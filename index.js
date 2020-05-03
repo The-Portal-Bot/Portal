@@ -1,3 +1,6 @@
+const regex = require('./regex_interpreter.js');
+const editor = require('./channel_manipulation.js');
+
 // Load up the discord.js library
 const Discord = require("discord.js");
 
@@ -13,6 +16,8 @@ const config = require("./config.json");
 
 var portal_list_id = new Array();
 var voice_list_id = new Array();
+
+// LISTENERS
 
 client.on("ready", () => {
 	// This event will run if the bot starts, and logs in, successfully.
@@ -36,57 +41,8 @@ client.on("guildDelete", guild => {
 	client.user.setActivity(`Serving ${client.guilds.size} servers`);
 });
 
-function delete_voice_channel(channel_to_delete)
-{
-	const index = voice_list_id.indexOf(channel_to_delete.id);
-	if (index > -1) { voice_list_id.splice(index, 1); }
-
-	channel_to_delete.delete()
-	.then(g => console.log(`Deleted the guild ${g}`))
-	.catch(console.error);	
-}
-
-function create_portal_channel(channel_to_delete)
-{
-}
-
-function create_voice_channel(state)
-{
-	state.voiceChannel.guild.createChannel("loading...", {type: "voice"})
-	.then(channel => {
-		voice_list_id.push(channel.id)
-		if (state.voiceChannel.parentID === null){ // doesn't have category
-			state.setVoiceChannel(channel);
-		} else { // has category
-			channel.setParent(state.voiceChannel.parentID);
-			state.setVoiceChannel(channel);
-		}
-
-	}).catch(console.error);
-}
-
-function generate_channel_names(guild)
-{
-	if(guild.available){
-		let current_channels = guild.channels
-		for(i = 0; i < voice_list_id.length; i++) {
-			let channel_to_update = current_channels.find(channel => channel.id === voice_list_id[i])
-			if(channel_to_update !== null){
-				let channel_name = "";
-				channel_to_update.members.forEach( (value) => {
-					if(value.presence.game !== null){
-						channel_name += value.presence.game;
-					}
-				})
-				channel_to_update.setName(channel_name);
-				return
-			}
-		}
-	}
-}
-
 client.on("presenceUpdate", (oldPresence, newPresence) => {
-	generate_channel_names(newPresence.guild);
+	editor.generate_channel_names(newPresence.guild, voice_list_id);
 });
 
 client.on("voiceStateUpdate", (oldState, newState) => {
@@ -100,13 +56,13 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 		if(portal_list_id.includes(new_user_channel.id))
 		{
 			// user joined portal channel
-			create_voice_channel(newState);
-			generate_channel_names(newState.guild);
+			editor.create_voice_channel(newState, voice_list_id);
+			editor.generate_channel_names(newState.guild, voice_list_id);
 		}
 		else if(voice_list_id.includes(new_user_channel.id))
 		{
 			// user joined voice channel
-			generate_channel_names(newState.guild);
+			editor.generate_channel_names(newState.guild, voice_list_id);
 		}
 	}
 	else if(new_user_channel === undefined && old_user_channel !== undefined) // LEAVE to undefined
@@ -121,7 +77,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 		else if(voice_list_id.includes(old_user_channel.id))
 		{
 			// user left voice channel
-			delete_voice_channel(old_user_channel);
+			editor.delete_voice_channel(old_user_channel, voice_list_id);
 		}
 	}
 	// user was moved from channel to channel
@@ -144,7 +100,14 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 				console.log("->dest: voice_list_id")
 				// has been checked before
 				console.log("has been checked before")
-				generate_channel_names(newState.guild);
+				editor.generate_channel_names(newState.guild, voice_list_id);
+			}
+			else
+			{
+				console.log("->dest: unknown")
+				// leaves portal channel and joins another unknown
+				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 		}
 		else if(voice_list_id.includes(old_user_channel.id))
@@ -155,17 +118,24 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 			{
 				console.log("->dest: portal_list_id")
 				// leaves created channel and joins portal
-				delete_voice_channel(old_user_channel);
+				editor.delete_voice_channel(old_user_channel, voice_list_id);
 				// user joined portal channel
-				create_voice_channel(newState);
-				generate_channel_names(newState.guild);
+				editor.create_voice_channel(newState, voice_list_id);
+				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 			else if(voice_list_id.includes(new_user_channel.id))
 			{
 				console.log("->dest: voice_list_id")
 				// leaves created channel and joins another created
-				delete_voice_channel(old_user_channel);
-				generate_channel_names(newState.guild);
+				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				editor.generate_channel_names(newState.guild, voice_list_id);
+			}
+			else
+			{
+				console.log("->dest: unknown")
+				// leaves created channel and joins another unknown
+				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 		}
 		else
@@ -176,14 +146,14 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 			{
 				console.log("->dest: portal_list_id")
 				// user joined portal channel
-				create_voice_channel(newState);
-				generate_channel_names(newState.guild);
+				editor.create_voice_channel(newState, voice_list_id);
+				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 			else if(voice_list_id.includes(new_user_channel.id))
 			{
 				console.log("->dest: voice_list_id")
 				// leaves created channel and joins another created
-				generate_channel_names(newState.guild);
+				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 		}
 	}
@@ -218,92 +188,98 @@ client.on("message", async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
 	
-	// Let's go with a few common example commands! Feel free to delete or change those.
-	
-
-
 
 	if(command === "portal")
 	{
-		// make the message to array without the prefix
-		var msg_arr = message.content.slice(config.prefix.length).trim().split(/ +/g)
+		if(args.length === 2)
+		{
+			message.channel.send("channel name:\t**"+args[0]+"**")
+			message.channel.send("category name:\t**"+args[1]+"**")
 
-		// print the message from the user // ["+message.channel.name+"]"
-		message.channel.send("category name: **"+msg_arr[1]+"**")
-		//message.channel.send("voice channel name: **"+msg_arr[2]+"-voice**")
-
-		// Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
-		// message.delete();
-
-		var server = message.guild;
-		var name = message.author.username;
-
-		// // creating category
-		// server.createChannel(msg_arr[1], {type: "category"})
-
-		// creating voice channel
-		server.createChannel(msg_arr[1]+"-voice", {type: "voice"})
-		.then (channel => {
-			portal_list_id.push(channel.id);
-			message.channel.send("channel.id: **"+channel.id+"**");
-		})
-		// .then(channel => {
-		// 	let category = server.channels.find(
-		// 		c => c.name == msg_arr[1] && c.type == "category"
-		// 	);
-		// 	if (!category) throw new Error("Category channel does not exist");
-		// 	channel.setParent(category.id);
-		// }).catch(console.error);
+			editor.create_portal_channel(message.guild, args[0], args[1], portal_list_id)
+		}
+		else if(args.length === 1)
+		{
+			message.channel.send("channel name:\t**"+args[0]+"**")
+			editor.create_portal_channel(message.guild, args[0], null, portal_list_id)
+		}
+		else
+		{
+			message.channel.send("**"+config.prefix+"portal <channel_name> <category_name>**\n"+
+				"*(channel_name: mandatory, category_name: optional)*")
+		}
 	}
 
-	if(command === "w")
+	if(command === "regex")
 	{
-		//message.author.setActivity(`to pouli mou`)
-		// print the message from the user // ["+message.channel.name+"]"
-		//message.channel.send("you are playing: **"+client.user.game+"**")
-		//message.channel.send("you are playing: **"+data.game.name+"**")
-		
-		//let channel = new Discord.Channel();
+		console.log("your command is: "+args.toString())
+		args.forEach( arg => {
+			str = String(arg);
 
-		message.guild.createChannel('new-general', {type: "category"})
-		.then(console.log)
-		.catch(console.error);
+			if(str.substring(0, 1) === "$")
+			{
+				if(str.substring(1, str.length) === "game_name")
+				{
+					console.log("game_name");
+				}
+				else if(str.substring(1, str.length) === "user_limit")
+				{
+					console.log("user_limit");
+				}
+				else if(str.substring(1, str.length) === "user_count")
+				{
+					console.log("user_count");
+				}
+				else if(str.substring(1, str.length) === "creator")
+				{
+					console.log("creator");
+				}
+			}
+			else if(str.substring(0, 1) === "#")
+			{
 
-		message.guild.channels.forEach( (value) => {
-			message.channel.send("client.channels: "+value.name+"****")
+			}
+			else if(str.substring(0, 1) === "##")
+			{
+
+			}
+			else if(str.substring(0, 1) === "{")
+			{
+
+			}
 		})
-
-		message.channel.send("you are playing: **"+message.author.presence.game+"**")
-		message.channel.send("channel name: **"+channel_nm+"**")
 	}
 
 	if(command === "purge")
-	{
+	{	
+		let current_guild = message.guild;
+
 		message.guild.channels.forEach( (value) => {
 			if(value.deletable) value.delete()
 			.then(g => console.log(`Deleted the guild ${g}`))
 			.catch(console.error);
 		})
-
-		message.channel.send("**τα λέγαμε**")
+		
+		current_guild.createChannel("general voice", {type: "voice"}, { bitrate: 64 })
+		.then(
+			current_guild.createChannel("general text", {type: "text"})
+			.then( value => {
+				value.send("**PURGE DONE**")
+			})
+		)
+		
 	}
 
-
-
-
-
-
-
-
-
-
-
-	if(command === "ping") {
+	if(command === "ping")
+	{
 		// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
 		// The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
 		const m = await message.channel.send("Ping?");
-		m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
+		m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.\nAPI Latency is ${Math.round(client.ping)}ms`);
 	}
+	
+
+
 	
 	if(command === "say") {
 		// makes the bot say something and delete the message. As an example, it's open to anyone to use.
