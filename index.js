@@ -37,90 +37,100 @@ client.on("guildDelete", guild => {
 });
 
 
+function generate_channel_names(guild)
+{
+	if(guild.available){
+		let current_channels = guild.channels
 
+		for(i = 0; i < portal_channels.length; i++) {
+			let channel_to_update = current_channels.find(channel => channel.id === portal_channels[i])
+			
+			if(channel_to_update !== null){
+				let channel_name = "";
+				channel_to_update.members.forEach( (value) => {
+					if(value.presence.game !== null){
+						channel_name += value.presence.game;
+					}
+				})
 
-client.on("presenceUpdate", guild => {
-	// this event triggers when a user changes presence
-	// console.log(`presence update`);
-
-	// portal_members.forEach( (value) => {
-	// 	if(value.presence.game !== null){
-	// 		if(portal_game.get(value.presence.game) !== undefined){
-	// 			prev = portal_game.get(value.presence.game)
-	// 			portal_game.set(value.presence.game, ++prev)
-	// 		} else {
-	// 			portal_game.set(value.presence.game, 1)
-	// 		}
-	// 	}
-	// })
-	
-	// var mapAsc = new Map([...map.portal_game()].sort());
-	// console.log(mapAsc)
-});
-
-
-
-// returns the name of the channel
-function set_channel_name(newMember) {
-	var channel_name = "general";
-
-	newMember.guild.channels.get(newMember.voiceChannel.id).members.forEach( (value) => {
-		if(value.presence.game !== null){
-			channel_name += value.presence.game;
+				channel_to_update.setName(channel_name);
+				return
+			}
 		}
-	})
-	console.log("channel_name: "+channel_name)
-	return channel_name;
+	}
 }
 
-client.on("voiceStateUpdate", (oldMember, newMember) => {
-	let newUserChannel = newMember.voiceChannel
-	let oldUserChannel = oldMember.voiceChannel
+client.on("presenceUpdate", (oldPresence, newPresence) => {
+	generate_channel_names(newPresence.guild);
+});
+
+client.on("voiceStateUpdate", (oldState, newState) => {
+	let newUserChannel = newState.voiceChannel
+	let oldUserChannel = oldState.voiceChannel
 	
-	// if portal is one that we created
-	if(portal_channels.includes(newUserChannel))
+	if(portal_channels.includes(oldUserChannel.id) && newUserChannel.id === portal_id) // User leaves a voice channel
 	{
+		console.log("LEAVING1: "+oldUserChannel.id)
 
-	}
-	else
-	{
-		if(newUserChannel !== undefined) // User Joins a voice channel
-		{
-			//
-			let channelName = set_channel_name(newMember);
-			newUserChannel.setName(channelName);
-			//
-			if(newUserChannel.id === portal_id)
-			{
-				let channelName = set_channel_name(newMember);
+		const index = portal_channels.indexOf(oldUserChannel.id);
+		if (index > -1) {
+			portal_channels.splice(index, 1);
+		}
 
-				newUserChannel.guild.createChannel(channelName+"-voice", {type: "voice"})
-				.then(channel => {
-					
-					if (newUserChannel.parentID === null){ // doesn't have category
-						newMember.setVoiceChannel(channel);
-					} else { // has category
-						channel.setParent(newUserChannel.parentID);
-						newMember.setVoiceChannel(channel);
-					}
+		oldUserChannel.delete()
+		.then(g => console.log(`Deleted the guild ${g}`))
+		.catch(console.error);
 
-				}).catch(console.error);
+		newUserChannel.guild.createChannel("initiation"+"-voice", {type: "voice"})
+		.then(channel => {
+			portal_channels.push(channel.id)
+			if (newUserChannel.parentID === null){ // doesn't have category
+				newState.setVoiceChannel(channel);
+			} else { // has category
+				channel.setParent(newUserChannel.parentID);
+				newState.setVoiceChannel(channel);
 			}
+		}).catch(console.error);
 
-		}
-		// User leaves a voice channel
-		else if(newUserChannel === undefined || newUserChannel.id === portal_id)
-		{
-			// console.log("about to delete channel with id: "+oldUserChannel.id)
-
-			// if(oldUserChannel.id === portal_id)
-			// {
-			// 	oldUserChannel.delete()
-			// 	.then(g => console.log(`Deleted the guild ${g}`))
-			// 	.catch(console.error);
-			// }
-		}
+		generate_channel_names(newState.guild);
 	}
+	else if(portal_channels.includes(oldUserChannel.id)) // User leaves a voice channel
+	{
+		console.log("LEAVING2: "+oldUserChannel.id)
+
+		const index = portal_channels.indexOf(oldUserChannel.id);
+		if (index > -1) {
+			portal_channels.splice(index, 1);
+		}
+
+		oldUserChannel.delete()
+			.then(g => console.log(`Deleted the guild ${g}`))
+			.catch(console.error);
+	}
+	else if(newUserChannel !== undefined) // User Joins a voice channel
+	{
+		console.log("JOINING1: "+newUserChannel.id)
+
+		// runs only if you are in one portal voice channel //soomn array with portal channels not only one
+		if(newUserChannel.id === portal_id)
+		{
+			newUserChannel.guild.createChannel("loading...", {type: "voice"})
+			.then(channel => {
+				portal_channels.push(channel.id)
+				if (newUserChannel.parentID === null){ // doesn't have category
+					newState.setVoiceChannel(channel);
+				} else { // has category
+					channel.setParent(newUserChannel.parentID);
+					newState.setVoiceChannel(channel);
+				}
+
+			}).catch(console.error);
+		}
+
+		generate_channel_names(newState.guild);
+	}
+
+	console.log("number of portal channels: "+portal_channels.length)
 })
 
 client.on("message", async message => {
