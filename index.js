@@ -11,8 +11,8 @@ const config = require("./config.json");
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 
-var portal_id = 0;
-var portal_channels = new Array();
+var portal_list_id = new Array();
+var voice_list_id = new Array();
 
 client.on("ready", () => {
 	// This event will run if the bot starts, and logs in, successfully.
@@ -36,15 +36,41 @@ client.on("guildDelete", guild => {
 	client.user.setActivity(`Serving ${client.guilds.size} servers`);
 });
 
+function delete_voice_channel(channel_to_delete)
+{
+	const index = voice_list_id.indexOf(channel_to_delete.id);
+	if (index > -1) { voice_list_id.splice(index, 1); }
+
+	channel_to_delete.delete()
+	.then(g => console.log(`Deleted the guild ${g}`))
+	.catch(console.error);	
+}
+
+function create_portal_channel(channel_to_delete)
+{
+}
+
+function create_voice_channel(state)
+{
+	state.voiceChannel.guild.createChannel("loading...", {type: "voice"})
+	.then(channel => {
+		voice_list_id.push(channel.id)
+		if (state.voiceChannel.parentID === null){ // doesn't have category
+			state.setVoiceChannel(channel);
+		} else { // has category
+			channel.setParent(state.voiceChannel.parentID);
+			state.setVoiceChannel(channel);
+		}
+
+	}).catch(console.error);
+}
 
 function generate_channel_names(guild)
 {
 	if(guild.available){
 		let current_channels = guild.channels
-
-		for(i = 0; i < portal_channels.length; i++) {
-			let channel_to_update = current_channels.find(channel => channel.id === portal_channels[i])
-			
+		for(i = 0; i < voice_list_id.length; i++) {
+			let channel_to_update = current_channels.find(channel => channel.id === voice_list_id[i])
 			if(channel_to_update !== null){
 				let channel_name = "";
 				channel_to_update.members.forEach( (value) => {
@@ -52,7 +78,6 @@ function generate_channel_names(guild)
 						channel_name += value.presence.game;
 					}
 				})
-
 				channel_to_update.setName(channel_name);
 				return
 			}
@@ -65,72 +90,114 @@ client.on("presenceUpdate", (oldPresence, newPresence) => {
 });
 
 client.on("voiceStateUpdate", (oldState, newState) => {
-	let newUserChannel = newState.voiceChannel
-	let oldUserChannel = oldState.voiceChannel
-	
-	if(portal_channels.includes(oldUserChannel.id) && newUserChannel.id === portal_id) // User leaves a voice channel
+	let new_user_channel = newState.voiceChannel; console.log("new_user_channel: "+new_user_channel);
+	let old_user_channel = oldState.voiceChannel; console.log("old_user_channel: "+old_user_channel);	
+
+	if(old_user_channel === undefined && new_user_channel !== undefined) // JOIN from undefined
 	{
-		console.log("LEAVING1: "+oldUserChannel.id)
+		console.log("undefined->existing")
 
-		const index = portal_channels.indexOf(oldUserChannel.id);
-		if (index > -1) {
-			portal_channels.splice(index, 1);
-		}
-
-		oldUserChannel.delete()
-		.then(g => console.log(`Deleted the guild ${g}`))
-		.catch(console.error);
-
-		newUserChannel.guild.createChannel("initiation"+"-voice", {type: "voice"})
-		.then(channel => {
-			portal_channels.push(channel.id)
-			if (newUserChannel.parentID === null){ // doesn't have category
-				newState.setVoiceChannel(channel);
-			} else { // has category
-				channel.setParent(newUserChannel.parentID);
-				newState.setVoiceChannel(channel);
-			}
-		}).catch(console.error);
-
-		generate_channel_names(newState.guild);
-	}
-	else if(portal_channels.includes(oldUserChannel.id)) // User leaves a voice channel
-	{
-		console.log("LEAVING2: "+oldUserChannel.id)
-
-		const index = portal_channels.indexOf(oldUserChannel.id);
-		if (index > -1) {
-			portal_channels.splice(index, 1);
-		}
-
-		oldUserChannel.delete()
-			.then(g => console.log(`Deleted the guild ${g}`))
-			.catch(console.error);
-	}
-	else if(newUserChannel !== undefined) // User Joins a voice channel
-	{
-		console.log("JOINING1: "+newUserChannel.id)
-
-		// runs only if you are in one portal voice channel //soomn array with portal channels not only one
-		if(newUserChannel.id === portal_id)
+		if(portal_list_id.includes(new_user_channel.id))
 		{
-			newUserChannel.guild.createChannel("loading...", {type: "voice"})
-			.then(channel => {
-				portal_channels.push(channel.id)
-				if (newUserChannel.parentID === null){ // doesn't have category
-					newState.setVoiceChannel(channel);
-				} else { // has category
-					channel.setParent(newUserChannel.parentID);
-					newState.setVoiceChannel(channel);
-				}
-
-			}).catch(console.error);
+			// user joined portal channel
+			create_voice_channel(newState);
+			generate_channel_names(newState.guild);
 		}
+		else if(voice_list_id.includes(new_user_channel.id))
+		{
+			// user joined voice channel
+			generate_channel_names(newState.guild);
+		}
+	}
+	else if(new_user_channel === undefined && old_user_channel !== undefined) // LEAVE to undefined
+	{
+		console.log("existing->undefined")
+		
+		if(portal_list_id.includes(old_user_channel.id))
+		{
+			// user leaves portal channel
+			// is handled before
+		}
+		else if(voice_list_id.includes(old_user_channel.id))
+		{
+			// user left voice channel
+			delete_voice_channel(old_user_channel);
+		}
+	}
+	// user was moved from channel to channel
+	else if(new_user_channel !== undefined && old_user_channel !== undefined)
+	{
+		console.log("existing->existing")
 
-		generate_channel_names(newState.guild);
+		if(portal_list_id.includes(old_user_channel.id))
+		{
+			console.log("->source: portal_list_id");
+			
+			if(portal_list_id.includes(new_user_channel.id))
+			{
+				console.log("->dest: portal_list_id")
+				// this should not happen
+				console.log("this should not happen error: portal_channel->portal_channel")
+			}
+			else if(voice_list_id.includes(new_user_channel.id))
+			{
+				console.log("->dest: voice_list_id")
+				// has been checked before
+				console.log("has been checked before")
+				generate_channel_names(newState.guild);
+			}
+		}
+		else if(voice_list_id.includes(old_user_channel.id))
+		{
+			console.log("->source: voice_list");
+			
+			if(portal_list_id.includes(new_user_channel.id))
+			{
+				console.log("->dest: portal_list_id")
+				// leaves created channel and joins portal
+				delete_voice_channel(old_user_channel);
+				// user joined portal channel
+				create_voice_channel(newState);
+				generate_channel_names(newState.guild);
+			}
+			else if(voice_list_id.includes(new_user_channel.id))
+			{
+				console.log("->dest: voice_list_id")
+				// leaves created channel and joins another created
+				delete_voice_channel(old_user_channel);
+				generate_channel_names(newState.guild);
+			}
+		}
+		else
+		{
+			console.log("->source: unknown voice");
+			
+			if(portal_list_id.includes(new_user_channel.id))
+			{
+				console.log("->dest: portal_list_id")
+				// user joined portal channel
+				create_voice_channel(newState);
+				generate_channel_names(newState.guild);
+			}
+			else if(voice_list_id.includes(new_user_channel.id))
+			{
+				console.log("->dest: voice_list_id")
+				// leaves created channel and joins another created
+				generate_channel_names(newState.guild);
+			}
+		}
+	}
+	else if(new_user_channel === undefined && old_user_channel === undefined)
+	{
+		console.log("undefined->undefined")
+	}
+	else
+	{
+		console.log("don't know how we got here")
 	}
 
-	console.log("number of portal channels: "+portal_channels.length)
+	console.log("number of portal channels: "+voice_list_id.length)
+	console.log("")
 })
 
 client.on("message", async message => {
@@ -177,8 +244,8 @@ client.on("message", async message => {
 		// creating voice channel
 		server.createChannel(msg_arr[1]+"-voice", {type: "voice"})
 		.then (channel => {
-			portal_id = channel.id
-			message.channel.send("channel.id: **"+channel.id+"**")
+			portal_list_id.push(channel.id);
+			message.channel.send("channel.id: **"+channel.id+"**");
 		})
 		// .then(channel => {
 		// 	let category = server.channels.find(
@@ -208,6 +275,17 @@ client.on("message", async message => {
 
 		message.channel.send("you are playing: **"+message.author.presence.game+"**")
 		message.channel.send("channel name: **"+channel_nm+"**")
+	}
+
+	if(command === "purge")
+	{
+		message.guild.channels.forEach( (value) => {
+			if(value.deletable) value.delete()
+			.then(g => console.log(`Deleted the guild ${g}`))
+			.catch(console.error);
+		})
+
+		message.channel.send("**τα λέγαμε**")
 	}
 
 
