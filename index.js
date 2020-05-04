@@ -77,14 +77,16 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 		else if(voice_list_id.includes(old_user_channel.id))
 		{
 			// user left voice channel
-			editor.delete_voice_channel(old_user_channel, voice_list_id);
+			console.log("old_user_channel.members.length: "+old_user_channel.members.length)
+			if(old_user_channel.members.size === 0)
+			{ editor.delete_voice_channel(old_user_channel, voice_list_id); }
 		}
 	}
 	// user was moved from channel to channel
 	else if(new_user_channel !== undefined && old_user_channel !== undefined)
 	{
 		console.log("existing->existing")
-
+		
 		if(portal_list_id.includes(old_user_channel.id))
 		{
 			console.log("->source: portal_list_id");
@@ -101,12 +103,13 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 				// has been checked before
 				console.log("has been checked before")
 				editor.generate_channel_names(newState.guild, voice_list_id);
+				
 			}
 			else
 			{
 				console.log("->dest: unknown")
 				// leaves portal channel and joins another unknown
-				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				// should not happen
 				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 		}
@@ -118,7 +121,9 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 			{
 				console.log("->dest: portal_list_id")
 				// leaves created channel and joins portal
-				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				console.log("old_user_channel.members.length: "+old_user_channel.members.length)
+				if(old_user_channel.members.size === 0)
+				{ editor.delete_voice_channel(old_user_channel, voice_list_id); }
 				// user joined portal channel
 				editor.create_voice_channel(newState, voice_list_id);
 				editor.generate_channel_names(newState.guild, voice_list_id);
@@ -127,14 +132,18 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 			{
 				console.log("->dest: voice_list_id")
 				// leaves created channel and joins another created
-				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				console.log("old_user_channel.members.length: "+old_user_channel.members.length)
+				if(old_user_channel.members.size === 0)
+				{ editor.delete_voice_channel(old_user_channel, voice_list_id); }
 				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 			else
 			{
 				console.log("->dest: unknown")
 				// leaves created channel and joins another unknown
-				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				console.log("old_user_channel.members.length: "+old_user_channel.members.length)
+				if(old_user_channel.members.size === 0)
+				{ editor.delete_voice_channel(old_user_channel, voice_list_id); }
 				editor.generate_channel_names(newState.guild, voice_list_id);
 			}
 		}

@@ -66,7 +66,8 @@ module.exports =
                             channel_name += value.presence.game;
                         }
                     })
-                    channel_to_update.setName(channel_name);
+                    if(channel_name !== "") channel_to_update.setName(channel_name);
+                    else channel_to_update.setName("general")
                     return
                 }
             }
