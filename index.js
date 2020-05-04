@@ -221,38 +221,45 @@ client.on("message", async message => {
 
 	if(command === "regex")
 	{
+		let channel_name = "";
+
 		console.log("your command is: "+args.toString())
-		args.forEach( arg => {
-			str = String(arg);
+		let commands = [ "game_name", "user_limit", "users_playing", "user_count", "creator" ];
+		let functions = [ "expression", "popular", "popular_max", "summary_max" ];
 
-			if(str.substring(0, 1) === "$")
+		args.forEach(arg => {
+			if(String(arg).substring(0, 1) === "$")
 			{
-				if(str.substring(1, str.length) === "game_name")
-				{
-					console.log("game_name");
-				}
-				else if(str.substring(1, str.length) === "user_limit")
-				{
-					console.log("user_limit");
-				}
-				else if(str.substring(1, str.length) === "user_count")
-				{
-					console.log("user_count");
-				}
-				else if(str.substring(1, str.length) === "creator")
-				{
-					console.log("creator");
-				}
-			}
-			else if(str.substring(0, 1) === "#")
-			{
+				commands.forEach((cmd) => {
+					if(String(arg).substring(1, (String(cmd).length+1)) === cmd)
+					{
+						console.log("command: "+cmd)
 
+						console.log("dot ?: "+String(arg).substring( (String(cmd).length+1), (String(cmd).length+2)))
+						if(String(arg).substring( (String(cmd).length+1), (String(cmd).length+2)) === ".")
+						{
+							functions.forEach((func) => {
+								console.log(String(arg).substring( (String(cmd).length+2), (String(func).length+2))+" === "+func)
+								if(String(arg).substring( (String(cmd).length+2), (String(func).length+2)) === func)
+								{
+									console.log("with function: "+func)
+								}
+							})
+						}
+					}
+				})
+				console.log()
 			}
-			else if(str.substring(0, 1) === "##")
+			else if(String(arg).substring(0, 1) === "#")
 			{
-
+				// gets the channel creation number
+				channel_name += "1"
 			}
-			else if(str.substring(0, 1) === "{")
+			else if(String(arg).substring(0, 1) === "##")
+			{
+				channel_name += "#"+"1"
+			}
+			else if(String(arg).substring(0, 1) === "{")
 			{
 
 			}
