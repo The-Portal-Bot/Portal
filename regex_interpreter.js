@@ -9,7 +9,6 @@ module.exports = {
 		if(String(arg).substring(0, 1) === "$")
 		{
 			for(i=0, cmd=this.cmmd_name[i]; i < this.cmmd_name.length; i++, cmd=this.cmmd_name[i]) {
-				console.log(String(arg).substring(1, (String(cmd).length+1))+" === "+cmd)
 				if(String(arg).substring(1, (String(cmd).length+1)) === cmd)
 				{
 					console.log("cmd: "+cmd);
@@ -18,10 +17,10 @@ module.exports = {
 			}
 		}
 
-		
+		return false;
 	},
 
-	function_check: function(arg)
+	function_check: function(arg, cmd)
 	{
 		if(String(arg).substring(0, 1) === ".")
 		{
@@ -34,6 +33,8 @@ module.exports = {
 				}
 			}
 		}
+
+		return false;
 	},
 
 	hashtag_check: function(arg)
@@ -47,6 +48,8 @@ module.exports = {
 		{
 			return "1"
 		}
+
+		return false;
 	},
 
 	if_expression_check: function(arg)
@@ -54,14 +57,17 @@ module.exports = {
 		if(String(arg).substring(0, 1) === "{")
 		{
 			console.log("expression: "+String(arg).substring(1, String(arg).indexOf("?")))
-			console.log("statemment1: "+String(arg).substring(String(arg).indexOf("?"), String(arg).indexOf(":")))
-			console.log("statemment2: "+String(arg).substring(String(arg).indexOf(":"), String(arg).indexOf("}")))
+			console.log("statemment1: "+String(arg).substring(String(arg).indexOf("?")+1, String(arg).indexOf(":")))
+			console.log("statemment2: "+String(arg).substring(String(arg).indexOf(":")+1, String(arg).indexOf("}")))
 		}
+
+		return false;
 	},
 
 	regex_reader: function(args)
 	{
 		console.log("command: "+args)
+		let regex_value = "";
 
 		args.forEach( (arg, key)=> {
 
@@ -72,17 +78,29 @@ module.exports = {
 				let cmd = this.command_check(arg)
 				if(this.function_check(arg.substring(String(cmd).length+1)))
 				{
-					let func = this.function_check(arg.substring(String(cmd).length+1))
+					regex_value += this.function_check(arg.substring(String(cmd).length+1), cmd) + " "
+				}
+				else
+				{
+					// there is no function on value
+					regex_value += cmd; + " "
 				}
 			}
-			else if(hash = this.hashtag_check(arg))
+			else if(this.hashtag_check(arg))
 			{
-
+				regex_value += this.hashtag_check(arg) + " "
 			}
-			else if(if_exp = this.if_expression_check(arg))
+			else if(this.if_expression_check(arg))
 			{
-
+				regex_value += this.if_expression_check(arg) + " "
+			}
+			else
+			{
+				regex_value += arg + " "
 			}
 		})
+
+		console.log("regex: "+regex_value);
+		return regex_value;
 	}
 };
