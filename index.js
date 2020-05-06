@@ -88,7 +88,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 	else if(new_user_channel !== undefined && old_user_channel !== undefined)
 	{
 		console.log("existing->existing")
-
+		
 		if(portal_list_id.includes(old_user_channel.id))
 		{
 			console.log("->source: portal_list_id");

@@ -60,22 +60,30 @@ module.exports =
 
 	get_array_of_games: function (guild, voice_list_id, regex_string_id)
 	{
-		let array_of_games = {};
+		let array_of_games = [];
 
 		guild.channels.forEach( channel => {
 			for(j=0, voice=voice_list_id[j]; j < voice_list_id.length; j++, voice=voice_list_id[j])
 			{
 				if(channel.id === voice)
 				{
-					array_of_games[channel.id] = " ";
 					channel.members.forEach( (member_game) => {
 						if(member_game.presence.game !== null) {
 							console.log("member_game.presence.game: "+member_game.presence.game)
-							array_of_games[channel.id] += member_game.presence.game;
+							array_of_games.push(member_game.presence.game);
 						}
 					})
-					channel.setName(array_of_games[channel.id]);
+					console.log("array_of_games="+array_of_games)
+					console.log("array_of_games.length="+array_of_games.length)
+
+					if(array_of_games.length > 0) {
+						channel.setName(array_of_games.toString());
+					} else {
+						channel.setName("general")
+					}
+					
 					console.log("update channel with id: "+channel.id+", with name"+array_of_games[channel.id])
+					
 					return
 				}
 			}
@@ -87,4 +95,5 @@ module.exports =
 	generate_channel_names: function (guild, voice_list_id, regex_string)
 	{
 	}
+
 };
