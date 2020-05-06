@@ -27,7 +27,7 @@ name | arguments | description
 
 ***
 
-## Regex Interpretor
+## Regex Interpreter
 There are four types of data in portal bot:
 1. variables
 2. attributes
