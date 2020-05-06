@@ -34,9 +34,9 @@ There are four types of data in portal bot:
 3. pipes
 
 ## Variables
-*prefix:* **$**
+* *prefix:* **$**
 <br>
-*Variables are defacto data sources that can be accessed though calling them*
+* *Variables are defacto data sources that can be accessed though calling them*
 
 name | description
 --------- | ---------
@@ -55,13 +55,12 @@ mmbr_his | _returns the currently played games_
 mmbr_lmt | _sets the limit of users in channel_
 
 ### Pipes
-*prefix:* **|**
+* *prefix:* **|**
 <br>
-*Pipes are applied to variables in order to change their outcome*
+* *Pipes are applied to variables in order to change their outcome*
 
 name | type | description
 --------- | --------- | ---------
-
 upper | string | _makes input uppercase_
 lower | string | _makes input lowercase_
 title | string | _makes input titlecase_
@@ -78,9 +77,9 @@ ppls_cnt | array | _count of most popular in array_
 smmr_cnt | array | _count of all in array_
 
 ### Attributes
-*prefix:* **@**
+* *prefix:* **@**
 <br>
-*Attributes are values that a channel has from its inception and are subject to change*
+* *Attributes are values that a channel has from its inception and are subject to change*
 
 name | type | default | description
 --------- | --------- | --------- | --------- 
