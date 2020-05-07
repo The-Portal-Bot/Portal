@@ -1,14 +1,18 @@
 module.exports = {
 	// arrays
-	cmmd_name: [ "game_name", "user_limit", "users_playing", "user_count", "creator" ],
-	func_name: [ "expression", "popular_max", "popular", "summary_max" ],
+	vrbl_name: [ "#", "##", "date", "time", "crtr", "game_lst", "game_cnt", "game_his",
+		"mmbr_lst", "mmbr_cnt", "mmbr_plg", "mmbr_his", "mmbr_lmt" ],
+	pipe_name: [ "upper", "lower", "titl", "acrnm", "word#",
+		"cday", "mnth", "year", "hour", "mint", "scnd",
+		"ppls", "ppls_cnt", "smmr_cnt" ],
+	attr_name: [ "nbot", "mmbr_cap", "time_tolv", "titl_rfsh" ],
 	//functions
 
 	command_check: function(arg)
 	{
 		if(String(arg).substring(0, 1) === "$")
 		{
-			for(i=0, cmd=this.cmmd_name[i]; i < this.cmmd_name.length; i++, cmd=this.cmmd_name[i]) {
+			for(i=0, cmd=this.vrbl_name[i]; i < this.vrbl_name.length; i++, cmd=this.vrbl_name[i]) {
 				if(String(arg).substring(1, (String(cmd).length+1)) === cmd)
 				{
 					console.log("cmd: "+cmd);
@@ -20,11 +24,11 @@ module.exports = {
 		return false;
 	},
 
-	function_check: function(arg, cmd)
+	pipe_check: function(arg, cmd)
 	{
-		if(String(arg).substring(0, 1) === ".")
+		if(String(arg).substring(0, 1) === "|")
 		{
-			for(j=0, func=this.func_name[j]; j < this.func_name.length; j++, func=this.func_name[j]) {
+			for(j=0, func=this.pipe_name[j]; j < this.pipe_name.length; j++, func=this.pipe_name[j]) {
 				if(String(arg).substring(1, (String(func).length+1)) === func)
 				{
 					//check for ()
@@ -76,9 +80,9 @@ module.exports = {
 			if(this.command_check(arg))
 			{
 				let cmd = this.command_check(arg)
-				if(this.function_check(arg.substring(String(cmd).length+1)))
+				if(this.pipe_check(arg.substring(String(cmd).length+1)))
 				{
-					regex_value += this.function_check(arg.substring(String(cmd).length+1), cmd) + " "
+					regex_value += this.pipe_check(arg.substring(String(cmd).length+1), cmd) + " "
 				}
 				else
 				{

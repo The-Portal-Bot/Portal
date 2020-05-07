@@ -14,6 +14,8 @@ const config = require("./config.json");
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 
+let portal_channel = new Array();
+
 let portal_list_id = new Array();
 let voice_list_id = new Array();
 let regex_string_id = {};
@@ -228,6 +230,7 @@ client.on("message", async message => {
 		regex.regex_reader(args);
 	}
 
+	//testing processes
 	if(command === "purge")
 	{	
 		let current_guild = message.guild;
@@ -258,79 +261,184 @@ client.on("message", async message => {
 
 
 	
-	if(command === "say") {
-		// makes the bot say something and delete the message. As an example, it's open to anyone to use.
-		// To get the "message" itself we join the `args` back into a string with spaces:
-		const sayMessage = args.join(" ");
+	if(command === "help")
+	{
+		func_name = [
+			{name: "portal", value: "creates a voice channel and a category for it", args: "!channel_name @category_name"},
+			{name: "text", value: "creates a text channel connected to the voice channel", args: "none"},
+			{name: "regex", value: "sets regex-guidelines for how to name channels (current portal)", args: "!regex_command"},
+			{name: "exec", value: "returns the log of data given in log_string", args: "!exec_command"},
+			{name: "prefix", value: "sets the new prefix for portal bot", args: "!prefix"},
+			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command"}
+		];
+			
+		vrbl_name = [
+			{name: "#", value: "number of channel in list", args: "none"},
+			{name: "##", value: "number of channel in list with \#", args: "none"},
+			{name: "date", value: "full date: dd/mm/yyyy", args: "none"},
+			{name: "time", value: "full time: hh/mm/ss", args: "none"},
+			{name: "crtr", value: "creator of the channel", args: "none"},
+			{name: "game_lst", value: "list of currently played games", args: "none"},
+			{name: "game_cnt", value: "number of games being played", args: "none"},
+			{name: "game_his", value: "list of all games played from beginning", args: "none"},
+			{name: "mmbr_lst", value: "returns the currently played games", args: "none"},
+			{name: "mmbr_cnt", value: "number of members in channel", args: "none"},
+			{name: "mmbr_plg", value: "number of members playing", args: "none"},
+			{name: "mmbr_his", value: "returns the currently played games", args: "none"},
+			{name: "mmbr_lmt", value: "sets the limit of users in channel", args: "none"}
+		];
+
+		pipe_name = [
+			{name: "upper", value: "makes input uppercase", args: "none"},
+			{name: "lower", value: "makes input lowercase", args: "none"},
+			{name: "titl", value: "makes input titlecase", args: "none"},
+			{name: "acrm", value: "makes input string of acronyms", args: "none"},
+			{name: "word#", value: "maximum number of words (# is number)", args: "none"},
+			{name: "cday", value: "gets the day", args: "none"},
+			{name: "mnth", value: "gets the month", args: "none"},
+			{name: "year", value: "gets the year", args: "none"},
+			{name: "hour", value: "gets the hour", args: "none"},
+			{name: "mint", value: "gets the minute", args: "none"},
+			{name: "scnd", value: "gets the second", args: "none"},
+			{name: "ppls", value: "gets more popular in array", args: "none"},
+			{name: "ppls_cnt", value: "count of most popular in array", args: "none"},
+			{name: "smmr_cnt", value: "count of all in array", args: "none"}
+		];
+
+		attr_name = [
+			{name: "nbot", value: "no bots allowed", args: "!true/false"},
+			{name: "mmbr_cap", value: "maximum number of members allowed", args: "!number of maximum members"},
+			{name: "time_tolv", value: "time to live", args: "!number in seconds"},
+			{name: "titl_rfsh", value: "how often titles are being refreshed", args: "!number in seconds"}
+		];
+
+		if(args.length === 1)
+		{
+			// check if argument is function
+			for(i=0, func=func_name[i]; i < func_name.length; i++, func=func_name[i])
+			{
+				if(func.name === args[0])
+				{
+					message.channel.send(
+						">>> Name: **"+func.name+"** "+
+						"\nType: **function**"+
+						"\nDescription\t-\t*"+func.value+"*"+
+						"\nArguments \t-\t*"+func.args+"*");
+					return;
+				}
+			}
+			// check if argument is pipe
+			for(i=0, pipe=pipe_name[i]; i < pipe_name.length; i++, pipe=pipe_name[i])
+			{
+				if(pipe.name === args[0])
+				{
+					message.channel.send(
+						">>> Name: **"+pipe.name+"** "+
+						"\nType: **pipe**"+
+						"\nDescription\t-\t*"+pipe.value+"*"+
+						"\nArguments \t-\t*"+pipe.args+"*");
+					return;
+				}
+			}
+			// check if argument is attribute
+			for(i=0, attr=attr_name[i]; i < attr_name.length; i++, attr=attr_name[i])
+			{
+				if(attr.name === args[0])
+				{
+					message.channel.send(
+						">>> Name: **"+attr.name+"** "+
+						"\nType: **attribute**"+
+						"\nDescription\t-\t*"+attr.value+"*"+
+						"\nArguments \t-\t*"+attr.args+"*");
+					return;
+				}
+			}
+			// check if argument is variable
+			for(i=0, vrbl=vrbl_name[i]; i < vrbl_name.length; i++, vrbl=vrbl_name[i])
+			{
+				if(vrbl.name === args[0])
+				{
+					message.channel.send(
+						">>> Name: **"+vrbl.name+"** "+
+						"\nType: **variable**"+
+						"\nDescription\t-\t*"+vrbl.value+"*"+
+						"\nArguments \t-\t*"+vrbl.args+"*");
+					return;
+				}
+			}
+			message.channel.send("**"+args[0]+"**, *does not exist in portal, you can always try **./help***");
+		}
+		else
+		{
+			let help_message_func = "";
+			let help_message_pipe = "";
+			let help_message_attr = "";
+			let help_message_vrbl = "";
+
+			// check if argument is function
+			help_message_func = "-\n`Functions (prefix ./)`\n"
+			for(i=0, func=func_name[i]; i < func_name.length; i++, func=func_name[i])
+			{
+				help_message_func +=
+					"> name: **"+func.name+"**, "+
+					"type: **function**, "+
+					"description: ***"+func.value+"***, "+
+					"arguments: ***"+func.args+"***\n"
+			}
+			// check if argument is pipe
+			help_message_pipe = "-\n`Pipe (prefix |)`\n"
+			for(i=0, pipe=pipe_name[i]; i < pipe_name.length; i++, pipe=pipe_name[i])
+			{
+				help_message_pipe +=
+					"> name: **"+pipe.name+"**, "+
+					"type: **pipe**, "+
+					"description: ***"+pipe.value+"***, "+
+					"arguments: ***"+pipe.args+"***\n"
+			}
+			// check if argument is attribute
+			help_message_attr = "-\n`Attribute (prefix @)`\n"
+			for(i=0, attr=attr_name[i]; i < attr_name.length; i++, attr=attr_name[i])
+			{
+				help_message_attr +=
+					"> name: **"+attr.name+"**, "+
+					"type: **attribute**, "+
+					"description: ***"+attr.value+"***, "+
+					"arguments: ***"+attr.args+"***\n"
+			}
+			// check if argument is variable
+			help_message_vrbl = "-\n`Variable (prefix $)`\n"
+			for(i=0, vrbl=vrbl_name[i]; i < vrbl_name.length; i++, vrbl=vrbl_name[i])
+			{
+				help_message_vrbl +=
+					"> name: **"+vrbl.name+"**, "+
+					"type: **variable**, "+
+					"description: ***"+vrbl.value+"***, "+
+					"arguments: ***"+vrbl.args+"***\n"
+			}
+			message.channel.send(help_message_func);
+			message.channel.send(help_message_pipe);
+			message.channel.send(help_message_attr);
+			message.channel.send(help_message_vrbl);
+			message.channel.send("-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n"+
+			"symbol: @ indicates beginning of mandatory argument (should not be included)*");
+		}
+		
 		// Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
-		message.delete().catch(O_o=>{});
-		// And we get the bot to say the thing:
-		message.channel.send(sayMessage);
+		//message.delete();
 	}
-	
-	if(command === "kick") {
-		// This command must be limited to mods and admins. In this example we just hardcode the role names.
-		// Please read on Array.some() to understand this bit:
-		// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
-		if(!message.member.roles.some(r=>["Administrator", "Moderator"].includes(r.name)) )
-			return message.reply("Sorry, you don't have permissions to use this!");
-		
-		// Let's first check if we have a member and if we can kick them!
-		// message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
-		// We can also support getting the member by ID, which would be args[0]
-		let member = message.mentions.members.first() || message.guild.members.get(args[0]);
-		if(!member)
-			return message.reply("Please mention a valid member of this server");
-		if(!member.kickable)
-			return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?");
-		
-		// slice(1) removes the first part, which here should be the user mention or ID
-		// join(' ') takes all the various parts to make it a single string.
-		let reason = args.slice(1).join(' ');
-		if(!reason) reason = "No reason provided";
-		
-		// Now, time for a swift kick in the nuts!
-		await member.kick(reason)
-			.catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
-		message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
 
+	if(command === "prefix")
+	{
 	}
-	
-	if(command === "ban") {
-		// Most of this command is identical to kick, except that here we'll only let admins do it.
-		// In the real world mods could ban too, but this is just an example, right? ;)
-		if(!message.member.roles.some(r=>["Administrator"].includes(r.name)) )
-			return message.reply("Sorry, you don't have permissions to use this!");
-		
-		let member = message.mentions.members.first();
-		if(!member)
-			return message.reply("Please mention a valid member of this server");
-		if(!member.bannable)
-			return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
 
-		let reason = args.slice(1).join(' ');
-		if(!reason) reason = "No reason provided";
-		
-		await member.ban(reason)
-			.catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
-		message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
+	if(command === "exec")
+	{
+	}
+
+	if(command === "text")
+	{
 	}
 	
-	if(command === "purge") {
-		// This command removes all messages from all users in the channel, up to 100.
-		
-		// get the delete count, as an actual number.
-		const deleteCount = parseInt(args[0], 10);
-		
-		// Ooooh nice, combined conditions. <3
-		if(!deleteCount || deleteCount < 2 || deleteCount > 100)
-			return message.reply("Please provide a number between 2 and 100 for the number of messages to delete");
-		
-		// So we get our messages, and delete them. Simple enough, right?
-		const fetched = await message.channel.fetchMessages({limit: deleteCount});
-		message.channel.bulkDelete(fetched)
-			.catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
-	}
 });
 
 client.login(config.token);

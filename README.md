@@ -16,11 +16,11 @@ Features:
 name | arguments | description
 --------- | --------- | ---------
 .portal | !channel_name @category_name | _creates a voice channel and a category for it_
-.text | !channel_name | _creates a text channel connected to the voice channel_
-.regex | @regex_string | _sets regex-guidelines for how to name channels (current portal)_
-.exec | @log_string | _returns the log of data given in log_string_
-.prefix | !new_prefix | _sets the new prefix for portal bot_
-.help | none | _returns a help-list of all commands and regex manipulation_
+.text | none | _creates a text channel connected to the voice channel_
+.regex | @regex_command | _sets regex-guidelines for how to name channels (current portal)_
+.exec | @exec_command | _returns the log of data given in log_string_
+.prefix | !prefix | _sets the new prefix for portal bot_
+.help | @specific_command | _returns a help-list of all commands and regex manipulation_
   
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
@@ -61,15 +61,15 @@ name | type | description
 --------- | --------- | ---------
 upper | string | _makes input uppercase_
 lower | string | _makes input lowercase_
-title | string | _makes input titlecase_
-acrnm | string | _makes input string of acronyms_
-word\# | string | _maximum number of word \# is number_
-dday | date | _gets the day_
+titl | string | _makes input titlecase_
+acrm | string | _makes input string of acronyms_
+word\# | string | _maximum number of words (\# is number)_
+cday | date | _gets the day_
 mnth | date | _gets the month_
 year | date | _gets the year_
 hour | time | _gets the hour_
 mint | time | _gets the minute_
-secs | time | _gets the second_
+scnd | time | _gets the second_
 ppls | array | _gets more popular in array_
 ppls_cnt | array | _count of most popular in array_
 smmr_cnt | array | _count of all in array_
@@ -80,10 +80,10 @@ smmr_cnt | array | _count of all in array_
 
 name | type | default | description
 --------- | --------- | --------- | --------- 
-nobots | bool | false | _no bots allowes_
+nbot | bool | false | _no bots allowed_
 mmbr_cap | num | infinite | _maximum number of members allowed_
-ttl | num | infinite | _time to live_
-title_refresh | num | on presence update | _how often titles are being refreshed_
+time_tolv | num | infinite | _time to live_
+titl_rfsh | num | on presence update | _how often titles are being refreshed_
 
 ***
 
