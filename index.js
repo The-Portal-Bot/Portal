@@ -14,7 +14,7 @@ const config = require("./config.json");
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 
-let portal_channel = new Array();
+let portal_list = new Array();
 
 let portal_list_id = new Array();
 let voice_list_id = new Array();
@@ -45,8 +45,18 @@ client.on("guildDelete", guild => {
 });
 
 client.on("presenceUpdate", (oldPresence, newPresence) => {
-	editor.get_array_of_games(newPresence.guild, voice_list_id, regex_string_id);
+	editor.get_array_of_games(newPresence.guild, portal_list);
 	//editor.generate_channel_names(newPresence.guild, voice_list_id, regex_string_id);
+
+	for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i])
+	{
+		console.log(i+") Portal channel with id: "+portal.id+" has voice channels: [");
+		for(j=0, voice=portal.voice_list[j]; j < portal.voice_list.length; j++, voice=portal.voice_list[j])
+		{
+			console.log("\t"+j+") voice channel with id: "+voice.id);
+		}
+		console.log("]\n")
+	}
 });
 
 client.on("voiceStateUpdate", (oldState, newState) => {
@@ -57,32 +67,32 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 	{
 		console.log("undefined->existing")
 
-		if(portal_list_id.includes(new_user_channel.id))
+		if(editor.included_in_portal_list(new_user_channel.id, portal_list))
 		{
 			// user joined portal channel
-			editor.create_voice_channel(newState, voice_list_id, regex_string_id);
-			editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+			editor.create_voice_channel(newState, portal_list);
+			editor.get_array_of_games(newState.guild, portal_list);
 		}
-		else if(voice_list_id.includes(new_user_channel.id))
+		else if(editor.included_in_voice_list(new_user_channel.id, portal_list))
 		{
 			// user joined voice channel
-			editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+			editor.get_array_of_games(newState.guild, portal_list);
 		}
 	}
 	else if(new_user_channel === undefined && old_user_channel !== undefined) // LEAVE to undefined
 	{
 		console.log("existing->undefined")
 		
-		if(portal_list_id.includes(old_user_channel.id))
+		if(editor.included_in_portal_list(old_user_channel.id, portal_list))
 		{
 			// user leaves portal channel
 			// is handled before
 		}
-		else if(voice_list_id.includes(old_user_channel.id))
+		else if(editor.included_in_voice_list(old_user_channel.id, portal_list))
 		{
 			// user left voice channel
 			if(old_user_channel.members.size === 0) {
-				editor.delete_voice_channel(old_user_channel, voice_list_id);
+				editor.delete_voice_channel(old_user_channel, portal_list);
 			}
 		}
 	}
@@ -91,83 +101,80 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 	{
 		console.log("existing->existing")
 		
-		if(portal_list_id.includes(old_user_channel.id))
+		if(editor.included_in_portal_list(old_user_channel.id, portal_list))
 		{
 			console.log("->source: portal_list_id");
 			
-			if(portal_list_id.includes(new_user_channel.id))
+			if(editor.included_in_portal_list(new_user_channel.id, portal_list))
 			{
 				console.log("->dest: portal_list_id")
 				// this should not happen
 				console.log("this should not happen error: portal_channel->portal_channel")
 			}
-			else if(voice_list_id.includes(new_user_channel.id))
+			else if(editor.included_in_voice_list(new_user_channel.id, portal_list))
 			{
 				console.log("->dest: voice_list_id")
 				// has been checked before
 				console.log("has been checked before")
-				editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+				editor.get_array_of_games(newState.guild, portal_list);
 			}
 			else
 			{
 				console.log("->dest: unknown")
 				// leaves portal channel and joins another unknown
-				if(old_user_channel.members.size === 0) {
-					editor.delete_voice_channel(old_user_channel, voice_list_id);
-				}
-				editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+				editor.get_array_of_games(newState.guild, portal_list);
 			}
 		}
-		else if(voice_list_id.includes(old_user_channel.id))
+		else if(editor.included_in_voice_list(old_user_channel.id, portal_list))
 		{
 			console.log("->source: voice_list");
 			
-			if(portal_list_id.includes(new_user_channel.id))
+			if(editor.included_in_portal_list(new_user_channel.id, portal_list))
 			{
 				console.log("->dest: portal_list_id")
 				// leaves created channel and joins portal
 				if(old_user_channel.members.size === 0) {
-					editor.delete_voice_channel(old_user_channel, voice_list_id);
+					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
 				// user joined portal channel
-				editor.create_voice_channel(newState, voice_list_id, regex_string_id);
-				editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+				editor.create_voice_channel(newState, portal_list);
+				editor.get_array_of_games(newState.guild, portal_list);
 			}
-			else if(voice_list_id.includes(new_user_channel.id))
+			else if(editor.included_in_voice_list(new_user_channel.id, portal_list))
 			{
 				console.log("->dest: voice_list_id")
 				// leaves created channel and joins another created
 				if(old_user_channel.members.size === 0) {
-					editor.delete_voice_channel(old_user_channel, voice_list_id);
+					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
-				editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+				editor.get_array_of_games(newState.guild, portal_list);
 			}
 			else
 			{
 				console.log("->dest: unknown")
 				// leaves created channel and joins another unknown
 				if(old_user_channel.members.size === 0) {
-					editor.delete_voice_channel(old_user_channel, voice_list_id);
+					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
-				editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+				editor.get_array_of_games(newState.guild, portal_list);
 			}
 		}
 		else
 		{
 			console.log("->source: unknown voice");
 			
-			if(portal_list_id.includes(new_user_channel.id))
+			if(editor.included_in_portal_list(new_user_channel.id, portal_list))
 			{
 				console.log("->dest: portal_list_id")
 				// user joined portal channel
-				editor.create_voice_channel(newState, voice_list_id, regex_string_id);
-				editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+				editor.create_voice_channel(newState, portal_list);
+				editor.get_array_of_games(newState.guild, portal_list);
 			}
-			else if(voice_list_id.includes(new_user_channel.id))
+			else if(editor.included_in_voice_list(new_user_channel.id, portal_list))
 			{
 				console.log("->dest: voice_list_id")
 				// leaves created channel and joins another created
-				editor.get_array_of_games(newState.guild, voice_list_id, regex_string_id);
+				editor.get_array_of_games(newState.guild, portal_list);
 			}
 		}
 	}
@@ -180,7 +187,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 		console.log("don't know how we got here")
 	}
 
-	console.log("number of portal channels: "+voice_list_id.length)
+	console.log("PORTAL CHANNELS: "+portal_list.length)
 	console.log("")
 })
 
@@ -202,7 +209,6 @@ client.on("message", async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
 	
-
 	if(command === "portal")
 	{
 		if(args.length === 2)
@@ -210,12 +216,12 @@ client.on("message", async message => {
 			message.channel.send("channel name:\t**"+args[0]+"**")
 			message.channel.send("category name:\t**"+args[1]+"**")
 
-			editor.create_portal_channel(message.guild, args[0], args[1], portal_list_id)
+			editor.create_portal_channel(message.guild, args[0], args[1], portal_list)
 		}
 		else if(args.length === 1)
 		{
 			message.channel.send("channel name:\t**"+args[0]+"**")
-			editor.create_portal_channel(message.guild, args[0], null, portal_list_id)
+			editor.create_portal_channel(message.guild, args[0], null, portal_list)
 		}
 		else
 		{
