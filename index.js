@@ -14,6 +14,8 @@ const config = require("./config.json");
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 
+let portal_channel = new Array();
+
 let portal_list_id = new Array();
 let voice_list_id = new Array();
 let regex_string_id = {};
@@ -264,10 +266,10 @@ client.on("message", async message => {
 		func_name = [
 			{name: "portal", value: "creates a voice channel and a category for it", args: "!channel_name @category_name"},
 			{name: "text", value: "creates a text channel connected to the voice channel", args: "none"},
-			{name: "regex", value: "sets regex-guidelines for how to name channels (current portal)", args: "!command"},
-			{name: "exec", value: "returns the log of data given in log_string", args: "!command"},
+			{name: "regex", value: "sets regex-guidelines for how to name channels (current portal)", args: "!regex_command"},
+			{name: "exec", value: "returns the log of data given in log_string", args: "!exec_command"},
 			{name: "prefix", value: "sets the new prefix for portal bot", args: "!prefix"},
-			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "!specific_command"}
+			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command"}
 		];
 			
 		vrbl_name = [
@@ -304,7 +306,7 @@ client.on("message", async message => {
 		];
 
 		attr_name = [
-			{name: "nbot", value: "no bots allowes", args: "!true/false"},
+			{name: "nbot", value: "no bots allowed", args: "!true/false"},
 			{name: "mmbr_cap", value: "maximum number of members allowed", args: "!number of maximum members"},
 			{name: "time_tolv", value: "time to live", args: "!number in seconds"},
 			{name: "titl_rfsh", value: "how often titles are being refreshed", args: "!number in seconds"}
@@ -417,6 +419,8 @@ client.on("message", async message => {
 			message.channel.send(help_message_pipe);
 			message.channel.send(help_message_attr);
 			message.channel.send(help_message_vrbl);
+			message.channel.send("-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n"+
+			"symbol: @ indicates beginning of mandatory argument (should not be included)*");
 		}
 		
 		// Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.

@@ -16,11 +16,11 @@ Features:
 name | arguments | description
 --------- | --------- | ---------
 .portal | !channel_name @category_name | _creates a voice channel and a category for it_
-.text | !channel_name | _creates a text channel connected to the voice channel_
-.regex | @regex_string | _sets regex-guidelines for how to name channels (current portal)_
-.exec | @log_string | _returns the log of data given in log_string_
-.prefix | !new_prefix | _sets the new prefix for portal bot_
-.help | none | _returns a help-list of all commands and regex manipulation_
+.text | none | _creates a text channel connected to the voice channel_
+.regex | @regex_command | _sets regex-guidelines for how to name channels (current portal)_
+.exec | @exec_command | _returns the log of data given in log_string_
+.prefix | !prefix | _sets the new prefix for portal bot_
+.help | @specific_command | _returns a help-list of all commands and regex manipulation_
   
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
@@ -80,7 +80,7 @@ smmr_cnt | array | _count of all in array_
 
 name | type | default | description
 --------- | --------- | --------- | --------- 
-nbot | bool | false | _no bots allowes_
+nbot | bool | false | _no bots allowed_
 mmbr_cap | num | infinite | _maximum number of members allowed_
 time_tolv | num | infinite | _time to live_
 titl_rfsh | num | on presence update | _how often titles are being refreshed_
