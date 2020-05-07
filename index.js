@@ -237,9 +237,6 @@ client.on("message", async message => {
 		{
 			message.channel.send(config.prefix+"regex @regex_command");
 		}
-
-		let channel_name = "";
-		regex.regex_reader(args);
 	}
 
 	//testing processes
@@ -459,7 +456,7 @@ client.on("message", async message => {
 	{		
 		message.channel.send("hot: "+args.join(" "));
 
-		let executed = regex.regex_interpreter(args.join(" "));
+		let executed = regex.regex_interpreter(args.join(" "), message.member.voiceChannel.id, message.member.guild);
 		message.channel.send(executed);
 	}
 

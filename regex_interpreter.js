@@ -3,7 +3,13 @@ const object = require('./object_retrievers.js');
 module.exports = {
 	// variables $
 	vrbl_name: [ 
-		{value: '#', func: () => {return 1}},
+		{value: '#', func: (guild, id) => {
+			guild.channels.forEach(channel => {
+				if(channel.id === id) {
+					return channel.members.length;
+				}
+			})
+		}},
 
 		{value: 'date', func: () => { let date = new Date(); return date; }},
 		{value: 'tday', func: () => { let date = new Date(); return date.getDate(); }},
@@ -23,8 +29,26 @@ module.exports = {
 			else {object.get_status_list(guild, id).length}
 		}},
 		{value: 'game_his', func: () => { return "no_yet_implemented" }},
-		{value: 'mmbr_lst', func: () => { return "no_yet_implemented" }},
-		{value: 'mmbr_cnt', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_lst', func: (guild, id) => { 
+			let mmbr_lst = [];
+			guild.channels.forEach(channel => {
+				if(channel.id === id) {
+					channel.members.forEach(member => {
+						mmbr_lst.push(member);
+					})
+				}
+			})
+			return mmbr_lst;
+		 }},
+		{value: 'mmbr_cnt', func: (guild, id) => { 
+			let cnt = undefined;
+			guild.channels.forEach(channel => {
+				if(channel.id === id) {
+					cnt = channel.members.size;
+				}
+			})
+			return cnt;
+		 }},
 		{value: 'mmbr_plg', func: () => { return "no_yet_implemented" }},
 		{value: 'mmbr_his', func: () => { return "no_yet_implemented" }},
 		{value: 'mmbr_lmt', func: () => { return "no_yet_implemented" }},
@@ -130,6 +154,9 @@ module.exports = {
 
 	regex_interpreter: function(regex, id, guild)
 	{
+		if(regex === undefined){ return "regex is undefined";}
+		if(id === undefined){ return "id is undefined";}
+		if(guild === undefined){ return "guild is undefined";}
 		console.log('regex: '+regex);
 		let new_channel_name = '';
 
