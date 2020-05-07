@@ -269,7 +269,7 @@ client.on("message", async message => {
 			{name: "regex", value: "sets regex-guidelines for how to name channels (current portal)", args: "!regex_command"},
 			{name: "exec", value: "returns the log of data given in log_string", args: "!exec_command"},
 			{name: "prefix", value: "sets the new prefix for portal bot", args: "!prefix"},
-			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command"},
+			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command or @vrbl/@func/@pipe/@attr"},
 			{name: "ping", value: "returns round trip latency", args: "none"}
 		];
 			
@@ -313,7 +313,75 @@ client.on("message", async message => {
 			{name: "titl_rfsh", value: "how often titles are being refreshed", args: "!number in seconds"}
 		];
 
-		if(args.length === 1)
+		if(args.length === 0 || (args.length === 1 && ( args[0] === "func" ||
+			args[0] === "vrbl" || args[0] === "pipe" || args[0] === "attr")))
+		{
+			let help_message_func = "";
+			let help_message_pipe = "";
+			let help_message_attr = "";
+			let help_message_vrbl = "";
+			
+			if(args.length === 0 || args[0] === "func")
+			{
+				// check if argument is function
+				help_message_func = "-\n`Functions (prefix ./)`\n"
+				for(i=0, func=func_name[i]; i < func_name.length; i++, func=func_name[i])
+				{
+					help_message_func +=
+						"> name: **"+func.name+"**, "+
+						"type: **function**, "+
+						"description: ***"+func.value+"***, "+
+						"arguments: ***"+func.args+"***\n"
+				}
+				message.channel.send(help_message_func);
+			}
+			if(args.length === 0 || args[0] === "pipe")
+			{
+				// check if argument is pipe
+				help_message_pipe = "-\n`Pipe (prefix |)`\n"
+				for(i=0, pipe=pipe_name[i]; i < pipe_name.length; i++, pipe=pipe_name[i])
+				{
+					help_message_pipe +=
+						"> name: **"+pipe.name+"**, "+
+						"type: **pipe**, "+
+						"description: ***"+pipe.value+"***, "+
+						"arguments: ***"+pipe.args+"***\n"
+				}
+				message.channel.send(help_message_pipe);
+			}
+			if(args.length === 0 || args[0] === "attr")
+			{
+				// check if argument is attribute
+				help_message_attr = "-\n`Attribute (prefix @)`\n"
+				for(i=0, attr=attr_name[i]; i < attr_name.length; i++, attr=attr_name[i])
+				{
+					help_message_attr +=
+						"> name: **"+attr.name+"**, "+
+						"type: **attribute**, "+
+						"description: ***"+attr.value+"***, "+
+						"arguments: ***"+attr.args+"***\n"
+				}
+				message.channel.send(help_message_attr);
+			}
+			if(args.length === 0 || args[0] === "vrbl")
+			{
+			// check if argument is variable
+				help_message_vrbl = "-\n`Variable (prefix $)`\n"
+				for(i=0, vrbl=vrbl_name[i]; i < vrbl_name.length; i++, vrbl=vrbl_name[i])
+				{
+					help_message_vrbl +=
+						"> name: **"+vrbl.name+"**, "+
+						"type: **variable**, "+
+						"description: ***"+vrbl.value+"***, "+
+						"arguments: ***"+vrbl.args+"***\n"
+				}
+				message.channel.send(help_message_vrbl);
+			}
+
+			message.channel.send("-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n"+
+			"symbol: @ indicates beginning of mandatory argument (should not be included)*");
+		}
+		else if(args.length === 1)
 		{
 			// check if argument is function
 			for(i=0, func=func_name[i]; i < func_name.length; i++, func=func_name[i])
@@ -368,60 +436,6 @@ client.on("message", async message => {
 				}
 			}
 			message.channel.send("**"+args[0]+"**, *does not exist in portal, you can always try **./help***");
-		}
-		else
-		{
-			let help_message_func = "";
-			let help_message_pipe = "";
-			let help_message_attr = "";
-			let help_message_vrbl = "";
-
-			// check if argument is function
-			help_message_func = "-\n`Functions (prefix ./)`\n"
-			for(i=0, func=func_name[i]; i < func_name.length; i++, func=func_name[i])
-			{
-				help_message_func +=
-					"> name: **"+func.name+"**, "+
-					"type: **function**, "+
-					"description: ***"+func.value+"***, "+
-					"arguments: ***"+func.args+"***\n"
-			}
-			// check if argument is pipe
-			help_message_pipe = "-\n`Pipe (prefix |)`\n"
-			for(i=0, pipe=pipe_name[i]; i < pipe_name.length; i++, pipe=pipe_name[i])
-			{
-				help_message_pipe +=
-					"> name: **"+pipe.name+"**, "+
-					"type: **pipe**, "+
-					"description: ***"+pipe.value+"***, "+
-					"arguments: ***"+pipe.args+"***\n"
-			}
-			// check if argument is attribute
-			help_message_attr = "-\n`Attribute (prefix @)`\n"
-			for(i=0, attr=attr_name[i]; i < attr_name.length; i++, attr=attr_name[i])
-			{
-				help_message_attr +=
-					"> name: **"+attr.name+"**, "+
-					"type: **attribute**, "+
-					"description: ***"+attr.value+"***, "+
-					"arguments: ***"+attr.args+"***\n"
-			}
-			// check if argument is variable
-			help_message_vrbl = "-\n`Variable (prefix $)`\n"
-			for(i=0, vrbl=vrbl_name[i]; i < vrbl_name.length; i++, vrbl=vrbl_name[i])
-			{
-				help_message_vrbl +=
-					"> name: **"+vrbl.name+"**, "+
-					"type: **variable**, "+
-					"description: ***"+vrbl.value+"***, "+
-					"arguments: ***"+vrbl.args+"***\n"
-			}
-			message.channel.send(help_message_func);
-			message.channel.send(help_message_pipe);
-			message.channel.send(help_message_attr);
-			message.channel.send(help_message_vrbl);
-			message.channel.send("-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n"+
-			"symbol: @ indicates beginning of mandatory argument (should not be included)*");
 		}
 		
 		// Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
