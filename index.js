@@ -269,7 +269,7 @@ client.on("message", async message => {
 			{name: "regex", value: "sets regex-guidelines for how to name channels (current portal)", args: "!regex_command"},
 			{name: "exec", value: "returns the log of data given in log_string", args: "!exec_command"},
 			{name: "prefix", value: "sets the new prefix for portal bot", args: "!prefix"},
-			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command"}
+			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command"},
 			{name: "ping", value: "returns round trip latency", args: "none"}
 		];
 			
