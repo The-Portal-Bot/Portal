@@ -14,11 +14,8 @@ const config = require("./config.json");
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 
+// All data is stored from portal list to its voice channel list, which is encapsulated
 let portal_list = new Array();
-
-let portal_list_id = new Array();
-let voice_list_id = new Array();
-let regex_string_id = {};
 
 // LISTENERS
 
@@ -46,7 +43,7 @@ client.on("guildDelete", guild => {
 
 client.on("presenceUpdate", (oldPresence, newPresence) => {
 	editor.get_array_of_games(newPresence.guild, portal_list);
-	//editor.generate_channel_names(newPresence.guild, voice_list_id, regex_string_id);
+	//editor.generate_channel_names(newPresence.guild, voice_list, regex_string_id);
 
 	for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i])
 	{
@@ -103,17 +100,17 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 		
 		if(editor.included_in_portal_list(old_user_channel.id, portal_list))
 		{
-			console.log("->source: portal_list_id");
+			console.log("->source: portal_list");
 			
 			if(editor.included_in_portal_list(new_user_channel.id, portal_list))
 			{
-				console.log("->dest: portal_list_id")
+				console.log("->dest: portal_list")
 				// this should not happen
 				console.log("this should not happen error: portal_channel->portal_channel")
 			}
 			else if(editor.included_in_voice_list(new_user_channel.id, portal_list))
 			{
-				console.log("->dest: voice_list_id")
+				console.log("->dest: voice_list")
 				// has been checked before
 				console.log("has been checked before")
 				editor.get_array_of_games(newState.guild, portal_list);
@@ -131,7 +128,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 			
 			if(editor.included_in_portal_list(new_user_channel.id, portal_list))
 			{
-				console.log("->dest: portal_list_id")
+				console.log("->dest: portal_list")
 				// leaves created channel and joins portal
 				if(old_user_channel.members.size === 0) {
 					editor.delete_voice_channel(old_user_channel, portal_list);
@@ -142,7 +139,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 			}
 			else if(editor.included_in_voice_list(new_user_channel.id, portal_list))
 			{
-				console.log("->dest: voice_list_id")
+				console.log("->dest: voice_list")
 				// leaves created channel and joins another created
 				if(old_user_channel.members.size === 0) {
 					editor.delete_voice_channel(old_user_channel, portal_list);
@@ -165,14 +162,14 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 			
 			if(editor.included_in_portal_list(new_user_channel.id, portal_list))
 			{
-				console.log("->dest: portal_list_id")
+				console.log("->dest: portal_list")
 				// user joined portal channel
 				editor.create_voice_channel(newState, portal_list);
 				editor.get_array_of_games(newState.guild, portal_list);
 			}
 			else if(editor.included_in_voice_list(new_user_channel.id, portal_list))
 			{
-				console.log("->dest: voice_list_id")
+				console.log("->dest: voice_list")
 				// leaves created channel and joins another created
 				editor.get_array_of_games(newState.guild, portal_list);
 			}
@@ -264,9 +261,6 @@ client.on("message", async message => {
 		m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.\nAPI Latency is ${Math.round(client.ping)}ms`);
 	}
 	
-
-
-	
 	if(command === "help")
 	{
 		func_name = [
@@ -276,6 +270,7 @@ client.on("message", async message => {
 			{name: "exec", value: "returns the log of data given in log_string", args: "!exec_command"},
 			{name: "prefix", value: "sets the new prefix for portal bot", args: "!prefix"},
 			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command"}
+			{name: "ping", value: "returns round trip latency", args: "none"}
 		];
 			
 		vrbl_name = [
