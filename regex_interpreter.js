@@ -1,110 +1,217 @@
+const object = require('./object_retrievers.js');
+
 module.exports = {
-	// arrays
-	vrbl_name: [ "#", "##", "date", "time", "crtr", "game_lst", "game_cnt", "game_his",
-		"mmbr_lst", "mmbr_cnt", "mmbr_plg", "mmbr_his", "mmbr_lmt" ],
-	pipe_name: [ "upper", "lower", "titl", "acrnm", "word#",
-		"cday", "mnth", "year", "hour", "mint", "scnd",
-		"ppls", "ppls_cnt", "smmr_cnt" ],
-	attr_name: [ "nbot", "mmbr_cap", "time_tolv", "titl_rfsh" ],
-	//functions
+	// variables $
+	vrbl_name: [ 
+		{value: '#', func: () => {return 1}},
 
-	command_check: function(arg)
+		{value: 'date', func: () => { let date = new Date(); return date; }},
+		{value: 'tday', func: () => { let date = new Date(); return date.getDate(); }},
+		{value: 'nday', func: () => { let date = new Date(); return date.getDay();  }},
+		{value: 'mnth', func: () => { let date = new Date(); return date.getMonth();  }},
+		{value: 'year', func: () => { let date = new Date(); return date.getFullYear();  }},
+		{value: 'time', func: () => { let date = new Date(); return date.getTime();  }},
+		{value: 'hour', func: () => { let date = new Date(); return date.getHours();  }},
+		{value: 'mint', func: () => { let date = new Date(); return date.getMinutes();  }},
+		{value: 'scnd', func: () => { let date = new Date(); return date.getSeconds();  }},
+
+		{value: 'crtr', func: () => { return "no_yet_implemented" }},
+
+		{value: 'game_lst', func: (guild, id) => { return object.get_status_list(guild, id)}},
+		{value: 'game_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
+			if(typeof(object.get_status_list(guild, id)) !== "object") {return 0}
+			else {object.get_status_list(guild, id).length}
+		}},
+		{value: 'game_his', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_lst', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_cnt', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_plg', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_his', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_lmt', func: () => { return "no_yet_implemented" }},
+	],
+
+	
+	// pipes |
+	pipe_name: [ 
+		{value: 'upper', func: () => { return "no_yet_implemented" }},
+		{value: 'lower', func: () => { return "no_yet_implemented" }},
+		{value: 'titl', func: () => { return "no_yet_implemented" }},
+		{value: 'acrnm', func: () => { return "no_yet_implemented" }},
+		{value: 'word#', func: () => { return "no_yet_implemented" }},
+		{value: 'ppls', func: () => { return "no_yet_implemented" }},
+		{value: 'ppls_cnt', func: () => { return "no_yet_implemented" }},
+		{value: 'smmr_cnt', func: () => { return "no_yet_implemented" }},
+	],
+
+	
+	// attributes @
+	attr_name: [
+		{value: 'nbot', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_cap', func: () => { return "no_yet_implemented" }},
+		{value: 'time_tolv', func: () => { return "no_yet_implemented" }},
+		{value: 'titl_rfsh', func: () => { return "no_yet_implemented" }},
+	],
+
+	
+	//
+	get_variable_data: function(variable, id, guild)
 	{
-		if(String(arg).substring(0, 1) === "$")
+		for(i=0; i < this.vrbl_name.length; i++)
 		{
-			for(i=0, cmd=this.vrbl_name[i]; i < this.vrbl_name.length; i++, cmd=this.vrbl_name[i]) {
-				if(String(arg).substring(1, (String(cmd).length+1)) === cmd)
-				{
-					console.log("cmd: "+cmd);
-					return cmd;
-				}
+			if(variable == this.vrbl_name[i].value)
+			{
+				return this.vrbl_name[i].func(guild, id);
+			}
+		} 
+	}
+	,
+
+	is_variable: function(arg)
+	{
+		for(i=0, vrbl=this.vrbl_name[i].value; i < this.vrbl_name.length; i++, vrbl=this.vrbl_name[i].value)
+		{
+			if(String(arg).substring(1, (String(vrbl).length+1)) == vrbl)
+			{
+				console.log('vrbl: '+vrbl);
+				return vrbl;
 			}
 		}
 
 		return false;
-	},
+	}
+	,
 
-	pipe_check: function(arg, cmd)
+	is_pipe: function(arg)
 	{
-		if(String(arg).substring(0, 1) === "|")
+		for(j=0, pipe=this.pipe_name[j].value; j < this.pipe_name.length; j++, pipe=this.pipe_name[j].value)
 		{
-			for(j=0, func=this.pipe_name[j]; j < this.pipe_name.length; j++, func=this.pipe_name[j]) {
-				if(String(arg).substring(1, (String(func).length+1)) === func)
-				{
-					//check for ()
-					console.log("func: "+func);
-					return func;
-				}
+			if(String(arg).substring(1, (String(pipe).length+1)) == pipe)
+			{
+				console.log('pipe: '+pipe);
+				return pipe;
 			}
 		}
 
 		return false;
-	},
+	}
+	,
 
-	hashtag_check: function(arg)
+	is_attribute: function(arg)
 	{
-		if(String(arg).substring(0, 2) === "##")
+		for(j=0, attr=this.attr_name[j].value; j < this.attr_name.length; j++, attr=this.attr_name[j].value)
 		{
-			// gets the channel creation number
-			return "#"+"1"
-		}
-		else if(String(arg).substring(0, 1) === "#")
-		{
-			return "1"
+			if(String(arg).substring(1, (String(attr).length+1)) == attr)
+			{
+				console.log('attr: '+attr);
+				return attr;
+			}
+	
 		}
 
 		return false;
-	},
+	}
+	,
 
 	if_expression_check: function(arg)
 	{
-		if(String(arg).substring(0, 1) === "{")
+		if(String(arg).substring(0, 1) == '{')
 		{
-			console.log("expression: "+String(arg).substring(1, String(arg).indexOf("?")))
-			console.log("statemment1: "+String(arg).substring(String(arg).indexOf("?")+1, String(arg).indexOf(":")))
-			console.log("statemment2: "+String(arg).substring(String(arg).indexOf(":")+1, String(arg).indexOf("}")))
+			console.log('expression: '+String(arg).substring(1, String(arg).indexOf('?')))
+			console.log('statemment1: '+String(arg).substring(String(arg).indexOf('?')+1, String(arg).indexOf(':')))
+			console.log('statemment2: '+String(arg).substring(String(arg).indexOf(':')+1, String(arg).indexOf('}')))
 		}
 
 		return false;
-	},
+	}
+	,
 
-	regex_reader: function(args)
+
+
+
+	regex_interpreter: function(regex, id, guild)
 	{
-		console.log("command: "+args)
-		let regex_value = "";
+		console.log('regex: '+regex);
+		let new_channel_name = '';
 
-		args.forEach( (arg, key)=> {
+		for(let i=0; i < regex.length; i++)
+		{
+			console.log(i + ') ' + regex[i]);
 
-			console.log("arg["+key+"]: "+arg);
-			
-			if(this.command_check(arg))
+			if(regex[i] === '$')
 			{
-				let cmd = this.command_check(arg)
-				if(this.pipe_check(arg.substring(String(cmd).length+1)))
+				let vrbl = this.is_variable(regex.substring(i))
+				console.log('vrbl:'+vrbl);
+				if(vrbl)
 				{
-					regex_value += this.pipe_check(arg.substring(String(cmd).length+1), cmd) + " "
+					new_channel_name += this.get_variable_data(vrbl, id, guild);
+					i += vrbl.length;
 				}
 				else
 				{
-					// there is no function on value
-					regex_value += cmd; + " "
+					new_channel_name += regex[i];
 				}
 			}
-			else if(this.hashtag_check(arg))
+			else if(regex[i] === '|')
 			{
-				regex_value += this.hashtag_check(arg) + " "
+				let pipe = this.is_pipe(regex.substring(i))
+				if(pipe)
+				{
+					new_channel_name += '%'+pipe+'%';
+					i += pipe.length;
+				}
+				else
+				{
+					new_channel_name += regex[i];
+				}
 			}
-			else if(this.if_expression_check(arg))
+			else if(regex[i] === '@')
 			{
-				regex_value += this.if_expression_check(arg) + " "
+				let attr = this.is_attribute(regex.substring(i))
+				if(attr)
+				{
+					new_channel_name += '%'+attr+'%';
+					i += attr.length;
+				}
+				else
+				{
+					new_channel_name += regex[i];
+				}
 			}
 			else
 			{
-				regex_value += arg + " "
+				new_channel_name += regex[i];
+			}
+		}
+
+		console.log('new_channel_name: '+new_channel_name);
+		return new_channel_name;
+	}
+	,
+
+	generate_channel_names: function (guild, portal_list)
+	{
+		let array_of_games = [];
+		
+		// for each channel in guild
+		guild.channels.forEach( channel => {
+			// for each channel in portal list
+			for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i]) {
+				// for each channel in voice list of current portal channel
+				for(j=0, voice=portal.voice_list[j]; j < portal.voice_list.length; j++, voice=portal.voice_list[j]) {
+					// if current channel is in voice list of a portal channel
+					if(channel.id === voice.id)
+					{
+						channel.setName(this.regex_interpreter(voice.regex, voice.id, guild));
+						
+						// array_of_games = object.get_status_list(guild, channel.id);
+						// channel.setName(array_of_games.toString());
+						
+						return
+					}
+
+				}
 			}
 		})
-
-		console.log("regex: "+regex_value);
-		return regex_value;
 	}
+
 };
