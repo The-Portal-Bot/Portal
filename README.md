@@ -21,6 +21,7 @@ name | arguments | description
 .exec | @exec_command | _returns the log of data given in log_string_
 .prefix | !prefix | _sets the new prefix for portal bot_
 .help | @specific_command | _returns a help-list of all commands and regex manipulation_
+.ping | none | _returns round trip latency_
   
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
