@@ -213,12 +213,12 @@ client.on("message", async message => {
 			message.channel.send("channel name:\t**"+args[0]+"**")
 			message.channel.send("category name:\t**"+args[1]+"**")
 
-			editor.create_portal_channel(message.guild, args[0], args[1], portal_list)
+			editor.create_portal_channel(message.guild, args[0], args[1], portal_list, message.member.id);
 		}
 		else if(args.length === 1)
 		{
 			message.channel.send("channel name:\t**"+args[0]+"**")
-			editor.create_portal_channel(message.guild, args[0], null, portal_list)
+			editor.create_portal_channel(message.guild, args[0], null, portal_list, message.member.id);
 		}
 		else
 		{
@@ -273,7 +273,7 @@ client.on("message", async message => {
 			{name: "portal", value: "creates a voice channel and a category for it", args: "!channel_name @category_name"},
 			{name: "text", value: "creates a text channel connected to the voice channel", args: "none"},
 			{name: "regex", value: "sets regex-guidelines for how to name channels (current portal)", args: "!regex_command"},
-			{name: "exec", value: "returns the log of data given in log_string", args: "!exec_command"},
+			{name: "run", value: "returns the log of data given in log_string", args: "!exec_command"},
 			{name: "prefix", value: "sets the new prefix for portal bot", args: "!prefix"},
 			{name: "help", value: "returns a help-list of all commands and regex manipulation", args: "@specific_command or @vrbl/@func/@pipe/@attr"},
 			{name: "ping", value: "returns round trip latency", args: "none"}
@@ -283,7 +283,13 @@ client.on("message", async message => {
 			{name: "#", value: "number of channel in list", args: "none"},
 			{name: "##", value: "number of channel in list with \#", args: "none"},
 			{name: "date", value: "full date: dd/mm/yyyy", args: "none"},
+			{name: "cday", value: "gets the day", args: "none"},
+			{name: "mnth", value: "gets the month", args: "none"},
+			{name: "year", value: "gets the year", args: "none"},
 			{name: "time", value: "full time: hh/mm/ss", args: "none"},
+			{name: "hour", value: "gets the hour", args: "none"},
+			{name: "mint", value: "gets the minute", args: "none"},
+			{name: "scnd", value: "gets the second", args: "none"},
 			{name: "crtr", value: "creator of the channel", args: "none"},
 			{name: "game_lst", value: "list of currently played games", args: "none"},
 			{name: "game_cnt", value: "number of games being played", args: "none"},
@@ -301,12 +307,6 @@ client.on("message", async message => {
 			{name: "titl", value: "makes input titlecase", args: "none"},
 			{name: "acrm", value: "makes input string of acronyms", args: "none"},
 			{name: "word#", value: "maximum number of words (# is number)", args: "none"},
-			{name: "cday", value: "gets the day", args: "none"},
-			{name: "mnth", value: "gets the month", args: "none"},
-			{name: "year", value: "gets the year", args: "none"},
-			{name: "hour", value: "gets the hour", args: "none"},
-			{name: "mint", value: "gets the minute", args: "none"},
-			{name: "scnd", value: "gets the second", args: "none"},
 			{name: "ppls", value: "gets more popular in array", args: "none"},
 			{name: "ppls_cnt", value: "count of most popular in array", args: "none"},
 			{name: "smmr_cnt", value: "count of all in array", args: "none"}
@@ -452,12 +452,28 @@ client.on("message", async message => {
 	{
 	}
 
-	if(command === "exec")
-	{		
-		message.channel.send("hot: "+args.join(" "));
+	if(command === "run")
+	{	
+		message.react('💡');	
+		let executed = regex.regex_interpreter(
+			args.join(" "), 
+			message.member.voiceChannel.id,
+			message.member.guild,
+			portal_list,
+			message.channel.send("executing: "+args.join(" "))
+			);
+		// message.channel.send(executed);
+		// message.channel.send("compiling.")
+		// .then((sentMessage) => sentMessage.edit("compiling.."))
+		// .then((sentMessage) => sentMessage.edit("compiling..."))
+		// .then((sentMessage) => sentMessage.edit("executing.."))
+		// .then((sentMessage) => sentMessage.edit("executing."))
+		// .then((sentMessage) => sentMessage.edit(executed));
 
-		let executed = regex.regex_interpreter(args.join(" "), message.member.voiceChannel.id, message.member.guild);
-		message.channel.send(executed);
+		console.log("Object.getOwnPropertyNames(message)= ", Object.getOwnPropertyNames(message))
+		console.log("Object.getOwnPropertyNames(message.author)= ", Object.getOwnPropertyNames(message.author))
+		message.react('✔️');
+		
 	}
 
 	if(command === "text")

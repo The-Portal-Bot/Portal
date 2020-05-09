@@ -10,7 +10,6 @@ module.exports = {
 				}
 			})
 		}},
-
 		{value: 'date', func: () => { let date = new Date(); return date; }},
 		{value: 'tday', func: () => { let date = new Date(); return date.getDate(); }},
 		{value: 'nday', func: () => { let date = new Date(); return date.getDay();  }},
@@ -20,9 +19,15 @@ module.exports = {
 		{value: 'hour', func: () => { let date = new Date(); return date.getHours();  }},
 		{value: 'mint', func: () => { let date = new Date(); return date.getMinutes();  }},
 		{value: 'scnd', func: () => { let date = new Date(); return date.getSeconds();  }},
-
-		{value: 'crtr', func: () => { return "no_yet_implemented" }},
-
+		{value: 'crtr', func: (guild, id, portal_list) => {
+			portal_list.forEach(portal => {
+				portal.voice_list.forEach(voice => {
+					if(voice.id === id) {
+						return voice.creator;
+					}
+				})
+			})
+		}},
 		{value: 'game_lst', func: (guild, id) => { return object.get_status_list(guild, id)}},
 		{value: 'game_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
 			if(typeof(object.get_status_list(guild, id)) !== "object") {return 0}
@@ -49,9 +54,29 @@ module.exports = {
 			})
 			return cnt;
 		 }},
-		{value: 'mmbr_plg', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_plg', func: (guild, id) => { 
+			let cnt = 0;
+			guild.channels.forEach(channel => {
+				if(channel.id === id) {
+					channel.members.forEach( (member) => {
+						if(member.presence.game !== null) {
+							cnt++;
+						}
+					})
+				}
+			})
+			return cnt;
+		}},
 		{value: 'mmbr_his', func: () => { return "no_yet_implemented" }},
-		{value: 'mmbr_lmt', func: () => { return "no_yet_implemented" }},
+		{value: 'mmbr_lmt', func: (guild, id) => { 
+			let cnt = undefined;
+			guild.channels.forEach(channel => {
+				if(channel.id === id) {
+					cnt = channel.userLimit; //change
+				}
+			})
+			return cnt;
+		 }},
 	],
 
 	
@@ -78,13 +103,13 @@ module.exports = {
 
 	
 	//
-	get_variable_data: function(variable, id, guild)
+	get_variable_data: function(variable, id, guild, portal_list)
 	{
 		for(i=0; i < this.vrbl_name.length; i++)
 		{
 			if(variable == this.vrbl_name[i].value)
 			{
-				return this.vrbl_name[i].func(guild, id);
+				return this.vrbl_name[i].func(guild, id, portal_list);
 			}
 		} 
 	}
@@ -92,27 +117,27 @@ module.exports = {
 
 	is_variable: function(arg)
 	{
-		for(i=0, vrbl=this.vrbl_name[i].value; i < this.vrbl_name.length; i++, vrbl=this.vrbl_name[i].value)
-		{
-			if(String(arg).substring(1, (String(vrbl).length+1)) == vrbl)
+		for(i=0; i < this.vrbl_name.length; i++)
+		{	
+			console.log(String(arg).substring(1, (String(this.vrbl_name[i].value).length+1)) + " == " + this.vrbl_name[i].value);
+			if(String(arg).substring(1, (String(this.vrbl_name[i].value).length+1)) == this.vrbl_name[i].value)
 			{
-				console.log('vrbl: '+vrbl);
-				return vrbl;
+				console.log('this.vrbl_name[i].value: '+this.vrbl_name[i].value);
+				return this.vrbl_name[i].value;
 			}
 		}
-
 		return false;
 	}
 	,
 
 	is_pipe: function(arg)
 	{
-		for(j=0, pipe=this.pipe_name[j].value; j < this.pipe_name.length; j++, pipe=this.pipe_name[j].value)
+		for(i=0; i < this.pipe_name.length; i++)
 		{
-			if(String(arg).substring(1, (String(pipe).length+1)) == pipe)
+			if(String(arg).substring(1, (String(this.vrbl_name[i].value.value).length+1)) == this.vrbl_name[i].value.value)
 			{
-				console.log('pipe: '+pipe);
-				return pipe;
+				console.log('this.vrbl_name[i].value.value: '+this.vrbl_name[i].value.value);
+				return this.vrbl_name[i].value.value;
 			}
 		}
 
@@ -122,12 +147,12 @@ module.exports = {
 
 	is_attribute: function(arg)
 	{
-		for(j=0, attr=this.attr_name[j].value; j < this.attr_name.length; j++, attr=this.attr_name[j].value)
+		for(i=0; i < this.attr_name.length; i++)
 		{
-			if(String(arg).substring(1, (String(attr).length+1)) == attr)
+			if(String(arg).substring(1, (String(this.attr_name[i].value).length+1)) == this.attr_name[i].value)
 			{
-				console.log('attr: '+attr);
-				return attr;
+				console.log('this.attr_name[i].value: '+this.attr_name[i].value);
+				return this.attr_name[i].value;
 			}
 	
 		}
@@ -152,13 +177,15 @@ module.exports = {
 
 
 
-	regex_interpreter: function(regex, id, guild)
+	regex_interpreter: function(regex, id, guild, portal_list, message)
 	{
 		if(regex === undefined){ return "regex is undefined";}
 		if(id === undefined){ return "id is undefined";}
 		if(guild === undefined){ return "guild is undefined";}
+		
 		console.log('regex: '+regex);
 		let new_channel_name = '';
+		message.then((sentMessage) => sentMessage.edit(new_channel_name))
 
 		for(let i=0; i < regex.length; i++)
 		{
@@ -170,12 +197,14 @@ module.exports = {
 				console.log('vrbl:'+vrbl);
 				if(vrbl)
 				{
-					new_channel_name += this.get_variable_data(vrbl, id, guild);
+					new_channel_name += this.get_variable_data(vrbl, id, guild, portal_list);
+					message.then((sentMessage) => sentMessage.edit(new_channel_name))
 					i += vrbl.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
+					message.then((sentMessage) => sentMessage.edit(new_channel_name))
 				}
 			}
 			else if(regex[i] === '|')
@@ -184,11 +213,13 @@ module.exports = {
 				if(pipe)
 				{
 					new_channel_name += '%'+pipe+'%';
+					message.then((sentMessage) => sentMessage.edit(new_channel_name))
 					i += pipe.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
+					message.then((sentMessage) => sentMessage.edit(new_channel_name))
 				}
 			}
 			else if(regex[i] === '@')
@@ -197,16 +228,19 @@ module.exports = {
 				if(attr)
 				{
 					new_channel_name += '%'+attr+'%';
+					message.then((sentMessage) => sentMessage.edit(new_channel_name))
 					i += attr.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
+					message.then((sentMessage) => sentMessage.edit(new_channel_name))
 				}
 			}
 			else
 			{
 				new_channel_name += regex[i];
+				message.then((sentMessage) => sentMessage.edit(new_channel_name))
 			}
 		}
 
@@ -228,7 +262,7 @@ module.exports = {
 					// if current channel is in voice list of a portal channel
 					if(channel.id === voice.id)
 					{
-						channel.setName(this.regex_interpreter(voice.regex, voice.id, guild));
+						//channel.setName(this.regex_interpreter(voice.regex, voice.id, guild, portal_list));
 						
 						// array_of_games = object.get_status_list(guild, channel.id);
 						// channel.setName(array_of_games.toString());

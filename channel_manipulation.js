@@ -1,5 +1,8 @@
 module.exports = 
 {
+	portal_counter: 0,
+	voice_counter: 0,
+
 	included_in_portal_list: function(channel_id, portal_list)
 	{
 		for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i]) {
@@ -44,7 +47,7 @@ module.exports =
 	}
 	,
 
-	create_portal_channel: function (server, portal_name, category_name, portal_list)
+	create_portal_channel: function (server, portal_name, category_name, portal_list, creator_id)
 	{
 		if(category_name)
 		{
@@ -54,7 +57,8 @@ module.exports =
 			// creating voice channel
 			server.createChannel(portal_name, {type: "voice"}, { bitrate: 8 })
 			.then (channel => {
-				portal_list.push({id: channel.id, regex: portal_name, voice_list: []});
+				portal_list.push({id: channel.id, regex: portal_name, creator: creator_id, 
+					count: this.voice_counter++, voice_list: []});
 
 				let category = server.channels.find(
 					c => c.name == category_name && c.type == "category"
@@ -78,6 +82,8 @@ module.exports =
 	{
 		state.voiceChannel.guild.createChannel("loading...", {type: "voice"}, { bitrate: 64 })
 		.then(channel => {
+			console.log("properties: ", Object.getOwnPropertyNames(channel));
+			channel.viewable = false;
 			for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i])
 			{
 				// finding the portal channel in portal channel list
@@ -85,7 +91,8 @@ module.exports =
 				if(portal.id === state.voiceChannel.id)
 				{
 					console.log("found portal.id in portal_list")
-					portal.voice_list.push({id: channel.id, regex: "$date"});//"## $game_name"});
+					portal.voice_list.push({id: channel.id, regex: "Ggame_cnt-P$mmbr_cnt | $game_lst", 
+						creator: state.member, count: this.voice_counter++}); //"Ggame_cnt-P$mmbr_cnt | $game_lst"});
 				}
 			}
 						
@@ -95,6 +102,7 @@ module.exports =
 				channel.setParent(state.voiceChannel.parentID);
 				state.setVoiceChannel(channel); // move member from portal to voice channel
 			}
+			// channel.viewable = true;
 		}).catch(console.error);
 		
 		return

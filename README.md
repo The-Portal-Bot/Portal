@@ -18,7 +18,7 @@ name | arguments | description
 .portal | !channel_name @category_name | _creates a voice channel and a category for it_
 .text | none | _creates a text channel connected to the voice channel_
 .regex | @regex_command | _sets regex-guidelines for how to name channels (current portal)_
-.exec | @exec_command | _returns the log of data given in log_string_
+.run | @exec_command | _returns the log of data given in log_string_
 .prefix | !prefix | _sets the new prefix for portal bot_
 .help | @specific_command | _returns a help-list of all commands and regex manipulation_
 .ping | none | _returns round trip latency_
