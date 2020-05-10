@@ -1,5 +1,7 @@
-const regex = require('./regex_interpreter.js');
-const editor = require('./channel_manipulation.js');
+// import { portal_channel, voice_channel } from "./classes/portal_old";
+
+const regex = require('./functions/regex_interpreter.js');
+const editor = require('./functions/channel_manipulation.js');
 
 // Load up the discord.js library
 const Discord = require('discord.js');
@@ -14,11 +16,13 @@ const config = require('./config.json');
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 
+
+
 // All data is stored from portal list to its voice channel list, which is encapsulated
 let portal_list = new Array();
-
+// let portals = new portal_channel;
 // LISTENERS
-
+	
 client.on('ready', () => {
 	// This event will run if the bot starts, and logs in, successfully.
 	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
@@ -228,6 +232,12 @@ client.on('message', async message => {
 
 	if(command === 'regex')
 	{
+		if (message.member.voiceChannel === undefined) {
+			message.channel.send("**You must be in portal's voice channel to change it's regex**");
+			message.react('❌');
+			return;
+		}
+
 		if(args.length === 1)
 		{
 			//change regex
@@ -268,7 +278,7 @@ client.on('message', async message => {
 	
 	if(command === 'help')
 	{
-		func_name = [
+		let func_name = [
 			{name: 'portal', value: 'creates a voice channel and a category for it', args: '!channel_name @category_name'},
 			{name: 'text', value: 'creates a text channel connected to the voice channel', args: 'none'},
 			{name: 'regex', value: 'sets regex-guidelines for how to name channels (current portal)', args: '!regex_command'},
@@ -278,7 +288,7 @@ client.on('message', async message => {
 			{name: 'ping', value: 'returns round trip latency', args: 'none'}
 		];
 			
-		vrbl_name = [
+		let vrbl_name = [
 			{name: '#', value: 'number of channel in list', args: 'none'},
 			{name: '##', value: 'number of channel in list with \#', args: 'none'},
 			{name: 'date', value: 'full date: dd/mm/yyyy', args: 'none'},
@@ -300,7 +310,7 @@ client.on('message', async message => {
 			{name: 'mmbr_lmt', value: 'sets the limit of users in channel', args: 'none'}
 		];
 
-		pipe_name = [
+		let pipe_name = [
 			{name: 'upper', value: 'makes input uppercase', args: 'none'},
 			{name: 'lower', value: 'makes input lowercase', args: 'none'},
 			{name: 'titl', value: 'makes input titlecase', args: 'none'},
@@ -311,7 +321,7 @@ client.on('message', async message => {
 			{name: 'smmr_cnt', value: 'count of all in array', args: 'none'}
 		];
 
-		attr_name = [
+		let attr_name = [
 			{name: 'nbot', value: 'no bots allowed', args: '!true/false'},
 			{name: 'mmbr_cap', value: 'maximum number of members allowed', args: '!number of maximum members'},
 			{name: 'time_tolv', value: 'time to live', args: '!number in seconds'},
@@ -478,20 +488,49 @@ client.on('message', async message => {
 	{
 	}
 
-	if(command === 'run')
-	{	
+	if (command === 'run') {
+		if (message.member.voiceChannel === undefined) {
+			message.channel.send("**You must be in portal's voice channel to execute commands**");
+			message.react('❌');
+			return;
+		}
+
 		message.channel.send('executing: ' + args.join(' '))
-		.then( sentMessage => {
-			sentMessage.edit(regex.regex_interpreter(
-				args.join(' '),
-				message.member.voiceChannel.id,
-				message.member.guild,
-				portal_list
-			));
-		})
+			.then(sentMessage => {
+				sentMessage.edit(regex.regex_interpreter(
+					args.join(' '),
+					message.member.voiceChannel.id,
+					message.member.guild,
+					portal_list
+				));
+			})
 		// console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
 		// console.log('Object.getOwnPropertyNames(message.author)= ', Object.getOwnPropertyNames(message.author))
-		message.react('✔️');	
+		message.react('✔️');
+	}
+
+	// set attributes
+	if (command === 'set') {
+		if (args.length === 1 && (args[0] === 'nbot' || args[0] === 'mmbr_cap'
+			|| args[0] === 'time_tolv' || args[0] === 'titl_rfsh')) {
+			for (i = 0; i < portal_list.length; i++) {
+				for (j = 0; j < portal_list[i].voice_list.length; j++) {
+					if (portal_list[i].voice_list[j] === message.member.voiceChannel.id) {
+						// set variables
+						message.react('✔️');
+						return;
+					}
+				}
+			}
+		} else {
+			message.channel.send("**Attributes that can be changed are: nbot, mmbr_cap, time_tolv, titl_rfsh**");
+			message.react('❌');
+			return;
+		}
+
+		message.channel.send("**You must be in portal's voice channel to set attributes**");
+		message.react('❌');
+		return;
 	}
 
 	if(command === 'url?')
@@ -503,12 +542,10 @@ client.on('message', async message => {
 			'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
 			'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
 
-		if (!!pattern.test(args.join(' ')))
-		{
+		if (!!pattern.test(args.join(' '))) 
 			message.react('✔️');
-		}else{
+		else
 			message.react('❌');
-		}
 	}
 	
 });
