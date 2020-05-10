@@ -18,7 +18,7 @@ name | arguments | description
 .portal | !channel_name @category_name | _creates a voice channel and a category for it_
 .text | none | _creates a text channel connected to the voice channel_
 .regex | @regex_command | _sets regex-guidelines for how to name channels (current portal)_
-.exec | @exec_command | _returns the log of data given in log_string_
+.run | @exec_command | _returns the log of data given in log_string_
 .prefix | !prefix | _sets the new prefix for portal bot_
 .help | @specific_command | _returns a help-list of all commands and regex manipulation_
 .ping | none | _returns round trip latency_
@@ -42,8 +42,14 @@ name | description
 --------- | ---------
 \# | _number of channel in list_
 \## | _number of channel in list with \#_
-date | _full date: dd/mm/yyyy_
+date |_full date: dd/mm/yyyy_
+tday |_gets the day_
+mnth |_gets the month_
+year | _gets the year_
 time | _full time: hh/mm/ss_
+hour | _gets the hour_
+mint | _gets the minute_
+scnd | _gets the second_
 crtr | _creator of the channel_
 game_lst | _list of currently played games_
 game_cnt | _number of games being played_
@@ -65,12 +71,6 @@ lower | string | _makes input lowercase_
 titl | string | _makes input titlecase_
 acrm | string | _makes input string of acronyms_
 word\# | string | _maximum number of words (\# is number)_
-cday | date | _gets the day_
-mnth | date | _gets the month_
-year | date | _gets the year_
-hour | time | _gets the hour_
-mint | time | _gets the minute_
-scnd | time | _gets the second_
 ppls | array | _gets more popular in array_
 ppls_cnt | array | _count of most popular in array_
 smmr_cnt | array | _count of all in array_

@@ -1,5 +1,8 @@
 module.exports = 
 {
+	portal_counter: 0,
+	voice_counter: 0,
+
 	included_in_portal_list: function(channel_id, portal_list)
 	{
 		for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i]) {
@@ -11,7 +14,6 @@ module.exports =
 
 		return false;
 	}
-	
 	,
 
 	included_in_voice_list: function(channel_id, portal_list)
@@ -27,7 +29,6 @@ module.exports =
 
 		return false;
 	}
-	
 	,
 
 	delete_voice_channel: function (channel_to_delete, portal_list)
@@ -39,7 +40,6 @@ module.exports =
 				}
 			}
 		}
-		
 
 		channel_to_delete.delete()
 		.then(g => console.log(`Deleted the guild ${g}`))
@@ -47,7 +47,7 @@ module.exports =
 	}
 	,
 
-	create_portal_channel: function (server, portal_name, category_name, portal_list)
+	create_portal_channel: function (server, portal_name, category_name, portal_list, creator_id)
 	{
 		if(category_name)
 		{
@@ -57,7 +57,8 @@ module.exports =
 			// creating voice channel
 			server.createChannel(portal_name, {type: "voice"}, { bitrate: 8 })
 			.then (channel => {
-				portal_list.push({id: channel.id, regex: portal_name, voice_list: []});
+				portal_list.push({id: channel.id, regex: portal_name, 
+					creator: creator_id, voice_list: []});
 
 				let category = server.channels.find(
 					c => c.name == category_name && c.type == "category"
@@ -81,6 +82,8 @@ module.exports =
 	{
 		state.voiceChannel.guild.createChannel("loading...", {type: "voice"}, { bitrate: 64 })
 		.then(channel => {
+			console.log("properties: ", Object.getOwnPropertyNames(channel));
+			channel.viewable = false;
 			for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i])
 			{
 				// finding the portal channel in portal channel list
@@ -88,59 +91,33 @@ module.exports =
 				if(portal.id === state.voiceChannel.id)
 				{
 					console.log("found portal.id in portal_list")
-					portal.voice_list.push({id: channel.id, regex: "## $game_name"});
+					portal.voice_list.push({id: channel.id, regex: "G$#-P$mmbr_cnt | $game_lst", 
+						creator: state.member, count: this.voice_counter++}); //"Ggame_cnt-P$mmbr_cnt | $game_lst"});
 				}
 			}
-						
+			
+			console.log("Object.getOwnPropertyNames(state)= ", Object.getOwnPropertyNames(state));
+			console.log("Object.getOwnPropertyNames(state.user)= ", Object.getOwnPropertyNames(state.user));
+			// state.user.client.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' });
 			if (state.voiceChannel.parentID === null){ // doesn't have category
 				state.setVoiceChannel(channel);
 			} else { // has category
 				channel.setParent(state.voiceChannel.parentID);
 				state.setVoiceChannel(channel); // move member from portal to voice channel
 			}
+			// channel.viewable = true;
 		}).catch(console.error);
 		
 		return
 	}
-	,
-
-	get_array_of_games: function (guild, portal_list)
-	{
-		let array_of_games = [];
-
-		guild.channels.forEach( channel => {
-			for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i]) {
-				for(j=0, voice=portal.voice_list[j]; j < portal.voice_list.length; j++, voice=portal.voice_list[j]) {
-					if(channel.id === voice.id)
-					{
-						channel.members.forEach( (member_game) => {
-							if(member_game.presence.game !== null) {
-								console.log("member_game.presence.game: "+member_game.presence.game)
-								array_of_games.push(member_game.presence.game);
-							}
-						})
-						console.log("array_of_games="+array_of_games)
-						console.log("array_of_games.length="+array_of_games.length)
-
-						if(array_of_games.length > 0) {
-							channel.setName(array_of_games.toString());
-						} else {
-							channel.setName("general")
-						}
-						
-						console.log("update channel with id: "+channel.id+", with name"+array_of_games[channel.id])
-						
-						return
-					}
-				}
-			}
-		})
-	}
-
-	,
-
-	generate_channel_names: function (guild, voice_list_id, regex_string)
-	{
-	}
-
 };
+
+'client', 'guild',
+	'user', 'joinedTimestamp',
+	'premiumSinceTimestamp', '_roles',
+	'serverDeaf', 'serverMute',
+	'selfMute', 'selfDeaf',
+	'selfStream', 'voiceSessionID',
+	'voiceChannelID', 'speaking',
+	'nickname', 'lastMessageID',
+	'lastMessage', 'deleted'
