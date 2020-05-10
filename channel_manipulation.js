@@ -57,8 +57,8 @@ module.exports =
 			// creating voice channel
 			server.createChannel(portal_name, {type: "voice"}, { bitrate: 8 })
 			.then (channel => {
-				portal_list.push({id: channel.id, regex: portal_name, creator: creator_id, 
-					count: this.voice_counter++, voice_list: []});
+				portal_list.push({id: channel.id, regex: portal_name, 
+					creator: creator_id, voice_list: []});
 
 				let category = server.channels.find(
 					c => c.name == category_name && c.type == "category"
@@ -91,11 +91,14 @@ module.exports =
 				if(portal.id === state.voiceChannel.id)
 				{
 					console.log("found portal.id in portal_list")
-					portal.voice_list.push({id: channel.id, regex: "Ggame_cnt-P$mmbr_cnt | $game_lst", 
+					portal.voice_list.push({id: channel.id, regex: "G$#-P$mmbr_cnt | $game_lst", 
 						creator: state.member, count: this.voice_counter++}); //"Ggame_cnt-P$mmbr_cnt | $game_lst"});
 				}
 			}
-						
+			
+			console.log("Object.getOwnPropertyNames(state)= ", Object.getOwnPropertyNames(state));
+			console.log("Object.getOwnPropertyNames(state.user)= ", Object.getOwnPropertyNames(state.user));
+			// state.user.client.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' });
 			if (state.voiceChannel.parentID === null){ // doesn't have category
 				state.setVoiceChannel(channel);
 			} else { // has category
@@ -108,3 +111,13 @@ module.exports =
 		return
 	}
 };
+
+'client', 'guild',
+	'user', 'joinedTimestamp',
+	'premiumSinceTimestamp', '_roles',
+	'serverDeaf', 'serverMute',
+	'selfMute', 'selfDeaf',
+	'selfStream', 'voiceSessionID',
+	'voiceChannelID', 'speaking',
+	'nickname', 'lastMessageID',
+	'lastMessage', 'deleted'

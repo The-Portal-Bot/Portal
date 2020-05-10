@@ -28,7 +28,7 @@ module.exports = {
 			{status: "Call of Duty®️ː Modern Warfare®️", alias: "CoDːMW", type: "game"},
 
 			{status: "Google Chrome", alias: "Chrome", type: "program"},
-			{status: "Spotify", alias: "Spotify Music", type: "program"},
+			{status: "Spotify", alias: "Μουσικούλα", type: "program"},
 		];
 
 		for(i=0, status=status_shortcuts[i]; i < status_shortcuts.length; i++, status=status_shortcuts[i]) {

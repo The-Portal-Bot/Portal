@@ -3,12 +3,25 @@ const object = require('./object_retrievers.js');
 module.exports = {
 	// variables $
 	vrbl_name: [ 
-		{value: '#', func: (guild, id) => {
-			guild.channels.forEach(channel => {
-				if(channel.id === id) {
-					return channel.members.length;
+		{ value: '#', func: (guild, id, portal_list) => {
+			let voice_number = undefined;
+			portal_list.forEach(  portal => {
+				portal.voice_list.forEach( (voice, key) => {
+					if(voice.id === id) {
+						voice_number = key+1;
+					}
+				})
+			})
+			return voice_number;
+		}},
+		{value: '##', func: (guild, id, portal_list) => {
+			let portal_number = undefined;
+			portal_list.forEach( (portal, key) => {
+				if (portal.id === id) {
+					portal_number = key+1;
 				}
 			})
+			return portal_number;
 		}},
 		{value: 'date', func: () => { let date = new Date(); return date; }},
 		{value: 'tday', func: () => { let date = new Date(); return date.getDate(); }},
@@ -30,8 +43,8 @@ module.exports = {
 		}},
 		{value: 'game_lst', func: (guild, id) => { return object.get_status_list(guild, id)}},
 		{value: 'game_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
-			if(typeof(object.get_status_list(guild, id)) !== "object") {return 0}
-			else {object.get_status_list(guild, id).length}
+			if(typeof(object.get_status_list(guild, id)) !== "object") { return 0; }
+			else{ object.get_status_list(guild, id).length; }
 		}},
 		{value: 'game_his', func: () => { return "no_yet_implemented" }},
 		{value: 'mmbr_lst', func: (guild, id) => { 
@@ -72,6 +85,7 @@ module.exports = {
 			let cnt = undefined;
 			guild.channels.forEach(channel => {
 				if(channel.id === id) {
+					//console.log("Object.getOwnPropertyNames(channel)= ", Object.getOwnPropertyNames(channel))
 					cnt = channel.userLimit; //change
 				}
 			})
@@ -79,7 +93,6 @@ module.exports = {
 		 }},
 	],
 
-	
 	// pipes |
 	pipe_name: [ 
 		{value: 'upper', func: () => { return "no_yet_implemented" }},
@@ -92,7 +105,6 @@ module.exports = {
 		{value: 'smmr_cnt', func: () => { return "no_yet_implemented" }},
 	],
 
-	
 	// attributes @
 	attr_name: [
 		{value: 'nbot', func: () => { return "no_yet_implemented" }},
@@ -101,7 +113,6 @@ module.exports = {
 		{value: 'titl_rfsh', func: () => { return "no_yet_implemented" }},
 	],
 
-	
 	//
 	get_variable_data: function(variable, id, guild, portal_list)
 	{
@@ -177,15 +188,14 @@ module.exports = {
 
 
 
-	regex_interpreter: function(regex, id, guild, portal_list, message)
+	regex_interpreter: function(regex, id, guild, portal_list)
 	{
 		if(regex === undefined){ return "regex is undefined";}
 		if(id === undefined){ return "id is undefined";}
 		if(guild === undefined){ return "guild is undefined";}
 		
 		console.log('regex: '+regex);
-		let new_channel_name = '';
-		message.then((sentMessage) => sentMessage.edit(new_channel_name))
+		let new_channel_name = ''		
 
 		for(let i=0; i < regex.length; i++)
 		{
@@ -198,13 +208,13 @@ module.exports = {
 				if(vrbl)
 				{
 					new_channel_name += this.get_variable_data(vrbl, id, guild, portal_list);
-					message.then((sentMessage) => sentMessage.edit(new_channel_name))
+					
 					i += vrbl.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
-					message.then((sentMessage) => sentMessage.edit(new_channel_name))
+					
 				}
 			}
 			else if(regex[i] === '|')
@@ -213,13 +223,13 @@ module.exports = {
 				if(pipe)
 				{
 					new_channel_name += '%'+pipe+'%';
-					message.then((sentMessage) => sentMessage.edit(new_channel_name))
+					
 					i += pipe.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
-					message.then((sentMessage) => sentMessage.edit(new_channel_name))
+					
 				}
 			}
 			else if(regex[i] === '@')
@@ -228,19 +238,18 @@ module.exports = {
 				if(attr)
 				{
 					new_channel_name += '%'+attr+'%';
-					message.then((sentMessage) => sentMessage.edit(new_channel_name))
+					
 					i += attr.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
-					message.then((sentMessage) => sentMessage.edit(new_channel_name))
+					
 				}
 			}
 			else
 			{
-				new_channel_name += regex[i];
-				message.then((sentMessage) => sentMessage.edit(new_channel_name))
+				new_channel_name += regex[i];				
 			}
 		}
 
@@ -262,7 +271,7 @@ module.exports = {
 					// if current channel is in voice list of a portal channel
 					if(channel.id === voice.id)
 					{
-						//channel.setName(this.regex_interpreter(voice.regex, voice.id, guild, portal_list));
+						channel.setName(this.regex_interpreter(voice.regex, voice.id, guild, portal_list));
 						
 						// array_of_games = object.get_status_list(guild, channel.id);
 						// channel.setName(array_of_games.toString());
@@ -276,3 +285,4 @@ module.exports = {
 	}
 
 };
+// ./run $# $## $ate $day $day $nth $ear $ime $our $int $cnd $rtr $ame_lst $ame_cnt $ame_his $mbr_lst $mbr_cnt $mbr_plg $mbr_his $mbr_lmt
