@@ -1,4 +1,4 @@
-module.exports = 
+module.exports =
 {
 	portal_counter: 0,
 	voice_counter: 0,
@@ -57,8 +57,19 @@ module.exports =
 			// creating voice channel
 			server.createChannel(portal_name, {type: "voice"}, { bitrate: 8 })
 			.then (channel => {
-				portal_list.push({id: channel.id, regex: portal_name, 
-					creator: creator_id, voice_list: []});
+				portal_list.push({
+					id: channel.id,
+					regex: portal_name,
+					creator: creator_id,
+					voice_list: [],
+					attributes: {
+						no_bots: false,
+						mmbr_cap: 0,
+						time_to_live: 0,
+						refresh_rate: 0,
+						count: this.portal_counter++ // not editable
+					}
+				});
 
 				let category = server.channels.find(
 					c => c.name == category_name && c.type == "category"
@@ -90,8 +101,21 @@ module.exports =
 				console.log(portal.id + "===" + state.voiceChannel.id)
 				if(portal.id === state.voiceChannel.id)
 				{
+					portal.voice_list.push({
+						id: channel.id,
+						regex: "G$#-P$mmbr_cnt | $game_lst",
+						creator: state.member,
+						attributes: {
+							no_bots: false,
+							mmbr_cap: 0,
+							time_to_live: 0,
+							refresh_rate: 0,
+							count: this.voice_counter++ // not editable
+						}
+					});
+					
 					console.log("found portal.id in portal_list")
-					portal.voice_list.push({id: channel.id, regex: "G$#-P$mmbr_cnt | $game_lst", 
+					portal.voice_list.push({id: channel.id, regex: "G$#-P$mmbr_cnt | $game_lst",
 						creator: state.member, count: this.voice_counter++}); //"Ggame_cnt-P$mmbr_cnt | $game_lst"});
 				}
 			}

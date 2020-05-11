@@ -41,12 +41,12 @@ module.exports = {
 				})
 			})
 		}},
-		{value: 'game_lst', func: (guild, id) => { return object.get_status_list(guild, id)}},
-		{value: 'game_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
+		{value: 'status_lst', func: (guild, id) => { return object.get_status_list(guild, id)}},
+		{value: 'status_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
 			if(typeof(object.get_status_list(guild, id)) !== "object") { return 0; }
 			else{ object.get_status_list(guild, id).length; }
 		}},
-		{value: 'game_his', func: () => { return "no_yet_implemented" }},
+		{value: 'status_his', func: () => { return "no_yet_implemented" }},
 		{value: 'mmbr_lst', func: (guild, id) => { 
 			let mmbr_lst = [];
 			guild.channels.forEach(channel => {
@@ -90,7 +90,7 @@ module.exports = {
 				}
 			})
 			return cnt;
-		 }},
+		}},
 	],
 
 	// pipes |
@@ -190,12 +190,12 @@ module.exports = {
 
 	regex_interpreter: function(regex, id, guild, portal_list)
 	{
-		if(regex === undefined){ return "regex is undefined";}
-		if(id === undefined){ return "id is undefined";}
-		if(guild === undefined){ return "guild is undefined";}
-		
+		if(regex === undefined){ return "regex is undefined"; }
+		if(id === undefined){ return "id is undefined"; }
+		if(guild === undefined){ return "guild is undefined"; }
+
 		console.log('regex: '+regex);
-		let new_channel_name = ''		
+		let new_channel_name = ''
 
 		for(let i=0; i < regex.length; i++)
 		{
@@ -208,13 +208,13 @@ module.exports = {
 				if(vrbl)
 				{
 					new_channel_name += this.get_variable_data(vrbl, id, guild, portal_list);
-					
+			
 					i += vrbl.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
-					
+			
 				}
 			}
 			else if(regex[i] === '|')
@@ -223,13 +223,13 @@ module.exports = {
 				if(pipe)
 				{
 					new_channel_name += '%'+pipe+'%';
-					
+			
 					i += pipe.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
-					
+			
 				}
 			}
 			else if(regex[i] === '@')
@@ -238,18 +238,17 @@ module.exports = {
 				if(attr)
 				{
 					new_channel_name += '%'+attr+'%';
-					
+			
 					i += attr.length;
 				}
 				else
 				{
 					new_channel_name += regex[i];
-					
 				}
 			}
 			else
 			{
-				new_channel_name += regex[i];				
+				new_channel_name += regex[i];		
 			}
 		}
 
@@ -261,7 +260,7 @@ module.exports = {
 	generate_channel_names: function (guild, portal_list)
 	{
 		let array_of_games = [];
-		
+
 		// for each channel in guild
 		guild.channels.forEach( channel => {
 			// for each channel in portal list
@@ -272,10 +271,9 @@ module.exports = {
 					if(channel.id === voice.id)
 					{
 						channel.setName(this.regex_interpreter(voice.regex, voice.id, guild, portal_list));
-						
 						// array_of_games = object.get_status_list(guild, channel.id);
 						// channel.setName(array_of_games.toString());
-						
+				
 						return
 					}
 
