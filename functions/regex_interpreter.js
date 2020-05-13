@@ -270,7 +270,9 @@ module.exports = {
 					// if current channel is in voice list of a portal channel
 					if(channel.id === voice.id)
 					{
-						channel.setName(this.regex_interpreter(voice.regex, voice.id, guild, portal_list));
+						console.log('portal = ', portal)
+						console.log("portal.regex_voice = " + portal.regex_voice)
+						channel.setName(this.regex_interpreter(portal.regex_voice, voice.id, guild, portal_list));
 						// array_of_games = object.get_status_list(guild, channel.id);
 						// channel.setName(array_of_games.toString());
 				

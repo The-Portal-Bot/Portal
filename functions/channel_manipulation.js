@@ -59,8 +59,9 @@ module.exports =
 			.then (channel => {
 				portal_list.push({
 					id: channel.id,
-					regex: portal_name,
 					creator: creator_id,
+					regex_portal: portal_name,
+					regex_voice: "G$#-P$mmbr_cnt | $game_lst",
 					voice_list: [],
 					attributes: {
 						no_bots: false,
@@ -83,7 +84,20 @@ module.exports =
 			// creating voice channel
 			server.createChannel(portal_name, {type: "voice"}, { bitrate: 8 })
 			.then (channel => {
-				portal_list.push({id: channel.id, regex: portal_name, voice_list: []});
+				portal_list.push({
+					id: channel.id,
+					creator: creator_id,
+					regex_portal: portal_name,
+					regex_voice: "G$#-P$mmbr_cnt | $game_lst",
+					voice_list: [],
+					attributes: {
+						no_bots: false,
+						mmbr_cap: 0,
+						time_to_live: 0,
+						refresh_rate: 0,
+						count: this.portal_counter++ // not editable
+					}
+				});
 			})
 		}
 	}
@@ -98,18 +112,16 @@ module.exports =
 			for(i=0, portal=portal_list[i]; i < portal_list.length; i++, portal=portal_list[i])
 			{
 				// finding the portal channel in portal channel list
-				console.log(portal.id + "===" + state.voiceChannel.id)
 				if(portal.id === state.voiceChannel.id)
 				{
 					portal.voice_list.push({
 						id: channel.id,
-						regex: "G$#-P$mmbr_cnt | $game_lst",
 						creator: state.member,
 						attributes: {
 							no_bots: false,
-							mmbr_cap: 0,
-							time_to_live: 0,
-							refresh_rate: 0,
+							mmbr_cap: portal.mmbr_cap,
+							time_to_live: portal.time_to_live,
+							refresh_rate: portal.refresh_rate,
 							count: this.voice_counter++ // not editable
 						}
 					});

@@ -17,7 +17,6 @@ const config = require('./config.json');
 // config.prefix contains the message prefix.
 
 
-
 // All data is stored from portal list to its voice channel list, which is encapsulated
 let portal_list = new Array();
 // let portal_channel = new portal_channel;
@@ -499,6 +498,7 @@ client.on('message', async message => {
 	}
 
 	if (command === 'prefix') {
+		
 	}
 
 	if (command === 'run') {
