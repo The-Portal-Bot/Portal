@@ -47,8 +47,8 @@ module.exports = {
 				})
 			}
 		},
-		{ 
-			value: 'status_lst', func: (guild, id) => { return object.get_status_list(guild, id) } 
+		{
+			value: 'status_lst', func: (guild, id) => { return object.get_status_list(guild, id) }
 		},
 		{
 			value: 'status_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
@@ -113,11 +113,16 @@ module.exports = {
 
 	// pipes |
 	pipe_name: [
-		{ value: 'upper', func: (str, count) => { 
-			return str.toUpperCase(); } },
-		{ value: 'lower', func: (str, count) => { 
-			return str.toLowerCase(); 
-		} },
+		{
+			value: 'upper', func: (str, count) => {
+				return str.toUpperCase();
+			}
+		},
+		{
+			value: 'lower', func: (str, count) => {
+				return str.toLowerCase();
+			}
+		},
 		{
 			value: 'titl', func: (str, count) => {
 				str = str.toLowerCase().split(' ');
@@ -130,18 +135,20 @@ module.exports = {
 		{
 			value: 'acrnm', func: (str, count) => {
 				let words = str.split(" ");
-				let acr = words.map(word => { return word[0]});
+				let acr = words.map(word => { return word[0] });
 				return acr.join("").toUpperCase();
 			}
 		},
-		{ value: 'word#', func: (str, count) => {
-			let count_words = '';
-			let words = str.split(" ");
-			for(let i=0; i<count; i++){
-				count_words += words[i];
+		{
+			value: 'word#', func: (str, count) => {
+				let count_words = '';
+				let words = str.split(" ");
+				for (let i = 0; i < count; i++) {
+					count_words += words[i];
+				}
+				return count_words;
 			}
-			return count_words;
-		 } },
+		},
 		{
 			value: 'ppls_cnt', func: (str, count) => {
 				let words = str.split(" ");
@@ -167,41 +174,119 @@ module.exports = {
 				return mf;
 			}
 		},
-		{ value: 'ppls', func: (str, count) => { 
-			let words = str.split(" ");
-			let mf = 1; //default maximum frequency
-			let m = 0;  //counter
-			let item;  //to store item with maximum frequency
-			for (let i = 0; i < words.length; i++)    //select element (current element)
-			{
-				for (let j = i; j < words.length; j++)   //loop through next elements in array to compare calculate frequency of current element
+		{
+			value: 'ppls', func: (str, count) => {
+				let words = str.split(" ");
+				let mf = 1; //default maximum frequency
+				let m = 0;  //counter
+				let item;  //to store item with maximum frequency
+				for (let i = 0; i < words.length; i++)    //select element (current element)
 				{
-					if (words[i] == words[j])    //see if element occurs again in the array
-						m++;   //increment counter if it does
-					if (mf < m)   //compare current items frequency with maximum frequency
+					for (let j = i; j < words.length; j++)   //loop through next elements in array to compare calculate frequency of current element
 					{
-						mf = m;      //if m>mf store m in mf for upcoming elements
-						item = words[i];   // store the current element.
+						if (words[i] == words[j])    //see if element occurs again in the array
+							m++;   //increment counter if it does
+						if (mf < m)   //compare current items frequency with maximum frequency
+						{
+							mf = m;      //if m>mf store m in mf for upcoming elements
+							item = words[i];   // store the current element.
+						}
 					}
+					m = 0;   // make counter 0 for next element.
 				}
-				m = 0;   // make counter 0 for next element.
-			}
 
-			return item;
-		 } },
+				return item;
+			}
+		},
 		{ value: 'smmr_cnt', func: (str, count) => { return str.split(" ").length } },
 	],
 
 	// attributes @
 	attr_name: [
-		{ value: 'nbot', func: () => { return "no_yet_implemented" } },
-		{ value: 'mmbr_cap', func: () => { return "no_yet_implemented" } },
-		{ value: 'time_tolv', func: () => { return "no_yet_implemented" } },
-		{ value: 'titl_rfsh', func: () => { return "no_yet_implemented" } },
+		{
+			value: 'no_bots', func: (value, id, portal_list) => {
+				if (typeof (value) === 'boolean') {
+					for (i = 0; i < portal_list.length; i++) {
+						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
+							if (id === portal_list[i].get_voice_list()[j].id) {
+								return portal_list[i].get_voice_list()[j].get_no_bots;
+							}
+						}
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+		},
+		{
+			value: 'mmbr_cap', func: (value, id, portal_list) => {
+				if (typeof (value) === 'number') {
+					for (i = 0; i < portal_list.length; i++) {
+						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
+							if (id === portal_list[i].get_voice_list()[j].id) {
+								return portal_list[i].get_voice_list()[j].get_mmbr_cap();
+							}
+						}
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+		},
+		{
+			value: 'time_to_live', func: (value, id, portal_listn) => {
+				if (typeof (value) === 'number') {
+					for (i = 0; i < portal_list.length; i++) {
+						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
+							if (id === portal_list[i].get_voice_list()[j].id) {
+								return portal_list[i].get_voice_list()[j].get_time_to_live();
+							}
+						}
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+		},
+		{
+			value: 'refresh_rate', func: (value, id, portal_listn) => {
+				if (typeof (value) === 'number)') {
+					for (i = 0; i < portal_list.length; i++) {
+						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
+							if (id === portal_list[i].get_voice_list()[j].id) {
+								return portal_list[i].get_voice_list()[j].get_refresh_rate();
+							}
+						}
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+		},
+		{
+			value: 'count', func: (value, id, portal_listn) => {
+				if (typeof (value) === 'number') {
+					for (i = 0; i < portal_list.length; i++) {
+						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
+							if (id === portal_list[i].get_voice_list()[j].id) {
+								return portal_list[i].get_voice_list()[j].get_count();
+							}
+						}
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+		},
 	],
 
 	//
-	get_variable_data: function (variable, id, guild, portal_list) {
+	get_vrbl_data: function (variable, id, guild, portal_list) {
 		for (i = 0; i < this.vrbl_name.length; i++) {
 			if (variable == this.vrbl_name[i].value) {
 				return this.vrbl_name[i].func(guild, id, portal_list);
@@ -218,6 +303,17 @@ module.exports = {
 		}
 	}
 	,
+
+	get_attr_data: function (attr, id, portal_list) {
+		for (i = 0; i < this.attr_name.length; i++) {
+			if (attr == this.attr_name[i].value) {
+				return this.attr_name[i].func(id, portal_list);
+			}
+		}
+	}
+	,
+
+	//
 
 	is_variable: function (arg) {
 		for (i = 0; i < this.vrbl_name.length; i++) {
@@ -286,7 +382,7 @@ module.exports = {
 				let vrbl = this.is_variable(regex.substring(i))
 				console.log("yes it is vrbl and this is : ", vrbl, ', it is: ', regex.substring(i));
 				if (vrbl) {
-					new_channel_name += this.get_variable_data(vrbl, id, guild, portal_list);
+					new_channel_name += this.get_vrbl_data(vrbl, id, guild, portal_list);
 					last_variable = new_channel_name;
 
 					i += vrbl.length;
@@ -300,7 +396,7 @@ module.exports = {
 				console.log("yes it is pipe and this is : ", pipe, " and this is : ", regex.substring(i));
 				if (pipe) {
 					// removes previous variable output, in order to replace with pipe output
-					new_channel_name = new_channel_name.substring(0, new_channel_name.length-last_variable.length);
+					new_channel_name = new_channel_name.substring(0, new_channel_name.length - last_variable.length);
 					new_channel_name += this.get_pipe_data(pipe, last_variable, 2);
 
 					i += pipe.length;
@@ -312,8 +408,9 @@ module.exports = {
 			}
 			else if (regex[i] === '@') {
 				let attr = this.is_attribute(regex.substring(i))
+				console.log("yes it is attr and this is : ", attr, " and this is : ", regex.substring(i));
 				if (attr) {
-					new_channel_name += '%' + attr + '%';
+					new_channel_name += this.get_attr_data(attr, id, portal_list);
 
 					i += attr.length;
 				}
