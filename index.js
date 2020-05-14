@@ -48,7 +48,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 	for (i = 0; i < portal_list.length; i++) {
 		console.log(i + ') Portal channel with id: ' + portal_list[i].id + ' has voice channels: [');
 		for (j = 0; j < portal_list[i].voice_list.length; j++) {
-			console.log('\t' + j + ') voice channel with id: ' + portal_list[i], voice_list[j].id);
+			console.log('\t' + j + ') voice channel with id: ' + portal_list[i], portal_list[i].voice_list[j].id);
 		}
 		console.log(']\n')
 	}
@@ -64,8 +64,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 		if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
 			// user joined portal channel
-			console.log('Object.getOwnPropertyNames(newState)= ', Object.getOwnPropertyNames(newState))
-			console.log('Object.getOwnPropertyNames(newState.member)= ', Object.getOwnPropertyNames(newState.member))
 			editor.create_voice_channel(newState, portal_list, newState.user.id);
 			regex.generate_channel_names(newState.guild, portal_list);
 		}
@@ -123,8 +121,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
 				// user joined portal channel
-				console.log('Object.getOwnPropertyNames(newState)= ', Object.getOwnPropertyNames(newState))
-				console.log('Object.getOwnPropertyNames(newState.user)= ', Object.getOwnPropertyNames(newState.user))
 				editor.create_voice_channel(newState, portal_list, newState.user.id);
 				regex.generate_channel_names(newState.guild, portal_list);
 			}
@@ -151,8 +147,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
 				console.log('->dest: portal_list')
 				// user joined portal channel
-				console.log('Object.getOwnPropertyNames(newState)= ', Object.getOwnPropertyNames(newState))
-				console.log('Object.getOwnPropertyNames(newState.user)= ', Object.getOwnPropertyNames(newState.user))
 				editor.create_voice_channel(newState, portal_list, newState.user.id);
 				regex.generate_channel_names(newState.guild, portal_list);
 			}

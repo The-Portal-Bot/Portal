@@ -46,31 +46,31 @@ module.exports =
 		category_name, portal_list, creator_id) {
 		if (category_name) {
 			// creating category
-			server.createChannel(category_name, { type: "category" })
+			server.createChannel(category_name, { type: 'category' })
 
 			// creating voice channel
-			server.createChannel(portal_name, { type: "voice" }, { bitrate: 8 })
+			server.createChannel(portal_name, { type: 'voice' }, { bitrate: 8 })
 				.then(channel => {
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
-						"G$#-P$mmbr_cnt | $game_lst", [],
+						'G$#-P$mmbr_cnt | $status_lst', [],
 						false, 0, 0, 0,
 						this.portal_counter++ // not editable					
 					));
 
 					let category = server.channels.find(
-						c => c.name == category_name && c.type == "category"
+						c => c.name == category_name && c.type == 'category'
 					);
-					if (!category) throw new Error("Category channel does not exist");
+					if (!category) throw new Error('Category channel does not exist');
 					channel.setParent(category);
 				}).catch(console.error);
 		} else {
 			// creating voice channel
-			server.createChannel(portal_name, { type: "voice" }, { bitrate: 8 })
+			server.createChannel(portal_name, { type: 'voice' }, { bitrate: 8 })
 				.then(channel => {
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
-						"G$#-P$mmbr_cnt | $game_lst", [],
+						'G$#-P$mmbr_cnt | $status_lst', [],
 						false, 0, 0, 0,
 						this.portal_counter++ // not editable				
 					));
@@ -80,9 +80,9 @@ module.exports =
 	,
 
 	create_voice_channel: function (state, portal_list, creator_id) {
-		state.voiceChannel.guild.createChannel("loading...", { type: "voice" }, { bitrate: 64 })
+		state.voiceChannel.guild.createChannel('loading...', { type: 'voice' }, { bitrate: 64 })
 			.then(channel => {
-				//console.log("properties: ", Object.getOwnPropertyNames(channel));
+				//console.log('properties: ', Object.getOwnPropertyNames(channel));
 				channel.viewable = false;
 				for (i = 0; i < portal_list.length; i++) {
 					// finding the portal channel in portal channel list
@@ -97,8 +97,8 @@ module.exports =
 					}
 				}
 
-				console.log("Object.getOwnPropertyNames(state)= ", Object.getOwnPropertyNames(state));
-				console.log("Object.getOwnPropertyNames(state.user)= ", Object.getOwnPropertyNames(state.user));
+				console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));
+				console.log('Object.getOwnPropertyNames(state.user)= ', Object.getOwnPropertyNames(state.user));
 				// state.user.client.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' });
 				if (state.voiceChannel.parentID === null) { // doesn't have category
 					state.setVoiceChannel(channel);
