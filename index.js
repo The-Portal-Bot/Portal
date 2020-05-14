@@ -1,5 +1,3 @@
-// import { portal_channel, voice_channel } from "./classes/portal";
-
 const regex = require('./functions/regex_interpreter.js');
 const editor = require('./functions/channel_manipulation.js');
 
@@ -19,7 +17,6 @@ const config = require('./config.json');
 
 // All data is stored from portal list to its voice channel list, which is encapsulated
 let portal_list = new Array();
-// let portal_channel = new portal_channel;
 // LISTENERS
 
 client.on('ready', () => {
@@ -48,10 +45,10 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 	regex.generate_channel_names(newPresence.guild, portal_list);
 	//regex.generate_channel_names(newPresence.guild, voice_list, regex_string_id);
 
-	for (i = 0, portal = portal_list[i]; i < portal_list.length; i++, portal = portal_list[i]) {
-		console.log(i + ') Portal channel with id: ' + portal.id + ' has voice channels: [');
-		for (j = 0, voice = portal.voice_list[j]; j < portal.voice_list.length; j++, voice = portal.voice_list[j]) {
-			console.log('\t' + j + ') voice channel with id: ' + voice.id);
+	for (i = 0; i < portal_list.length; i++) {
+		console.log(i + ') Portal channel with id: ' + portal_list[i].id + ' has voice channels: [');
+		for (j = 0; j < portal_list[i].voice_list.length; j++) {
+			console.log('\t' + j + ') voice channel with id: ' + portal_list[i], voice_list[j].id);
 		}
 		console.log(']\n')
 	}
@@ -67,7 +64,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 		if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
 			// user joined portal channel
-			editor.create_voice_channel(newState, portal_list);
+			console.log('Object.getOwnPropertyNames(newState)= ', Object.getOwnPropertyNames(newState))
+			console.log('Object.getOwnPropertyNames(newState.member)= ', Object.getOwnPropertyNames(newState.member))
+			editor.create_voice_channel(newState, portal_list, newState.user.id);
 			regex.generate_channel_names(newState.guild, portal_list);
 		}
 		else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) {
@@ -124,7 +123,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
 				// user joined portal channel
-				editor.create_voice_channel(newState, portal_list);
+				console.log('Object.getOwnPropertyNames(newState)= ', Object.getOwnPropertyNames(newState))
+				console.log('Object.getOwnPropertyNames(newState.user)= ', Object.getOwnPropertyNames(newState.user))
+				editor.create_voice_channel(newState, portal_list, newState.user.id);
 				regex.generate_channel_names(newState.guild, portal_list);
 			}
 			else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) {
@@ -150,7 +151,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
 				console.log('->dest: portal_list')
 				// user joined portal channel
-				editor.create_voice_channel(newState, portal_list);
+				console.log('Object.getOwnPropertyNames(newState)= ', Object.getOwnPropertyNames(newState))
+				console.log('Object.getOwnPropertyNames(newState.user)= ', Object.getOwnPropertyNames(newState.user))
+				editor.create_voice_channel(newState, portal_list, newState.user.id);
 				regex.generate_channel_names(newState.guild, portal_list);
 			}
 			else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) {
@@ -217,13 +220,13 @@ client.on('message', async message => {
 			for (i = 0; i < portal_list.length; i++) {
 				for (j = 0; j < portal_list[i].voice_list.length; j++) {
 					if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
-						portal_list[i].regex = args.join(' ');
+						portal_list[i].regex_portal = args.join(' ');
 
 						message.guild.channels.forEach((value) => {
 							if (value.id === portal_list[i].id) {
 								value.setName(
 									regex.regex_interpreter(
-										portal_list[i].regex,
+										portal_list[i].regex_portal,
 										portal_list[i].id,
 										message.guild,
 										portal_list
@@ -256,11 +259,11 @@ client.on('message', async message => {
 			for (i = 0; i < portal_list.length; i++) {
 				for (j = 0; j < portal_list[i].voice_list.length; j++) {
 					if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
-						portal_list[i].voice_list[j].regex = args.join(' ');
+						portal_list[i].regex_voice = args.join(' ');
 						message.member.voiceChannel.setName(
 							regex.regex_interpreter(
-								portal_list[i].voice_list[j].regex,
-								portal_list[i].voice_list[j].id,
+								portal_list[i].regex_voice,
+								portal_list[i].id,
 								message.guild,
 								portal_list
 							)
@@ -282,9 +285,10 @@ client.on('message', async message => {
 		let current_guild = message.guild;
 
 		message.guild.channels.forEach((value) => {
-			if (value.deletable) value.delete()
-				.then(g => console.log(`Deleted the guild ${g}`))
-				.catch(console.error);
+			if (value.deletable)
+				value.delete()
+					.then(g => console.log(`Deleted the guild ${g}`))
+					.catch(console.error);
 		})
 
 		current_guild.createChannel('general voice', { type: 'voice' }, { bitrate: 64 })
@@ -300,7 +304,8 @@ client.on('message', async message => {
 		// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
 		// The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
 		const m = await message.channel.send('Ping?');
-		m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.\nAPI Latency is ${Math.round(client.ping)}ms`);
+		m.edit('Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.\n',
+			'API Latency is ${Math.round(client.ping)}ms');
 	}
 
 	if (command === 'help') {
@@ -498,7 +503,7 @@ client.on('message', async message => {
 	}
 
 	if (command === 'prefix') {
-		
+
 	}
 
 	if (command === 'run') {
