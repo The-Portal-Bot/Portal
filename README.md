@@ -11,17 +11,19 @@ Features:
 ***
 
 ## Commands
-**Portal prefix: .**
+**Portal prefix: ./**
 
 name | arguments | description
 --------- | --------- | ---------
-.portal | !channel_name @category_name | _creates a voice channel and a category for it_
-.text | none | _creates a text channel connected to the voice channel_
-.regex | @regex_command | _sets regex-guidelines for how to name channels (current portal)_
-.run | @exec_command | _returns the log of data given in log_string_
-.prefix | !prefix | _sets the new prefix for portal bot_
-.help | @specific_command | _returns a help-list of all commands and regex manipulation_
-.ping | none | _returns round trip latency_
+./portal | !channel_name @category_name | _creates a voice channel and a category for it_
+./regexP | @regex_command | _sets the regex name for the portal from current voice channel_
+./regexV | @regex_command | _sets the regex name for the current voice channel_
+./run | @exec_command | _returns the log of data given in log\_string_
+./prefix | !prefix | _sets the new prefix for portal bot_
+./attrP | @attr | _sets the attribute you mention for the portal from current voice channel_
+./attrV | @attr | _sets the attribute you mention for the current voice channel_
+./help | @specific_command | _returns a help-list of all commands and regex manipulation_
+./ping | none | _returns round trip latency_
   
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
@@ -51,13 +53,13 @@ hour | _gets the hour_
 mint | _gets the minute_
 scnd | _gets the second_
 crtr | _creator of the channel_
-game_lst | _list of currently played games_
-game_cnt | _number of games being played_
-game_his | _list of all games played from beginning_
+status_lst | _list of current statuses_
+status_cnt | _number of games being played_
+status_his | _list of all games played from beginning_
 mmbr_lst | _returns the currently played games_
 mmbr_cnt | _number of members in channel_
 mmbr_plg | _number of members playing_
-mmbr_his | _returns the currently played games_
+mmbr_his | _returns the history of statuses_
 mmbr_lmt | _sets the limit of users in channel_
 
 ### Pipes
