@@ -25,7 +25,7 @@ client.on('ready', () => {
 	// Example of changing the bot's playing game to something useful. `client.user` is what the
 	// docs refer to as the 'ClientUser'.
 	//client.user.setActivity(`Serving ${client.guilds.size} servers`);
-	client.user.setActivity('[portal <ctg> <chl>', { type: 'LISTENING' });
+	client.user.setActivity('./portal channel', { type: 'LISTENING' });
 });
 
 client.on('guildCreate', guild => {
@@ -347,10 +347,10 @@ client.on('message', async message => {
 		];
 
 		let attr_name = [
-			{ name: 'nbot', value: 'no bots allowed', args: '!true/false' },
+			{ name: 'no_bots', value: 'no bots allowed', args: '!true/false' },
 			{ name: 'mmbr_cap', value: 'maximum number of members allowed', args: '!number of maximum members' },
-			{ name: 'time_tolv', value: 'time to live', args: '!number in seconds' },
-			{ name: 'titl_rfsh', value: 'how often titles are being refreshed', args: '!number in seconds' }
+			{ name: 'time_to_live', value: 'time to live', args: '!number in seconds' },
+			{ name: 'refresh_rate', value: 'how often titles are being refreshed', args: '!number in seconds' }
 		];
 
 		if (args.length === 0 || (args.length === 1 && (args[0] === 'func' ||
@@ -374,7 +374,7 @@ client.on('message', async message => {
 						'*' + func.value + '*\t - \t' +
 						'***' + func.args + '***\n'
 				}
-				message.channel.send(help_message_func);
+				message.author.send(help_message_func);
 			}
 			if (args.length === 0 || args[0] === 'vrbl') {
 				// check if argument is variable
@@ -390,7 +390,7 @@ client.on('message', async message => {
 						'*' + vrbl.value + '*\t - \t' +
 						'***' + vrbl.args + '***\n'
 				}
-				message.channel.send(help_message_vrbl);
+				message.author.send(help_message_vrbl);
 			}
 			if (args.length === 0 || args[0] === 'pipe') {
 				// check if argument is pipe
@@ -406,7 +406,7 @@ client.on('message', async message => {
 						'*' + pipe.value + '*\t - \t' +
 						'***' + pipe.args + '***\n'
 				}
-				message.channel.send(help_message_pipe);
+				message.author.send(help_message_pipe);
 			}
 			if (args.length === 0 || args[0] === 'attr') {
 				// check if argument is attribute
@@ -422,76 +422,80 @@ client.on('message', async message => {
 						'*' + attr.value + '*\t - \t' +
 						'***' + attr.args + '***\n'
 				}
-				message.channel.send(help_message_attr);
+				message.author.send(help_message_attr);
 			}
 
-			message.channel.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
+			message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 				'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 		}
 		else if (args.length === 1) {
 			// check if argument is function
 			for (i = 0, func = func_name[i]; i < func_name.length; i++, func = func_name[i]) {
 				if (func.name === args[0]) {
-					message.channel.send(
+					message.author.send(
 						'>>> Name: **' + func.name + '** ' +
 						'\nType: **function**' +
 						'\nDescription\t-\t*' + func.value + '*' +
 						'\nArguments \t-\t*' + func.args + '*');
 
-					message.channel.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
+					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
+					message.channel.send('Check your dms '+ message.author);
 					return;
 				}
 			}
 			// check if argument is pipe
 			for (i = 0, pipe = pipe_name[i]; i < pipe_name.length; i++, pipe = pipe_name[i]) {
 				if (pipe.name === args[0]) {
-					message.channel.send(
+					message.author.send(
 						'>>> Name: **' + pipe.name + '** ' +
 						'\nType: **pipe**' +
 						'\nDescription\t-\t*' + pipe.value + '*' +
 						'\nArguments \t-\t*' + pipe.args + '*');
 
-					message.channel.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
+					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
+					message.channel.send('Check your dms '+ message.author);
 					return;
 				}
 			}
 			// check if argument is attribute
 			for (i = 0, attr = attr_name[i]; i < attr_name.length; i++, attr = attr_name[i]) {
 				if (attr.name === args[0]) {
-					message.channel.send(
+					message.author.send(
 						'>>> Name: **' + attr.name + '** ' +
 						'\nType: **attribute**' +
 						'\nDescription\t-\t*' + attr.value + '*' +
 						'\nArguments \t-\t*' + attr.args + '*');
 
-					message.channel.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
+					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
+					message.channel.send('Check your dms '+ message.author);
 					return;
 				}
 			}
 			// check if argument is variable
 			for (i = 0, vrbl = vrbl_name[i]; i < vrbl_name.length; i++, vrbl = vrbl_name[i]) {
 				if (vrbl.name === args[0]) {
-					message.channel.send(
+					message.author.send(
 						'>>> Name: **' + vrbl.name + '** ' +
 						'\nType: **variable**' +
 						'\nDescription\t-\t*' + vrbl.value + '*' +
 						'\nArguments \t-\t*' + vrbl.args + '*');
 
-					message.channel.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
+					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
+					message.channel.send('Check your dms '+ message.author);
 					return;
 				}
 			}
-			message.channel.send('**' + args[0] + '**, *does not exist in portal, you can always try **./help***');
+			message.author.send('**' + args[0] + '**, *does not exist in portal, you can always try **./help***');
 		}
-
+		message.channel.send('Check your dms '+ message.author);
 		// Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
 		//message.delete();
 	}

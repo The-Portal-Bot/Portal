@@ -213,9 +213,9 @@ module.exports = {
 							}
 						}
 					}
-					return true;
+					return '! did not find';
 				} else {
-					return false;
+					return '! must be boolean';
 				}
 			}
 		},
@@ -229,9 +229,9 @@ module.exports = {
 							}
 						}
 					}
-					return true;
+					return '! did not find';
 				} else {
-					return false;
+					return '! must be number';
 				}
 			}
 		},
@@ -245,9 +245,9 @@ module.exports = {
 							}
 						}
 					}
-					return true;
+					return '! did not find';
 				} else {
-					return false;
+					return '! must be number';
 				}
 			}
 		},
@@ -261,9 +261,9 @@ module.exports = {
 							}
 						}
 					}
-					return true;
+					return '! did not find';
 				} else {
-					return false;
+					return '! must be number';
 				}
 			}
 		},
@@ -277,9 +277,9 @@ module.exports = {
 							}
 						}
 					}
-					return true;
+					return '! did not find';
 				} else {
-					return false;
+					return '! must be number';
 				}
 			}
 		},
