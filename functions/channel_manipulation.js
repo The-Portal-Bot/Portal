@@ -6,23 +6,18 @@ module.exports =
 	voice_counter: 0,
 
 	included_in_portal_list: function (channel_id, portal_list) {
-		for (i = 0; i < portal_list.length; i++) {
-			if (portal_list[i].get_id() === channel_id) {
+		for (i = 0; i < portal_list.length; i++)
+			if (portal_list[i].get_id() === channel_id)
 				return true;
-			}
-		}
 		return false;
 	}
 	,
 
 	included_in_voice_list: function (channel_id, portal_list) {
-		for (i = 0; i < portal_list.length; i++) {
-			for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
-				if (portal_list[i].get_voice_list()[j].get_id() === channel_id) {
+		for (i = 0; i < portal_list.length; i++)
+			for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+				if (portal_list[i].get_voice_list()[j].get_id() === channel_id)
 					return true;
-				}
-			}
-		}
 		return false;
 	}
 	,
@@ -55,7 +50,7 @@ module.exports =
 						channel.id, creator_id, portal_name,
 						'G$#-P$mmbr_cnt | $status_lst', [],
 						false, 0, 0, 0,
-						this.portal_counter++ // not editable					
+						this.portal_counter++ // not editable
 					));
 
 					let category = server.channels.find(
@@ -82,33 +77,26 @@ module.exports =
 	create_voice_channel: function (state, portal_list, creator_id) {
 		state.voiceChannel.guild.createChannel('loading...', { type: 'voice' }, { bitrate: 64 })
 			.then(channel => {
-				//console.log('properties: ', Object.getOwnPropertyNames(channel));
-				channel.viewable = false;
-				for (i = 0; i < portal_list.length; i++) {
-					// finding the portal channel in portal channel list
-					if (portal_list[i].get_id() === state.voiceChannel.id) {
+				for (i = 0; i < portal_list.length; i++)
+					if (portal_list[i].get_id() === state.voiceChannel.id)
 						portal_list[i].get_voice_list().push(
 							new classes.voice_channel(
 								channel.id, creator_id, portal_list[i].regex_voice,
 								false, 0, 0, 0,
-								this.portal_counter++ // not editable					
+								this.portal_counter++ // not editable
 							)
 						);
-					}
-				}
 
-				console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));
-				console.log('Object.getOwnPropertyNames(state.user)= ', Object.getOwnPropertyNames(state.user));
-				// state.user.client.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' });
-				if (state.voiceChannel.parentID === null) { // doesn't have category
-					state.setVoiceChannel(channel);
-				} else { // has category
+				// doesn't have category
+				if (state.voiceChannel.parentID !== null)
 					channel.setParent(state.voiceChannel.parentID);
-					state.setVoiceChannel(channel); // move member from portal to voice channel
-				}
-				// channel.viewable = true;
+				// move member from portal to voice channel
+				state.setVoiceChannel(channel);
 			}).catch(console.error);
 
 		return
 	}
 };
+
+// console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));
+// console.log('Object.getOwnPropertyNames(state.user)= ', Object.getOwnPropertyNames(state.user));

@@ -126,9 +126,8 @@ module.exports = {
 		{
 			value: 'titl', func: (str, count) => {
 				str = str.toLowerCase().split(' ');
-				for (let i = 0; i < str.length; i++) {
+				for (let i = 0; i < str.length; i++)
 					str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
-				}
 				return str.join(' ');
 			}
 		},
@@ -143,9 +142,8 @@ module.exports = {
 			value: 'word#', func: (str, count) => {
 				let count_words = '';
 				let words = str.split(" ");
-				for (let i = 0; i < count; i++) {
+				for (let i = 0; i < count; i++)
 					count_words += words[i];
-				}
 				return count_words;
 			}
 		},
@@ -153,201 +151,146 @@ module.exports = {
 			value: 'ppls_cnt', func: (str, count) => {
 				let words = str.split(" ");
 				console.log("words=" + words)
-				let mf = 1; //default maximum frequency
-				let m = 0;  //counter
-				let item;  //to store item with maximum frequency
-				for (let i = 0; i < words.length; i++)    //select element (current element)
+				let mf = 1;
+				let m = 0;
+				let item;
+				for (let i = 0; i < words.length; i++)  
 				{
-					for (let j = i; j < words.length; j++)   //loop through next elements in array to compare calculate frequency of current element
+					for (let j = i; j < words.length; j++) 
 					{
-						if (words[i] == words[j])    //see if element occurs again in the array
-							m++;   //increment counter if it does
-						if (mf < m)   //compare current items frequency with maximum frequency
+						if (words[i] == words[j])  
+							m++; 
+						if (mf < m) 
 						{
-							mf = m;      //if m>mf store m in mf for upcoming elements
-							item = words[i];   // store the current element.
+							mf = m;    
+							item = words[i]; 
 						}
 					}
-					m = 0;   // make counter 0 for next element.
+					m = 0; 
 				}
-
 				return mf;
 			}
 		},
 		{
 			value: 'ppls', func: (str, count) => {
 				let words = str.split(" ");
-				let mf = 1; //default maximum frequency
-				let m = 0;  //counter
-				let item;  //to store item with maximum frequency
-				for (let i = 0; i < words.length; i++)    //select element (current element)
+				let mf = 1;
+				let m = 0;
+				let item;
+				for (let i = 0; i < words.length; i++)  
 				{
-					for (let j = i; j < words.length; j++)   //loop through next elements in array to compare calculate frequency of current element
+					for (let j = i; j < words.length; j++) 
 					{
-						if (words[i] == words[j])    //see if element occurs again in the array
-							m++;   //increment counter if it does
-						if (mf < m)   //compare current items frequency with maximum frequency
+						if (words[i] == words[j])  
+							m++; 
+						if (mf < m) 
 						{
-							mf = m;      //if m>mf store m in mf for upcoming elements
-							item = words[i];   // store the current element.
+							mf = m;    
+							item = words[i]; 
 						}
 					}
-					m = 0;   // make counter 0 for next element.
+					m = 0; 
 				}
 
 				return item;
 			}
 		},
-		{ value: 'smmr_cnt', func: (str, count) => { return str.split(" ").length } },
+		{ 
+			value: 'smmr_cnt', func: (str, count) => { 
+				return str.split(" ").length 
+			} 
+		},
 	],
 
 	// attributes @
 	attr_name: [
 		{
 			value: 'no_bots', func: (value, id, portal_list) => {
-				if (typeof (value) === 'boolean') {
-					for (i = 0; i < portal_list.length; i++) {
-						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
-							if (id === portal_list[i].get_voice_list()[j].id) {
-								return portal_list[i].get_voice_list()[j].get_no_bots;
-							}
-						}
-					}
-					return '! did not find';
-				} else {
-					return '! must be boolean';
-				}
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+						if (id === portal_list[i].get_voice_list()[j].id)
+							return portal_list[i].get_voice_list()[j].get_no_bots;
 			}
 		},
 		{
 			value: 'mmbr_cap', func: (value, id, portal_list) => {
-				if (typeof (value) === 'number') {
-					for (i = 0; i < portal_list.length; i++) {
-						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
-							if (id === portal_list[i].get_voice_list()[j].id) {
-								return portal_list[i].get_voice_list()[j].get_mmbr_cap();
-							}
-						}
-					}
-					return '! did not find';
-				} else {
-					return '! must be number';
-				}
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+						if (id === portal_list[i].get_voice_list()[j].id)
+							return portal_list[i].get_voice_list()[j].get_mmbr_cap();
 			}
 		},
 		{
 			value: 'time_to_live', func: (value, id, portal_listn) => {
-				if (typeof (value) === 'number') {
-					for (i = 0; i < portal_list.length; i++) {
-						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
-							if (id === portal_list[i].get_voice_list()[j].id) {
-								return portal_list[i].get_voice_list()[j].get_time_to_live();
-							}
-						}
-					}
-					return '! did not find';
-				} else {
-					return '! must be number';
-				}
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+						if (id === portal_list[i].get_voice_list()[j].id)
+							return portal_list[i].get_voice_list()[j].get_time_to_live();
 			}
 		},
 		{
 			value: 'refresh_rate', func: (value, id, portal_listn) => {
-				if (typeof (value) === 'number)') {
-					for (i = 0; i < portal_list.length; i++) {
-						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
-							if (id === portal_list[i].get_voice_list()[j].id) {
-								return portal_list[i].get_voice_list()[j].get_refresh_rate();
-							}
-						}
-					}
-					return '! did not find';
-				} else {
-					return '! must be number';
-				}
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+						if (id === portal_list[i].get_voice_list()[j].id)
+							return portal_list[i].get_voice_list()[j].get_refresh_rate();
 			}
 		},
 		{
 			value: 'count', func: (value, id, portal_listn) => {
-				if (typeof (value) === 'number') {
-					for (i = 0; i < portal_list.length; i++) {
-						for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
-							if (id === portal_list[i].get_voice_list()[j].id) {
-								return portal_list[i].get_voice_list()[j].get_count();
-							}
-						}
-					}
-					return '! did not find';
-				} else {
-					return '! must be number';
-				}
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+						if (id === portal_list[i].get_voice_list()[j].id)
+							return portal_list[i].get_voice_list()[j].get_count();
 			}
 		},
 	],
 
 	//
+
 	get_vrbl_data: function (variable, id, guild, portal_list) {
-		for (i = 0; i < this.vrbl_name.length; i++) {
-			if (variable == this.vrbl_name[i].value) {
+		for (i = 0; i < this.vrbl_name.length; i++)
+			if (variable == this.vrbl_name[i].value)
 				return this.vrbl_name[i].func(guild, id, portal_list);
-			}
-		}
 	}
 	,
 
 	get_pipe_data: function (pipe, str, count) {
-		for (i = 0; i < this.pipe_name.length; i++) {
-			if (pipe == this.pipe_name[i].value) {
+		for (i = 0; i < this.pipe_name.length; i++)
+			if (pipe == this.pipe_name[i].value)
 				return this.pipe_name[i].func(str, count);
-			}
-		}
 	}
 	,
 
 	get_attr_data: function (attr, id, portal_list) {
-		for (i = 0; i < this.attr_name.length; i++) {
-			if (attr == this.attr_name[i].value) {
+		for (i = 0; i < this.attr_name.length; i++)
+			if (attr == this.attr_name[i].value)
 				return this.attr_name[i].func(id, portal_list);
-			}
-		}
 	}
 	,
 
 	//
 
 	is_variable: function (arg) {
-		for (i = 0; i < this.vrbl_name.length; i++) {
-			console.log(String(arg).substring(1, (String(this.vrbl_name[i].value).length + 1)) + " == " + this.vrbl_name[i].value);
-			if (String(arg).substring(1, (String(this.vrbl_name[i].value).length + 1)) == this.vrbl_name[i].value) {
-				console.log('this.vrbl_name[i].value: ' + this.vrbl_name[i].value);
+		for (i = 0; i < this.vrbl_name.length; i++)
+			if (String(arg).substring(1, (String(this.vrbl_name[i].value).length + 1)) == this.vrbl_name[i].value)
 				return this.vrbl_name[i].value;
-			}
-		}
 		return false;
 	}
 	,
 
 	is_pipe: function (arg) {
-		for (i = 0; i < this.pipe_name.length; i++) {
-			console.log(String(arg).substring(1, (String(this.pipe_name[i].value).length + 1)) + " == " + this.pipe_name[i].value);
-			if (String(arg).substring(1, (String(this.pipe_name[i].value).length + 1)) == this.pipe_name[i].value) {
-				console.log('this.pipe_name[i].value: ' + this.pipe_name[i].value);
+		for (i = 0; i < this.pipe_name.length; i++)
+			if (String(arg).substring(1, (String(this.pipe_name[i].value).length + 1)) == this.pipe_name[i].value)
 				return this.pipe_name[i].value;
-			}
-		}
 		return false;
 	}
 	,
 
 	is_attribute: function (arg) {
-		for (i = 0; i < this.attr_name.length; i++) {
-			if (String(arg).substring(1, (String(this.attr_name[i].value).length + 1)) == this.attr_name[i].value) {
-				console.log('this.attr_name[i].value: ' + this.attr_name[i].value);
+		for (i = 0; i < this.attr_name.length; i++)
+			if (String(arg).substring(1, (String(this.attr_name[i].value).length + 1)) == this.attr_name[i].value)
 				return this.attr_name[i].value;
-			}
-
-		}
-
 		return false;
 	}
 	,
@@ -358,7 +301,6 @@ module.exports = {
 			console.log('statemment1: ' + String(arg).substring(String(arg).indexOf('?') + 1, String(arg).indexOf(':')))
 			console.log('statemment2: ' + String(arg).substring(String(arg).indexOf(':') + 1, String(arg).indexOf('}')))
 		}
-
 		return false;
 	}
 	,
@@ -371,59 +313,43 @@ module.exports = {
 		if (id === undefined) { return "id is undefined"; }
 		if (guild === undefined) { return "guild is undefined"; }
 
-		console.log('regex: /' + regex + '/');
 		let new_channel_name = ''
 		let last_variable = ''
 
 		for (let i = 0; i < regex.length; i++) {
-			console.log(i + ') /' + regex[i] + '/');
-
 			if (regex[i] === '$') {
 				let vrbl = this.is_variable(regex.substring(i))
-				console.log("yes it is vrbl and this is : ", vrbl, ', it is: ', regex.substring(i));
 				if (vrbl) {
 					new_channel_name += this.get_vrbl_data(vrbl, id, guild, portal_list);
 					last_variable = new_channel_name;
-
 					i += vrbl.length;
-				}
-				else {
+				} else {
 					new_channel_name += regex[i];
 				}
-			}
-			else if (regex[i] === '|') {
+			} else if (regex[i] === '|') {
 				let pipe = this.is_pipe(regex.substring(i))
-				console.log("yes it is pipe and this is : ", pipe, " and this is : ", regex.substring(i));
 				if (pipe) {
 					// removes previous variable output, in order to replace with pipe output
-					new_channel_name = new_channel_name.substring(0, new_channel_name.length - last_variable.length);
+					new_channel_name = new_channel_name.substring(
+						0, new_channel_name.length - last_variable.length
+					);
 					new_channel_name += this.get_pipe_data(pipe, last_variable, 2);
-
 					i += pipe.length;
-				}
-				else {
+				} else {
 					new_channel_name += regex[i];
-
 				}
-			}
-			else if (regex[i] === '@') {
+			} else if (regex[i] === '@') {
 				let attr = this.is_attribute(regex.substring(i))
-				console.log("yes it is attr and this is : ", attr, " and this is : ", regex.substring(i));
 				if (attr) {
 					new_channel_name += this.get_attr_data(attr, id, portal_list);
-
 					i += attr.length;
-				}
-				else {
+				} else {
 					new_channel_name += regex[i];
 				}
-			}
-			else {
+			} else {
 				new_channel_name += regex[i];
 			}
 		}
-
-		console.log('new_channel_name: ' + new_channel_name);
 		return new_channel_name;
 	}
 	,
@@ -434,9 +360,9 @@ module.exports = {
 		// for each channel in guild
 		guild.channels.forEach(channel => {
 			// for each channel in portal list
-			for (i = 0; i < portal_list.length; i++) {
+			for (i = 0; i < portal_list.length; i++)
 				// for each channel in voice list of current portal channel
-				for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
+				for (j = 0; j < portal_list[i].get_voice_list().length; j++)
 					// if current channel is in voice list of a portal channel
 					if (channel.id === portal_list[i].get_voice_list()[j].id) {
 						channel.setName(this.regex_interpreter(
@@ -445,16 +371,9 @@ module.exports = {
 							guild,
 							portal_list
 						));
-						// array_of_games = object.get_status_list(guild, channel.id);
-						// channel.setName(array_of_games.toString());
-
 						return
 					}
-
-				}
-			}
 		})
 	}
 
 };
-// ./run $# $## $ate $day $day $nth $ear $ime $our $int $cnd $rtr $ame_lst $ame_cnt $ame_his $mbr_lst $mbr_cnt $mbr_plg $mbr_his $mbr_lmt

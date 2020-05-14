@@ -3,138 +3,114 @@ const editor = require('./functions/channel_manipulation.js');
 
 // Load up the discord.js library
 const Discord = require('discord.js');
-
-// This is your client. Some people call it `bot`, some people call it `self`,
-// some might call it `cootchie`. Either way, when you see `client.something`, or `bot.something`,
-// this is what we're refering to. Your client.
+// This is the client the Portal Bot. Some people call it 'bot', some people call it 'self',
+// client.user is actually the presence of portal bot in the server
 const client = new Discord.Client();
-
-// Here we load the config.json file that contains our token and our prefix values.
-const config = require('./config.json');
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
-
-
-// All data is stored from portal list to its voice channel list, which is encapsulated
+const config = require('./config.json');
+// Portal list is the structure that helps portal manage
+// all the portal channels and inner voice channels
 let portal_list = new Array();
-// LISTENERS
 
+//#endregion Listeners
 client.on('ready', () => {
 	// This event will run if the bot starts, and logs in, successfully.
-	console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-	// Example of changing the bot's playing game to something useful. `client.user` is what the
-	// docs refer to as the 'ClientUser'.
-	//client.user.setActivity(`Serving ${client.guilds.size} servers`);
+	console.log('Bot has started, with ' + client.users.size +
+		' users, in ' + client.channels.size +
+		' channels of ' + client.guilds.size + ' guilds.');
+	// Changing Portal bots status
 	client.user.setActivity('./portal channel', { type: 'LISTENING' });
 });
 
 client.on('guildCreate', guild => {
 	// This event triggers when the bot joins a guild.
-	console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-	// client.user.setActivity(`Serving ${client.guilds.size} servers`);
-	client.user.setActivity(`[create-portal <categ.> <chan.>`);
+	console.log('New guild joined: + ' + guild.name
+		+ ' (id: + ' + guild.id
+		+ '). This guild has + '
+		+ guild.memberCount + ' members!');
+	// Changing Portal bots status 
+	client.user.setActivity('./portal channel', { type: 'LISTENING' });
 });
 
 client.on('guildDelete', guild => {
 	// this event triggers when the bot is removed from a guild.
-	console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-	client.user.setActivity(`Serving ${client.guilds.size} servers`);
+	console.log('I have been removed from: ${guild.name} (id: ${guild.id})');
+	client.user.setActivity('Serving ${client.guilds.size} servers');
 });
 
 client.on('presenceUpdate', (oldPresence, newPresence) => {
+	// This event triggers when the status of a guild member has changed
 	regex.generate_channel_names(newPresence.guild, portal_list);
-	//regex.generate_channel_names(newPresence.guild, voice_list, regex_string_id);
 
-	for (i = 0; i < portal_list.length; i++) {
-		console.log(i + ') Portal channel with id: ' + portal_list[i].id + ' has voice channels: [');
-		for (j = 0; j < portal_list[i].voice_list.length; j++) {
-			console.log('\t' + j + ') voice channel with id: ' + portal_list[i], portal_list[i].voice_list[j].id);
-		}
-		console.log(']\n')
-	}
+	// for (i = 0; i < portal_list.length; i++) 
+	// 	console.log(i + ') Portal channel with id: ' + portal_list[i].id + ' has voice channels: [');
+	// 	for (j = 0; j < portal_list[i].voice_list.length; j++) 
+	// 		console.log('\t' + j + ') voice channel with id: ' + portal_list[i], portal_list[i].voice_list[j].id);
+	// 	console.log(']\n');
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
+	// This event triggers when a member joins or leaves a voice channel
 	let new_user_channel = newState.voiceChannel; console.log('new_user_channel: ' + new_user_channel);
 	let old_user_channel = oldState.voiceChannel; console.log('old_user_channel: ' + old_user_channel);
 
-	if (old_user_channel === undefined && new_user_channel !== undefined) // JOIN from undefined
-	{
-		console.log('undefined->existing')
+	if (old_user_channel === undefined && new_user_channel !== undefined) { // Joined from undefined
+		console.log('undefined->existing');
 
-		if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
-			// user joined portal channel
+		if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // user joined portal channel
 			editor.create_voice_channel(newState, portal_list, newState.user.id);
 			regex.generate_channel_names(newState.guild, portal_list);
-		}
-		else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) {
-			// user joined voice channel
+		} else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // user joined voice channel
 			regex.generate_channel_names(newState.guild, portal_list);
 		}
-	}
-	else if (new_user_channel === undefined && old_user_channel !== undefined) // LEAVE to undefined
-	{
-		console.log('existing->undefined')
+	} else if (new_user_channel === undefined && old_user_channel !== undefined) { // Left to undefined
+		console.log('existing->undefined');
 
-		if (editor.included_in_portal_list(old_user_channel.id, portal_list)) {
-			// user leaves portal channel
-			// is handled before
-		}
-		else if (editor.included_in_voice_list(old_user_channel.id, portal_list)) {
-			// user left voice channel
+		if (editor.included_in_portal_list(old_user_channel.id, portal_list)) { // user left portal channel this part is handled before
+		} else if (editor.included_in_voice_list(old_user_channel.id, portal_list)) { // user left voice channel
 			if (old_user_channel.members.size === 0) {
 				editor.delete_voice_channel(old_user_channel, portal_list);
 			}
 		}
-	}
-	// user was moved from channel to channel
-	else if (new_user_channel !== undefined && old_user_channel !== undefined) {
-		console.log('existing->existing')
+	} else if (new_user_channel !== undefined && old_user_channel !== undefined) { // Moved from channel to channel
+		console.log('existing->existing');
 
 		if (editor.included_in_portal_list(old_user_channel.id, portal_list)) {
 			console.log('->source: portal_list');
 
-			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
-				console.log('->dest: portal_list')
-				// this should not happen
-				console.log('this should not happen error: portal_channel->portal_channel')
-			}
-			else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) {
-				console.log('->dest: voice_list')
-				// has been checked before
-				console.log('has been checked before')
+			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // this should not happen
+				console.log('->dest: portal_list');
+				console.log('this should not happen error: portal_channel->portal_channel');
+			} else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // has been checked before
+				console.log('->dest: voice_list');
+				console.log('has been checked before');
+				regex.generate_channel_names(newState.guild, portal_list);
+			} else { // Left portal channel and joined another unknown
+				console.log('->dest: unknown');
 				regex.generate_channel_names(newState.guild, portal_list);
 			}
-			else {
-				console.log('->dest: unknown')
-				// leaves portal channel and joins another unknown
-				regex.generate_channel_names(newState.guild, portal_list);
-			}
-		}
-		else if (editor.included_in_voice_list(old_user_channel.id, portal_list)) {
+		} else if (editor.included_in_voice_list(old_user_channel.id, portal_list)) {
 			console.log('->source: voice_list');
 
-			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
-				console.log('->dest: portal_list')
-				// leaves created channel and joins portal
+			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // left created channel and joins portal
+				console.log('->dest: portal_list');
+
 				if (old_user_channel.members.size === 0) {
 					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
-				// user joined portal channel
 				editor.create_voice_channel(newState, portal_list, newState.user.id);
 				regex.generate_channel_names(newState.guild, portal_list);
-			}
-			else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) {
-				console.log('->dest: voice_list')
-				// leaves created channel and joins another created
+			} else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // Left created channel and joins another created
+				console.log('->dest: voice_list');
+
 				if (old_user_channel.members.size === 0) {
 					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
 				regex.generate_channel_names(newState.guild, portal_list);
-			}
-			else {
-				console.log('->dest: unknown')
-				// leaves created channel and joins another unknown
+			} else { // Left created channel and joins another unknown
+				console.log('->dest: unknown');
+
 				if (old_user_channel.members.size === 0) {
 					editor.delete_voice_channel(old_user_channel, portal_list);
 				}
@@ -144,68 +120,62 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 		else {
 			console.log('->source: unknown voice');
 
-			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) {
-				console.log('->dest: portal_list')
-				// user joined portal channel
+			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // Joined portal channel
+				console.log('->dest: portal_list');
+
 				editor.create_voice_channel(newState, portal_list, newState.user.id);
 				regex.generate_channel_names(newState.guild, portal_list);
 			}
-			else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) {
-				console.log('->dest: voice_list')
-				// leaves created channel and joins another created
+			else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // left created channel and joins another created
+				console.log('->dest: voice_list');
+
 				regex.generate_channel_names(newState.guild, portal_list);
 			}
 		}
+	} else if (new_user_channel === undefined && old_user_channel === undefined) {
+		console.log('undefined->undefined');
+	} else {
+		console.log('don\'t know how we got here');
 	}
-	else if (new_user_channel === undefined && old_user_channel === undefined) {
-		console.log('undefined->undefined')
-	}
-	else {
-		console.log('don\'t know how we got here')
-	}
-
-	console.log('PORTAL CHANNELS: ' + portal_list.length)
-	console.log('')
+	console.log('');
 })
+//#endregion
 
+message_reply = function (status, msg, str) {
+	msg.channel.send(str);
+	if (status) msg.react('✔️');
+	else msg.react('❌');
+	return;
+}
+
+//#region Message async reader
 client.on('message', async message => {
-	// This event will run on every single message received, from any channel or DM.
-
-	// It's good practice to ignore other bots. This also makes your bot ignore itself
-	// and not get into a spam loop (we call that 'botception').
+	// runs on every single message received, from any channel or DM
+	// Ignore other bots and also itself ('botception')
 	if (message.author.bot) return;
-
-	// Also good practice to ignore any message that does not start with our prefix,
-	// which is set in the configuration file.
+	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
 
-	// Here we separate our 'command' name, and our 'arguments' for the command.
-	// e.g. if we have the message '+say Is this the real life?' , we'll get the following:
-	// command = say
-	// args = ['Is', 'this', 'the', 'real', 'life?']
+	// Separate function name, and arguments of function
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-	const command = args.shift().toLowerCase();
+	const cmd = args.shift().toLowerCase();
 
-	if (command === 'portal') {
+	if (cmd === 'portal') {
 		if (args.length === 2) {
 			editor.create_portal_channel(message.guild, args[0], args[1], portal_list, message.member.id);
 			message.react('✔️');
-		}
-		else if (args.length === 1) {
+		} else if (args.length === 1) {
 			editor.create_portal_channel(message.guild, args[0], null, portal_list, message.member.id);
 			message.react('✔️');
-		}
-		else {
-			message.react('❌');
-			message.channel.send('**' + config.prefix + 'portal <channel_name> <category_name>**\n' +
-				'*(channel_name: mandatory, category_name: optional)*')
+		} else {
+			message_reply(false, message, '**' + config.prefix + 'portal <channel_name> <category_name>**\n' +
+				'*(channel_name: mandatory, category_name: optional)*');
 		}
 	}
 
-	if (command === 'portal_regex') {
+	if (cmd === 'portal_regex') {
 		if (message.member.voiceChannel === undefined) {
-			message.channel.send("**You must be in portal's voice channel to change the portal regex**");
-			message.react('❌');
+			message_reply(false, message, '**You must be in portal\'s voice channel to change the portal regex **');
 			return;
 		}
 
@@ -234,17 +204,16 @@ client.on('message', async message => {
 					}
 				}
 			}
-			message.channel.send('You are not a portal controlled voice channel');
-		}
-		else {
-			message.channel.send('You should enter a portal regex');
+			message_reply(false, message, 'You are not a portal controlled voice channel');
+		} else {
+			message_reply(false, message, 'You are not a portal controlled voice channel');
 		}
 	}
 
-	if (command === 'voice_regex') {
+	if (cmd === 'voice_regex') {
 		if (message.member.voiceChannel === undefined) {
-			message.channel.send("**You must be in portal's voice channel to change the voice regex**");
-			message.react('❌');
+			message_reply(false, message,
+				'**You must be in portal\'s voice channel to change the voice regex**');
 			return;
 		}
 
@@ -268,33 +237,12 @@ client.on('message', async message => {
 				}
 			}
 			message.channel.send('You are not a portal controlled voice channel');
-		}
-		else {
+		} else {
 			message.channel.send('You should enter a voice regex');
 		}
 	}
 
-	//testing processes
-	if (command === 'purge') {
-		let current_guild = message.guild;
-
-		message.guild.channels.forEach((value) => {
-			if (value.deletable)
-				value.delete()
-					.then(g => console.log(`Deleted the guild ${g}`))
-					.catch(console.error);
-		})
-
-		current_guild.createChannel('general voice', { type: 'voice' }, { bitrate: 64 })
-			.then(
-				current_guild.createChannel('general text', { type: 'text' })
-					.then(value => {
-						value.send('**PURGE DONE**')
-					})
-			)
-	}
-
-	if (command === 'ping') {
+	if (cmd === 'ping') {
 		// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
 		// The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
 		const m = await message.channel.send('Ping?');
@@ -302,55 +250,207 @@ client.on('message', async message => {
 			'API Latency is ${Math.round(client.ping)}ms');
 	}
 
-	if (command === 'help') {
-		let func_name = [
-			{ name: 'portal', value: 'creates a voice channel and a category for it', args: '!channel_name @category_name' },
-			{ name: 'text', value: 'creates a text channel connected to the voice channel', args: 'none' },
-			{ name: 'regex', value: 'sets regex-guidelines for how to name channels (current portal)', args: '!regex_command' },
-			{ name: 'run', value: 'returns the log of data given in log_string', args: '!exec_command' },
-			{ name: 'prefix', value: 'sets the new prefix for portal bot', args: '!prefix' },
-			{ name: 'help', value: 'returns a help-list of all commands and regex manipulation', args: '@specific_command or @vrbl/@func/@pipe/@attr' },
-			{ name: 'ping', value: 'returns round trip latency', args: 'none' }
+	if (cmd === 'help') {
+		const func_name = [
+			{
+				name: 'portal',
+				value: 'creates a voice channel and a category for it',
+				args: '!channel_name @category_name'
+			},
+			{
+				name: 'text',
+				value: 'creates a text channel connected to the voice channel',
+				args: 'none'
+			},
+			{
+				name: 'regex',
+				value: 'sets regex-guidelines for how to name channels (current portal)',
+				args: '!regex_command'
+			},
+			{
+				name: 'run',
+				value: 'returns the log of data given in log_string',
+				args: '!exec_command'
+			},
+			{
+				name: 'prefix',
+				value: 'sets the new prefix for portal bot',
+				args: '!prefix'
+			},
+			{
+				name: 'help',
+				value: 'returns a help-list of all commands and regex manipulation',
+				args: '@specific_command or @vrbl/@func/@pipe/@attr'
+			},
+			{
+				name: 'ping',
+				value: 'returns round trip latency',
+				args: 'none'
+			}
 		];
 
-		let vrbl_name = [
-			{ name: '#', value: 'number of channel in list', args: 'none' },
-			{ name: '##', value: 'number of channel in list with \#', args: 'none' },
-			{ name: 'date', value: 'full date: dd/mm/yyyy', args: 'none' },
-			{ name: 'cday', value: 'gets the day', args: 'none' },
-			{ name: 'mnth', value: 'gets the month', args: 'none' },
-			{ name: 'year', value: 'gets the year', args: 'none' },
-			{ name: 'time', value: 'full time: hh/mm/ss', args: 'none' },
-			{ name: 'hour', value: 'gets the hour', args: 'none' },
-			{ name: 'mint', value: 'gets the minute', args: 'none' },
-			{ name: 'scnd', value: 'gets the second', args: 'none' },
-			{ name: 'crtr', value: 'creator of the channel', args: 'none' },
-			{ name: 'game_lst', value: 'list of currently played games', args: 'none' },
-			{ name: 'game_cnt', value: 'number of games being played', args: 'none' },
-			{ name: 'game_his', value: 'list of all games played from beginning', args: 'none' },
-			{ name: 'mmbr_lst', value: 'returns the currently played games', args: 'none' },
-			{ name: 'mmbr_cnt', value: 'number of members in channel', args: 'none' },
-			{ name: 'mmbr_plg', value: 'number of members playing', args: 'none' },
-			{ name: 'mmbr_his', value: 'returns the currently played games', args: 'none' },
-			{ name: 'mmbr_lmt', value: 'sets the limit of users in channel', args: 'none' }
+		const vrbl_name = [
+			{
+				name: '#',
+				value: 'number of channel in list',
+				args: 'none'
+			},
+			{
+				name: '##',
+				value: 'number of channel in list with \#',
+				args: 'none'
+			},
+			{
+				name: 'date',
+				value: 'full date: dd/mm/yyyy',
+				args: 'none'
+			},
+			{
+				name: 'cday',
+				value: 'gets the day',
+				args: 'none'
+			},
+			{
+				name: 'mnth',
+				value: 'gets the month',
+				args: 'none'
+			},
+			{
+				name: 'year',
+				value: 'gets the year',
+				args: 'none'
+			},
+			{
+				name: 'time',
+				value: 'full time: hh/mm/ss',
+				args: 'none'
+			},
+			{
+				name: 'hour',
+				value: 'gets the hour',
+				args: 'none'
+			},
+			{
+				name: 'mint',
+				value: 'gets the minute',
+				args: 'none'
+			},
+			{
+				name: 'scnd',
+				value: 'gets the second',
+				args: 'none'
+			},
+			{
+				name: 'crtr',
+				value: 'creator of the channel',
+				args: 'none'
+			},
+			{
+				name: 'game_lst',
+				value: 'list of currently played games',
+				args: 'none'
+			},
+			{
+				name: 'game_cnt',
+				value: 'number of games being played',
+				args: 'none'
+			},
+			{
+				name: 'game_his',
+				value: 'list of all games played from beginning',
+				args: 'none'
+			},
+			{
+				name: 'mmbr_lst',
+				value: 'returns the currently played games',
+				args: 'none'
+			},
+			{
+				name: 'mmbr_cnt',
+				value: 'number of members in channel',
+				args: 'none'
+			},
+			{
+				name: 'mmbr_plg',
+				value: 'number of members playing',
+				args: 'none'
+			},
+			{
+				name: 'mmbr_his',
+				value: 'returns the currently played games',
+				args: 'none'
+			},
+			{
+				name: 'mmbr_lmt',
+				value: 'sets the limit of users in channel',
+				args: 'none'
+			}
 		];
 
-		let pipe_name = [
-			{ name: 'upper', value: 'makes input uppercase', args: 'none' },
-			{ name: 'lower', value: 'makes input lowercase', args: 'none' },
-			{ name: 'titl', value: 'makes input titlecase', args: 'none' },
-			{ name: 'acrm', value: 'makes input string of acronyms', args: 'none' },
-			{ name: 'word#', value: 'maximum number of words (# is number)', args: 'none' },
-			{ name: 'ppls', value: 'gets more popular in array', args: 'none' },
-			{ name: 'ppls_cnt', value: 'count of most popular in array', args: 'none' },
-			{ name: 'smmr_cnt', value: 'count of all in array', args: 'none' }
+		const pipe_name = [
+			{
+				name: 'upper',
+				value: 'makes input uppercase',
+				args: 'none'
+			},
+			{
+				name: 'lower',
+				value: 'makes input lowercase',
+				args: 'none'
+			},
+			{
+				name: 'titl',
+				value: 'makes input titlecase',
+				args: 'none'
+			},
+			{
+				name: 'acrm',
+				value: 'makes input string of acronyms',
+				args: 'none'
+			},
+			{
+				name: 'word#',
+				value: 'maximum number of words (# is number)',
+				args: 'none'
+			},
+			{
+				name: 'ppls',
+				value: 'gets more popular in array',
+				args: 'none'
+			},
+			{
+				name: 'ppls_cnt',
+				value: 'count of most popular in array',
+				args: 'none'
+			},
+			{
+				name: 'smmr_cnt',
+				value: 'count of all in array',
+				args: 'none'
+			}
 		];
 
-		let attr_name = [
-			{ name: 'no_bots', value: 'no bots allowed', args: '!true/false' },
-			{ name: 'mmbr_cap', value: 'maximum number of members allowed', args: '!number of maximum members' },
-			{ name: 'time_to_live', value: 'time to live', args: '!number in seconds' },
-			{ name: 'refresh_rate', value: 'how often titles are being refreshed', args: '!number in seconds' }
+		const attr_name = [
+			{
+				name: 'no_bots',
+				value: 'no bots allowed',
+				args: '!true/false'
+			},
+			{
+				name: 'mmbr_cap',
+				value: 'maximum number of members allowed',
+				args: '!number of maximum members'
+			},
+			{
+				name: 'time_to_live',
+				value: 'time to live',
+				args: '!number in seconds'
+			},
+			{
+				name: 'refresh_rate',
+				value: 'how often titles are being refreshed',
+				args: '!number in seconds'
+			}
 		];
 
 		if (args.length === 0 || (args.length === 1 && (args[0] === 'func' ||
@@ -441,7 +541,7 @@ client.on('message', async message => {
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
-					message.channel.send('Check your dms '+ message.author);
+					message.channel.send('Check your dms ' + message.author);
 					return;
 				}
 			}
@@ -457,7 +557,7 @@ client.on('message', async message => {
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
-					message.channel.send('Check your dms '+ message.author);
+					message.channel.send('Check your dms ' + message.author);
 					return;
 				}
 			}
@@ -473,7 +573,7 @@ client.on('message', async message => {
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
-					message.channel.send('Check your dms '+ message.author);
+					message.channel.send('Check your dms ' + message.author);
 					return;
 				}
 			}
@@ -489,25 +589,26 @@ client.on('message', async message => {
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
 						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
 
-					message.channel.send('Check your dms '+ message.author);
+					message.channel.send('Check your dms ' + message.author);
 					return;
 				}
 			}
 			message.author.send('**' + args[0] + '**, *does not exist in portal, you can always try **./help***');
 		}
-		message.channel.send('Check your dms '+ message.author);
-		// Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
+		message.channel.send('Check your dms ' + message.author);
+		// Then we delete the cmd message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
 		//message.delete();
 	}
 
-	if (command === 'prefix') {
+	if (cmd === 'prefix') {
 
 	}
 
-	if (command === 'run') {
-		if (message.member.voiceChannel === undefined) {
-			message.channel.send("**You must be in portal's voice channel to execute commands**");
-			message.react('❌');
+	if (cmd === 'run') {
+		if (message.member.voiceChannel === undefined
+			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
+			message_reply(false, message,
+				'**You must be in portal\'s voice channel to run regexes**');
 			return;
 		}
 
@@ -526,30 +627,77 @@ client.on('message', async message => {
 	}
 
 	// set attributes
-	if (command === 'set') {
-		if (args.length === 1 && (args[0] === 'nbot' || args[0] === 'mmbr_cap'
-			|| args[0] === 'time_tolv' || args[0] === 'titl_rfsh')) {
-			for (i = 0; i < portal_list.length; i++) {
-				for (j = 0; j < portal_list[i].voice_list.length; j++) {
-					if (portal_list[i].voice_list[j] === message.member.voiceChannel.id) {
-						// set variables
-						message.react('✔️');
-						return;
-					}
-				}
-			}
-		} else {
-			message.channel.send("**Attributes that can be changed are: nbot, mmbr_cap, time_tolv, titl_rfsh**");
-			message.react('❌');
+	if (cmd === 'set') {
+		if (message.member.voiceChannel === undefined
+			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
+			message_reply(false, message,
+				'**You must be in a portal\'s voice channel to set attributes**');
 			return;
 		}
 
-		message.channel.send("**You must be in portal's voice channel to set attributes**");
-		message.react('❌');
+		if (args.length === 2) {
+			if (args[0] === 'no_bots') {
+				for (i = 0; i < portal_list.length; i++) {
+					for (j = 0; j < portal_list[i].voice_list.length; j++) {
+						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
+							portal_list[i].voice_list[j].set_mmbr_cap(args[1]);
+							message_reply(true, message,
+								'**no_bots has been set to ' + args[1] + '**');
+							return;
+						}
+					}
+				}
+			} else if (args[0] === 'mmbr_cap') {
+				for (i = 0; i < portal_list.length; i++) {
+					for (j = 0; j < portal_list[i].voice_list.length; j++) {
+						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
+							portal_list[i].voice_list[j].set_mmbr_cap(args[1]);
+							message_reply(true, message,
+								'**mmbr_cap has been set to ' + args[1] + '**');
+							return;
+						}
+					}
+				}
+			} else if (args[0] === 'time_to_live') {
+				for (i = 0; i < portal_list.length; i++) {
+					for (j = 0; j < portal_list[i].voice_list.length; j++) {
+						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
+							portal_list[i].voice_list[j].set_time_to_live(args[1]);
+							message_reply(true, message,
+								'**time_to_live has been set to ' + args[1] + '**');
+							return;
+						}
+					}
+				}
+			} else if (args[0] === 'refresh_rate') {
+				for (i = 0; i < portal_list.length; i++) {
+					for (j = 0; j < portal_list[i].voice_list.length; j++) {
+						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
+							portal_list[i].voice_list[j].set_refresh_rate(args[1]);
+							message_reply(true, message,
+								'**refresh_rate has been set to ' + args[1] + '**');
+							return;
+						}
+					}
+				}
+			} else {
+				message_reply(false, message,
+					'**Attributes that can be changed are: ' +
+					'no_bots, mmbr_cap, time_to_live, refresh_rate**');
+				return;
+			}
+		} else if (args.length > 2) {
+			message_reply(false, message, '**You can only set one attribute at a time\n***example: ./set no_bots true*');
+		} else if (args.length < 2) {
+			message_reply(false, message, '**You should name the argument with value\n***example: ./set no_bots true*');
+		}
+
+		message_reply(false, message,
+			'**You must be in portal\'s voice channel to set attributes**');
 		return;
 	}
 
-	if (command === 'url?') {
+	if (cmd === 'url?') {
 		var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -563,6 +711,25 @@ client.on('message', async message => {
 			message.react('❌');
 	}
 
-});
+	//testing processes
+	if (cmd === 'purge') {
+		let current_guild = message.guild;
 
+		message.guild.channels.forEach((value) => {
+			if (value.deletable)
+				value.delete()
+					.then(g => console.log('Deleted the guild ' + g))
+					.catch(console.error);
+		})
+
+		current_guild.createChannel('general voice', { type: 'voice' }, { bitrate: 8 })
+			.then(
+				current_guild.createChannel('general text', { type: 'text' })
+					.then(value => {
+						value.send('**PURGE DONE**')
+					})
+			)
+	}
+});
+//#region 
 client.login(config.token);

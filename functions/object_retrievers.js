@@ -31,34 +31,29 @@ module.exports = {
 			{status: "Spotify", alias: "Μουσικούλα", type: "program"},
 		];
 
-		for(i=0, status=status_shortcuts[i]; i < status_shortcuts.length; i++, status=status_shortcuts[i]) {
-			if(current_status == status.status)
-			{
-				return status.alias;
-			}
-		}
+		for(i=0; i < status_shortcuts.length; i++)
+			if(current_status == status_shortcuts[i].status)
+				return status_shortcuts[i].alias;
 		return current_status;
 	}
 	,
 	
 	get_status_list: function (guild, id)
 	{
-		let array_of_games = [];
+		let array_of_statuses = [];
 		
 		guild.channels.forEach( channel => {
 			if(channel.id === id)
 			{
 				channel.members.forEach( (member_game) => {
-					if(member_game.presence.game !== null) {
-						array_of_games.push(this.status_aliases(member_game.presence.game));
-					}
+					if(member_game.presence.game !== null)
+						array_of_statuses.push(this.status_aliases(member_game.presence.game));
 				})
-				if(array_of_games.length === 0) {
-					array_of_games.push("chilling")
-				}
+				if(array_of_statuses.length === 0)
+					array_of_statuses.push("chilling");
 			}
 		})
 
-		return array_of_games;
+		return array_of_statuses;
 	}
 };
