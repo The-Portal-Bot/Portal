@@ -27,7 +27,7 @@ module.exports = {
 			{status: "Call of Dutyː Modern Warfare", alias: "CoDːMW", type: "game"},
 			{status: "Call of Duty®️ː Modern Warfare®️", alias: "CoDːMW", type: "game"},
 
-			{status: "Google Chrome", alias: "Chrome", type: "program"},
+			{status: "Google Chrome", alias: "Google Chrome", type: "program"},
 			{status: "Spotify", alias: "Μουσικούλα", type: "program"},
 		];
 

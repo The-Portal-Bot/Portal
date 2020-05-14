@@ -47,7 +47,9 @@ module.exports = {
 				})
 			}
 		},
-		{ value: 'status_lst', func: (guild, id) => { return object.get_status_list(guild, id) } },
+		{ 
+			value: 'status_lst', func: (guild, id) => { return object.get_status_list(guild, id) } 
+		},
 		{
 			value: 'status_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
 				if (typeof (object.get_status_list(guild, id)) !== "object") { return 0; }
@@ -128,7 +130,7 @@ module.exports = {
 		{
 			value: 'acrnm', func: (str, count) => {
 				let words = str.split(" ");
-				let acr = words.map(firstLetter); // ["f","y","i"]
+				let acr = words.map(word => { return word[0]});
 				return acr.join("").toUpperCase();
 			}
 		},
@@ -162,7 +164,7 @@ module.exports = {
 					m = 0;   // make counter 0 for next element.
 				}
 
-				return item;
+				return mf;
 			}
 		},
 		{ value: 'ppls', func: (str, count) => { 
@@ -185,7 +187,7 @@ module.exports = {
 				m = 0;   // make counter 0 for next element.
 			}
 
-			return mf;
+			return item;
 		 } },
 		{ value: 'smmr_cnt', func: (str, count) => { return str.split(" ").length } },
 	],
