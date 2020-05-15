@@ -102,7 +102,7 @@ module.exports = {
 				let cnt = undefined;
 				guild.channels.forEach(channel => {
 					if (channel.id === id) {
-						//console.log("Object.getOwnPropertyNames(channel)= ", Object.getOwnPropertyNames(channel))
+						//console.log("Object.getOwnPropertyNames(channel)= ", Object.getOwnPropertyNames(channel));
 						cnt = channel.userLimit; //change
 					}
 				})
@@ -139,10 +139,9 @@ module.exports = {
 			}
 		},
 		{
-			value: 'word#', func: (str, count) => {
-				let count_words = '';
-				let words = str.split(" ");
-				for (let i = 0; i < count; i++)
+			value: 'word', func: (str, count) => {
+				let count_words = '', words = str.split(" ");
+				for (let i = 0; i < Number(count); i++)
 					count_words += words[i];
 				return count_words;
 			}
@@ -275,9 +274,9 @@ module.exports = {
 
 	if_expression_check: function (arg) {
 		if (String(arg).substring(0, 1) == '{') {
-			console.log('expression: ' + String(arg).substring(1, String(arg).indexOf('?')))
-			console.log('statemment1: ' + String(arg).substring(String(arg).indexOf('?') + 1, String(arg).indexOf(':')))
-			console.log('statemment2: ' + String(arg).substring(String(arg).indexOf(':') + 1, String(arg).indexOf('}')))
+			console.log('expression: ' + String(arg).substring(1, String(arg).indexOf('?')));
+			console.log('statemment1: ' + String(arg).substring(String(arg).indexOf('?') + 1, String(arg).indexOf(':')));
+			console.log('statemment2: ' + String(arg).substring(String(arg).indexOf(':') + 1, String(arg).indexOf('}')));
 		}
 		return false;
 	}
@@ -296,7 +295,8 @@ module.exports = {
 
 		for (let i = 0; i < regex.length; i++) {
 			if (regex[i] === '$') {
-				let vrbl = this.is_variable(regex.substring(i))
+				let vrbl = this.is_variable(regex.substring(i));
+
 				if (vrbl) {
 					new_channel_name += this.get_vrbl_data(vrbl, id, guild, portal_list);
 					last_variable = new_channel_name;
@@ -305,19 +305,22 @@ module.exports = {
 					new_channel_name += regex[i];
 				}
 			} else if (regex[i] === '|') {
-				let pipe = this.is_pipe(regex.substring(i))
+				let pipe = this.is_pipe(regex.substring(i));
+				let cnt = regex.substring(i + 5, i + 6);
+				
 				if (pipe) {
 					// removes previous variable output, in order to replace with pipe output
 					new_channel_name = new_channel_name.substring(
 						0, new_channel_name.length - last_variable.length
 					);
-					new_channel_name += this.get_pipe_data(pipe, last_variable, 2);
+					new_channel_name += this.get_pipe_data(pipe, last_variable, cnt);
 					i += pipe.length;
 				} else {
 					new_channel_name += regex[i];
 				}
 			} else if (regex[i] === '@') {
-				let attr = this.is_attribute(regex.substring(i))
+				let attr = this.is_attribute(regex.substring(i));
+
 				if (attr) {
 					new_channel_name += this.get_attr_data(attr, id, portal_list);
 					i += attr.length;
