@@ -23,13 +23,10 @@ module.exports =
 	,
 
 	delete_voice_channel: function (channel_to_delete, portal_list) {
-		for (i = 0; i < portal_list.length; i++) {
-			for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
-				if (portal_list[i].get_voice_list()[j].get_id() === channel_to_delete.id) {
+		for (i = 0; i < portal_list.length; i++)
+			for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+				if (portal_list[i].get_voice_list()[j].get_id() === channel_to_delete.id)
 					portal_list[i].get_voice_list().splice(j, 1);
-				}
-			}
-		}
 
 		channel_to_delete.delete()
 			.then(g => console.log(`Deleted channel with id: ${g}`))
@@ -49,7 +46,7 @@ module.exports =
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$mmbr_cnt | $status_lst', [],
-						false, 0, 0, 0,
+						false, 0, 0, 0, 'gr',
 						this.portal_counter++ // not editable
 					));
 
@@ -66,7 +63,7 @@ module.exports =
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$mmbr_cnt | $status_lst', [],
-						false, 0, 0, 0,
+						false, 0, 0, 0, 'gr',
 						this.portal_counter++ // not editable				
 					));
 				})

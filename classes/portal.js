@@ -2,7 +2,7 @@ module.exports =
 {
     portal_channel: class {
         constructor(n_id, n_creator_id, n_regex_portal, n_regex_voice, n_voice_list,
-            n_no_bots, n_mmbr_cap, n_time_to_live, n_refresh_rate, n_count)
+            n_no_bots, n_mmbr_cap, n_time_to_live, n_refresh_rate, n_lang, n_count)
         {
             this.id = n_id;
             this.creator_id = n_creator_id;
@@ -13,6 +13,7 @@ module.exports =
             this.mmbr_cap = n_mmbr_cap;
             this.time_to_live = n_time_to_live;
             this.refresh_rate = n_refresh_rate;
+            this.lang = n_lang;
             this.count = n_count;
         }
 
@@ -43,19 +44,23 @@ module.exports =
         get_refresh_rate() { return this.refresh_rate; }
         set_refresh_rate(n_refresh_rate) { this.refresh_rate = n_refresh_rate; }
 
+        get_lang() { return this.lang; }
+        set_count(n_lang) { this.lang = n_lang; }
+
         get_count() { return this.count; }
         set_count(n_count) { this.count = n_count; }
     },
 
     voice_channel: class {
-        constructor(n_id, n_creator_id,
-            n_no_bots, n_mmbr_cap, n_time_to_live, n_refresh_rate, n_count) {
+        constructor(n_id, n_creator_id, n_no_bots, n_mmbr_cap, n_time_to_live,
+            n_refresh_rate, n_lang, n_count) {
             this.id = n_id;
             this.creator_id = n_creator_id;
             this.no_bots = n_no_bots;
             this.mmbr_cap = n_mmbr_cap;
             this.time_to_live = n_time_to_live;
             this.refresh_rate = n_refresh_rate;
+            this.lang = n_lang;
             this.count = n_count;
         }
 
@@ -76,6 +81,9 @@ module.exports =
 
         get_refresh_rate() { return this.refresh_rate; }
         set_refresh_rate(n_refresh_rate) { this.refresh_rate = n_refresh_rate; }
+
+        get_lang() { return this.lang; }
+        set_count(n_lang) { this.lang = n_lang; }
 
         get_count() { return this.count; }
         set_count(n_count) { this.count = n_count; }

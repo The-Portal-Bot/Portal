@@ -1,0 +1,829 @@
+{
+	status: "League of Legends",
+	type: "game",
+	languages:
+	{
+		en: 'League of Legends',
+		gr: 'Λεγεώνα των Θρύλων'
+	}
+},
+{
+	status: "Overwatch",
+	type: "game",
+	languages:
+	{
+		en: 'Overwatch',
+		gr: 'Παρακολούθηση'
+	}
+},
+{
+	status: "The Mean Greens - Plastic Warfare",
+	type: "game",
+	languages:
+	{
+		en: 'The Mean Greens - Plastic Warfare',
+		gr: 'Οι Κακοί Πράσινο - Πλαστικό Πόλεμο'
+	}
+},
+{
+	status: "Valorant",
+	type: "game",
+	languages:
+	{
+		en: 'Valorant',
+		gr: 'Γενναίος (κακό)'
+	}
+},
+
+{
+	status: '7 Days to Die',
+	type: 'game',
+	languages:
+	{
+		en: '7 Days to Die',
+		gr: '7 Μέρες να Πεθάνεις'
+	}
+},
+{
+	status: 'A Plague Tale: Innocence',
+	type: 'game',
+	languages:
+	{
+		en: 'Plague Tale',
+		gr: 'Ιστορία Πανούκλας'
+	}
+},
+{
+	status: 'Age of Empires II: Definitive Edition',
+	type: 'game',
+	languages:
+	{
+		en: 'AoE2',
+		gr: 'Εποχή των Αυτοκρατοριών 2'
+	}
+},
+{
+	status: "Age of Empires II (2013)",
+	type: "game",
+	languages:
+	{
+		en: 'AoE2',
+		gr: 'Εποχή των Αυτοκρατοριών 2'
+	}
+},
+{
+	status: 'ARK: Survival Evolved',
+	type: 'game',
+	languages:
+	{
+		en: 'ARK',
+		gr: 'ΑΡΚ'
+	}
+},
+{
+	status: 'Arma 3',
+	type: 'game',
+	languages:
+	{
+		en: 'Arma 3',
+		gr: 'Άρμα 3'
+	}
+},
+{
+	status: 'Assassin's Creed® Odyssey',
+	type: 'game',
+	languages:
+	{
+		en: 'AC Odyssey',
+		gr: 'Δολοφονικό Θρήσκευμα: Οδύσσεια'
+	}
+},
+{
+	status: 'BATTLETECH',
+	type: 'game',
+	languages:
+	{
+		en: 'BATTLETECH',
+		gr: 'Πολεμική Τεχνολογία'
+	}
+},
+{
+	status: 'Beat Saber',
+	type: 'game',
+	languages:
+	{
+		en: 'Beat Saber',
+		gr: 'Σέιπερ Νίκης'
+	}
+},
+{
+	status: 'Black Desert Online',
+	type: 'game',
+	languages:
+	{
+		en: 'Black Desert',
+		gr: 'Μαύρη Έρημος'
+	}
+},
+{
+	status: 'BONEWORKS',
+	type: 'game',
+	languages:
+	{
+		en: 'BONEWORKS',
+		gr: 'ΚΟΚΑΛΟΕΡΓΑΣΙΕΣ'
+	}
+},
+{
+	status: 'Call of Duty®: Black Ops II',
+	type: 'game',
+	languages:
+	{
+		en: 'CoD: Black Ops 2',
+		gr: 'Κάλεσμα του Καθήκοντος: Μαύρος Χειριστής 2'
+	}
+},
+{
+	status: 'Call of Duty®: Black Ops III',
+	type: 'game',
+	languages:
+	{
+		en: 'CoD: Black Ops 3',
+		gr: 'Κάλεσμα του Καθήκοντος Μαύρος Χειριστής 3'
+	}
+},
+{
+	status: 'CODE VEIN',
+	type: 'game',
+	languages:
+	{
+		en: 'CODE VEIN',
+		gr: 'ΚΩΔΙΚΑΣ ΦΛΕΒΑΣ'
+	}
+},
+{
+	status: 'Conan Exiles',
+	type: 'game',
+	languages:
+	{
+		en: 'Conan Exile',
+		gr: 'Conan Εξορία'
+	}
+},
+{
+	status: 'Counter-Strike: Global Offensive',
+	type: 'game',
+	languages:
+	{
+		en: 'CS:GO',
+		gr: 'CS:GO'
+	}
+},
+{
+	status: 'DARK SOULS™ III',
+	type: 'game',
+	languages:
+	{
+		en: 'DARK SOULS 3',
+		gr: 'Μαύρες Ψυχές 3'
+	}
+},
+{
+	status: 'DARK SOULS™ II',
+	type: 'game',
+	languages:
+	{
+		en: 'DARK SOULS II',
+		gr: 'Μαύρες Ψυχές II'
+	}
+},
+{
+	status: 'DayZ',
+	type: 'game',
+	languages:
+	{
+		en: 'Day',
+		gr: 'ΜέρεςΖ'
+	}
+},
+{
+	status: 'Dead by Daylight',
+	type: 'game',
+	languages:
+	{
+		en: 'Dead by Dayligh',
+		gr: 'Νεκρός με το Ξημέρωμα'
+	}
+},
+{
+	status: 'Deep Rock Galactic',
+	type: 'game',
+	languages:
+	{
+		en: 'Deep Rock Galactic',
+		gr: 'Βαθύς Γαλαξιακός Βράχος'
+	}
+},
+{
+	status: 'Destiny 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Destiny 2',
+		gr: 'Πεπρωμένο 2 '
+	}
+},
+{
+	status: 'Devil May Cry 5',
+	type: 'game',
+	languages:
+	{
+		en: 'Devil May Cry 5',
+		gr: 'Διάβολος Μπορεί να Κλάψει 5'
+	}
+},
+{
+	status: 'Dishonored 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Dishonored 2',
+		gr: 'Ατιμωμένος 2'
+	}
+},
+{
+	status: 'DOOM',
+	type: 'game',
+	languages:
+	{
+		en: 'DOOM',
+		gr: 'Καταδίκη'
+	}
+},
+{
+	status: 'DOOM Eternal',
+	type: 'game',
+	languages:
+	{
+		en: 'DOOM Eternal',
+		gr: 'Αιώνια Καταδίκη'
+	}
+},
+{
+	status: 'Dota 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Dota 2',
+		gr: 'Ντότα 2 '
+	}
+},
+{
+	status: 'DRAGON BALL FighterZ',
+	type: 'game',
+	languages:
+	{
+		en: 'DRAGON BALL FighterZ',
+		gr: 'Δρακόν Μπάλα ΠολεμιστήςΖ'
+	}
+},
+{
+	status: 'Dying Light',
+	type: 'game',
+	languages:
+	{
+		en: 'Dying Light',
+		gr: 'Φως θανάτου'
+	}
+},
+{
+	status: 'The Elder Scrolls V: Skyrim Special Edition',
+	type: 'game',
+	languages:
+	{
+		en: 'Skyrim V',
+		gr: 'Σκάιριμ V'
+	}
+},
+{
+	status: 'The Elder Scrolls® Online',
+	type: 'game',
+	languages:
+	{
+		en: 'Elder Scrolls Online',
+		gr: 'Γεροντικοί Κύλινδροι στο διαδίκτυο'
+	}
+},
+{
+	status: 'Fallout 4',
+	type: 'game',
+	languages:
+	{
+		en: 'Fallout 4',
+		gr: 'Επιπτώσεις 4'
+	}
+},
+{
+	status: 'Far Cry® 5',
+	type: 'game',
+	languages:
+	{
+		en: 'Far Cry 5',
+		gr: 'Πολύ Μακρυά 5'
+	}
+},
+{
+	status: 'FINAL FANTASY XIV Online',
+	type: 'game',
+	languages:
+	{
+		en: 'FINAL FANTASY XIV Onlin',
+		gr: 'Τελική Φαντασία στο διαδίκτυο'
+	}
+},
+{
+	status: 'The Forest',
+	type: 'game',
+	languages:
+	{
+		en: 'The Fores',
+		gr: 'Το Δάσος'
+	}
+},
+{
+	status: 'Garry's Mod',
+	type: 'game',
+	languages:
+	{
+		en: 'Garry's Mo',
+		gr: 'Η Μόντα του Γκάρι'
+	}
+},
+{
+	status: 'Grand Theft Auto V',
+	type: 'game',
+	languages:
+	{
+		en: 'Grand Theft Auto 5',
+		gr: 'Μεγάλη Κλοπή Αυτοκινήτων 5'
+	}
+},
+{
+	status: 'GreedFall',
+	type: 'game',
+	languages:
+	{
+		en: 'GreedFall',
+		gr: 'Πτώση Απληστίας'
+	}
+},
+{
+	status: 'Grim Dawn',
+	type: 'game',
+	languages:
+	{
+		en: 'Grim Daw',
+		gr: 'Απαίσια Αυγή'
+	}
+},
+{
+	status: 'GTFO',
+	type: 'game',
+	languages:
+	{
+		en: 'GTFO',
+		gr: 'ΒΓΑΕ'
+	}
+},
+{
+	status: 'Hades',
+	type: 'game',
+	languages:
+	{
+		en: 'Hade',
+		gr: 'Άδης'
+	}
+},
+{
+	status: 'Halo: The Master Chief Collection',
+	type: 'game',
+	languages:
+	{
+		en: 'Halo: The Master Chief Collection',
+		gr: 'Φωτοστέφανο: Η κύρια συλλογή'
+	}
+},
+{
+	status: 'Half-Life',
+	type: 'game',
+	languages:
+	{
+		en: 'Half-Life',
+		gr: 'Μισή-Ζωή'
+	}
+},
+{
+	status: 'Half-Life 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Half-Life 2',
+		gr: 'Μισή-Ζωή 2'
+	}
+},
+{
+	status: 'Half-Life 2: Episode One',
+	type: 'game',
+	languages:
+	{
+		en: 'Half-Life 2: Episode On',
+		gr: 'Μισή-Ζωή 2: Επεισόδιο Ένα'
+	}
+},
+{
+	status: 'Half-Life 2: Episode Two',
+	type: 'game',
+	languages:
+	{
+		en: 'Half-Life 2: Episode Two',
+		gr: 'Μισή-Ζωή 2: Επεισόδιο Δύο'
+	}
+},
+{
+	status: 'Half-Life 2: Lost Coast',
+	type: 'game',
+	languages:
+	{
+		en: 'Half-Life 2: Lost Coast',
+		gr: 'Μισή-Ζωή 2: Χαμένη Ακτή'
+	}
+},
+{
+	status: 'Half-Life: Blue Shift',
+	type: 'game',
+	languages:
+	{
+		en: 'Half-Life: Blue Shif',
+		gr: 'Μισή-Ζωή: Μπλε Μετατόπιση'
+	}
+},
+{
+	status: 'Half-Life: Opposing Force',
+	type: 'game',
+	languages:
+	{
+		en: 'Half-Life: Opposing Force',
+		gr: 'Μισή-Ζωή: Αντίθετη Δύναμη'
+	}
+},
+{
+	status: 'HITMAN™ 2',
+	type: 'game',
+	languages:
+	{
+		en: 'HITMAN 2',
+		gr: 'Πληρωμένος Δολοφόνος'
+	}
+},
+{
+	status: 'Hollow Knight',
+	type: 'game',
+	languages:
+	{
+		en: 'Hollow Knigh',
+		gr: 'Κούφιος Ιππότης'
+	}
+},
+{
+	status: 'Hunt: Showdown',
+	type: 'game',
+	languages:
+	{
+		en: 'Hunt: Showdown',
+		gr: 'Κυνήγι: Αναμέτρηση'
+	}
+},
+{
+	status: 'theHunter: Call of the Wild™',
+	type: 'game',
+	languages:
+	{
+		en: 'theHunter: Call of the Wild',
+		gr: 'ΟΚυνηγός: Κάλεσμα της Φύσης'
+	}
+},
+{
+	status: 'Insurgency: Sandstorm',
+	type: 'game',
+	languages:
+	{
+		en: 'Insurgency: Sandstorm',
+		gr: 'Εξέγερση: Αμμοθύελλα'
+	}
+},
+{
+	status: 'Jurassic World Evolution',
+	type: 'game',
+	languages:
+	{
+		en: 'Jurassic World Evolution',
+		gr: 'Ιουρασικός Κόσμος Εξέλιξη'
+	}
+},
+{
+	status: 'Middle-earth™: Shadow of War™',
+	type: 'game',
+	languages:
+	{
+		en: 'Middle-earth™: Shadow of War',
+		gr: 'Μέση-Γη: Σκιά του Πολέμου'
+	}
+},
+{
+	status: 'MONSTER HUNTER: WORLD',
+	type: 'game',
+	languages:
+	{
+		en: 'MONSTER HUNTER: WORLD',
+		gr: 'ΚΥΝΗΓΟΣ ΤΕΡΑΤΩΝ: ΚΟΣΜΟΣ'
+	}
+},
+{
+	status: 'MORDHAU',
+	type: 'game',
+	languages:
+	{
+		en: 'MORDHA',
+		gr: 'ΜΟΡΝΧΑ'
+	}
+},
+{
+	status: 'Path of Exile',
+	type: 'game',
+	languages:
+	{
+		en: 'Path of Exile',
+		gr: 'Μονοπάτι της Εξορίας'
+	}
+},
+{
+	status: 'PAYDAY 2',
+	type: 'game',
+	languages:
+	{
+		en: 'PAYDAY 2',
+		gr: 'ΗΜΕΡΑ ΠΛΗΡΩΜΗΣ 2'
+	}
+},
+{
+	status: 'PLAYER UNKNOWN'S: BATTLE GROUNDS',
+	type: 'game',
+	languages:
+	{
+		en: 'PLAYER UNKNOWN'S: BATTLE GROUNDS',
+		gr: 'ΑΓΝΩΣΤΟΣ ΠΑΙΚΤΗΣ: ΠΕΔΙΟ ΜΑΧΗΣ'
+	}
+},
+{
+	status: 'Portal',
+	type: 'game',
+	languages:
+	{
+		en: 'Portal',
+		gr: 'Πύλη'
+	}
+},
+{
+	status: 'Portal 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Portal 2',
+		gr: 'Πύλη 2'
+	}
+},
+{
+	status: 'Pummel Party',
+	type: 'game',
+	languages:
+	{
+		en: 'Pummel Party',
+		gr: 'Πάρτι Γρονθοκοπήματος'
+	}
+},
+{
+	status: 'Red Dead Redemption 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Red Dead Redemption 2',
+		gr: 'Κόκκινο Νεκρή Εξαργύρωση 2'
+	}
+},
+{
+	status: 'Remnant: From the Ashes',
+	type: 'game',
+	languages:
+	{
+		en: 'Remnant: From the Ashes',
+		gr: 'Υπόλοιπο: Από τις Στάχτες'
+	}
+},
+{
+	status: 'RESIDENT EVIL 2',
+	type: 'game',
+	languages:
+	{
+		en: 'RESIDENT EVIL 2',
+		gr: 'ΚΑΤΟΙΚΟΣ ΚΑΚΟΥ 2'
+	}
+},
+{
+	status: 'Risk of Rain 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Risk of Rain 2',
+		gr: 'Κίνδυνος βροχής 2'
+	}
+},
+{
+	status: 'Rocket League®',
+	type: 'game',
+	languages:
+	{
+		en: 'Rocket League',
+		gr: 'Λίγκα Ρουκετών'
+	}
+},
+{
+	status: 'Rust',
+	type: 'game',
+	languages:
+	{
+		en: 'Rust',
+		gr: 'Σκουριά'
+	}
+},
+{
+	status: 'Sekiro™: Shadows Die Twice',
+	type: 'game',
+	languages:
+	{
+		en: 'Sekiro: Shadows Die Twic',
+		gr: 'Σεκίρο: Οι σκιές πεθαίνουν δύο φορές'
+	}
+},
+{
+	status: 'Shadow of the Tomb Raider: Definitive Edition',
+	type: 'game',
+	languages:
+	{
+		en: 'Shadow of the Tomb Raider',
+		gr: 'Σκιά του Επιδρομέα Ταφών'
+	}
+},
+{
+	status: 'SMITE®',
+	type: 'game',
+	languages:
+	{
+		en: 'SMITΕ',
+		gr: 'ΧΤΥΠΩ'
+	}
+},
+{
+	status: 'STAR WARS Jedi: Fallen Order™',
+	type: 'game',
+	languages:
+	{
+		en: 'STAR WARS: Fallen Order',
+		gr: 'ΠΟΛΕΜΟΣ ΤΩΝ ΑΣΤΡΩΝ: Πεσμένη παραγγελία'
+	}
+},
+{
+	status: 'Team Fortress 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Team Fortress 2',
+		gr: 'Ομαδικό φρούριο 2'
+	}
+},
+{
+	status: 'TEKKEN 7',
+	type: 'game',
+	languages:
+	{
+		en: 'TEKKEN 7',
+		gr: 'TEKKEN 7'
+	}
+},
+{
+	status: 'Terraria',
+	type: 'game',
+	languages:
+	{
+		en: 'Terraria',
+		gr: 'Terraria'
+	}
+},
+{
+	status: 'Tom Clancy's Rainbow Six® Siege',
+	type: 'game',
+	languages:
+	{
+		en: 'Rainbow Six Siege',
+		gr: 'Ουράνιο-Τόξο Έξι Πολιορκία'
+	}
+},
+{
+	status: 'Total War: THREE KINGDOMS',
+	type: 'game',
+	languages:
+	{
+		en: 'Total War: THREE KINGDOM',
+		gr: 'Απόλυτος πόλεμος: ΤΡΙΑ ΒΑΣΙΛΕΙΑ'
+	}
+},
+{
+	status: 'Total War: WARHAMMER',
+	type: 'game',
+	languages:
+	{
+		en: 'Total War: WARHAMMER',
+		gr: 'Απόλυτος πόλεμος: ΠΟΛΕΜΟΣΦΥΡΙ'
+	}
+},
+{
+	status: 'Total War: WARHAMMER II',
+	type: 'game',
+	languages:
+	{
+		en: 'Total War: WARHAMMER II',
+		gr: 'Απόλυτος πόλεμος: ΠΟΛΕΜΟΣΦΥΡΙ 2'
+	}
+},
+{
+	status: 'Totally Accurate Battle Simulator',
+	type: 'game',
+	languages:
+	{
+		en: 'Totally Accurate Battle Simulator',
+		gr: 'Πλήρως Ακριβής Προσομοιωτής Μάχης'
+	}
+},
+{
+	status: 'Warframe',
+	type: 'game',
+	languages:
+	{
+		en: 'Warframe',
+		gr: 'Πολεμικό Πλαίσιο'
+	}
+},
+{
+	status: 'Warhammer: Vermintide 2',
+	type: 'game',
+	languages:
+	{
+		en: 'Warhammer: Vermintide 2',
+		gr: 'Πολεμοσφύρι: Βερμιντίδη 2'
+	}
+},
+{
+	status: 'War Thunder',
+	type: 'game',
+	languages:
+	{
+		en: 'War Thunder',
+		gr: 'Κεραυνός του πολέμου'
+	}
+},
+{
+	status: 'The Witcher® 3: Wild Hunt',
+	type: 'game',
+	languages:
+	{
+		en: 'Witcher 3',
+		gr: 'Γητευτής 3'
+	}
+},
+{
+	status: 'The Witcher 2: Assassins of Kings Enhanced Edition',
+	type: 'game',
+	languages:
+	{
+		en: 'Witcher 2',
+		gr: 'Γητευτής 2'
+	}
+},
+{
+	status: 'The Witcher 2: Assassins of Kings',
+	type: 'game',
+	languages:
+	{
+		en: 'Witcher 2',
+		gr: 'Γητευτής 2'
+	}
+},

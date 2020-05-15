@@ -48,7 +48,7 @@ module.exports = {
 			}
 		},
 		{
-			value: 'status_lst', func: (guild, id) => { return object.get_status_list(guild, id) }
+			value: 'status_lst', func: (guild, id, portal_list) => { return object.get_status_list(guild, id, portal_list) }
 		},
 		{
 			value: 'status_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 

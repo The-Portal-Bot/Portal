@@ -1,0 +1,40 @@
+{
+	"program_attributes": [
+		{	
+			"status": "Google Chrome",
+			"type": "browser",
+			"lang":
+			{
+				"en": "Chrome",
+				"gr": "Κρόμ"
+			}
+		},
+		{	
+			"status": "Spotify",
+			"type": "music",
+			"lang":
+			{
+				"en": "Spotify",
+				"gr": "Μουσική"
+			}
+		},
+		{	
+			"status": "Visual Studio Code",
+			"type": "code",
+			"lang":
+			{
+				"en": "VSCode",
+				"gr": "Βιεσκόντ"
+			}
+		},
+		{	
+			"status": "Discord",
+			"type": "chat",
+			"lang":
+			{
+				"en": "Discord",
+				"gr": "Ντίσκορντ"
+			}
+		}
+	]
+}

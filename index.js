@@ -25,9 +25,9 @@ client.on('ready', () => {
 
 client.on('guildCreate', guild => {
 	// This event triggers when the bot joins a guild.
-	console.log('New guild joined: + ' + guild.name
+	console.log('New guild joined: ' + guild.name
 		+ ' (id: + ' + guild.id
-		+ '). This guild has + '
+		+ ').\nThis guild has + '
 		+ guild.memberCount + ' members!');
 	// Changing Portal bots status 
 	client.user.setActivity('./portal channel', { type: 'LISTENING' });
@@ -43,11 +43,14 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 	// This event triggers when the status of a guild member has changed
 	regex.generate_channel_names(newPresence.guild, portal_list);
 
-	// for (i = 0; i < portal_list.length; i++) 
-	// 	console.log(i + ') Portal channel with id: ' + portal_list[i].id + ' has voice channels: [');
-	// 	for (j = 0; j < portal_list[i].voice_list.length; j++) 
-	// 		console.log('\t' + j + ') voice channel with id: ' + portal_list[i], portal_list[i].voice_list[j].id);
-	// 	console.log(']\n');
+	for (i = 0; i < portal_list.length; i++) {
+		console.log(i + ') portal_list[' + i + '].id: ' + portal_list[i].id + 
+			', has portal_list[' + i + '].voice_list.length: ' + portal_list[i].voice_list.length);
+		for (j = 0; j < portal_list[i].voice_list.length; j++) {
+			console.log('\t' + j + ') portal_list[' + i + '].voice_list[j].id: ' + portal_list[i].voice_list[j].id);
+		}
+	}
+	console.log('\n');
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
