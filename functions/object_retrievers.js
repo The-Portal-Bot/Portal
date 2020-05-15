@@ -1,5 +1,5 @@
-const games = require('../assets/game_list.json');
-const programs = require('../assets/program_list.json');
+const games = require('../assets/status/game_list.json');
+const programs = require('../assets/status/program_list.json');
 
 module.exports = {
 	status_aliases: function (current_status, portal_list, id) {

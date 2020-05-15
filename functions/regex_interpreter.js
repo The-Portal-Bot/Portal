@@ -214,6 +214,14 @@ module.exports = {
 			}
 		},
 		{
+			value: 'lang', func: (value, id, portal_listn) => {
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
+						if (id === portal_list[i].get_voice_list()[j].id)
+							return portal_list[i].get_voice_list()[j].get_lang();
+			}
+		},
+		{
 			value: 'count', func: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].get_voice_list().length; j++)

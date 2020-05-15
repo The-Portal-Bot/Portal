@@ -259,207 +259,10 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'help') {
-		const func_name = [
-			{
-				name: 'portal',
-				value: 'creates a voice channel and a category for it',
-				args: '!channel_name @category_name'
-			},
-			{
-				name: 'text',
-				value: 'creates a text channel connected to the voice channel',
-				args: 'none'
-			},
-			{
-				name: 'regex',
-				value: 'sets regex-guidelines for how to name channels (current portal)',
-				args: '!regex_command'
-			},
-			{
-				name: 'run',
-				value: 'returns the log of data given in log_string',
-				args: '!exec_command'
-			},
-			{
-				name: 'prefix',
-				value: 'sets the new prefix for portal bot',
-				args: '!prefix'
-			},
-			{
-				name: 'help',
-				value: 'returns a help-list of all commands and regex manipulation',
-				args: '@specific_command or @vrbl/@func/@pipe/@attr'
-			},
-			{
-				name: 'ping',
-				value: 'returns round trip latency',
-				args: 'none'
-			}
-		];
-
-		const vrbl_name = [
-			{
-				name: '#',
-				value: 'number of channel in list',
-				args: 'none'
-			},
-			{
-				name: '##',
-				value: 'number of channel in list with \#',
-				args: 'none'
-			},
-			{
-				name: 'date',
-				value: 'full date: dd/mm/yyyy',
-				args: 'none'
-			},
-			{
-				name: 'cday',
-				value: 'gets the day',
-				args: 'none'
-			},
-			{
-				name: 'mnth',
-				value: 'gets the month',
-				args: 'none'
-			},
-			{
-				name: 'year',
-				value: 'gets the year',
-				args: 'none'
-			},
-			{
-				name: 'time',
-				value: 'full time: hh/mm/ss',
-				args: 'none'
-			},
-			{
-				name: 'hour',
-				value: 'gets the hour',
-				args: 'none'
-			},
-			{
-				name: 'mint',
-				value: 'gets the minute',
-				args: 'none'
-			},
-			{
-				name: 'scnd',
-				value: 'gets the second',
-				args: 'none'
-			},
-			{
-				name: 'crtr',
-				value: 'creator of the channel',
-				args: 'none'
-			},
-			{
-				name: 'game_lst',
-				value: 'list of currently played games',
-				args: 'none'
-			},
-			{
-				name: 'game_cnt',
-				value: 'number of games being played',
-				args: 'none'
-			},
-			{
-				name: 'game_his',
-				value: 'list of all games played from beginning',
-				args: 'none'
-			},
-			{
-				name: 'mmbr_lst',
-				value: 'returns the currently played games',
-				args: 'none'
-			},
-			{
-				name: 'mmbr_cnt',
-				value: 'number of members in channel',
-				args: 'none'
-			},
-			{
-				name: 'mmbr_plg',
-				value: 'number of members playing',
-				args: 'none'
-			},
-			{
-				name: 'mmbr_his',
-				value: 'returns the currently played games',
-				args: 'none'
-			},
-			{
-				name: 'mmbr_lmt',
-				value: 'sets the limit of users in channel',
-				args: 'none'
-			}
-		];
-
-		const pipe_name = [
-			{
-				name: 'upper',
-				value: 'makes input uppercase',
-				args: 'none'
-			},
-			{
-				name: 'lower',
-				value: 'makes input lowercase',
-				args: 'none'
-			},
-			{
-				name: 'titl',
-				value: 'makes input titlecase',
-				args: 'none'
-			},
-			{
-				name: 'acrm',
-				value: 'makes input string of acronyms',
-				args: 'none'
-			},
-			{
-				name: 'word#',
-				value: 'maximum number of words (# is number)',
-				args: 'none'
-			},
-			{
-				name: 'ppls',
-				value: 'gets more popular in array',
-				args: 'none'
-			},
-			{
-				name: 'ppls_cnt',
-				value: 'count of most popular in array',
-				args: 'none'
-			},
-			{
-				name: 'smmr_cnt',
-				value: 'count of all in array',
-				args: 'none'
-			}
-		];
-
-		const attr_name = [
-			{
-				name: 'no_bots',
-				value: 'no bots allowed',
-				args: '!true/false'
-			},
-			{
-				name: 'mmbr_cap',
-				value: 'maximum number of members allowed',
-				args: '!number of maximum members'
-			},
-			{
-				name: 'time_to_live',
-				value: 'time to live',
-				args: '!number in seconds'
-			},
-			{
-				name: 'refresh_rate',
-				value: 'how often titles are being refreshed',
-				args: '!number in seconds'
-			}
-		];
+		const func_name = require('./assets/properties/function_list.json');
+		const vrbl_name = require('./assets/properties/variable_list.json');
+		const pipe_name = require('./assets/properties/pipe_list.json');
+		const attr_name = require('./assets/properties/attribute_list.json');
 
 		if (args.length === 0 || (args.length === 1 && (args[0] === 'func' ||
 			args[0] === 'vrbl' || args[0] === 'pipe' || args[0] === 'attr'))) {
@@ -471,12 +274,12 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'func') {
 				// check if argument is function
 				help_message_func +=
-					'-\n`Functions (prefix ./)`\n' +
+					'-\n`Functions (prefix '+func_name.prefix+')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
 
-				for (i = 0, func = func_name[i]; i < func_name.length; i++, func = func_name[i]) {
+				for (i = 0, func = func_name.functions[i]; i < func_name.functions.length; i++, func = func_name.functions[i]) {
 					help_message_func +=
 						'> **' + func.name + '**\t - \t' +
 						'*' + func.value + '*\t - \t' +
@@ -487,12 +290,12 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'vrbl') {
 				// check if argument is variable
 				help_message_vrbl +=
-					'-\n`Variable (prefix $)`\n' +
+					'-\n`Variable (prefix '+vrbl_name.prefix+')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
 
-				for (i = 0, vrbl = vrbl_name[i]; i < vrbl_name.length; i++, vrbl = vrbl_name[i]) {
+				for (i = 0, vrbl = vrbl_name.variables[i]; i < vrbl_name.variables.length; i++, vrbl = vrbl_name.variables[i]) {
 					help_message_vrbl +=
 						'> **' + vrbl.name + '**\t - \t' +
 						'*' + vrbl.value + '*\t - \t' +
@@ -503,12 +306,12 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'pipe') {
 				// check if argument is pipe
 				help_message_pipe +=
-					'-\n`Pipe (prefix |)`\n' +
+					'-\n`Pipe (prefix '+pipe_name.prefix+')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
 
-				for (i = 0, pipe = pipe_name[i]; i < pipe_name.length; i++, pipe = pipe_name[i]) {
+				for (i = 0, pipe = pipe_name.pipes[i]; i < pipe_name.pipes.length; i++, pipe = pipe_name.pipes[i]) {
 					help_message_pipe +=
 						'> **' + pipe.name + '**\t - \t' +
 						'*' + pipe.value + '*\t - \t' +
@@ -519,12 +322,12 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'attr') {
 				// check if argument is attribute
 				help_message_attr +=
-					'-\n`Attribute (prefix @)`\n' +
+					'-\n`Attribute (prefix '+attr_name.prefix+')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
 
-				for (i = 0, attr = attr_name[i]; i < attr_name.length; i++, attr = attr_name[i]) {
+				for (i = 0, attr = attr_name.attributes[i]; i < attr_name.attributes.length; i++, attr = attr_name.attributes[i]) {
 					help_message_attr +=
 						'> **' + attr.name + '**\t - \t' +
 						'*' + attr.value + '*\t - \t' +
@@ -538,7 +341,7 @@ client.on('message', async message => {
 		}
 		else if (args.length === 1) {
 			// check if argument is function
-			for (i = 0, func = func_name[i]; i < func_name.length; i++, func = func_name[i]) {
+			for (i = 0, func = func_name.functions[i]; i < func_name.functions.length; i++, func = func_name.functions[i]) {
 				if (func.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + func.name + '** ' +
@@ -554,7 +357,7 @@ client.on('message', async message => {
 				}
 			}
 			// check if argument is pipe
-			for (i = 0, pipe = pipe_name[i]; i < pipe_name.length; i++, pipe = pipe_name[i]) {
+			for (i = 0, pipe = pipe_name.pipes[i]; i < pipe_name.pipes.length; i++, pipe = pipe_name.pipes[i]) {
 				if (pipe.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + pipe.name + '** ' +
@@ -570,7 +373,7 @@ client.on('message', async message => {
 				}
 			}
 			// check if argument is attribute
-			for (i = 0, attr = attr_name[i]; i < attr_name.length; i++, attr = attr_name[i]) {
+			for (i = 0, attr = attr_name.attributes[i]; i < attr_name.attributes.length; i++, attr = attr_name.attributes[i]) {
 				if (attr.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + attr.name + '** ' +
@@ -586,7 +389,7 @@ client.on('message', async message => {
 				}
 			}
 			// check if argument is variable
-			for (i = 0, vrbl = vrbl_name[i]; i < vrbl_name.length; i++, vrbl = vrbl_name[i]) {
+			for (i = 0, vrbl = vrbl_name.variables[i]; i < vrbl_name.variables.length; i++, vrbl = vrbl_name.variables[i]) {
 				if (vrbl.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + vrbl.name + '** ' +
@@ -642,7 +445,7 @@ client.on('message', async message => {
 				'**You must be in a portal\'s voice channel to set attributes**');
 			return;
 		}
-
+		//check for type accuracy and make better
 		if (args.length === 2) {
 			if (args[0] === 'no_bots') {
 				for (i = 0; i < portal_list.length; i++) {
@@ -688,10 +491,21 @@ client.on('message', async message => {
 						}
 					}
 				}
+			} else if (args[0] === 'lang') {
+				for (i = 0; i < portal_list.length; i++) {
+					for (j = 0; j < portal_list[i].voice_list.length; j++) {
+						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
+							portal_list[i].voice_list[j].set_lang(args[1]);
+							message_reply(true, message,
+								'**lang has been set to ' + args[1] + '**');
+							return;
+						}
+					}
+				}
 			} else {
 				message_reply(false, message,
 					'**Attributes that can be changed are: ' +
-					'no_bots, mmbr_cap, time_to_live, refresh_rate**');
+					'no_bots, mmbr_cap, time_to_live, refresh_rate, lang**');
 				return;
 			}
 		} else if (args.length > 2) {
