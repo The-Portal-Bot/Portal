@@ -20,7 +20,7 @@ client.on('ready', () => {
 		' users, in ' + client.channels.size +
 		' channels of ' + client.guilds.size + ' guilds.');
 	// Changing Portal bots status
-	client.user.setActivity('./portal channel', { type: 'LISTENING' });
+	client.user.setActivity('./help', { type: 'LISTENING' });
 });
 
 client.on('guildCreate', guild => {

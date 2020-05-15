@@ -9,6 +9,62 @@
 			}
 		},
 		{
+			"status": "Hearthstone",
+			"type": "game",
+			"lang": {
+				"en": "Hearthstone",
+				"gr": "Πέτρινη Εστίας"
+			}
+		},
+		{
+			"status": "Apex Legends",
+			"type": "game",
+			"lang": {
+				"en": "Apex Legends",
+				"gr": "Κορυφαίοι Θρύλοι"
+			}
+		},
+		{
+			"status": "Minecraft",
+			"type": "game",
+			"lang": {
+				"en": "Minecraft",
+				"gr": "Μεταλλωρύχοσκάφτης"
+			}
+		},
+		{
+			"status": "Fortnite",
+			"type": "game",
+			"lang": {
+				"en": "Fortnite",
+				"gr": "Φορτνάιτ"
+			}
+		},
+						{
+							"status": "Don't Starve Together",
+							"type": "game",
+							"lang": {
+								"en": "Don't Starve Together",
+								"gr": "Μην Πεθάνετε Μαζί"
+							}
+						},
+						{
+							"status": "Apex Legends",
+							"type": "game",
+							"lang": {
+								"en": "Apex Legends",
+								"gr": "Κορυφαίοι Θρύλοι"
+							}
+						},
+						{
+							"status": "Apex Legends",
+							"type": "game",
+							"lang": {
+								"en": "Apex Legends",
+								"gr": "Κορυφαίοι Θρύλοι"
+							}
+						},
+		{
 			"status": "Overwatch",
 			"type": "game",
 			"lang": {
