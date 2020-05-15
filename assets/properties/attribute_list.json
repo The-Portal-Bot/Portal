@@ -1,0 +1,40 @@
+{
+	"prefix": "@",
+	"attributes": [
+		{
+			"name": "no_bots",
+			"value": "no bots allowed",
+			"args": "!true/false"
+		},
+		{
+			"name": "mmbr_cap",
+			"value": "maximum number of members allowed",
+			"args": "!number of maximum members"
+		},
+		{
+			"name": "time_to_live",
+			"value": "time to live",
+			"args": "!number in seconds"
+		},
+		{
+			"name": "refresh_rate",
+			"value": "how often titles are being refreshed",
+			"args": "!number in seconds"
+		},
+		{
+			"name": "lang",
+			"value": "language used in statuses",
+			"args": "en/gr"
+		},
+		{
+			"name": "pos",
+			"value": "position of channel",
+			"args": "number"
+		},
+		{
+			"name": "count",
+			"value": "position (index) in array",
+			"args": "readonly"
+		}
+	]
+}

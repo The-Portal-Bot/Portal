@@ -1,0 +1,45 @@
+{
+	"prefix": "./",
+	"functions": [
+		{
+			"name": "portal",
+			"value": "creates a voice channel and a category for it",
+			"args": "!channel_name @category_name"
+		},
+		{
+			"name": "text",
+			"value": "creates a text channel connected to the voice channel",
+			"args": "none"
+		},
+		{
+			"name": "regex",
+			"value": "sets regex-guidelines for how to name channels (current portal)",
+			"args": "!regex_command"
+		},
+		{
+			"name": "run",
+			"value": "returns the log of data given in log_string",
+			"args": "!exec_command"
+		},
+		{
+			"name": "prefix",
+			"value": "sets the new prefix for portal bot",
+			"args": "!prefix"
+		},
+		{
+			"name": "help",
+			"value": "returns a help-list of all commands and regex manipulation",
+			"args": "@specific_command or @vrbl/@func/@pipe/@attr"
+		},
+		{
+			"name": "ping",
+			"value": "returns round trip latency",
+			"args": "none"
+		},
+		{
+			"name": "url",
+			"value": "creates a url only channel and a category for it",
+			"args": "!channel_name @category_name"
+		}
+	]
+}
