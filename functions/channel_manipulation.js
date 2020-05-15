@@ -97,6 +97,46 @@ module.exports =
 
 		return
 	}
+	,
+
+	create_url_channel: function (server, url_name,
+		category_name, url_list, creator_id) {
+		if (category_name) {
+			// creating category
+			server.createChannel(category_name, { type: 'category' })
+
+			// creating voice channel
+			server.createChannel(url_name+' (url-only)', { type: 'text' }, { bitrate: 8 })
+				.then(channel => {
+					url_list.push(channel.id)
+						// new classes.portal_channel(
+						// channel.id, creator_id, url_name,
+						// 'URL-ONLY', [],
+						// false, 0, 0, 0, channel.position, 'gr',
+						// this.portal_counter++ // not editable
+						// ));
+
+					let category = server.channels.find(
+						c => c.name == category_name && c.type == 'category'
+					);
+					if (!category) throw new Error('Category channel does not exist');
+					channel.setParent(category);
+				}).catch(console.error);
+		} else {
+			// creating voice channel
+			server.createChannel(url_name+' (url-only)', { type: 'text' }, { bitrate: 8 })
+				.then(channel => {
+					url_list.push(channel.id)
+						// new classes.portal_channel(
+						// channel.id, creator_id, url_name,
+						// 'URL-ONLY', [],
+						// false, 0, 0, 0, channel.position, 'gr',
+						// this.portal_counter++ // not editable
+						// ));
+				})
+		}
+	}
+
 };
 
 // console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));

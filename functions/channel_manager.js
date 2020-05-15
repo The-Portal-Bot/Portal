@@ -26,31 +26,33 @@ module.exports = {
                     if (channel.id === portal_list[i].get_voice_list()[j].id) {
                         if (attr === 'no_bots') {
                             portal_list[i].get_voice_list()[j].set_no_bots(value);
-                            return true;
+                            return 1;
                         } else if (attr === 'mmbr_cap') {
                             portal_list[i].get_voice_list()[j].set_mmbr_cap(value);
                             channel.setUserLimit(Number(value));
-                            return true;
+                            return 1;
                         } else if (attr === 'time_to_live') {
                             portal_list[i].get_voice_list()[j].set_time_to_live(Number(value));
-                            return true;
+                            return 1;
                         } else if (attr === 'refresh_rate') {
                             portal_list[i].get_voice_list()[j].set_refresh_rate(Number(value));
-                            return true;
+                            return 1;
                         } else if (attr === 'pos') {
                             portal_list[i].get_voice_list()[j].set_pos(Number(value));
                             channel.setPosition(Number(value));
-                            return true;
+                            return 1;
                         } else if (attr === 'lang') {
                             portal_list[i].get_voice_list()[j].set_lang(value);
                             this.generate_channel_names(guild, portal_list);
-                            return true;
+                            return 1;
+                        } else {
+                            return 2;
                         }
                     }
-                })) return true;
+                })) return 2;
             }
         }
-        return false;
+        return 2;
     }
 
 };

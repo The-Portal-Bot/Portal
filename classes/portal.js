@@ -46,10 +46,10 @@ module.exports =
         set_refresh_rate(n_refresh_rate) { this.refresh_rate = n_refresh_rate; }
 
         get_pos() { return this.pos; }
-        set_count(n_pos) { this.pos = n_pos; }
+        set_pos(n_pos) { this.pos = n_pos; }
 
         get_lang() { return this.lang; }
-        set_count(n_lang) { this.lang = n_lang; }
+        set_lang(n_lang) { this.lang = n_lang; }
 
         get_count() { return this.count; }
         set_count(n_count) { this.count = n_count; }
@@ -89,10 +89,10 @@ module.exports =
         set_refresh_rate(n_refresh_rate) { this.refresh_rate = n_refresh_rate; }
 
         get_pos() { return this.pos; }
-        set_count(n_pos) { this.pos = n_pos; }
+        set_pos(n_pos) { this.pos = n_pos; }
 
         get_lang() { return this.lang; }
-        set_count(n_lang) { this.lang = n_lang; }
+        set_lang(n_lang) { this.lang = n_lang; }
 
         get_count() { return this.count; }
         set_count(n_count) { this.count = n_count; }

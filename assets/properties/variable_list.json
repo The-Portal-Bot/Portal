@@ -17,8 +17,13 @@
 			"args": "none"
 		},
 		{
-			"name": "cday",
-			"value": "gets the day",
+			"name": "nday",
+			"value": "gets the day number",
+			"args": "none"
+		},
+		{
+			"name": "tday",
+			"value": "gets the day name",
 			"args": "none"
 		},
 		{
@@ -57,18 +62,18 @@
 			"args": "none"
 		},
 		{
-			"name": "game_lst",
-			"value": "list of currently played games",
+			"name": "status_lst",
+			"value": "list of current member statuses",
 			"args": "none"
 		},
 		{
-			"name": "game_cnt",
-			"value": "number of games being played",
+			"name": "status_cnt",
+			"value": "count of current member statuses",
 			"args": "none"
 		},
 		{
-			"name": "game_his",
-			"value": "list of all games played from beginning",
+			"name": "status_his",
+			"value": "history of all the statuses",
 			"args": "none"
 		},
 		{

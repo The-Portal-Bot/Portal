@@ -13,6 +13,7 @@ const config = require('./config.json');
 // Portal list is the structure that helps portal manage
 // all the portal channels and inner voice channels
 let portal_list = new Array();
+let url_list = new Array();
 
 //#endregion Listeners
 client.on('ready', () => {
@@ -45,10 +46,11 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 	mngr.generate_channel_names(newPresence.guild, portal_list);
 
 	for (i = 0; i < portal_list.length; i++) {
-		console.log(i + ') portal_list[' + i + '].id: ' + portal_list[i].id + 
+		console.log(i + ') portal_list[' + i + '].id: ' + portal_list[i].id +
 			', has portal_list[' + i + '].voice_list.length: ' + portal_list[i].voice_list.length);
 		for (j = 0; j < portal_list[i].voice_list.length; j++) {
-			console.log('\t' + j + ') portal_list[' + i + '].voice_list[j].id: ' + portal_list[i].voice_list[j].id);
+			console.log('\t' + j + ') portal_list[' + i 
+				+ '].voice_list[j].id: ' + portal_list[i].voice_list[j].id);
 		}
 	}
 	console.log('\n');
@@ -150,7 +152,18 @@ message_reply = function (status, msg, str) {
 	msg.channel.send(str);
 	if (status) msg.react('✔️');
 	else msg.react('❌');
-	return;
+}
+
+is_url = function (message) {
+	var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+		'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+		'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+		'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+
+	if (!pattern.test(message.content))
+		message.delete();
 }
 
 //#region Message async reader
@@ -158,10 +171,18 @@ client.on('message', async message => {
 	// runs on every single message received, from any channel or DM
 	// Ignore other bots and also itself ('botception')
 	if (message.author.bot) return;
-	// Ignore any message that does not start with prefix
-	if (message.content.indexOf(config.prefix) !== 0) return;
+
 	// Ignore any direct message
 	if (message.channel.type === 'dm') return;
+	
+	// Ignore any message that does not start with prefix
+	if (message.content.indexOf(config.prefix) !== 0) {// return;
+		if (url_list !== undefined)
+			for (i = 0; i < url_list.length; i++) {
+				if (url_list[i] === message.channel.id)
+					is_url(message)
+			}
+	}
 
 	// Separate function name, and arguments of function
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
@@ -276,7 +297,7 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'func') {
 				// check if argument is function
 				help_message_func +=
-					'-\n`Functions (prefix '+func_name.prefix+')`\n' +
+					'-\n`Functions (prefix ' + func_name.prefix + ')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
@@ -292,7 +313,7 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'vrbl') {
 				// check if argument is variable
 				help_message_vrbl +=
-					'-\n`Variable (prefix '+vrbl_name.prefix+')`\n' +
+					'-\n`Variable (prefix ' + vrbl_name.prefix + ')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
@@ -308,7 +329,7 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'pipe') {
 				// check if argument is pipe
 				help_message_pipe +=
-					'-\n`Pipe (prefix '+pipe_name.prefix+')`\n' +
+					'-\n`Pipe (prefix ' + pipe_name.prefix + ')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
@@ -324,7 +345,7 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'attr') {
 				// check if argument is attribute
 				help_message_attr +=
-					'-\n`Attribute (prefix '+attr_name.prefix+')`\n' +
+					'-\n`Attribute (prefix ' + attr_name.prefix + ')`\n' +
 					'**Name**\t - \t' +
 					'**Description**\t - \t' +
 					'**Arguments** \n'
@@ -458,10 +479,12 @@ client.on('message', async message => {
 				args[1]
 			);
 
-			if(return_value)
+			if (return_value == 0)
 				message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
-			else
+			else if (return_value == 1)
 				message_reply(false, message, '**Attribute ' + args[0] + ' failed to updated**');
+			else if (return_value == 2)
+				message_reply(false, message, '**' + args[0] + ' is not an attribute**');
 			return;
 		} else if (args.length > 2) {
 			message_reply(false, message, '**You can only set one attribute at a time\n'
@@ -476,18 +499,17 @@ client.on('message', async message => {
 		return;
 	}
 
-	if (cmd === 'url?') {
-		var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-			'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-			'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-
-		if (!!pattern.test(args.join(' ')))
+	if (cmd === 'url') {
+		if (args.length === 2) {
+			edtr.create_url_channel(message.guild, args[0], args[1], url_list, message.member.id);
 			message.react('✔️');
-		else
-			message.react('❌');
+		} else if (args.length === 1) {
+			edtr.create_url_channel(message.guild, args[0], null, url_list, message.member.id);
+			message.react('✔️');
+		} else {
+			message_reply(false, message, '**' + config.prefix + 'url <channel_name> <category_name>**\n' +
+				'*(channel_name: mandatory, category_name: optional)*');
+		}
 	}
 
 	//testing processes
