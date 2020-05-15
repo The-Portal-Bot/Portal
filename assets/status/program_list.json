@@ -1,37 +1,49 @@
 {
 	"program_attributes": [
-		{	
+		{
 			"status": "Google Chrome",
 			"type": "browser",
-			"lang":
-			{
+			"lang": {
 				"en": "Chrome",
-				"gr": "Κρόμ"
+				"gr": "Κρόουμ"
 			}
 		},
-		{	
+		{
 			"status": "Spotify",
 			"type": "music",
-			"lang":
-			{
+			"lang": {
 				"en": "Spotify",
 				"gr": "Μουσική"
 			}
 		},
-		{	
+		{
 			"status": "Code",
 			"type": "code",
-			"lang":
-			{
+			"lang": {
 				"en": "VSCode",
-				"gr": "Βιεσκόντ"
+				"gr": "Βιεσκόουντ"
 			}
 		},
-		{	
+		{
+			"status": "Visual Studio Code",
+			"type": "code",
+			"lang": {
+				"en": "VSCode",
+				"gr": "Βιεσκόουντ"
+			}
+		},
+		{
+			"status": "Mozilla Firefox",
+			"type": "code",
+			"lang": {
+				"en": "Firefox",
+				"gr": "Πυραλεπού"
+			}
+		},
+		{
 			"status": "Discord",
 			"type": "chat",
-			"lang":
-			{
+			"lang": {
 				"en": "Discord",
 				"gr": "Ντίσκορντ"
 			}

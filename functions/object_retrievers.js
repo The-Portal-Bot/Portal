@@ -10,10 +10,10 @@ module.exports = {
 				if (portal_list[i].get_voice_list()[j].get_id() === id)
 					for (l = 0; l < games.game_attributes.length; l++)
 						if (current_status == games.game_attributes[l].status)
-							if (portal_list[i].get_voice_list()[j].get_lang() === 'en')
-								return games.game_attributes[l].lang.en;
-							else
+							if (portal_list[i].get_voice_list()[j].get_lang() === 'gr')
 								return games.game_attributes[l].lang.gr;
+							else
+								return games.game_attributes[l].lang.en;
 
 		// these loops work either position because there are encapsulated returns
 		for (i = 0; i < portal_list.length; i++)
@@ -21,10 +21,10 @@ module.exports = {
 				if (portal_list[i].get_voice_list()[j].get_id() === id)
 					for (l = 0; l < programs.program_attributes.length; l++)
 						if (current_status == programs.program_attributes[l].status)
-							if (portal_list[i].get_voice_list()[j].get_lang() === 'en')
-								return programs.program_attributes[l].lang.en;
-							else
+							if (portal_list[i].get_voice_list()[j].get_lang() === 'gr')
 								return programs.program_attributes[l].lang.gr;
+							else
+								return programs.program_attributes[l].lang.en;
 
 		return current_status;
 	}

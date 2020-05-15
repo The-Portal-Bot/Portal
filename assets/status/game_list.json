@@ -9,6 +9,14 @@
 			}
 		},
 		{
+			"status": "Heroes of the Storm",
+			"type": "game",
+			"lang": {
+				"en": "Heroes of the Storm",
+				"gr": "Ήρωες της Καταιγίδας"
+			}
+		},
+		{
 			"status": "Hearthstone",
 			"type": "game",
 			"lang": {
@@ -40,30 +48,30 @@
 				"gr": "Φορτνάιτ"
 			}
 		},
-						{
-							"status": "Don't Starve Together",
-							"type": "game",
-							"lang": {
-								"en": "Don't Starve Together",
-								"gr": "Μην Πεθάνετε Μαζί"
-							}
-						},
-						{
-							"status": "Apex Legends",
-							"type": "game",
-							"lang": {
-								"en": "Apex Legends",
-								"gr": "Κορυφαίοι Θρύλοι"
-							}
-						},
-						{
-							"status": "Apex Legends",
-							"type": "game",
-							"lang": {
-								"en": "Apex Legends",
-								"gr": "Κορυφαίοι Θρύλοι"
-							}
-						},
+		{
+			"status": "Don't Starve Together",
+			"type": "game",
+			"lang": {
+				"en": "Don't Starve Together",
+				"gr": "Μην Πεθάνετε Μαζί"
+			}
+		},
+		{
+			"status": "Apex Legends",
+			"type": "game",
+			"lang": {
+				"en": "Apex Legends",
+				"gr": "Κορυφαίοι Θρύλοι"
+			}
+		},
+		{
+			"status": "Apex Legends",
+			"type": "game",
+			"lang": {
+				"en": "Apex Legends",
+				"gr": "Κορυφαίοι Θρύλοι"
+			}
+		},
 		{
 			"status": "Overwatch",
 			"type": "game",

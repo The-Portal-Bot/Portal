@@ -1,5 +1,6 @@
-const regex = require('./functions/regex_interpreter.js');
-const editor = require('./functions/channel_manipulation.js');
+const regx = require('./functions/regex_interpreter.js');
+const edtr = require('./functions/channel_manipulation.js');
+const mngr = require('./functions/channel_manager.js');
 
 // Load up the discord.js library
 const Discord = require('discord.js');
@@ -41,7 +42,7 @@ client.on('guildDelete', guild => {
 
 client.on('presenceUpdate', (oldPresence, newPresence) => {
 	// This event triggers when the status of a guild member has changed
-	regex.generate_channel_names(newPresence.guild, portal_list);
+	mngr.generate_channel_names(newPresence.guild, portal_list);
 
 	for (i = 0; i < portal_list.length; i++) {
 		console.log(i + ') portal_list[' + i + '].id: ' + portal_list[i].id + 
@@ -55,84 +56,85 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 
 client.on('voiceStateUpdate', (oldState, newState) => {
 	// This event triggers when a member joins or leaves a voice channel
-	let new_user_channel = newState.voiceChannel; console.log('new_user_channel: ' + new_user_channel);
-	let old_user_channel = oldState.voiceChannel; console.log('old_user_channel: ' + old_user_channel);
+	let new_user_channel = newState.voiceChannel;
+	let old_user_channel = oldState.voiceChannel;
+
+	console.log('from: ' + old_user_channel + ' to ' + new_user_channel);
 
 	if (old_user_channel === undefined && new_user_channel !== undefined) { // Joined from undefined
 		console.log('undefined->existing');
 
-		if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // user joined portal channel
-			editor.create_voice_channel(newState, portal_list, newState.user.id);
-			regex.generate_channel_names(newState.guild, portal_list);
-		} else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // user joined voice channel
-			regex.generate_channel_names(newState.guild, portal_list);
+		if (edtr.included_in_portal_list(new_user_channel.id, portal_list)) { // user joined portal channel
+			edtr.create_voice_channel(newState, portal_list, newState.user.id);
+			mngr.generate_channel_names(newState.guild, portal_list);
+		} else if (edtr.included_in_voice_list(new_user_channel.id, portal_list)) { // user joined voice channel
+			mngr.generate_channel_names(newState.guild, portal_list);
 		}
 	} else if (new_user_channel === undefined && old_user_channel !== undefined) { // Left to undefined
 		console.log('existing->undefined');
 
-		if (editor.included_in_portal_list(old_user_channel.id, portal_list)) { // user left portal channel this part is handled before
-		} else if (editor.included_in_voice_list(old_user_channel.id, portal_list)) { // user left voice channel
+		if (edtr.included_in_portal_list(old_user_channel.id, portal_list)) { // user left portal channel this part is handled before
+		} else if (edtr.included_in_voice_list(old_user_channel.id, portal_list)) { // user left voice channel
 			if (old_user_channel.members.size === 0) {
-				editor.delete_voice_channel(old_user_channel, portal_list);
+				edtr.delete_voice_channel(old_user_channel, portal_list);
 			}
 		}
 	} else if (new_user_channel !== undefined && old_user_channel !== undefined) { // Moved from channel to channel
 		console.log('existing->existing');
 
-		if (editor.included_in_portal_list(old_user_channel.id, portal_list)) {
+		if (edtr.included_in_portal_list(old_user_channel.id, portal_list)) {
 			console.log('->source: portal_list');
-
-			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // this should not happen
+			console.log("outside portal_list.length:" + portal_list.length);
+			if (edtr.included_in_portal_list(new_user_channel.id, portal_list)) { // this should not happen
 				console.log('->dest: portal_list');
 				console.log('this should not happen error: portal_channel->portal_channel');
-			} else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // has been checked before
+			} else if (edtr.included_in_voice_list(new_user_channel.id, portal_list)) { // has been checked before
 				console.log('->dest: voice_list');
 				console.log('has been checked before');
-				regex.generate_channel_names(newState.guild, portal_list);
+				mngr.generate_channel_names(newState.guild, portal_list);
 			} else { // Left portal channel and joined another unknown
 				console.log('->dest: unknown');
-				regex.generate_channel_names(newState.guild, portal_list);
+				mngr.generate_channel_names(newState.guild, portal_list);
 			}
-		} else if (editor.included_in_voice_list(old_user_channel.id, portal_list)) {
+		} else if (edtr.included_in_voice_list(old_user_channel.id, portal_list)) {
 			console.log('->source: voice_list');
 
-			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // left created channel and joins portal
+			if (edtr.included_in_portal_list(new_user_channel.id, portal_list)) { // left created channel and joins portal
 				console.log('->dest: portal_list');
 
 				if (old_user_channel.members.size === 0) {
-					editor.delete_voice_channel(old_user_channel, portal_list);
+					edtr.delete_voice_channel(old_user_channel, portal_list);
 				}
-				editor.create_voice_channel(newState, portal_list, newState.user.id);
-				regex.generate_channel_names(newState.guild, portal_list);
-			} else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // Left created channel and joins another created
+				edtr.create_voice_channel(newState, portal_list, newState.user.id);
+				mngr.generate_channel_names(newState.guild, portal_list);
+			} else if (edtr.included_in_voice_list(new_user_channel.id, portal_list)) { // Left created channel and joins another created
 				console.log('->dest: voice_list');
 
 				if (old_user_channel.members.size === 0) {
-					editor.delete_voice_channel(old_user_channel, portal_list);
+					edtr.delete_voice_channel(old_user_channel, portal_list);
 				}
-				regex.generate_channel_names(newState.guild, portal_list);
+				mngr.generate_channel_names(newState.guild, portal_list);
 			} else { // Left created channel and joins another unknown
 				console.log('->dest: unknown');
 
 				if (old_user_channel.members.size === 0) {
-					editor.delete_voice_channel(old_user_channel, portal_list);
+					edtr.delete_voice_channel(old_user_channel, portal_list);
 				}
-				regex.generate_channel_names(newState.guild, portal_list);
+				mngr.generate_channel_names(newState.guild, portal_list);
 			}
-		}
-		else {
+		} else {
 			console.log('->source: unknown voice');
 
-			if (editor.included_in_portal_list(new_user_channel.id, portal_list)) { // Joined portal channel
+			if (edtr.included_in_portal_list(new_user_channel.id, portal_list)) { // Joined portal channel
 				console.log('->dest: portal_list');
 
-				editor.create_voice_channel(newState, portal_list, newState.user.id);
-				regex.generate_channel_names(newState.guild, portal_list);
+				edtr.create_voice_channel(newState, portal_list, newState.user.id);
+				mngr.generate_channel_names(newState.guild, portal_list);
 			}
-			else if (editor.included_in_voice_list(new_user_channel.id, portal_list)) { // left created channel and joins another created
+			else if (edtr.included_in_voice_list(new_user_channel.id, portal_list)) { // left created channel and joins another created
 				console.log('->dest: voice_list');
 
-				regex.generate_channel_names(newState.guild, portal_list);
+				mngr.generate_channel_names(newState.guild, portal_list);
 			}
 		}
 	} else if (new_user_channel === undefined && old_user_channel === undefined) {
@@ -167,10 +169,10 @@ client.on('message', async message => {
 
 	if (cmd === 'portal') {
 		if (args.length === 2) {
-			editor.create_portal_channel(message.guild, args[0], args[1], portal_list, message.member.id);
+			edtr.create_portal_channel(message.guild, args[0], args[1], portal_list, message.member.id);
 			message.react('✔️');
 		} else if (args.length === 1) {
-			editor.create_portal_channel(message.guild, args[0], null, portal_list, message.member.id);
+			edtr.create_portal_channel(message.guild, args[0], null, portal_list, message.member.id);
 			message.react('✔️');
 		} else {
 			message_reply(false, message, '**' + config.prefix + 'portal <channel_name> <category_name>**\n' +
@@ -180,7 +182,7 @@ client.on('message', async message => {
 
 	if (cmd === 'regex_portal') {
 		if (message.member.voiceChannel === undefined
-			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
+			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
 			message_reply(false, message,
 				'**You must be in portal\'s voice channel to change portal title**');
 			return;
@@ -196,7 +198,7 @@ client.on('message', async message => {
 						message.guild.channels.forEach((value) => {
 							if (value.id === portal_list[i].id) {
 								value.setName(
-									regex.regex_interpreter(
+									regx.regex_interpreter(
 										portal_list[i].regex_portal,
 										portal_list[i].id,
 										message.guild,
@@ -219,7 +221,7 @@ client.on('message', async message => {
 
 	if (cmd === 'regex_voice') {
 		if (message.member.voiceChannel === undefined
-			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
+			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
 			message_reply(false, message,
 				'**You must be in portal\'s voice channel to change voice title**');
 			return;
@@ -232,7 +234,7 @@ client.on('message', async message => {
 					if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
 						portal_list[i].regex_voice = args.join(' ');
 						message.member.voiceChannel.setName(
-							regex.regex_interpreter(
+							regx.regex_interpreter(
 								portal_list[i].regex_voice,
 								portal_list[i].id,
 								message.guild,
@@ -417,7 +419,7 @@ client.on('message', async message => {
 
 	if (cmd === 'run') {
 		if (message.member.voiceChannel === undefined
-			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
+			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
 			message_reply(false, message,
 				'**You must be in portal\'s voice channel to run regexes**');
 			return;
@@ -425,7 +427,7 @@ client.on('message', async message => {
 
 		message.channel.send('executing: ' + args.join(' '))
 			.then(sentMessage => {
-				sentMessage.edit(regex.regex_interpreter(
+				sentMessage.edit(regx.regex_interpreter(
 					args.join(' '),
 					message.member.voiceChannel.id,
 					message.member.guild,
@@ -440,78 +442,33 @@ client.on('message', async message => {
 	// set attributes
 	if (cmd === 'set') {
 		if (message.member.voiceChannel === undefined
-			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
+			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
 			message_reply(false, message,
 				'**You must be in a portal\'s voice channel to set attributes**');
 			return;
 		}
+
+		const attr = require('./assets/properties/attribute_list.json');
 		//check for type accuracy and make better
 		if (args.length === 2) {
-			if (args[0] === 'no_bots') {
-				for (i = 0; i < portal_list.length; i++) {
-					for (j = 0; j < portal_list[i].voice_list.length; j++) {
-						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
-							portal_list[i].voice_list[j].set_mmbr_cap(args[1]);
-							message_reply(true, message,
-								'**no_bots has been set to ' + args[1] + '**');
-							return;
-						}
-					}
-				}
-			} else if (args[0] === 'mmbr_cap') {
-				for (i = 0; i < portal_list.length; i++) {
-					for (j = 0; j < portal_list[i].voice_list.length; j++) {
-						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
-							portal_list[i].voice_list[j].set_mmbr_cap(args[1]);
-							message_reply(true, message,
-								'**mmbr_cap has been set to ' + args[1] + '**');
-							return;
-						}
-					}
-				}
-			} else if (args[0] === 'time_to_live') {
-				for (i = 0; i < portal_list.length; i++) {
-					for (j = 0; j < portal_list[i].voice_list.length; j++) {
-						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
-							portal_list[i].voice_list[j].set_time_to_live(args[1]);
-							message_reply(true, message,
-								'**time_to_live has been set to ' + args[1] + '**');
-							return;
-						}
-					}
-				}
-			} else if (args[0] === 'refresh_rate') {
-				for (i = 0; i < portal_list.length; i++) {
-					for (j = 0; j < portal_list[i].voice_list.length; j++) {
-						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
-							portal_list[i].voice_list[j].set_refresh_rate(args[1]);
-							message_reply(true, message,
-								'**refresh_rate has been set to ' + args[1] + '**');
-							return;
-						}
-					}
-				}
-			} else if (args[0] === 'lang') {
-				for (i = 0; i < portal_list.length; i++) {
-					for (j = 0; j < portal_list[i].voice_list.length; j++) {
-						if (portal_list[i].voice_list[j].id === message.member.voiceChannel.id) {
-							portal_list[i].voice_list[j].set_lang(args[1]);
-							message_reply(true, message,
-								'**lang has been set to ' + args[1] + '**');
-							return;
-						}
-					}
-				}
-			} else {
-				message_reply(false, message,
-					'**Attributes that can be changed are: ' +
-					'no_bots, mmbr_cap, time_to_live, refresh_rate, lang**');
-				return;
-			}
+			return_value = mngr.update_channel_attributes(
+				message.guild,
+				portal_list,
+				args[0],
+				args[1]
+			);
+
+			if(return_value)
+				message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
+			else
+				message_reply(false, message, '**Attribute ' + args[0] + ' failed to updated**');
+			return;
 		} else if (args.length > 2) {
-			message_reply(false, message, '**You can only set one attribute at a time\n***example: ./set no_bots true*');
+			message_reply(false, message, '**You can only set one attribute at a time\n'
+				+ '***example: ./set no_bots true*');
 		} else if (args.length < 2) {
-			message_reply(false, message, '**You should name the argument with value\n***example: ./set no_bots true*');
+			message_reply(false, message, '**You should name the argument with value\n'
+				+ '***example: ./set no_bots true*');
 		}
 
 		message_reply(false, message,

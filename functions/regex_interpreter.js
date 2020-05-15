@@ -1,6 +1,7 @@
 const object = require('./object_retrievers.js');
 
 module.exports = {
+
 	// variables $
 	vrbl_name: [
 		{
@@ -8,9 +9,7 @@ module.exports = {
 				let voice_number = undefined;
 				portal_list.forEach(portal => {
 					portal.voice_list.forEach((voice, key) => {
-						if (voice.id === id) {
-							voice_number = key + 1;
-						}
+						if (voice.id === id) voice_number = key + 1;
 					})
 				})
 				return voice_number;
@@ -20,9 +19,7 @@ module.exports = {
 			value: '##', func: (guild, id, portal_list) => {
 				let portal_number = undefined;
 				portal_list.forEach((portal, key) => {
-					if (portal.id === id) {
-						portal_number = key + 1;
-					}
+					if (portal.id === id) portal_number = key + 1;
 				})
 				return portal_number;
 			}
@@ -40,9 +37,7 @@ module.exports = {
 			value: 'crtr', func: (guild, id, portal_list) => {
 				portal_list.forEach(portal => {
 					portal.voice_list.forEach(voice => {
-						if (voice.id === id) {
-							return voice.creator;
-						}
+						if (voice.id === id) return voice.creator;
 					})
 				})
 			}
@@ -61,12 +56,11 @@ module.exports = {
 			value: 'mmbr_lst', func: (guild, id) => {
 				let mmbr_lst = [];
 				guild.channels.forEach(channel => {
-					if (channel.id === id) {
+					if (channel.id === id)
 						channel.members.forEach(member => {
 							mmbr_lst.push(member);
-						})
-					}
-				})
+						});
+				});
 				return mmbr_lst;
 			}
 		},
@@ -74,9 +68,7 @@ module.exports = {
 			value: 'mmbr_cnt', func: (guild, id) => {
 				let cnt = undefined;
 				guild.channels.forEach(channel => {
-					if (channel.id === id) {
-						cnt = channel.members.size;
-					}
+					if (channel.id === id) cnt = channel.members.size;
 				})
 				return cnt;
 			}
@@ -85,13 +77,10 @@ module.exports = {
 			value: 'mmbr_plg', func: (guild, id) => {
 				let cnt = 0;
 				guild.channels.forEach(channel => {
-					if (channel.id === id) {
+					if (channel.id === id)
 						channel.members.forEach((member) => {
-							if (member.presence.game !== null) {
-								cnt++;
-							}
+							if (member.presence.game !== null) cnt++;
 						})
-					}
 				})
 				return cnt;
 			}
@@ -101,10 +90,7 @@ module.exports = {
 			value: 'mmbr_lmt', func: (guild, id) => {
 				let cnt = undefined;
 				guild.channels.forEach(channel => {
-					if (channel.id === id) {
-						//console.log("Object.getOwnPropertyNames(channel)= ", Object.getOwnPropertyNames(channel));
-						cnt = channel.userLimit; //change
-					}
+					if (channel.id === id) cnt = channel.userLimit;
 				})
 				return cnt;
 			}
@@ -266,7 +252,8 @@ module.exports = {
 
 	is_pipe: function (arg) {
 		for (i = 0; i < this.pipe_name.length; i++)
-			if (String(arg).substring(1, (String(this.pipe_name[i].value).length + 1)) == this.pipe_name[i].value)
+			if (String(arg).substring(1, (String(this.pipe_name[i].value).length + 1)) 
+				== this.pipe_name[i].value)
 				return this.pipe_name[i].value;
 		return false;
 	}
@@ -274,7 +261,8 @@ module.exports = {
 
 	is_attribute: function (arg) {
 		for (i = 0; i < this.attr_name.length; i++)
-			if (String(arg).substring(1, (String(this.attr_name[i].value).length + 1)) == this.attr_name[i].value)
+			if (String(arg).substring(1, (String(this.attr_name[i].value).length + 1)) 
+				== this.attr_name[i].value)
 				return this.attr_name[i].value;
 		return false;
 	}
@@ -282,16 +270,18 @@ module.exports = {
 
 	if_expression_check: function (arg) {
 		if (String(arg).substring(0, 1) == '{') {
-			console.log('expression: ' + String(arg).substring(1, String(arg).indexOf('?')));
-			console.log('statemment1: ' + String(arg).substring(String(arg).indexOf('?') + 1, String(arg).indexOf(':')));
-			console.log('statemment2: ' + String(arg).substring(String(arg).indexOf(':') + 1, String(arg).indexOf('}')));
+			console.log('expression: ' + String(arg).substring(1, 
+				String(arg).indexOf('?')));
+			console.log('statemment1: ' + String(arg).substring(
+				String(arg).indexOf('?') + 1, String(arg).indexOf(':')));
+			console.log('statemment2: ' + String(arg).substring(
+				String(arg).indexOf(':') + 1, String(arg).indexOf('}')));
 		}
 		return false;
 	}
 	,
 
-
-
+	//
 
 	regex_interpreter: function (regex, id, guild, portal_list) {
 		if (regex === undefined) { return "regex is undefined"; }
@@ -340,25 +330,6 @@ module.exports = {
 			}
 		}
 		return new_channel_name;
-	}
-	,
-
-	generate_channel_names: function (guild, portal_list) {
-		let array_of_games = [];
-
-		guild.channels.forEach(channel => {
-			for (i = 0; i < portal_list.length; i++)
-				for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-					if (channel.id === portal_list[i].get_voice_list()[j].id) {
-						channel.setName(this.regex_interpreter(
-							portal_list[i].regex_voice,
-							portal_list[i].get_voice_list()[j].id,
-							guild,
-							portal_list
-						));
-						return
-					}
-		})
 	}
 
 };

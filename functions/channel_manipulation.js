@@ -14,6 +14,7 @@ module.exports =
 	,
 
 	included_in_voice_list: function (channel_id, portal_list) {
+		console.log("inside portal_list.length:" + portal_list.length);
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].get_voice_list().length; j++)
 				if (portal_list[i].get_voice_list()[j].get_id() === channel_id)
@@ -46,7 +47,7 @@ module.exports =
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$mmbr_cnt | $status_lst', [],
-						false, 0, 0, 0, 'gr',
+						false, 0, 0, 0, channel.position, 'gr',
 						this.portal_counter++ // not editable
 					));
 
@@ -63,7 +64,7 @@ module.exports =
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$mmbr_cnt | $status_lst', [],
-						false, 0, 0, 0, 'gr',
+						false, 0, 0, 0, channel.position, 'gr',
 						this.portal_counter++ // not editable				
 					));
 				})
@@ -75,14 +76,17 @@ module.exports =
 		state.voiceChannel.guild.createChannel('loading...', { type: 'voice' }, { bitrate: 64 })
 			.then(channel => {
 				for (i = 0; i < portal_list.length; i++)
-					if (portal_list[i].get_id() === state.voiceChannel.id)
+					if (portal_list[i].get_id() === state.voiceChannel.id) {
 						portal_list[i].get_voice_list().push(
 							new classes.voice_channel(
-								channel.id, creator_id, portal_list[i].regex_voice,
-								false, 0, 0, 0,
+								channel.id, creator_id,
+								false, 0, 0, 0, channel.id, 
 								this.portal_counter++ // not editable
 							)
 						);
+					} else {
+						console.log('COULD NOT ADD TO PORTAL LIST');
+					}
 
 				// doesn't have category
 				if (state.voiceChannel.parentID !== null)
