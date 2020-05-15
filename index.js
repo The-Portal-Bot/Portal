@@ -155,6 +155,8 @@ client.on('message', async message => {
 	if (message.author.bot) return;
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
+	// Ignore any direct message
+	if (message.channel.type === 'dm') return;
 
 	// Separate function name, and arguments of function
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
@@ -173,9 +175,11 @@ client.on('message', async message => {
 		}
 	}
 
-	if (cmd === 'portal_regex') {
-		if (message.member.voiceChannel === undefined) {
-			message_reply(false, message, '**You must be in portal\'s voice channel to change the portal regex **');
+	if (cmd === 'regex_portal') {
+		if (message.member.voiceChannel === undefined
+			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
+			message_reply(false, message,
+				'**You must be in portal\'s voice channel to change portal title**');
 			return;
 		}
 
@@ -210,10 +214,11 @@ client.on('message', async message => {
 		}
 	}
 
-	if (cmd === 'voice_regex') {
-		if (message.member.voiceChannel === undefined) {
+	if (cmd === 'regex_voice') {
+		if (message.member.voiceChannel === undefined
+			|| !editor.included_in_voice_list(message.member.voiceChannel.id, portal_list)) {
 			message_reply(false, message,
-				'**You must be in portal\'s voice channel to change the voice regex**');
+				'**You must be in portal\'s voice channel to change voice title**');
 			return;
 		}
 

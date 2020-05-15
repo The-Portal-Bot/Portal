@@ -48,12 +48,20 @@ module.exports = {
 				channel.members.forEach( (member_game) => {
 					if(member_game.presence.game !== null)
 						array_of_statuses.push(this.status_aliases(member_game.presence.game));
-				})
+				});
 				if(array_of_statuses.length === 0)
 					array_of_statuses.push("chilling");
+				else
+					array_of_statuses = array_of_statuses.filter(function (item) {
+						var type = typeof item;
+						if (type in prims)
+							return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
+						else
+							return objs.indexOf(item) >= 0 ? false : objs.push(item);
+					});
+
 			}
 		})
-
 		return array_of_statuses;
 	}
 };

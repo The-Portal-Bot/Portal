@@ -26,7 +26,7 @@ module.exports =
 		for (i = 0; i < portal_list.length; i++) {
 			for (j = 0; j < portal_list[i].get_voice_list().length; j++) {
 				if (portal_list[i].get_voice_list()[j].get_id() === channel_to_delete.id) {
-					portal.get_voice_list().splice(j, 1);
+					portal_list[i].get_voice_list().splice(j, 1);
 				}
 			}
 		}

@@ -149,49 +149,27 @@ module.exports = {
 		},
 		{
 			value: 'ppls_cnt', func: (str, count) => {
-				let words = str.split(" ");
-				console.log("words=" + words)
-				let mf = 1;
-				let m = 0;
-				let item;
-				for (let i = 0; i < words.length; i++)  
-				{
-					for (let j = i; j < words.length; j++) 
-					{
-						if (words[i] == words[j])  
-							m++; 
-						if (mf < m) 
-						{
-							mf = m;    
-							item = words[i]; 
-						}
+				let words = str.split(" "), mf = 1, m = 0, item = words[0];
+				for (let i = 0; i < words.length; i++) {
+					for (let j = i; j < words.length; j++) {
+						if (words[i] == words[j]) { m++; }
+						if (mf < m) { mf = m; item = words[i]; }
 					}
-					m = 0; 
+					m = 0;
 				}
 				return mf;
 			}
 		},
 		{
 			value: 'ppls', func: (str, count) => {
-				let words = str.split(" ");
-				let mf = 1;
-				let m = 0;
-				let item;
-				for (let i = 0; i < words.length; i++)  
-				{
-					for (let j = i; j < words.length; j++) 
-					{
-						if (words[i] == words[j])  
-							m++; 
-						if (mf < m) 
-						{
-							mf = m;    
-							item = words[i]; 
-						}
+				let words = str.split(" "), mf = 1, m = 0, item = words[0];
+				for (let i = 0; i < words.length; i++) {
+					for (let j = i; j < words.length; j++) {
+						if (words[i] == words[j]) { m++; } 
+						if (mf < m) { mf = m; item = words[i]; }
 					}
 					m = 0; 
 				}
-
 				return item;
 			}
 		},
@@ -357,13 +335,9 @@ module.exports = {
 	generate_channel_names: function (guild, portal_list) {
 		let array_of_games = [];
 
-		// for each channel in guild
 		guild.channels.forEach(channel => {
-			// for each channel in portal list
 			for (i = 0; i < portal_list.length; i++)
-				// for each channel in voice list of current portal channel
 				for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-					// if current channel is in voice list of a portal channel
 					if (channel.id === portal_list[i].get_voice_list()[j].id) {
 						channel.setName(this.regex_interpreter(
 							portal_list[i].regex_voice,
