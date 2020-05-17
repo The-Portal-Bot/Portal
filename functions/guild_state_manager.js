@@ -10,12 +10,13 @@ module.exports =
     }
     ,
 
-    delete_guild: function (channel_to_delete, portal_list) {
+    insert_guild: function (guild_id, guild_list) {
+        guild_list[guild_id] = {"portal_list": [{}], "url_list": [{}]};
     }
     ,
 
-    insert_guild: function (guild_id, guild_list, path) {
-        guild_list[guild_id] = [{"portal_list": [], "url_list": []}];
+    delete_guild: function (guild_id, guild_list) {
+        delete guild_list.guild_id;
     }
 
 };
