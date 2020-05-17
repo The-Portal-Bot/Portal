@@ -7,17 +7,16 @@ module.exports =
 
 	included_in_portal_list: function (channel_id, portal_list) {
 		for (i = 0; i < portal_list.length; i++)
-			if (portal_list[i].get_id() === channel_id)
+			if (portal_list[i].id === channel_id)
 				return true;
 		return false;
 	}
 	,
 
 	included_in_voice_list: function (channel_id, portal_list) {
-		console.log("inside portal_list.length:" + portal_list.length);
 		for (i = 0; i < portal_list.length; i++)
-			for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-				if (portal_list[i].get_voice_list()[j].get_id() === channel_id)
+			for (j = 0; j < portal_list[i].voice_list.length; j++)
+				if (portal_list[i].voice_list[j].id === channel_id)
 					return true;
 		return false;
 	}
@@ -25,9 +24,9 @@ module.exports =
 
 	delete_voice_channel: function (channel_to_delete, portal_list) {
 		for (i = 0; i < portal_list.length; i++)
-			for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-				if (portal_list[i].get_voice_list()[j].get_id() === channel_to_delete.id)
-					portal_list[i].get_voice_list().splice(j, 1);
+			for (j = 0; j < portal_list[i].voice_list.length; j++)
+				if (portal_list[i].voice_list[j].id === channel_to_delete.id)
+					portal_list[i].voice_list.splice(j, 1);
 
 		channel_to_delete.delete()
 			.then(g => console.log(`Deleted channel with id: ${g}`))
@@ -76,17 +75,14 @@ module.exports =
 		state.voiceChannel.guild.createChannel('loading...', { type: 'voice' }, { bitrate: 64 })
 			.then(channel => {
 				for (i = 0; i < portal_list.length; i++)
-					if (portal_list[i].get_id() === state.voiceChannel.id) {
-						portal_list[i].get_voice_list().push(
+					if (portal_list[i].id === state.voiceChannel.id)
+						portal_list[i].voice_list.push(
 							new classes.voice_channel(
 								channel.id, creator_id,
 								false, 0, 0, 0, channel.id, 
 								this.portal_counter++ // not editable
 							)
 						);
-					} else {
-						console.log('COULD NOT ADD TO PORTAL LIST');
-					}
 
 				// doesn't have category
 				if (state.voiceChannel.parentID !== null)

@@ -25,11 +25,27 @@
 			}
 		},
 		{
-			"status": "Visual Studio Code",
+			"status": "Code",
 			"type": "code",
 			"lang": {
 				"en": "VSCode",
 				"gr": "Οπτικό Στούντιο Κώδικα"
+			}
+		},
+		{
+			"status": "IntelliJ IDEA",
+			"type": "code",
+			"lang": {
+				"en": "IntelliJ IDEA",
+				"gr": "ΈξυπνοΤζει ΙΔΕΑ"
+			}
+		},
+		{
+			"status": "Sublime Text",
+			"type": "code",
+			"lang": {
+				"en": "Sublime Tex",
+				"gr": "Πανέμορφο Κείμενο"
 			}
 		},
 		{

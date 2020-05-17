@@ -228,12 +228,28 @@
 			"status": "DARK SOULS™ III",
 			"type": "game",
 			"lang": {
-				"en": "DARK SOULS 3",
-				"gr": "Μαύρες Ψυχές 3"
+				"en": "DARK SOULS III",
+				"gr": "Μαύρες Ψυχές III"
+			}
+		},
+		{
+			"status": "DARK SOULS III",
+			"type": "game",
+			"lang": {
+				"en": "DARK SOULS III",
+				"gr": "Μαύρες Ψυχές III"
 			}
 		},
 		{
 			"status": "DARK SOULS™ II",
+			"type": "game",
+			"lang": {
+				"en": "DARK SOULS II",
+				"gr": "Μαύρες Ψυχές II"
+			}
+		},
+		{
+			"status": "DARK SOULS II",
 			"type": "game",
 			"lang": {
 				"en": "DARK SOULS II",
