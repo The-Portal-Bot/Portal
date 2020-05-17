@@ -5,9 +5,9 @@ Features:
 * Automatically generates voice channels
 * Automatically updates the title of the channel in accordance to your guidlines
 * Assignes and strips roles forom users with a siple reaction press
-
+<br><br />
 ***
-
+<br><br />
 ## Commands
 **Portal prefix: ./**
 
