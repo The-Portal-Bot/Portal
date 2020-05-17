@@ -7,7 +7,7 @@ Features:
 * Assignes and strips roles forom users with a siple reaction press
 <br><br />
 ***
-<br><br />
+
 ## Commands
 **Portal prefix: ./**
 
