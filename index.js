@@ -1,4 +1,3 @@
-// Libraries
 const fs = require('file-system');
 const guild_json_path = "./server_storage/guild_list.json";
 
@@ -11,6 +10,7 @@ const gmng = require('./functions/guild_state_manager');
 // let guilds = require('./server_storage/guild_list.json');
 let guild_json = fs.readFileSync(guild_json_path);
 let portal_guilds = JSON.parse(guild_json);
+
 // Load up the discord.js library
 const Discord = require('discord.js');
 
@@ -22,24 +22,7 @@ const client = new Discord.Client();
 // config.prefix contains the message prefix.
 const config = require('./config.json');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// FUNCTIONS ------------------------------------------------------------------------------------ \\
 
 update_guild_json = function (force) {
 	console.log('updating guild json');
@@ -49,9 +32,6 @@ update_guild_json = function (force) {
 		fs.writeFileSync(guild_json_path, portal_guilds_json);
 	else
 		fs.writeFile(guild_json_path, portal_guilds_json);
-	// setTimeout(() => {
-	// 	fs.writeFile(guild_json_path, portal_guilds_json);
-	// }, 1000);
 }
 
 message_reply = function (status, msg, str) {
@@ -72,23 +52,7 @@ is_url = function (message) {
 		message.delete();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// LISTENERS ------------------------------------------------------------------------------------ \\
 
 //#endregion Listeners
 client.on('ready', () => {
@@ -253,20 +217,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 })
 //#endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// MESSAGE LISTENER ----------------------------------------------------------------------------- \\
 
 //#region Message async reader
 client.on('message', async message => {
@@ -292,12 +243,6 @@ client.on('message', async message => {
 	// Separate function name, and arguments of function
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
-
-	if (cmd === 'save') {
-		console.log('SAVE: ' + JSON.stringify(portal_guilds));
-		update_guild_json(true);
-		return;
-	}
 
 	if (cmd === 'portal') {
 		if (args.length === 2) {
@@ -645,6 +590,12 @@ client.on('message', async message => {
 		gmng.delete_guild(message.guild.id, portal_guilds);
 		gmng.insert_guild(message.guild.id, portal_guilds, guild_json_path);
 		
+		update_guild_json(true);
+		return;
+	}
+
+	if (cmd === 'save') {
+		console.log('SAVE: ' + JSON.stringify(portal_guilds));
 		update_guild_json(true);
 		return;
 	}
