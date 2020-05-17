@@ -170,49 +170,49 @@ module.exports = {
 		{
 			value: 'no_bots', func: (value, id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-						if (id === portal_list[i].get_voice_list()[j].id)
-							return portal_list[i].get_voice_list()[j].get_no_bots;
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].no_bots;
 			}
 		},
 		{
 			value: 'mmbr_cap', func: (value, id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-						if (id === portal_list[i].get_voice_list()[j].id)
-							return portal_list[i].get_voice_list()[j].get_mmbr_cap();
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].mmbr_cap;
 			}
 		},
 		{
 			value: 'time_to_live', func: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-						if (id === portal_list[i].get_voice_list()[j].id)
-							return portal_list[i].get_voice_list()[j].get_time_to_live();
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].time_to_live;
 			}
 		},
 		{
 			value: 'refresh_rate', func: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-						if (id === portal_list[i].get_voice_list()[j].id)
-							return portal_list[i].get_voice_list()[j].get_refresh_rate();
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].refresh_rate;
 			}
 		},
 		{
 			value: 'lang', func: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-						if (id === portal_list[i].get_voice_list()[j].id)
-							return portal_list[i].get_voice_list()[j].get_lang();
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].lang;
 			}
 		},
 		{
 			value: 'count', func: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].get_voice_list().length; j++)
-						if (id === portal_list[i].get_voice_list()[j].id)
-							return portal_list[i].get_voice_list()[j].get_count();
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].count();
 			}
 		},
 	],
@@ -320,7 +320,7 @@ module.exports = {
 				let attr = this.is_attribute(regex.substring(i));
 
 				if (attr) {
-					new_channel_name += this.get_attr_data(attr, id, portal_list);
+					new_channel_name += this.attr_data(attr, id, portal_list);
 					i += attr.length;
 				} else {
 					new_channel_name += regex[i];
