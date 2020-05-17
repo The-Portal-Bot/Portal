@@ -1,7 +1,10 @@
+[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png
+
+
 # [Portal](https://github.com/keybraker/portal-discord-bot)
 A feature-rich channel manager for discord.
 
-![alt text](https://...)
+![alt text][logo]
 
 Features:
 * Automatically generates voice channels

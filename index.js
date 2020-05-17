@@ -30,20 +30,6 @@ const config = require('./config.json');
 
 
 
-console.log('INIT guild[' + '705112209985896529' + ']');
-for (i = 0; i < portal_guilds['705112209985896529']['portal_list'].length; i++) {
-	console.log('  -> portal_' + i + ') ' +
-		'[\'portal_list\'][' + i + '].id: ' +
-		portal_guilds['705112209985896529']['portal_list'][i].id +
-		'.voice_list.length: ' +
-		portal_guilds['705112209985896529']['portal_list'][i].voice_list.length);
-	for (j = 0; j < portal_guilds['705112209985896529']['portal_list'][i].voice_list.length; j++) {
-		console.log('   -> voice_' + j + ') voice_list[' + j + '].id: ' +
-			portal_guilds['705112209985896529']['portal_list'][i].voice_list[j].id);
-	}
-}
-console.log('\n');
-
 
 
 
@@ -145,26 +131,29 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 	if (!gmng.included_in_guild_list(newPresence.guild.id, portal_guilds)) {
 		// den mporo na katalavo giati to kanei, sumbainei otan molis anoikso to server valo 
 		// na paizei mousikh sto spotify
-		console.log(newPresence.guild.id + ' PRESENCE SOURCE MUST BE INVESTIGATED');
+		console.log('Member (' + newPresence.displayName + ') who is a member of a handled server,' +
+			' has changed presence but is in another server (' + newPresence.guild.id + ').\n');
 		return;
 	}
 
 	mngr.generate_channel_names(newPresence.guild, 
 		portal_guilds[newPresence.guild.id]['portal_list']);
 
-	console.log('guild[' + newPresence.guild.id + ']');
+	console.log('guild[' + newPresence.guild.id + ']: [');
 	for (i = 0; i < portal_guilds[newPresence.guild.id]['portal_list'].length; i++) {
-		console.log('  -> portal_' + i + ') ' +
+		console.log('\t{ portal_' + i + ') ' +
 			'[\'portal_list\'][' + i + '].id: ' +
 			portal_guilds[newPresence.guild.id]['portal_list'][i].id +
-			'.voice_list.length: ' +
-			portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length);
+			'.length(' +
+			portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length +
+			'}: [');
 		for (j = 0; j < portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length; j++) {
-			console.log('   -> voice_' + j + ') voice_list[' + j + '].id: ' +
-				portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list[j].id);
+			console.log('\t\t{ voice_' + j + ') voice_list[' + j + '].id: ' +
+				portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list[j].id + '}');
 		}
+		console.log('\t]');
 	}
-	console.log('\n');
+	console.log(']\n');
 
 	return;
 });
