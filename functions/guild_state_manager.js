@@ -11,7 +11,7 @@ module.exports =
     ,
 
     insert_guild: function (guild_id, guild_list) {
-        guild_list[guild_id] = {"portal_list": [{}], "url_list": [{}]};
+        guild_list[guild_id] = {"portal_list": [], "url_list": []};
     }
     ,
 
