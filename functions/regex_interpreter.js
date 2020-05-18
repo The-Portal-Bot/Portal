@@ -1,4 +1,5 @@
 const object = require('./object_retrievers.js');
+const moment = require('moment'); 
 
 module.exports = {
 
@@ -24,15 +25,15 @@ module.exports = {
 				return portal_number;
 			}
 		},
-		{ value: 'date', func: () => { let date = new Date(); return date; } },
-		{ value: 'tday', func: () => { let date = new Date(); return date.getDate(); } },
-		{ value: 'nday', func: () => { let date = new Date(); return date.getDay(); } },
-		{ value: 'mnth', func: () => { let date = new Date(); return date.getMonth(); } },
-		{ value: 'year', func: () => { let date = new Date(); return date.getFullYear(); } },
-		{ value: 'time', func: () => { let date = new Date(); return date.getTime(); } },
-		{ value: 'hour', func: () => { let date = new Date(); return date.getHours(); } },
-		{ value: 'mint', func: () => { let date = new Date(); return date.getMinutes(); } },
-		{ value: 'scnd', func: () => { let date = new Date(); return date.getSeconds(); } },
+		{ value: 'date', func: () => { return moment().locale("gr").subtract(10, 'days').calendar(); } },
+		{ value: 'tday', func: () => { return moment().locale("gr").format('dddd'); } },
+		{ value: 'nday', func: () => { return moment().locale("gr").format('dddd'); } },
+		{ value: 'mnth', func: () => { return moment().locale("gr").format('mmmm'); } },
+		{ value: 'year', func: () => { return moment().locale("gr").format('yyyy'); } },
+		{ value: 'time', func: () => { return moment().locale("gr").format('h:mm:ss'); } },
+		{ value: 'hour', func: () => { return moment().locale("gr").format('h'); } },
+		{ value: 'mint', func: () => { return moment().locale("gr").format('mm'); } },
+		{ value: 'scnd', func: () => { return moment().locale("gr").format('ss'); } },
 		{
 			value: 'crtr', func: (guild, id, portal_list) => {
 				portal_list.forEach(portal => {

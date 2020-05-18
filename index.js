@@ -92,30 +92,28 @@ client.on('guildDelete', guild => {
 client.on('presenceUpdate', (oldPresence, newPresence) => {
 	// This event triggers when the status of a guild member has changed
 
-	if (!gmng.included_in_guild_list(newPresence.guild.id, portal_guilds)) {
-		// den mporo na katalavo giati to kanei, sumbainei otan molis anoikso to server valo 
-		// na paizei mousikh sto spotify
+	if (!gmng.included_in_portal_guilds(newPresence.guild.id, portal_guilds)) {
 		console.log('Member (' + newPresence.displayName + ') who is a member of a handled server,' +
-			' has changed presence but is in another server (' + newPresence.guild.id + ').\n');
+			' has changed presence, but is in another server (' + newPresence.guild.id + ').\n');
 		return;
+	} else {
+		console.log('Member (' + newPresence.displayName + ') has changed presence,' +
+			' and is controlled server (' + newPresence.guild.id + ').\n');
 	}
 
 	mngr.generate_channel_names(newPresence.guild, 
 		portal_guilds[newPresence.guild.id]['portal_list']);
 
-	console.log('guild[' + newPresence.guild.id + ']: [');
+	console.log(newPresence.guild.id + '.portal_list\n[');
 	for (i = 0; i < portal_guilds[newPresence.guild.id]['portal_list'].length; i++) {
-		console.log('\t{ portal_' + i + ') ' +
-			'[\'portal_list\'][' + i + '].id: ' +
-			portal_guilds[newPresence.guild.id]['portal_list'][i].id +
-			'.length(' +
-			portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length +
-			'}: [');
+		console.log('\t' + i + '. ' + portal_guilds[newPresence.guild.id]['portal_list'][i].id 
+		+ '.voice_list\n\t[');
+
 		for (j = 0; j < portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length; j++) {
-			console.log('\t\t{ voice_' + j + ') voice_list[' + j + '].id: ' +
-				portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list[j].id + '}');
+			console.log('\t\t' + j + '. {' 
+			+ portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list[j].id + '}');
 		}
-		console.log('\t]');
+		console.log('\t],\n');
 	}
 	console.log(']\n');
 

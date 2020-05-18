@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "discord.js": "^11.6.4",
-    "file-system": "^2.2.2"
+    "file-system": "^2.2.2",
+    "moment": "^2.25.3"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"
