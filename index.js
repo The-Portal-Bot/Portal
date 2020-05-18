@@ -104,7 +104,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 	mngr.generate_channel_names(newPresence.guild, 
 		portal_guilds[newPresence.guild.id]['portal_list']);
 
-	console.log(newPresence.guild.id + '.portal_list\n[');
+	console.log(newPresence.guild.id + '\n.portal_list\n[');
 	for (i = 0; i < portal_guilds[newPresence.guild.id]['portal_list'].length; i++) {
 		console.log('\t' + i + '. ' + portal_guilds[newPresence.guild.id]['portal_list'][i].id 
 		+ '.voice_list\n\t[');
@@ -115,7 +115,12 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 		}
 		console.log('\t],\n');
 	}
-	console.log(']\n');
+	console.log('],');
+	console.log(newPresence.guild.id + '\n.url_list\n[');
+	for (i = 0; i < portal_guilds[newPresence.guild.id]['url_list'].length; i++) {
+		console.log('\t' + i + '. ' + portal_guilds[newPresence.guild.id]['url_list'][i].id);
+	}
+	console.log(']');
 
 	return;
 });

@@ -4,7 +4,6 @@ const programs = require('../assets/status/program_list.json');
 module.exports = {
 	status_aliases: function (current_status, portal_list, id) {
 
-		// these loops work either position because there are encapsulated returns
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].voice_list.length; j++)
 				if (portal_list[i].voice_list[j].id === id)
@@ -15,7 +14,6 @@ module.exports = {
 							else
 								return games.game_attributes[l].lang.en;
 
-		// these loops work either position because there are encapsulated returns
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].voice_list.length; j++)
 				if (portal_list[i].voice_list[j].id === id)
