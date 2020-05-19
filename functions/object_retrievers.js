@@ -28,21 +28,26 @@ module.exports = {
 	}
 	,
 
-	get_status_list: function (guild, id, portal_list) {
-		let array_of_statuses = [];
+get_status_list: function (guild, id, portal_list) {
+	let array_of_statuses = [];
 
-		guild.channels.forEach(channel => {
-			if (channel.id === id) {
-				channel.members.forEach((member_game) => {
-					if (member_game.presence.game !== null)
-						array_of_statuses.push(this.status_aliases(member_game.presence.game, portal_list, id));
-				});
-				if (array_of_statuses.length === 0)
-					array_of_statuses.push("chilling");
+	guild.channels.some(channel => {
+		if (channel.id === id) {
+			channel.members.forEach((member) => {
+				if (member.presence.game !== null) {
+					let status = this.status_aliases(member.presence.game, portal_list, id);
+					if (!array_of_statuses.includes(status))
+						array_of_statuses.push(status);
+				}
+			});
+			if (array_of_statuses.length === 0)
+				if (portal_list[i].voice_list[j].lang === 'gr')
+					array_of_statuses.push("Άραγμα");
 				else
-					array_of_statuses = array_of_statuses.filter((v, i, a) => a.indexOf(v) === i);
-			}
-		})
-		return array_of_statuses;
-	}
+					array_of_statuses.push("Chilling");
+			return;
+		}
+	})
+	return array_of_statuses;
+}
 };

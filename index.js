@@ -522,31 +522,26 @@ client.on('message', async message => {
 
 	if (cmd === 'set') { // set attributes
 		if (message.member.voiceChannel === undefined
-			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_guilds[message.guild.id]['portal_list'])) {
+			|| !edtr.included_in_voice_list(message.member.voiceChannel.id,
+				portal_guilds[message.guild.id]['portal_list'])) {
 			message_reply(false, message,
 				'**You must be in a portal\'s voice channel to set attributes**');
-		} else if (args.length === 2) { //check for type accuracy and make better
+		} else if (args.length > 1) { // check for type accuracy and make better
 			return_value = mngr.update_channel_attributes(
-				message.guild,
+				message,
 				portal_guilds[message.guild.id]['portal_list'],
-				args[0], args[1]
+				args
 			);
 
-			if (return_value == 0)
+			if (return_value === 1)
 				message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
-			else if (return_value == 1)
-				message_reply(false, message, '**Attribute ' + args[0] + ' failed to updated**');
-			else if (return_value == 2)
+			else if (return_value === 0)
+				message_reply(false, message, '**Attribute ' + args[0] + ' failed to update**');
+			else if (return_value === -1)
 				message_reply(false, message, '**' + args[0] + ' is not an attribute**');
-		} else if (args.length > 2) {
-			message_reply(false, message, '**You can only set one attribute at a time\n'
-				+ '***example: ./set no_bots true*');
-		} else if (args.length < 2) {
-			message_reply(false, message, '**You should name the argument with value\n'
-				+ '***example: ./set no_bots true*');
+		} else {
+			message_reply(false, message, '**Error with set, ***example: ./set no_bots true*');
 		}
-		message_reply(false, message,
-			'**You must be in portal\'s voice channel to set attributes**');
 
 		update_guild_json(true);
 		return;

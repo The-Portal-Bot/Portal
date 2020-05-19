@@ -7,7 +7,17 @@
 			"args": "!true/false"
 		},
 		{
-			"name": "mmbr_cap",
+			"name": "regex_voice",
+			"value": "set the voice of you current voice channel",
+			"args": "!regex"
+		},
+		{
+			"name": "regex_portal",
+			"value": "set the portal of you current voice channel",
+			"args": "!regex"
+		},
+		{
+			"name": "member_cap",
 			"value": "maximum number of members allowed",
 			"args": "!number of maximum members"
 		},
@@ -22,19 +32,14 @@
 			"args": "!number in seconds"
 		},
 		{
-			"name": "lang",
+			"name": "locale",
 			"value": "language used in statuses",
 			"args": "en/gr"
 		},
 		{
-			"name": "pos",
+			"name": "position",
 			"value": "position of channel",
 			"args": "number"
-		},
-		{
-			"name": "count",
-			"value": "position (index) in array",
-			"args": "readonly"
 		}
 	]
 }
