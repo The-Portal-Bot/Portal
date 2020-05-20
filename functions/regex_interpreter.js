@@ -177,11 +177,11 @@ module.exports = {
 			}
 		},
 		{
-			value: 'lang', get: (value, id, portal_listn) => {
+			value: 'locale', get: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].lang;
+							return portal_list[i].voice_list[j].locale;
 			}
 		},
 		{

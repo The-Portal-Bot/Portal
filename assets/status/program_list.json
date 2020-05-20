@@ -3,7 +3,7 @@
 		{
 			"status": "Google Chrome",
 			"type": "browser",
-			"lang": {
+			"locale": {
 				"en": "Chrome",
 				"gr": "Κρόουμ"
 			}
@@ -11,7 +11,7 @@
 		{
 			"status": "Spotify",
 			"type": "music",
-			"lang": {
+			"locale": {
 				"en": "Spotify",
 				"gr": "Μουσική"
 			}
@@ -19,7 +19,7 @@
 		{
 			"status": "Code",
 			"type": "code",
-			"lang": {
+			"locale": {
 				"en": "VSCode",
 				"gr": "Οπτικό Στούντιο Κώδικα"
 			}
@@ -27,7 +27,7 @@
 		{
 			"status": "Code",
 			"type": "code",
-			"lang": {
+			"locale": {
 				"en": "VSCode",
 				"gr": "Οπτικό Στούντιο Κώδικα"
 			}
@@ -35,7 +35,7 @@
 		{
 			"status": "IntelliJ IDEA",
 			"type": "code",
-			"lang": {
+			"locale": {
 				"en": "IntelliJ IDEA",
 				"gr": "ΈξυπνοΤζει ΙΔΕΑ"
 			}
@@ -43,7 +43,7 @@
 		{
 			"status": "Sublime Text",
 			"type": "code",
-			"lang": {
+			"locale": {
 				"en": "Sublime Tex",
 				"gr": "Πανέμορφο Κείμενο"
 			}
@@ -51,7 +51,7 @@
 		{
 			"status": "Mozilla Firefox",
 			"type": "code",
-			"lang": {
+			"locale": {
 				"en": "Firefox",
 				"gr": "Πυραλεπού"
 			}
@@ -59,7 +59,7 @@
 		{
 			"status": "Discord",
 			"type": "chat",
-			"lang": {
+			"locale": {
 				"en": "Discord",
 				"gr": "Ντίσκορντ"
 			}

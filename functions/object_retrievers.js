@@ -9,20 +9,20 @@ module.exports = {
 				if (portal_list[i].voice_list[j].id === id)
 					for (l = 0; l < games.game_attributes.length; l++)
 						if (current_status == games.game_attributes[l].status)
-							if (portal_list[i].voice_list[j].lang === 'gr')
-								return games.game_attributes[l].lang.gr;
+							if (portal_list[i].voice_list[j].locale === 'gr')
+								return games.game_attributes[l].locale.gr;
 							else
-								return games.game_attributes[l].lang.en;
+								return games.game_attributes[l].locale.en;
 
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].voice_list.length; j++)
 				if (portal_list[i].voice_list[j].id === id)
 					for (l = 0; l < programs.program_attributes.length; l++)
 						if (current_status == programs.program_attributes[l].status)
-							if (portal_list[i].voice_list[j].lang === 'gr')
-								return programs.program_attributes[l].lang.gr;
+							if (portal_list[i].voice_list[j].locale === 'gr')
+								return programs.program_attributes[l].locale.gr;
 							else
-								return programs.program_attributes[l].lang.en;
+								return programs.program_attributes[l].locale.en;
 
 		return current_status;
 	}
@@ -41,10 +41,13 @@ get_status_list: function (guild, id, portal_list) {
 				}
 			});
 			if (array_of_statuses.length === 0)
-				if (portal_list[i].voice_list[j].lang === 'gr')
-					array_of_statuses.push("Άραγμα");
-				else
-					array_of_statuses.push("Chilling");
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (portal_list[i].voice_list[j].id === id)
+							if (portal_list[i].voice_list[j].locale === 'gr')
+								array_of_statuses.push("Άραγμα");
+							else
+								array_of_statuses.push("Chilling");
 			return;
 		}
 	})

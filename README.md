@@ -85,7 +85,7 @@ no_bots | bool | false | _no bots allowed_
 mmbr_cap | num | infinite | _maximum number of members allowed_
 time_to_live | num | infinite | _time to live_
 refresh_rate | num | on presence update | _how often titles are being refreshed_
-lang | string | gr/en | _language used in statuses_
+locale | string | gr/en | _language used in statuses_
 pos | num | beneath portal | _position of channel_
 count | num | spawn number | _position (index) in array_
 ***
