@@ -1,6 +1,31 @@
 {
     "705112209985896529": {
-        "portal_list": [],
+        "portal_list": [
+            {
+                "id": "712778126324662292",
+                "creator_id": "228666893068795905",
+                "regex_portal": "Tsia",
+                "regex_voice": "G$#-P$mmbr_cnt | $status_lst",
+                "voice_list": [
+                    {
+                        "id": "712778352720740412",
+                        "creator_id": "228666893068795905",
+                        "no_bots": false,
+                        "member_cap": 0,
+                        "time_to_live": 0,
+                        "refresh_rate": 0,
+                        "position": 44,
+                        "locale": "gr"
+                    }
+                ],
+                "no_bots": false,
+                "member_cap": 0,
+                "time_to_live": 0,
+                "refresh_rate": 0,
+                "position": 43,
+                "locale": "gr"
+            }
+        ],
         "url_list": []
     },
     "710746690650374208": {

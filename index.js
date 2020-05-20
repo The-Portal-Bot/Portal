@@ -24,18 +24,17 @@ const config = require('./config.json');
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-channel_exists = function (channel, guild_id) {
-	for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
-		for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
-			if (portal_guilds[guild_id]['portal_list'][i].voice_list[j].id === channel.id) {
-				return true;
-			}
+channel_clean_up = function (channel, current_guild) {
+	if(current_guild.channels.some((guild_channel) => {
+		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
+			console.log('yes');
+			edtr.delete_voice_channel(guild_channel, portal_guilds[current_guild.id]['portal_list']);
+			return true;
 		}
-	}
-	return false;
+	}));
 }
 
-portal_init = function()
+portal_init = function(current_guild)
 {
 	const keys = Object.keys(portal_guilds);
 	const servers = keys.map(key => ({ key: key, value: portal_guilds[key] }));
@@ -43,9 +42,7 @@ portal_init = function()
 	for (let l = 0; l < servers.length; l++) {
 		for (i = 0; i < servers[l].value.portal_list.length; i++) {
 			for (j = 0; j < servers[l].value.portal_list[i].voice_list.length; j++) {
-				if (channel_exists(servers[l].value.portal_list[i].voice_list[j], servers[l].key) === false) {
-					servers[l].value.portal_list[i].voice_list.slice(j);
-				}
+				channel_clean_up(servers[l].value.portal_list[i].voice_list[j], current_guild);
 			}
 		}
 
@@ -111,7 +108,9 @@ client.on('ready', () => {
 		' channels of ' + client.guilds.size + ' guilds.');
 	// Changing Portal bots status
 	client.user.setActivity('./help', { type: 'LISTENING' });
-	portal_init();
+	client.guilds.forEach(guild => {
+		portal_init(guild);
+	})
 });
 
 client.on('guildCreate', guild => {
