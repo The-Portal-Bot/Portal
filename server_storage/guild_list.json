@@ -1,1 +1,14 @@
-{"705112209985896529":{"portal_list":[{"id":"712098099618644089","creator_id":"228666893068795905","regex_portal":"NIGRO","regex_voice":"BRAVO","voice_list":[{"id":"712098473083928626","creator_id":"228666893068795905","no_bots":false,"member_cap":0,"time_to_live":0,"refresh_rate":0,"position":"712098473083928626","locale":0}],"no_bots":false,"member_cap":0,"time_to_live":0,"refresh_rate":0,"position":39,"locale":"gr","portal_voice":"NIGRO"}],"url_list":[]},"710746690650374208":{"portal_list":[{"id":"712593192939159612","creator_id":"228666893068795905","regex_portal":"asd","regex_voice":"G$#-P$mmbr_cnt | $status_lst","voice_list":[{"id":"712593198559526912","creator_id":"228666893068795905","no_bots":false,"member_cap":0,"time_to_live":0,"refresh_rate":0,"position":6,"locale":"gr"}],"no_bots":false,"member_cap":0,"time_to_live":0,"refresh_rate":0,"position":5,"locale":"gr"}],"url_list":[]},"228667314252283904":{"portal_list":[],"url_list":[]}}
+{
+    "705112209985896529": {
+        "portal_list": [],
+        "url_list": []
+    },
+    "710746690650374208": {
+        "portal_list": [],
+        "url_list": []
+    },
+    "228667314252283904": {
+        "portal_list": [],
+        "url_list": []
+    }
+}

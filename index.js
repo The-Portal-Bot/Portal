@@ -24,7 +24,56 @@ const config = require('./config.json');
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-update_guild_json = function (force) {
+channel_exists = function (channel, guild_id) {
+	for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
+		for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
+			if (portal_guilds[guild_id]['portal_list'][i].voice_list[j].id === channel.id) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+portal_init = function()
+{
+	const keys = Object.keys(portal_guilds);
+	const servers = keys.map(key => ({ key: key, value: portal_guilds[key] }));
+
+	for (let l = 0; l < servers.length; l++) {
+		for (i = 0; i < servers[l].value.portal_list.length; i++) {
+			for (j = 0; j < servers[l].value.portal_list[i].voice_list.length; j++) {
+				if (channel_exists(servers[l].value.portal_list[i].voice_list[j], servers[l].key) === false) {
+					servers[l].value.portal_list[i].voice_list.slice(j);
+				}
+			}
+		}
+
+	}	
+}
+
+show_portal_state = function(guild_id)
+{
+	console.log(guild_id + '\n.portal_list\n[');
+	for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
+		console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
+			+ '.voice_list\n\t[');
+
+		for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
+			console.log('\t\t' + j + '. {'
+				+ portal_guilds[guild_id]['portal_list'][i].voice_list[j].id + '}');
+		}
+		console.log('\t],\n');
+	}
+	console.log('],');
+	console.log(guild_id + '\n.url_list\n[');
+	for (i = 0; i < portal_guilds[guild_id]['url_list'].length; i++) {
+		console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
+	}
+	console.log(']');
+}
+
+update_guild_json = function(force) {
 	console.log('updating guild json');
 
 	portal_guilds_json = JSON.stringify(portal_guilds);
@@ -34,13 +83,13 @@ update_guild_json = function (force) {
 		fs.writeFile(guild_json_path, portal_guilds_json);
 }
 
-message_reply = function (status, msg, str) {
+message_reply = function(status, msg, str) {
 	msg.channel.send(str);
 	if (status) msg.react('✔️');
 	else msg.react('❌');
 }
 
-is_url = function (message) {
+is_url = function(message) {
 	var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -62,6 +111,7 @@ client.on('ready', () => {
 		' channels of ' + client.guilds.size + ' guilds.');
 	// Changing Portal bots status
 	client.user.setActivity('./help', { type: 'LISTENING' });
+	portal_init();
 });
 
 client.on('guildCreate', guild => {
@@ -104,23 +154,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 	mngr.generate_channel_names(newPresence.guild, 
 		portal_guilds[newPresence.guild.id]['portal_list']);
 
-	console.log(newPresence.guild.id + '\n.portal_list\n[');
-	for (i = 0; i < portal_guilds[newPresence.guild.id]['portal_list'].length; i++) {
-		console.log('\t' + i + '. ' + portal_guilds[newPresence.guild.id]['portal_list'][i].id 
-		+ '.voice_list\n\t[');
-
-		for (j = 0; j < portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length; j++) {
-			console.log('\t\t' + j + '. {' 
-			+ portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list[j].id + '}');
-		}
-		console.log('\t],\n');
-	}
-	console.log('],');
-	console.log(newPresence.guild.id + '\n.url_list\n[');
-	for (i = 0; i < portal_guilds[newPresence.guild.id]['url_list'].length; i++) {
-		console.log('\t' + i + '. ' + portal_guilds[newPresence.guild.id]['url_list'][i].id);
-	}
-	console.log(']');
+	show_portal_state(newPresence.guild.id);
 
 	return;
 });
