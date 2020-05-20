@@ -82,12 +82,13 @@ smmr_cnt | array | _count of all in array_
 name | type | default | description
 --------- | --------- | --------- | --------- 
 no_bots | bool | false | _no bots allowed_
-mmbr_cap | num | infinite | _maximum number of members allowed_
+member_cap | num | infinite | _maximum number of members allowed_
 time_to_live | num | infinite | _time to live_
 refresh_rate | num | on presence update | _how often titles are being refreshed_
 locale | string | gr/en | _language used in statuses_
-pos | num | beneath portal | _position of channel_
-count | num | spawn number | _position (index) in array_
+position | num | beneath portal | _position of channel_
+regex_voice | regex | 'G$#-P$mmbr_cnt | $status_lst' | _position (index) in array_
+regex_portal | regex | 'G$#-P$mmbr_cnt | $status_lst' | _position (index) in array_
 ***
 
 # About
