@@ -7,13 +7,13 @@
 			"args": "!channel_name @category_name"
 		},
 		{
-			"name": "text",
-			"value": "creates a text channel connected to the voice channel",
-			"args": "none"
+			"name": "regex_portal",
+			"value": "sets regex-guidelines for how to display portal's title",
+			"args": "!regex_command"
 		},
 		{
-			"name": "regex",
-			"value": "sets regex-guidelines for how to name channels (current portal)",
+			"name": "regex_voice",
+			"value": "sets regex-guidelines for how to display voice (current portal)",
 			"args": "!regex_command"
 		},
 		{
@@ -22,9 +22,19 @@
 			"args": "!exec_command"
 		},
 		{
-			"name": "prefix",
-			"value": "sets the new prefix for portal bot",
-			"args": "!prefix"
+			"name": "set",
+			"value": "sets the value of attribute",
+			"args": "!attribute !value"
+		},
+		{
+			"name": "url",
+			"value": "creates a url only channel and a category for it",
+			"args": "!channel_name @category_name"
+		},
+		{
+			"name": "save",
+			"value": "saves current state of server",
+			"args": "none"
 		},
 		{
 			"name": "help",
@@ -35,11 +45,6 @@
 			"name": "ping",
 			"value": "returns round trip latency",
 			"args": "none"
-		},
-		{
-			"name": "url",
-			"value": "creates a url only channel and a category for it",
-			"args": "!channel_name @category_name"
 		}
 	]
 }

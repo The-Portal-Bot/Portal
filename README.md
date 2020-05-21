@@ -14,13 +14,13 @@ Features:
 name | arguments | description
 --------- | --------- | ---------
 ./portal | !channel_name @category_name | _creates a voice channel and a category for it_
-./regexP | @regex_command | _sets the regex name for the portal from current voice channel_
-./regexV | @regex_command | _sets the regex name for the current voice channel_
-./run | @exec_command | _returns the log of data given in log\_string_
-./prefix | !prefix | _sets the new prefix for portal bot_
-./attrP | @attr | _sets the attribute you mention for the portal from current voice channel_
-./attrV | @attr | _sets the attribute you mention for the current voice channel_
-./help | @specific_command | _returns a help-list of all commands and regex manipulation_
+./regex_portal | !regex_command | _sets regex-guidelines for how to display portal's title_
+./regex_voice | !regex_command | _sets regex-guidelines for how to display voice (current portal)_
+./run | !exec_command | _returns the log of data given in log_string_
+./set | !attribute !value | _sets the value of attribute_
+./url | !channel_name @category_name | _creates a url only channel and a category for it_
+./save | none | _saves current state of server_
+./help | @specific_command or @vrbl/@func/@pipe/@attr | _returns a help-list of all commands and regex manipulation_
 ./ping | none | _returns round trip latency_
   
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
@@ -81,16 +81,20 @@ smmr_cnt | array | _count of all in array_
 
 name | type | default | description
 --------- | --------- | --------- | --------- 
-nbot | bool | false | _no bots allowed_
-mmbr_cap | num | infinite | _maximum number of members allowed_
-time_tolv | num | infinite | _time to live_
-titl_rfsh | num | on presence update | _how often titles are being refreshed_
-
+no_bots | bool | false | _no bots allowed_
+member_cap | num | infinite | _maximum number of members allowed_
+time_to_live | num | infinite | _time to live_
+refresh_rate | num | on presence update | _how often titles are being refreshed_
+locale | string | gr/en | _language used in statuses_
+position | num | beneath portal | _position of channel_
+regex_voice | regex | 'G$#-P$mmbr_cnt | $status_lst' | _position (index) in array_
+regex_portal | regex | 'G$#-P$mmbr_cnt | $status_lst' | _position (index) in array_
 ***
 
 # About
 
-* v0.0.0: 5/5/20 ALPHA
+* v0.0.0: 5/5/20 Alpha
+* v1.0.0: 18/5/20 Version 1
 
 Acknowledgments - **Discord.js** with the exeptional library [**Discord.js**](http://owl.phy.queensu.ca/~phil/exiftool/)
 <br>

@@ -1,11 +1,13 @@
 const object = require('./object_retrievers.js');
+const moment = require('moment'); 
+var v = require('voca');
 
 module.exports = {
 
 	// variables $
 	vrbl_name: [
 		{
-			value: '#', func: (guild, id, portal_list) => {
+			value: '#', get: (guild, id, portal_list) => {
 				let voice_number = undefined;
 				portal_list.forEach(portal => {
 					portal.voice_list.forEach((voice, key) => {
@@ -16,25 +18,23 @@ module.exports = {
 			}
 		},
 		{
-			value: '##', func: (guild, id, portal_list) => {
-				let portal_number = undefined;
-				portal_list.forEach((portal, key) => {
-					if (portal.id === id) portal_number = key + 1;
+			value: '##', get: (guild, id, portal_list) => {
+				return portal_list.some((portal, key) => {
+					if (portal.id === id) return key;
 				})
-				return portal_number;
 			}
 		},
-		{ value: 'date', func: () => { let date = new Date(); return date; } },
-		{ value: 'tday', func: () => { let date = new Date(); return date.getDate(); } },
-		{ value: 'nday', func: () => { let date = new Date(); return date.getDay(); } },
-		{ value: 'mnth', func: () => { let date = new Date(); return date.getMonth(); } },
-		{ value: 'year', func: () => { let date = new Date(); return date.getFullYear(); } },
-		{ value: 'time', func: () => { let date = new Date(); return date.getTime(); } },
-		{ value: 'hour', func: () => { let date = new Date(); return date.getHours(); } },
-		{ value: 'mint', func: () => { let date = new Date(); return date.getMinutes(); } },
-		{ value: 'scnd', func: () => { let date = new Date(); return date.getSeconds(); } },
+		{ value: 'date', get: () => { return moment().locale("gr").subtract(10, 'days').calendar(); } },
+		{ value: 'tday', get: () => { return moment().locale("gr").format('dddd'); } },
+		{ value: 'nday', get: () => { return moment().locale("gr").format('dddd'); } },
+		{ value: 'mnth', get: () => { return moment().locale("gr").format('mmmm'); } },
+		{ value: 'year', get: () => { return moment().locale("gr").format('yyyy'); } },
+		{ value: 'time', get: () => { return moment().locale("gr").format('h:mm:ss'); } },
+		{ value: 'hour', get: () => { return moment().locale("gr").format('h'); } },
+		{ value: 'mint', get: () => { return moment().locale("gr").format('mm'); } },
+		{ value: 'scnd', get: () => { return moment().locale("gr").format('ss'); } },
 		{
-			value: 'crtr', func: (guild, id, portal_list) => {
+			value: 'crtr', get: (guild, id, portal_list) => {
 				portal_list.forEach(portal => {
 					portal.voice_list.forEach(voice => {
 						if (voice.id === id) return voice.creator;
@@ -43,17 +43,17 @@ module.exports = {
 			}
 		},
 		{
-			value: 'status_lst', func: (guild, id, portal_list) => { return object.get_status_list(guild, id, portal_list) }
+			value: 'status_lst', get: (guild, id, portal_list) => { return object.get_status_list(guild, id, portal_list) }
 		},
 		{
-			value: 'status_cnt', func: (guild, id) => { //check if he is in a voice channel of a portal 
+			value: 'status_cnt', get: (guild, id) => { //check if he is in a voice channel of a portal 
 				if (typeof (object.get_status_list(guild, id)) !== "object") { return 0; }
 				else { object.get_status_list(guild, id).length; }
 			}
 		},
-		{ value: 'status_his', func: () => { return "no_yet_implemented" } },
+		{ value: 'status_his', get: () => { return "no_yet_implemented" } },
 		{
-			value: 'mmbr_lst', func: (guild, id) => {
+			value: 'mmbr_lst', get: (guild, id) => {
 				let mmbr_lst = [];
 				guild.channels.forEach(channel => {
 					if (channel.id === id)
@@ -65,7 +65,7 @@ module.exports = {
 			}
 		},
 		{
-			value: 'mmbr_cnt', func: (guild, id) => {
+			value: 'mmbr_cnt', get: (guild, id) => {
 				let cnt = undefined;
 				guild.channels.forEach(channel => {
 					if (channel.id === id) cnt = channel.members.size;
@@ -74,7 +74,7 @@ module.exports = {
 			}
 		},
 		{
-			value: 'mmbr_plg', func: (guild, id) => {
+			value: 'mmbr_plg', get: (guild, id) => {
 				let cnt = 0;
 				guild.channels.forEach(channel => {
 					if (channel.id === id)
@@ -85,9 +85,9 @@ module.exports = {
 				return cnt;
 			}
 		},
-		{ value: 'mmbr_his', func: () => { return "no_yet_implemented" } },
+		{ value: 'mmbr_his', get: () => { return "no_yet_implemented" } },
 		{
-			value: 'mmbr_lmt', func: (guild, id) => {
+			value: 'mmbr_lmt', get: (guild, id) => {
 				let cnt = undefined;
 				guild.channels.forEach(channel => {
 					if (channel.id === id) cnt = channel.userLimit;
@@ -99,41 +99,18 @@ module.exports = {
 
 	// pipes |
 	pipe_name: [
+		{ value: 'upperCase', get: (str, count) => { return vocal.upperCase(str); } },
+		{ value: 'lowerCase', get: (str, count) => { return vocal.lowerCase(str); } },
+		{ value: 'capitalize', get: (str, count) => { return vocal.capitalize(str); } },
+		{ value: 'decapitalize', get: (str, count) => { return vocal.decapitalize(str); } },
+		{ value: 'kebabCase', get: (str, count) => { return vocal.kebabCase(str); } },
+		{ value: 'snakeCase', get: (str, count) => { return vocal.snakeCase(str); } },
+		{ value: 'titleCase', get: (str, count) => { return vocal.titleCase(str); } },
+		{ value: 'camelCase', get: (str, count) => { return vocal.camelCase(str); } },
+		{ value: 'acronym', get: (str, count) => { return vocal.chain(str).upperCase().words().first().value(); } },
+		{ value: 'word', get: (str, count) => { return vocal.words(str).slice(0, count); } },
 		{
-			value: 'upper', func: (str, count) => {
-				return str.toUpperCase();
-			}
-		},
-		{
-			value: 'lower', func: (str, count) => {
-				return str.toLowerCase();
-			}
-		},
-		{
-			value: 'titl', func: (str, count) => {
-				str = str.toLowerCase().split(' ');
-				for (let i = 0; i < str.length; i++)
-					str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
-				return str.join(' ');
-			}
-		},
-		{
-			value: 'acrnm', func: (str, count) => {
-				let words = str.split(" ");
-				let acr = words.map(word => { return word[0] });
-				return acr.join("").toUpperCase();
-			}
-		},
-		{
-			value: 'word', func: (str, count) => {
-				let count_words = '', words = str.split(" ");
-				for (let i = 0; i < Number(count); i++)
-					count_words += words[i];
-				return count_words;
-			}
-		},
-		{
-			value: 'ppls_cnt', func: (str, count) => {
+			value: 'ppls_cnt', get: (str, count) => {
 				let words = str.split(" "), mf = 1, m = 0, item = words[0];
 				for (let i = 0; i < words.length; i++) {
 					for (let j = i; j < words.length; j++) {
@@ -146,7 +123,7 @@ module.exports = {
 			}
 		},
 		{
-			value: 'ppls', func: (str, count) => {
+			value: 'ppls', get: (str, count) => {
 				let words = str.split(" "), mf = 1, m = 0, item = words[0];
 				for (let i = 0; i < words.length; i++) {
 					for (let j = i; j < words.length; j++) {
@@ -159,7 +136,7 @@ module.exports = {
 			}
 		},
 		{ 
-			value: 'smmr_cnt', func: (str, count) => { 
+			value: 'smmr_cnt', get: (str, count) => { 
 				return str.split(" ").length 
 			} 
 		},
@@ -168,7 +145,7 @@ module.exports = {
 	// attributes @
 	attr_name: [
 		{
-			value: 'no_bots', func: (value, id, portal_list) => {
+			value: 'no_bots', get: (value, id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -176,7 +153,7 @@ module.exports = {
 			}
 		},
 		{
-			value: 'mmbr_cap', func: (value, id, portal_list) => {
+			value: 'mmbr_cap', get: (value, id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -184,7 +161,7 @@ module.exports = {
 			}
 		},
 		{
-			value: 'time_to_live', func: (value, id, portal_listn) => {
+			value: 'time_to_live', get: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -192,7 +169,7 @@ module.exports = {
 			}
 		},
 		{
-			value: 'refresh_rate', func: (value, id, portal_listn) => {
+			value: 'refresh_rate', get: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -200,15 +177,15 @@ module.exports = {
 			}
 		},
 		{
-			value: 'lang', func: (value, id, portal_listn) => {
+			value: 'locale', get: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].lang;
+							return portal_list[i].voice_list[j].locale;
 			}
 		},
 		{
-			value: 'count', func: (value, id, portal_listn) => {
+			value: 'count', get: (value, id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -222,21 +199,21 @@ module.exports = {
 	get_vrbl_data: function (variable, id, guild, portal_list) {
 		for (i = 0; i < this.vrbl_name.length; i++)
 			if (variable == this.vrbl_name[i].value)
-				return this.vrbl_name[i].func(guild, id, portal_list);
+				return this.vrbl_name[i].get(guild, id, portal_list);
 	}
 	,
 
 	get_pipe_data: function (pipe, str, count) {
 		for (i = 0; i < this.pipe_name.length; i++)
 			if (pipe == this.pipe_name[i].value)
-				return this.pipe_name[i].func(str, count);
+				return this.pipe_name[i].get(str, count);
 	}
 	,
 
 	get_attr_data: function (attr, id, portal_list) {
 		for (i = 0; i < this.attr_name.length; i++)
 			if (attr == this.attr_name[i].value)
-				return this.attr_name[i].func(id, portal_list);
+				return this.attr_name[i].get(id, portal_list);
 	}
 	,
 

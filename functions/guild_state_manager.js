@@ -3,20 +3,21 @@ const class_guild = require('./../classes/guild.js');
 
 module.exports =
 {
-    included_in_guild_list: function (guild_id, guild_list) {
-        if (guild_list[guild_id])
+    included_in_portal_guilds: function (guild_id, portal_guilds) {
+        console.log('portal_guilds[guild_id]: ' + portal_guilds[guild_id]);
+        if (portal_guilds[guild_id] !== undefined)
             return true;
         return false;
     }
     ,
 
-    insert_guild: function (guild_id, guild_list) {
-        guild_list[guild_id] = {"portal_list": [], "url_list": []};
+    insert_guild: function (guild_id, portal_guilds) {
+        portal_guilds[guild_id] = { "portal_list": [], "url_list": [] };
     }
     ,
 
-    delete_guild: function (guild_id, guild_list) {
-        delete guild_list.guild_id;
+    delete_guild: function (guild_id, portal_guilds) {
+        delete portal_guilds.guild_id;
     }
 
 };

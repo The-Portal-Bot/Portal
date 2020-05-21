@@ -1,4 +1,3 @@
-// Libraries
 const fs = require('file-system');
 const guild_json_path = "./server_storage/guild_list.json";
 
@@ -11,6 +10,7 @@ const gmng = require('./functions/guild_state_manager');
 // let guilds = require('./server_storage/guild_list.json');
 let guild_json = fs.readFileSync(guild_json_path);
 let portal_guilds = JSON.parse(guild_json);
+
 // Load up the discord.js library
 const Discord = require('discord.js');
 
@@ -22,26 +22,52 @@ const client = new Discord.Client();
 // config.prefix contains the message prefix.
 const config = require('./config.json');
 
+// FUNCTIONS ------------------------------------------------------------------------------------ \\
 
+channel_clean_up = function (channel, current_guild) {
+	if(current_guild.channels.some((guild_channel) => {
+		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
+			console.log('yes');
+			edtr.delete_voice_channel(guild_channel, portal_guilds[current_guild.id]['portal_list']);
+			return true;
+		}
+	}));
+}
 
+portal_init = function(current_guild)
+{
+	const keys = Object.keys(portal_guilds);
+	const servers = keys.map(key => ({ key: key, value: portal_guilds[key] }));
 
+	for (let l = 0; l < servers.length; l++)
+		for (let i = 0; i < servers[l].value.portal_list.length; i++)
+			for (let j = 0; j < servers[l].value.portal_list[i].voice_list.length; j++)
+				channel_clean_up(servers[l].value.portal_list[i].voice_list[j], current_guild);
+	update_guild_json(true);
+}
 
+show_portal_state = function(guild_id)
+{
+	console.log(guild_id + '\n.portal_list\n[');
+	for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
+		console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
+			+ '.voice_list\n\t[');
 
+		for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
+			console.log('\t\t' + j + '. {'
+				+ portal_guilds[guild_id]['portal_list'][i].voice_list[j].id + '}');
+		}
+		console.log('\t],\n');
+	}
+	console.log('],');
+	console.log(guild_id + '\n.url_list\n[');
+	for (i = 0; i < portal_guilds[guild_id]['url_list'].length; i++) {
+		console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
+	}
+	console.log(']');
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-update_guild_json = function (force) {
+update_guild_json = function(force) {
 	console.log('updating guild json');
 
 	portal_guilds_json = JSON.stringify(portal_guilds);
@@ -49,18 +75,15 @@ update_guild_json = function (force) {
 		fs.writeFileSync(guild_json_path, portal_guilds_json);
 	else
 		fs.writeFile(guild_json_path, portal_guilds_json);
-	// setTimeout(() => {
-	// 	fs.writeFile(guild_json_path, portal_guilds_json);
-	// }, 1000);
 }
 
-message_reply = function (status, msg, str) {
+message_reply = function(status, msg, str) {
 	msg.channel.send(str);
 	if (status) msg.react('✔️');
 	else msg.react('❌');
 }
 
-is_url = function (message) {
+is_url = function(message) {
 	var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -72,23 +95,7 @@ is_url = function (message) {
 		message.delete();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// LISTENERS ------------------------------------------------------------------------------------ \\
 
 //#endregion Listeners
 client.on('ready', () => {
@@ -98,6 +105,9 @@ client.on('ready', () => {
 		' channels of ' + client.guilds.size + ' guilds.');
 	// Changing Portal bots status
 	client.user.setActivity('./help', { type: 'LISTENING' });
+	client.guilds.forEach(guild => {
+		portal_init(guild);
+	})
 });
 
 client.on('guildCreate', guild => {
@@ -128,32 +138,19 @@ client.on('guildDelete', guild => {
 client.on('presenceUpdate', (oldPresence, newPresence) => {
 	// This event triggers when the status of a guild member has changed
 
-	if (!gmng.included_in_guild_list(newPresence.guild.id, portal_guilds)) {
-		// den mporo na katalavo giati to kanei, sumbainei otan molis anoikso to server valo 
-		// na paizei mousikh sto spotify
+	if (!gmng.included_in_portal_guilds(newPresence.guild.id, portal_guilds)) {
 		console.log('Member (' + newPresence.displayName + ') who is a member of a handled server,' +
-			' has changed presence but is in another server (' + newPresence.guild.id + ').\n');
+			' has changed presence, but is in another server (' + newPresence.guild.id + ').\n');
 		return;
+	} else {
+		console.log('Member (' + newPresence.displayName + ') has changed presence,' +
+			' and is controlled server (' + newPresence.guild.id + ').\n');
 	}
 
 	mngr.generate_channel_names(newPresence.guild, 
 		portal_guilds[newPresence.guild.id]['portal_list']);
 
-	console.log('guild[' + newPresence.guild.id + ']: [');
-	for (i = 0; i < portal_guilds[newPresence.guild.id]['portal_list'].length; i++) {
-		console.log('\t{ portal_' + i + ') ' +
-			'[\'portal_list\'][' + i + '].id: ' +
-			portal_guilds[newPresence.guild.id]['portal_list'][i].id +
-			'.length(' +
-			portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length +
-			'}: [');
-		for (j = 0; j < portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list.length; j++) {
-			console.log('\t\t{ voice_' + j + ') voice_list[' + j + '].id: ' +
-				portal_guilds[newPresence.guild.id]['portal_list'][i].voice_list[j].id + '}');
-		}
-		console.log('\t]');
-	}
-	console.log(']\n');
+	show_portal_state(newPresence.guild.id);
 
 	return;
 });
@@ -253,20 +250,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 })
 //#endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// MESSAGE LISTENER ----------------------------------------------------------------------------- \\
 
 //#region Message async reader
 client.on('message', async message => {
@@ -292,12 +276,6 @@ client.on('message', async message => {
 	// Separate function name, and arguments of function
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
-
-	if (cmd === 'save') {
-		console.log('SAVE: ' + JSON.stringify(portal_guilds));
-		update_guild_json(true);
-		return;
-	}
 
 	if (cmd === 'portal') {
 		if (args.length === 2) {
@@ -574,31 +552,26 @@ client.on('message', async message => {
 
 	if (cmd === 'set') { // set attributes
 		if (message.member.voiceChannel === undefined
-			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_guilds[message.guild.id]['portal_list'])) {
+			|| !edtr.included_in_voice_list(message.member.voiceChannel.id,
+				portal_guilds[message.guild.id]['portal_list'])) {
 			message_reply(false, message,
 				'**You must be in a portal\'s voice channel to set attributes**');
-		} else if (args.length === 2) { //check for type accuracy and make better
+		} else if (args.length > 1) { // check for type accuracy and make better
 			return_value = mngr.update_channel_attributes(
-				message.guild,
+				message,
 				portal_guilds[message.guild.id]['portal_list'],
-				args[0], args[1]
+				args
 			);
 
-			if (return_value == 0)
+			if (return_value === 1)
 				message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
-			else if (return_value == 1)
-				message_reply(false, message, '**Attribute ' + args[0] + ' failed to updated**');
-			else if (return_value == 2)
+			else if (return_value === 0)
+				message_reply(false, message, '**Attribute ' + args[0] + ' failed to update**');
+			else if (return_value === -1)
 				message_reply(false, message, '**' + args[0] + ' is not an attribute**');
-		} else if (args.length > 2) {
-			message_reply(false, message, '**You can only set one attribute at a time\n'
-				+ '***example: ./set no_bots true*');
-		} else if (args.length < 2) {
-			message_reply(false, message, '**You should name the argument with value\n'
-				+ '***example: ./set no_bots true*');
+		} else {
+			message_reply(false, message, '**Error with set, ***example: ./set no_bots true*');
 		}
-		message_reply(false, message,
-			'**You must be in portal\'s voice channel to set attributes**');
 
 		update_guild_json(true);
 		return;
@@ -645,6 +618,12 @@ client.on('message', async message => {
 		gmng.delete_guild(message.guild.id, portal_guilds);
 		gmng.insert_guild(message.guild.id, portal_guilds, guild_json_path);
 		
+		update_guild_json(true);
+		return;
+	}
+
+	if (cmd === 'save') {
+		console.log('SAVE: ' + JSON.stringify(portal_guilds));
 		update_guild_json(true);
 		return;
 	}
