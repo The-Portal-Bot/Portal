@@ -39,14 +39,11 @@ portal_init = function(current_guild)
 	const keys = Object.keys(portal_guilds);
 	const servers = keys.map(key => ({ key: key, value: portal_guilds[key] }));
 
-	for (let l = 0; l < servers.length; l++) {
-		for (i = 0; i < servers[l].value.portal_list.length; i++) {
-			for (j = 0; j < servers[l].value.portal_list[i].voice_list.length; j++) {
+	for (let l = 0; l < servers.length; l++)
+		for (let i = 0; i < servers[l].value.portal_list.length; i++)
+			for (let j = 0; j < servers[l].value.portal_list[i].voice_list.length; j++)
 				channel_clean_up(servers[l].value.portal_list[i].voice_list[j], current_guild);
-			}
-		}
-
-	}	
+	update_guild_json(true);
 }
 
 show_portal_state = function(guild_id)
