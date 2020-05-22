@@ -5,14 +5,9 @@ const attr_objct = require('./../assets/properties/attribute_list');
 module.exports = {
 
 	get_vrbl_data: function (variable, id, guild, portal_list) {
-		console.log('vrbl_objct.variables.length = ' + vrbl_objct.variables.length);
-		for (i = 0; i < vrbl_objct.variables.length; i++) {
-			console.log(variable + ' === ' + vrbl_objct.variables[i].name);
-			if (variable == vrbl_objct.variables[i].name) {
-				console.log('einai ontos');
+		for (i = 0; i < vrbl_objct.variables.length; i++)
+			if (variable == vrbl_objct.variables[i].name)
 				return vrbl_objct.variables[i].get(guild, id, portal_list);
-			}
-		}
 	}
 	,
 
@@ -33,13 +28,9 @@ module.exports = {
 	//
 
 	is_variable: function (arg) {
-		console.log('vrbl_objct.variables.length = ' + vrbl_objct.variables.length);
-		for (i = 0; i < vrbl_objct.variables.length; i++) {
-			console.log(String(arg).substring(1, (String(vrbl_objct.variables[i].name).length + 1)) + ' === ' + vrbl_objct.variables[i].name);
-			if (String(arg).substring(1, (String(vrbl_objct.variables[i].name).length + 1)) == vrbl_objct.variables[i].name) {
+		for (i = 0; i < vrbl_objct.variables.length; i++)
+			if (String(arg).substring(1, (String(vrbl_objct.variables[i].name).length + 1)) == vrbl_objct.variables[i].name)
 				return vrbl_objct.variables[i].name;
-			}
-		}
 		return false;
 	}
 	,
@@ -81,22 +72,20 @@ module.exports = {
 		if (regex === undefined) { return "regex is undefined"; }
 		if (id === undefined) { return "id is undefined"; }
 		if (guild === undefined) { return "guild is undefined"; }
+		if (portal_list === undefined) { return "guild is undefined"; }
 
-		let new_channel_objct = '';
+		let new_channel_name = '';
 		let last_variable = '';
 
 		for (let i = 0; i < regex.length; i++) {
 			if (regex[i] === '$') {
-				console.log('einai $');
 				let vrbl = this.is_variable(regex.substring(i));
-				console.log('vrbl =' + vrbl);
 				if (vrbl) {
-					new_channel_objct += this.get_vrbl_data(vrbl, id, guild, portal_list);
-					last_variable = new_channel_objct;
+					new_channel_name += this.get_vrbl_data(vrbl, id, guild, portal_list);
+					last_variable = new_channel_name;
 					i += vrbl.length;
 				} else {
-					console.log('den einai mpainei opos einai');
-					new_channel_objct += regex[i];
+					new_channel_name += regex[i];
 				}
 			} else if (regex[i] === '|') {
 				let pipe = this.is_pipe(regex.substring(i));
@@ -104,28 +93,28 @@ module.exports = {
 				
 				if (pipe) {
 					// removes previous variable output, in order to replace with pipe output
-					new_channel_objct = new_channel_objct.nnel.substring(
-						0, new_channel_objct.nnel.length - last_variable.length
+					new_channel_name = new_channel_name.substring(
+						0, new_channel_name.length - last_variable.length
 					);
-					new_channel_objct += this.get_pipe_data(pipe, last_variable, cnt);
+					new_channel_name += this.get_pipe_data(pipe, last_variable, cnt);
 					i += pipe.length;
 				} else {
-					new_channel_objct += regex[i];
+					new_channel_name += regex[i];
 				}
 			} else if (regex[i] === '@') {
 				let attr = this.is_attribute(regex.substring(i));
 
 				if (attr) {
-					new_channel_objct += this.attr_data(attr, id, portal_list);
-					i += attributes.length;
+					new_channel_name += this.get_attr_data(attr, id, portal_list);
+					i += attr.length;
 				} else {
-					new_channel_objct += regex[i];
+					new_channel_name += regex[i];
 				}
 			} else {
-				new_channel_objct += regex[i];
+				new_channel_name += regex[i];
 			}
 		}
-		return new_channel_objct;
+		return new_channel_name;
 	}
 
 };

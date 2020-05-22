@@ -1,12 +1,12 @@
 module.exports =
 {
-	prefix: "@",
+	prefix: '@',
 	attributes: [
 		{
-			name: "no_bots",
-			description: "no bots allowed",
-			args: "!true/false",
-			get: (value, id, portal_list) => {
+			name: 'no_bots',
+			description: 'no bots allowed',
+			args: '!true/false',
+			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -17,10 +17,10 @@ module.exports =
             }
 		},
 		{
-			name: "creator_id",
-			description: "no bots allowed",
-			args: "!true/false",
-			get: (value, id, portal_list) => {
+			name: 'creator_id',
+			description: 'no bots allowed',
+			args: '!true/false',
+			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -31,40 +31,40 @@ module.exports =
 			}
 		},
 		{
-			name: "regex_voice",
-			description: "set the voice of you current voice channel",
-			args: "!regex",
-			get: (value, id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].regex_voice;
-			},
-			set: (args, portal, voice) => {
-                var args_arr = Array.prototype.slice.call(args);
-                portal.regex_portal = args_arr.slice(1).join(' ');
-            }
-		},
-		{
-			name: "regex_portal",
-			description: "set the portal of you current voice channel",
-			args: "!regex",
-			get: (value, id, portal_list) => {
+			name: 'regex_portal',
+			description: 'sets regex-guidelines for how to display portal\'s title',
+			args: '!regex',
+			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
 							return portal_list[i].regex_portal;
 			},
 			set: (args, portal, voice) => {
-                var args_arr = Array.prototype.slice.call(args);
-                portal.regex_voice = args_arr.slice(1).join(' ');
+				var args_arr = Array.prototype.slice.call(args);
+                portal.regex_portal = args_arr.slice(1).join(' ');
             }
 		},
 		{
-			name: "member_limit",
-			description: "maximum number of members allowed",
-			args: "!number of maximum members",
-			get: (value, id, portal_list) => {
+			name: 'regex_voice',
+			description: 'sets regex-guidelines for how to display voice (current portal)',
+			args: '!regex',
+			get: (id, portal_list) => {
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].regex_voice;
+			},
+			set: (args, portal, voice) => {
+				var args_arr = Array.prototype.slice.call(args);
+				portal.regex_voice = args_arr.slice(1).join(' ');
+			}
+		},
+		{
+			name: 'member_limit',
+			description: 'maximum number of members allowed',
+			args: '!number of maximum members',
+			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -75,10 +75,10 @@ module.exports =
             }
 		},
 		{
-			name: "time_to_live",
-			description: "time to live",
-			args: "!number in seconds",
-			get: (value, id, portal_listn) => {
+			name: 'time_to_live',
+			description: 'time to live',
+			args: '!number in seconds',
+			get: (id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -89,10 +89,10 @@ module.exports =
             }
 		},
 		{
-			name: "refresh_rate",
-			description: "how often titles are being refreshed",
-			args: "!number in seconds",
-			get: (value, id, portal_listn) => {
+			name: 'refresh_rate',
+			description: 'how often titles are being refreshed',
+			args: '!number in seconds',
+			get: (id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -103,10 +103,10 @@ module.exports =
             }
 		},
 		{
-			name: "locale",
-			description: "language used in statuses",
-			args: "en/gr",
-			get: (value, id, portal_listn) => {
+			name: 'locale',
+			description: 'language used in statuses',
+			args: 'en/gr',
+			get: (id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
@@ -117,10 +117,10 @@ module.exports =
             }
 		},
 		{
-			name: "position",
-			description: "position of channel",
-			args: "number",
-			get: (value, id, portal_listn) => {
+			name: 'position',
+			description: 'position of channel',
+			args: 'number',
+			get: (id, portal_listn) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)

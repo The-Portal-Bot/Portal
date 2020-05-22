@@ -21,27 +21,29 @@ module.exports = {
     ,
 
     update_channel_attributes: function (message, portal_list, args) {
-        let attr_index = -1;
-        for (i = 0; i < attr_objct.length; i++)
-            if (args[0] === attr_objct[i].name)
-                attr_index = i;
-
-        if (attr_index > -1) {
-            for (i = 0; i < portal_list.length; i++) {
-                for (j = 0; j < portal_list[i].voice_list.length; j++) {
-                    if (message.member.voiceChannel.id === portal_list[i].voice_list[j].id) {
-                        attr_objct[attr_index].set(
-                            args,
-                            portal_list[i],
-                            portal_list[i].voice_list[j]
-                        );
-                        this.generate_channel_objcts(message.guild, portal_list);
-                        return 1;
+        for (l = 0; l < attr_objct.attributes.length; l++) {
+            if (args[0] === attr_objct.attributes[l].name) {
+                console.log('Mphka 2');
+                for (i = 0; i < portal_list.length; i++) {
+                    console.log('Mphka 3');
+                    for (j = 0; j < portal_list[i].voice_list.length; j++) {
+                        console.log('Mphka 4');
+                        if (message.member.voiceChannel.id === portal_list[i].voice_list[j].id) {
+                            console.log('setting attribute: ' + l)
+                            attr_objct.attributes[l].set(
+                                args,
+                                portal_list[i],
+                                portal_list[i].voice_list[j]
+                            );
+                            this.generate_channel_names(message.guild, portal_list);
+                            return 1;
+                        }
                     }
                 }
             }
         }
-        this.generate_channel_objcts(message.guild, portal_list);
+
+        this.generate_channel_names(message.guild, portal_list);
         return 0;
     }
 

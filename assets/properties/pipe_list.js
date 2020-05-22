@@ -1,6 +1,8 @@
+const vocal = require('voca');
+
 module.exports =
 {
-	prefix: "|",
+	prefix: '|',
 	pipes: [
 		{ 	
 			name: 'upperCase',
@@ -54,9 +56,9 @@ module.exports =
 		},
 		{
 			name: 'populous_count',
-			description: 'returns the count of members having the most populous status in the current channel',
+			description: 'returns the count of most common element in list',
 			get: (str, count) => {
-			let words = str.split(" "), mf = 1, m = 0, item = words[0];
+			let words = str.split(' '), mf = 1, m = 0, item = words[0];
 			for (let i = 0; i < words.length; i++) {
 				for (let j = i; j < words.length; j++) {
 					if (words[i] == words[j]) { m++; }
@@ -68,10 +70,10 @@ module.exports =
 			}
 		},
 		{
-			name: 'ppopulous',
-			description: 'returns the most populous status in the current channel',
+			name: 'populous',
+			description: 'returns the name of the most common element in list',
 			get: (str, count) => {
-			let words = str.split(" "), mf = 1, m = 0, item = words[0];
+			let words = str.split(' '), mf = 1, m = 0, item = words[0];
 			for (let i = 0; i < words.length; i++) {
 				for (let j = i; j < words.length; j++) {
 					if (words[i] == words[j]) { m++; } 
@@ -86,7 +88,7 @@ module.exports =
 			name: 'summary_count',
 			description: 'returns the count of members having a status',
 			get: (str, count) => { 
-			return str.split(" ").length 
+			return str.split(' ').length 
 			} 
 		},
 	]
