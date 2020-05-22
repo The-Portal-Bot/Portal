@@ -1,35 +1,34 @@
 module.exports =
 {
     portal_channel: class {
-        constructor(n_id, n_creator_id, n_regex_portal, n_regex_voice, n_voice_list,
-            n_no_bots, n_member_cap, n_time_to_live, n_refresh_rate, n_position, n_locale)
+        constructor(id, creator_id, regex_portal, regex_voice, voice_list,
+            no_bots, member_limit, time_to_live, refresh_rate, position, locale)
         {
-            this.id = n_id;
-            this.creator_id = n_creator_id;
-            this.regex_portal = n_regex_portal;
-            this.regex_voice = n_regex_voice;
-            this.no_bots = n_no_bots;
-            this.member_cap = n_member_cap;
-            this.time_to_live = n_time_to_live;
-            this.refresh_rate = n_refresh_rate;
-            this.position = n_position;
-            this.locale = n_locale;
-            this.voice_list = n_voice_list;
+            this.id = id;
+            this.creator_id = creator_id;
+            this.regex_portal = regex_portal;
+            this.regex_voice = regex_voice;
+            this.no_bots = no_bots;
+            this.member_limit = member_limit;
+            this.time_to_live = time_to_live;
+            this.refresh_rate = refresh_rate;
+            this.position = position;
+            this.locale = locale;
+            this.voice_list = voice_list;
         }
     },
 
     voice_channel: class {
-        constructor(n_id, n_creator_id, 
-            n_no_bots, n_member_cap, n_time_to_live,
-            n_refresh_rate, n_position, n_locale) {
-            this.id = n_id;
-            this.creator_id = n_creator_id;
-            this.no_bots = n_no_bots;
-            this.member_cap = n_member_cap;
-            this.time_to_live = n_time_to_live;
-            this.refresh_rate = n_refresh_rate;
-            this.position = n_position;
-            this.locale = n_locale;
+        constructor(id, creator_id, no_bots, member_limit, 
+            time_to_live, refresh_rate, position, locale) {
+            this.id = id;
+            this.creator_id = creator_id;
+            this.no_bots = no_bots;
+            this.member_limit = member_limit;
+            this.time_to_live = time_to_live;
+            this.refresh_rate = refresh_rate;
+            this.position = position;
+            this.locale = locale;
         }
     }
 }

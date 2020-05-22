@@ -374,10 +374,10 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'help') {
-		const func_name = require('./assets/properties/function_list');
-		const vrbl_name = require('./assets/properties/variable_list');
-		const pipe_name = require('./assets/properties/pipe_list');
-		const attr_name = require('./assets/properties/attribute_list');
+		const func_objct = require('./assets/properties/function_list');
+		const vrbl_objct = require('./assets/properties/variable_list');
+		const pipe_objct = require('./assets/properties/pipe_list');
+		const attr_objct = require('./assets/properties/attribute_list');
 
 		if (args.length === 0 || (args.length === 1 && (args[0] === 'func' ||
 			args[0] === 'vrbl' || args[0] === 'pipe' || args[0] === 'attr'))) {
@@ -389,64 +389,64 @@ client.on('message', async message => {
 			if (args.length === 0 || args[0] === 'func') {
 				// check if argument is function
 				help_message_func +=
-					'-\n`Functions (prefix ' + func_name.prefix + ')`\n' +
+					'-\n`Functions (prefix ' + func_objct.functions.prefix + ')`\n' +
 					'**Name**\t\t[' +
 					'**Description**]\t\t(' +
 					'**Arguments**)\n'
 
-				for (i = 0, func = func_name.functions[i]; i < func_name.functions.length; i++, func = func_name.functions[i]) {
+				for (i = 0; i < func_objct.functions.length; i++) {
 					help_message_func +=
-						'> **' + func.name + '**\t\t[' +
-						'*' + func.value + '*]\t(' +
-						'***' + func.args + '***)\n'
+						'> **' + func_objct.functions[i].name + '**\t\t[' +
+						'*' + func_objct.functions[i].description + '*]\t(' +
+						'***' + func_objct.functions[i].args + '***)\n'
 				}
 				message.author.send(help_message_func);
 			}
 			if (args.length === 0 || args[0] === 'vrbl') {
 				// check if argument is variable
 				help_message_vrbl +=
-					'-\n`Variable (prefix ' + vrbl_name.prefix + ')`\n' +
+					'-\n`Variable (prefix ' + vrbl_objct.variables.prefix + ')`\n' +
 					'**Name**\t\t[' +
 					'**Description**]\t\t(' +
 					'**Arguments**)\n'
 
-				for (i = 0, vrbl = vrbl_name.variables[i]; i < vrbl_name.variables.length; i++, vrbl = vrbl_name.variables[i]) {
+				for (i = 0; i < vrbl_objct.variables.length; i++) {
 					help_message_vrbl +=
-						'> **' + vrbl.name + '**\t\t[' +
-						'*' + vrbl.value + '*]\t(' +
-						'***' + vrbl.args + '***)\n'
+						'> **' + vrbl_objct.variables[i].name + '**\t\t[' +
+						'*' + vrbl_objct.variables[i].description + '*]\t(' +
+						'***' + vrbl_objct.variables[i].args + '***)\n'
 				}
 				message.author.send(help_message_vrbl);
 			}
 			if (args.length === 0 || args[0] === 'pipe') {
 				// check if argument is pipe
 				help_message_pipe +=
-					'-\n`Pipe (prefix ' + pipe_name.prefix + ')`\n' +
+					'-\n`Pipe (prefix ' + pipe_objct.pipes.prefix + ')`\n' +
 					'**Name**\t\t[' +
 					'**Description**]\t\t(' +
 					'**Arguments**)\n'
 
-				for (i = 0, pipe = pipe_name.pipes[i]; i < pipe_name.pipes.length; i++, pipe = pipe_name.pipes[i]) {
+				for (i = 0; i < pipe_objct.pipes.length; i++) {
 					help_message_pipe +=
-						'> **' + pipe.name + '**\t\t[' +
-						'*' + pipe.value + '*]\t(' +
-						'***' + pipe.args + '***)\n'
+						'> **' + pipe_objct.pipes[i].name + '**\t\t[' +
+						'*' + pipe_objct.pipes[i].description + '*]\t(' +
+						'***' + pipe_objct.pipes[i].args + '***)\n'
 				}
 				message.author.send(help_message_pipe);
 			}
 			if (args.length === 0 || args[0] === 'attr') {
 				// check if argument is attribute
 				help_message_attr +=
-					'-\n`Attribute (prefix ' + attr_name.prefix + ')`\n' +
+					'-\n`Attribute (prefix ' + attr_objct.attributes.prefix + ')`\n' +
 					'**Name**\t\t[' +
 					'**Description**]\t\t(' +
 					'**Arguments**)\n'
 
-				for (i = 0, attr = attr_name.attributes[i]; i < attr_name.attributes.length; i++, attr = attr_name.attributes[i]) {
+				for (i = 0; i < attr_objct.attributes.length; i++) {
 					help_message_attr +=
-						'> **' + attr.name + '**\t\t[' +
-						'*' + attr.value + '*]\t(' +
-						'***' + attr.args + '***)\n'
+						'> **' + attr_objct.attributes[i].name + '**\t\t[' +
+						'*' + attr_objct.attributes[i].description + '*]\t(' +
+						'***' + attr_objct.attributes[i].args + '***)\n'
 				}
 				message.author.send(help_message_attr);
 			}
@@ -456,12 +456,13 @@ client.on('message', async message => {
 		}
 		else if (args.length === 1) {
 			// check if argument is function
-			for (i = 0, func = func_name.functions[i]; i < func_name.functions.length; i++, func = func_name.functions[i]) {
+			for (i = 0; i < func_objct.functions.length; i++) {
+				let func = func_objct.functions[i]
 				if (func.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + func.name + '** ' +
 						'\nType: **function**' +
-						'\nDescription\t-\t*' + func.value + '*' +
+						'\nDescription\t-\t*' + func.description + '*' +
 						'\nArguments \t-\t*' + func.args + '*');
 
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
@@ -472,12 +473,13 @@ client.on('message', async message => {
 				}
 			}
 			// check if argument is pipe
-			for (i = 0, pipe = pipe_name.pipes[i]; i < pipe_name.pipes.length; i++, pipe = pipe_name.pipes[i]) {
+			for (i = 0; i < pipe_objct.pipes.length; i++) {
+				let pipe = pipe_objct.pipes[i]
 				if (pipe.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + pipe.name + '** ' +
 						'\nType: **pipe**' +
-						'\nDescription\t-\t*' + pipe.value + '*' +
+						'\nDescription\t-\t*' + pipe.description + '*' +
 						'\nArguments \t-\t*' + pipe.args + '*');
 
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
@@ -488,12 +490,13 @@ client.on('message', async message => {
 				}
 			}
 			// check if argument is attribute
-			for (i = 0, attr = attr_name.attributes[i]; i < attr_name.attributes.length; i++, attr = attr_name.attributes[i]) {
+			for (i = 0; i < attr_objct.attributes.length; i++) {
+				let attr = attr_objct.attributes[i]
 				if (attr.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + attr.name + '** ' +
 						'\nType: **attribute**' +
-						'\nDescription\t-\t*' + attr.value + '*' +
+						'\nDescription\t-\t*' + attr.description + '*' +
 						'\nArguments \t-\t*' + attr.args + '*');
 
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
@@ -504,12 +507,13 @@ client.on('message', async message => {
 				}
 			}
 			// check if argument is variable
-			for (i = 0, vrbl = vrbl_name.variables[i]; i < vrbl_name.variables.length; i++, vrbl = vrbl_name.variables[i]) {
+			for (i = 0; i < vrbl_objct.variables.length; i++) {
+				let vrbl = vrbl_objct.variables[i]
 				if (vrbl.name === args[0]) {
 					message.author.send(
 						'>>> Name: **' + vrbl.name + '** ' +
 						'\nType: **variable**' +
-						'\nDescription\t-\t*' + vrbl.value + '*' +
+						'\nDescription\t-\t*' + vrbl.description + '*' +
 						'\nArguments \t-\t*' + vrbl.args + '*');
 
 					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +

@@ -1,46 +1,93 @@
 module.exports =
 {
-	"prefix": "|",
-	"pipes": [
-		{
-			"name": "upper",
-			"value": "makes input uppercase",
-			"args": "none"
+	prefix: "|",
+	pipes: [
+		{ 	
+			name: 'upperCase',
+			description: 'returns an upperCase of the input',
+			get: (str, count) => { return vocal.upperCase(str); },
+		},
+		{ 	
+			name: 'lowerCase',
+			description: 'returns an lowerCase of the input',
+			get: (str, count) => { return vocal.lowerCase(str); },
+		},
+		{ 	
+			name: 'capitalize',
+			description: 'returns an capitalize of the input',
+			get: (str, count) => { return vocal.capitalize(str); },
+		},
+		{ 	
+			name: 'decapitalize',
+			description: 'returns an decapitalize of the input',
+			get: (str, count) => { return vocal.decapitalize(str); },
+		},
+		{ 	
+			name: 'kebabCase',
+			description: 'returns an kebabCase of the input',
+			get: (str, count) => { return vocal.kebabCase(str); },
+		},
+		{ 	
+			name: 'snakeCase',
+			description: 'returns an snakeCase of the input',
+			get: (str, count) => { return vocal.snakeCase(str); },
+		},
+		{ 	
+			name: 'titleCase',
+			description: 'returns an titleCase of the input',
+			get: (str, count) => { return vocal.titleCase(str); },
+		},
+		{ 	
+			name: 'camelCase',
+			description: 'returns an camelCase of the input',
+			get: (str, count) => { return vocal.camelCase(str); },
+		},
+		{ 	
+			name: 'acronym',
+			description: 'returns an acronym of the input',
+			get: (str, count) => { return vocal.chain(str).upperCase().words().first().value(); },
+		},
+		{ 	
+			name: 'word',
+			description: 'returns word of the input',
+			get: (str, count) => { return vocal.words(str).slice(0, count); },
 		},
 		{
-			"name": "lower",
-			"value": "makes input lowercase",
-			"args": "none"
+			name: 'populous_count',
+			description: 'returns the count of members having the most populous status in the current channel',
+			get: (str, count) => {
+			let words = str.split(" "), mf = 1, m = 0, item = words[0];
+			for (let i = 0; i < words.length; i++) {
+				for (let j = i; j < words.length; j++) {
+					if (words[i] == words[j]) { m++; }
+					if (mf < m) { mf = m; item = words[i]; }
+				}
+				m = 0;
+			}
+			return mf;
+			}
 		},
 		{
-			"name": "titl",
-			"value": "makes input titlecase",
-			"args": "none"
+			name: 'ppopulous',
+			description: 'returns the most populous status in the current channel',
+			get: (str, count) => {
+			let words = str.split(" "), mf = 1, m = 0, item = words[0];
+			for (let i = 0; i < words.length; i++) {
+				for (let j = i; j < words.length; j++) {
+					if (words[i] == words[j]) { m++; } 
+					if (mf < m) { mf = m; item = words[i]; }
+				}
+				m = 0; 
+			}
+			return item;
+			}
 		},
-		{
-			"name": "acrm",
-			"value": "makes input string of acronyms",
-			"args": "none"
+		{ 
+			name: 'summary_count',
+			description: 'returns the count of members having a status',
+			get: (str, count) => { 
+			return str.split(" ").length 
+			} 
 		},
-		{
-			"name": "word#",
-			"value": "maximum number of words (# is number)",
-			"args": "none"
-		},
-		{
-			"name": "ppls",
-			"value": "gets more popular in array",
-			"args": "none"
-		},
-		{
-			"name": "ppls_cnt",
-			"value": "count of most popular in array",
-			"args": "none"
-		},
-		{
-			"name": "smmr_cnt",
-			"value": "count of all in array",
-			"args": "none"
-		}
 	]
 }

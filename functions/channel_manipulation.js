@@ -45,7 +45,7 @@ module.exports =
 				.then(channel => {
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
-						'G$#-P$mmbr_cnt | $status_lst', [],
+						'G$#-P$member_count | $status_list', [],
 						false, 0, 0, 0, channel.position, 'gr',
 						this.portal_counter++ // not editable
 					));
@@ -62,7 +62,7 @@ module.exports =
 				.then(channel => {
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
-						'G$#-P$mmbr_cnt | $status_lst', [],
+						'G$#-P$member_count | $status_list', [],
 						false, 0, 0, 0, channel.position, 'gr'
 					));
 				})
