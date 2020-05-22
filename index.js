@@ -374,10 +374,10 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'help') {
-		const func_name = require('./assets/properties/function_list.json');
-		const vrbl_name = require('./assets/properties/variable_list.json');
-		const pipe_name = require('./assets/properties/pipe_list.json');
-		const attr_name = require('./assets/properties/attribute_list.json');
+		const func_name = require('./assets/properties/function_list');
+		const vrbl_name = require('./assets/properties/variable_list');
+		const pipe_name = require('./assets/properties/pipe_list');
+		const attr_name = require('./assets/properties/attribute_list');
 
 		if (args.length === 0 || (args.length === 1 && (args[0] === 'func' ||
 			args[0] === 'vrbl' || args[0] === 'pipe' || args[0] === 'attr'))) {
@@ -390,15 +390,15 @@ client.on('message', async message => {
 				// check if argument is function
 				help_message_func +=
 					'-\n`Functions (prefix ' + func_name.prefix + ')`\n' +
-					'**Name**\t - \t' +
-					'**Description**\t - \t' +
-					'**Arguments** \n'
+					'**Name**\t\t[' +
+					'**Description**]\t\t(' +
+					'**Arguments**)\n'
 
 				for (i = 0, func = func_name.functions[i]; i < func_name.functions.length; i++, func = func_name.functions[i]) {
 					help_message_func +=
-						'> **' + func.name + '**\t - \t' +
-						'*' + func.value + '*\t - \t' +
-						'***' + func.args + '***\n'
+						'> **' + func.name + '**\t\t[' +
+						'*' + func.value + '*]\t(' +
+						'***' + func.args + '***)\n'
 				}
 				message.author.send(help_message_func);
 			}
@@ -406,15 +406,15 @@ client.on('message', async message => {
 				// check if argument is variable
 				help_message_vrbl +=
 					'-\n`Variable (prefix ' + vrbl_name.prefix + ')`\n' +
-					'**Name**\t - \t' +
-					'**Description**\t - \t' +
-					'**Arguments** \n'
+					'**Name**\t\t[' +
+					'**Description**]\t\t(' +
+					'**Arguments**)\n'
 
 				for (i = 0, vrbl = vrbl_name.variables[i]; i < vrbl_name.variables.length; i++, vrbl = vrbl_name.variables[i]) {
 					help_message_vrbl +=
-						'> **' + vrbl.name + '**\t - \t' +
-						'*' + vrbl.value + '*\t - \t' +
-						'***' + vrbl.args + '***\n'
+						'> **' + vrbl.name + '**\t\t[' +
+						'*' + vrbl.value + '*]\t(' +
+						'***' + vrbl.args + '***)\n'
 				}
 				message.author.send(help_message_vrbl);
 			}
@@ -422,15 +422,15 @@ client.on('message', async message => {
 				// check if argument is pipe
 				help_message_pipe +=
 					'-\n`Pipe (prefix ' + pipe_name.prefix + ')`\n' +
-					'**Name**\t - \t' +
-					'**Description**\t - \t' +
-					'**Arguments** \n'
+					'**Name**\t\t[' +
+					'**Description**]\t\t(' +
+					'**Arguments**)\n'
 
 				for (i = 0, pipe = pipe_name.pipes[i]; i < pipe_name.pipes.length; i++, pipe = pipe_name.pipes[i]) {
 					help_message_pipe +=
-						'> **' + pipe.name + '**\t - \t' +
-						'*' + pipe.value + '*\t - \t' +
-						'***' + pipe.args + '***\n'
+						'> **' + pipe.name + '**\t\t[' +
+						'*' + pipe.value + '*]\t(' +
+						'***' + pipe.args + '***)\n'
 				}
 				message.author.send(help_message_pipe);
 			}
@@ -438,15 +438,15 @@ client.on('message', async message => {
 				// check if argument is attribute
 				help_message_attr +=
 					'-\n`Attribute (prefix ' + attr_name.prefix + ')`\n' +
-					'**Name**\t - \t' +
-					'**Description**\t - \t' +
-					'**Arguments** \n'
+					'**Name**\t\t[' +
+					'**Description**]\t\t(' +
+					'**Arguments**)\n'
 
 				for (i = 0, attr = attr_name.attributes[i]; i < attr_name.attributes.length; i++, attr = attr_name.attributes[i]) {
 					help_message_attr +=
-						'> **' + attr.name + '**\t - \t' +
-						'*' + attr.value + '*\t - \t' +
-						'***' + attr.args + '***\n'
+						'> **' + attr.name + '**\t\t[' +
+						'*' + attr.value + '*]\t(' +
+						'***' + attr.args + '***)\n'
 				}
 				message.author.send(help_message_attr);
 			}
