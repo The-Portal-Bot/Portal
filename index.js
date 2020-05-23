@@ -604,6 +604,40 @@ client.on('message', async message => {
 		return;
 	}
 
+	if (cmd === 'role') {
+		const exampleEmbed = new Discord.RichEmbed()
+			.setColor('#FF7F00')
+			// .setTitle('Role giver message')
+			//.setURL('https://discord.js.org/')
+			.setAuthor(message.author.username, message.author.avatarURL)
+			.setDescription('React to this message to get or strip roles')
+			// .setThumbnail('https://i.imgur.com/wSTFkRM.png')
+			.addBlankField()
+			.addField('Get Role', 'react with one of the following emotes to get this role')
+			.addField(':gun:', 'Fps', true)
+			.addField(':clown:', 'Moba', true)
+			.addField(':gun:', 'Fps', true)
+			.addField(':clown:', 'Moba', true)
+			.addField(':gun:', 'Fps', true)
+			.addField(':clown:', 'Moba', true)
+			
+			.addBlankField()
+			.addField('Strip Role', 'react with one of the following emotes to strip this role')
+			.addField(':gun:', 'Fps', true)
+			.addField(':clown:', 'Moba', true)
+			.addField(':gun:', 'Fps', true)
+			.addField(':clown:', 'Moba', true)
+			.addField(':gun:', 'Fps', true)
+			.addField(':clown:', 'Moba', true)
+
+			// .setImage('https://i.imgur.com/wSTFkRM.png')
+			.setTimestamp()
+			.setFooter('Portal bot by Keybraker', 'https://raw.githubusercontent.com/keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2');
+
+		message.channel.send(exampleEmbed);
+		return;
+	}
+
 	//testing processes
 	if (cmd === 'purge') {
 		message.guild.channels.forEach((value) => {
