@@ -2,9 +2,9 @@
 A feature-rich channel manager for discord.
 
 Features:
-* Automatically generates voice channels
-* Automatically updates the title of the channel in accordance to your guidlines
-* Assignes and strips roles forom users with a siple reaction press
+* Automatically generates voice channels.
+* Automatically updates the title of the channel in accordance to your regex guidlines.
+* Assignes and strips roles from users with a single reaction press.
 <br><br />
 ***
 

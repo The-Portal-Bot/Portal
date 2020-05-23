@@ -25,7 +25,7 @@ const config = require('./config.json');
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
 channel_clean_up = function (channel, current_guild) {
-	if(current_guild.channels.some((guild_channel) => {
+	if (current_guild.channels.some((guild_channel) => {
 		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
 			console.log('yes');
 			edtr.delete_voice_channel(guild_channel, portal_guilds[current_guild.id]['portal_list']);
@@ -34,8 +34,7 @@ channel_clean_up = function (channel, current_guild) {
 	}));
 }
 
-portal_init = function(current_guild)
-{
+portal_init = function (current_guild) {
 	const keys = Object.keys(portal_guilds);
 	const servers = keys.map(key => ({ key: key, value: portal_guilds[key] }));
 
@@ -46,8 +45,7 @@ portal_init = function(current_guild)
 	update_guild_json(true);
 }
 
-show_portal_state = function(guild_id)
-{
+show_portal_state = function (guild_id) {
 	console.log(guild_id + '\n.portal_list\n[');
 	for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
 		console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
@@ -67,23 +65,23 @@ show_portal_state = function(guild_id)
 	console.log(']');
 }
 
-update_guild_json = function(force) {
+update_guild_json = function (force) {
 	console.log('updating guild json');
 
 	portal_guilds_json = JSON.stringify(portal_guilds);
-	if(force)
+	if (force)
 		fs.writeFileSync(guild_json_path, portal_guilds_json);
 	else
 		fs.writeFile(guild_json_path, portal_guilds_json);
 }
 
-message_reply = function(status, msg, str) {
+message_reply = function (status, msg, str) {
 	msg.channel.send(str);
 	if (status) msg.react('✔️');
 	else msg.react('❌');
 }
 
-is_url = function(message) {
+is_url = function (message) {
 	var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -147,7 +145,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 			' and is controlled server (' + newPresence.guild.id + ').\n');
 	}
 
-	mngr.generate_channel_names(newPresence.guild, 
+	mngr.generate_channel_names(newPresence.guild,
 		portal_guilds[newPresence.guild.id]['portal_list']);
 
 	show_portal_state(newPresence.guild.id);
@@ -567,12 +565,16 @@ client.on('message', async message => {
 				args
 			);
 
-			if (return_value === 1)
+			if (return_value === 1) {
+				mngr.generate_channel_names(message.guild, portal_guilds[message.guild.id]['portal_list']);
 				message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
-			else if (return_value === 0)
-				message_reply(false, message, '**Attribute ' + args[0] + ' failed to update**');
-			else if (return_value === -1)
+			} else if (return_value === -3) {
+				message_reply(false, message, '**Only the channel creator can change attributes**');
+			} else if (return_value === -2) {
+				message_reply(false, message, '**Attribute ' + args[0] + ' is read only**');
+			} else if (return_value === -1) {
 				message_reply(false, message, '**' + args[0] + ' is not an attribute**');
+			}
 		} else {
 			message_reply(false, message, '**Error with set, ***example: ./set no_bots true*');
 		}
@@ -595,9 +597,9 @@ client.on('message', async message => {
 
 		console.log("url_list: ");
 		for (let i = 0; i < portal_guilds[message.guild.id]['url_list']; i++)
-			console.log('url_list[' + i + ']: ' + 
-			portal_guilds[message.guild.id]['url_list'][i]);
-		
+			console.log('url_list[' + i + ']: ' +
+				portal_guilds[message.guild.id]['url_list'][i]);
+
 		update_guild_json(true);
 		return;
 	}
@@ -621,7 +623,7 @@ client.on('message', async message => {
 
 		gmng.delete_guild(message.guild.id, portal_guilds);
 		gmng.insert_guild(message.guild.id, portal_guilds, guild_json_path);
-		
+
 		update_guild_json(true);
 		return;
 	}
@@ -631,7 +633,7 @@ client.on('message', async message => {
 		update_guild_json(true);
 		return;
 	}
-	
+
 });
 //#region 
 client.login(config.token);

@@ -72,7 +72,7 @@ module.exports = {
 		if (regex === undefined) { return "regex is undefined"; }
 		if (id === undefined) { return "id is undefined"; }
 		if (guild === undefined) { return "guild is undefined"; }
-		if (portal_list === undefined) { return "guild is undefined"; }
+		if (portal_list === undefined) { return "portal_list is undefined"; }
 
 		let new_channel_name = '';
 		let last_variable = '';

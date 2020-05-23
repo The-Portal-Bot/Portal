@@ -25,9 +25,6 @@ module.exports =
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
 							return portal_list[i].voice_list[j].creator_id;
-			},
-			set: (args, portal, voice) => {
-				voice.creator_id = Number(args[1]);
 			}
 		},
 		{

@@ -15,6 +15,14 @@ module.exports = {
                             portal_list
                         ));
                         return
+                    } else if (channel.id === portal_list[i].id) {
+                        channel.setName(regx.regex_interpreter(
+                            portal_list[i].regex_portal,
+                            portal_list[i].id,
+                            guild,
+                            portal_list
+                        ));
+                        return
                     }
         })
     }
@@ -23,28 +31,30 @@ module.exports = {
     update_channel_attributes: function (message, portal_list, args) {
         for (l = 0; l < attr_objct.attributes.length; l++) {
             if (args[0] === attr_objct.attributes[l].name) {
-                console.log('Mphka 2');
                 for (i = 0; i < portal_list.length; i++) {
-                    console.log('Mphka 3');
                     for (j = 0; j < portal_list[i].voice_list.length; j++) {
-                        console.log('Mphka 4');
                         if (message.member.voiceChannel.id === portal_list[i].voice_list[j].id) {
-                            console.log('setting attribute: ' + l)
-                            attr_objct.attributes[l].set(
-                                args,
-                                portal_list[i],
-                                portal_list[i].voice_list[j]
-                            );
-                            this.generate_channel_names(message.guild, portal_list);
-                            return 1;
+                            // checks whether you have created the voice channel not the portalchannel
+                            if (message.member.id === portal_list[i].voice_list[j].creator_id) {
+                                if (attr_objct.attributes[l].set === undefined) {
+                                    return -2;
+                                } else {
+                                    attr_objct.attributes[l].set(
+                                        args,
+                                        portal_list[i],
+                                        portal_list[i].voice_list[j]
+                                    );
+                                    return 1;
+                                }
+                            } else {
+                                return -3
+                            }
                         }
                     }
                 }
             }
         }
-
-        this.generate_channel_names(message.guild, portal_list);
-        return 0;
+        return -1;
     }
 
 
