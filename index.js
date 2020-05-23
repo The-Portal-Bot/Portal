@@ -116,7 +116,7 @@ client.on('guildCreate', guild => {
 		gmng.insert_guild(guild.id, portal_guilds, guild_json_path);
 	update_guild_json(true);
 
-	console.log('New guild joined: ' + guild.name
+	console.log('Portal joined guild: ' + guild.name
 		+ ' (id: + ' + guild.id
 		+ ').\nThis guild has + '
 		+ guild.memberCount + ' members!');
@@ -129,7 +129,7 @@ client.on('guildDelete', guild => {
 	gmng.delete_guild(guild.id, portal_guilds);
 	update_guild_json(true);
 
-	console.log('I have been removed from: ${guild.name} (id: ${guild.id})');
+	console.log('Portal has been removed from: ${guild.name} (id: ${guild.id})');
 	client.user.setActivity('Serving ${client.guilds.size} servers');
 });
 

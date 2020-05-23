@@ -11,15 +11,15 @@ Features:
 ## Commands
 **Portal prefix: ./**
 
-name | arguments | description
+name | description | arguments
 --------- | --------- | ---------
 portal | _creates a voice channel and a category for it_ | _!channel\_name @category\_name_
 run | _returns the proccessed of comand entered_ | _!exec\_command_
 set | _sets the value of attribute_ | _!attribute !value_
 url | _creates a url only channel and a category for it_ | _!channel\_name @category\_name_
-save | _saves current state of server_ | _one_
+save | _saves current state of server_ | _none_
 help | _returns a help-list of all commands and regex manipulation_ | _@specific\_command or @vrbl/@func/@pipe/@attr_
-ping | _returns round trip latency_ | _one_
+ping | _returns round trip latency_ | _none_
   
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
@@ -86,8 +86,8 @@ name | type | default | description
 --------- | --------- | --------- | --------- 
 no_bots | boolean | false | _no bots allowed_
 creator_id | number | creator_id | _no bots allowed_
-regex_portal | string | _G$\#-P$member_count | $status_list_ | _sets regex-guidelines for how to display portal's title_
-regex_voice | string | _G$\#-P$member_count | $status_list_ | _sets regex-guidelines for how to display voice (current portal)_
+regex_portal | string | _G$\#-P$member_count \| $status_list_ | _sets regex-guidelines for how to display portal's title_
+regex_voice | string | _G$\#-P$member_count \| $status_list_ | _sets regex-guidelines for how to display voice (current portal)_
 member_limit | number | 0 | _maximum number of members allowed_
 time_to_live | number | 0 | _time to live_
 refresh_rate | number | 0 | _how often titles are being refreshed_
