@@ -42,7 +42,8 @@ module.exports = {
                                     attr_objct.attributes[l].set(
                                         args,
                                         portal_list[i],
-                                        portal_list[i].voice_list[j]
+                                        portal_list[i].voice_list[j],
+                                        message.member.voiceChannel
                                     );
                                     return 1;
                                 }
