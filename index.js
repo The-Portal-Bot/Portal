@@ -635,7 +635,7 @@ client.on('message', async message => {
 	if (cmd === 'role') {
 		let roles = [];
 		message.guild.roles.forEach(role => {
-			roles.push({role}})});
+			roles.push({role})});
 		console.log('roles: ', roles);
 
 		if (args.length === 1) {
