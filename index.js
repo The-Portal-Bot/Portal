@@ -24,7 +24,7 @@ const config = require('./config.json');
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-create_rich_embed = function (title, description, colour, filed_array) {
+create_rich_embed = function (title, description, colour, field_array) {
 	const exampleEmbed = new Discord.RichEmbed()
 		.setColor(colour)
 		.setAuthor(title)
@@ -34,7 +34,7 @@ create_rich_embed = function (title, description, colour, filed_array) {
 			'https://raw.githubusercontent.com/keybraker/portal-discord-bot/'+
 			'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2');
 
-	filed_array.forEach(row => {
+	field_array.forEach(row => {
 		if (row.emote === '') {
 			exampleEmbed.addBlankField();
 		} else {
@@ -628,35 +628,43 @@ client.on('message', async message => {
 				'*(channel_name: mandatory, category_name: optional)*');
 		}
 
-		console.log("url_list: ");
-		for (let i = 0; i < portal_guilds[message.guild.id]['url_list']; i++)
-			console.log('url_list[' + i + ']: ' +
-				portal_guilds[message.guild.id]['url_list'][i]);
-
 		update_guild_json(true);
 		return;
 	}
 
 	if (cmd === 'role') {
-		message.channel.send(create_rich_embed('Portal Role Assigner', 'by reacting to this comment you can get or strip roles', '#FF7F00', message,
-			[
-				{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false },
-				{ emote: ':gun:', role: 'Fps', inline: true },
-				{ emote: ':clown:', role: 'Moba', inline: true },
-				{ emote: ':gun:', role: 'Fps', inline: true },
-				{ emote: ':clown:', role: 'Moba', inline: true },
-				{ emote: ':gun:', role: 'Fps', inline: true },
-				{ emote: ':clown:', role: 'Moba', inline: true },
+		let roles = [];
+		message.guild.roles.forEach(role => {
+			roles.push({role}})});
+		console.log('roles: ', roles);
 
-				{ emote: '', role: '', inline: false },
-				{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false },
-				{ emote: ':gun:', role: 'Fps', inline: true },
-				{ emote: ':clown:', role: 'Moba', inline: true },
-				{ emote: ':gun:', role: 'Fps', inline: true },
-				{ emote: ':clown:', role: 'Moba', inline: true },
-				{ emote: ':gun:', role: 'Fps', inline: true },
-				{ emote: ':clown:', role: 'Moba', inline: true },
-			]));
+		if (args.length === 1) {
+			// edtr.create_role_giver(message.guild, args[0], null, portal_guilds[message.guild.id]['url_list']);
+			message.channel.send(create_rich_embed('Portal Role Assigner',
+				'by reacting to this comment you can get or strip roles', '#FF7F00',
+				[
+					{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+
+					{ emote: '', role: '', inline: false },
+					{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+				]));
+			message.react('✔️');
+		} else {
+			message_reply(false, message, '**' + config.prefix + 'role !role1->:emote: !role2->:emote: ...**');
+		}
+
 		return;
 	}
 
