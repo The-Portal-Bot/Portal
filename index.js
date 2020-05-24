@@ -24,6 +24,27 @@ const config = require('./config.json');
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
+create_rich_embed = function (title, description, colour, filed_array) {
+	const exampleEmbed = new Discord.RichEmbed()
+		.setColor(colour)
+		.setAuthor(title)
+		.setDescription(description)
+		.setTimestamp()
+		.setFooter('Portal bot by Keybraker',
+			'https://raw.githubusercontent.com/keybraker/portal-discord-bot/'+
+			'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2');
+
+	filed_array.forEach(row => {
+		if (row.emote === '') {
+			exampleEmbed.addBlankField();
+		} else {
+			exampleEmbed.addField(row.emote, row.role, row.inline);
+		}
+	});
+
+	return exampleEmbed;
+}
+
 channel_clean_up = function (channel, current_guild) {
 	if (current_guild.channels.some((guild_channel) => {
 		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
@@ -386,85 +407,88 @@ client.on('message', async message => {
 
 			if (args.length === 0 || args[0] === 'func') {
 				// check if argument is function
-				help_message_func +=
-					'-\n`Functions (prefix ' + func_objct.functions.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let func_array = [];
 				for (i = 0; i < func_objct.functions.length; i++) {
-					help_message_func +=
-						'> **' + func_objct.functions[i].name + '**\t\t[' +
-						'*' + func_objct.functions[i].description + '*]\t(' +
-						'***' + func_objct.functions[i].args + '***)\n'
+					func_array.push({ 
+						emote: func_objct.functions[i].name, 
+						role: '**desc**: *' + func_objct.functions[i].description + '*' +
+							'\n**args**: *' + func_objct.functions[i].args + '*', 
+						inline: true });
 				}
-				message.author.send(help_message_func);
+				
+				message.author.send(create_rich_embed('Functions',
+					'Prefix: ' + func_objct.prefix + '\nCommands to access portal bot.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', func_array));
 			}
 			if (args.length === 0 || args[0] === 'vrbl') {
 				// check if argument is variable
-				help_message_vrbl +=
-					'-\n`Variable (prefix ' + vrbl_objct.variables.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let vrbl_array = [];
 				for (i = 0; i < vrbl_objct.variables.length; i++) {
-					help_message_vrbl +=
-						'> **' + vrbl_objct.variables[i].name + '**\t\t[' +
-						'*' + vrbl_objct.variables[i].description + '*]\t(' +
-						'***' + vrbl_objct.variables[i].args + '***)\n'
+					vrbl_array.push({
+						emote: vrbl_objct.variables[i].name,
+						role: '**desc**: *' + vrbl_objct.variables[i].description + '*' +
+							'\n**args**: *' + vrbl_objct.variables[i].args + '*',
+						inline: true
+					});
 				}
-				message.author.send(help_message_vrbl);
+
+				message.author.send(create_rich_embed('Variables',
+					'Prefix: ' + vrbl_objct.prefix + '\nChannel data that changes automatically.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', vrbl_array));
 			}
 			if (args.length === 0 || args[0] === 'pipe') {
 				// check if argument is pipe
-				help_message_pipe +=
-					'-\n`Pipe (prefix ' + pipe_objct.pipes.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let pipe_array = [];
 				for (i = 0; i < pipe_objct.pipes.length; i++) {
-					help_message_pipe +=
-						'> **' + pipe_objct.pipes[i].name + '**\t\t[' +
-						'*' + pipe_objct.pipes[i].description + '*]\t(' +
-						'***' + pipe_objct.pipes[i].args + '***)\n'
+					pipe_array.push({
+						emote: pipe_objct.pipes[i].name,
+						role: '**desc**: *' + pipe_objct.pipes[i].description + '*' +
+							'\n**args**: *' + pipe_objct.pipes[i].args + '*',
+						inline: true
+					});
 				}
-				message.author.send(help_message_pipe);
+
+				message.author.send(create_rich_embed('Pipes',
+					'Prefix: ' + pipe_objct.prefix + '\nGive input of sort to get an output.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', pipe_array));
 			}
 			if (args.length === 0 || args[0] === 'attr') {
 				// check if argument is attribute
-				help_message_attr +=
-					'-\n`Attribute (prefix ' + attr_objct.attributes.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let attr_array = [];
 				for (i = 0; i < attr_objct.attributes.length; i++) {
-					help_message_attr +=
-						'> **' + attr_objct.attributes[i].name + '**\t\t[' +
-						'*' + attr_objct.attributes[i].description + '*]\t(' +
-						'***' + attr_objct.attributes[i].args + '***)\n'
+					attr_array.push({
+						emote: attr_objct.attributes[i].name,
+						role: '**desc**: *' + attr_objct.attributes[i].description + '*' +
+							'\n**args**: *' + attr_objct.attributes[i].args + '*',
+						inline: true
+					});
 				}
-				message.author.send(help_message_attr);
-			}
 
-			message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-				'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+				message.author.send(create_rich_embed('Attributes',
+					'Prefix: ' + attr_objct.prefix + '\nData of channel that can be set.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', attr_array));
+			}
 		}
 		else if (args.length === 1) {
 			// check if argument is function
 			for (i = 0; i < func_objct.functions.length; i++) {
 				let func = func_objct.functions[i]
 				if (func.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + func.name + '** ' +
-						'\nType: **function**' +
-						'\nDescription\t-\t*' + func.description + '*' +
-						'\nArguments \t-\t*' + func.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						func.name,
+						'Type: Function' + 
+						'\nPrefix: ' + func_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + func.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + func.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -474,14 +498,17 @@ client.on('message', async message => {
 			for (i = 0; i < pipe_objct.pipes.length; i++) {
 				let pipe = pipe_objct.pipes[i]
 				if (pipe.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + pipe.name + '** ' +
-						'\nType: **pipe**' +
-						'\nDescription\t-\t*' + pipe.description + '*' +
-						'\nArguments \t-\t*' + pipe.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						pipe.name,
+						'Type: Pipe' + 
+						'\nPrefix: ' + pipe_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + pipe.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + pipe.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -491,14 +518,17 @@ client.on('message', async message => {
 			for (i = 0; i < attr_objct.attributes.length; i++) {
 				let attr = attr_objct.attributes[i]
 				if (attr.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + attr.name + '** ' +
-						'\nType: **attribute**' +
-						'\nDescription\t-\t*' + attr.description + '*' +
-						'\nArguments \t-\t*' + attr.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						attr.name,
+						'Type: Attribute' + 
+						'\nPrefix: ' + attr_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + attr.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + attr.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -508,14 +538,17 @@ client.on('message', async message => {
 			for (i = 0; i < vrbl_objct.variables.length; i++) {
 				let vrbl = vrbl_objct.variables[i]
 				if (vrbl.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + vrbl.name + '** ' +
-						'\nType: **variable**' +
-						'\nDescription\t-\t*' + vrbl.description + '*' +
-						'\nArguments \t-\t*' + vrbl.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						vrbl.name,
+						'Type: Variable' + 
+						'\nPrefix: ' + vrbl_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + vrbl.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -605,36 +638,25 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'role') {
-		const exampleEmbed = new Discord.RichEmbed()
-			.setColor('#FF7F00')
-			// .setTitle('Role giver message')
-			//.setURL('https://discord.js.org/')
-			.setAuthor(message.author.username, message.author.avatarURL)
-			.setDescription('React to this message to get or strip roles')
-			// .setThumbnail('https://i.imgur.com/wSTFkRM.png')
-			.addBlankField()
-			.addField('Get Role', 'react with one of the following emotes to get this role')
-			.addField(':gun:', 'Fps', true)
-			.addField(':clown:', 'Moba', true)
-			.addField(':gun:', 'Fps', true)
-			.addField(':clown:', 'Moba', true)
-			.addField(':gun:', 'Fps', true)
-			.addField(':clown:', 'Moba', true)
-			
-			.addBlankField()
-			.addField('Strip Role', 'react with one of the following emotes to strip this role')
-			.addField(':gun:', 'Fps', true)
-			.addField(':clown:', 'Moba', true)
-			.addField(':gun:', 'Fps', true)
-			.addField(':clown:', 'Moba', true)
-			.addField(':gun:', 'Fps', true)
-			.addField(':clown:', 'Moba', true)
+		message.channel.send(create_rich_embed('Portal Role Assigner', 'by reacting to this comment you can get or strip roles', '#FF7F00', message,
+			[
+				{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false },
+				{ emote: ':gun:', role: 'Fps', inline: true },
+				{ emote: ':clown:', role: 'Moba', inline: true },
+				{ emote: ':gun:', role: 'Fps', inline: true },
+				{ emote: ':clown:', role: 'Moba', inline: true },
+				{ emote: ':gun:', role: 'Fps', inline: true },
+				{ emote: ':clown:', role: 'Moba', inline: true },
 
-			// .setImage('https://i.imgur.com/wSTFkRM.png')
-			.setTimestamp()
-			.setFooter('Portal bot by Keybraker', 'https://raw.githubusercontent.com/keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2');
-
-		message.channel.send(exampleEmbed);
+				{ emote: '', role: '', inline: false },
+				{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false },
+				{ emote: ':gun:', role: 'Fps', inline: true },
+				{ emote: ':clown:', role: 'Moba', inline: true },
+				{ emote: ':gun:', role: 'Fps', inline: true },
+				{ emote: ':clown:', role: 'Moba', inline: true },
+				{ emote: ':gun:', role: 'Fps', inline: true },
+				{ emote: ':clown:', role: 'Moba', inline: true },
+			]));
 		return;
 	}
 
