@@ -47,7 +47,11 @@ module.exports =
 		{
 			name: 'acronym',
 			description: 'returns an acronym of the input',
-			get: (str, count) => { return vocal.chain(str).upperCase().words().first().value(); }
+			get: (str, count) => { 
+				return vocal.chain(str).upperCase().words().value().map(word => {
+					return word.charAt(0);
+				}).join('');
+			}
 		},
 		{
 			name: 'word',

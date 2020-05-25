@@ -45,7 +45,7 @@ get_status_list: function (guild, id, portal_list) {
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (portal_list[i].voice_list[j].id === id)
 							if (portal_list[i].voice_list[j].locale === 'gr')
-								array_of_statuses.push("Άραγμα");
+								array_of_statuses.push("Άραγμα Πέτσας");
 							else
 								array_of_statuses.push("Chilling");
 			return;
