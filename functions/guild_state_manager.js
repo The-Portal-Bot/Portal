@@ -19,7 +19,6 @@ module.exports =
     delete_guild: function (guild_id, portal_guilds) {
         delete portal_guilds.guild_id;
     }
-
 };
 
 // console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));

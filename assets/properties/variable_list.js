@@ -114,7 +114,7 @@ module.exports =
 				guild.channels.forEach(channel => {
 					if (channel.id === id)
 						channel.members.forEach(member => {
-							mmbr_lst.push(member);
+							mmbr_lst.push(member.displayName);
 						});
 				});
 				return mmbr_lst;

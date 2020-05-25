@@ -1,1 +1,41 @@
-{"705112209985896529":{"portal_list":[],"url_list":[]},"710746690650374208":{"portal_list":[],"url_list":[]},"228667314252283904":{"portal_list":[],"url_list":[]}}
+{
+    "705112209985896529": {
+        "portal_list": [
+            {
+                "id": "714171850694983760",
+                "creator_id": "228666893068795905",
+                "regex_portal": "tsiakkas",
+                "regex_voice": "G$#-P$member_count | $status_list",
+                "no_bots": false,
+                "member_limit": 0,
+                "time_to_live": 0,
+                "refresh_rate": 0,
+                "position": 3,
+                "locale": "gr",
+                "voice_list": []
+            },
+            {
+                "id": "714171991191453726",
+                "creator_id": "228666893068795905",
+                "regex_portal": "$status_list|upperCase",
+                "regex_voice": "$status_list|upperCase",
+                "no_bots": false,
+                "member_limit": 0,
+                "time_to_live": 0,
+                "refresh_rate": 0,
+                "position": 4,
+                "locale": "gr",
+                "voice_list": []
+            }
+        ],
+        "url_list": []
+    },
+    "710746690650374208": {
+        "portal_list": [],
+        "url_list": []
+    },
+    "228667314252283904": {
+        "portal_list": [],
+        "url_list": []
+    }
+}
