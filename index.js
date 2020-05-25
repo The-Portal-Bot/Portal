@@ -10,7 +10,6 @@ const gmng = require('./functions/guild_state_manager');
 // let guilds = require('./server_storage/guild_list.json');
 let guild_json = fs.readFileSync(guild_json_path);
 let portal_guilds = JSON.parse(guild_json);
-console.log('PORTAL GUILDS JSON: ', portal_guilds);
 
 // Load up the discord.js library
 const Discord = require('discord.js');
@@ -91,19 +90,10 @@ show_portal_state = function (guild_id) {
 update_guild_json = function (force) {
 	console.log('updating guild json');
 
-	portal_guilds_json = JSON.stringify(portal_guilds);
-	if (force)
-		try {
-			fs.writeFileSync(guild_json_path, portal_guilds_json);
-		} catch(error) {
-			console.log('ERROR: could not save to file.')
-		}
-	else
-		try {
-			fs.writeFile(guild_json_path, portal_guilds_json);
-		} catch(error) {
-			console.log('ERROR: could not save to file.')
-		}
+	setTimeout(function () {
+		if (force) fs.writeFileSync(guild_json_path, JSON.stringify(portal_guilds), 'utf8');
+		else fs.writeFile(guild_json_path, JSON.stringify(portal_guilds), 'utf8');
+	}, 1000);
 }
 
 message_reply = function (status, msg, str) {
@@ -214,7 +204,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 		if (edtr.included_in_portal_list(old_user_channel.id, portal_guilds[newState.guild.id]['portal_list'])) {
 			console.log('->source: portal_list');
-			console.log("outside portal_list.length:" + portal_guilds[newState.guild.id]['portal_list'].length);
+
 			if (edtr.included_in_portal_list(new_user_channel.id, portal_guilds[newState.guild.id]['portal_list'])) { // this should not happen
 				console.log('->dest: portal_list');
 				console.log('this should not happen error: portal_channel->portal_channel');
@@ -272,9 +262,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 	} else {
 		console.log('don\'t know how we got here');
 	}
+	update_guild_json(true);
 	console.log('');
 
-	update_guild_json(true);
 	return;
 })
 //#endregion
