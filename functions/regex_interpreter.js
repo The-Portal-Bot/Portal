@@ -95,12 +95,13 @@ module.exports = {
 				let cnt = regex.substring(i + 5, i + 6); // wtf wrong ? check ?
 				
 				if (pipe) {
+					console.log('pipe: ' + pipe + ' with count: ' + cnt);
 					// removes previous variable output, in order to replace with pipe output
 					new_channel_name = new_channel_name.substring(0,
 						voca.chars(new_channel_name).length - voca.chars(last_variable).length);
-
 					new_channel_name += this.get_pipe_data(pipe, last_variable, cnt);
 					i += voca.chars(pipe).length;
+					if (pipe === 'word') i++;
 				} else {
 					new_channel_name += regex[i];
 				}
