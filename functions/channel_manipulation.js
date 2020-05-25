@@ -94,14 +94,13 @@ module.exports =
 	}
 	,
 
-	create_url_channel: function (server, url_name,
-		category_name, url_list, creator_id) {
+	create_url_channel: function (server, url_name, category_name, url_list, creator_id) {
 		if (category_name) {
 			// creating category
 			server.createChannel(category_name, { type: 'category' })
 
 			// creating voice channel
-			server.createChannel(url_name+' (url-only)', { type: 'text' }, { bitrate: 8 })
+			server.createChannel(url_name + ' (url-only)', { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
 
@@ -113,9 +112,10 @@ module.exports =
 				}).catch(console.error);
 		} else {
 			// creating voice channel
-			server.createChannel(url_name+' (url-only)', { type: 'text' }, { bitrate: 8 })
+			server.createChannel(url_name + ' (url-only)', { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
+					console.log('url_list = ' + url_list);
 				})
 		}
 	}

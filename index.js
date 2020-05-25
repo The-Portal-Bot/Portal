@@ -10,6 +10,7 @@ const gmng = require('./functions/guild_state_manager');
 // let guilds = require('./server_storage/guild_list.json');
 let guild_json = fs.readFileSync(guild_json_path);
 let portal_guilds = JSON.parse(guild_json);
+console.log('PORTAL GUILDS JSON: ', portal_guilds);
 
 // Load up the discord.js library
 const Discord = require('discord.js');
@@ -67,23 +68,24 @@ portal_init = function (current_guild) {
 }
 
 show_portal_state = function (guild_id) {
-	console.log(guild_id + '\n.portal_list\n[');
-	for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
-		console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
-			+ '.voice_list\n\t[');
+	// console.log(guild_id + '\n.portal_list\n[');
+	// for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
+	// 	console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
+	// 		+ '.voice_list\n\t[');
 
-		for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
-			console.log('\t\t' + j + '. {'
-				+ portal_guilds[guild_id]['portal_list'][i].voice_list[j].id + '}');
-		}
-		console.log('\t],\n');
-	}
-	console.log('],');
-	console.log(guild_id + '\n.url_list\n[');
-	for (i = 0; i < portal_guilds[guild_id]['url_list'].length; i++) {
-		console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
-	}
-	console.log(']');
+	// 	for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
+	// 		console.log('\t\t' + j + '. {'
+	// 			+ portal_guilds[guild_id]['portal_list'][i].voice_list[j].id + '}');
+	// 	}
+	// 	console.log('\t],\n');
+	// }
+	// console.log('],');
+	// console.log(guild_id + '\n.url_list\n[');
+	// for (i = 0; i < portal_guilds[guild_id]['url_list'].length; i++) {
+	// 	console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
+	// }
+	// console.log(']');
+	console.log('PORTAL GUILDS JSON: ', portal_guilds[guild_id]);
 }
 
 update_guild_json = function (force) {
@@ -91,9 +93,17 @@ update_guild_json = function (force) {
 
 	portal_guilds_json = JSON.stringify(portal_guilds);
 	if (force)
-		fs.writeFileSync(guild_json_path, portal_guilds_json);
+		try {
+			fs.writeFileSync(guild_json_path, portal_guilds_json);
+		} catch(error) {
+			console.log('ERROR: could not save to file.')
+		}
 	else
-		fs.writeFile(guild_json_path, portal_guilds_json);
+		try {
+			fs.writeFile(guild_json_path, portal_guilds_json);
+		} catch(error) {
+			console.log('ERROR: could not save to file.')
+		}
 }
 
 message_reply = function (status, msg, str) {
@@ -627,9 +637,7 @@ client.on('message', async message => {
 			message_reply(false, message, '**' + config.prefix + 'url <channel_name> <category_name>**\n' +
 				'*(channel_name: mandatory, category_name: optional)*');
 		}
-
 		update_guild_json(true);
-		return;
 	}
 
 	if (cmd === 'role') {
