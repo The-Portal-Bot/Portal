@@ -18,6 +18,11 @@ module.exports =
 			args: '!attribute !value'
 		},
 		{
+			name: 'role_giver',
+			description: 'creates a role message',
+			args: '!{role_name=:emote:, ...}'
+		},
+		{
 			name: 'url',
 			description: 'creates a url only channel and a category for it',
 			args: '!channel_name @category_name'

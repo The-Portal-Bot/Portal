@@ -630,34 +630,45 @@ client.on('message', async message => {
 		update_guild_json(true);
 	}
 
-	if (cmd === 'role') {
+	if (cmd === 'role_giver') {
 		let roles = [];
-		message.guild.roles.forEach(role => {
-			roles.push({role})});
-		console.log('roles: ', roles);
+		message.guild.roles.forEach(role => { roles.push({role}); });
 
-		if (args.length === 1) {
+		if (args.length > 0) {
+			role_emb = [];
+			try {
+				role_map = JSON.parse(args.join(' '));
+			} catch(error) {
+				message.channel.send('Roles must be in JSON format for more info ./help role_giver');
+				return;
+			}
+
+			console.log('role_map: ', role_map);
+
+			role_emb.push(
+				{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false }
+			);
+
+			for (let i = 0; i < role_map.map.length; i++) {
+				role_emb.push(
+					{ emote: role_map.map[i].emote_give, role: role_map.map[i].role, inline: true }
+				);
+			}
+
+			role_emb.push(
+				{ emote: '', role: '', inline: false },
+				{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false }
+			);
+			for (let i = 0; i < role_map.map.length; i++) {
+				role_emb.push(
+					{ emote: role_map.map[i].emote_strip, role: role_map.map[i].role, inline: true }
+				);
+			}
 			// edtr.create_role_giver(message.guild, args[0], null, portal_guilds[message.guild.id]['url_list']);
-			message.channel.send(create_rich_embed('Portal Role Assigner',
-				'by reacting to this comment you can get or strip roles', '#FF7F00',
-				[
-					{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false },
-					{ emote: ':gun:', role: 'Fps', inline: true },
-					{ emote: ':clown:', role: 'Moba', inline: true },
-					{ emote: ':gun:', role: 'Fps', inline: true },
-					{ emote: ':clown:', role: 'Moba', inline: true },
-					{ emote: ':gun:', role: 'Fps', inline: true },
-					{ emote: ':clown:', role: 'Moba', inline: true },
-
-					{ emote: '', role: '', inline: false },
-					{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false },
-					{ emote: ':gun:', role: 'Fps', inline: true },
-					{ emote: ':clown:', role: 'Moba', inline: true },
-					{ emote: ':gun:', role: 'Fps', inline: true },
-					{ emote: ':clown:', role: 'Moba', inline: true },
-					{ emote: ':gun:', role: 'Fps', inline: true },
-					{ emote: ':clown:', role: 'Moba', inline: true },
-				]));
+			message.channel.send(create_rich_embed('Portal Role Assigner', '', '#FF7F00', role_emb))
+				.then(sent_message => {
+					console.log('messageid is : '+sent_message.id);
+				})
 			message.react('✔️');
 		} else {
 			message_reply(false, message, '**' + config.prefix + 'role !role1->:emote: !role2->:emote: ...**');

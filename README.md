@@ -36,10 +36,11 @@ There are four types of data in portal bot:
 * _prefix:_ __$__
 * _(Variables are defacto data sources that can be accessed though calling them)_
 
-name | description
+variable | description
 --------- | ---------
 \# | _number of channel in list_
 \## | _number of channel in list with \#_
+|
 date | _full date: dd/mm/yyyy_
 number_day | _gets the day number_
 name_day | _gets the day name_
@@ -49,14 +50,16 @@ time | _full time: hh/mm/ss_
 hour | _gets the hour_
 minute | _gets the minute_
 second | _gets the second_
+| 
 status_list | _list of current member statuses_
 status_count | _count of current member statuses_
 status_history | _history of all the statuses_
+|
 member_list | _returns the currently played games_
 member_count | _number of members in channel_
 member_playing | _number of members playing_
 member_history | _returns the currently played games_
-member_limit | _limit of users in channel_
+|
 creator_portal | _creator of current voice\'s portal_
 creator_voice | _creator of current voice_
 
@@ -64,7 +67,7 @@ creator_voice | _creator of current voice_
 * _prefix:_ __|__
 * _(Pipes are applied to variables in order to change their outcome)_
 
-name | type | description
+pipe | type | description
 --------- | --------- | ---------
 upperCase | string | _returns an upperCase of the input_
 lowerCase | string | _returns an lowerCase of the input_
@@ -76,15 +79,21 @@ titleCase | string | _returns an titleCase of the input_
 camelCase | string | _returns an camelCase of the input_
 acronym | string | _returns an acronym of the input_
 word\# | string | _returns \# words of the input_
+|
 populous_count | list | _returns the count of most common element in list_
 populous | list | _returns the name of the most common element in list_
 summary_count | list | _returns the count of members having a status_
+|
+limit_portal | _maximum number of members guideline for portal_
+limit_voice | _maximum number of members allowed_
+|
+position | _the position of the channel_
 
 ### Attributes
 * _prefix:_ __@__
 * _(Attributes are values that a channel has from its inception and are subject to change)_
 
-name | type | default | description
+attributes | type | default | description
 --------- | --------- | --------- | --------- 
 no_bots | boolean | false | _no bots allowed_
 creator_id | number | creator_id | _no bots allowed_

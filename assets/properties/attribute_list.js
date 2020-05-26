@@ -94,6 +94,24 @@ module.exports =
 			}
 		},
 		{
+			name: 'position',
+			description: 'the position of the channel',
+			args: '!position of channel',
+			get: (id, portal_list, guild) => {
+				let position = 0;
+				guild.channels.some(channel => {
+					if (id === channel.id) {
+						position = channel.position;
+						return;
+					}
+				});
+				return position;
+			},
+			set: (args, portal, voice, voice_channel) => {
+				voice_channel.position = Number(args[1]);
+			}
+		},
+		{
 			name: 'time_to_live',
 			description: 'time to live',
 			args: '!number in seconds',
