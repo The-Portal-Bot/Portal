@@ -56,7 +56,9 @@ member_list | _returns the currently played games_
 member_count | _number of members in channel_
 member_playing | _number of members playing_
 member_history | _returns the currently played games_
-member_limit | _sets the limit of users in channel_
+member_limit | _limit of users in channel_
+creator_portal | _creator of current voice\'s portal_
+creator_voice | _creator of current voice_
 
 ### Pipes
 * _prefix:_ __|__

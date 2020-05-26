@@ -114,7 +114,7 @@ module.exports =
 				guild.channels.forEach(channel => {
 					if (channel.id === id)
 						channel.members.forEach(member => {
-							mmbr_lst.push(member);
+							mmbr_lst.push(member.displayName);
 						});
 				});
 				return mmbr_lst;
@@ -154,15 +154,26 @@ module.exports =
 			get: () => { return 'no_yet_implemented' }
 		},
 		{
-			name: 'member_limit',
-			description: 'sets the limit of users in channel',
+			name: 'creator_portal',
+			description: 'creator of current voice\'s portal',
 			args: 'none',
-			get: (guild, id) => {
-				let cnt = undefined;
-				guild.channels.forEach(channel => {
-					if (channel.id === id) cnt = channel.userLimit;
-				})
-				return cnt;
+			get: (guild, id, portal_list) => {
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].creator_id;
+			}
+		},
+		{
+			name: 'creator_voice',
+			description: 'creator of current voice',
+			args: 'none',
+			get: (guild, id, portal_list) => {
+				console.log('portal_list: ', portal_list);
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].creator_id;
 			}
 		}
 	]

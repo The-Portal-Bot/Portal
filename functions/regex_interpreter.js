@@ -1,3 +1,5 @@
+const voca = require('voca');
+
 const vrbl_objct = require('./../assets/properties/variable_list');
 const pipe_objct = require('./../assets/properties/pipe_list');
 const attr_objct = require('./../assets/properties/attribute_list');
@@ -18,10 +20,10 @@ module.exports = {
 	}
 	,
 
-	get_attr_data: function (attr, id, portal_list) {
+	get_attr_data: function (attr, id, portal_list, guild) {
 		for (i = 0; i < attr_objct.attributes.length; i++)
 			if (attr == attr_objct.attributes[i].name)
-				return attr_objct.attributes[i].get(id, portal_list);
+				return attr_objct.attributes[i].get(id, portal_list, guild);
 	}
 	,
 
@@ -78,26 +80,28 @@ module.exports = {
 		let last_variable = '';
 
 		for (let i = 0; i < regex.length; i++) {
+
 			if (regex[i] === '$') {
 				let vrbl = this.is_variable(regex.substring(i));
 				if (vrbl) {
-					new_channel_name += this.get_vrbl_data(vrbl, id, guild, portal_list);
-					last_variable = new_channel_name;
-					i += vrbl.length;
+					last_variable = this.get_vrbl_data(vrbl, id, guild, portal_list);
+					new_channel_name += last_variable;
+					i += voca.chars(vrbl).length;
 				} else {
 					new_channel_name += regex[i];
 				}
 			} else if (regex[i] === '|') {
 				let pipe = this.is_pipe(regex.substring(i));
-				let cnt = regex.substring(i + 5, i + 6);
+				let cnt = regex.substring(i + 5, i + 6); // wtf wrong ? check ?
 				
 				if (pipe) {
+					console.log('pipe: ' + pipe + ' with count: ' + cnt);
 					// removes previous variable output, in order to replace with pipe output
-					new_channel_name = new_channel_name.substring(
-						0, new_channel_name.length - last_variable.length
-					);
+					new_channel_name = new_channel_name.substring(0,
+						voca.chars(new_channel_name).length - voca.chars(last_variable).length);
 					new_channel_name += this.get_pipe_data(pipe, last_variable, cnt);
-					i += pipe.length;
+					i += voca.chars(pipe).length;
+					if (pipe === 'word') i++;
 				} else {
 					new_channel_name += regex[i];
 				}
@@ -105,8 +109,8 @@ module.exports = {
 				let attr = this.is_attribute(regex.substring(i));
 
 				if (attr) {
-					new_channel_name += this.get_attr_data(attr, id, portal_list);
-					i += attr.length;
+					new_channel_name += this.get_attr_data(attr, id, portal_list, guild);
+					i += voca.chars(attr).length;
 				} else {
 					new_channel_name += regex[i];
 				}

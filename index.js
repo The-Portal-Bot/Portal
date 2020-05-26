@@ -24,6 +24,27 @@ const config = require('./config.json');
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
+create_rich_embed = function (title, description, colour, field_array) {
+	const exampleEmbed = new Discord.RichEmbed()
+		.setColor(colour)
+		.setAuthor(title)
+		.setDescription(description)
+		.setTimestamp()
+		.setFooter('Portal bot by Keybraker',
+			'https://raw.githubusercontent.com/keybraker/portal-discord-bot/'+
+			'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2');
+
+	field_array.forEach(row => {
+		if (row.emote === '') {
+			exampleEmbed.addBlankField();
+		} else {
+			exampleEmbed.addField(row.emote, row.role, row.inline);
+		}
+	});
+
+	return exampleEmbed;
+}
+
 channel_clean_up = function (channel, current_guild) {
 	if (current_guild.channels.some((guild_channel) => {
 		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
@@ -46,33 +67,33 @@ portal_init = function (current_guild) {
 }
 
 show_portal_state = function (guild_id) {
-	console.log(guild_id + '\n.portal_list\n[');
-	for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
-		console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
-			+ '.voice_list\n\t[');
+	// console.log(guild_id + '\n.portal_list\n[');
+	// for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
+	// 	console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
+	// 		+ '.voice_list\n\t[');
 
-		for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
-			console.log('\t\t' + j + '. {'
-				+ portal_guilds[guild_id]['portal_list'][i].voice_list[j].id + '}');
-		}
-		console.log('\t],\n');
-	}
-	console.log('],');
-	console.log(guild_id + '\n.url_list\n[');
-	for (i = 0; i < portal_guilds[guild_id]['url_list'].length; i++) {
-		console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
-	}
-	console.log(']');
+	// 	for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
+	// 		console.log('\t\t' + j + '. {'
+	// 			+ portal_guilds[guild_id]['portal_list'][i].voice_list[j].id + '}');
+	// 	}
+	// 	console.log('\t],\n');
+	// }
+	// console.log('],');
+	// console.log(guild_id + '\n.url_list\n[');
+	// for (i = 0; i < portal_guilds[guild_id]['url_list'].length; i++) {
+	// 	console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
+	// }
+	// console.log(']');
+	console.log('Portal State: ', portal_guilds);
 }
 
 update_guild_json = function (force) {
 	console.log('updating guild json');
 
-	portal_guilds_json = JSON.stringify(portal_guilds);
-	if (force)
-		fs.writeFileSync(guild_json_path, portal_guilds_json);
-	else
-		fs.writeFile(guild_json_path, portal_guilds_json);
+	setTimeout(function () {
+		if (force) fs.writeFileSync(guild_json_path, JSON.stringify(portal_guilds), 'utf8');
+		else fs.writeFile(guild_json_path, JSON.stringify(portal_guilds), 'utf8');
+	}, 1000);
 }
 
 message_reply = function (status, msg, str) {
@@ -183,7 +204,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 		if (edtr.included_in_portal_list(old_user_channel.id, portal_guilds[newState.guild.id]['portal_list'])) {
 			console.log('->source: portal_list');
-			console.log("outside portal_list.length:" + portal_guilds[newState.guild.id]['portal_list'].length);
+
 			if (edtr.included_in_portal_list(new_user_channel.id, portal_guilds[newState.guild.id]['portal_list'])) { // this should not happen
 				console.log('->dest: portal_list');
 				console.log('this should not happen error: portal_channel->portal_channel');
@@ -241,9 +262,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 	} else {
 		console.log('don\'t know how we got here');
 	}
+	update_guild_json(true);
 	console.log('');
 
-	update_guild_json(true);
 	return;
 })
 //#endregion
@@ -386,85 +407,88 @@ client.on('message', async message => {
 
 			if (args.length === 0 || args[0] === 'func') {
 				// check if argument is function
-				help_message_func +=
-					'-\n`Functions (prefix ' + func_objct.functions.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let func_array = [];
 				for (i = 0; i < func_objct.functions.length; i++) {
-					help_message_func +=
-						'> **' + func_objct.functions[i].name + '**\t\t[' +
-						'*' + func_objct.functions[i].description + '*]\t(' +
-						'***' + func_objct.functions[i].args + '***)\n'
+					func_array.push({ 
+						emote: func_objct.functions[i].name, 
+						role: '**desc**: *' + func_objct.functions[i].description + '*' +
+							'\n**args**: *' + func_objct.functions[i].args + '*', 
+						inline: true });
 				}
-				message.author.send(help_message_func);
+				
+				message.author.send(create_rich_embed('Functions',
+					'Prefix: ' + func_objct.prefix + '\nCommands to access portal bot.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', func_array));
 			}
 			if (args.length === 0 || args[0] === 'vrbl') {
 				// check if argument is variable
-				help_message_vrbl +=
-					'-\n`Variable (prefix ' + vrbl_objct.variables.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let vrbl_array = [];
 				for (i = 0; i < vrbl_objct.variables.length; i++) {
-					help_message_vrbl +=
-						'> **' + vrbl_objct.variables[i].name + '**\t\t[' +
-						'*' + vrbl_objct.variables[i].description + '*]\t(' +
-						'***' + vrbl_objct.variables[i].args + '***)\n'
+					vrbl_array.push({
+						emote: vrbl_objct.variables[i].name,
+						role: '**desc**: *' + vrbl_objct.variables[i].description + '*' +
+							'\n**args**: *' + vrbl_objct.variables[i].args + '*',
+						inline: true
+					});
 				}
-				message.author.send(help_message_vrbl);
+
+				message.author.send(create_rich_embed('Variables',
+					'Prefix: ' + vrbl_objct.prefix + '\nChannel data that changes automatically.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', vrbl_array));
 			}
 			if (args.length === 0 || args[0] === 'pipe') {
 				// check if argument is pipe
-				help_message_pipe +=
-					'-\n`Pipe (prefix ' + pipe_objct.pipes.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let pipe_array = [];
 				for (i = 0; i < pipe_objct.pipes.length; i++) {
-					help_message_pipe +=
-						'> **' + pipe_objct.pipes[i].name + '**\t\t[' +
-						'*' + pipe_objct.pipes[i].description + '*]\t(' +
-						'***' + pipe_objct.pipes[i].args + '***)\n'
+					pipe_array.push({
+						emote: pipe_objct.pipes[i].name,
+						role: '**desc**: *' + pipe_objct.pipes[i].description + '*' +
+							'\n**args**: *' + pipe_objct.pipes[i].args + '*',
+						inline: true
+					});
 				}
-				message.author.send(help_message_pipe);
+
+				message.author.send(create_rich_embed('Pipes',
+					'Prefix: ' + pipe_objct.prefix + '\nGive input of sort to get an output.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', pipe_array));
 			}
 			if (args.length === 0 || args[0] === 'attr') {
 				// check if argument is attribute
-				help_message_attr +=
-					'-\n`Attribute (prefix ' + attr_objct.attributes.prefix + ')`\n' +
-					'**Name**\t\t[' +
-					'**Description**]\t\t(' +
-					'**Arguments**)\n'
-
+				let attr_array = [];
 				for (i = 0; i < attr_objct.attributes.length; i++) {
-					help_message_attr +=
-						'> **' + attr_objct.attributes[i].name + '**\t\t[' +
-						'*' + attr_objct.attributes[i].description + '*]\t(' +
-						'***' + attr_objct.attributes[i].args + '***)\n'
+					attr_array.push({
+						emote: attr_objct.attributes[i].name,
+						role: '**desc**: *' + attr_objct.attributes[i].description + '*' +
+							'\n**args**: *' + attr_objct.attributes[i].args + '*',
+						inline: true
+					});
 				}
-				message.author.send(help_message_attr);
-			}
 
-			message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-				'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+				message.author.send(create_rich_embed('Attributes',
+					'Prefix: ' + attr_objct.prefix + '\nData of channel that can be set.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', attr_array));
+			}
 		}
 		else if (args.length === 1) {
 			// check if argument is function
 			for (i = 0; i < func_objct.functions.length; i++) {
 				let func = func_objct.functions[i]
 				if (func.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + func.name + '** ' +
-						'\nType: **function**' +
-						'\nDescription\t-\t*' + func.description + '*' +
-						'\nArguments \t-\t*' + func.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						func.name,
+						'Type: Function' + 
+						'\nPrefix: ' + func_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + func.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + func.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -474,14 +498,17 @@ client.on('message', async message => {
 			for (i = 0; i < pipe_objct.pipes.length; i++) {
 				let pipe = pipe_objct.pipes[i]
 				if (pipe.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + pipe.name + '** ' +
-						'\nType: **pipe**' +
-						'\nDescription\t-\t*' + pipe.description + '*' +
-						'\nArguments \t-\t*' + pipe.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						pipe.name,
+						'Type: Pipe' + 
+						'\nPrefix: ' + pipe_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + pipe.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + pipe.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -491,14 +518,17 @@ client.on('message', async message => {
 			for (i = 0; i < attr_objct.attributes.length; i++) {
 				let attr = attr_objct.attributes[i]
 				if (attr.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + attr.name + '** ' +
-						'\nType: **attribute**' +
-						'\nDescription\t-\t*' + attr.description + '*' +
-						'\nArguments \t-\t*' + attr.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						attr.name,
+						'Type: Attribute' + 
+						'\nPrefix: ' + attr_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + attr.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + attr.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -508,14 +538,17 @@ client.on('message', async message => {
 			for (i = 0; i < vrbl_objct.variables.length; i++) {
 				let vrbl = vrbl_objct.variables[i]
 				if (vrbl.name === args[0]) {
-					message.author.send(
-						'>>> Name: **' + vrbl.name + '** ' +
-						'\nType: **variable**' +
-						'\nDescription\t-\t*' + vrbl.description + '*' +
-						'\nArguments \t-\t*' + vrbl.args + '*');
-
-					message.author.send('-\n*symbol: ! indicates beginning of mandatory argument (should not be included)\n' +
-						'symbol: @ indicates beginning of mandatory argument (should not be included)*');
+					message.author.send(create_rich_embed(
+						vrbl.name,
+						'Type: Variable' + 
+						'\nPrefix: ' + vrbl_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{emote: 'Description', role: '*' + vrbl.description + '*', inline: false},
+							{emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false}
+						]
+						));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
@@ -594,13 +627,42 @@ client.on('message', async message => {
 			message_reply(false, message, '**' + config.prefix + 'url <channel_name> <category_name>**\n' +
 				'*(channel_name: mandatory, category_name: optional)*');
 		}
-
-		console.log("url_list: ");
-		for (let i = 0; i < portal_guilds[message.guild.id]['url_list']; i++)
-			console.log('url_list[' + i + ']: ' +
-				portal_guilds[message.guild.id]['url_list'][i]);
-
 		update_guild_json(true);
+	}
+
+	if (cmd === 'role') {
+		let roles = [];
+		message.guild.roles.forEach(role => {
+			roles.push({role})});
+		console.log('roles: ', roles);
+
+		if (args.length === 1) {
+			// edtr.create_role_giver(message.guild, args[0], null, portal_guilds[message.guild.id]['url_list']);
+			message.channel.send(create_rich_embed('Portal Role Assigner',
+				'by reacting to this comment you can get or strip roles', '#FF7F00',
+				[
+					{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+
+					{ emote: '', role: '', inline: false },
+					{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+					{ emote: ':gun:', role: 'Fps', inline: true },
+					{ emote: ':clown:', role: 'Moba', inline: true },
+				]));
+			message.react('✔️');
+		} else {
+			message_reply(false, message, '**' + config.prefix + 'role !role1->:emote: !role2->:emote: ...**');
+		}
+
 		return;
 	}
 

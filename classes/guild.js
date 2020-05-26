@@ -5,5 +5,4 @@ module.exports =
             this.id = n_id;
         }
     }
-
 }

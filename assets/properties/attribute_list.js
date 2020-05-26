@@ -17,19 +17,8 @@ module.exports =
 			}
 		},
 		{
-			name: 'creator_id',
-			description: 'no bots allowed',
-			args: '!true/false',
-			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].creator_id;
-			}
-		},
-		{
 			name: 'regex_portal',
-			description: 'sets regex-guidelines for how to display portal\'s title',
+			description: 'sets title-guidelines of portal channel',
 			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -44,7 +33,7 @@ module.exports =
 		},
 		{
 			name: 'regex_voice',
-			description: 'sets regex-guidelines for how to display voice (current portal)',
+			description: 'sets the default title for created voice channels',
 			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -58,17 +47,49 @@ module.exports =
 			}
 		},
 		{
-			name: 'member_limit',
-			description: 'maximum number of members allowed',
-			args: '!number of maximum members',
+			name: 'regex',
+			description: 'sets the title for current voice channel',
+			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].member_limit;
+							return portal_list[i].voice_list[j].regex;
 			},
 			set: (args, portal, voice, voice_channel) => {
-				voice.member_cap = Number(args[1]);
+				var args_arr = Array.prototype.slice.call(args);
+				voice.regex = args_arr.slice(1).join(' ');
+			}
+		},
+		{
+			name: 'limit_portal',
+			description: 'maximum number of members guideline for portal',
+			args: '!number of maximum members',
+			get: (id, portal_list, guild) => {
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].limit_portal;
+			},
+			set: (args, portal, voice, voice_channel) => {
+				portal.limit_portal = Number(args[1]);
+			}
+		},
+		{
+			name: 'limit_voice',
+			description: 'maximum number of members allowed',
+			args: '!number of maximum members',
+			get: (id, portal_list, guild) => {
+				let member_limit = 0;
+				guild.channels.some(channel => {
+					if (id === channel.id) {
+						member_limit = channel.userLimit;
+						return;
+					}
+				});
+				return member_limit;
+			},
+			set: (args, portal, voice, voice_channel) => {
 				voice_channel.userLimit = Number(args[1]);
 			}
 		},
