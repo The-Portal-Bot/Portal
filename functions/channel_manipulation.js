@@ -46,8 +46,7 @@ module.exports =
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$member_count | $status_list', [],
-						false, 0, 0, 0, channel.position, 'gr',
-						this.portal_counter++ // not editable
+						false, 0, 0, 0, 'gr'
 					));
 
 					let category = server.channels.find(
@@ -63,7 +62,7 @@ module.exports =
 					portal_list.push(new classes.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$member_count | $status_list', [],
-						false, 0, 0, 0, channel.position, 'gr'
+						false, 0, 0, 0, 'gr'
 					));
 				})
 		}
@@ -74,15 +73,15 @@ module.exports =
 		state.voiceChannel.guild.createChannel('loading...', { type: 'voice' }, { bitrate: 64 })
 			.then(channel => {
 				for (i = 0; i < portal_list.length; i++)
-					if (portal_list[i].id === state.voiceChannel.id)
+					if (portal_list[i].id === state.voiceChannel.id) {
 						portal_list[i].voice_list.push(
 							new classes.voice_channel(
 								channel.id, creator_id, portal_list[i].regex_voice,
-								false, 0, 0, 0, channel.position, 
-								'gr'
+								false, 0, 0, 'gr'
 							)
 						);
-
+						channel.userLimit = portal_list[i].limit_portal;
+					}
 				// doesn't have category
 				if (state.voiceChannel.parentID !== null)
 					channel.setParent(state.voiceChannel.parentID);

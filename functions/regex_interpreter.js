@@ -20,10 +20,10 @@ module.exports = {
 	}
 	,
 
-	get_attr_data: function (attr, id, portal_list) {
+	get_attr_data: function (attr, id, portal_list, guild) {
 		for (i = 0; i < attr_objct.attributes.length; i++)
 			if (attr == attr_objct.attributes[i].name)
-				return attr_objct.attributes[i].get(id, portal_list);
+				return attr_objct.attributes[i].get(id, portal_list, guild);
 	}
 	,
 
@@ -109,7 +109,7 @@ module.exports = {
 				let attr = this.is_attribute(regex.substring(i));
 
 				if (attr) {
-					new_channel_name += this.get_attr_data(attr, id, portal_list);
+					new_channel_name += this.get_attr_data(attr, id, portal_list, guild);
 					i += voca.chars(attr).length;
 				} else {
 					new_channel_name += regex[i];

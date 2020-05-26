@@ -84,7 +84,7 @@ show_portal_state = function (guild_id) {
 	// 	console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
 	// }
 	// console.log(']');
-	console.log('PORTAL GUILDS JSON: ', portal_guilds[guild_id]);
+	console.log('Portal State: ', portal_guilds);
 }
 
 update_guild_json = function (force) {
