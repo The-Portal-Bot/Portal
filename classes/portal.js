@@ -31,9 +31,6 @@ module.exports =
             this.time_to_live = time_to_live;
             this.refresh_rate = refresh_rate;
             this.locale = locale;
-
-
-            // this.position = position;
         }
     }
 }

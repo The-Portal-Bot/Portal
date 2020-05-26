@@ -1,1 +1,172 @@
-{"710746690650374208":{"portal_list":[{"id":"714806657602945034","creator_id":"228666893068795905","regex_portal":"games-squad-portal","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":4,"time_to_live":0,"refresh_rate":0,"locale":"gr","voice_list":[{"id":"714810367397593109","creator_id":"228666893068795905","regex":"G$#-P$member_count | $status_list","no_bots":false,"time_to_live":0,"refresh_rate":0,"locale":"gr"}]},{"id":"714825192735637534","creator_id":"228666893068795905","regex_portal":"{ioannis=😢}","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":0,"time_to_live":0,"refresh_rate":0,"locale":"gr","voice_list":[]}],"url_list":[]},"705112209985896529":{"portal_list":[],"url_list":[]},"228667314252283904":{"portal_list":[],"url_list":[]}}
+{
+    "710746690650374208": {
+        "portal_list": [
+            {
+                "id": "714944200243937442",
+                "creator_id": "228666893068795905",
+                "regex_portal": "as",
+                "regex_voice": "G$#-P$member_count | $status_list",
+                "no_bots": false,
+                "limit_portal": 0,
+                "time_to_live": 0,
+                "refresh_rate": 0,
+                "locale": "gr",
+                "voice_list": []
+            }
+        ],
+        "url_list": [],
+        "role_list": [
+            {
+                "message_id": "714939242891182102",
+                "role_emote_map": [
+                    {
+                        "emote": "Get Role",
+                        "role": "react with one of the following emotes to get this role",
+                        "inline": false
+                    },
+                    {
+                        "emote": "❤️",
+                        "role": "moba",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🤣",
+                        "role": "fps",
+                        "inline": true
+                    },
+                    {
+                        "emote": "😦",
+                        "role": "mmorpg",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🔫",
+                        "role": "progamer",
+                        "inline": true
+                    },
+                    {
+                        "emote": "",
+                        "role": "",
+                        "inline": false
+                    },
+                    {
+                        "emote": "Strip Role",
+                        "role": "react with one of the following emotes to strip this role",
+                        "inline": false
+                    },
+                    {
+                        "emote": "💩",
+                        "role": "moba",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🐶",
+                        "role": "fps",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🎮",
+                        "role": "mmorpg",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🕵🏿‍♂️",
+                        "role": "progamer",
+                        "inline": true
+                    }
+                ]
+            },
+            {
+                "message_id": "714939373006749777",
+                "role_emote_map": [
+                    {
+                        "emote": "Get Role",
+                        "role": "react with one of the following emotes to get this role",
+                        "inline": false
+                    },
+                    {
+                        "emote": "❤️",
+                        "role": "moba",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🤣",
+                        "role": "fps",
+                        "inline": true
+                    },
+                    {
+                        "emote": "😦",
+                        "role": "mmorpg",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🔫",
+                        "role": "progamer",
+                        "inline": true
+                    },
+                    {
+                        "emote": "",
+                        "role": "",
+                        "inline": false
+                    },
+                    {
+                        "emote": "Strip Role",
+                        "role": "react with one of the following emotes to strip this role",
+                        "inline": false
+                    },
+                    {
+                        "emote": "💩",
+                        "role": "moba",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🐶",
+                        "role": "fps",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🎮",
+                        "role": "mmorpg",
+                        "inline": true
+                    },
+                    {
+                        "emote": "🕵🏿‍♂️",
+                        "role": "progamer",
+                        "inline": true
+                    }
+                ]
+            }
+        ]
+    },
+    "705112209985896529": {
+        "portal_list": [
+            {
+                "id": "714954043398554079",
+                "creator_id": "228666893068795905",
+                "regex_portal": "IOANNIS",
+                "regex_voice": "TSIAKKAS",
+                "no_bots": false,
+                "limit_portal": 6,
+                "time_to_live": 0,
+                "refresh_rate": 0,
+                "locale": "gr",
+                "voice_list": [
+                    {
+                        "id": "714954985108144251",
+                        "creator_id": "228666893068795905",
+                        "regex": "$date",
+                        "no_bots": false,
+                        "time_to_live": 0,
+                        "refresh_rate": 0,
+                        "locale": "gr"
+                    }
+                ]
+            }
+        ],
+        "url_list": []
+    },
+    "228667314252283904": {
+        "portal_list": [],
+        "url_list": []
+    }
+}

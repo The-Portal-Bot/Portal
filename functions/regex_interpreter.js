@@ -114,6 +114,18 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
+			} else if (regex[i] === '{') {
+				console.log('regex.substring(' + (i+1) + ', '+(i+4)+') = ' + regex.substring(i+1, i+4));
+				if (regex.substring(i + 1, i + 4) === 'if(') {
+					console.log('regex.substring(' + (i + 4) + ') = ' + regex.substring(i + 4, i+4+regex.substring(i + 4).indexOf(')')));
+				}
+
+				// if (attr) {
+				// 	new_channel_name += this.get_attr_data(attr, id, portal_list, guild);
+				// 	i += voca.chars(attr).length;
+				// } else {
+				// 	new_channel_name += regex[i];
+				// }
 			} else {
 				new_channel_name += regex[i];
 			}

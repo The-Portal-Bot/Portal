@@ -1,4 +1,5 @@
-const classes = require('./../classes/portal.js');
+const class_portal = require('./../classes/portal.js');
+const class_role = require('./../classes/role.js');
 
 module.exports =
 {
@@ -43,7 +44,7 @@ module.exports =
 			// creating voice channel
 			server.createChannel(portal_name, { type: 'voice' }, { bitrate: 8 })
 				.then(channel => {
-					portal_list.push(new classes.portal_channel(
+					portal_list.push(new class_portal.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$member_count | $status_list', [],
 						false, 0, 0, 0, 'gr'
@@ -59,7 +60,7 @@ module.exports =
 			// creating voice channel
 			server.createChannel(portal_name, { type: 'voice' }, { bitrate: 8 })
 				.then(channel => {
-					portal_list.push(new classes.portal_channel(
+					portal_list.push(new class_portal.portal_channel(
 						channel.id, creator_id, portal_name,
 						'G$#-P$member_count | $status_list', [],
 						false, 0, 0, 0, 'gr'
@@ -75,7 +76,7 @@ module.exports =
 				for (i = 0; i < portal_list.length; i++)
 					if (portal_list[i].id === state.voiceChannel.id) {
 						portal_list[i].voice_list.push(
-							new classes.voice_channel(
+							new class_portal.voice_channel(
 								channel.id, creator_id, portal_list[i].regex_voice,
 								false, 0, 0, 'gr'
 							)
@@ -93,7 +94,7 @@ module.exports =
 	}
 	,
 
-	create_url_channel: function (server, url_name, category_name, url_list, creator_id) {
+	create_url_channel: function (server, url_name, category_name, url_list) {
 		if (category_name) {
 			// creating category
 			server.createChannel(category_name, { type: 'category' })
@@ -118,7 +119,14 @@ module.exports =
 				})
 		}
 	}
+	,
 
+	create_role_message: function (message, role_list, title, desc, colour, role_emb) {
+		message.channel.send(create_rich_embed(title, desc, colour, role_emb))
+			.then(sent_message => {
+				role_list.push(new class_role.role_message(sent_message.id, role_emb));
+			});
+	}
 };
 
 // console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));

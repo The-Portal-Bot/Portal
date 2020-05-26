@@ -635,45 +635,47 @@ client.on('message', async message => {
 		message.guild.roles.forEach(role => { roles.push({role}); });
 
 		if (args.length > 0) {
-			role_emb = [];
 			try {
 				role_map = JSON.parse(args.join(' '));
 			} catch(error) {
 				message.channel.send('Roles must be in JSON format for more info ./help role_giver');
 				return;
 			}
+			role_emb = [];
+			role_emb_prnt = [];
 
-			console.log('role_map: ', role_map);
-
-			role_emb.push(
+			role_emb_prnt.push(
 				{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false }
 			);
-
-			for (let i = 0; i < role_map.map.length; i++) {
+			for (let i = 0; i < role_map.length; i++) {
+				role_emb_prnt.push(
+					{ emote: role_map[i].emote_give, role: role_map[i].role, inline: true }
+				);
 				role_emb.push(
-					{ emote: role_map.map[i].emote_give, role: role_map.map[i].role, inline: true }
+					{ emote: role_map[i].emote_give, role: role_map[i].role, inline: true }
 				);
 			}
-
-			role_emb.push(
+			role_emb_prnt.push(
 				{ emote: '', role: '', inline: false },
 				{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false }
 			);
-			for (let i = 0; i < role_map.map.length; i++) {
+			for (let i = 0; i < role_map.length; i++) {
+				role_emb_prnt.push(
+					{ emote: role_map[i].emote_strip, role: role_map[i].role, inline: true }
+				);
 				role_emb.push(
-					{ emote: role_map.map[i].emote_strip, role: role_map.map[i].role, inline: true }
+					{ emote: role_map[i].emote_strip, role: role_map[i].role, inline: true }
 				);
 			}
-			// edtr.create_role_giver(message.guild, args[0], null, portal_guilds[message.guild.id]['url_list']);
-			message.channel.send(create_rich_embed('Portal Role Assigner', '', '#FF7F00', role_emb))
-				.then(sent_message => {
-					console.log('messageid is : '+sent_message.id);
-				})
+
+			edtr.create_role_message(message, portal_guilds[message.guild.id]['role_list'],
+				'Portal Role Assigner', '', '#FF7F00', role_emb_prnt);
 			message.react('✔️');
 		} else {
 			message_reply(false, message, '**' + config.prefix + 'role !role1->:emote: !role2->:emote: ...**');
 		}
 
+		update_guild_json(true);
 		return;
 	}
 
