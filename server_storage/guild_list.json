@@ -1,1 +1,40 @@
-{"710746690650374208":{"portal_list":[{"id":"714621553291034675","creator_id":"228666893068795905","regex_portal":"ass","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"member_limit":0,"time_to_live":0,"refresh_rate":0,"position":1,"locale":"gr","voice_list":[]},{"id":"714621625546440926","creator_id":"228666893068795905","regex_portal":"RUSSIAN","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"member_limit":0,"time_to_live":0,"refresh_rate":0,"position":2,"locale":"gr","voice_list":[]}],"url_list":[]},"705112209985896529":{"portal_list":[],"url_list":[]},"228667314252283904":{"portal_list":[],"url_list":[]}}
+{
+    "710746690650374208": {
+        "portal_list": [
+            {
+                "id": "714779865408208926",
+                "creator_id": "228666893068795905",
+                "regex_portal": "duo",
+                "regex_voice": "hello",
+                "no_bots": false,
+                "member_limit": 0,
+                "time_to_live": 0,
+                "refresh_rate": 0,
+                "position": 1,
+                "locale": "gr",
+                "voice_list": [
+                    {
+                        "id": "714780060653060128",
+                        "creator_id": "228666893068795905",
+                        "regex": "diko mou",
+                        "no_bots": false,
+                        "member_limit": 0,
+                        "time_to_live": 0,
+                        "refresh_rate": 0,
+                        "position": 3,
+                        "locale": "gr"
+                    }
+                ]
+            }
+        ],
+        "url_list": []
+    },
+    "705112209985896529": {
+        "portal_list": [],
+        "url_list": []
+    },
+    "228667314252283904": {
+        "portal_list": [],
+        "url_list": []
+    }
+}

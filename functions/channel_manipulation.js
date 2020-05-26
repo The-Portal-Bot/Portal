@@ -77,7 +77,7 @@ module.exports =
 					if (portal_list[i].id === state.voiceChannel.id)
 						portal_list[i].voice_list.push(
 							new classes.voice_channel(
-								channel.id, creator_id,
+								channel.id, creator_id, portal_list[i].regex_voice,
 								false, 0, 0, 0, channel.position, 
 								'gr'
 							)

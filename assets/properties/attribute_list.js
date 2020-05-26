@@ -29,7 +29,7 @@ module.exports =
 		},
 		{
 			name: 'regex_portal',
-			description: 'sets regex-guidelines for how to display portal\'s title',
+			description: 'sets title-guidelines of portal channel',
 			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -44,7 +44,7 @@ module.exports =
 		},
 		{
 			name: 'regex_voice',
-			description: 'sets regex-guidelines for how to display voice (current portal)',
+			description: 'sets the default title for created voice channels',
 			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -55,6 +55,21 @@ module.exports =
 			set: (args, portal, voice, voice_channel) => {
 				var args_arr = Array.prototype.slice.call(args);
 				portal.regex_voice = args_arr.slice(1).join(' ');
+			}
+		},
+		{
+			name: 'regex',
+			description: 'sets the title for current voice channel',
+			args: '!regex',
+			get: (id, portal_list) => {
+				for (i = 0; i < portal_list.length; i++)
+					for (j = 0; j < portal_list[i].voice_list.length; j++)
+						if (id === portal_list[i].voice_list[j].id)
+							return portal_list[i].voice_list[j].regex;
+			},
+			set: (args, portal, voice, voice_channel) => {
+				var args_arr = Array.prototype.slice.call(args);
+				voice.regex = args_arr.slice(1).join(' ');
 			}
 		},
 		{

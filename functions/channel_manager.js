@@ -9,7 +9,7 @@ module.exports = {
                 for (j = 0; j < portal_list[i].voice_list.length; j++)
                     if (channel.id === portal_list[i].voice_list[j].id) {
                         channel.setName(regx.regex_interpreter(
-                            portal_list[i].regex_voice,
+                            portal_list[i].voice_list[j].regex,
                             portal_list[i].voice_list[j].id,
                             guild,
                             portal_list
