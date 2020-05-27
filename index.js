@@ -485,7 +485,7 @@ client.on('message', async message => {
 						'\n**!**: *mandatory*, **@**: *optional*',
 						'#FF7F00',
 						[
-							{emote: 'Description', role: '*' + func.description + '*', inline: false},
+							{emote: 'Description', role: '*' + func.super_description + '*', inline: false},
 							{emote: 'Arguments', role: '*' + func.args + '*', inline: false}
 						]
 						));
@@ -505,7 +505,7 @@ client.on('message', async message => {
 						'\n**!**: *mandatory*, **@**: *optional*',
 						'#FF7F00',
 						[
-							{emote: 'Description', role: '*' + pipe.description + '*', inline: false},
+							{emote: 'Description', role: '*' + pipe.super_description + '*', inline: false},
 							{emote: 'Arguments', role: '*' + pipe.args + '*', inline: false}
 						]
 						));
@@ -525,7 +525,7 @@ client.on('message', async message => {
 						'\n**!**: *mandatory*, **@**: *optional*',
 						'#FF7F00',
 						[
-							{emote: 'Description', role: '*' + attr.description + '*', inline: false},
+							{emote: 'Description', role: '*' + attr.super_description + '*', inline: false},
 							{emote: 'Arguments', role: '*' + attr.args + '*', inline: false}
 						]
 						));
@@ -545,7 +545,7 @@ client.on('message', async message => {
 						'\n**!**: *mandatory*, **@**: *optional*',
 						'#FF7F00',
 						[
-							{emote: 'Description', role: '*' + vrbl.description + '*', inline: false},
+							{emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false},
 							{emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false}
 						]
 						));
