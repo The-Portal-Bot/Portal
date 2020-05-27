@@ -80,7 +80,6 @@ module.exports = {
 		let last_variable = '';
 
 		for (let i = 0; i < regex.length; i++) {
-
 			if (regex[i] === '$') {
 				let vrbl = this.is_variable(regex.substring(i));
 				if (vrbl) {
@@ -93,7 +92,7 @@ module.exports = {
 			} else if (regex[i] === '|') {
 				let pipe = this.is_pipe(regex.substring(i));
 				let cnt = regex.substring(i + 5, i + 6); // wtf wrong ? check ?
-				
+
 				if (pipe) {
 					console.log('pipe: ' + pipe + ' with count: ' + cnt);
 					// removes previous variable output, in order to replace with pipe output
@@ -114,18 +113,20 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
-			} else if (regex[i] === '{') {
-				console.log('regex.substring(' + (i+1) + ', '+(i+4)+') = ' + regex.substring(i+1, i+4));
-				if (regex.substring(i + 1, i + 4) === 'if(') {
-					console.log('regex.substring(' + (i + 4) + ') = ' + regex.substring(i + 4, i+4+regex.substring(i + 4).indexOf(')')));
+			} else if (regex[i] === '?' && (regex[i + 1] !== undefined && regex[i + 1] === '?')) {
+				let statement = JSON.parse(regex.substring(i + 2, i + 2 + regex.substring(i + 2).indexOf('??')));
+				if(statement.v1 ) {
+					console.log('is true');
+				} else {
+					console.log('is false');
 				}
 
-				// if (attr) {
-				// 	new_channel_name += this.get_attr_data(attr, id, portal_list, guild);
-				// 	i += voca.chars(attr).length;
-				// } else {
-				// 	new_channel_name += regex[i];
-				// }
+				if(statement.if) {
+					new_channel_name += statement.a;
+				} else {
+					new_channel_name += statement.b;
+				}
+				i += 3 + regex.substring(i + 2).indexOf('??');
 			} else {
 				new_channel_name += regex[i];
 			}
