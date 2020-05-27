@@ -76,6 +76,17 @@ module.exports = {
 		if (guild === undefined) { return "guild is undefined"; }
 		if (portal_list === undefined) { return "portal_list is undefined"; }
 
+		let inline = {
+			"==": (a, b) => { if (a == b) return true; else false; } ,
+			"===": (a, b) => { if (a === b) return true; else false; } ,
+			"!=": (a, b) => { if (a != b) return true; else false; } ,
+			"!==": (a, b) => { if (a !== b) return true; else false; } ,
+			">": (a, b) => { if (a > b) return true; else false; } ,
+			"<": (a, b) => { if (a < b) return true; else false; } ,
+			">=": (a, b) => { if (a >= b) return true; else false; } ,
+			"<=": (a, b) => { if (a <= b) return true; else false; }
+		};
+
 		let new_channel_name = '';
 		let last_variable = '';
 
@@ -113,20 +124,18 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
-			} else if (regex[i] === '?' && (regex[i + 1] !== undefined && regex[i + 1] === '?')) {
-				let statement = JSON.parse(regex.substring(i + 2, i + 2 + regex.substring(i + 2).indexOf('??')));
-				if(statement.v1 ) {
-					console.log('is true');
-				} else {
-					console.log('is false');
+			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
+				try {
+					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
+					if (inline[statement.op](statement.is, statement.that)) {
+						new_channel_name += this.regex_interpreter(statement.yes, id, guild, portal_list);
+					} else {
+						new_channel_name += this.regex_interpreter(statement.no, id, guild, portal_list);
+					}
+					i += 3 + regex.substring(i + 1).indexOf('}}') + 1;
+				} catch (error) {
+					new_channel_name += regex[i];
 				}
-
-				if(statement.if) {
-					new_channel_name += statement.a;
-				} else {
-					new_channel_name += statement.b;
-				}
-				i += 3 + regex.substring(i + 2).indexOf('??');
 			} else {
 				new_channel_name += regex[i];
 			}
