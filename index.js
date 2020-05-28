@@ -397,6 +397,7 @@ client.on('message', async message => {
 		const vrbl_objct = require('./assets/properties/variable_list');
 		const pipe_objct = require('./assets/properties/pipe_list');
 		const attr_objct = require('./assets/properties/attribute_list');
+		const strc_objct = require('./assets/properties/structure_list');
 
 		if (args.length === 0 || (args.length === 1 && (args[0] === 'func' ||
 			args[0] === 'vrbl' || args[0] === 'pipe' || args[0] === 'attr'))) {
@@ -472,6 +473,23 @@ client.on('message', async message => {
 					'\n**!**: *mandatory*, **@**: *optional*',
 					'#FF7F00', attr_array));
 			}
+			if (args.length === 0 || args[0] === 'strc') {
+				// check if argument is attribute
+				let strc_array = [];
+				for (i = 0; i < strc_objct.structures.length; i++) {
+					strc_array.push({
+						emote: strc_objct.structures[i].name,
+						role: '**desc**: *' + strc_objct.structures[i].description + '*' +
+							'\n**args**: *' + strc_objct.structures[i].args + '*',
+						inline: true
+					});
+				}
+
+				message.author.send(create_rich_embed('Structures',
+					'Prefix: ' + strc_objct.prefix + '\nStructural data functions.' +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00', strc_array));
+			}
 		}
 		else if (args.length === 1) {
 			// check if argument is function
@@ -540,15 +558,35 @@ client.on('message', async message => {
 				if (vrbl.name === args[0]) {
 					message.author.send(create_rich_embed(
 						vrbl.name,
-						'Type: Variable' + 
+						'Type: Variable' +
 						'\nPrefix: ' + vrbl_objct.prefix +
 						'\n**!**: *mandatory*, **@**: *optional*',
 						'#FF7F00',
 						[
-							{emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false},
-							{emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false}
+							{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
+							{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false }
 						]
-						));
+					));
+
+					message.channel.send('Check your dms ' + message.author);
+					return;
+				}
+			}
+			// check if argument is structure
+			for (i = 0; i < strc_objct.structures.length; i++) {
+				let strc = strc_objct.structures[i]
+				if (strc.name === args[0]) {
+					message.author.send(create_rich_embed(
+						strc.name,
+						'Type: Structure' +
+						'\nPrefix: ' + strc_objct.prefix +
+						'\n**!**: *mandatory*, **@**: *optional*',
+						'#FF7F00',
+						[
+							{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
+							{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false }
+						]
+					));
 
 					message.channel.send('Check your dms ' + message.author);
 					return;
