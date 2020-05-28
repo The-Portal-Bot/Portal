@@ -1,6 +1,3 @@
-const class_portal = require('./../classes/portal.js');
-const class_guild = require('./../classes/guild.js');
-
 module.exports =
 {
     included_in_portal_guilds: function (guild_id, portal_guilds) {
@@ -12,7 +9,7 @@ module.exports =
     ,
 
     insert_guild: function (guild_id, portal_guilds) {
-        portal_guilds[guild_id] = { "portal_list": [], "url_list": [] };
+        portal_guilds[guild_id] = { "portal_list": [], "url_list": [], "role_list": [] };
     }
     ,
 

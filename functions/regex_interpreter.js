@@ -76,11 +76,21 @@ module.exports = {
 		if (guild === undefined) { return "guild is undefined"; }
 		if (portal_list === undefined) { return "portal_list is undefined"; }
 
+		let inline = {
+			"==": (a, b) => { if (a == b) return true; else false; } ,
+			"===": (a, b) => { if (a === b) return true; else false; } ,
+			"!=": (a, b) => { if (a != b) return true; else false; } ,
+			"!==": (a, b) => { if (a !== b) return true; else false; } ,
+			">": (a, b) => { if (a > b) return true; else false; } ,
+			"<": (a, b) => { if (a < b) return true; else false; } ,
+			">=": (a, b) => { if (a >= b) return true; else false; } ,
+			"<=": (a, b) => { if (a <= b) return true; else false; }
+		};
+
 		let new_channel_name = '';
 		let last_variable = '';
 
 		for (let i = 0; i < regex.length; i++) {
-
 			if (regex[i] === '$') {
 				let vrbl = this.is_variable(regex.substring(i));
 				if (vrbl) {
@@ -93,7 +103,7 @@ module.exports = {
 			} else if (regex[i] === '|') {
 				let pipe = this.is_pipe(regex.substring(i));
 				let cnt = regex.substring(i + 5, i + 6); // wtf wrong ? check ?
-				
+
 				if (pipe) {
 					console.log('pipe: ' + pipe + ' with count: ' + cnt);
 					// removes previous variable output, in order to replace with pipe output
@@ -114,11 +124,29 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
+			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
+				try {
+					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
+					if (inline[statement.op](
+						this.regex_interpreter(statement.is, id, guild, portal_list), 
+						this.regex_interpreter(statement.that, id, guild, portal_list)
+					)) {
+						new_channel_name += this.regex_interpreter(statement.yes, id, guild, portal_list);
+					} else {
+						new_channel_name += this.regex_interpreter(statement.no, id, guild, portal_list);
+					}
+					i += 3 + regex.substring(i + 1).indexOf('}}') + 1;
+				} catch (error) {
+					new_channel_name += regex[i];
+				}
 			} else {
 				new_channel_name += regex[i];
 			}
 		}
-		return new_channel_name;
+		if (new_channel_name === '')
+			return '.';
+		else
+			return new_channel_name;
 	}
 
 };
