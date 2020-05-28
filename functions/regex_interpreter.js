@@ -126,10 +126,11 @@ module.exports = {
 				}
 			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
 				try {
+					// did not put into structure_list due to many unnecessary function calls
 					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
-					if (inline[statement.op](
-						this.regex_interpreter(statement.is, id, guild, portal_list), 
-						this.regex_interpreter(statement.that, id, guild, portal_list)
+					if (inline[statement.is](
+						this.regex_interpreter(statement.if, id, guild, portal_list), 
+						this.regex_interpreter(statement.with, id, guild, portal_list)
 					)) {
 						new_channel_name += this.regex_interpreter(statement.yes, id, guild, portal_list);
 					} else {
