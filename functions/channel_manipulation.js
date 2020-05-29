@@ -35,14 +35,14 @@ module.exports =
 	}
 	,
 
-	create_portal_channel: function (server, portal_name,
+	create_portal_channel: function (guild, portal_name,
 		category_name, portal_list, creator_id) {
 		if (category_name) {
 			// creating category
-			server.createChannel(category_name, { type: 'category' })
+			guild.channels.create(category_name, { type: 'category' })
 
 			// creating voice channel
-			server.createChannel(portal_name, { type: 'voice' }, { bitrate: 8 })
+			guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_list.push(new class_portal.portal_channel(
 						channel.id, creator_id, portal_name,
@@ -50,7 +50,7 @@ module.exports =
 						false, 0, 0, 0, 'gr'
 					));
 
-					let category = server.channels.find(
+					let category = guild.channels.find(
 						c => c.name == category_name && c.type == 'category'
 					);
 					if (!category) throw new Error('Category channel does not exist');
@@ -58,7 +58,7 @@ module.exports =
 				}).catch(console.error);
 		} else {
 			// creating voice channel
-			server.createChannel(portal_name, { type: 'voice' }, { bitrate: 8 })
+			guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_list.push(new class_portal.portal_channel(
 						channel.id, creator_id, portal_name,
@@ -71,10 +71,10 @@ module.exports =
 	,
 
 	create_voice_channel: function (state, portal_list, creator_id) {
-		state.voiceChannel.guild.createChannel('loading...', { type: 'voice' }, { bitrate: 64 })
+		state.channel.guild.channels.create('loading...', { type: 'voice', bitrate: 64000 })
 			.then(channel => {
 				for (i = 0; i < portal_list.length; i++)
-					if (portal_list[i].id === state.voiceChannel.id) {
+					if (portal_list[i].id === state.channel.id) {
 						portal_list[i].voice_list.push(
 							new class_portal.voice_channel(
 								channel.id, creator_id, portal_list[i].regex_voice,
@@ -84,27 +84,27 @@ module.exports =
 						channel.userLimit = portal_list[i].limit_portal;
 					}
 				// doesn't have category
-				if (state.voiceChannel.parentID !== null)
-					channel.setParent(state.voiceChannel.parentID);
+				if (state.channel.parentID !== null)
+					channel.setParent(state.channel.parentID);
 				// move member from portal to voice channel
-				state.setVoiceChannel(channel);
+				state.member.voice.setChannel(channel);
 			}).catch(console.error);
 
 		return
 	}
 	,
 
-	create_url_channel: function (server, url_name, category_name, url_list) {
+	create_url_channel: function (guild, url_name, category_name, url_list) {
 		if (category_name) {
 			// creating category
-			server.createChannel(category_name, { type: 'category' })
+			guild.channels.create(category_name, { type: 'category' })
 
 			// creating voice channel
-			server.createChannel(url_name + ' (url-only)', { type: 'text' })
+			guild.channels.create(url_name + ' (url-only)', { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
 
-					let category = server.channels.find(
+					let category = guild.channels.find(
 						c => c.name == category_name && c.type == 'category'
 					);
 					if (!category) throw new Error('Category channel does not exist');
@@ -112,7 +112,7 @@ module.exports =
 				}).catch(console.error);
 		} else {
 			// creating voice channel
-			server.createChannel(url_name + ' (url-only)', { type: 'text' })
+			guild.channels.create(url_name + ' (url-only)', { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
 					console.log('url_list = ' + url_list);

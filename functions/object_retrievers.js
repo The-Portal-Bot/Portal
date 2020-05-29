@@ -31,11 +31,11 @@ module.exports = {
 get_status_list: function (guild, id, portal_list) {
 	let array_of_statuses = [];
 
-	guild.channels.some(channel => {
+	guild.channels.cache.some(channel => {
 		if (channel.id === id) {
 			channel.members.forEach((member) => {
-				if (member.presence.game !== null) {
-					let status = this.status_aliases(member.presence.game, portal_list, id);
+				if (member.presence.activities !== null) {
+					let status = this.status_aliases(member.presence.activities, portal_list, id);
 					if (!array_of_statuses.includes(status))
 						array_of_statuses.push(status);
 				}

@@ -4,7 +4,7 @@ const attr_objct = require('./../assets/properties/attribute_list');
 module.exports = {
 
     generate_channel_names: function (guild, portal_list) {
-        guild.channels.some(channel => {
+        guild.channels.cache.some(channel => {
             for (i = 0; i < portal_list.length; i++)
                 for (j = 0; j < portal_list[i].voice_list.length; j++)
                     if (channel.id === portal_list[i].voice_list[j].id) {

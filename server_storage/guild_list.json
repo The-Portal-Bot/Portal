@@ -1,16 +1,1 @@
-{
-    "710746690650374208": {
-        "portal_list": [],
-        "url_list": [],
-        "role_list": []
-    },
-    "705112209985896529": {
-        "portal_list": [],
-        "url_list": [],
-        "role_list": []
-    },
-    "228667314252283904": {
-        "portal_list": [],
-        "url_list": []
-    }
-}
+{"710746690650374208":{"portal_list":[{"id":"715979962217136251","creator_id":"228666893068795905","regex_portal":"asd","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":0,"time_to_live":0,"refresh_rate":0,"locale":"gr","voice_list":[{"id":"715980938869211177","creator_id":"228666893068795905","regex":"G$#-P$member_count | $status_list","no_bots":false,"time_to_live":0,"refresh_rate":0,"locale":"gr"},{"id":"715981240179753050","creator_id":"228666893068795905","regex":"G$#-P$member_count | $status_list","no_bots":false,"time_to_live":0,"refresh_rate":0,"locale":"gr"}]}],"url_list":[],"role_list":[]},"705112209985896529":{"portal_list":[],"url_list":[],"role_list":[]},"228667314252283904":{"portal_list":[],"url_list":[]}}

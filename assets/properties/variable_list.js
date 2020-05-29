@@ -131,7 +131,7 @@ module.exports =
 			args: 'none',
 			get: (guild, id) => {
 				let mmbr_lst = [];
-				guild.channels.forEach(channel => {
+				guild.channels.cache.forEach(channel => {
 					if (channel.id === id)
 						channel.members.forEach(member => {
 							mmbr_lst.push(member.displayName);
@@ -147,7 +147,7 @@ module.exports =
 			args: 'none',
 			get: (guild, id) => {
 				let cnt = undefined;
-				guild.channels.forEach(channel => {
+				guild.channels.cache.forEach(channel => {
 					if (channel.id === id) cnt = channel.members.size;
 				})
 				return cnt;
@@ -160,7 +160,7 @@ module.exports =
 			args: 'none',
 			get: (guild, id) => {
 				let cnt = 0;
-				guild.channels.forEach(channel => {
+				guild.channels.cache.forEach(channel => {
 					if (channel.id === id)
 						channel.members.forEach((member) => {
 							if (member.presence.game !== null) cnt++;

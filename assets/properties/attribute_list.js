@@ -87,7 +87,7 @@ module.exports =
 			args: '!number of maximum members',
 			get: (id, portal_list, guild) => {
 				let member_limit = 0;
-				guild.channels.some(channel => {
+				guild.channels.cache.some(channel => {
 					if (id === channel.id) {
 						member_limit = channel.userLimit;
 						return;
@@ -106,7 +106,7 @@ module.exports =
 			args: '!position of channel',
 			get: (id, portal_list, guild) => {
 				let position = 0;
-				guild.channels.some(channel => {
+				guild.channels.cache.some(channel => {
 					if (id === channel.id) {
 						position = channel.position;
 						return;
