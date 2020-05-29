@@ -18,7 +18,8 @@ module.exports =
 			description: 'returns the log of data given in log_string',
 			super_description: '**run**, gives you the opportunity to run regexes in any text channel. ' +
 				'You can get properties about the channel you are in.\n' +
-				'example: ./run games: $status_list\nThis will print out games: CS:GO\nif CS:GO is being played.',
+				'example: ./run games: $status_list\nThis will print out games: CS:GO\nif CS:GO is being played.' +
+				'If regex is empty string it will return a dot (.)',
 			args: '!exec_command'
 		},
 		{

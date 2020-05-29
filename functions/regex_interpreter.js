@@ -132,12 +132,19 @@ module.exports = {
 						this.regex_interpreter(statement.if, id, guild, portal_list), 
 						this.regex_interpreter(statement.with, id, guild, portal_list)
 					)) {
-						new_channel_name += this.regex_interpreter(statement.yes, id, guild, portal_list);
+						let value = this.regex_interpreter(statement.yes, id, guild, portal_list);
+						console.log('value_a: '+value)
+						if('--' !== value)
+							new_channel_name += value;
 					} else {
-						new_channel_name += this.regex_interpreter(statement.no, id, guild, portal_list);
+						let value = this.regex_interpreter(statement.no, id, guild, portal_list);
+						console.log('value_b: '+value)
+						if('--' !== value)
+							new_channel_name += value;
 					}
-					i += 3 + regex.substring(i + 1).indexOf('}}') + 1;
+					i += regex.substring(i + 1).indexOf('}}') + 2;
 				} catch (error) {
+					console.log('Error: in JSON parse: ', error);
 					new_channel_name += regex[i];
 				}
 			} else {
