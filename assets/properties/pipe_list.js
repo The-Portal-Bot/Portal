@@ -37,7 +37,7 @@ module.exports =
 			description: 'returns an souvlakiCase of the input',
 			super_description: '**souvlakiCase**, connects all words with \'-\', like a greek souvlaki.',
 			args: 'none',
-			get: (str, count) => { return voca.souvlakiCase(str); }
+			get: (str, count) => { return voca.kebabCase(str); }
 		},
 		{
 			name: 'snakeCase',
@@ -105,7 +105,7 @@ module.exports =
 			super_description: '**summary_count**, returns the count of members having a status',
 			args: 'none',
 			get: (str, count) => {
-				return str.split(' ').length
+				get: (str, count) => { return voca.words(str).length; }
 			}
 		}
 	]

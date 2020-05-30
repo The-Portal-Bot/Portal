@@ -315,81 +315,12 @@ client.on('message', async message => {
 		return;
 	}
 
-	if (cmd === 'regex_portal') {
-		if (message.member.voiceChannel === null
-			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_guilds[message.guild.id]['portal_list'])) {
-			message_reply(false, message,
-				'**You must be in portal\'s voice channel to change portal title**');
-		} else if (args.length > 0) {
-			//change portal regex
-			for (i = 0; i < portal_guilds[message.guild.id]['portal_list'].length; i++) {
-				for (j = 0; j < portal_guilds[message.guild.id]['portal_list'][i].voice_list.length; j++) {
-					if (portal_guilds[message.guild.id]['portal_list'][i].voice_list[j].id === message.member.voiceChannel.id) {
-						portal_guilds[message.guild.id]['portal_list'][i].regex_portal = args.join(' ');
-
-						message.guild.channels.cache.forEach((value) => {
-							if (value.id === portal_guilds[message.guild.id]['portal_list'][i].id) {
-								value.setName(
-									regx.regex_interpreter(
-										portal_guilds[message.guild.id]['portal_list'][i].regex_portal,
-										portal_guilds[message.guild.id]['portal_list'][i].id,
-										message.guild,
-										portal_guilds[message.guild.id]['portal_list']
-									)
-								);
-							}
-						});
-						message.react('✔️');
-					}
-				}
-			}
-			message_reply(false, message, 'You are not a portal controlled voice channel');
-		} else {
-			message_reply(false, message, 'You are not a portal controlled voice channel');
-		}
-
-		update_guild_json(true);
-		return;
-	}
-
-	if (cmd === 'regex_voice') {
-		if (message.member.voiceChannel === null
-			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_guilds[message.guild.id]['portal_list'])) {
-			message_reply(false, message,
-				'**You must be in portal\'s voice channel to change voice title**');
-		} else if (args.length > 0) {
-			//change voice regex
-			for (i = 0; i < portal_guilds[message.guild.id]['portal_list'].length; i++) {
-				for (j = 0; j < portal_guilds[message.guild.id]['portal_list'][i].voice_list.length; j++) {
-					if (portal_guilds[message.guild.id]['portal_list'][i].voice_list[j].id === message.member.voiceChannel.id) {
-						portal_guilds[message.guild.id]['portal_list'][i].regex_voice = args.join(' ');
-						message.member.voiceChannel.setName(
-							regx.regex_interpreter(
-								portal_guilds[message.guild.id]['portal_list'][i].regex_voice,
-								portal_guilds[message.guild.id]['portal_list'][i].id,
-								message.guild,
-								portal_guilds[message.guild.id]['portal_list']
-							)
-						);
-						message.react('✔️');
-					}
-				}
-			}
-			message.channel.send('You are not a portal controlled voice channel');
-		} else {
-			message.channel.send('You should enter a voice regex');
-		}
-
-		update_guild_json(true);
-		return;
-	}
-
 	if (cmd === 'ping') {
 		// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
 		// The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
-		const m = await message.channel.send('Ping?');
-		m.edit('Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.\n',
-			'API Latency is ${Math.round(client.ping)}ms');
+		const msg = await message.channel.send('Ping?');
+		msg.edit(`Pong!\nLatency of rtt is ${msg.createdTimestamp - message.createdTimestamp}ms.\n` +
+			`Latency to portal is ${client.ws.ping}ms`);
 		return;
 	}
 
@@ -509,7 +440,7 @@ client.on('message', async message => {
 						]
 						));
 
-					message.channel.send('Check your dms ' + message.author.username);
+					message.channel.send(`${message.author}, I sent you a message`);
 					return;
 				}
 			}
@@ -529,7 +460,7 @@ client.on('message', async message => {
 						]
 						));
 
-					message.channel.send('Check your dms ' + message.author.username);
+					message.channel.send(`${message.author}, I sent you a message`);
 					return;
 				}
 			}
@@ -549,7 +480,7 @@ client.on('message', async message => {
 						]
 						));
 
-					message.channel.send('Check your dms ' + message.author.username);
+					message.channel.send(`${message.author}, I sent you a message`);
 					return;
 				}
 			}
@@ -569,7 +500,7 @@ client.on('message', async message => {
 						]
 					));
 
-					message.channel.send('Check your dms ' + message.author.username);
+					message.channel.send(`${message.author}, I sent you a message`);
 					return;
 				}
 			}
@@ -589,21 +520,23 @@ client.on('message', async message => {
 						]
 					));
 
-					message.channel.send('Check your dms ' + message.author.username);
+					message.channel.send(`${message.author}, I sent you a message`);
 					return;
 				}
 			}
 			message.author.send('**' + args[0] + '**, *does not exist in portal, you can always try **./help***');
 		}
-		message.channel.send('Check your dms ' + message.author.username);
+		message.channel.send(`${message.author}, I sent you a message`);
 		// Then we delete the cmd message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
 		//message.delete();
 		return;
 	}
 
 	if (cmd === 'run') {
-		if (message.member.voiceChannel === null
-			|| !edtr.included_in_voice_list(message.member.voiceChannel.id, portal_guilds[message.guild.id]['portal_list'])) {
+		if (message.member.voice === null
+			|| !edtr.included_in_voice_list(
+					message.member.voice.channelID, portal_guilds[message.guild.id]['portal_list'])
+				) {
 			message_reply(false, message,
 				'**You must be in portal\'s voice channel to run regexes**');
 			return;
@@ -613,7 +546,7 @@ client.on('message', async message => {
 			.then(sentMessage => {
 				sentMessage.edit(regx.regex_interpreter(
 					args.join(' '),
-					message.member.voiceChannel.id,
+					message.member.voice.channelID,
 					message.member.guild,
 					portal_guilds[message.guild.id]['portal_list']
 				));
@@ -625,8 +558,8 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'set') { // set attributes
-		if (message.member.voiceChannel === null
-			|| !edtr.included_in_voice_list(message.member.voiceChannel.id,
+		if (message.member.voice === null
+			|| !edtr.included_in_voice_list(message.member.voice.channelID,
 				portal_guilds[message.guild.id]['portal_list'])) {
 			message_reply(false, message,
 				'**You must be in a portal\'s voice channel to set attributes**');

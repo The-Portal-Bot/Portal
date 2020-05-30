@@ -50,8 +50,8 @@ module.exports =
 						false, 0, 0, 0, 'gr'
 					));
 
-					let category = guild.channels.find(
-						c => c.name == category_name && c.type == 'category'
+					let category = guild.channels.cache.find(
+						channel => channel.name == category_name && channel.type == 'category'
 					);
 					if (!category) throw new Error('Category channel does not exist');
 					channel.setParent(category);

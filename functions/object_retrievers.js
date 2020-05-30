@@ -3,7 +3,6 @@ const programs = require('../assets/status/program_list.json');
 
 module.exports = {
 	status_aliases: function (current_status, portal_list, id) {
-
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].voice_list.length; j++)
 				if (portal_list[i].voice_list[j].id === id)
@@ -33,7 +32,7 @@ get_status_list: function (guild, id, portal_list) {
 
 	guild.channels.cache.some(channel => {
 		if (channel.id === id) {
-			channel.members.forEach((member) => {
+			channel.members.forEach((member, index) => {
 				if (member.presence.activities !== null) {
 					let status = this.status_aliases(member.presence.activities, portal_list, id);
 					if (!array_of_statuses.includes(status))

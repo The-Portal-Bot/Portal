@@ -33,7 +33,7 @@ module.exports = {
             if (args[0] === attr_objct.attributes[l].name) {
                 for (i = 0; i < portal_list.length; i++) {
                     for (j = 0; j < portal_list[i].voice_list.length; j++) {
-                        if (message.member.voiceChannel.id === portal_list[i].voice_list[j].id) {
+                        if (message.member.voice.channelID === portal_list[i].voice_list[j].id) {
                             // checks whether you have created the voice channel not the portalchannel
                             if (message.member.id === portal_list[i].voice_list[j].creator_id) {
                                 if (attr_objct.attributes[l].set === undefined) {
@@ -43,7 +43,7 @@ module.exports = {
                                         args,
                                         portal_list[i],
                                         portal_list[i].voice_list[j],
-                                        message.member.voiceChannel
+                                        message.member.voice.channel
                                     );
                                     return 1;
                                 }

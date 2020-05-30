@@ -5,7 +5,7 @@ module.exports =
 		{
 			name: 'no_bots',
 			description: 'returns/no bots allowed',
-			super_description: '**Porta returns/no bots allowedl**,',
+			super_description: '**no_bots returns/no bots allowedl**,',
 			args: '!true/false',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -20,7 +20,7 @@ module.exports =
 		{
 			name: 'regex_portal',
 			description: 'returns/sets title-guidelines of portal channel',
-			super_description: '**Portal**, returns/sets title-guidelines of portal channel',
+			super_description: '**regex_portal**, returns/sets title-guidelines of portal channel',
 			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -36,7 +36,7 @@ module.exports =
 		{
 			name: 'regex_voice',
 			description: 'returns/sets the default title for created voice channels',
-			super_description: '**Portal**, returns/sets the default title for created voice channels',
+			super_description: '**regex_voice**, returns/sets the default title for created voice channels',
 			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -52,7 +52,7 @@ module.exports =
 		{
 			name: 'regex',
 			description: 'returns/sets the title for current voice channel',
-			super_description: '**Portal**, returns/sets the title for current voice channel',
+			super_description: '**regex**, returns/sets the title for current voice channel',
 			args: '!regex',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -68,7 +68,7 @@ module.exports =
 		{
 			name: 'limit_portal',
 			description: 'returns/maximum number of members guideline for portal',
-			super_description: '**Portal**, returns/maximum number of members guideline for portal',
+			super_description: '**limit_portal**, returns/maximum number of members guideline for portal',
 			args: '!number of maximum members',
 			get: (id, portal_list, guild) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -83,7 +83,7 @@ module.exports =
 		{
 			name: 'limit_voice',
 			description: 'returns/maximum number of members allowed',
-			super_description: '**Portal**, returns/maximum number of members allowed',
+			super_description: '**limit_voice**, returns/maximum number of members allowed',
 			args: '!number of maximum members',
 			get: (id, portal_list, guild) => {
 				let member_limit = 0;
@@ -102,7 +102,7 @@ module.exports =
 		{
 			name: 'position',
 			description: 'returns/the position of the channel',
-			super_description: '**Portal**, returns/the position of the channel',
+			super_description: '**position**, returns/the position of the channel',
 			args: '!position of channel',
 			get: (id, portal_list, guild) => {
 				let position = 0;
@@ -115,13 +115,23 @@ module.exports =
 				return position;
 			},
 			set: (args, portal, voice, voice_channel) => {
-				voice_channel.position = Number(args[1]);
+				// voice_channel.setPosition(0)
+				// 	.then(channel => console.log(
+				// 		`Channel's new position is ${channel.position} but should be ${args[1]}`))
+				// 	.catch(console.error);
+
+				voice_channel.edit({ position: Number(args[1]) })
+					.then(channel => console.log(
+						`Channel's new position is ${channel.position} but should be ${args[1]}`))
+					.catch(console.error);
+
+				// voice_channel.position = 2
 			}
 		},
 		{
 			name: 'time_to_live',
 			description: 'returns/time to live',
-			super_description: '**Po returns/time to livertal**,',
+			super_description: '**time_to_live returns/time to livertal**,',
 			args: '!number in seconds',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -136,7 +146,7 @@ module.exports =
 		{
 			name: 'refresh_rate',
 			description: 'returns/how often titles are being refreshed',
-			super_description: '**Portal**, returns/how often titles are being refreshed',
+			super_description: '**refresh_rate**, returns/how often titles are being refreshed',
 			args: '!number in seconds',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -151,7 +161,7 @@ module.exports =
 		{
 			name: 'locale',
 			description: 'returns/language used in statuses',
-			super_description: '**Portal**, returns/language used in statuses',
+			super_description: '**locale**, returns/language used in statuses',
 			args: 'en/gr',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -166,7 +176,7 @@ module.exports =
 		{
 			name: 'position',
 			description: 'returns/position of channel',
-			super_description: '**Portal**, returns/position of channel',
+			super_description: '**position**, returns/position of channel',
 			args: 'number',
 			get: (id, portal_list) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -182,16 +192,19 @@ module.exports =
 		{
 			name: 'bitrate',
 			description: 'returns/bitrate of channel',
-			super_description: '**Portal** returns/bitrate of channel,',
+			super_description: '**bitrate** returns/bitrate of channel,',
 			args: 'number',
-			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].bitrate();
+			get: (id, portal_list, guild) => {
+				let bitrate = 0;
+				guild.channels.cache.some(channel => {
+					if (id === channel.id) {
+						bitrate = channel.bitrate;
+						return;
+					}
+				});
+				return bitrate;
 			},
 			set: (args, portal, voice, voice_channel) => {
-				voice.bitrate = Number(args[1]);
 				voice_channel.setBitrate(Number(args[1]));
 			}
 		}

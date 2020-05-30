@@ -39,7 +39,7 @@ module.exports = {
 
 	is_pipe: function (arg) {
 		for (i = 0; i < pipe_objct.pipes.length; i++)
-			if (String(arg).substring(1, (String(pipe_objct.pipes[i].name).length + 1)) 
+			if (String(arg).substring(1, (String(pipe_objct.pipes[i].name).length + 1))
 				== pipe_objct.pipes[i].name)
 				return pipe_objct.pipes[i].name;
 		return false;
@@ -48,7 +48,7 @@ module.exports = {
 
 	is_attribute: function (arg) {
 		for (i = 0; i < attr_objct.attributes.length; i++)
-			if (String(arg).substring(1, (String(attr_objct.attributes[i].name).length + 1)) 
+			if (String(arg).substring(1, (String(attr_objct.attributes[i].name).length + 1))
 				== attr_objct.attributes[i].name)
 				return attr_objct.attributes[i].name;
 		return false;
@@ -57,7 +57,7 @@ module.exports = {
 
 	if_expression_check: function (arg) {
 		if (String(arg).substring(0, 1) == '{') {
-			console.log('expression: ' + String(arg).substring(1, 
+			console.log('expression: ' + String(arg).substring(1,
 				String(arg).indexOf('?')));
 			console.log('statemment1: ' + String(arg).substring(
 				String(arg).indexOf('?') + 1, String(arg).indexOf(':')));
@@ -77,26 +77,34 @@ module.exports = {
 		if (portal_list === undefined) { return "portal_list is undefined"; }
 
 		let inline = {
-			"==": (a, b) => { if (a == b) return true; else false; } ,
-			"===": (a, b) => { if (a === b) return true; else false; } ,
-			"!=": (a, b) => { if (a != b) return true; else false; } ,
-			"!==": (a, b) => { if (a !== b) return true; else false; } ,
-			">": (a, b) => { if (a > b) return true; else false; } ,
-			"<": (a, b) => { if (a < b) return true; else false; } ,
-			">=": (a, b) => { if (a >= b) return true; else false; } ,
+			"==": (a, b) => { if (a == b) return true; else false; },
+			"===": (a, b) => { if (a === b) return true; else false; },
+			"!=": (a, b) => { if (a != b) return true; else false; },
+			"!==": (a, b) => { if (a !== b) return true; else false; },
+			">": (a, b) => { if (a > b) return true; else false; },
+			"<": (a, b) => { if (a < b) return true; else false; },
+			">=": (a, b) => { if (a >= b) return true; else false; },
 			"<=": (a, b) => { if (a <= b) return true; else false; }
 		};
+		let last_space_index = 0;
+		let last_vatiable_end_index = 0;
+		let last_attribute_end_index = 0;
+
+		let last_variable = '';
+		let last_attribute = '';
 
 		let new_channel_name = '';
-		let last_variable = '';
 
 		for (let i = 0; i < regex.length; i++) {
+			console.log('regex[' + (i+1) + '] = ' + regex[i]);
+			
 			if (regex[i] === '$') {
 				let vrbl = this.is_variable(regex.substring(i));
 				if (vrbl) {
 					last_variable = this.get_vrbl_data(vrbl, id, guild, portal_list);
 					new_channel_name += last_variable;
 					i += voca.chars(vrbl).length;
+					last_vatiable_end_index = i;
 				} else {
 					new_channel_name += regex[i];
 				}
@@ -105,12 +113,32 @@ module.exports = {
 				let cnt = regex.substring(i + 5, i + 6); // wtf wrong ? check ?
 
 				if (pipe) {
-					console.log('pipe: ' + pipe + ' with count: ' + cnt);
-					// removes previous variable output, in order to replace with pipe output
-					new_channel_name = new_channel_name.substring(0,
-						voca.chars(new_channel_name).length - voca.chars(last_variable).length);
-					new_channel_name += this.get_pipe_data(pipe, last_variable, cnt);
-					i += voca.chars(pipe).length;
+					console.log('1) ' + (last_vatiable_end_index + 1) + ' === ' + i)
+					console.log('2) ' + (last_attribute_end_index + 1) + ' === ' + i)
+					console.log('3) ' + (last_space_index + 1) + ' === ' + i)
+					if (last_vatiable_end_index + 1 === i) { console.log('inside: 1')
+						// removes previous variable output, in order to replace with pipe output
+						new_channel_name = new_channel_name.substring(0,
+							voca.chars(new_channel_name).length - voca.chars(last_variable).length);
+						new_channel_name += this.get_pipe_data(pipe, last_variable, cnt);
+						i += voca.chars(pipe).length;
+					} else if (last_attribute_end_index + 1 === i) { console.log('inside: 2')
+						// removes previous variable output, in order to replace with pipe output
+						new_channel_name = new_channel_name.substring(0,
+							voca.chars(new_channel_name).length - voca.chars(last_attribute).length);
+						new_channel_name += this.get_pipe_data(pipe, last_attribute, cnt);
+						i += voca.chars(pipe).length;
+					} else { console.log('inside: 3')
+						console.log('str=' + new_channel_name.substring(
+							last_space_index,
+							new_channel_name.length));
+						let str_for_pipe = this.get_pipe_data(pipe, new_channel_name.substring(
+							last_space_index,
+							new_channel_name.length), cnt);
+						new_channel_name = new_channel_name.substring(0, last_space_index);
+						new_channel_name += str_for_pipe;
+						i += voca.chars(pipe).length;
+					}
 					if (pipe === 'word') i++;
 				} else {
 					new_channel_name += regex[i];
@@ -119,8 +147,10 @@ module.exports = {
 				let attr = this.is_attribute(regex.substring(i));
 
 				if (attr) {
-					new_channel_name += this.get_attr_data(attr, id, portal_list, guild);
+					last_attribute = this.get_attr_data(attr, id, portal_list, guild);
+					new_channel_name += last_attribute;
 					i += voca.chars(attr).length;
+					last_attribute_end_index = i;
 				} else {
 					new_channel_name += regex[i];
 				}
@@ -129,17 +159,17 @@ module.exports = {
 					// did not put into structure_list due to many unnecessary function calls
 					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 					if (inline[statement.is](
-						this.regex_interpreter(statement.if, id, guild, portal_list), 
+						this.regex_interpreter(statement.if, id, guild, portal_list),
 						this.regex_interpreter(statement.with, id, guild, portal_list)
 					)) {
 						let value = this.regex_interpreter(statement.yes, id, guild, portal_list);
-						console.log('value_a: '+value)
-						if('--' !== value)
+						console.log('value_a: ' + value)
+						if ('--' !== value)
 							new_channel_name += value;
 					} else {
 						let value = this.regex_interpreter(statement.no, id, guild, portal_list);
-						console.log('value_b: '+value)
-						if('--' !== value)
+						console.log('value_b: ' + value)
+						if ('--' !== value)
 							new_channel_name += value;
 					}
 					i += regex.substring(i + 1).indexOf('}}') + 2;
@@ -149,6 +179,10 @@ module.exports = {
 				}
 			} else {
 				new_channel_name += regex[i];
+				if (regex[i] === ' ') {
+					last_space_index = i + 1;
+					console.log('new space is: ' + last_space_index);
+				}
 			}
 		}
 		if (new_channel_name === '')

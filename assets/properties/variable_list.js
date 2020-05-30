@@ -112,9 +112,10 @@ module.exports =
 			description: 'returns the count of current member statuses.',
 			super_description: '**status_count**, returns the count of current member statuses.',
 			args: 'none',
-			get: (guild, id) => { //check if he is in a voice channel of a portal 
-				if (typeof (object.get_status_list(guild, id)) !== 'object') { return 0; }
-				else { object.get_status_list(guild, id).length; }
+			get: (guild, id, portal_list) => { //check if he is in a voice channel of a portal 
+				let status_list = object.get_status_list(guild, id, portal_list);
+				if (typeof status_list === 'object' && status_list !== null) { return 0; }
+				else { status_list.length; }
 			}
 		},
 		{
