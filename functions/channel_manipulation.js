@@ -124,6 +124,7 @@ module.exports =
 	create_role_message: function (message, role_list, title, desc, colour, role_emb) {
 		message.channel.send(create_rich_embed(title, desc, colour, role_emb))
 			.then(sent_message => {
+				// add roles emotes
 				role_list.push(new class_role.role_message(sent_message.id, role_emb));
 			});
 	}

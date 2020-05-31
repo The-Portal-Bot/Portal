@@ -55,18 +55,18 @@ module.exports = {
 	}
 	,
 
-	if_expression_check: function (arg) {
-		if (String(arg).substring(0, 1) == '{') {
-			console.log('expression: ' + String(arg).substring(1,
-				String(arg).indexOf('?')));
-			console.log('statemment1: ' + String(arg).substring(
-				String(arg).indexOf('?') + 1, String(arg).indexOf(':')));
-			console.log('statemment2: ' + String(arg).substring(
-				String(arg).indexOf(':') + 1, String(arg).indexOf('}')));
-		}
-		return false;
-	}
-	,
+	// if_expression_check: function (arg) {
+	// 	if (String(arg).substring(0, 1) == '{') {
+	// 		console.log('expression: ' + String(arg).substring(1,
+	// 			String(arg).indexOf('?')));
+	// 		console.log('statemment1: ' + String(arg).substring(
+	// 			String(arg).indexOf('?') + 1, String(arg).indexOf(':')));
+	// 		console.log('statemment2: ' + String(arg).substring(
+	// 			String(arg).indexOf(':') + 1, String(arg).indexOf('}')));
+	// 	}
+	// 	return false;
+	// }
+	// ,
 
 	//
 
@@ -96,9 +96,8 @@ module.exports = {
 		let new_channel_name = '';
 
 		for (let i = 0; i < regex.length; i++) {
-			console.log('regex[' + (i+1) + '] = ' + regex[i]);
 			
-			if (regex[i] === '$') {
+			if (regex[i] === vrbl_objct.prefix) {
 				let vrbl = this.is_variable(regex.substring(i));
 				if (vrbl) {
 					last_variable = this.get_vrbl_data(vrbl, id, guild, portal_list);
@@ -108,7 +107,7 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
-			} else if (regex[i] === '|') {
+			} else if (regex[i] === pipe_objct.prefix) {
 				let pipe = this.is_pipe(regex.substring(i));
 				let cnt = regex.substring(i + 5, i + 6); // wtf wrong ? check ?
 
@@ -143,7 +142,7 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
-			} else if (regex[i] === '@') {
+			} else if (regex[i] === attr_objct.prefix) {
 				let attr = this.is_attribute(regex.substring(i));
 
 				if (attr) {
@@ -154,7 +153,8 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
-			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
+			} else if (regex[i] === '{' && 
+				(regex[i + 1] !== undefined && regex[i + 1] === '{')) {
 				try {
 					// did not put into structure_list due to many unnecessary function calls
 					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
@@ -181,7 +181,6 @@ module.exports = {
 				new_channel_name += regex[i];
 				if (regex[i] === ' ') {
 					last_space_index = i + 1;
-					console.log('new space is: ' + last_space_index);
 				}
 			}
 		}

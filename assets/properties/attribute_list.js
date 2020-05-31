@@ -66,9 +66,9 @@ module.exports =
 			}
 		},
 		{
-			name: 'limit_portal',
+			name: 'user_limit_portal',
 			description: 'returns/maximum number of members guideline for portal',
-			super_description: '**limit_portal**, returns/maximum number of members guideline for portal',
+			super_description: '**user_limit_portal**, returns/maximum number of members guideline for portal',
 			args: '!number of maximum members',
 			get: (id, portal_list, guild) => {
 				for (i = 0; i < portal_list.length; i++)
@@ -81,19 +81,12 @@ module.exports =
 			}
 		},
 		{
-			name: 'limit_voice',
+			name: 'user_limit_voice',
 			description: 'returns/maximum number of members allowed',
-			super_description: '**limit_voice**, returns/maximum number of members allowed',
+			super_description: '**user_limit_voice**, returns/maximum number of members allowed',
 			args: '!number of maximum members',
 			get: (id, portal_list, guild) => {
-				let member_limit = 0;
-				guild.channels.cache.some(channel => {
-					if (id === channel.id) {
-						member_limit = channel.userLimit;
-						return;
-					}
-				});
-				return member_limit;
+				return guild.channels.cache.find(channel => channel.id === id).userLimit;
 			},
 			set: (args, portal, voice, voice_channel) => {
 				voice_channel.userLimit = Number(args[1]);
@@ -105,27 +98,13 @@ module.exports =
 			super_description: '**position**, returns/the position of the channel',
 			args: '!position of channel',
 			get: (id, portal_list, guild) => {
-				let position = 0;
-				guild.channels.cache.some(channel => {
-					if (id === channel.id) {
-						position = channel.position;
-						return;
-					}
-				});
-				return position;
+				return guild.channels.cache.find(channel => channel.id === id).position;
 			},
 			set: (args, portal, voice, voice_channel) => {
-				// voice_channel.setPosition(0)
-				// 	.then(channel => console.log(
-				// 		`Channel's new position is ${channel.position} but should be ${args[1]}`))
-				// 	.catch(console.error);
-
 				voice_channel.edit({ position: Number(args[1]) })
 					.then(channel => console.log(
-						`Channel's new position is ${channel.position} but should be ${args[1]}`))
+						`Channel's new position is ${channel.position} and should be ${args[1]}`))
 					.catch(console.error);
-
-				// voice_channel.position = 2
 			}
 		},
 		{
@@ -174,38 +153,19 @@ module.exports =
 			}
 		},
 		{
-			name: 'position',
-			description: 'returns/position of channel',
-			super_description: '**position**, returns/position of channel',
-			args: 'number',
-			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].position();
-			},
-			set: (args, portal, voice, voice_channel) => {
-				voice.position = Number(args[1]);
-				voice_channel.setPosition(Number(args[1]));
-			}
-		},
-		{
 			name: 'bitrate',
 			description: 'returns/bitrate of channel',
 			super_description: '**bitrate** returns/bitrate of channel,',
 			args: 'number',
 			get: (id, portal_list, guild) => {
-				let bitrate = 0;
-				guild.channels.cache.some(channel => {
-					if (id === channel.id) {
-						bitrate = channel.bitrate;
-						return;
-					}
-				});
-				return bitrate;
+				return guild.channels.cache.find(channel => channel.id === id).bitrate;
 			},
 			set: (args, portal, voice, voice_channel) => {
-				voice_channel.setBitrate(Number(args[1]));
+				// voice_channel.setBitrate(Number(args[1]));
+				voice_channel.edit({ bitrate: Number(args[1]) })
+					.then(channel => console.log(
+						`Channel's new position is ${channel.bitrate} and should be ${args[1]}`))
+					.catch(console.error);
 			}
 		}
 	]

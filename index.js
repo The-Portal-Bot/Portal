@@ -25,15 +25,17 @@ const config = require('./config.json');
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
 create_rich_embed = function (title, description, colour, field_array) {
+	console.log('field_array:', field_array);
+
 	const rich_message = new Discord.MessageEmbed()
 		.setColor(colour)
 		.setAuthor(title)
 		.setDescription(description)
 		.setTimestamp()
 		.setFooter('Portal bot by Keybraker',
-			'https://raw.githubusercontent.com/keybraker/portal-discord-bot/'+
+			'https://raw.githubusercontent.com/keybraker/portal-discord-bot/' +
 			'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2');
-
+			
 	field_array.forEach(row => {
 		if (row.emote === '') {
 			rich_message.addBlankField();
@@ -67,23 +69,6 @@ portal_init = function (current_guild) {
 }
 
 show_portal_state = function (guild_id) {
-	// console.log(guild_id + '\n.portal_list\n[');
-	// for (i = 0; i < portal_guilds[guild_id]['portal_list'].length; i++) {
-	// 	console.log('\t' + i + '. ' + portal_guilds[guild_id]['portal_list'][i].id
-	// 		+ '.voice_list\n\t[');
-
-	// 	for (j = 0; j < portal_guilds[guild_id]['portal_list'][i].voice_list.length; j++) {
-	// 		console.log('\t\t' + j + '. {'
-	// 			+ portal_guilds[guild_id]['portal_list'][i].voice_list[j].id + '}');
-	// 	}
-	// 	console.log('\t],\n');
-	// }
-	// console.log('],');
-	// console.log(guild_id + '\n.url_list\n[');
-	// for (i = 0; i < portal_guilds[guild_id]['url_list'].length; i++) {
-	// 	console.log('\t' + i + '. ' + portal_guilds[guild_id]['url_list'][i].id);
-	// }
-	// console.log(']');
 	console.log('Portal State: ', portal_guilds);
 }
 
@@ -604,7 +589,7 @@ client.on('message', async message => {
 
 	if (cmd === 'role_giver') {
 		let roles = [];
-		message.guild.roles.forEach(role => { roles.push({role}); });
+		message.guild.roles.cache.forEach(role => { roles.push({role}); });
 
 		if (args.length > 0) {
 			try {
@@ -639,7 +624,6 @@ client.on('message', async message => {
 					{ emote: role_map[i].emote_strip, role: role_map[i].role, inline: true }
 				);
 			}
-
 			edtr.create_role_message(message, portal_guilds[message.guild.id]['role_list'],
 				'Portal Role Assigner', '', '#FF7F00', role_emb_prnt);
 			message.react('✔️');
@@ -656,7 +640,7 @@ client.on('message', async message => {
 		message.guild.channels.cache.forEach((value) => {
 			if (value.deletable)
 				value.delete()
-					.then(g => console.log('Deleted the guild ' + g))
+					.then(channel => console.log('Deleted the channel: ' + channel))
 					.catch(console.error);
 		})
 
@@ -676,7 +660,7 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'save') {
-		console.log('SAVE: ' + JSON.stringify(portal_guilds));
+		console.log('SAVE: ', portal_guilds);
 		update_guild_json(true);
 		return;
 	}
