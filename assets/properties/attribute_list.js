@@ -1,6 +1,6 @@
 module.exports =
 {
-	prefix: '@',
+	prefix: '&',
 	attributes: [
 		{
 			name: 'no_bots',
@@ -74,10 +74,10 @@ module.exports =
 				for (i = 0; i < portal_list.length; i++)
 					for (j = 0; j < portal_list[i].voice_list.length; j++)
 						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].limit_portal;
+							return portal_list[i].user_limit_portal;
 			},
 			set: (args, portal, voice, voice_channel) => {
-				portal.limit_portal = Number(args[1]);
+				portal.user_limit_portal = Number(args[1]);
 			}
 		},
 		{

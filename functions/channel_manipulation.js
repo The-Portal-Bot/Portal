@@ -7,6 +7,10 @@ module.exports =
 	voice_counter: 0,
 
 	included_in_portal_list: function (channel_id, portal_list) {
+		// if (portal_list.find(portal => portal.id === channel_id))
+		// 	return true;
+		// return false;
+
 		for (i = 0; i < portal_list.length; i++)
 			if (portal_list[i].id === channel_id)
 				return true;
@@ -15,6 +19,10 @@ module.exports =
 	,
 
 	included_in_voice_list: function (channel_id, portal_list) {
+		// if (portal_list.find(portal => portal.voice_list.find(voice => voice.id === channel_id)))
+		// 	return true;
+		// return false;
+
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].voice_list.length; j++)
 				if (portal_list[i].voice_list[j].id === channel_id)
@@ -24,6 +32,13 @@ module.exports =
 	,
 
 	delete_voice_channel: function (channel_to_delete, portal_list) {
+		// portal_list.some(portal => {
+		// 	portal.voice_list.some((voice, i) => {
+		// 		if (voice.id === channel_to_delete.id)
+		// 			portal.voice_list.splice(i, 1);
+		// 	});
+		// });
+
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].voice_list.length; j++)
 				if (portal_list[i].voice_list[j].id === channel_to_delete.id)
@@ -81,7 +96,8 @@ module.exports =
 								false, 0, 0, 'gr'
 							)
 						);
-						channel.userLimit = portal_list[i].limit_portal;
+						channel.userLimit = portal_list[i].user_limit_portal;
+						break;
 					}
 				// doesn't have category
 				if (state.channel.parentID !== null)
@@ -122,7 +138,8 @@ module.exports =
 	,
 
 	create_role_message: function (message, role_list, title, desc, colour, role_emb) {
-		message.channel.send(create_rich_embed(title, desc, colour, role_emb))
+		role_message_emb = create_rich_embed(title, desc, colour, role_emb);
+		message.channel.send(role_message_emb)
 			.then(sent_message => {
 				// add roles emotes
 				role_list.push(new class_role.role_message(sent_message.id, role_emb));

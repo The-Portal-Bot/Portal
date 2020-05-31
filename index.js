@@ -25,20 +25,22 @@ const config = require('./config.json');
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
 create_rich_embed = function (title, description, colour, field_array) {
-	console.log('field_array:', field_array);
+	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/portal-discord-bot/' +
+		'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2';
+	const keybraker_url = 'https://github.com/keybraker';
 
-	const rich_message = new Discord.MessageEmbed()
+	let rich_message = new Discord.MessageEmbed()
+		.setURL()
+		.setTitle(title)
 		.setColor(colour)
-		.setAuthor(title)
+		// .setAuthor('Portal', portal_icon_url, keybraker_url)
 		.setDescription(description)
 		.setTimestamp()
-		.setFooter('Portal bot by Keybraker',
-			'https://raw.githubusercontent.com/keybraker/portal-discord-bot/' +
-			'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2');
+		.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 			
 	field_array.forEach(row => {
 		if (row.emote === '') {
-			rich_message.addBlankField();
+			// rich_message.addBlankField();
 		} else {
 			rich_message.addField(row.emote, row.role, row.inline);
 		}
@@ -50,7 +52,6 @@ create_rich_embed = function (title, description, colour, field_array) {
 channel_clean_up = function (channel, current_guild) {
 	if (current_guild.channels.cache.some((guild_channel) => {
 		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
-			console.log('yes');
 			edtr.delete_voice_channel(guild_channel, portal_guilds[current_guild.id]['portal_list']);
 			return true;
 		}
@@ -68,9 +69,9 @@ portal_init = function (current_guild) {
 	update_guild_json(true);
 }
 
-show_portal_state = function (guild_id) {
-	console.log('Portal State: ', portal_guilds);
-}
+// show_portal_state = function (guild_id) {
+// 	console.log('Portal State: ', portal_guilds);
+// }
 
 update_guild_json = function (force) {
 	console.log('updating guild json');
@@ -113,6 +114,7 @@ client.on('ready', () => {
 		portal_init(guild);
 	})
 });
+
 client.on('shardReconnecting', id => console.log(`Shard with ID ${id} reconnected.`));
 
 client.on('guildCreate', guild => {
@@ -149,13 +151,13 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 		return;
 	} else {
 		console.log('Member (' + newPresence.member.displayName + ') has changed presence,' +
-			' and is controlled server (' + newPresence.guild.id + ').\n');
+			' and is in controlled server (' + newPresence.guild.id + ').\n');
 	}
 
 	mngr.generate_channel_names(newPresence.guild,
 		portal_guilds[newPresence.guild.id]['portal_list']);
 
-	show_portal_state(newPresence.guild.id);
+	// show_portal_state(newPresence.guild.id);
 
 	return;
 });
@@ -268,7 +270,6 @@ client.on('message', async message => {
 
 	// Check if something written in url channel
 	for (i = 0; i < portal_guilds[message.guild.id]['url_list'].length; i++) {
-		console.log(portal_guilds[message.guild.id]['url_list'][i] + ' === ' + message.channel.id);
 		if (portal_guilds[message.guild.id]['url_list'][i] === message.channel.id) {
 			is_url(message);
 			return;

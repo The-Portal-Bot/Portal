@@ -2,28 +2,59 @@ const games = require('../assets/status/game_list.json');
 const programs = require('../assets/status/program_list.json');
 
 module.exports = {
-	status_aliases: function (current_status, portal_list, id) {
-		for (i = 0; i < portal_list.length; i++)
-			for (j = 0; j < portal_list[i].voice_list.length; j++)
-				if (portal_list[i].voice_list[j].id === id)
-					for (l = 0; l < games.game_attributes.length; l++)
-						if (current_status == games.game_attributes[l].status)
-							if (portal_list[i].voice_list[j].locale === 'gr')
-								return games.game_attributes[l].locale.gr;
-							else
-								return games.game_attributes[l].locale.en;
+	status_aliases: function (current_statuses, portal_list, id) {
+		new_status = [];
 
 		for (i = 0; i < portal_list.length; i++)
 			for (j = 0; j < portal_list[i].voice_list.length; j++)
-				if (portal_list[i].voice_list[j].id === id)
-					for (l = 0; l < programs.program_attributes.length; l++)
-						if (current_status == programs.program_attributes[l].status)
-							if (portal_list[i].voice_list[j].locale === 'gr')
-								return programs.program_attributes[l].locale.gr;
-							else
-								return programs.program_attributes[l].locale.en;
+				if (portal_list[i].voice_list[j].id === id) {
 
-		return current_status;
+
+
+					current_statuses.forEach(status => {
+						let found = false;
+
+						for (l = 0; l < games.game_attributes.length; l++)
+							if (status.name == games.game_attributes[l].status)
+								if (portal_list[i].voice_list[j].locale === 'gr') {
+									new_status.push(games.game_attributes[l].locale.gr);
+									found = true;
+								}
+								else {
+									new_status.push(games.game_attributes[l].locale.en);
+									found = true;
+								}
+						if(!found)
+							for (l = 0; l < programs.program_attributes.length; l++)
+								if (status.name == programs.program_attributes[l].status)
+									if (portal_list[i].voice_list[j].locale === 'gr') {
+										new_status.push(programs.program_attributes[l].locale.gr);
+										found = true;
+									}
+									else {
+										new_status.push(programs.program_attributes[l].locale.en);
+										found = true;
+									}
+
+						if(!found)
+							new_status.push(status.name);
+					});
+
+					// for (l = 0; l < games.game_attributes.length; l++)
+					// 	if (current_statuses == games.game_attributes[l].status)
+					// 		if (portal_list[i].voice_list[j].locale === 'gr')
+					// 			return games.game_attributes[l].locale.gr;
+					// 		else
+					// 			return games.game_attributes[l].locale.en;
+					// for (l = 0; l < programs.program_attributes.length; l++)
+					// 	if (current_statuses == programs.program_attributes[l].status)
+					// 		if (portal_list[i].voice_list[j].locale === 'gr')
+					// 			return programs.program_attributes[l].locale.gr;
+					// 		else
+					// 			return programs.program_attributes[l].locale.en;
+				}
+								
+		return new_status.join('/');
 	}
 	,
 
@@ -50,6 +81,7 @@ get_status_list: function (guild, id, portal_list) {
 			return;
 		}
 	})
+	console.log('\n\n\narray_of_statuses: ', array_of_statuses);
 	return array_of_statuses;
 }
 };
