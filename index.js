@@ -84,7 +84,8 @@ update_guild_json = function (force) {
 
 message_reply = function (status, msg, str) {
 	msg.channel.send(str);
-	if (status) msg.react('✔️');
+	if (status)
+		msg.react('✔️');
 	else msg.react('❌');
 }
 
@@ -101,9 +102,11 @@ is_url = function (message) {
 }
 
 // LISTENERS ------------------------------------------------------------------------------------ \\
+let previous_update = Date.now();
 
 //#endregion Listeners
 client.on('ready', () => {
+	previous_update = Date.now();
 	// This event will run if the bot starts, and logs in, successfully.
 	console.log('Bot has started, with ' + client.users.cache.size +
 		' users, in ' + client.channels.cache.size +
@@ -142,25 +145,30 @@ client.on('guildDelete', guild => {
 	client.user.setActivity('Serving ${client.guilds.cache.size} servers');
 });
 
+// This event triggers when the status of a guild member has changed
 client.on('presenceUpdate', (oldPresence, newPresence) => {
-	// This event triggers when the status of a guild member has changed
-
 	if (!gmng.included_in_portal_guilds(newPresence.guild.id, portal_guilds)) {
-		console.log('Member (' + newPresence.member.displayName + ') who is a member of a handled server,' +
-			' has changed presence, but is in another server (' + newPresence.guild.id + ').\n');
+		console.log(newPresence.member.displayName + ', who is a member of a handled server,' +
+			' has changed presence, but is in another server (' + newPresence.guild.name + ').\n');
 		return;
-	} else {
-		console.log('Member (' + newPresence.member.displayName + ') has changed presence,' +
-			' and is in controlled server (' + newPresence.guild.id + ').\n');
 	}
 
-	// mngr.generate_channel_names(newPresence.guild, portal_guilds[newPresence.guild.id]['portal_list']);
-	if (newPresence.member.voice.channel)
-		mngr.generate_channel_names(newPresence.guild,
-			portal_guilds[newPresence.guild.id]['portal_list'],
-			newPresence.member.voice.channel);
-
-	// show_portal_state(newPresence.guild.id);
+	console.log(newPresence.member.displayName +
+		', has changed presence, in controlled server (' +
+		newPresence.guild.name + ').\n');
+		
+	let presence_channel = newPresence.member.voice.channel;
+	if (presence_channel) {
+		if (portal_list[newPresence.guild.id].voice_list[presence_channel.id]) {
+			if (((Date.now() - previous_update.last_update)) > previous_update.interval) {
+				mngr.generate_channel_name(
+					newPresence.guild,
+					portal_guilds[newPresence.guild.id]['portal_list'],
+					presence_channel
+				);
+			}
+		}
+	}
 
 	return;
 });
@@ -177,11 +185,11 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 		if (edtr.included_in_portal_list(newChannel.id, portal_guilds[newState.guild.id]['portal_list'])) { // user joined portal channel
 			edtr.create_voice_channel(newState, portal_guilds[newState.guild.id]['portal_list'][newChannel.id], newState.id);
-			// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-			mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+			// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+			mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 		} else if (edtr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id]['portal_list'])) { // user joined voice channel
-			// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-			mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+			// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+			mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 		}
 	} else if (newChannel === null && oldChannel !== null) { // Left to null
 		console.log('existing->null');
@@ -204,12 +212,12 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 			} else if (edtr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id]['portal_list'])) { // has been checked before
 				console.log('->dest: voice_list');
 				console.log('has been checked before');
-				// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-				mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+				// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+				mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 			} else { // Left portal channel and joined another unknown
 				console.log('->dest: unknown');
-				// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-				mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+				// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+				mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 			}
 		} else if (edtr.included_in_voice_list(oldChannel.id, portal_guilds[newState.guild.id]['portal_list'])) {
 			console.log('->source: voice_list');
@@ -221,24 +229,24 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 					edtr.delete_voice_channel(oldChannel, portal_guilds[newState.guild.id]['portal_list']);
 				}
 				edtr.create_voice_channel(newState, portal_guilds[newState.guild.id]['portal_list'][newChannel.id], newState.id);
-				// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-				mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+				// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+				mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 			} else if (edtr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id]['portal_list'])) { // Left created channel and joins another created
 				console.log('->dest: voice_list');
 
 				if (oldChannel.members.size === 0) {
 					edtr.delete_voice_channel(oldChannel, portal_guilds[newState.guild.id]['portal_list']);
 				}
-				// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-				mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+				// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+				mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 			} else { // Left created channel and joins another unknown
 				console.log('->dest: unknown');
 
 				if (oldChannel.members.size === 0) {
 					edtr.delete_voice_channel(oldChannel, portal_guilds[newState.guild.id]['portal_list']);
 				}
-				// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-				mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+				// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+				mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 			}
 		} else {
 			console.log('->source: unknown voice');
@@ -247,14 +255,14 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 				console.log('->dest: portal_list');
 
 				edtr.create_voice_channel(newState, portal_guilds[newState.guild.id]['portal_list'][newChannel.id], newState.id);
-				// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-				mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+				// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+				mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 			}
 			else if (edtr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id]['portal_list'])) { // left created channel and joins another created
 				console.log('->dest: voice_list');
 
-				// mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
-				mngr.generate_channel_names(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
+				// mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list']);
+				mngr.generate_channel_name(newState.guild, portal_guilds[newState.guild.id]['portal_list'], newChannel);
 			}
 		}
 	} else if (newChannel === null && oldChannel === null) {
@@ -569,8 +577,8 @@ client.on('message', async message => {
 			);
 
 			if (return_value === 1) {
-				// mngr.generate_channel_names(message.guild, portal_guilds[message.guild.id]['portal_list']);
-				mngr.generate_channel_names(message.guild, portal_guilds[newPresence.guild.id]['portal_list'], message.member.voice);
+				// mngr.generate_channel_name(message.guild, portal_guilds[message.guild.id]['portal_list']);
+				mngr.generate_channel_name(message.guild, portal_guilds[newPresence.guild.id]['portal_list'], message.member.voice);
 				message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
 			} else if (return_value === -3) {
 				message_reply(false, message, '**Only the channel creator can change attributes**');

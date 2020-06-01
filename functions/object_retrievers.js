@@ -36,7 +36,7 @@ module.exports = {
 				});
 			}
 		}					
-		return new_status.join('/');
+		return new_status.join('_');
 	}
 	,
 
@@ -52,6 +52,7 @@ get_status_list: function (guild, id, portal_list) {
 						array_of_statuses.push(status);
 				}
 			});
+
 			if (array_of_statuses.length === 0)
 				for (let key in portal_list)
 					if (portal_list[key].voice_list[id])

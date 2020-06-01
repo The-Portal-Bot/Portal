@@ -34,12 +34,11 @@ module.exports =
 
 	create_portal_channel: function (guild, portal_name, category_name, json_portal_list, creator_id) {
 		if (category_name) { // with category
-			
-			guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
+			return guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					json_portal_list[channel.id] =  new class_portal.portal_channel(
 						creator_id, portal_name, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, 'gr'
+						false, 0, 0, 0, 'gr', 3000000, Date.now()
 					);
 					
 					guild.channels.create(category_name, { type: 'category' })
@@ -49,11 +48,11 @@ module.exports =
 				.catch(console.error);
 		} else {
 			// creating voice channel
-			guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
+			return guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					json_portal_list[channel.id] = new class_portal.portal_channel(
 						creator_id, portal_name, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, 'gr'
+						false, 0, 0, 0, 'gr', 3000000, Date.now()
 					);
 				})
 				.catch(console.error);
@@ -67,20 +66,8 @@ module.exports =
 				channel.userLimit = json_portal.user_limit_portal;
 				json_portal['voice_list'][channel.id] = new class_portal.voice_channel(
 					creator_id, json_portal.regex_voice,
-					false, 0, 0, 'gr'
+					false, 0, 0, 'gr', 3000000, Date.now()
 				);
-				
-				// for (i = 0; i < portal_list.length; i++)
-				// 	if (portal_list[i].id === state.channel.id) {
-				// 		portal_list[i].voice_list.push(
-				// 			new class_portal.voice_channel(
-				// 				channel.id, creator_id, portal_list[i].regex_voice,
-				// 				false, 0, 0, 'gr'
-				// 			)
-				// 		);
-				// 		channel.userLimit = portal_list[i].user_limit_portal;
-				// 		break;
-				// 	}
 
 				// doesn't have category
 				if (state.channel.parentID !== null)
