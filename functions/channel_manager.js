@@ -16,28 +16,22 @@ module.exports = {
 
         portal_list.some(portal => {
             portal.voice_list.some(voice => {
-                if (found_channel = guild.channels.cache.find(channel => channel.id === voice.id))
-                    found_channel.edit({
-                        name: regx.regex_interpreter(
-                            voice.regex,
-                            voice.id,
-                            guild,
-                            portal_list)
+                if (voice_channel = guild.channels.cache.find(channel => channel.id === voice.id))
+                    voice_channel.edit({
+                        name: String(regx.regex_interpreter(voice.regex, voice.id, guild, portal_list))
+                    }, reason => {
+                        console.log('reason: ' + reason); // Error!
                     })
                         .then(newChannel => console.log(`Voice's new name is ${newChannel.name}`))
-                        .catch(console.error);
+                        .catch(console.log);
             });
 
-            if (found_channel = guild.channels.cache.find(channel => channel.id === portal.id))
-                found_channel.edit({
-                    name: regx.regex_interpreter(
-                        portal.regex_portal,
-                        portal.id,
-                        guild,
-                        portal_list)
+            if (portal_channel = guild.channels.cache.find(channel => channel.id === portal.id))
+                portal_channel.edit({
+                    name: String(regx.regex_interpreter(portal.regex_portal, portal.id, guild, portal_list))
                 })
                     .then(newChannel => console.log(`Portal's new name is ${newChannel.name}`))
-                    .catch(console.error);
+                    .catch(console.log);
         });
 
         // guild.channels.cache.some(channel => {
