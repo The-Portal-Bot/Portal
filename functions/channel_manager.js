@@ -1,8 +1,9 @@
 const regx = require('./regex_interpreter.js');
 const attr_objct = require('./../assets/properties/attribute_list');
+const  _ = require('lodash/core');
 
 module.exports = {
-    makeid(length) {
+    makeid: function(length) {
         var result = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var charactersLength = characters.length;
@@ -12,75 +13,53 @@ module.exports = {
         return result;
     },
 
-    generate_channel_names: function (guild, portal_list) {
-
-        portal_list.some(portal => {
-            portal.voice_list.some(voice => {
-                if (voice_channel = guild.channels.cache.find(channel => channel.id === voice.id))
-                    voice_channel.edit({
-                        name: String(regx.regex_interpreter(voice.regex, voice.id, guild, portal_list))
-                    }, reason => {
-                        console.log('reason: ' + reason); // Error!
-                    })
-                        .then(newChannel => console.log(`Voice's new name is ${newChannel.name}`))
-                        .catch(console.log);
-            });
-
-            if (portal_channel = guild.channels.cache.find(channel => channel.id === portal.id))
-                portal_channel.edit({
-                    name: String(regx.regex_interpreter(portal.regex_portal, portal.id, guild, portal_list))
-                })
+    // generate_channel_names: function (guild, portal_list) {
+    generate_channel_names: function (guild, portal_list, voice_to_update) {
+        for (let key in portal_list) {
+            if (portal_list[key].voice_list[voice_to_update.id]) {
+                console.log('portal_list[key].voice_list[voice_to_update.id]: ', portal_list[key].voice_list[voice_to_update.id]);
+                let new_name = String(regx.regex_interpreter(
+                    portal_list[key].voice_list[voice_to_update.id].regex,
+                    voice_to_update.id,
+                    guild, portal_list));
+                console.log('New name for voice channel with name: "' + voice_to_update.name + '", is: ' + new_name);
+                voice_to_update.edit({ name: new_name })
+                    .then(newChannel => console.log(`Voice's new name is ${newChannel.name}`))
+                    .catch(console.log);
+                console.log('Name should be updated.');
+                return true;
+            } else if (portal_list[voice_to_update.id]) {
+                let new_name = String(regx.regex_interpreter(
+                    portal_list[voice_to_update.id].regex_portal,
+                    portal_list[voice_to_update.id].id,
+                    guild, portal_list));
+                console.log('New name for portal channel with name: "' + voice_to_update.name + '", is: ' + new_name);
+                voice_to_update.edit({ name: new_name })
                     .then(newChannel => console.log(`Portal's new name is ${newChannel.name}`))
                     .catch(console.log);
-        });
-
-        // guild.channels.cache.some(channel => {
-        //     for (i = 0; i < portal_list.length; i++)
-        //         for (j = 0; j < portal_list[i].voice_list.length; j++)
-        //             if (portal_list[i].voice_list[j].id === channel.id) {
-        //                 let new_name = regx.regex_interpreter(
-        //                     portal_list[i].voice_list[j].regex,
-        //                     portal_list[i].voice_list[j].id,
-        //                     guild,
-        //                     portal_list);
-        //                 console.log('channel: ', channel);
-        //                 console.log('new_name: ', new_name);
-        //                 // Set a new channel name
-        //                 channel.edit({ name: new_name })
-        //                     .then(console.log)
-        //                     .catch(console.error);
-        //                 // channel.setName(new_name)
-        //                 //     .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-        //                 //     .catch(console.error);
-        //                 return
-        //             } else if (channel.id === portal_list[i].id) {
-        //                 channel.setName(regx.regex_interpreter(
-        //                     portal_list[i].regex_portal,
-        //                     portal_list[i].id,
-        //                     guild,
-        //                     portal_list
-        //                 ));
-        //                 return
-        //             }
-        // })
+                console.log('Name should be updated.');
+                return true;
+            }
+        }
+        return false;
     }
     ,
 
     update_channel_attributes: function (message, portal_list, args) {
         for (l = 0; l < attr_objct.attributes.length; l++) {
             if (args[0] === attr_objct.attributes[l].name) {
-                for (i = 0; i < portal_list.length; i++) {
-                    for (j = 0; j < portal_list[i].voice_list.length; j++) {
-                        if (message.member.voice.channelID === portal_list[i].voice_list[j].id) {
+                for (let key in portal_list) {
+                    for (let key2 in portal_list[key].voice_list) {
+                            if (key2 === message.member.voice.channelID) {
                             // checks whether you have created the voice channel not the portalchannel
-                            if (message.member.id === portal_list[i].voice_list[j].creator_id) {
+                            if (message.member.id === portal_list[key].voice_list[key2].creator_id) {
                                 if (attr_objct.attributes[l].set === undefined) {
                                     return -2;
                                 } else {
                                     attr_objct.attributes[l].set(
                                         args,
                                         portal_list[i],
-                                        portal_list[i].voice_list[j],
+                                        portal_list[key].voice_list[key2],
                                         message.member.voice.channel
                                     );
                                     return 1;

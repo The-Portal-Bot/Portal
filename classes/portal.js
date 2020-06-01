@@ -1,10 +1,8 @@
 module.exports =
 {
     portal_channel: class {
-        constructor(id, creator_id, regex_portal, regex_voice, voice_list,
-            no_bots, limit_portal, time_to_live, refresh_rate, locale)
-        {
-            this.id = id;
+        constructor(creator_id, regex_portal, regex_voice, voice_list,
+            no_bots, limit_portal, time_to_live, refresh_rate, locale) {
             this.creator_id = creator_id;
 
             this.regex_portal = regex_portal;
@@ -20,9 +18,7 @@ module.exports =
     },
 
     voice_channel: class {
-        constructor(id, creator_id, regex, no_bots, 
-            time_to_live, refresh_rate, locale) {
-            this.id = id;
+        constructor(creator_id, regex, no_bots, time_to_live, refresh_rate, locale) {
             this.creator_id = creator_id;
 
             this.regex = regex;

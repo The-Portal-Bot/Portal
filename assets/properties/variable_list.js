@@ -13,13 +13,14 @@ module.exports =
 				'it will display #1, if third #3, etc.',
 			args: 'none',
 			get: (guild, id, portal_list) => {
-				let voice_number = undefined;
-				portal_list.forEach(portal => {
-					portal.voice_list.forEach((voice, key) => {
-						if (voice.id === id) voice_number = '#' +(key + 1);
-					})
-				})
-				return voice_number;
+				let i = 0;
+				for (let key in portal_list) {
+					i++;
+					if (portal_list[key].voice_list[id]) {
+						return '#' + i;
+					}
+				}
+				return '#' + '-1';
 			}
 		},{
 			name: '#',
@@ -28,13 +29,14 @@ module.exports =
 			'it will display 1, if third 3, etc.',
 			args: 'none',
 			get: (guild, id, portal_list) => {
-				let voice_number = undefined;
-				portal_list.forEach(portal => {
-					portal.voice_list.forEach((voice, key) => {
-						if (voice.id === id) voice_number = key + 1;
-					})
-				})
-				return voice_number;
+				let i = 0;
+				for (let key in portal_list) {
+					i++;
+					if(portal_list[key].voice_list[id]) {
+						return i;
+					}
+				}
+				return String(-1);
 			}
 		},
 		{
@@ -183,10 +185,12 @@ module.exports =
 			super_description: '**creator_portal**, returns the creator of current voice channel\'s portal.',
 			args: 'none',
 			get: (guild, id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].creator_id;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].creator_id;
+					}
+				}
+				return '-1';
 			}
 		},
 		{
@@ -195,11 +199,12 @@ module.exports =
 			super_description: '**creator_voice**, returns the creator of current voice channel.',
 			args: 'none',
 			get: (guild, id, portal_list) => {
-				console.log('portal_list: ', portal_list);
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].creator_id;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].voice_list[id].creator_id;
+					}
+				}
+				return '-1';
 			}
 		}
 	]

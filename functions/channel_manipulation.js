@@ -7,42 +7,24 @@ module.exports =
 	voice_counter: 0,
 
 	included_in_portal_list: function (channel_id, portal_list) {
-		// if (portal_list.find(portal => portal.id === channel_id))
-		// 	return true;
-		// return false;
-
-		for (i = 0; i < portal_list.length; i++)
-			if (portal_list[i].id === channel_id)
-				return true;
+		if (portal_list[channel_id])
+			return true;
 		return false;
 	}
 	,
 
 	included_in_voice_list: function (channel_id, portal_list) {
-		// if (portal_list.find(portal => portal.voice_list.find(voice => voice.id === channel_id)))
-		// 	return true;
-		// return false;
-
-		for (i = 0; i < portal_list.length; i++)
-			for (j = 0; j < portal_list[i].voice_list.length; j++)
-				if (portal_list[i].voice_list[j].id === channel_id)
-					return true;
+		for (let key in portal_list)
+			if (portal_list[key].voice_list[channel_id])
+				return true;
 		return false;
 	}
 	,
 
 	delete_voice_channel: function (channel_to_delete, portal_list) {
-		// portal_list.some(portal => {
-		// 	portal.voice_list.some((voice, i) => {
-		// 		if (voice.id === channel_to_delete.id)
-		// 			portal.voice_list.splice(i, 1);
-		// 	});
-		// });
-
-		for (i = 0; i < portal_list.length; i++)
-			for (j = 0; j < portal_list[i].voice_list.length; j++)
-				if (portal_list[i].voice_list[j].id === channel_to_delete.id)
-					portal_list[i].voice_list.splice(j, 1);
+		for (let key in portal_list)
+			if (portal_list[key].voice_list[channel_to_delete.id])
+				delete portal_list[key].voice_list[channel_to_delete.id];
 
 		channel_to_delete.delete()
 			.then(g => console.log(`Deleted channel with id: ${g}`))
@@ -50,55 +32,56 @@ module.exports =
 	}
 	,
 
-	create_portal_channel: function (guild, portal_name,
-		category_name, portal_list, creator_id) {
-		if (category_name) {
-			// creating category
-			guild.channels.create(category_name, { type: 'category' })
-
-			// creating voice channel
+	create_portal_channel: function (guild, portal_name, category_name, json_portal_list, creator_id) {
+		if (category_name) { // with category
+			
 			guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
-					portal_list.push(new class_portal.portal_channel(
-						channel.id, creator_id, portal_name,
-						'G$#-P$member_count | $status_list', [],
+					json_portal_list[channel.id] =  new class_portal.portal_channel(
+						creator_id, portal_name, 'G$#-P$member_count | $status_list', {},
 						false, 0, 0, 0, 'gr'
-					));
-
-					let category = guild.channels.cache.find(
-						channel => channel.name == category_name && channel.type == 'category'
 					);
-					if (!category) throw new Error('Category channel does not exist');
-					channel.setParent(category);
-				}).catch(console.error);
+					
+					guild.channels.create(category_name, { type: 'category' })
+						.then(cat_channel => channel.setParent(cat_channel))
+						.catch(console.error);
+				})
+				.catch(console.error);
 		} else {
 			// creating voice channel
 			guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
-					portal_list.push(new class_portal.portal_channel(
-						channel.id, creator_id, portal_name,
-						'G$#-P$member_count | $status_list', [],
+					json_portal_list[channel.id] = new class_portal.portal_channel(
+						creator_id, portal_name, 'G$#-P$member_count | $status_list', {},
 						false, 0, 0, 0, 'gr'
-					));
+					);
 				})
+				.catch(console.error);
 		}
 	}
 	,
 
-	create_voice_channel: function (state, portal_list, creator_id) {
+	create_voice_channel: function (state, json_portal, creator_id) {
 		state.channel.guild.channels.create('loading...', { type: 'voice', bitrate: 64000 })
 			.then(channel => {
-				for (i = 0; i < portal_list.length; i++)
-					if (portal_list[i].id === state.channel.id) {
-						portal_list[i].voice_list.push(
-							new class_portal.voice_channel(
-								channel.id, creator_id, portal_list[i].regex_voice,
-								false, 0, 0, 'gr'
-							)
-						);
-						channel.userLimit = portal_list[i].user_limit_portal;
-						break;
-					}
+				channel.userLimit = json_portal.user_limit_portal;
+				json_portal['voice_list'][channel.id] = new class_portal.voice_channel(
+					creator_id, json_portal.regex_voice,
+					false, 0, 0, 'gr'
+				);
+				
+				// for (i = 0; i < portal_list.length; i++)
+				// 	if (portal_list[i].id === state.channel.id) {
+				// 		portal_list[i].voice_list.push(
+				// 			new class_portal.voice_channel(
+				// 				channel.id, creator_id, portal_list[i].regex_voice,
+				// 				false, 0, 0, 'gr'
+				// 			)
+				// 		);
+				// 		channel.userLimit = portal_list[i].user_limit_portal;
+				// 		break;
+				// 	}
+
 				// doesn't have category
 				if (state.channel.parentID !== null)
 					channel.setParent(state.channel.parentID);
