@@ -1,23 +1,42 @@
 const regx = require('./regex_interpreter.js');
 const attr_objct = require('./../assets/properties/attribute_list');
-const  _ = require('lodash/core');
 
 module.exports = {
+    generate_channel_name2: function (guild, portal_list, voice_attributes, voice) {
+        let new_name = String(regx.regex_interpreter(
+            voice_attributes.regex,
+            voice.id,
+            guild,
+            portal_list));
+
+        voice.edit({ name: new_name })
+            .then(newChannel => console.log(
+                `Voice's new name from promise is ${newChannel.name}`))
+            .catch(console.log);
+    }
+    ,
+
     generate_channel_name: function (guild, portal_list, voice_to_update) {
         for (let key in portal_list) {
             if (portal_list[key].voice_list[voice_to_update.id]) {
                 let new_name = String(regx.regex_interpreter(
                     portal_list[key].voice_list[voice_to_update.id].regex,
-                    voice_to_update.id, guild, portal_list));
+                    voice_to_update.id,
+                    guild,
+                    portal_list));
                 voice_to_update.edit({ name: new_name })
-                    .then(newChannel => console.log(`Voice's new name from promise is ${newChannel.name}`))
+                    .then(newChannel => console.log(
+                        `Voice's new name from promise is ${newChannel.name}`))
                     .catch(console.log);
             } else if (portal_list[voice_to_update.id]) {
                 let new_name = String(regx.regex_interpreter(
-                    portal_list[voice_to_update.id].regex_portal,
-                    portal_list[voice_to_update.id].id, guild, portal_list));
+                    portal_list[key].regex_portal,
+                    key,
+                    guild,
+                    portal_list));
                 voice_to_update.edit({ name: new_name })
-                    .then(newChannel => console.log(`Portal's new name from promise is ${newChannel.name}`))
+                    .then(newChannel => console.log(
+                        `Portal's new name from promise is ${newChannel.name}`))
                     .catch(console.log);
             }
         }

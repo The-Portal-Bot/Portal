@@ -1,3 +1,9 @@
+**Disclaimer[1]:**
+> Discord update their server rate limit to twice per 10 minutes
+> [The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel.](https://github.com/discordjs/discord.js/issues/4327)
+
+***
+
 # [Portal](https://github.com/keybraker/portal-discord-bot) <img src="https://github.com/keybraker/portal-discord-bot/blob/master/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
 A feature-rich channel manager for discord.
 

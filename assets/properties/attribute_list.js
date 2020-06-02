@@ -1,5 +1,39 @@
 module.exports =
 {
+	get: () => {
+
+	},
+	set: (message, portal_list, args) => {
+        for (l = 0; l < this.attributes.length; l++) {
+            if (args[0] === this.attributes[l].name) {
+                for (let key in portal_list) {
+                    for (let key2 in portal_list[key].voice_list) {
+                            if (key2 === message.member.voice.channelID) {
+                            // checks whether you have created the voice channel not the portalchannel
+                            if (message.member.id === portal_list[key].voice_list[key2].creator_id) {
+                                if (this.attributes[l].set === undefined) {
+                                    return -2;
+                                } else {
+                                    this.attributes[l].set(
+                                        args,
+                                        portal_list[i],
+                                        portal_list[key].voice_list[key2],
+                                        message.member.voice.channel
+                                    );
+                                    return 1;
+                                }
+                            } else {
+                                return -3
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+	}
+	,
+
 	prefix: '&',
 	attributes: [
 		{
@@ -8,10 +42,11 @@ module.exports =
 			super_description: '**no_bots returns/no bots allowedl**,',
 			args: '!true/false',
 			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].no_bots;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].voice_list[id].no_bots; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				voice.no_bots = Boolean(args[1]);
@@ -23,10 +58,11 @@ module.exports =
 			super_description: '**regex_portal**, returns/sets title-guidelines of portal channel',
 			args: '!regex',
 			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].regex_portal;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].regex_portal; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				var args_arr = Array.prototype.slice.call(args);
@@ -39,10 +75,11 @@ module.exports =
 			super_description: '**regex_voice**, returns/sets the default title for created voice channels',
 			args: '!regex',
 			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].regex_voice;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].regex_voice; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				var args_arr = Array.prototype.slice.call(args);
@@ -55,10 +92,11 @@ module.exports =
 			super_description: '**regex**, returns/sets the title for current voice channel',
 			args: '!regex',
 			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].regex;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].voice_list[id].regex; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				var args_arr = Array.prototype.slice.call(args);
@@ -71,10 +109,11 @@ module.exports =
 			super_description: '**user_limit_portal**, returns/maximum number of members guideline for portal',
 			args: '!number of maximum members',
 			get: (id, portal_list, guild) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].user_limit_portal;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].voice_list[id].user_limit_portal; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				portal.user_limit_portal = Number(args[1]);
@@ -113,10 +152,11 @@ module.exports =
 			super_description: '**time_to_live returns/time to livertal**,',
 			args: '!number in seconds',
 			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].time_to_live;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].voice_list[id].time_to_live; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				voice.time_to_live = Number(args[1]);
@@ -128,10 +168,11 @@ module.exports =
 			super_description: '**refresh_rate**, returns/how often titles are being refreshed',
 			args: '!number in seconds',
 			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].refresh_rate;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].voice_list[id].refresh_rate; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				voice.refresh_rate = Number(args[1]);
@@ -143,10 +184,11 @@ module.exports =
 			super_description: '**locale**, returns/language used in statuses',
 			args: 'en/gr',
 			get: (id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].locale;
+				for (let key in portal_list) {
+					if (portal_list[key].voice_list[id]) {
+						return portal_list[key].voice_list[id].locale; 
+					}
+				}
 			},
 			set: (args, portal, voice, voice_channel) => {
 				voice.locale = String(args[1]);
