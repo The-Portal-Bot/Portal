@@ -551,7 +551,7 @@ client.on('message', async message => {
 					return;
 				}
 			}
-			message.author.send('**' + args[0] + '**, *does not exist in portal, you can always try **./help***');
+			message.author.send('**' + args[0] + '**, *does not exist in Portal™, you can always try **./help***');
 		}
 		message.channel.send(`${message.author}, I sent you a message`);
 		// Then we delete the cmd message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
@@ -586,12 +586,14 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'set') { // set attributes
-		if (message.member.voice === null || !edtr.included_in_voice_list(message.member.voice.channelID,
-				portal_guilds[message.guild.id].portal_list)) {
-			message_reply(false, message, '**You must be in a portal\'s voice channel to set attributes**');
+		current_portal_list = portal_guilds[message.guild.id].portal_list;
+
+		if (message.member.voice.channelID === undefined) {
+			message_reply(false, message, '*You must be in a channel handled by* **Portal™** *to set attributes*');
+		} else if (!edtr.included_in_voice_list(message.member.voice.channelID, current_portal_list)) {
+			message_reply(false, message, '*The channel you are in is not handled by* **Portal™**');
 		} else if (args.length > 1) { // check for type accuracy and make better
 			
-			current_portal_list = portal_guilds[message.guild.id].portal_list;
 			for (let portal_key in current_portal_list) {
 				for (let voice_key in current_portal_list[portal_key].voice_list) {
 					if (voice_key === message.member.voice.channelID) {

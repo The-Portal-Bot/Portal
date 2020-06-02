@@ -144,16 +144,27 @@ module.exports = {
 					new_channel_name += regex[i];
 				}
 			} else if (regex[i] === attr_objct.prefix) {
-				let attr = this.is_attribute(regex.substring(i));
-
-				if (attr) {
-					last_attribute = this.get_attr_data(attr, id, portal_list, guild);
-					new_channel_name += last_attribute;
-					i += voca.chars(attr).length;
-					last_attribute_end_index = i;
+				if(attr = this.is_attribute(regex.substring(i))) {
+					for (let key in portal_list) {
+						if (portal_list[key].voice_list[id]) {
+							if (return_value = attr_objct.get(guild.channels.cache.find(
+								channel => channel.id === id),
+								portal_list[key].voice_list[id],
+								portal_list[key],
+								attr)) {
+									last_attribute = return_value;
+									new_channel_name += return_value;
+									i += voca.chars(attr).length;
+									last_attribute_end_index = i;
+							} else {
+								new_channel_name += regex[i];
+							}
+						}
+					}
 				} else {
-					new_channel_name += regex[i];
+					new_channel_name += regex[i];						
 				}
+
 			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
 				try {
 					// did not put into structure_list due to many unnecessary function calls

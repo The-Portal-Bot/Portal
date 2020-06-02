@@ -1,16 +1,19 @@
 module.exports =
 {
-	get: () => {
-
+	get: function(voice_channel, voice_object, voice_portal, attr) {
+		for (l = 0; l < this.attributes.length; l++) {
+			if (attr === this.attributes[l].name) {
+				return this.attributes[l].get(voice_channel, voice_object, voice_portal);
+			}
+		}
+		return -1;
 	},
 
 	set: function(voice_channel, voice_object, voice_portal, attr, value) {
 		for (l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {
 				if (this.attributes[l].set !== undefined) {
-					this.attributes[l].set(
-						voice_channel, voice_object, voice_portal, value
-					);
+					this.attributes[l].set(voice_channel, voice_object, voice_portal, value);
 					return 1;
 				}
 				return -1
@@ -27,12 +30,8 @@ module.exports =
 			description: 'returns/sets title-guidelines of portal channel',
 			super_description: '**regex_portal**, returns/sets title-guidelines of portal channel',
 			args: '!regex',
-			get: (id, portal_list) => {
-				for (let key in portal_list) {
-					if (portal_list[key].voice_list[id]) {
-						return portal_list[key].regex_portal; 
-					}
-				}
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_portal.regex_portal; 
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				var args_arr = Array.prototype.slice.call(value);
@@ -44,12 +43,8 @@ module.exports =
 			description: 'returns/sets the default title for created voice channels',
 			super_description: '**regex_voice**, returns/sets the default title for created voice channels',
 			args: '!regex',
-			get: (id, portal_list) => {
-				for (let key in portal_list) {
-					if (portal_list[key].voice_list[id]) {
-						return portal_list[key].regex_voice; 
-					}
-				}
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_portal.regex_voice;
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				var args_arr = Array.prototype.slice.call(value);
@@ -61,12 +56,8 @@ module.exports =
 			description: 'returns/sets the title for current voice channel',
 			super_description: '**regex**, returns/sets the title for current voice channel',
 			args: '!regex',
-			get: (id, portal_list) => {
-				for (let key in portal_list) {
-					if (portal_list[key].voice_list[id]) {
-						return portal_list[key].voice_list[id].regex; 
-					}
-				}
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_object.regex; 
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				var args_arr = Array.prototype.slice.call(value);
@@ -78,12 +69,8 @@ module.exports =
 			description: 'returns/maximum number of members guideline for portal',
 			super_description: '**user_limit_portal**, returns/maximum number of members guideline for portal',
 			args: '!number of maximum members',
-			get: (id, portal_list, guild) => {
-				for (let key in portal_list) {
-					if (portal_list[key].voice_list[id]) {
-						return portal_list[key].voice_list[id].user_limit_portal; 
-					}
-				}
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_portal.user_limit_portal;
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				voice_portal.user_limit_portal = Number(value);
@@ -94,8 +81,8 @@ module.exports =
 			description: 'returns/maximum number of members allowed',
 			super_description: '**user_limit_voice**, returns/maximum number of members allowed',
 			args: '!number of maximum members',
-			get: (id, portal_list, guild) => {
-				return guild.channels.cache.find(channel => channel.id === id).userLimit;
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_channel.userLimit;
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				voice_channel.userLimit = Number(value);
@@ -106,8 +93,8 @@ module.exports =
 			description: 'returns/the position of the channel',
 			super_description: '**position**, returns/the position of the channel',
 			args: '!position of channel',
-			get: (id, portal_list, guild) => {
-				return guild.channels.cache.find(channel => channel.id === id).position;
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_channel.position;
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				voice_channel.edit({ position: Number(value) })
@@ -121,12 +108,8 @@ module.exports =
 			description: 'returns/language used in statuses',
 			super_description: '**locale**, returns/language used in statuses',
 			args: 'en/gr',
-			get: (id, portal_list) => {
-				for (let key in portal_list) {
-					if (portal_list[key].voice_list[id]) {
-						return portal_list[key].voice_list[id].locale; 
-					}
-				}
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_object.locale;
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				voice_object.locale = String(value);
@@ -137,8 +120,8 @@ module.exports =
 			description: 'returns/bitrate of channel',
 			super_description: '**bitrate** returns/bitrate of channel,',
 			args: 'number',
-			get: (id, portal_list, guild) => {
-				return guild.channels.cache.find(channel => channel.id === id).bitrate;
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_channel.bitrate;
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				// voice_channel.setBitrate(Number(value));
@@ -153,12 +136,8 @@ module.exports =
 			description: 'forces a channel creation and move of members to change name',
 			super_description: '**force_update**, forces a channel creation and move of members to change name',
 			args: '!true/false',
-			get: (id, portal_list) => {
-				for (let key in portal_list) {
-					if (portal_list[key].voice_list[id]) {
-						return portal_list[key].voice_list[id].force_update;
-					}
-				}
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_object.force_update;
 			},
 			set: (voice_channel, voice_object, voice_portal, value) => {
 				voice_object.force_update = Boolean(value);
@@ -169,12 +148,8 @@ module.exports =
 			description: 'is the last time the channel name was updated',
 			super_description: '**last_update**, is the last time the channel name was updated',
 			args: 'none',
-			get: (id, portal_list) => {
-				for (let key in portal_list) {
-					if (portal_list[key].voice_list[id]) {
-						return portal_list[key].voice_list[id].last_update;
-					}
-				}
+			get: (voice_channel, voice_object, voice_portal) => {
+				return voice_object.last_update;
 			}
 		}
 	]
