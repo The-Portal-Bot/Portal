@@ -86,6 +86,7 @@ module.exports = {
 			">=": (a, b) => { if (a >= b) return true; else false; },
 			"<=": (a, b) => { if (a <= b) return true; else false; }
 		};
+
 		let last_space_index = 0;
 		let last_vatiable_end_index = 0;
 		let last_attribute_end_index = 0;
@@ -153,8 +154,7 @@ module.exports = {
 				} else {
 					new_channel_name += regex[i];
 				}
-			} else if (regex[i] === '{' && 
-				(regex[i + 1] !== undefined && regex[i + 1] === '{')) {
+			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
 				try {
 					// did not put into structure_list due to many unnecessary function calls
 					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));

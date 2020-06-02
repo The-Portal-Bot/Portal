@@ -560,24 +560,25 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'run') {
-		if (message.member.voice === null
-			|| !edtr.included_in_voice_list(
-					message.member.voice.channelID, portal_guilds[message.guild.id].portal_list)
-				) {
-			message_reply(false, message,
-				'**You must be in portal\'s voice channel to run regexes**');
+		let current_voice = message.member.voice;
+		let current_portal_list = portal_guilds[message.guild.id].portal_list;
+
+		if (current_voice === null || !edtr.included_in_voice_list(current_voice.channelID, current_portal_list)) {
+			message_reply(false, message, '**You must be in portal\'s voice channel to run regexes**');
 			return;
 		}
 
 		message.channel.send('executing: ' + args.join(' '))
 			.then(sentMessage => {
-				sentMessage.edit(regx.regex_interpreter(
-					args.join(' '),
-					message.member.voice.channelID,
-					message.member.guild,
-					portal_guilds[message.guild.id].portal_list
-				));
-			})
+				sentMessage.edit(
+					regx.regex_interpreter(
+						args.join(' '),
+						current_voice.channelID,
+						message.member.guild,
+						current_portal_list
+					)
+				);
+			});
 		// console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
 		// console.log('Object.getOwnPropertyNames(message.author)= ', Object.getOwnPropertyNames(message.author))
 		message.react('✔️');
@@ -585,33 +586,40 @@ client.on('message', async message => {
 	}
 
 	if (cmd === 'set') { // set attributes
-		if (message.member.voice === null
-			|| !edtr.included_in_voice_list(message.member.voice.channelID,
+		if (message.member.voice === null || !edtr.included_in_voice_list(message.member.voice.channelID,
 				portal_guilds[message.guild.id].portal_list)) {
-			message_reply(false, message,
-				'**You must be in a portal\'s voice channel to set attributes**');
+			message_reply(false, message, '**You must be in a portal\'s voice channel to set attributes**');
 		} else if (args.length > 1) { // check for type accuracy and make better
-			return_value = attr_objct.set(
-				message,
-				portal_guilds[message.guild.id].portal_list,
-				args
-			);
+			
+			current_portal_list = portal_guilds[message.guild.id].portal_list;
+			for (let portal_key in current_portal_list) {
+				for (let voice_key in current_portal_list[portal_key].voice_list) {
+					if (voice_key === message.member.voice.channelID) {
+						let current_voice_channel = current_portal_list[portal_key].voice_list[voice_key]
+						let current_portal_channel = current_portal_list[portal_key]
+						if (message.member.id === current_voice_channel.creator_id) {
+							let return_value = attr_objct.set(
+								message.member.voice.channel, 
+								current_voice_channel,
+								current_portal_channel,
+								args[0],
+								args[1]
+							);
 
-			if (return_value === 1) {
-				// mngr.generate_channel_name(message.guild, portal_guilds[message.guild.id].portal_list);
-				mngr.generate_channel_name(message.guild, portal_guilds[message.guild.id].portal_list, message.member.voice);
-				message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
-			} else if (return_value === -3) {
-				message_reply(false, message, '**Only the channel creator can change attributes**');
-			} else if (return_value === -2) {
-				message_reply(false, message, '**Attribute ' + args[0] + ' is read only**');
-			} else if (return_value === -1) {
-				message_reply(false, message, '**' + args[0] + ' is not an attribute**');
+							if (return_value === 1)
+								message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
+							else if (return_value === -1)
+								message_reply(false, message, '**Attribute ' + args[0] + ' is read only**');
+							else if (return_value === -2)
+								message_reply(false, message, '**' + args[0] + ' is not an attribute**');
+						} else {
+							message_reply(false, message, '**Only the channel creator can change attributes**');
+						}
+					}
+				}
 			}
-		} else {
-			message_reply(false, message, '**Error with set, ***example: ./set no_bots true*');
-		}
 
+		}
 		update_portal_managed_guilds(true);
 		return;
 	}
@@ -706,6 +714,11 @@ client.on('message', async message => {
 		console.log('SAVE: ', portal_guilds);
 		update_portal_managed_guilds(true);
 		return;
+	}
+
+	if (cmd === 'force_update')
+	{
+
 	}
 
 });
