@@ -1,5 +1,11 @@
 module.exports =
 {
+	is_function: function (arg) {
+		for (i = 0; i < this.functions.length; i++)
+			if (String(arg).substring(1, (String(this.functions[i].name).length + 1)) == this.functions[i].name)
+				return this.functions[i].name;
+		return false;
+	},
 	get_help: function () {
 		let func_array = [];
 		for (i = 0; i < this.functions.length; i++) {

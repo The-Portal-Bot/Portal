@@ -312,7 +312,6 @@ client.on('message', async message => {
 		if (args.length === 2) {
 			edtr.create_portal_channel(message.guild, args[0], args[1],
 				portal_guilds[message.guild.id].portal_list, message.member.id);
-			
 		} else if (args.length === 1) {
 			edtr.create_portal_channel(message.guild, args[0], null,
 				portal_guilds[message.guild.id].portal_list, message.member.id);
@@ -385,8 +384,7 @@ client.on('message', async message => {
 					)
 				);
 			});
-		// console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
-		// console.log('Object.getOwnPropertyNames(message.author)= ', Object.getOwnPropertyNames(message.author))
+
 		message.react('✔️');
 		return;
 	}
@@ -519,8 +517,6 @@ client.on('message', async message => {
 	}
 	
 	if (cmd === 'ping') {
-		// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-		// The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
 		const msg = await message.channel.send('Ping?');
 		msg.edit(`Pong!\nLatency of rtt is ${msg.createdTimestamp - message.createdTimestamp}ms.\n` +
 			`Latency to portal is ${client.ws.ping}ms`);
@@ -541,3 +537,6 @@ client.on('message', async message => {
 });
 //#region 
 client.login(config.token);
+
+		// console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
+		// console.log('Object.getOwnPropertyNames(message.author)= ', Object.getOwnPropertyNames(message.author))

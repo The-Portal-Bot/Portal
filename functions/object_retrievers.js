@@ -4,7 +4,6 @@ const programs = require('../assets/status/program_list.json');
 module.exports = {
 	status_aliases: function (current_statuses, locale) {
 		new_status = [];
-		console.log('mpika gia current_statuses: ' + current_statuses);
 
 		current_statuses.forEach(status => {
 			let found = false;
@@ -19,6 +18,7 @@ module.exports = {
 					}
 				}
 			}
+			
 			if(!found) {
 				for (l = 0; l < programs.program_attributes.length; l++) {
 					if (status.name == programs.program_attributes[l].status) {
@@ -33,7 +33,6 @@ module.exports = {
 				}
 			}
 			if(!found) {
-				console.log('mpika gia name: ' + status.name);
 				new_status.push(status.name);
 			}
 		});

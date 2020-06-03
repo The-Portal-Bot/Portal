@@ -1,5 +1,11 @@
 module.exports =
 {
+	is_structure: function (arg) {
+		for (i = 0; i < this.structures.length; i++)
+			if (String(arg).substring(1, (String(this.structures[i].name).length + 1)) == this.structures[i].name)
+				return this.structures[i].name;
+		return false;
+	},
 	get_help: function () {
 		let strc_array = [];
 		for (i = 0; i < this.structures.length; i++) {

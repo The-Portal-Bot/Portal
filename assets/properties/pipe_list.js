@@ -2,6 +2,12 @@ const voca = require('voca');
 
 module.exports =
 {
+	is_pipe: function (arg) {
+		for (i = 0; i < this.pipes.length; i++)
+			if (String(arg).substring(1, (String(this.pipes[i].name).length + 1)) == this.pipes[i].name)
+				return this.pipes[i].name;
+		return false;
+	},
 	get_help: function () {
 		let pipe_array = [];
 		for (i = 0; i < this.pipes.length; i++) {

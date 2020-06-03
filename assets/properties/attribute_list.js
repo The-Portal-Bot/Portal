@@ -1,5 +1,11 @@
 module.exports =
 {
+	is_attribute: function (arg) {
+		for (i = 0; i < this.attributes.length; i++)
+			if (String(arg).substring(1, (String(this.attributes[i].name).length + 1)) == this.attributes[i].name)
+				return this.attributes[i].name;
+		return false;
+	},
 	get_help: function () {
 		let attr_array = [];
 		for (i = 0; i < this.attributes.length; i++) {

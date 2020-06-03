@@ -3,6 +3,12 @@ const moment = require('moment');
 
 module.exports =
 {
+	is_variable: function (arg) {
+		for (i = 0; i < this.variables.length; i++)
+			if (String(arg).substring(1, (String(this.variables[i].name).length + 1)) == this.variables[i].name)
+				return this.variables[i].name;
+		return false;
+	},
 	get_help: function () {
 		let vrbl_array = [];
 		for (i = 0; i < this.variables.length; i++) {
@@ -45,6 +51,7 @@ module.exports =
 		}
 		return -1;
 	},
+
 	prefix: '$',
 	variables: [
 		{
