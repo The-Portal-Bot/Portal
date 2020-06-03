@@ -2,68 +2,69 @@ const games = require('../assets/status/game_list.json');
 const programs = require('../assets/status/program_list.json');
 
 module.exports = {
-	status_aliases: function (current_statuses, portal_list, id) {
+	status_aliases: function (current_statuses, locale) {
 		new_status = [];
+		console.log('mpika gia current_statuses: ' + current_statuses);
 
-		for (let key in portal_list) {
-			if (portal_list[key].voice_list[id]) {
-				current_statuses.forEach(status => {
-					let found = false;
-					for (l = 0; l < games.game_attributes.length; l++)
-						if (status.name == games.game_attributes[l].status)
-							if (portal_list[key].voice_list[id].locale === 'gr') {
-								new_status.push(games.game_attributes[l].locale.gr);
-								found = true;
-							}
-							else {
-								new_status.push(games.game_attributes[l].locale.en);
-								found = true;
-							}
-					if(!found)
-						for (l = 0; l < programs.program_attributes.length; l++)
-							if (status.name == programs.program_attributes[l].status)
-								if (portal_list[key].voice_list[id].locale === 'gr') {
-									new_status.push(programs.program_attributes[l].locale.gr);
-									found = true;
-								}
-								else {
-									new_status.push(programs.program_attributes[l].locale.en);
-									found = true;
-								}
-
-					if(!found)
-						new_status.push(status.name);
-				});
+		current_statuses.forEach(status => {
+			let found = false;
+			for (l = 0; l < games.game_attributes.length; l++) {
+				if (status.name == games.game_attributes[l].status) {
+					if (locale === 'gr') {
+						new_status.push(games.game_attributes[l].locale.gr);
+						found = true;
+					} else {
+						new_status.push(games.game_attributes[l].locale.en);
+						found = true;
+					}
+				}
 			}
-		}					
-		return new_status.join('_');
+			if(!found) {
+				for (l = 0; l < programs.program_attributes.length; l++) {
+					if (status.name == programs.program_attributes[l].status) {
+						if (locale === 'gr') {
+							new_status.push(programs.program_attributes[l].locale.gr);
+							found = true;
+						} else {
+							new_status.push(programs.program_attributes[l].locale.en);
+							found = true;
+						}
+					}
+				}
+			}
+			if(!found) {
+				console.log('mpika gia name: ' + status.name);
+				new_status.push(status.name);
+			}
+		});
+
+		return new_status;
 	}
 	,
 
-get_status_list: function (guild, id, portal_list) {
-	let array_of_statuses = [];
+	get_status_list: function (voice_channel, voice_object) {
+		let array_of_statuses = [];
+		console.log('1array_of_statuses: ', array_of_statuses.length);
 
-	guild.channels.cache.some(channel => {
-		if (channel.id === id) {
-			channel.members.forEach((member, index) => {
-				if (member.presence.activities !== null) {
-					let status = this.status_aliases(member.presence.activities, portal_list, id);
-					if (!array_of_statuses.includes(status))
-						array_of_statuses.push(status);
+		voice_channel.members.forEach(member => {
+			console.log(member.user.username, 'has activities: ', member.presence.activities);
+			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
+				let status = this.status_aliases(member.presence.activities, voice_object.locale);
+				if (!array_of_statuses.includes(status)) {
+					array_of_statuses.push(status);
 				}
-			});
-
-			if (array_of_statuses.length === 0)
-				for (let key in portal_list)
-					if (portal_list[key].voice_list[id])
-						if (portal_list[key].voice_list[id].locale === 'gr')
-							array_of_statuses.push("Άραγμα");
-						else
-							array_of_statuses.push("Chilling");
-			return;
+			}
+		});
+		console.log('2array_of_statuses: ', array_of_statuses.length);
+		if (array_of_statuses.length === 0) {
+			if (voice_object.locale === 'gr') {
+				array_of_statuses.push("Άραγμα");
+			} else {
+				array_of_statuses.push("Chilling");
+			}
 		}
-	})
-	console.log('\n\n\narray_of_statuses: ', array_of_statuses);
-	return array_of_statuses;
+	
+		console.log('\n\n\narray_of_statuses: ', array_of_statuses);
+		return array_of_statuses;
 }
 };

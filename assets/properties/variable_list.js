@@ -133,7 +133,7 @@ module.exports =
 			super_description: '**status_list**, returns the list of all current members statuses.',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_object) => { 
-				// return object.get_status_list(guild, id, portal_object)
+				return object.get_status_list(voice_channel, voice_object);
 			}
 		},
 		{
@@ -142,9 +142,9 @@ module.exports =
 			super_description: '**status_count**, returns the count of current member statuses.',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_object) => {
-				// let status_list = object.get_status_list(guild, id, portal_object);
-				// if (typeof status_list === 'object' && status_list !== null) { return 0; }
-				// else { status_list.length; }
+				let status_list = object.get_status_list(voice_channel, voice_object);
+				if (typeof status_list === 'object' && status_list !== null) { return 0; }
+				else { status_list.length; }
 			}
 		},
 		{

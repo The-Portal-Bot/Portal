@@ -4,25 +4,29 @@ const class_role = require('./../classes/role.js');
 module.exports =
 {
 	included_in_portal_list: function(channel_id, portal_list) {
-		if (portal_list[channel_id])
+		if (portal_list[channel_id]) {
 			return true;
+		}
 		return false;
 	}
 	,
 
 	included_in_voice_list: function(channel_id, portal_list) {
-		for (let key in portal_list)
-			if (portal_list[key].voice_list[channel_id])
+		for (let key in portal_list) {
+			if (portal_list[key].voice_list[channel_id]) {
 				return true;
+			}
+		}
 		return false;
 	}
 	,
 
 	delete_voice_channel: function(channel_to_delete, portal_list) {
-		for (let key in portal_list)
-			if (portal_list[key].voice_list[channel_to_delete.id])
+		for (let key in portal_list) {
+			if (portal_list[key].voice_list[channel_to_delete.id]) {
 				delete portal_list[key].voice_list[channel_to_delete.id];
-
+			}
+		}
 		channel_to_delete.delete()
 			.then(g => console.log(`Deleted channel with id: ${g}`))
 			.catch(console.error);
@@ -37,14 +41,12 @@ module.exports =
 						creator_id, portal_name, 'G$#-P$member_count | $status_list', {},
 						false, 0, 0, 0, 'gr', false, Date.now()
 					);
-					
 					guild.channels.create(category_name, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
 				})
 				.catch(console.error);
-		} else {
-			// creating voice channel
+		} else { // without category
 			return guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					json_portal_list[channel.id] = new class_portal.portal_channel(
@@ -65,11 +67,9 @@ module.exports =
 					creator_id, json_portal.regex_voice,
 					false, 0, 0, 'gr', 1, Date.now()
 				);
-
-				// doesn't have category
-				if (state.channel.parentID !== null)
+				if (state.channel.parentID !== null) {
 					channel.setParent(state.channel.parentID);
-				// move member from portal to voice channel
+				}
 				state.member.voice.setChannel(channel);
 			}).catch(console.error);
 
@@ -78,23 +78,16 @@ module.exports =
 	,
 
 	create_url_channel: function(guild, url_name, category_name, url_list) {
-		if (category_name) {
-			// creating category
-			guild.channels.create(category_name, { type: 'category' })
-
-			// creating voice channel
+		if (category_name) { // with category
 			guild.channels.create(url_name + ' (url-only)', { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
 
-					let category = guild.channels.find(
-						c => c.name == category_name && c.type == 'category'
-					);
-					if (!category) throw new Error('Category channel does not exist');
-					channel.setParent(category);
+					guild.channels.create(category_name, { type: 'category' })
+						.then(cat_channel => channel.setParent(cat_channel))
+						.catch(console.error);
 				}).catch(console.error);
-		} else {
-			// creating voice channel
+		} else { // withou category
 			guild.channels.create(url_name + ' (url-only)', { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);

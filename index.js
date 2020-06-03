@@ -173,9 +173,8 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 			if (current_voice_channel = current_portal_list[key].voice_list[current_channel.id]) {
 				if (((Date.now() - current_voice_channel.last_update)) >= 300000) {
 					mngr.generate_channel_name(
-						current_voice_channel,
-						current_portal_list[key].voice_list[current_channel.id],
-						current_portal_list[key]
+						current_channel,
+						current_portal_list
 					);
 				}
 			}

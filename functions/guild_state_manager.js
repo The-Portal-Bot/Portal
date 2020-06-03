@@ -1,9 +1,9 @@
 module.exports =
 {
     included_in_portal_guilds: function (guild_id, portal_guilds) {
-        console.log('portal_guilds[guild_id]: ' + portal_guilds[guild_id]);
-        if (portal_guilds[guild_id] !== undefined)
+        if (portal_guilds[guild_id] !== undefined) {
             return true;
+        }
         return false;
     }
     ,
@@ -14,7 +14,7 @@ module.exports =
     ,
 
     delete_guild: function (guild_id, portal_guilds) {
-        delete portal_guilds.guild_id;
+        delete portal_guilds[guild_id];
     }
 };
 
