@@ -63,7 +63,7 @@ module.exports =
 				channel.userLimit = json_portal.user_limit_portal;
 				json_portal['voice_list'][channel.id] = new class_portal.voice_channel(
 					creator_id, json_portal.regex_voice,
-					false, 0, 0, 'gr', false, Date.now()
+					false, 0, 0, 'gr', 1, Date.now()
 				);
 
 				// doesn't have category
