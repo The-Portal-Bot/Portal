@@ -1,5 +1,39 @@
 module.exports =
 {
+	get_help: function () {
+		let attr_array = [];
+		for (i = 0; i < this.attributes.length; i++) {
+			attr_array.push({
+				emote: this.attributes[i].name,
+				role: '**desc**: *' + this.attributes[i].description + '*' +
+					'\n**args**: *' + this.attributes[i].args + '*',
+				inline: true
+			});
+		}
+		return create_rich_embed('Attributes',
+			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'\n**!**: *mandatory*, **@**: *optional*',
+			'#FF7F00', attr_array);
+	},
+	get_help_super: function (check) {
+		for (i = 0; i < this.attributes.length; i++) {
+			let attr = this.attributes[i]
+			if (attr.name === check) {
+				return create_rich_embed(
+					attr.name,
+					'Type: Attribute' +
+					'\nPrefix: ' + this.prefix +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00',
+					[
+						{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },
+						{ emote: 'Arguments', role: '*' + attr.args + '*', inline: false }
+					]
+				)
+			}
+		}
+		return false;
+	},
 	get: function(voice_channel, voice_object, portal_object, attr) {
 		for (l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {

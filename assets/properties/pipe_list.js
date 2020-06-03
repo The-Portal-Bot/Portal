@@ -2,6 +2,40 @@ const voca = require('voca');
 
 module.exports =
 {
+	get_help: function () {
+		let pipe_array = [];
+		for (i = 0; i < this.pipes.length; i++) {
+			pipe_array.push({
+				emote: this.pipes[i].name,
+				role: '**desc**: *' + this.pipes[i].description + '*' +
+					'\n**args**: *' + this.pipes[i].args + '*',
+				inline: true
+			});
+		}
+		return create_rich_embed('Pipes',
+			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'\n**!**: *mandatory*, **@**: *optional*',
+			'#FF7F00', pipe_array);
+	},
+	get_help_super: function (check) {
+		for (i = 0; i < this.pipes.length; i++) {
+			let pipe = this.pipes[i]
+			if (pipe.name === check) {
+				return create_rich_embed(
+					pipe.name,
+					'Type: Pipe' +
+					'\nPrefix: ' + this.prefix +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00',
+					[
+						{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },
+						{ emote: 'Arguments', role: '*' + pipe.args + '*', inline: false }
+					]
+				)
+			}
+		}
+		return false;
+	},
 	get: function (str, pipe) {
 		for (l = 0; l < this.pipes.length; l++) {
 			if (pipe === this.pipes[l].name) {

@@ -3,6 +3,40 @@ const moment = require('moment');
 
 module.exports =
 {
+	get_help: function () {
+		let vrbl_array = [];
+		for (i = 0; i < this.variables.length; i++) {
+			vrbl_array.push({
+				emote: this.variables[i].name,
+				role: '**desc**: *' + this.variables[i].description + '*' +
+					'\n**args**: *' + this.variables[i].args + '*',
+				inline: true
+			});
+		}
+		return create_rich_embed('Variables',
+			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'\n**!**: *mandatory*, **@**: *optional*',
+			'#FF7F00', vrbl_array);
+	},
+	get_help_super: function (check) {
+		for (i = 0; i < this.variables.length; i++) {
+			let vrbl = this.variables[i]
+			if (vrbl.name === check) {
+				return create_rich_embed(
+					vrbl.name,
+					'Type: Variable' +
+					'\nPrefix: ' + this.prefix +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00',
+					[
+						{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
+						{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false }
+					]
+				)
+			}
+		}
+		return false;
+	},
 	get: function (voice_channel, voice_object, portal_object, vrbl) {
 		for (l = 0; l < this.variables.length; l++) {
 			if (vrbl === this.variables[l].name) {

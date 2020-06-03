@@ -89,10 +89,12 @@ update_portal_managed_guilds = function (force) {
 }
 
 message_reply = function (status, msg, str) {
-	msg.channel.send(str);
-	if (status)
+	msg.channel.send(str).then(msg => { msg.delete({ timeout: 3000 }) })
+	if (status) {
 		msg.react('✔️');
-	else msg.react('❌');
+	} else { 
+		msg.react('❌');
+	}
 }
 
 is_url = function (message) {
@@ -155,12 +157,16 @@ client.on('guildDelete', guild => {
 // This event triggers when the status of a guild member has changed
 client.on('presenceUpdate', (oldPresence, newPresence) => {
 	if (!gmng.included_in_portal_guilds(newPresence.guild.id, portal_guilds)) {
-		console.log(newPresence.member.displayName + ', who is a member of a handled server,' +
-			' has changed presence, but is in another server (' + newPresence.guild.name + ').\n');
+		console.log(
+			newPresence.member.displayName +
+			', who is a member of a handled server,' +
+			' has changed presence, but is in another server ('+
+			newPresence.guild.name + ').\n');
 		return;
 	}
 
-	console.log(newPresence.member.displayName +
+	console.log(
+		newPresence.member.displayName +
 		', has changed presence, in controlled server (' +
 		newPresence.guild.name + ').\n');
 
@@ -172,10 +178,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 		for (let key in portal_guilds[current_guild.id].portal_list) {
 			if (current_voice_channel = current_portal_list[key].voice_list[current_channel.id]) {
 				if (((Date.now() - current_voice_channel.last_update)) >= 300000) {
-					mngr.generate_channel_name(
-						current_channel,
-						current_portal_list
-					);
+					mngr.generate_channel_name(current_channel, current_portal_list);
 				}
 			}
 		}
@@ -309,230 +312,56 @@ client.on('message', async message => {
 		if (args.length === 2) {
 			edtr.create_portal_channel(message.guild, args[0], args[1],
 				portal_guilds[message.guild.id].portal_list, message.member.id);
-			message_reply(true, message, '*Keep in mind that after Discord\'s update* ' +
-				'**channel names can be update twice per 10 minutes**');
+			
 		} else if (args.length === 1) {
 			edtr.create_portal_channel(message.guild, args[0], null,
 				portal_guilds[message.guild.id].portal_list, message.member.id);
-			message_reply(true, message, '*Keep in mind that after Discord\'s update* ' +
-				'**channel names can be update twice per 10 minutes**');
 		} else {
 			message_reply(false, message, '**' + config.prefix + 'portal <channel_name> <category_name>**\n' +
 				'*(channel_name: mandatory, category_name: optional)*');
 		}
 
+		message_reply(true, message, '*Keep in mind that after Discord\'s update* ' +
+			'**channel names can be update twice per 10 minutes**');
 		update_portal_managed_guilds(true);
 		return;
 	}
 
-	if (cmd === 'ping') {
-		// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-		// The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
-		const msg = await message.channel.send('Ping?');
-		msg.edit(`Pong!\nLatency of rtt is ${msg.createdTimestamp - message.createdTimestamp}ms.\n` +
-			`Latency to portal is ${client.ws.ping}ms`);
-		return;
-	}
-
 	if (cmd === 'help') {
-		if (args.length === 0 || (args.length === 1 && (args[0] === 'func' ||
-			args[0] === 'vrbl' || args[0] === 'pipe' || args[0] === 'attr'))) {
-			let help_message_func = '';
-			let help_message_pipe = '';
-			let help_message_attr = '';
-			let help_message_vrbl = '';
-
-			if (args.length === 0 || args[0] === 'func') {
-				// check if argument is function
-				let func_array = [];
-				for (i = 0; i < func_objct.functions.length; i++) {
-					func_array.push({ 
-						emote: func_objct.functions[i].name, 
-						role: '**desc**: *' + func_objct.functions[i].description + '*' +
-							'\n**args**: *' + func_objct.functions[i].args + '*', 
-						inline: true });
-				}
-				
-				message.author.send(create_rich_embed('Functions',
-					'Prefix: ' + func_objct.prefix + '\nCommands to access portal bot.' +
-					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00', func_array));
-			}
-			if (args.length === 0 || args[0] === 'vrbl') {
-				// check if argument is variable
-				let vrbl_array = [];
-				for (i = 0; i < vrbl_objct.variables.length; i++) {
-					vrbl_array.push({
-						emote: vrbl_objct.variables[i].name,
-						role: '**desc**: *' + vrbl_objct.variables[i].description + '*' +
-							'\n**args**: *' + vrbl_objct.variables[i].args + '*',
-						inline: true
-					});
-				}
-
-				message.author.send(create_rich_embed('Variables',
-					'Prefix: ' + vrbl_objct.prefix + '\nChannel data that changes automatically.' +
-					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00', vrbl_array));
-			}
-			if (args.length === 0 || args[0] === 'pipe') {
-				// check if argument is pipe
-				let pipe_array = [];
-				for (i = 0; i < pipe_objct.pipes.length; i++) {
-					pipe_array.push({
-						emote: pipe_objct.pipes[i].name,
-						role: '**desc**: *' + pipe_objct.pipes[i].description + '*' +
-							'\n**args**: *' + pipe_objct.pipes[i].args + '*',
-						inline: true
-					});
-				}
-
-				message.author.send(create_rich_embed('Pipes',
-					'Prefix: ' + pipe_objct.prefix + '\nGive input of sort to get an output.' +
-					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00', pipe_array));
-			}
-			if (args.length === 0 || args[0] === 'attr') {
-				// check if argument is attribute
-				let attr_array = [];
-				for (i = 0; i < attr_objct.attributes.length; i++) {
-					attr_array.push({
-						emote: attr_objct.attributes[i].name,
-						role: '**desc**: *' + attr_objct.attributes[i].description + '*' +
-							'\n**args**: *' + attr_objct.attributes[i].args + '*',
-						inline: true
-					});
-				}
-
-				message.author.send(create_rich_embed('Attributes',
-					'Prefix: ' + attr_objct.prefix + '\nData of channel that can be set.' +
-					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00', attr_array));
-			}
-			if (args.length === 0 || args[0] === 'strc') {
-				// check if argument is attribute
-				let strc_array = [];
-				for (i = 0; i < strc_objct.structures.length; i++) {
-					strc_array.push({
-						emote: strc_objct.structures[i].name,
-						role: '**desc**: *' + strc_objct.structures[i].description + '*' +
-							'\n**args**: *' + strc_objct.structures[i].args + '*',
-						inline: true
-					});
-				}
-
-				message.author.send(create_rich_embed('Structures',
-					'Prefix: ' + strc_objct.prefix + '\nStructural data functions.' +
-					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00', strc_array));
+		if (args.length === 0) {			
+			message.author.send(func_objct.get_help()).catch(console.error);
+			message.author.send(vrbl_objct.get_help()).catch(console.error);
+			message.author.send(pipe_objct.get_help()).catch(console.error);
+			message.author.send(attr_objct.get_help()).catch(console.error);
+			message.author.send(strc_objct.get_help()).catch(console.error);
+		} else if (args.length === 1) {
+			if (args[0] === 'func') {
+				message.author.send(func_objct.get_help()).catch(console.error);
+			} else if (args[0] === 'vrbl') {
+				message.author.send(vrbl_objct.get_help()).catch(console.error);
+			} else if (args[0] === 'pipe') {
+				message.author.send(pipe_objct.get_help()).catch(console.error);
+			} else if (args[0] === 'attr') {
+				message.author.send(attr_objct.get_help()).catch(console.error);
+			} else if (args[0] === 'strc') {
+				message.author.send(strc_objct.get_help()).catch(console.error);
+			} else if(func_detailed = func_objct.get_help_super(args[0])) {
+				message.author.send(func_detailed).catch(console.error);
+			} else if (vrbl_detailed = vrbl_objct.get_help_super(args[0])) {
+				message.author.send(vrbl_detailed).catch(console.error);
+			} else if (pipe_detailed = pipe_objct.get_help_super(args[0])) {
+				message.author.send(pipe_detailed).catch(console.error);
+			} else if (attr_detailed = attr_objct.get_help_super(args[0])) {
+				message.author.send(attr_detailed).catch(console.error);
+			} else if (strc_detailed = strc_objct.get_help_super(args[0])) {
+				message.author.send(strc_detailed).catch(console.error);
+			} else {
+				message_reply(false, message, `**${args[0]}**, *does not exist in Portal™,` +
+					`you can always try **./help***`);
+				return;
 			}
 		}
-		else if (args.length === 1) {
-			// check if argument is function
-			for (i = 0; i < func_objct.functions.length; i++) {
-				let func = func_objct.functions[i]
-				if (func.name === args[0]) {
-					message.author.send(create_rich_embed(
-						func.name,
-						'Type: Function' + 
-						'\nPrefix: ' + func_objct.prefix +
-						'\n**!**: *mandatory*, **@**: *optional*',
-						'#FF7F00',
-						[
-							{emote: 'Description', role: '*' + func.super_description + '*', inline: false},
-							{emote: 'Arguments', role: '*' + func.args + '*', inline: false}
-						]
-						));
-
-					message.channel.send(`${message.author}, I sent you a message`);
-					return;
-				}
-			}
-			// check if argument is pipe
-			for (i = 0; i < pipe_objct.pipes.length; i++) {
-				let pipe = pipe_objct.pipes[i]
-				if (pipe.name === args[0]) {
-					message.author.send(create_rich_embed(
-						pipe.name,
-						'Type: Pipe' + 
-						'\nPrefix: ' + pipe_objct.prefix +
-						'\n**!**: *mandatory*, **@**: *optional*',
-						'#FF7F00',
-						[
-							{emote: 'Description', role: '*' + pipe.super_description + '*', inline: false},
-							{emote: 'Arguments', role: '*' + pipe.args + '*', inline: false}
-						]
-						));
-
-					message.channel.send(`${message.author}, I sent you a message`);
-					return;
-				}
-			}
-			// check if argument is attribute
-			for (i = 0; i < attr_objct.attributes.length; i++) {
-				let attr = attr_objct.attributes[i]
-				if (attr.name === args[0]) {
-					message.author.send(create_rich_embed(
-						attr.name,
-						'Type: Attribute' + 
-						'\nPrefix: ' + attr_objct.prefix +
-						'\n**!**: *mandatory*, **@**: *optional*',
-						'#FF7F00',
-						[
-							{emote: 'Description', role: '*' + attr.super_description + '*', inline: false},
-							{emote: 'Arguments', role: '*' + attr.args + '*', inline: false}
-						]
-						));
-
-					message.channel.send(`${message.author}, I sent you a message`);
-					return;
-				}
-			}
-			// check if argument is variable
-			for (i = 0; i < vrbl_objct.variables.length; i++) {
-				let vrbl = vrbl_objct.variables[i]
-				if (vrbl.name === args[0]) {
-					message.author.send(create_rich_embed(
-						vrbl.name,
-						'Type: Variable' +
-						'\nPrefix: ' + vrbl_objct.prefix +
-						'\n**!**: *mandatory*, **@**: *optional*',
-						'#FF7F00',
-						[
-							{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
-							{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false }
-						]
-					));
-
-					message.channel.send(`${message.author}, I sent you a message`);
-					return;
-				}
-			}
-			// check if argument is structure
-			for (i = 0; i < strc_objct.structures.length; i++) {
-				let strc = strc_objct.structures[i]
-				if (strc.name === args[0]) {
-					message.author.send(create_rich_embed(
-						strc.name,
-						'Type: Structure' +
-						'\nPrefix: ' + strc_objct.prefix +
-						'\n**!**: *mandatory*, **@**: *optional*',
-						'#FF7F00',
-						[
-							{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
-							{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false }
-						]
-					));
-
-					message.channel.send(`${message.author}, I sent you a message`);
-					return;
-				}
-			}
-			message.author.send('**' + args[0] + '**, *does not exist in Portal™, you can always try **./help***');
-		}
-		message.channel.send(`${message.author}, I sent you a message`);
-		// Then we delete the cmd message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
-		//message.delete();
+		message_reply(true, message, `${message.author}, I sent you a private message`);
 		return;
 	}
 
@@ -686,6 +515,15 @@ client.on('message', async message => {
 		gmng.insert_guild(message.guild.id, portal_guilds, portal_managed_guilds_path);
 
 		update_portal_managed_guilds(true);
+		return;
+	}
+	
+	if (cmd === 'ping') {
+		// Calculates ping between sending a message and editing it, giving a nice round-trip latency.
+		// The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
+		const msg = await message.channel.send('Ping?');
+		msg.edit(`Pong!\nLatency of rtt is ${msg.createdTimestamp - message.createdTimestamp}ms.\n` +
+			`Latency to portal is ${client.ws.ping}ms`);
 		return;
 	}
 

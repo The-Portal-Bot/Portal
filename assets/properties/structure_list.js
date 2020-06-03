@@ -1,5 +1,39 @@
 module.exports =
 {
+	get_help: function () {
+		let strc_array = [];
+		for (i = 0; i < this.structures.length; i++) {
+			strc_array.push({
+				emote: this.structures[i].name,
+				role: '**desc**: *' + this.structures[i].description + '*' +
+					'\n**args**: *' + this.structures[i].args + '*',
+				inline: true
+			});
+		}
+		return create_rich_embed('Structures',
+			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'\n**!**: *mandatory*, **@**: *optional*',
+			'#FF7F00', strc_array);
+	},
+	get_help_super: function (check) {
+		for (i = 0; i < this.structures.length; i++) {
+			let strc = this.structures[i]
+			if (strc.name === check) {
+				return create_rich_embed(
+					strc.name,
+					'Type: Structure' +
+					'\nPrefix: ' + this.prefix +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#FF7F00',
+					[
+						{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
+						{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false }
+					]
+				)
+			}
+		}
+		return false;
+	},
 	prefix: '{{',
 	structures: [
 		{
