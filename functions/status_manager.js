@@ -1,14 +1,14 @@
-const games = require('../assets/status/game_list.json');
-const programs = require('../assets/status/program_list.json');
+const games = require('../assets/jsons/game_list.json');
+const programs = require('../assets/jsons/program_list.json');
 
 module.exports = {
-	status_aliases: function (current_statuses, locale) {
+	status_aliases: function (activities, locale) {
 		new_status = [];
 
-		current_statuses.forEach(status => {
+		activities.forEach(activitiy => {
 			let found = false;
 			for (l = 0; l < games.game_attributes.length; l++) {
-				if (status.name == games.game_attributes[l].status) {
+				if (activitiy.name == games.game_attributes[l].status) {
 					if (locale === 'gr') {
 						new_status.push(games.game_attributes[l].locale.gr);
 						found = true;
@@ -21,7 +21,7 @@ module.exports = {
 
 			if(!found) {
 				for (l = 0; l < programs.program_attributes.length; l++) {
-					if (status.name == programs.program_attributes[l].status) {
+					if (activitiy.name == programs.program_attributes[l].status) {
 						if (locale === 'gr') {
 							new_status.push(programs.program_attributes[l].locale.gr);
 							found = true;
@@ -33,7 +33,7 @@ module.exports = {
 				}
 			}
 			if(!found) {
-				new_status.push(status.name);
+				new_status.push(activitiy.name);
 			}
 		});
 
@@ -46,6 +46,7 @@ module.exports = {
 
 		voice_channel.members.forEach(member => {
 			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
+				console.log('member.presence.activities: ', member.presence.activities);
 				let status = this.status_aliases(member.presence.activities, voice_object.locale);
 				if (!array_of_statuses.includes(status)) {
 					array_of_statuses.push(status);
