@@ -107,13 +107,11 @@ is_url = function (message) {
 }
 
 // LISTENERS ------------------------------------------------------------------------------------ \\
-let previous_update = Date.now();
 
 //#endregion Listeners
 
 // This event will run if the bot starts, and logs in, successfully.
 client.on('ready', () => {
-	previous_update = Date.now();
 	console.log('Bot has started, with ' + client.users.cache.size +
 		' users, in ' + client.channels.cache.size +
 		' channels of ' + client.guilds.cache.size + ' guilds.');
@@ -178,7 +176,8 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 					guild_mngr.generate_channel_name(current_channel, current_portal_list);
 					current_voice_channel.last_update = Date.now();
 				} else {
-					console.log(`${(Date.now() - current_voice_channel.last_update)/1000/60}/5 minutes`);
+					console.log(`${Math.round(((Date.now() - current_voice_channel.last_update) / 1000 / 60))}m` +
+						`${Math.round(((Date.now() - current_voice_channel.last_update) / 1000) % 60)}s / 5m0s`);
 				}
 			}
 		}

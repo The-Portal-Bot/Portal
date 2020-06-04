@@ -186,7 +186,8 @@ module.exports =
 			super_description: '**last_update**, is the last time the channel name was updated',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_object) => {
-				return voice_object.last_update;
+				return `${Math.round(((Date.now() - voice_object.last_update) / 1000 / 60))}m` +
+					`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`
 			}
 		}
 	]
