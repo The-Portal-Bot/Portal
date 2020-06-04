@@ -19,7 +19,7 @@ module.exports =
 		return create_rich_embed('Attributes',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
-			'#FF7F00', attr_array);
+			'#FF5714', attr_array);
 	},
 	get_help_super: function (check) {
 		for (i = 0; i < this.attributes.length; i++) {
@@ -30,7 +30,7 @@ module.exports =
 					'Type: Attribute' +
 					'\nPrefix: ' + this.prefix +
 					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00',
+					'#FF5714',
 					[
 						{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + attr.args + '*', inline: false }

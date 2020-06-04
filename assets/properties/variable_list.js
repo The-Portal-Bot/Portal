@@ -1,4 +1,4 @@
-const object = require('./../../functions/object_retrievers.js');
+const rtrv = require('../../functions/status_manager');
 const moment = require('moment');
 
 module.exports =
@@ -22,7 +22,7 @@ module.exports =
 		return create_rich_embed('Variables',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
-			'#FF7F00', vrbl_array);
+			'#1BE7FF', vrbl_array);
 	},
 	get_help_super: function (check) {
 		for (i = 0; i < this.variables.length; i++) {
@@ -33,7 +33,7 @@ module.exports =
 					'Type: Variable' +
 					'\nPrefix: ' + this.prefix +
 					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00',
+					'#1BE7FF',
 					[
 						{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false }
@@ -174,7 +174,7 @@ module.exports =
 			super_description: '**status_list**, returns the list of all current members statuses.',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_object) => { 
-				return object.get_status_list(voice_channel, voice_object);
+				return rtrv.get_status_list(voice_channel, voice_object);
 			}
 		},
 		{
@@ -183,7 +183,7 @@ module.exports =
 			super_description: '**status_count**, returns the count of current member statuses.',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_object) => {
-				let status_list = object.get_status_list(voice_channel, voice_object);
+				let status_list = rtrv.get_status_list(voice_channel, voice_object);
 				if (typeof status_list === 'object' && status_list !== null) { return 0; }
 				else { status_list.length; }
 			}

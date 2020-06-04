@@ -18,7 +18,7 @@ module.exports = {
 					}
 				}
 			}
-			
+
 			if(!found) {
 				for (l = 0; l < programs.program_attributes.length; l++) {
 					if (status.name == programs.program_attributes[l].status) {
@@ -43,10 +43,8 @@ module.exports = {
 
 	get_status_list: function (voice_channel, voice_object) {
 		let array_of_statuses = [];
-		console.log('1array_of_statuses: ', array_of_statuses.length);
 
 		voice_channel.members.forEach(member => {
-			console.log(member.user.username, 'has activities: ', member.presence.activities);
 			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
 				let status = this.status_aliases(member.presence.activities, voice_object.locale);
 				if (!array_of_statuses.includes(status)) {
@@ -54,7 +52,7 @@ module.exports = {
 				}
 			}
 		});
-		console.log('2array_of_statuses: ', array_of_statuses.length);
+
 		if (array_of_statuses.length === 0) {
 			if (voice_object.locale === 'gr') {
 				array_of_statuses.push("Άραγμα");
@@ -63,7 +61,7 @@ module.exports = {
 			}
 		}
 	
-		console.log('\n\n\narray_of_statuses: ', array_of_statuses);
 		return array_of_statuses;
-}
+	}
+	
 };

@@ -19,7 +19,7 @@ module.exports =
 		return create_rich_embed('Structures',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
-			'#FF7F00', strc_array);
+			'#EEB902', strc_array);
 	},
 	get_help_super: function (check) {
 		for (i = 0; i < this.structures.length; i++) {
@@ -30,7 +30,7 @@ module.exports =
 					'Type: Structure' +
 					'\nPrefix: ' + this.prefix +
 					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00',
+					'#EEB902',
 					[
 						{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false }

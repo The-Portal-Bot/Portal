@@ -21,7 +21,7 @@ module.exports =
 		return create_rich_embed('Pipes',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
-			'#FF7F00', pipe_array);
+			'#6EEB83', pipe_array);
 	},
 	get_help_super: function (check) {
 		for (i = 0; i < this.pipes.length; i++) {
@@ -32,7 +32,7 @@ module.exports =
 					'Type: Pipe' +
 					'\nPrefix: ' + this.prefix +
 					'\n**!**: *mandatory*, **@**: *optional*',
-					'#FF7F00',
+					'#6EEB83',
 					[
 						{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + pipe.args + '*', inline: false }
