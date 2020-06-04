@@ -1,9 +1,57 @@
-const object = require('./../../functions/object_retrievers.js');
-
+const rtrv = require('../../functions/status_manager');
 const moment = require('moment');
 
 module.exports =
 {
+	is_variable: function (arg) {
+		for (i = 0; i < this.variables.length; i++)
+			if (String(arg).substring(1, (String(this.variables[i].name).length + 1)) == this.variables[i].name)
+				return this.variables[i].name;
+		return false;
+	},
+	get_help: function () {
+		let vrbl_array = [];
+		for (i = 0; i < this.variables.length; i++) {
+			vrbl_array.push({
+				emote: this.variables[i].name,
+				role: '**desc**: *' + this.variables[i].description + '*' +
+					'\n**args**: *' + this.variables[i].args + '*',
+				inline: true
+			});
+		}
+		return create_rich_embed('Variables',
+			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'\n**!**: *mandatory*, **@**: *optional*',
+			'#1BE7FF', vrbl_array);
+	},
+	get_help_super: function (check) {
+		for (i = 0; i < this.variables.length; i++) {
+			let vrbl = this.variables[i]
+			if (vrbl.name === check) {
+				return create_rich_embed(
+					vrbl.name,
+					'Type: Variable' +
+					'\nPrefix: ' + this.prefix +
+					'\n**!**: *mandatory*, **@**: *optional*',
+					'#1BE7FF',
+					[
+						{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
+						{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false }
+					]
+				)
+			}
+		}
+		return false;
+	},
+	get: function (voice_channel, voice_object, portal_object, vrbl) {
+		for (l = 0; l < this.variables.length; l++) {
+			if (vrbl === this.variables[l].name) {
+				return this.variables[l].get(voice_channel, voice_object, portal_object);
+			}
+		}
+		return -1;
+	},
+
 	prefix: '$',
 	variables: [
 		{
@@ -12,14 +60,15 @@ module.exports =
 			super_description: '**##**, returns the channel number in list with # in the front, if it was created first ' +
 				'it will display #1, if third #3, etc.',
 			args: 'none',
-			get: (guild, id, portal_list) => {
-				let voice_number = undefined;
-				portal_list.forEach(portal => {
-					portal.voice_list.forEach((voice, key) => {
-						if (voice.id === id) voice_number = '#' +(key + 1);
-					})
-				})
-				return voice_number;
+			get: (voice_channel, voice_object, portal_object) => {
+				let i = 0;
+				for (let key in portal_object) {
+					i++;
+					if (portal_object.voice_list[voice_channel.id] === voice_object) {
+						return '#' + i;
+					}
+				}
+				return '#' + '-1';
 			}
 		},{
 			name: '#',
@@ -27,14 +76,15 @@ module.exports =
 			super_description: '**#**, returns the channel number in list, if it was created first .'+
 			'it will display 1, if third 3, etc.',
 			args: 'none',
-			get: (guild, id, portal_list) => {
-				let voice_number = undefined;
-				portal_list.forEach(portal => {
-					portal.voice_list.forEach((voice, key) => {
-						if (voice.id === id) voice_number = key + 1;
-					})
-				})
-				return voice_number;
+			get: (voice_channel, voice_object, portal_object) => {
+				let i = 0;
+				for (let key in portal_object) {
+					i++;
+					if (portal_object[key].voice_list[voice_channel.id] === voice_object) {
+						return +i;
+					}
+				}
+				return +-1;
 			}
 		},
 		{
@@ -42,79 +92,100 @@ module.exports =
 			description: 'returns the full date: dd/mm/yyyy.',
 			super_description: '**date**, full date: dd/mm/yyyy.',
 			args: 'none',
-			get: () => { return moment().locale('gr').subtract(10, 'days').calendar(); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).subtract(10, 'days').calendar();
+			}
 		},
 		{
 			name: 'number_day',
 			description: 'returns the day number.',
 			super_description: '**number_day**, returns the day number.',
 			args: 'none',
-			get: () => { return moment().locale('gr').date(); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).date();
+			}
 		},
 		{
 			name: 'name_day',
 			description: 'returns the day name.',
 			super_description: '**name_day**, returns the day name.',
 			args: 'none',
-			get: () => { return moment().locale('gr').format('dddd'); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).format('dddd');
+			}
 		},
 		{
 			name: 'month',
 			description: 'returns the month.',
 			super_description: '**month**, returns the month.',
 			args: 'none',
-			get: () => { return moment().locale('gr').format('mmmm'); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).format('mmmm');
+			}
 		},
 		{
 			name: 'year',
 			description: 'returns the year.',
 			super_description: '**year**, returns the year.',
 			args: 'none',
-			get: () => { return moment().locale('gr').format('yyyy'); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).format('yyyy');
+			}
 		},
 		{
 			name: 'time',
 			description: 'full time: hh/mm/ss.',
 			super_description: '**time**, full time: hh/mm/ss.',
 			args: 'none',
-			get: () => { return moment().locale('gr').format('h:mm:ss'); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).format('h:mm:ss');
+			}
 		},
 		{
 			name: 'hour',
 			description: 'returns the hour in current time.',
 			super_description: '**hour**, returns the hour.',
 			args: 'none',
-			get: () => { return moment().locale('gr').format('h'); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).format('h');
+			}
 		},
 		{
 			name: 'minute',
 			description: 'returns the minute in current time.',
 			super_description: '**minute**, returns the minute.',
 			args: 'none',
-			get: () => { return moment().locale('gr').format('mm'); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).format('mm');
+			}
 		},
 		{
 			name: 'second',
 			description: 'returns the second in current time.',
 			super_description: '**second**, returns the second.',
 			args: 'none',
-			get: () => { return moment().locale('gr').format('ss'); }
+			get: (voice_channel, voice_object, portal_object) => {
+				return moment().locale(voice_object.locale).format('ss');
+			}
 		},
 		{
 			name: 'status_list',
 			description: 'returns the list of current member statuses.',
 			super_description: '**status_list**, returns the list of all current members statuses.',
 			args: 'none',
-			get: (guild, id, portal_list) => { return object.get_status_list(guild, id, portal_list) }
+			get: (voice_channel, voice_object, portal_object) => { 
+				return rtrv.get_status_list(voice_channel, voice_object);
+			}
 		},
 		{
 			name: 'status_count',
 			description: 'returns the count of current member statuses.',
 			super_description: '**status_count**, returns the count of current member statuses.',
 			args: 'none',
-			get: (guild, id) => { //check if he is in a voice channel of a portal 
-				if (typeof (object.get_status_list(guild, id)) !== 'object') { return 0; }
-				else { object.get_status_list(guild, id).length; }
+			get: (voice_channel, voice_object, portal_object) => {
+				let status_list = rtrv.get_status_list(voice_channel, voice_object);
+				if (typeof status_list === 'object' && status_list !== null) { return 0; }
+				else { status_list.length; }
 			}
 		},
 		{
@@ -122,21 +193,18 @@ module.exports =
 			description: 'returns the history of all the statuses.',
 			super_description: '**status_history**, returns the history of all the statuses.',
 			args: 'none',
-			get: () => { return 'no_yet_implemented' }
+			get: (voice_channel, voice_object, portal_object) => {
+				return 'no_yet_implemented'
+			}
 		},
 		{
 			name: 'member_list',
 			description: 'returns the currently played games.',
 			super_description: '**member_list**, returns the currentstatuses.',
 			args: 'none',
-			get: (guild, id) => {
+			get: (voice_channel, voice_object, portal_object) => {
 				let mmbr_lst = [];
-				guild.channels.forEach(channel => {
-					if (channel.id === id)
-						channel.members.forEach(member => {
-							mmbr_lst.push(member.displayName);
-						});
-				});
+				voice_channel.members.forEach(member => { mmbr_lst.push(member.displayName); });
 				return mmbr_lst;
 			}
 		},
@@ -145,12 +213,8 @@ module.exports =
 			description: 'returns number of members in channel.',
 			super_description: '**member_count**, returns the number of members in channel.',
 			args: 'none',
-			get: (guild, id) => {
-				let cnt = undefined;
-				guild.channels.forEach(channel => {
-					if (channel.id === id) cnt = channel.members.size;
-				})
-				return cnt;
+			get: (voice_channel, voice_object, portal_object) => {
+				return voice_channel.members.size;
 			}
 		},
 		{
@@ -158,13 +222,11 @@ module.exports =
 			description: 'returns number of members with a status.',
 			super_description: '**member_with_status**, returns the number of members with a status.',
 			args: 'none',
-			get: (guild, id) => {
+			get: (voice_channel, voice_object, portal_object) => {
 				let cnt = 0;
-				guild.channels.forEach(channel => {
-					if (channel.id === id)
-						channel.members.forEach((member) => {
-							if (member.presence.game !== null) cnt++;
-						})
+				voice_channel.members.forEach((member) => {
+					if (member.presence.game !== null)
+						cnt++;
 				})
 				return cnt;
 			}
@@ -174,18 +236,17 @@ module.exports =
 			description: 'returns a list of all members that have connected to the channel.',
 			super_description: '**member_history**, returns a list of all members that have connected to the channel.',
 			args: 'none',
-			get: () => { return 'no_yet_implemented' }
+			get: (voice_channel, voice_object, portal_object) => {
+				return 'no_yet_implemented'
+			}
 		},
 		{
 			name: 'creator_portal',
 			description: 'returns the creator of current voice channel\'s portal.',
 			super_description: '**creator_portal**, returns the creator of current voice channel\'s portal.',
 			args: 'none',
-			get: (guild, id, portal_list) => {
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].creator_id;
+			get: (voice_channel, voice_object, portal_object) => {
+				return portal_object.creator_id;
 			}
 		},
 		{
@@ -193,12 +254,8 @@ module.exports =
 			description: 'returns the creator of current voice channel.',
 			super_description: '**creator_voice**, returns the creator of current voice channel.',
 			args: 'none',
-			get: (guild, id, portal_list) => {
-				console.log('portal_list: ', portal_list);
-				for (i = 0; i < portal_list.length; i++)
-					for (j = 0; j < portal_list[i].voice_list.length; j++)
-						if (id === portal_list[i].voice_list[j].id)
-							return portal_list[i].voice_list[j].creator_id;
+			get: (voice_channel, voice_object, portal_object) => {
+				return voice_object.creator_id;
 			}
 		}
 	]

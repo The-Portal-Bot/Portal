@@ -4,15 +4,17 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "discord.js": "^11.6.4",
+    "discord.js": "^12.2.0",
     "file-system": "^2.2.2",
     "moment": "^2.25.3",
     "voca": "^1.4.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "eslint": "^7.1.0",
+    "nodemon": "^2.0.4"
   }
 }
