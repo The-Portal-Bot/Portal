@@ -1,18 +1,22 @@
-const fs = require('file-system');
+const file_system = require('file-system');
+
 const portal_managed_guilds_path = "./server_storage/guild_list.json";
+const config = require('./config.json'); // config.token / config.prefix
 
-const guild_mngr = require('./functions/guild_manager');
+const lclz_mngr = require('./functions/localization_manager');
+const guld_mngr = require('./functions/guild_manager');
 
-const func_objct = require('./assets/properties/function_list');
-const vrbl_objct = require('./assets/properties/variable_list');
-const pipe_objct = require('./assets/properties/pipe_list');
-const attr_objct = require('./assets/properties/attribute_list');
-const strc_objct = require('./assets/properties/structure_list');
+let active_cooldowns = new Array();
+const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 10 }];
+const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
+{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }];
+const uncooldownable = ['help', 'ping', 'portal', 'run', 'set'];
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
-let portal_managed_guilds = fs.readFileSync(portal_managed_guilds_path);
+let portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
 let portal_guilds = JSON.parse(portal_managed_guilds);
+// var polyglot = new Polyglot();
 
 // Load up the discord.js library
 const Discord = require('discord.js');
@@ -21,13 +25,9 @@ const Discord = require('discord.js');
 // it 'self', client.user is actually the presence of portal bot in the server
 const client = new Discord.Client();
 
-// config.token contains the bot's token
-// config.prefix contains the message prefix.
-const config = require('./config.json');
-
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-create_rich_embed = function (title, description, colour, field_array) {
+create_rich_embed = function (title, description, colour, field_array, thumbnail) {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/portal-discord-bot/' +
 		'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2';
 	const keybraker_url = 'https://github.com/keybraker';
@@ -40,7 +40,10 @@ create_rich_embed = function (title, description, colour, field_array) {
 		.setDescription(description)
 		.setTimestamp()
 		.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
-			
+		
+	if(thumbnail) {
+		rich_message.setThumbnail(thumbnail)
+	}
 	field_array.forEach(row => {
 		if (row.emote === '') {
 			// rich_message.addBlankField();
@@ -55,7 +58,7 @@ create_rich_embed = function (title, description, colour, field_array) {
 channel_clean_up = function (channel, current_guild) {
 	if (current_guild.channels.cache.some((guild_channel) => {
 		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
-			guild_mngr.delete_voice_channel(guild_channel, portal_guilds[current_guild.id].portal_list);
+			guld_mngr.delete_voice_channel(guild_channel, portal_guilds[current_guild.id].portal_list);
 			return true;
 		}
 	}));
@@ -80,16 +83,27 @@ update_portal_managed_guilds = function (force) {
 	console.log('updating guild json');
 
 	setTimeout(function () {
-		if (force) fs.writeFileSync(portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8');
-		else fs.writeFile(portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8');
+		if (force) file_system.writeFileSync(portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8');
+		else file_system.writeFile(portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8');
 	}, 1000);
 }
 
-message_reply = function (status, msg, str) {
-	msg.channel.send(str).then(msg => { msg.delete({ timeout: 3000 }) })
-	if (status) {
+message_reply = function (status, channel, msg, user, str) {
+	msg.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }) });
+
+
+		// console.log('client.voice.connections : ', client.voice.connections);
+	// console.log('client.voice.connections.size : ' + client.voice.connections.size);
+	// client.voice.connections.forEach(element => {
+	// 		console.log('element.channnel.id: ', element.channnel.id);
+	// 	});
+	// 	client.voice.connections.find(connection => connection.channel === channel)
+	// 		.play(say.speak(str))
+	// 		.catch(error.log);
+	
+	if (status === true) {
 		msg.react('✔️');
-	} else { 
+	} else if (status === false) {
 		msg.react('❌');
 	}
 }
@@ -109,176 +123,71 @@ is_url = function (message) {
 // LISTENERS ------------------------------------------------------------------------------------ \\
 
 //#endregion Listeners
-
-// This event will run if the bot starts, and logs in, successfully.
-client.on('ready', () => {
-	console.log('Bot has started, with ' + client.users.cache.size +
-		' users, in ' + client.channels.cache.size +
-		' channels of ' + client.guilds.cache.size + ' guilds.');
-	// Changing Portal bots status
-	client.user.setActivity('./help', { url: 'https://github.com/keybraker', type: 'LISTENING' });
-	client.guilds.cache.forEach(guild => { portal_init(guild); })
-});
-
-client.on('shardReconnecting', id => 
-	console.log(`Shard with ID ${id} reconnected.`)
+client.on('ready', () => // This event will run if the bot starts, and logs in, successfully.
+	require(`./events/ready.js`)(
+		{ 'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
+	)
+		.then(rspns => {
+			if (rspns.result) {
+				console.log(rspns.value)
+			}
+		})
 );
 
-// This event triggers when the bot joins a guild.
-client.on('guildCreate', guild => {
-
-	// Inserting guild to portal's guild list if it does not exist
-	if (!guild_mngr.included_in_guild_list(guild.id, portal_guilds))
-		guild_mngr.insert_guild(guild.id, portal_guilds, portal_managed_guilds_path);
-	update_portal_managed_guilds(true);
-
-	console.log('Portal joined guild: ' + guild.name
-		+ ' (id: + ' + guild.id
-		+ ').\nThis guild has + '
-		+ guild.memberCount + ' members!');
-	// Changing Portal bots status 
-	client.user.setActivity('./portal channel', { type: 'LISTENING' });
-});
-
-// this event triggers when the bot is removed from a guild.
-client.on('guildDelete', guild => {
-	guild_mngr.delete_guild(guild.id, portal_guilds);
-	update_portal_managed_guilds(true);
-
-	console.log('Portal has been removed from: ${guild.name} (id: ${guild.id})');
-	client.user.setActivity('Serving ${client.guilds.cache.size} servers');
-});
-
-// This event triggers when the status of a guild member has changed
-client.on('presenceUpdate', (oldPresence, newPresence) => {
-	if (!guild_mngr.included_in_portal_guilds(newPresence.guild.id, portal_guilds)) {
-		console.log(
-			newPresence.member.displayName +
-			', who is a member of a handled server,' +
-			' has changed presence, but is in another server ('+
-			newPresence.guild.name + ')');
-		return;
-	}
-
-	console.log(
-		newPresence.member.displayName +
-		', has changed presence, in controlled server (' +
-		newPresence.guild.name + ')');
-
-	let current_guild = newPresence.guild;
-	let current_channel = newPresence.member.voice.channel;
-
-	if (current_channel) { // if member is in a channel
-		let current_portal_list = portal_guilds[current_guild.id].portal_list;
-		for (let key in portal_guilds[current_guild.id].portal_list) {
-			if (current_voice_channel = current_portal_list[key].voice_list[current_channel.id]) {
-				if ((Date.now() - current_voice_channel.last_update) >= 300000) {
-					guild_mngr.generate_channel_name(current_channel, current_portal_list);
-					current_voice_channel.last_update = Date.now();
-				} else {
-					console.log(`${Math.round(((Date.now() - current_voice_channel.last_update) / 1000 / 60))}m` +
-						`${Math.round(((Date.now() - current_voice_channel.last_update) / 1000) % 60)}s / 5m0s`);
-				}
+client.on('shardReconnecting', id =>
+	require(`./events/shardReconnecting.js`)(
+		{ 'id': id }
+	)
+		.then(rspns => {
+			if (rspns.result) {
+				console.log(rspns.value)
 			}
-		}
-	}
+		})
+);
 
-	return;
-});
-
-// This event triggers when a member joins or leaves a voice channel
-client.on('voiceStateUpdate', (oldState, newState) => {
-	let newChannel = newState.channel; // join channel
-	let oldChannel = oldState.channel; // left channel
-
-	console.log('from: ' + oldChannel + ' to ' + newChannel);
-
-	if (oldChannel === null && newChannel !== null) { // Joined from null
-		console.log('null->existing');
-
-		if (guild_mngr.included_in_portal_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // user joined portal channel
-			guild_mngr.create_voice_channel(newState, portal_guilds[newState.guild.id].portal_list[newChannel.id], newState.id);
-			guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
-		} else if (guild_mngr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // user joined voice channel
-			guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
-		}
-	} else if (newChannel === null && oldChannel !== null) { // Left to null
-		console.log('existing->null');
-
-		if (guild_mngr.included_in_portal_list(oldChannel.id, portal_guilds[newState.guild.id].portal_list)) { // user left portal channel this part is handled before
-		} else if (guild_mngr.included_in_voice_list(oldChannel.id, portal_guilds[newState.guild.id].portal_list)) { // user left voice channel
-			if (oldChannel.members.size === 0) {
-				guild_mngr.delete_voice_channel(oldChannel, portal_guilds[newState.guild.id].portal_list);
+client.on('guildDelete', guild => // This event triggers when the bot joins a guild.
+	require(`./events/guildCreate.js`)(
+		{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
+	)
+		.then(rspns => {
+			if (rspns.result) {
+				console.log(rspns.value)
 			}
-		}
-	} else if (newChannel !== null && oldChannel !== null) { // Moved from channel to channel
-		console.log('existing->existing');
+		})
+);
 
-		if (guild_mngr.included_in_portal_list(oldChannel.id, portal_guilds[newState.guild.id].portal_list)) {
-			console.log('->source: portal_list');
-
-			if (guild_mngr.included_in_portal_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // this should not happen
-				console.log('->dest: portal_list');
-				console.log('this should not happen error: portal_channel->portal_channel');
-			} else if (guild_mngr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // has been checked before
-				console.log('->dest: voice_list');
-				console.log('has been checked before');
-				guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
-			} else { // Left portal channel and joined another unknown
-				console.log('->dest: unknown');
-				guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
+client.on('guildCreate', guild => // this event triggers when the bot is removed from a guild.
+	require(`./events/guildDelete.js`)(
+		{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
+	)
+		.then(rspns => {
+			if (rspns.result) {
+				console.log(rspns.value)
 			}
-		} else if (guild_mngr.included_in_voice_list(oldChannel.id, portal_guilds[newState.guild.id].portal_list)) {
-			console.log('->source: voice_list');
+		})
+);
 
-			if (guild_mngr.included_in_portal_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // left created channel and joins portal
-				console.log('->dest: portal_list');
-
-				if (oldChannel.members.size === 0) {
-					guild_mngr.delete_voice_channel(oldChannel, portal_guilds[newState.guild.id].portal_list);
-				}
-				guild_mngr.create_voice_channel(newState, portal_guilds[newState.guild.id].portal_list[newChannel.id], newState.id);
-				guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
-			} else if (guild_mngr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // Left created channel and joins another created
-				console.log('->dest: voice_list');
-
-				if (oldChannel.members.size === 0) {
-					guild_mngr.delete_voice_channel(oldChannel, portal_guilds[newState.guild.id].portal_list);
-				}
-				guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
-			} else { // Left created channel and joins another unknown
-				console.log('->dest: unknown');
-
-				if (oldChannel.members.size === 0) {
-					guild_mngr.delete_voice_channel(oldChannel, portal_guilds[newState.guild.id].portal_list);
-				}
-				guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
+client.on('presenceUpdate', (oldPresence, newPresence) => // This event triggers when the status of a guild member has changed
+	require(`./events/presenceUpdate.js`)(
+		{ 'newPresence': newPresence, 'portal_guilds': portal_guilds }
+	)
+		.then(rspns => {
+			if (rspns.result) {
+				console.log(rspns.value)
 			}
-		} else {
-			console.log('->source: unknown voice');
+		})
+);
 
-			if (guild_mngr.included_in_portal_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // Joined portal channel
-				console.log('->dest: portal_list');
-
-				guild_mngr.create_voice_channel(newState, portal_guilds[newState.guild.id].portal_list[newChannel.id], newState.id);
-				guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
+client.on('voiceStateUpdate', (oldState, newState) => // This event triggers when a member joins or leaves a voice channel
+	require(`./events/voiceStateUpdate.js`)(
+		{ 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds }
+	)
+		.then(rspns => {
+			if (rspns.result) {
+				console.log(rspns.value)
 			}
-			else if (guild_mngr.included_in_voice_list(newChannel.id, portal_guilds[newState.guild.id].portal_list)) { // left created channel and joins another created
-				console.log('->dest: voice_list');
-
-				guild_mngr.generate_channel_name(newChannel, portal_guilds[newState.guild.id].portal_list);
-			}
-		}
-	} else if (newChannel === null && oldChannel === null) {
-		console.log('null->null');
-	} else {
-		console.log('don\'t know how we got here');
-	}
-	update_portal_managed_guilds(true);
-	console.log('');
-
-	return;
-})
+		})
+);
 //#endregion
 
 // MESSAGE LISTENER ----------------------------------------------------------------------------- \\
@@ -307,242 +216,112 @@ client.on('message', async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
 
-	if (cmd === 'portal') {
-		if (args.length === 2) {
-			guild_mngr.create_portal_channel(message.guild, args[0], args[1],
-				portal_guilds[message.guild.id].portal_list, message.member.id);
-		} else if (args.length === 1) {
-			guild_mngr.create_portal_channel(message.guild, args[0], null,
-				portal_guilds[message.guild.id].portal_list, message.member.id);
+	if (command_obj = guild_cooldownable.find(cool => cool.command === cmd)) {
+		if (member_obj = active_cooldowns.find(cool => cool.member === message.guild.id && cool.command === command_obj.command)) {
+			const time_elapsed = Date.now() - member_obj.timestamp;
+			const timeout_time = command_obj.timeout * 60 * 1000;
+			const time_remaining = timeout_time - time_elapsed;
+
+			const remaining_min = Math.round((time_remaining / 1000 / 60) - 1);
+			const remaining_sec = Math.round((time_remaining / 1000) % 60);
+
+			message_reply(
+				false,
+				message.author.presence.member.voice.channel,
+				message,
+				message.author,
+				`${message.author} you need to wait ${remaining_min}m${remaining_sec}s/${command_obj.timeout}m0s ` +
+				`to use ${command_obj.command} again as it was used again in ${message.guild.name}.`);
+
 		} else {
-			message_reply(false, message, '**' + config.prefix + 'portal <channel_name> <category_name>**\n' +
-				'*(channel_name: mandatory, category_name: optional)*');
-		}
-
-		message_reply(true, message, '*Keep in mind that after Discord\'s update* ' +
-			'**channel names can be update twice per 10 minutes**');
-		update_portal_managed_guilds(true);
-		return;
-	}
-
-	if (cmd === 'help') {
-		if (args.length === 0) {			
-			message.author.send(func_objct.get_help()).catch(console.error);
-			message.author.send(vrbl_objct.get_help()).catch(console.error);
-			message.author.send(pipe_objct.get_help()).catch(console.error);
-			message.author.send(attr_objct.get_help()).catch(console.error);
-			message.author.send(strc_objct.get_help()).catch(console.error);
-		} else if (args.length === 1) {
-			if (args[0] === 'func') {
-				message.author.send(func_objct.get_help()).catch(console.error);
-			} else if (args[0] === 'vrbl') {
-				message.author.send(vrbl_objct.get_help()).catch(console.error);
-			} else if (args[0] === 'pipe') {
-				message.author.send(pipe_objct.get_help()).catch(console.error);
-			} else if (args[0] === 'attr') {
-				message.author.send(attr_objct.get_help()).catch(console.error);
-			} else if (args[0] === 'strc') {
-				message.author.send(strc_objct.get_help()).catch(console.error);
-			} else if(func_detailed = func_objct.get_help_super(args[0])) {
-				message.author.send(func_detailed).catch(console.error);
-			} else if (vrbl_detailed = vrbl_objct.get_help_super(args[0])) {
-				message.author.send(vrbl_detailed).catch(console.error);
-			} else if (pipe_detailed = pipe_objct.get_help_super(args[0])) {
-				message.author.send(pipe_detailed).catch(console.error);
-			} else if (attr_detailed = attr_objct.get_help_super(args[0])) {
-				message.author.send(attr_detailed).catch(console.error);
-			} else if (strc_detailed = strc_objct.get_help_super(args[0])) {
-				message.author.send(strc_detailed).catch(console.error);
-			} else {
-				message_reply(false, message, `**${args[0]}**, *does not exist in Portal™,` +
-					`you can always try **./help***`);
-				return;
-			}
-		}
-		message_reply(true, message, `${message.author}, I sent you a private message`);
-		return;
-	}
-
-	if (cmd === 'run') {
-		let current_voice = message.member.voice;
-		let current_portal_list = portal_guilds[message.guild.id].portal_list;
-
-		if (current_voice === null){
-			message_reply(false, message, '*You must be in a channel handled by* **Portal™** *to run commands*');
-			return;
-		} else if (!guild_mngr.included_in_voice_list(current_voice.channelID, current_portal_list)) {
-			message_reply(false, message, '*The channel you are in is not handled by* **Portal™**');
-			return;
-		}
-
-		for (let key in current_portal_list) {
-			if (current_portal_list[key].voice_list[current_voice.channelID]) {
-				message.channel.send('executing: ' + args.join(' '))
-					.then(sentMessage => {
-						sentMessage.edit(
-							guild_mngr.regex_interpreter(
-								args.join(' '),
-								current_voice.channel,
-								current_portal_list[key].voice_list[current_voice.channelID],
-								current_portal_list[key]
-							)
-						);
-					});
-			}
-		}
-
-		message.react('✔️');
-		return;
-	}
-
-	if (cmd === 'set') { // set attributes
-		current_portal_list = portal_guilds[message.guild.id].portal_list;
-
-		if (message.member.voice.channelID === undefined) {
-			message_reply(false, message, '*You must be in a channel handled by* **Portal™** *to set attributes*');
-		} else if (!guild_mngr.included_in_voice_list(message.member.voice.channelID, current_portal_list)) {
-			message_reply(false, message, '*The channel you are in is not handled by* **Portal™**');
-		} else if (args.length > 1) { // check for type accuracy and make better
-			
-			for (let portal_key in current_portal_list) {
-				for (let voice_key in current_portal_list[portal_key].voice_list) {
-					if (voice_key === message.member.voice.channelID) {
-						let current_voice_channel = current_portal_list[portal_key].voice_list[voice_key]
-						let current_portal_channel = current_portal_list[portal_key]
-						if (message.member.id === current_voice_channel.creator_id) {
-							let return_value = attr_objct.set(
-								message.member.voice.channel, 
-								current_voice_channel,
-								current_portal_channel,
-								args[0],
-								args[1]
-							);
-
-							if (return_value === 1)
-								message_reply(true, message, '**Attribute ' + args[0] + ' updated successfully**');
-							else if (return_value === -1)
-								message_reply(false, message, '**Attribute ' + args[0] + ' is read only**');
-							else if (return_value === -2)
-								message_reply(false, message, '**' + args[0] + ' is not an attribute**');
-						} else {
-							message_reply(false, message, '**Only the channel creator can change attributes**');
+			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+				.then(rspns => {
+					if (rspns === true) {
+						active_cooldowns.push({ member: message.guild.id, command: command_obj.command, timestamp: Date.now() });
+						setTimeout(() => {
+							active_cooldowns = active_cooldowns.filter(cool =>
+								cool.member !== message.guild.id && cool.command !== command_obj.command);
+						}, command_obj.timeout * 60 * 1000);
+					} else if (rspns !== false) {
+						if (rspns.result === true) {
+							active_cooldowns.push({ member: message.guild.id, command: command_obj.command, timestamp: Date.now() });
+							setTimeout(() => {
+								active_cooldowns = active_cooldowns.filter(cool =>
+									cool.member !== message.guild.id && cool.command !== command_obj.command);
+							}, command_obj.timeout * 60 * 1000);
 						}
+						message_reply(
+							rspns.result,
+							message.author.presence.member.voice.channel,
+							message,
+							message.author,
+							rspns.value);
 					}
+				});
+			update_portal_managed_guilds(true);
+		}
+	} else if (command_obj = member_cooldownable.find(cool => cool.command === cmd)) {
+		if (member_obj = active_cooldowns.find(cool => cool.member === message.author.id && cool.command === command_obj.command)) {
+			const time_elapsed = Date.now() - member_obj.timestamp;
+			const timeout_time = command_obj.timeout * 60 * 1000;
+			const time_remaining = timeout_time - time_elapsed;
+
+			const remaining_min = Math.round((time_remaining / 1000 / 60) - 1);
+			const remaining_sec = Math.round((time_remaining / 1000) % 60);
+
+			message_reply(
+				false,
+				message.author.presence.member.voice.channel,
+				message,
+				message.author,
+				`${message.author} you need to wait ${remaining_min}m${remaining_sec}s/${command_obj.timeout}m0s ` +
+				`to use ${command_obj.command} again.`);
+
+		} else {
+			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+				.then(rspns => {
+					if (rspns === true) {
+						active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
+						setTimeout(() => {
+							active_cooldowns = active_cooldowns.filter(cool =>
+								cool.member !== message.author.id && cool.command !== command_obj.command);
+						}, command_obj.timeout * 60 * 1000);
+					} else if (rspns !== false) {
+						if (rspns.result === true) {
+							active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
+							setTimeout(() => {
+								active_cooldowns = active_cooldowns.filter(cool =>
+									cool.member !== message.author.id && cool.command !== command_obj.command);
+							}, command_obj.timeout * 60 * 1000);
+						}
+						message_reply(
+							rspns.result,
+							message.author.presence.member.voice.channel,
+							message,
+							message.author,
+							rspns.value);
+					}
+				});
+			update_portal_managed_guilds(true);
+		}
+	} else if (uncooldownable.includes(cmd)) {
+		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+			.then(rspns => { 
+				if(rspns) {
+					message_reply(
+						rspns.result,
+						message.author.presence.member.voice.channel,
+						message,
+						message.author,
+						rspns.value);
 				}
-			}
-
-		}
+			});
 		update_portal_managed_guilds(true);
-		return;
-	}
-
-	if (cmd === 'url') {
-		if (args.length === 2) {
-			guild_mngr.create_url_channel(message.guild, args[0], args[1], portal_guilds[message.guild.id].url_list);
-			message.react('✔️');
-		} else if (args.length === 1) {
-			guild_mngr.create_url_channel(message.guild, args[0], null, portal_guilds[message.guild.id].url_list);
-			message.react('✔️');
-		} else {
-			message_reply(false, message, '**' + config.prefix + 'url <channel_name> <category_name>**\n' +
-				'*(channel_name: mandatory, category_name: optional)*');
-		}
-		update_portal_managed_guilds(true);
-	}
-
-	if (cmd === 'role_giver') {
-		let roles = [];
-		message.guild.roles.cache.forEach(role => { roles.push({role}); });
-
-		if (args.length > 0) {
-			try {
-				role_map = JSON.parse(args.join(' '));
-			} catch(error) {
-				message.channel.send('Roles must be in JSON format for more info ./help role_giver');
-				return;
-			}
-			role_emb = [];
-			role_emb_prnt = [];
-
-			role_emb_prnt.push(
-				{ emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false }
-			);
-			for (let i = 0; i < role_map.length; i++) {
-				role_emb_prnt.push(
-					{ emote: role_map[i].emote_give, role: role_map[i].role, inline: true }
-				);
-				role_emb.push(
-					{ emote: role_map[i].emote_give, role: role_map[i].role, inline: true }
-				);
-			}
-			role_emb_prnt.push(
-				{ emote: '', role: '', inline: false },
-				{ emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false }
-			);
-			for (let i = 0; i < role_map.length; i++) {
-				role_emb_prnt.push(
-					{ emote: role_map[i].emote_strip, role: role_map[i].role, inline: true }
-				);
-				role_emb.push(
-					{ emote: role_map[i].emote_strip, role: role_map[i].role, inline: true }
-				);
-			}
-			guild_mngr.create_role_message(message, portal_guilds[message.guild.id]['role_list'],
-				'Portal Role Assigner', '', '#FF7F00', role_emb_prnt);
-			message.react('✔️');
-		} else {
-			message_reply(false, message, '**' + config.prefix + 'role !role1->:emote: !role2->:emote: ...**');
-		}
-
-		update_portal_managed_guilds(true);
-		return;
-	}
-
-	//testing processes
-	if (cmd === 'purge') {
-		message.guild.channels.cache.forEach((value) => {
-			if (value.deletable)
-				value.delete()
-					.then(channel => console.log('Deleted the channel: ' + channel))
-					.catch(console.error);
-		})
-
-		message.guild.channels.create('general voice', { type: 'voice' }, { bitrate: 8 })
-			.then(
-				message.guild.channels.create('general text', { type: 'text' })
-					.then(value => {
-						value.send('**PURGE DONE**')
-					})
-			)
-
-		guild_mngr.delete_guild(message.guild.id, portal_guilds);
-		guild_mngr.insert_guild(message.guild.id, portal_guilds, portal_managed_guilds_path);
-
-		update_portal_managed_guilds(true);
-		return;
-	}
-	
-	if (cmd === 'ping') {
-		const msg = await message.channel.send('Ping?');
-		msg.edit(`Pong!\nLatency of rtt is ${msg.createdTimestamp - message.createdTimestamp}ms.\n` +
-			`Latency to portal is ${client.ws.ping}ms`);
-		return;
-	}
-
-	if (cmd === 'save') {
-		console.log('SAVE: ', portal_guilds);
-		update_portal_managed_guilds(true);
-		return;
-	}
-
-	if (cmd === 'force_update')
-	{
-
 	}
 
 });
 //#region 
 client.login(config.token);
 
-		// console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
-		// console.log('Object.getOwnPropertyNames(message.author)= ', Object.getOwnPropertyNames(message.author))
+// console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
+// console.log('Object.getOwnPropertyNames(message.author)= ', Object.getOwnPropertyNames(message.author))

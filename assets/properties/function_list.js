@@ -107,6 +107,27 @@ module.exports =
 			description: 'returns round trip latency',
 			super_description: '**ping**, returns the latency of portal bot.',
 			args: 'none'
+		},
+		{
+			name: 'join',
+			description: 'joins the caller\'s voice channel.',
+			super_description: '**join**, joins the caller\'s voice channel. Makes announcements about people that ' +
+				'left and people that joined, and talks loudly every response',
+			args: 'none'
+		},
+		{
+			name: 'leave',
+			description: 'leaves the voice channel portal is currently in',
+			super_description: '**leave**, leaves the voice channel portal is currently in.',
+			args: 'none'
+		},
+		{
+			name: 'force',
+			description: 'creates a new channel and moves all users to new channel',
+			super_description: '**ping**, creates a new channel and moves all users to new channel, ' + 
+				'in order to get a new channel name if cooldown is still in effect.',
+			args: 'none'
 		}
+		
 	]
 }

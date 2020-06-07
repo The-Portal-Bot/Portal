@@ -71,7 +71,7 @@ module.exports =
 					creator_id, json_portal.regex_voice,
 					false, 0, 0, 'gr', 1, Date.now()
 				);
-				if (state.channel.parentID !== null) {
+				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
 					channel.setParent(state.channel.parentID);
 				}
 				state.member.voice.setChannel(channel);
@@ -142,14 +142,19 @@ module.exports =
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
 				let new_name = this.regex_interpreter(voice_object.regex, voice_channel, voice_object, portal_object);
-				voice_channel.edit({ name: new_name })
-					.then(newChannel => console.log(
-						`Voice's new name from promise is ${newChannel.name}`))
-					.catch(console.log);
-				return;
+				if(voice_channel.name !== new_name) {
+					voice_channel.edit({ name: new_name })
+						.then(newChannel => console.log(
+							`Voice's new name from promise is ${newChannel.name}`))
+						.catch(console.log);
+						return true;
+				} else {
+					return false;
+				}
 			}
 		}
 		console.log('did not find channel');
+		return false;
 	}
 	,
 
