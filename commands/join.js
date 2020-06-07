@@ -1,4 +1,4 @@
-const guld_mngr = require('./functions/guild_manager');
+const guld_mngr = require('./../functions/guild_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
     let error_message = null;
@@ -12,7 +12,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
                 message.member.voice.channel.join()
                     .then(connection => {
-                        console.log('I WILL CONNECT TO CONNECTION: ', connection);
                         say_voice = connection;
                         say_voice.play('./assets/mp3s/cheers.mp3');
                         // client.voice.connections.find(connection => connection.channel.id === message.member.voice.channel.id)
@@ -23,20 +22,20 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
                 // message.member.voice.channel.leave();
             } else {
                 return {
-                    response: false, value: 'I can only connect to my channels.'
+                    result: false, value: `I can only connect to my channels.`
                 };
             }
         } else {
             return {
-                response: false, value: 'Your current channel is on another guild.'
+                result: false, value: `Your current channel is on another guild.`
             };
         }
     } else {
         return {
-            response: false, value: 'You are not connected to any channel.'
+            result: false, value: `You are not connected to any channel.`
         };
     }
     return {
-        response: true, value: '**Joined voice channel successfully.**'
+        result: true, value: `**Cheers love! The cavalry\'s here!**`
     };
 }

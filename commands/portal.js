@@ -9,12 +9,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
             portal_guilds[message.guild.id].portal_list, message.member.id);
     } else {
         return {
-            response: false, value: '**You can run "./help portal" for help.**'
+            result: false, value: '**You can run "./help portal" for help.**'
         };
     }
     
     return {
-        response: true, value: '*Keep in mind that after Discord\'s update*, ' +
+        result: true, value: '*Keep in mind that after Discord\'s update*, ' +
             '**channel names can be updated twice per ten minutes**'
     };
 }

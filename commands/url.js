@@ -9,10 +9,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         message.react('✔️');
     } else {
         return {
-            response: false, value: '**You can run "./help url" for help.**'
+            result: false, value: '**You can run "./help url" for help.**'
         };
     }
     return {
-        response: true, value: '**Url channel has been created.**'
+        result: true, value: '**Url channel has been created.**'
     };
 }

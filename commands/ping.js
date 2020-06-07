@@ -3,6 +3,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
     msg.edit(`Pong!\nLatency of rtt is ${msg.createdTimestamp - message.createdTimestamp}ms.\n` +
         `Latency to portal is ${client.ws.ping}ms`);
     return {
-        response: true, value: '**Ping ran successfully.**'
+        result: true, value: '**Ping ran successfully.**'
     };
 }

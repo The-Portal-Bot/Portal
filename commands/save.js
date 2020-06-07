@@ -4,6 +4,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
     update_portal_managed_guilds(true);
     
     return {
-        response: true, value: '**Update portal guild json.**'
+        result: true, value: '**Update portal guild json.**'
     };
 }

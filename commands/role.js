@@ -42,11 +42,11 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         message.react('✔️');
     } else {
         return {
-            response: false, value: '**You can run "./help role" for help.**'
+            result: false, value: '**You can run "./help role" for help.**'
         };
     }
 
     return {
-        response: true, value: '**Role giver message has been created.**'
+        result: true, value: '**Role giver message has been created.**'
     };
 }

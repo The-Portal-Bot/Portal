@@ -6,11 +6,11 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
     
     if (message.member.voice.channelID === undefined) {
         return {
-            response: false, value: '*You must be in a channel handled by* **Portal™** *to set attributes*'
+            result: false, value: '*You must be in a channel handled by* **Portal™** *to set attributes*'
         };
     } else if (!guld_mngr.included_in_voice_list(message.member.voice.channelID, current_portal_list)) {
         return {
-            response: false, value: '*The channel you are in is not handled by* **Portal™**'
+            result: false, value: '*The channel you are in is not handled by* **Portal™**'
         };
     } else if (args.length > 1) { // check for type accuracy and make better
         for (let portal_key in current_portal_list) {
@@ -29,20 +29,20 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
                         if (return_value === 1) {
                             return {
-                                response: true, value: '**Attribute ' + args[0] + ' updated successfully**'
+                                result: true, value: '**Attribute ' + args[0] + ' updated successfully**'
                             };
                         } else if (return_value === -1) {
                             return {
-                                response: false, value: '**Attribute ' + args[0] + ' is read only**'
+                                result: false, value: '**Attribute ' + args[0] + ' is read only**'
                             };
                         } else if (return_value === -2) {
                             return {
-                                response: false, value: '**' + args[0] + ' is not an attribute**'
+                                result: false, value: '**' + args[0] + ' is not an attribute**'
                             };
                         }
                     } else {
                         return {
-                            response: false, value: '**Only the channel creator can change attributes**'
+                            result: false, value: '**Only the channel creator can change attributes**'
                         };
                     }
                 }
@@ -51,6 +51,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
     }
 
     return {
-        response: true, value: '**Attribute was set.**'
+        result: true, value: '**Attribute was set.**'
     };
 }
