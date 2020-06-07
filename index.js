@@ -27,7 +27,7 @@ const client = new Discord.Client();
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-create_rich_embed = function (title, description, colour, field_array) {
+create_rich_embed = function (title, description, colour, field_array, thumbnail) {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/portal-discord-bot/' +
 		'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2';
 	const keybraker_url = 'https://github.com/keybraker';
@@ -40,7 +40,10 @@ create_rich_embed = function (title, description, colour, field_array) {
 		.setDescription(description)
 		.setTimestamp()
 		.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
-
+		
+	if(thumbnail) {
+		rich_message.setThumbnail(thumbnail)
+	}
 	field_array.forEach(row => {
 		if (row.emote === '') {
 			// rich_message.addBlankField();

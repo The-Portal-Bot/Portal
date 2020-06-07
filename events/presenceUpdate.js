@@ -15,8 +15,24 @@ module.exports = async (args) => {
         let current_portal_list = args.portal_guilds[current_guild.id].portal_list;
         for (let key in args.portal_guilds[current_guild.id].portal_list) {
             if (current_voice_channel = current_portal_list[key].voice_list[current_channel.id]) {
+
                 console.log(`${Math.round(((Date.now() - current_voice_channel.last_update) / 1000 / 60))}m` +
                     `${Math.round(((Date.now() - current_voice_channel.last_update) / 1000) % 60)}s / 5m0s`);
+
+                current_channel.members.forEach(member => {
+                    member.presence.activities.forEach(activity => {
+                        if (activity.name === 'Spotify') {
+                            args.newPresence.guild.channels.cache.find(channel => channel.id === '719108602132168774').send(create_rich_embed(
+                                `Spotify`,
+                                `Listening to ${activity.details} by ${activity.state} from album ${activity.assets.largeText}`,
+                                '#1DB954',
+                                [{ emote: '', role: '', inline: false }],
+                                null //activity.assets.largeImage
+                            ));
+                        }
+                    });
+                });
+
                 if ((Date.now() - current_voice_channel.last_update) >= 300000) {
                     if (guld_mngr.generate_channel_name(current_channel, current_portal_list)) {
                         current_voice_channel.last_update = Date.now();
