@@ -71,7 +71,7 @@ module.exports =
 			args: '!attribute !value'
 		},
 		{
-			name: 'role_giver',
+			name: 'role',
 			description: 'creates a role message',
 			super_description: '**role_giver**, creates a message that distributes roles.' +
 				'Roles can be given or striped by reacting to the message.\n' +
@@ -124,8 +124,15 @@ module.exports =
 		{
 			name: 'force',
 			description: 'creates a new channel and moves all users to new channel',
-			super_description: '**ping**, creates a new channel and moves all users to new channel, ' + 
+			super_description: '**force**, creates a new channel and moves all users to new channel, ' +
 				'in order to get a new channel name if cooldown is still in effect.',
+			args: 'none'
+		},
+		{
+			name: 'spotify',
+			description: 'sets the text channel you wrote the command as the spotify channel',
+			super_description: '**spotify**, sets the text channel you wrote the command as the spotify channel, ' +
+				'which means that every time someone listens to a song on spotify it will be displayed.',
 			args: 'none'
 		}
 		
