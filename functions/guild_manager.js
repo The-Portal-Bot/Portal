@@ -112,7 +112,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = { "portal_list": {}, "url_list": {}, "role_list": {} };
+		portal_guilds[guild_id] = { "portal_list": {}, "url_list": {}, "role_list": {}, "spotify": null };
 	}
 	,
 

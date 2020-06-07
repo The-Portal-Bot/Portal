@@ -13,7 +13,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         .then(
             message.guild.channels.create('general text', { type: 'text' })
                 .then(value => {
-                    value.send('**PURGE DONE**')
+                    value.send('**PURGE DONE**').then(msg => { msg.delete({ timeout: 5000 }) });
                 })
         )
 

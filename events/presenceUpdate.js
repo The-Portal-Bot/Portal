@@ -4,7 +4,7 @@ module.exports = async (args) => {
     if (!guld_mngr.included_in_portal_guilds(args.newPresence.guild.id, args.portal_guilds)) {
         return {
             result: true, value: `${args.newPresence.member.displayName}, who is a member of a handled server, ` +
-            `has changed presence, but is in another server (${args.newPresence.guild.name})`
+                `has changed presence, but is in another server (${args.newPresence.guild.name})`
         };
     }
 
@@ -22,13 +22,22 @@ module.exports = async (args) => {
                 current_channel.members.forEach(member => {
                     member.presence.activities.forEach(activity => {
                         if (activity.name === 'Spotify') {
-                            args.newPresence.guild.channels.cache.find(channel => channel.id === '719108602132168774').send(create_rich_embed(
-                                `Spotify`,
-                                `Listening to ${activity.details} by ${activity.state} from album ${activity.assets.largeText}`,
-                                '#1DB954',
-                                [{ emote: '', role: '', inline: false }],
-                                null //activity.assets.largeImage
-                            ));
+                            if (args.portal_guilds[current_guild.id].spotify) {
+                                args.newPresence.guild.channels.cache.find(channel =>
+                                    channel.id === args.portal_guilds[current_guild.id].spotify
+                                )
+                                    .send(create_rich_embed(
+                                    `Spotify`,
+                                    `Listening to ${activity.details} by ${activity.state} from album ${activity.assets.largeText}`,
+                                    '#1DB954',
+                                    [{ emote: '', role: '', inline: false }],
+                                    'https://raw.githubusercontent.com/keybraker/portal-discord-bot/' +
+                                    'master/assets/img/spotify.png?token=AFS7NCR5WZIHWFNPVBBGK4S64X47M' //activity.assets.largeImage
+                                ));
+                            }
+                            else {
+                                console.log('nope\n\n\n')
+                            }
                         }
                     });
                 });
@@ -43,7 +52,7 @@ module.exports = async (args) => {
     }
 
     return {
-        result: true, value: `${args.newPresence.member.displayName}, has changed presence, `+
+        result: true, value: `${args.newPresence.member.displayName}, has changed presence, ` +
             `in controlled server (${args.newPresence.guild.name})`
     };
 }

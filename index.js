@@ -10,7 +10,7 @@ let active_cooldowns = new Array();
 const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 10 }];
 const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
 { command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }];
-const uncooldownable = ['help', 'ping', 'portal', 'run', 'set'];
+const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify'];
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
@@ -28,8 +28,8 @@ const client = new Discord.Client();
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
 create_rich_embed = function (title, description, colour, field_array, thumbnail) {
-	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/portal-discord-bot/' +
-		'master/assets/img/logo.png?token=AFS7NCWAA55MMT4PYBCJKOK62LPR2';
+	const portal_icon_url = 'https://raw.githubusercontent.com/'+
+		'keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCQYV4EIHFZAOFV5CYK64X4YA';
 	const keybraker_url = 'https://github.com/keybraker';
 
 	let rich_message = new Discord.MessageEmbed()
@@ -42,6 +42,7 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		
 	if(thumbnail) {
+		console.log('mpika\n\n\n\n');
 		rich_message.setThumbnail(thumbnail)
 	}
 	field_array.forEach(row => {
@@ -230,7 +231,7 @@ client.on('message', async message => {
 				message.author.presence.member.voice.channel,
 				message,
 				message.author,
-				`${message.author} you need to wait ${remaining_min}m${remaining_sec}s/${command_obj.timeout}m0s ` +
+				`${message.author} you need to wait ${remaining_min}:${remaining_sec}/${command_obj.timeout}:00 ` +
 				`to use ${command_obj.command} again as it was used again in ${message.guild.name}.`);
 
 		} else {
@@ -274,7 +275,7 @@ client.on('message', async message => {
 				message.author.presence.member.voice.channel,
 				message,
 				message.author,
-				`${message.author} you need to wait ${remaining_min}m${remaining_sec}s/${command_obj.timeout}m0s ` +
+				`${message.author} you need to wait ${remaining_min}:${remaining_sec}/${command_obj.timeout}:00 ` +
 				`to use ${command_obj.command} again.`);
 
 		} else {
