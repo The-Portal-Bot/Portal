@@ -112,7 +112,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = { "portal_list": {}, "url_list": {}, "role_list": {}, "spotify": null };
+		portal_guilds[guild_id] = { "portal_list": {}, "url_list": [], "role_list": {}, "spotify": null, "announcement": null };
 	}
 	,
 
@@ -159,7 +159,6 @@ module.exports =
 	,
 
 	regex_interpreter: function (regex, voice_channel, voice_object, portal_object) {
-
 		let last_space_index = 0;
 		let last_vatiable_end_index = 0;
 		let last_attribute_end_index = 0;

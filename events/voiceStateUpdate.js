@@ -4,6 +4,16 @@ module.exports = async (args) => {
     let newChannel = args.newState.channel; // join channel
     let oldChannel = args.oldState.channel; // left channel
 
+    if (voiceConnection = args.client.voice.connections.find(connection => 
+        connection.channel.id === newChannel.id)) {
+        voiceConnection
+            .play('./assets/mp3s/user_connected.mp3');
+    } else if (voiceConnection = args.client.voice.connections.find(connection =>
+        connection.channel.id === oldChannel.id)) {
+        voiceConnection
+            .play('./assets/mp3s/user_disconnected.mp3');
+    }
+
     let report_message = `from: ${oldChannel} to ${newChannel})\n`;
 
     if (oldChannel === null && newChannel !== null) { // Joined from null
@@ -23,6 +33,7 @@ module.exports = async (args) => {
             if (oldChannel.members.size === 0) {
                 guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
             }
+
         }
     } else if (newChannel !== null && oldChannel !== null) { // Moved from channel to channel
         report_message += `existing->existing\n`;
@@ -78,7 +89,6 @@ module.exports = async (args) => {
             }
             else if (guld_mngr.included_in_voice_list(newChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // left created channel and joins another created
                 report_message += `->dest: voice_list\n`;
-
                 guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list);
             }
         }

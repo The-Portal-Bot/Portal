@@ -9,14 +9,14 @@ const guld_mngr = require('./functions/guild_manager');
 let active_cooldowns = new Array();
 const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 10 }];
 const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
-{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }];
-const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify'];
+	{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }, 
+	{ command: 'announce', timeout: 2 }];
+const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify', 'announcement'];
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
 let portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
 let portal_guilds = JSON.parse(portal_managed_guilds);
-// var polyglot = new Polyglot();
 
 // Load up the discord.js library
 const Discord = require('discord.js');
@@ -27,7 +27,7 @@ const client = new Discord.Client();
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-create_rich_embed = function (title, description, colour, field_array, thumbnail, member) {
+create_rich_embed = function (title, description, colour, field_array, thumbnail, member, from_bot) {
 	const portal_icon_url = 'https://raw.githubusercontent.com/'+
 		'keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCQYV4EIHFZAOFV5CYK64X4YA';
 	const keybraker_url = 'https://github.com/keybraker';
@@ -39,11 +39,12 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		// .setAuthor('Portal', portal_icon_url, keybraker_url)
 		.setDescription(description)
 		.setTimestamp()
-		.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		
+	if (from_bot) {
+		rich_message.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
+	}
 	if (member) {
-		rich_message.setAuthor(member.nickname, member.user.avatarURL())
-		
+		rich_message.setAuthor(member.displayName, member.user.avatarURL())
 	}
 	if (thumbnail) {
 		rich_message.setThumbnail(thumbnail)
@@ -94,16 +95,6 @@ update_portal_managed_guilds = function (force) {
 
 message_reply = function (status, channel, msg, user, str) {
 	msg.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }) });
-
-
-		// console.log('client.voice.connections : ', client.voice.connections);
-	// console.log('client.voice.connections.size : ' + client.voice.connections.size);
-	// client.voice.connections.forEach(element => {
-	// 		console.log('element.channnel.id: ', element.channnel.id);
-	// 	});
-	// 	client.voice.connections.find(connection => connection.channel === channel)
-	// 		.play(say.speak(str))
-	// 		.catch(error.log);
 	
 	if (status === true) {
 		msg.react('✔️');
@@ -126,7 +117,6 @@ is_url = function (message) {
 
 // LISTENERS ------------------------------------------------------------------------------------ \\
 
-//#endregion Listeners
 client.on('ready', () => // This event will run if the bot starts, and logs in, successfully.
 	require(`./events/ready.js`)(
 		{ 'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
@@ -184,7 +174,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => // This event triggers
 
 client.on('voiceStateUpdate', (oldState, newState) => // This event triggers when a member joins or leaves a voice channel
 	require(`./events/voiceStateUpdate.js`)(
-		{ 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds }
+		{ 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds, client: client }
 	)
 		.then(rspns => {
 			if (rspns.result) {
@@ -192,11 +182,7 @@ client.on('voiceStateUpdate', (oldState, newState) => // This event triggers whe
 			}
 		})
 );
-//#endregion
 
-// MESSAGE LISTENER ----------------------------------------------------------------------------- \\
-
-//#region Message async reader
 client.on('message', async message => {
 	// runs on every single message received, from any channel or DM
 	// Ignore other bots and also itself ('botception')
@@ -324,7 +310,7 @@ client.on('message', async message => {
 	}
 
 });
-//#region 
+
 client.login(config.token);
 
 // console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))

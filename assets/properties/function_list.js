@@ -134,7 +134,21 @@ module.exports =
 			super_description: '**spotify**, sets the text channel you wrote the command as the spotify channel, ' +
 				'which means that every time someone listens to a song on spotify it will be displayed.',
 			args: 'none'
-		}
-		
+		},
+		{
+			name: 'announcement',
+			description: 'sets the text channel you wrote the command as the announcement channel',
+			super_description: '**announcement**, sets the text channel you wrote the command as the announcement channel, ' +
+				'which means that every time someone times an announcement is displayed there.',
+			args: 'none'
+		},
+		{
+			name: 'announce',
+			description: 'announce makes an announcement via portal bot to the announcement channel',
+			super_description: '**announce**, announce makes an announcement via portal bot to the announcement channel, ' +
+				'./announce hello im jhon | i want to play games, Here what goes until the "|" is the title and the ' +
+				'the rest it the body your message.',
+			args: 'none'
+		}		
 	]
 }

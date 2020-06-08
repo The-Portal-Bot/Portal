@@ -20,7 +20,6 @@ module.exports = async (args) => {
                     `${Math.round(((Date.now() - current_voice_channel.last_update) / 1000) % 60)}s / 5m0s`);
 
                 current_channel.members.forEach(member => {
-                    console.log('\n\n\nMEMBER:', member)
                     member.presence.activities.forEach(activity => {
                         if (activity.name === 'Spotify') {
                             if (args.portal_guilds[current_guild.id].spotify) {
@@ -37,7 +36,8 @@ module.exports = async (args) => {
                                             inline: false
                                         }],
                                         activity.assets.largeImageURL(),
-                                        member
+                                        member,
+                                        false
                                     ));
                             }
                             else {

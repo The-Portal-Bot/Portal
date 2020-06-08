@@ -13,6 +13,7 @@
     "file-system": "^2.2.2",
     "moment": "^2.25.3",
     "say": "^0.16.0",
+    "text-to-mp3": "^1.0.4",
     "voca": "^1.4.0"
   },
   "devDependencies": {

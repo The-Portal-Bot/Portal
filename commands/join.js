@@ -12,10 +12,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
                 message.member.voice.channel.join()
                     .then(connection => {
-                        say_voice = connection;
-                        say_voice.play('./assets/mp3s/cheers.mp3');
-                        // client.voice.connections.find(connection => connection.channel.id === message.member.voice.channel.id)
-                        // 	.play(say.export('Cheers love! Portal\'s here !'));				
+                        connection.play('./assets/mp3s/cheers.mp3');		
                         console.log('connected to channel');
                     })
                     .catch(e => { console.log(e); });
