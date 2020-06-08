@@ -2,7 +2,7 @@ const lclz_mngr = require('./../functions/localization_manager');
 
 module.exports = async (args) => {
     console.log(
-        lclz_mngr.text_localization.gr.hello(
+        lclz_mngr.console.gr.ready(
             args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size
         )
     );

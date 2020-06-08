@@ -4,6 +4,7 @@ const vrbl_objct = require('../assets/properties/variable_list');
 const pipe_objct = require('../assets/properties/pipe_list');
 const attr_objct = require('../assets/properties/attribute_list');
 
+const class_guild = require('../classes/guild');
 const class_portal = require('../classes/portal');
 const class_role = require('../classes/role');
 
@@ -112,7 +113,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = { "portal_list": {}, "url_list": [], "role_list": {}, "spotify": null, "announcement": null };
+		portal_guilds[guild_id] = new class_guild({}, [], {}, null, null, `gr`);
 	}
 	,
 

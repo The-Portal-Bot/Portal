@@ -1,39 +1,39 @@
 module.exports =
 {
-	is_function: function (arg) {
-		for (i = 0; i < this.functions.length; i++)
-			if (String(arg).substring(1, (String(this.functions[i].name).length + 1)) == this.functions[i].name)
-				return this.functions[i].name;
+	is_command: function (arg) {
+		for (i = 0; i < this.commands.length; i++)
+			if (String(arg).substring(1, (String(this.commands[i].name).length + 1)) == this.commands[i].name)
+				return this.commands[i].name;
 		return false;
 	},
 	get_help: function () {
 		let func_array = [];
-		for (i = 0; i < this.functions.length; i++) {
+		for (i = 0; i < this.commands.length; i++) {
 			func_array.push({
-				emote: this.functions[i].name,
-				role: '**desc**: *' + this.functions[i].description + '*' +
-					'\n**args**: *' + this.functions[i].args + '*',
+				emote: this.commands[i].name,
+				role: '**desc**: *' + this.commands[i].description + '*' +
+					'\n**args**: *' + this.commands[i].args + '*',
 				inline: true
 			});
 		}
-		return create_rich_embed('Functions',
+		return create_rich_embed('Commands',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#9775A9', func_array);
 	},
 	get_help_super: function (check) {
-		for (i = 0; i < this.functions.length; i++) {
-			let func = this.functions[i]
-			if (func.name === check) {
+		for (i = 0; i < this.commands.length; i++) {
+			let cmmd = this.commands[i]
+			if (cmmd.name === check) {
 				return create_rich_embed(
-					func.name,
-					'Type: Function' +
+					cmmd.name,
+					'Type: Command' +
 					'\nPrefix: ' + this.prefix +
 					'\n**!**: *mandatory*, **@**: *optional*',
 					'#9775A9',
 					[
-						{ emote: 'Description', role: '*' + func.super_description + '*', inline: false },
-						{ emote: 'Arguments', role: '*' + func.args + '*', inline: false }
+						{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },
+						{ emote: 'Arguments', role: '*' + cmmd.args + '*', inline: false }
 					]
 				)
 			}
@@ -41,7 +41,7 @@ module.exports =
 		return false;
 	},
 	prefix: './',
-	functions: [
+	commands: [
 		{
 			name: 'portal',
 			description: 'creates a voice channel and a category for it',
@@ -97,10 +97,10 @@ module.exports =
 			name: 'help',
 			description: 'returns a help-list of all commands and regex manipulation',
 			super_description: '**help**, sends personal messages to the one who requests them.\n' +
-				'You can run ./help func, ./help vrbl, ./help attr, ./help pipe, to get only the category you choose.\n' +
+				'You can run ./help cmmd, ./help vrbl, ./help attr, ./help pipe, to get only the category you choose.\n' +
 				'You can run ./help specific_property, like portal or set, etc, in order to get a more descriptive '+
 				'definition of the property chosen',
-			args: '@specific_command or @vrbl/@func/@pipe/@attr'
+			args: '@specific_command or @vrbl/@cmmd/@pipe/@attr'
 		},
 		{
 			name: 'ping',

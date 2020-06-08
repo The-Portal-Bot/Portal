@@ -95,12 +95,7 @@ update_portal_managed_guilds = function (force) {
 
 message_reply = function (status, channel, msg, user, str) {
 	msg.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }) });
-	
-	if (status === true) {
-		msg.react('✔️');
-	} else if (status === false) {
-		msg.react('❌');
-	}
+	if (status === true) { msg.react('✔️');	} else if (status === false) { msg.react('❌');	}
 }
 
 is_url = function (message) {
@@ -117,70 +112,37 @@ is_url = function (message) {
 
 // LISTENERS ------------------------------------------------------------------------------------ \\
 
+event_loader = function (event, args) {
+	require(`./events/${event}.js`)(args)
+		.then(rspns => { if (rspns.result) { console.log(rspns.value) } })
+}
+
 client.on('ready', () => // This event will run if the bot starts, and logs in, successfully.
-	require(`./events/ready.js`)(
-		{ 'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('ready', { 'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
 );
 
 client.on('shardReconnecting', id =>
-	require(`./events/shardReconnecting.js`)(
-		{ 'id': id }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('shardReconnecting', { 'id': id })
 );
 
 client.on('guildDelete', guild => // This event triggers when the bot joins a guild.
-	require(`./events/guildCreate.js`)(
-		{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('guildDelete', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
 );
 
+// client.on('channelDelete', guild => // This event triggers when the bot joins a guild.
+// 	event_loader('channelDelete', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
+// );
+
 client.on('guildCreate', guild => // this event triggers when the bot is removed from a guild.
-	require(`./events/guildDelete.js`)(
-		{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('guildCreate', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
 );
 
 client.on('presenceUpdate', (oldPresence, newPresence) => // This event triggers when the status of a guild member has changed
-	require(`./events/presenceUpdate.js`)(
-		{ 'newPresence': newPresence, 'portal_guilds': portal_guilds }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('presenceUpdate', { 'newPresence': newPresence, 'portal_guilds': portal_guilds })
 );
 
 client.on('voiceStateUpdate', (oldState, newState) => // This event triggers when a member joins or leaves a voice channel
-	require(`./events/voiceStateUpdate.js`)(
-		{ 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds, client: client }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('voiceStateUpdate', { 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds, client: client })
 );
 
 client.on('message', async message => {
@@ -268,7 +230,7 @@ client.on('message', async message => {
 				`to use ${command_obj.command} again.`);
 
 		} else {
-			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+			require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 				.then(rspns => {
 					if (rspns === true) {
 						active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
@@ -295,7 +257,7 @@ client.on('message', async message => {
 			update_portal_managed_guilds(true);
 		}
 	} else if (uncooldownable.includes(cmd)) {
-		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+		require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 			.then(rspns => { 
 				if(rspns) {
 					message_reply(
