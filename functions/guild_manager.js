@@ -138,11 +138,11 @@ module.exports =
 
 	//
 
-	generate_channel_name: function (voice_channel, portal_object) {
+	generate_channel_name: function (voice_channel, portal_object, guild_object) {
 		for (let portal_id in portal_object) {
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
-				let new_name = this.regex_interpreter(voice_object.regex, voice_channel, voice_object, portal_object);
+				let new_name = this.regex_interpreter(voice_object.regex, voice_channel, voice_object, portal_object, guild_object);
 				if(voice_channel.name !== new_name) {
 					voice_channel.edit({ name: new_name })
 						.then(newChannel => console.log(
@@ -154,12 +154,11 @@ module.exports =
 				}
 			}
 		}
-		console.log('did not find channel');
 		return false;
 	}
 	,
 
-	regex_interpreter: function (regex, voice_channel, voice_object, portal_object) {
+	regex_interpreter: function (regex, voice_channel, voice_object, portal_object, guild_object) {
 		let last_space_index = 0;
 		let last_vatiable_end_index = 0;
 		let last_attribute_end_index = 0;
@@ -184,7 +183,7 @@ module.exports =
 			} else if (regex[i] === attr_objct.prefix) {
 
 				if (attr = attr_objct.is_attribute(regex.substring(i))) {
-					if (return_value = attr_objct.get(voice_channel, voice_object, portal_object, attr)) {
+					if (return_value = attr_objct.get(voice_channel, voice_object, portal_object, guild_object, attr)) {
 						last_attribute = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(attr).length;
@@ -238,14 +237,14 @@ module.exports =
 					// did not put into structure_list due to many unnecessary function calls
 					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 					if (inline[statement.is](
-						this.regex_interpreter(statement.if, voice_channel, voice_object, portal_object),
-						this.regex_interpreter(statement.with, voice_channel, voice_object, portal_object)
+						this.regex_interpreter(statement.if, voice_channel, voice_object, portal_object, guild_object),
+						this.regex_interpreter(statement.with, voice_channel, voice_object, portal_object, guild_object)
 					)) {
-						let value = this.regex_interpreter(statement.yes, voice_channel, voice_object, portal_object);
+						let value = this.regex_interpreter(statement.yes, voice_channel, voice_object, portal_object, guild_object);
 						if ('--' !== value)
 							new_channel_name += value;
 					} else {
-						let value = this.regex_interpreter(statement.no, voice_channel, voice_object, portal_object);
+						let value = this.regex_interpreter(statement.no, voice_channel, voice_object, portal_object, guild_object);
 						if ('--' !== value)
 							new_channel_name += value;
 					}

@@ -1,5 +1,3 @@
-const Discord = require("discord.js");
-
 const cmmd_objct = require('./../assets/properties/command_list');
 const vrbl_objct = require('./../assets/properties/variable_list');
 const pipe_objct = require('./../assets/properties/pipe_list');

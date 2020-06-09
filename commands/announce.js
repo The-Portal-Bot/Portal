@@ -1,3 +1,5 @@
+const lclz_mngr = require('./../functions/localization_manager');
+
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
     if (!portal_guilds[message.guild.id].announcement) {
         return {
@@ -5,9 +7,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         };
     }
 
-    message.guild.channels.cache.find(channel =>
-        channel.id === portal_guilds[message.guild.id].announcement
-    )
+    message.guild.channels.cache.find(channel => channel.id === portal_guilds[message.guild.id].announcement)
         .send(create_rich_embed(
             `**${args.join(' ').substr(0, args.join(' ').indexOf('|'))}**`,
             `**${args.join(' ').substr(args.join(' ').indexOf('|')+1)}**`,
@@ -18,11 +18,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
             false
         ));
 
-    if (voiceConnection = client.voice.connections.find(connection =>
-        connection.channel.id)) {
-        voiceConnection
-            .play('./assets/mp3s/new_announcement.mp3');
-    }
+    let locale = portal_guilds[message.guild.id].locale;
+    lclz_mngr.portal[locale].announcement.voice(client);
 
     return {
         result: true, value: '**Announcement was sent successfully.**'

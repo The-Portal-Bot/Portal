@@ -17,6 +17,14 @@
 			}
 		},
 		{
+			"status": "Visual Studio Code",
+			"type": "code",
+			"locale": {
+				"en": "VSCode",
+				"gr": "ΟΣΚώδικα"
+			}
+		},
+		{
 			"status": "Code",
 			"type": "code",
 			"locale": {

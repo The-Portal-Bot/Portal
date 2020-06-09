@@ -53,7 +53,7 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		if (row.emote === '') {
 			// rich_message.addBlankField();
 		} else {
-			rich_message.addField(row.emote, row.role, row.inline);
+			rich_message.addField(`**${row.emote}**`, row.role, false); //row.inline);
 		}
 	});
 
@@ -80,12 +80,8 @@ portal_init = function (current_guild) {
 	update_portal_managed_guilds(true);
 }
 
-// show_portal_state = function (guild_id) {
-// 	console.log('Portal State: ', portal_guilds);
-// }
-
 update_portal_managed_guilds = function (force) {
-	console.log('updating guild json');
+	console.log(lclz_mngr.console.gr.updating_guild());
 
 	setTimeout(function () {
 		if (force) file_system.writeFileSync(portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8');
@@ -95,7 +91,12 @@ update_portal_managed_guilds = function (force) {
 
 message_reply = function (status, channel, msg, user, str) {
 	msg.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }) });
-	if (status === true) { msg.react('✔️');	} else if (status === false) { msg.react('❌');	}
+	if (status === true) { msg.react('✔️');	
+	} else if (status === false) {
+		let locale = portal_guilds[msg.guild.id].locale;
+		lclz_mngr.portal[locale].error.voice(client);
+		msg.react('❌');	
+	}
 }
 
 is_url = function (message) {
@@ -230,7 +231,7 @@ client.on('message', async message => {
 				`to use ${command_obj.command} again.`);
 
 		} else {
-			require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 				.then(rspns => {
 					if (rspns === true) {
 						active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
@@ -257,7 +258,7 @@ client.on('message', async message => {
 			update_portal_managed_guilds(true);
 		}
 	} else if (uncooldownable.includes(cmd)) {
-		require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 			.then(rspns => { 
 				if(rspns) {
 					message_reply(
