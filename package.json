@@ -10,6 +10,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "discord.js": "^12.2.0",
+    "ffmpeg-static": "^4.2.2",
     "file-system": "^2.2.2",
     "moment": "^2.25.3",
     "say": "^0.16.0",

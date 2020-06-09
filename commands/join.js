@@ -1,41 +1,38 @@
 const guld_mngr = require('./../functions/guild_manager');
+const lclz_mngr = require('./../functions/localization_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
-    let error_message = null;
+    current_voice = message.member.voice.channel;
     // check if he is an a guild
-    if (message.member.voice.channel !== null) {
+    if (current_voice !== null) {
         // is he in a voice channel that is in the same guild as his text message
-        if (message.member.voice.channel.guild.id === message.guild.id) {
+        if (current_voice.guild.id === message.guild.id) {
             // is he in a controlled voice channel ?
-            if (guld_mngr.included_in_voice_list(message.member.voice.channel.id, portal_guilds[message.guild.id].portal_list)) {
-                console.log('I WILL CONNECT TO ID: ' + message.member.voice.channel.id + ' or ' + message.member.voice.channelID);
-
-                message.member.voice.channel.join()
-                    .then(connection => {
-                        say_voice = connection;
-                        say_voice.play('./assets/mp3s/cheers.mp3');
-                        // client.voice.connections.find(connection => connection.channel.id === message.member.voice.channel.id)
-                        // 	.play(say.export('Cheers love! Portal\'s here !'));				
-                        console.log('connected to channel');
+            if (guld_mngr.included_in_voice_list(current_voice.id, portal_guilds[message.guild.id].portal_list)) {
+                current_voice.join()
+                    .then(con => {
+                        lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.voice(client);
                     })
                     .catch(e => { console.log(e); });
-                // message.member.voice.channel.leave();
+
+                
             } else {
                 return {
-                    result: false, value: `I can only connect to my channels.`
+                    result: false, value: `I can only connect to my channels.` // localize
                 };
             }
         } else {
             return {
-                result: false, value: `Your current channel is on another guild.`
+                result: false, value: `Your current channel is on another guild.` // localize
             };
         }
     } else {
         return {
-            result: false, value: `You are not connected to any channel.`
+            result: false, value: `You are not connected to any channel.` // localize
         };
     }
+    console.log(`portal_guilds[${current_voice.guild.id}].locale: ` + portal_guilds[current_voice.guild.id].locale);
     return {
-        result: true, value: `**Cheers love! The cavalry\'s here!**`
+        result: true, value: lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.text()
     };
 }

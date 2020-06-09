@@ -47,7 +47,6 @@ module.exports = {
 
 		voice_channel.members.forEach(member => {
 			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
-				console.log('member.presence.activities: ', member.presence.activities);
 				let status = this.status_aliases(member.presence.activities, voice_object.locale);
 				if (!array_of_statuses.includes(status)) {
 					array_of_statuses.push(status);

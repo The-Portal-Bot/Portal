@@ -1,15 +1,15 @@
 const guld_mngr = require('./../functions/guild_manager');
+const lclz_mngr = require('./../functions/localization_manager');
 
 module.exports = async (args) => {
-    if (!guld_mngr.included_in_portal_guilds(args.newPresence.guild.id, args.portal_guilds)) {
-        return {
-            result: true, value: `${args.newPresence.member.displayName}, who is a member of a handled server, ` +
-                `has changed presence, but is in another server (${args.newPresence.guild.name})`
-        };
-    }
-
     let current_guild = args.newPresence.guild;
     let current_channel = args.newPresence.member.voice.channel;
+    
+    if (!guld_mngr.included_in_portal_guilds(args.newPresence.guild.id, args.portal_guilds)) {
+        return {
+            result: false, value: lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled_away(args)
+        };
+    }
 
     if (current_channel) { // if member is in a channel
         let current_portal_list = args.portal_guilds[current_guild.id].portal_list;
@@ -20,13 +20,13 @@ module.exports = async (args) => {
                     `${Math.round(((Date.now() - current_voice_channel.last_update) / 1000) % 60)}s / 5m0s`);
 
                 current_channel.members.forEach(member => {
-                    console.log('\n\n\nMEMBER:', member)
                     member.presence.activities.forEach(activity => {
                         if (activity.name === 'Spotify') {
                             if (args.portal_guilds[current_guild.id].spotify) {
-                                args.newPresence.guild.channels.cache.find(channel =>
+                                if(spotify = args.newPresence.guild.channels.cache.find(channel =>
                                     channel.id === args.portal_guilds[current_guild.id].spotify
-                                )
+                                )) {
+                                    spotify
                                     .send(create_rich_embed(
                                         `**${activity.details}**`,
                                         ``,
@@ -37,18 +37,17 @@ module.exports = async (args) => {
                                             inline: false
                                         }],
                                         activity.assets.largeImageURL(),
-                                        member
+                                        member,
+                                        false
                                     ));
-                            }
-                            else {
-                                console.log('nope\n\n\n')
+                                }
                             }
                         }
                     });
                 });
 
                 if ((Date.now() - current_voice_channel.last_update) >= 300000) {
-                    if (guld_mngr.generate_channel_name(current_channel, current_portal_list)) {
+                    if (guld_mngr.generate_channel_name(current_channel, current_portal_list, args.portal_guilds[current_guild.id])) {
                         current_voice_channel.last_update = Date.now();
                     }
                 }
@@ -57,7 +56,6 @@ module.exports = async (args) => {
     }
 
     return {
-        result: true, value: `${args.newPresence.member.displayName}, has changed presence, ` +
-            `in controlled server (${args.newPresence.guild.name})`
+        result: true, value: lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled(args)
     };
 }

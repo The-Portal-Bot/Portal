@@ -12,9 +12,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
     message.guild.channels.create('general voice', { type: 'voice' }, { bitrate: 8 })
         .then(
             message.guild.channels.create('general text', { type: 'text' })
-                .then(value => {
-                    value.send('**PURGE DONE**').then(msg => { msg.delete({ timeout: 5000 }) });
-                })
+                .then(value => { value.send('**Purge done**').then(msg => { msg.delete({ timeout: 5000 }) }); })
         )
 
     guld_mngr.delete_guild(message.guild.id, portal_guilds);

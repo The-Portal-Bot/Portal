@@ -1,5 +1,5 @@
-const guld_mngr = require('./functions/guild_manager');
-const attr_objct = require('./assets/properties/attribute_list');
+const guld_mngr = require('./../functions/guild_manager');
+const attr_objct = require('./../assets/properties/attribute_list');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
     current_portal_list = portal_guilds[message.guild.id].portal_list;
@@ -23,6 +23,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
                             message.member.voice.channel,
                             current_voice_channel,
                             current_portal_channel,
+                            portal_guilds[message.guild.id],
                             args[0],
                             args[1]
                         );

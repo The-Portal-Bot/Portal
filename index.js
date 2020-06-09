@@ -6,17 +6,19 @@ const config = require('./config.json'); // config.token / config.prefix
 const lclz_mngr = require('./functions/localization_manager');
 const guld_mngr = require('./functions/guild_manager');
 
-let active_cooldowns = new Array();
+let guild_cooldowns = new Array();
+let member_cooldowns = new Array();
+
 const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 10 }];
 const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
-{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }];
-const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify'];
+	{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }, 
+	{ command: 'announce', timeout: 2 }];
+const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify', 'announcement'];
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
 let portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
 let portal_guilds = JSON.parse(portal_managed_guilds);
-// var polyglot = new Polyglot();
 
 // Load up the discord.js library
 const Discord = require('discord.js');
@@ -27,7 +29,7 @@ const client = new Discord.Client();
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-create_rich_embed = function (title, description, colour, field_array, thumbnail, member) {
+create_rich_embed = function (title, description, colour, field_array, thumbnail, member, from_bot) {
 	const portal_icon_url = 'https://raw.githubusercontent.com/'+
 		'keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCQYV4EIHFZAOFV5CYK64X4YA';
 	const keybraker_url = 'https://github.com/keybraker';
@@ -39,11 +41,12 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		// .setAuthor('Portal', portal_icon_url, keybraker_url)
 		.setDescription(description)
 		.setTimestamp()
-		.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		
+	if (from_bot) {
+		rich_message.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
+	}
 	if (member) {
-		rich_message.setAuthor(member.nickname, member.user.avatarURL())
-		
+		rich_message.setAuthor(member.displayName, member.user.avatarURL())
 	}
 	if (thumbnail) {
 		rich_message.setThumbnail(thumbnail)
@@ -52,7 +55,7 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		if (row.emote === '') {
 			// rich_message.addBlankField();
 		} else {
-			rich_message.addField(row.emote, row.role, row.inline);
+			rich_message.addField(`**${row.emote}**`, row.role, false); //row.inline);
 		}
 	});
 
@@ -79,12 +82,8 @@ portal_init = function (current_guild) {
 	update_portal_managed_guilds(true);
 }
 
-// show_portal_state = function (guild_id) {
-// 	console.log('Portal State: ', portal_guilds);
-// }
-
 update_portal_managed_guilds = function (force) {
-	console.log('updating guild json');
+	console.log(lclz_mngr.console.gr.updating_guild());
 
 	setTimeout(function () {
 		if (force) file_system.writeFileSync(portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8');
@@ -94,21 +93,11 @@ update_portal_managed_guilds = function (force) {
 
 message_reply = function (status, channel, msg, user, str) {
 	msg.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }) });
-
-
-		// console.log('client.voice.connections : ', client.voice.connections);
-	// console.log('client.voice.connections.size : ' + client.voice.connections.size);
-	// client.voice.connections.forEach(element => {
-	// 		console.log('element.channnel.id: ', element.channnel.id);
-	// 	});
-	// 	client.voice.connections.find(connection => connection.channel === channel)
-	// 		.play(say.speak(str))
-	// 		.catch(error.log);
-	
-	if (status === true) {
-		msg.react('✔️');
+	if (status === true) { msg.react('✔️');	
 	} else if (status === false) {
-		msg.react('❌');
+		let locale = portal_guilds[msg.guild.id].locale;
+		lclz_mngr.portal[locale].error.voice(client);
+		msg.react('❌');	
 	}
 }
 
@@ -126,77 +115,39 @@ is_url = function (message) {
 
 // LISTENERS ------------------------------------------------------------------------------------ \\
 
-//#endregion Listeners
+event_loader = function (event, args) {
+	require(`./events/${event}.js`)(args)
+		.then(rspns => { if (rspns.result) { console.log(rspns.value) } })
+}
+
 client.on('ready', () => // This event will run if the bot starts, and logs in, successfully.
-	require(`./events/ready.js`)(
-		{ 'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('ready', { 'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
 );
 
 client.on('shardReconnecting', id =>
-	require(`./events/shardReconnecting.js`)(
-		{ 'id': id }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('shardReconnecting', { 'id': id })
 );
 
 client.on('guildDelete', guild => // This event triggers when the bot joins a guild.
-	require(`./events/guildCreate.js`)(
-		{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('guildDelete', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
 );
 
+// client.on('channelDelete', guild => // This event triggers when the bot joins a guild.
+// 	event_loader('channelDelete', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
+// );
+
 client.on('guildCreate', guild => // this event triggers when the bot is removed from a guild.
-	require(`./events/guildDelete.js`)(
-		{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('guildCreate', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
 );
 
 client.on('presenceUpdate', (oldPresence, newPresence) => // This event triggers when the status of a guild member has changed
-	require(`./events/presenceUpdate.js`)(
-		{ 'newPresence': newPresence, 'portal_guilds': portal_guilds }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('presenceUpdate', { 'newPresence': newPresence, 'portal_guilds': portal_guilds })
 );
 
 client.on('voiceStateUpdate', (oldState, newState) => // This event triggers when a member joins or leaves a voice channel
-	require(`./events/voiceStateUpdate.js`)(
-		{ 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds }
-	)
-		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value)
-			}
-		})
+	event_loader('voiceStateUpdate', { 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds, client: client })
 );
-//#endregion
 
-// MESSAGE LISTENER ----------------------------------------------------------------------------- \\
-
-//#region Message async reader
 client.on('message', async message => {
 	// runs on every single message received, from any channel or DM
 	// Ignore other bots and also itself ('botception')
@@ -220,8 +171,10 @@ client.on('message', async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
 
-	if (command_obj = guild_cooldownable.find(cool => cool.command === cmd)) {
-		if (member_obj = active_cooldowns.find(cool => cool.member === message.guild.id && cool.command === command_obj.command)) {
+	if (command_obj = guild_cooldownable.find(guild_cooldown => guild_cooldown.command === cmd)) {
+		if (member_obj = guild_cooldowns.find(active_cooldown => 
+			active_cooldown.command === command_obj.command)) {
+
 			const time_elapsed = Date.now() - member_obj.timestamp;
 			const timeout_time = command_obj.timeout * 60 * 1000;
 			const time_remaining = timeout_time - time_elapsed;
@@ -241,17 +194,17 @@ client.on('message', async message => {
 			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 				.then(rspns => {
 					if (rspns === true) {
-						active_cooldowns.push({ member: message.guild.id, command: command_obj.command, timestamp: Date.now() });
+						guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
 						setTimeout(() => {
-							active_cooldowns = active_cooldowns.filter(cool =>
-								cool.member !== message.guild.id && cool.command !== command_obj.command);
+							guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
+								active_cooldown.command !== command_obj.command);
 						}, command_obj.timeout * 60 * 1000);
 					} else if (rspns !== false) {
 						if (rspns.result === true) {
-							active_cooldowns.push({ member: message.guild.id, command: command_obj.command, timestamp: Date.now() });
+							guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
 							setTimeout(() => {
-								active_cooldowns = active_cooldowns.filter(cool =>
-									cool.member !== message.guild.id && cool.command !== command_obj.command);
+								guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
+									active_cooldown.command !== command_obj.command);
 							}, command_obj.timeout * 60 * 1000);
 						}
 						message_reply(
@@ -264,8 +217,11 @@ client.on('message', async message => {
 				});
 			update_portal_managed_guilds(true);
 		}
-	} else if (command_obj = member_cooldownable.find(cool => cool.command === cmd)) {
-		if (member_obj = active_cooldowns.find(cool => cool.member === message.author.id && cool.command === command_obj.command)) {
+	} else if (command_obj = member_cooldownable.find(member_cooldown => member_cooldown.command === cmd)) {
+		if (member_obj = member_cooldowns.find(active_cooldown =>
+			active_cooldown.member === message.author.id &&
+			active_cooldown.command === command_obj.command)) {
+				
 			const time_elapsed = Date.now() - member_obj.timestamp;
 			const timeout_time = command_obj.timeout * 60 * 1000;
 			const time_remaining = timeout_time - time_elapsed;
@@ -285,17 +241,21 @@ client.on('message', async message => {
 			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 				.then(rspns => {
 					if (rspns === true) {
-						active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
+						member_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
 						setTimeout(() => {
-							active_cooldowns = active_cooldowns.filter(cool =>
-								cool.member !== message.author.id && cool.command !== command_obj.command);
+							member_cooldowns = member_cooldowns.filter(active_cooldown =>
+								active_cooldown.member !== message.author.id &&
+								active_cooldown.command !== command_obj.command);
 						}, command_obj.timeout * 60 * 1000);
 					} else if (rspns !== false) {
 						if (rspns.result === true) {
-							active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
+							member_cooldowns.push(
+								{ member: message.author.id, command: command_obj.command, timestamp: Date.now() }
+							);
 							setTimeout(() => {
-								active_cooldowns = active_cooldowns.filter(cool =>
-									cool.member !== message.author.id && cool.command !== command_obj.command);
+								member_cooldowns = member_cooldowns.filter(active_cooldown =>
+									active_cooldown.member !== message.author.id &&
+									active_cooldown.command !== command_obj.command);
 							}, command_obj.timeout * 60 * 1000);
 						}
 						message_reply(
@@ -324,7 +284,7 @@ client.on('message', async message => {
 	}
 
 });
-//#region 
+
 client.login(config.token);
 
 // console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
