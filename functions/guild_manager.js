@@ -38,12 +38,73 @@ module.exports =
 
 	//
 
+	create_focus_channel: function (guild, portal_objct, member, focus_name, focus_time) {
+		
+		console.log('focus_name: ', focus_name)
+		console.log('focus_time: ', focus_time)
+
+		let return_value = null;
+		if (member_found = member.voice.channel.members.find(member_find => 
+			member_find.displayName === focus_name, focus_time)) {
+			const oldChannel = member.voice.channel;
+			let newChannel = null;
+			
+			guild.channels.create(
+				`${member.displayName}&${member_found.displayName}`, { type: 'voice', bitrate: 64000 })
+				.then(channel => {
+					newChannel = channel;
+					channel.userLimit = 2;
+					member.voice.setChannel(channel);
+					member_found.voice.setChannel(channel);
+				}).catch(console.error);
+
+			setTimeout(() => {
+				if (!oldChannel.deleted) {
+					member.voice.setChannel(oldChannel).then(moved => {
+						member_found.voice.setChannel(oldChannel).then(moved => {
+							if (newChannel.deletable()) {
+								newChannel.delete().catch(console.error);
+							}
+						}).catch(console.error);
+					}).catch(console.error);
+				} else {
+					return_value =  `oldChannel.name was deleted before transport back could occur.`;
+				}
+			}, focus_time * 60 * 1000);
+			if (return_value) { return return_value}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	,
+
+	create_url_channel: function (guild, url_name, portal_category, url_list) {
+		if (portal_category) { // with category
+			guild.channels.create(`${url_name}-url`, { type: 'text' })
+				.then(channel => {
+					url_list.push(channel.id);
+
+					guild.channels.create(portal_category, { type: 'category' })
+						.then(cat_channel => channel.setParent(cat_channel))
+						.catch(console.error);
+				}).catch(console.error);
+		} else { // withou category
+			guild.channels.create(`${url_name}-url`, { type: 'text' })
+				.then(channel => {
+					url_list.push(channel.id);
+					console.log('url_list = ' + url_list);
+				})
+		}
+	}
+	,
+	
 	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_objct) {
 		console.log('spotify_channel: ', spotify_channel);
 		console.log('spotify_category: ', spotify_category);
 		if (spotify_category) { // with category
 			console.log('exei category');
-			return guild.channels.create(spotify_channel, { type: 'text' })
+			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
 				.then(channel => {
 					guild_objct.spotify = channel.id
 					guild.channels.create(spotify_category, { type: 'category' })
@@ -53,7 +114,7 @@ module.exports =
 				.catch(console.error);
 		} else { // without category
 			console.log('den exei category');
-			return guild.channels.create(spotify_channel, { type: 'text' })
+			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
 				.then(channel => { guild_objct.spotify = channel.id })
 				.catch(console.error);
 		}
@@ -65,7 +126,7 @@ module.exports =
 		console.log('announcement_category: ', announcement_category);
 		if (announcement_category) { // with category
 			console.log('exei category');
-			return guild.channels.create(announcement_channel, { type: 'text' })
+			return guild.channels.create(`${announcement}-annc`, { type: 'text' })
 				.then(channel => {
 					guild_objct.announcement = channel.id
 					guild.channels.create(announcement_category, { type: 'category' })
@@ -110,12 +171,12 @@ module.exports =
 	}
 	,
 
-	create_voice_channel: function (state, json_portal, creator_id) {
+	create_voice_channel: function (state, portal_objct, creator_id) {
 		state.channel.guild.channels.create('loading...', { type: 'voice', bitrate: 64000 })
 			.then(channel => {
-				channel.userLimit = json_portal.user_limit_portal;
-				json_portal['voice_list'][channel.id] = new class_portal.voice_channel(
-					creator_id, json_portal.regex_voice,
+				channel.userLimit = portal_objct.user_limit_portal;
+				portal_objct['voice_list'][channel.id] = new class_portal.voice_channel(
+					creator_id, portal_objct.regex_voice,
 					false, 0, 0, 'gr', 1, Date.now()
 				);
 				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
@@ -125,26 +186,6 @@ module.exports =
 			}).catch(console.error);
 
 		return
-	}
-	,
-
-	create_url_channel: function (guild, url_name, portal_category, url_list) {
-		if (portal_category) { // with category
-			guild.channels.create(url_name + ' (url-only)', { type: 'text' })
-				.then(channel => {
-					url_list.push(channel.id);
-
-					guild.channels.create(portal_category, { type: 'category' })
-						.then(cat_channel => channel.setParent(cat_channel))
-						.catch(console.error);
-				}).catch(console.error);
-		} else { // withou category
-			guild.channels.create(url_name + ' (url-only)', { type: 'text' })
-				.then(channel => {
-					url_list.push(channel.id);
-					console.log('url_list = ' + url_list);
-				})
-		}
 	}
 	,
 

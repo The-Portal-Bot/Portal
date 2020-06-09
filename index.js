@@ -8,12 +8,13 @@ const guld_mngr = require('./functions/guild_manager');
 
 let guild_cooldowns = new Array();
 let member_cooldowns = new Array();
+let user_match = {};
 
-const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 10 }];
+const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 0.1 }];
 const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
 	{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }, 
 	{ command: 'announce', timeout: 2 }];
-const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify', 'announcement'];
+const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify', 'announcement', 'focus'];
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
@@ -179,7 +180,12 @@ client.on('message', async message => {
 			const timeout_time = command_obj.timeout * 60 * 1000;
 			const time_remaining = timeout_time - time_elapsed;
 
-			const remaining_min = Math.round((time_remaining / 1000 / 60) - 1);
+			const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
+				Math.round((time_remaining / 1000 / 60)) : 0;
+			const timeout_sec = Math.round((timeout_time / 1000) % 60);
+
+			const remaining_min = Math.round((time_remaining / 1000 / 60) - 1) > 0 ?
+				Math.round((time_remaining / 1000 / 60) - 1) : 0;
 			const remaining_sec = Math.round((time_remaining / 1000) % 60);
 
 			message_reply(
@@ -187,7 +193,7 @@ client.on('message', async message => {
 				message.author.presence.member.voice.channel,
 				message,
 				message.author,
-				`${message.author} you need to wait ${remaining_min}:${remaining_sec}/${command_obj.timeout}:00 ` +
+				`${message.author} you need to wait ${remaining_min}:${remaining_sec}/${timeout_min}:${timeout_sec} ` +
 				`to use ${command_obj.command} again as it was used again in ${message.guild.name}.`);
 
 		} else {
@@ -197,14 +203,15 @@ client.on('message', async message => {
 						guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
 						setTimeout(() => {
 							guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
-								active_cooldown.command !== command_obj.command);
+								active_cooldown.command !== 
+								command_obj.command);
 						}, command_obj.timeout * 60 * 1000);
 					} else if (rspns !== false) {
 						if (rspns.result === true) {
 							guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
 							setTimeout(() => {
 								guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
-									active_cooldown.command !== command_obj.command);
+									active_cooldown.command !== cmd);
 							}, command_obj.timeout * 60 * 1000);
 						}
 						message_reply(
@@ -226,7 +233,12 @@ client.on('message', async message => {
 			const timeout_time = command_obj.timeout * 60 * 1000;
 			const time_remaining = timeout_time - time_elapsed;
 
-			const remaining_min = Math.round((time_remaining / 1000 / 60) - 1);
+			const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
+				Math.round((time_remaining / 1000 / 60)) : 0;
+			const timeout_sec = Math.round((timeout_time / 1000) % 60);
+
+			const remaining_min = Math.round((time_remaining / 1000 / 60) - 1) > 0 ?
+				Math.round((time_remaining / 1000 / 60) - 1) : 0;
 			const remaining_sec = Math.round((time_remaining / 1000) % 60);
 
 			message_reply(
@@ -234,7 +246,7 @@ client.on('message', async message => {
 				message.author.presence.member.voice.channel,
 				message,
 				message.author,
-				`${message.author} you need to wait ${remaining_min}:${remaining_sec}/${command_obj.timeout}:00 ` +
+				`${message.author} you need to ${remaining_min}:${remaining_sec}/${timeout_min}:${timeout_sec} ` +
 				`to use ${command_obj.command} again.`);
 
 		} else {
@@ -245,7 +257,7 @@ client.on('message', async message => {
 						setTimeout(() => {
 							member_cooldowns = member_cooldowns.filter(active_cooldown =>
 								active_cooldown.member !== message.author.id &&
-								active_cooldown.command !== command_obj.command);
+								active_cooldown.command !== cmd);
 						}, command_obj.timeout * 60 * 1000);
 					} else if (rspns !== false) {
 						if (rspns.result === true) {
@@ -255,7 +267,7 @@ client.on('message', async message => {
 							setTimeout(() => {
 								member_cooldowns = member_cooldowns.filter(active_cooldown =>
 									active_cooldown.member !== message.author.id &&
-									active_cooldown.command !== command_obj.command);
+									active_cooldown.command !== cmd);
 							}, command_obj.timeout * 60 * 1000);
 						}
 						message_reply(
@@ -269,7 +281,7 @@ client.on('message', async message => {
 			update_portal_managed_guilds(true);
 		}
 	} else if (uncooldownable.includes(cmd)) {
-		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path, user_match)
 			.then(rspns => { 
 				if(rspns) {
 					message_reply(

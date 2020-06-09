@@ -88,6 +88,15 @@ module.exports =
                     client_talk(client, `./assets/mp3s/en/goodbye_${random}.mp3`);
                 }
             },
+            error: {
+                text: () => {
+                    return `Κάτι δεν πήγε καλά.`
+                },
+                voice: (client) => {
+                    let random = Math.floor(Math.random() * Math.floor(0));
+                    client_talk(client, `./assets/mp3s/gr/error_${random}.mp3`);
+                }
+            },
             user_connected: {
                 text: (user) => {
                     return `User ${user} connected to the channel.`
@@ -126,6 +135,15 @@ module.exports =
                 voice: (client) => {
                     let random = Math.floor(Math.random() * Math.floor(1));
                     client_talk(client, `./assets/mp3s/de/goodbye_${random}.mp3`);
+                }
+            },
+            error: {
+                text: () => {
+                    return `Κάτι δεν πήγε καλά.`
+                },
+                voice: (client) => {
+                    let random = Math.floor(Math.random() * Math.floor(0));
+                    client_talk(client, `./assets/mp3s/gr/error_${random}.mp3`);
                 }
             },
             user_connected: {

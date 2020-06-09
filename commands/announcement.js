@@ -3,7 +3,7 @@ const guld_mngr = require('./../functions/guild_manager');
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
     if (portal_guilds[message.guild.id].announcement === message.channel.id && args.length === 0) {
         return {
-            result: true, value: '**This is already the Announcement channel.**'
+            result: true, value: '**This already is, the Announcement channel.**'
         };
     } else if (portal_guilds[message.guild.id].announcement !== message.channel.id) {
         if (announcement = message.guild.channels.cache.find(channel =>
@@ -36,7 +36,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
             return {
                 result: true, value: '*Announcement channel and category have been created*'
             };
-        } else if (announcement_channel === '') {
+        } else if (announcement_channel === '' && announcement_category !== '') {
             console.log('den exei category');
             guld_mngr.create_announcement_channel(
                 message.guild, announcement_category, null, portal_guilds[message.guild.id]);
