@@ -23,9 +23,10 @@ module.exports = async (args) => {
                     member.presence.activities.forEach(activity => {
                         if (activity.name === 'Spotify') {
                             if (args.portal_guilds[current_guild.id].spotify) {
-                                args.newPresence.guild.channels.cache.find(channel =>
+                                if(spotify = args.newPresence.guild.channels.cache.find(channel =>
                                     channel.id === args.portal_guilds[current_guild.id].spotify
-                                )
+                                )) {
+                                    spotify
                                     .send(create_rich_embed(
                                         `**${activity.details}**`,
                                         ``,
@@ -39,6 +40,7 @@ module.exports = async (args) => {
                                         member,
                                         false
                                     ));
+                                }
                             }
                         }
                     });

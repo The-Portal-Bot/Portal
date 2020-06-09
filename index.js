@@ -6,7 +6,9 @@ const config = require('./config.json'); // config.token / config.prefix
 const lclz_mngr = require('./functions/localization_manager');
 const guld_mngr = require('./functions/guild_manager');
 
-let active_cooldowns = new Array();
+let guild_cooldowns = new Array();
+let member_cooldowns = new Array();
+
 const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 10 }];
 const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
 	{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }, 
@@ -169,8 +171,10 @@ client.on('message', async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
 
-	if (command_obj = guild_cooldownable.find(cool => cool.command === cmd)) {
-		if (member_obj = active_cooldowns.find(cool => cool.member === message.guild.id && cool.command === command_obj.command)) {
+	if (command_obj = guild_cooldownable.find(guild_cooldown => guild_cooldown.command === cmd)) {
+		if (member_obj = guild_cooldowns.find(active_cooldown => 
+			active_cooldown.command === command_obj.command)) {
+
 			const time_elapsed = Date.now() - member_obj.timestamp;
 			const timeout_time = command_obj.timeout * 60 * 1000;
 			const time_remaining = timeout_time - time_elapsed;
@@ -190,17 +194,17 @@ client.on('message', async message => {
 			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 				.then(rspns => {
 					if (rspns === true) {
-						active_cooldowns.push({ member: message.guild.id, command: command_obj.command, timestamp: Date.now() });
+						guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
 						setTimeout(() => {
-							active_cooldowns = active_cooldowns.filter(cool =>
-								cool.member !== message.guild.id && cool.command !== command_obj.command);
+							guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
+								active_cooldown.command !== command_obj.command);
 						}, command_obj.timeout * 60 * 1000);
 					} else if (rspns !== false) {
 						if (rspns.result === true) {
-							active_cooldowns.push({ member: message.guild.id, command: command_obj.command, timestamp: Date.now() });
+							guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
 							setTimeout(() => {
-								active_cooldowns = active_cooldowns.filter(cool =>
-									cool.member !== message.guild.id && cool.command !== command_obj.command);
+								guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
+									active_cooldown.command !== command_obj.command);
 							}, command_obj.timeout * 60 * 1000);
 						}
 						message_reply(
@@ -213,8 +217,11 @@ client.on('message', async message => {
 				});
 			update_portal_managed_guilds(true);
 		}
-	} else if (command_obj = member_cooldownable.find(cool => cool.command === cmd)) {
-		if (member_obj = active_cooldowns.find(cool => cool.member === message.author.id && cool.command === command_obj.command)) {
+	} else if (command_obj = member_cooldownable.find(member_cooldown => member_cooldown.command === cmd)) {
+		if (member_obj = member_cooldowns.find(active_cooldown =>
+			active_cooldown.member === message.author.id &&
+			active_cooldown.command === command_obj.command)) {
+				
 			const time_elapsed = Date.now() - member_obj.timestamp;
 			const timeout_time = command_obj.timeout * 60 * 1000;
 			const time_remaining = timeout_time - time_elapsed;
@@ -234,17 +241,21 @@ client.on('message', async message => {
 			await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 				.then(rspns => {
 					if (rspns === true) {
-						active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
+						member_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
 						setTimeout(() => {
-							active_cooldowns = active_cooldowns.filter(cool =>
-								cool.member !== message.author.id && cool.command !== command_obj.command);
+							member_cooldowns = member_cooldowns.filter(active_cooldown =>
+								active_cooldown.member !== message.author.id &&
+								active_cooldown.command !== command_obj.command);
 						}, command_obj.timeout * 60 * 1000);
 					} else if (rspns !== false) {
 						if (rspns.result === true) {
-							active_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
+							member_cooldowns.push(
+								{ member: message.author.id, command: command_obj.command, timestamp: Date.now() }
+							);
 							setTimeout(() => {
-								active_cooldowns = active_cooldowns.filter(cool =>
-									cool.member !== message.author.id && cool.command !== command_obj.command);
+								member_cooldowns = member_cooldowns.filter(active_cooldown =>
+									active_cooldown.member !== message.author.id &&
+									active_cooldown.command !== command_obj.command);
 							}, command_obj.timeout * 60 * 1000);
 						}
 						message_reply(

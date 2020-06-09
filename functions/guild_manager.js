@@ -18,7 +18,7 @@ module.exports =
 	}
 	,
 
-	included_in_portal_list: function(channel_id, portal_list) {
+	included_in_portal_list: function (channel_id, portal_list) {
 		if (portal_list[channel_id]) {
 			return true;
 		}
@@ -26,7 +26,7 @@ module.exports =
 	}
 	,
 
-	included_in_voice_list: function(channel_id, portal_list) {
+	included_in_voice_list: function (channel_id, portal_list) {
 		for (let key in portal_list) {
 			if (portal_list[key].voice_list[channel_id]) {
 				return true;
@@ -38,24 +38,70 @@ module.exports =
 
 	//
 
-	create_portal_channel: function(guild, portal_name, category_name, json_portal_list, creator_id) {
-		if (category_name) { // with category
-			return guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
+	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_objct) {
+		console.log('spotify_channel: ', spotify_channel);
+		console.log('spotify_category: ', spotify_category);
+		if (spotify_category) { // with category
+			console.log('exei category');
+			return guild.channels.create(spotify_channel, { type: 'text' })
 				.then(channel => {
-					json_portal_list[channel.id] =  new class_portal.portal_channel(
-						creator_id, portal_name, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, 'gr', false, Date.now()
-					);
-					guild.channels.create(category_name, { type: 'category' })
+					guild_objct.spotify = channel.id
+					guild.channels.create(spotify_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
 				})
 				.catch(console.error);
 		} else { // without category
-			return guild.channels.create(portal_name, { type: 'voice', bitrate: 8000 })
+			console.log('den exei category');
+			return guild.channels.create(spotify_channel, { type: 'text' })
+				.then(channel => { guild_objct.spotify = channel.id })
+				.catch(console.error);
+		}
+	}
+	,
+
+	create_announcement_channel: function (guild, announcement_channel, announcement_category, guild_objct) {
+		console.log('announcement_channel: ', announcement_channel);
+		console.log('announcement_category: ', announcement_category);
+		if (announcement_category) { // with category
+			console.log('exei category');
+			return guild.channels.create(announcement_channel, { type: 'text' })
 				.then(channel => {
-					json_portal_list[channel.id] = new class_portal.portal_channel(
-						creator_id, portal_name, 'G$#-P$member_count | $status_list', {},
+					guild_objct.announcement = channel.id
+					guild.channels.create(announcement_category, { type: 'category' })
+						.then(cat_channel => channel.setParent(cat_channel))
+						.catch(console.error);
+				})
+				.catch(console.error);
+		} else { // without category
+			console.log('den exei category');
+			return guild.channels.create(announcement_channel, { type: 'text' })
+				.then(channel => { guild_objct.announcement = channel.id })
+				.catch(console.error);
+		}
+	}
+	,
+
+	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, creator_id) {
+		console.log('portal_channel: ', portal_channel);
+		console.log('portal_category: ', portal_category);
+		if (portal_category) { // with category
+			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
+				.then(channel => {
+					portal_objct[channel.id] = new class_portal.portal_channel(
+						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
+						false, 0, 0, 0, 'gr', false, Date.now()
+					);
+					guild.channels.create(portal_category, { type: 'category' })
+						.then(cat_channel => channel.setParent(cat_channel))
+						.catch(console.error);
+				})
+				.catch(console.error);
+		} else { // without category
+			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
+				.then(channel => {
+					portal_objct[channel.id] = new class_portal.portal_channel(
+						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
 						false, 0, 0, 0, 'gr', false, Date.now()
 					);
 				})
@@ -64,7 +110,7 @@ module.exports =
 	}
 	,
 
-	create_voice_channel: function(state, json_portal, creator_id) {
+	create_voice_channel: function (state, json_portal, creator_id) {
 		state.channel.guild.channels.create('loading...', { type: 'voice', bitrate: 64000 })
 			.then(channel => {
 				channel.userLimit = json_portal.user_limit_portal;
@@ -82,13 +128,13 @@ module.exports =
 	}
 	,
 
-	create_url_channel: function(guild, url_name, category_name, url_list) {
-		if (category_name) { // with category
+	create_url_channel: function (guild, url_name, portal_category, url_list) {
+		if (portal_category) { // with category
 			guild.channels.create(url_name + ' (url-only)', { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
 
-					guild.channels.create(category_name, { type: 'category' })
+					guild.channels.create(portal_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
 				}).catch(console.error);
@@ -102,7 +148,7 @@ module.exports =
 	}
 	,
 
-	create_role_message: function(message, role_list, title, desc, colour, role_emb) {
+	create_role_message: function (message, role_list, title, desc, colour, role_emb) {
 		role_message_emb = create_rich_embed(title, desc, colour, role_emb);
 		message.channel.send(role_message_emb)
 			.then(sent_message => {
@@ -123,7 +169,7 @@ module.exports =
 		delete portal_guilds[guild_id];
 	}
 	,
-	
+
 	delete_voice_channel: function (channel_to_delete, portal_list) {
 		for (let key in portal_list) {
 			if (portal_list[key].voice_list[channel_to_delete.id]) {
@@ -143,12 +189,12 @@ module.exports =
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
 				let new_name = this.regex_interpreter(voice_object.regex, voice_channel, voice_object, portal_object, guild_object);
-				if(voice_channel.name !== new_name) {
+				if (voice_channel.name !== new_name) {
 					voice_channel.edit({ name: new_name })
 						.then(newChannel => console.log(
 							`Voice's new name from promise is ${newChannel.name}`))
 						.catch(console.log);
-						return true;
+					return true;
 				} else {
 					return false;
 				}
