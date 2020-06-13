@@ -1,24 +1,29 @@
 const guld_mngr = require('./../functions/guild_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
-    if (portal_guilds[message.guild.id].url_list.find(url_list => url_list === message.channel.id) && args.length === 0) {
-        return {
-            result: true, value: '**This already is in the url list, the url channel.**'
-        };
-    } else if (portal_guilds[message.guild.id].announcement !== message.channel.id &&
-        portal_guilds[message.guild.id].spotify !== message.channel.id) {
-        if (url = message.guild.channels.cache.find(channel =>
-            portal_guilds[message.guild.id].url_list.find(url_list => url_list === channel.id))) {
-            if (url.deletable) {
-                url
-                    .delete()
-                    .catch(console.error); // edo petaei error investigate
-            }
-        } else {
-            portal_guilds[message.guild.id].url_list = [];
+    if (args.length === 0) {
+        if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: `**This already is a URL channel.**`
+            };
+        }
+        if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: `**This can't be set as a URL channel for it is the Announcement channel.**`
+            };
+        }
+        if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: `**This can't be set as a URL channel for it is the Spotify channel.**`
+            };
         }
     }
-    console.log('args: ', args);
+
+    if (spotify = message.guild.channels.cache.find(channel => channel.id == portal_guilds[message.guild.id].spotify)) {
+        guld_mngr.delete_channel(spotify);
+    }
+
+
     if (args.length === 0) {
         portal_guilds[message.guild.id].url_list.push(message.channel.id);
 

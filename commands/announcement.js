@@ -1,19 +1,26 @@
 const guld_mngr = require('./../functions/guild_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
-    if (portal_guilds[message.guild.id].announcement === message.channel.id && args.length === 0) {
-        return {
-            result: true, value: '**This already is, the Announcement channel.**'
-        };
-    } else if (portal_guilds[message.guild.id].announcement !== message.channel.id) {
-        if (announcement = message.guild.channels.cache.find(channel =>
-            channel.id == portal_guilds[message.guild.id].announcement)) {
-            announcement
-                .delete()
-                .catch(console.error);
-        } else {
-            portal_guilds[message.guild.id].announcement = null;
+    if (args.length === 0) {
+        if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: '**This already is, the Announcement channel.**'
+            };
         }
+        if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: `**This can't be set as the Announcemennt channel for it is the Spotify channel.**`
+            };
+        }
+        if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: `**This can't be set as the Spotify channel for it is an url channel.**`
+            };
+        }
+    }
+
+    if (announcement = message.guild.channels.cache.find(channel => channel.id == portal_guilds[message.guild.id].announcement)) {
+        guld_mngr.delete_channel(announcement);
     }
 
     if (args.length === 0) {
@@ -25,8 +32,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
     } else if (args.length > 0) {
         const announcement_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
         const announcement_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
-        console.log('1announcement_channel: ', announcement_channel);
-        console.log('2announcement_category: ', announcement_category);
 
         if (announcement_channel !== '') {
             console.log('exei category');

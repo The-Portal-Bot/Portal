@@ -26,14 +26,15 @@ module.exports = async (args) => {
                                 if(spotify = args.newPresence.guild.channels.cache.find(channel =>
                                     channel.id === args.portal_guilds[current_guild.id].spotify
                                 )) {
+                                    console.log('san tou xristou ta pathei', activity);
                                     spotify
                                     .send(create_rich_embed(
                                         `**${activity.details}**`,
                                         ``,
                                         '#1DB954',
                                         [{
-                                            emote: `Album: **${activity.assets.largeText}**`,
-                                            role: `Artist: ***${activity.state}***`,
+                                            emote: `\u200b`,
+                                            role: `Artist: ***${activity.state}***\nAlbum: ***${activity.assets.largeText}***`,
                                             inline: false
                                         }],
                                         activity.assets.largeImageURL(),

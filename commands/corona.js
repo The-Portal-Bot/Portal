@@ -51,7 +51,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
                     { emote: 'Total recovered', role: `***${daily_stats.total_recovered}***`, inline: true },
                     { emote: '% Recovered', role: `***${((daily_stats.total_recovered / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
                     { emote: '% Diseased', role: `***${((daily_stats.total_deaths / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
-                    { emote: 'Total serious cases', role: `***${daily_stats.total_serious_cases}***`, inline: true }
+                    { emote: 'Serious cases', role: `***${daily_stats.total_serious_cases}***`, inline: true }
                 ], null, null, true));
             } else if (json.results !== undefined && json.results[0].data !== 'none') { console.log('mphka sto 2', json.results[0].data);
                 daily_stats = json.results[0];
@@ -66,7 +66,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
                     { emote: 'Total recovered', role: `***${daily_stats.total_recovered}***`, inline: true },
                     { emote: '% Recovered', role: `***${((daily_stats.total_recovered / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
                     { emote: '% Diseased', role: `***${((daily_stats.total_deaths / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
-                    { emote: 'Total serious cases', role: `***${daily_stats.total_serious_cases}***`, inline: true }
+                    { emote: 'Serious cases', role: `***${daily_stats.total_serious_cases}***`, inline: true }
                 ], null, null, true));
             } else {
                 message.channel.send(

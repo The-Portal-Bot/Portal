@@ -1,21 +1,26 @@
 const guld_mngr = require('./../functions/guild_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
-    if (portal_guilds[message.guild.id].spotify === message.channel.id && args.length === 0) {
-        return {
-            result: true, value: '**This already is, the Spotify channel.**'
-        };
-    } else if (portal_guilds[message.guild.id].announcement !== message.channel.id) {
-        if (spotify = message.guild.channels.cache.find(channel =>
-            channel.id == portal_guilds[message.guild.id].spotify)) {
-            if (spotify.deletable) {
-                spotify
-                    .delete()
-                    .catch(console.error); // edo petaei error investigate
-            }
-        } else {
-            portal_guilds[message.guild.id].spotify = null;
+    if (args.length === 0) {
+        if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: '**This already is, the Spotify channel.**'
+            };
         }
+        if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: `**This can't be set as the Spotify channel for it is the Announcement channel.**`
+            };
+        }
+        if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
+            return {
+                result: true, value: `**This can't be set as the Spotify channel for it is an url channel.**`
+            };
+        }
+    }
+
+    if (spotify = message.guild.channels.cache.find(channel => channel.id == portal_guilds[message.guild.id].spotify)) {
+        guld_mngr.delete_channel(spotify);
     }
 
     if (args.length === 0) {

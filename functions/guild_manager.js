@@ -36,6 +36,32 @@ module.exports =
 	}
 	,
 
+	included_in_url_list: function (channel_id, guild_objct) {
+		for (let i = 0; i < guild_objct.url_list.length; i++) {
+			if (guild_objct.url_list[i] === channel_id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	,
+
+	is_spotify_channel: function (channel_id, guild_objct) {
+		if (guild_objct.spotify === channel_id) {
+			return true;
+		}
+		return false;
+	}
+	,
+
+	is_announcement_channel: function (channel_id, guild_objct) {
+		if (guild_objct.announcement === channel_id) {
+			return true;
+		}
+		return false;
+	}
+	,
+
 	//
 
 	create_focus_channel: function (guild, portal_objct, member, focus_name, focus_time) {
@@ -201,26 +227,7 @@ module.exports =
 	}
 	,
 
-	delete_voice_channel: function (channel_to_delete, portal_list) {
-		// for (let key in portal_list) {
-		// 	if (portal_list[key].voice_list[channel_to_delete.id]) {
-		// 		delete portal_list[key].voice_list[channel_to_delete.id];
-		// 	}
-		// }
-		if(channel_to_delete.deletable) {
-			channel_to_delete.delete()
-				.then(g => console.log(`Deleted channel with id: ${g}`))
-				.catch(console.error);
-		}
-	}
-	,
-
-	delete_portal_channel: function (channel_to_delete, portal_list) {
-		for (let key in portal_list) {
-			if (key == channel_to_delete.id) {
-				delete portal_list[key];
-			}
-		}
+	delete_channel: function (channel_to_delete) {
 		if (channel_to_delete.deletable) {
 			channel_to_delete.delete()
 				.then(g => console.log(`Deleted channel with id: ${g}`))
@@ -232,14 +239,12 @@ module.exports =
 	remove_channel_from_guild_list: function (channel_to_remove, guild_list) {
 		let type_of_channel = 0;
 		for (let portal_id in guild_list[channel_to_remove.guild.id].portal_list) {
-			console.log('inside portal_id: ' + portal_id + ' === ' + channel_to_remove.id)
 			if (portal_id === channel_to_remove.id) {
 				delete guild_list[channel_to_remove.guild.id].portal_list[portal_id];
 				type_of_channel = 1;
 				break;
 			} else {
 				for (let voice_id in guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list) {
-					console.log('inside voice_id: ' + voice_id + ' === ' + channel_to_remove.id)
 					if (voice_id === channel_to_remove.id) {
 						delete guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list[voice_id];
 						type_of_channel = 2;
@@ -266,6 +271,7 @@ module.exports =
 		return type_of_channel;
 	}
 	,
+
 	//
 
 	generate_channel_name: function (voice_channel, portal_object, guild_object) {

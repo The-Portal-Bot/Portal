@@ -44,7 +44,7 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		.setTimestamp()
 		
 	if (from_bot) {
-		rich_message.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
+		rich_message.setFooter(`Portal bot by Keybraker`, portal_icon_url, keybraker_url);
 	}
 	if (member) {
 		rich_message.setAuthor(member.displayName, member.user.avatarURL())
@@ -53,10 +53,13 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		rich_message.setThumbnail(thumbnail)
 	}
 	field_array.forEach(row => {
-		if (row.emote === '') {
-			rich_message.addField('\u200b', '\u200b');
+		if (row.emote === ``) {
+			rich_message.addField(`\u200b`, `\u200b`);
 		} else {
-			rich_message.addField('**`' + row.emote + '`**', row.role, row.inline);
+			rich_message.addField(
+				row.emote === `\u200b` ? `\u200b` : '`' + row.emote + '`',
+				row.role === `\u200b` ? `\u200b` : row.role,
+				row.inline);
 		}
 	});
 
@@ -66,7 +69,7 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 channel_clean_up = function (channel, current_guild) {
 	if (current_guild.channels.cache.some((guild_channel) => {
 		if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
-			guld_mngr.delete_voice_channel(guild_channel, portal_guilds[current_guild.id].portal_list);
+			guld_mngr.delete_channel(guild_channel, portal_guilds[current_guild.id].portal_list);
 			return true;
 		}
 	}));
@@ -110,8 +113,7 @@ is_url = function (message) {
 		'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
 		'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
 
-	if (!pattern.test(message.content))
-		message.delete();
+	return pattern.test(message.content);
 }
 
 // LISTENERS ------------------------------------------------------------------------------------ \\
@@ -166,9 +168,37 @@ client.on('message', async message => {
 	// Check if something written in url channel
 	for (i = 0; i < portal_guilds[message.guild.id].url_list.length; i++) {
 		if (portal_guilds[message.guild.id].url_list[i] === message.channel.id) {
-			is_url(message);
-			return;
+			if (is_url(message)) {
+				message_reply(
+					null,
+					message.author.presence.member.voice.channel,
+					message,
+					message.author,
+					`${message.author}, the URL channels are read-only.`);
+				message.delete();
+				return;
+			}
 		}
+	}
+	if (portal_guilds[message.guild.id].spotify === message.channel.id) {
+		message_reply(
+			null,
+			message.author.presence.member.voice.channel,
+			message,
+			message.author,
+			`${message.author}, the Spotify channel is read-only.`);
+		message.delete();
+		return;
+	}
+	if (portal_guilds[message.guild.id].spotify === message.channel.id) {
+		message_reply(
+			null,
+			message.author.presence.member.voice.channel,
+			message,
+			message.author,
+			`${message.author}, the Announcement channel is read-only.`);
+		message.delete();
+		return;
 	}
 
 	// Ignore any message that does not start with prefix
