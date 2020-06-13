@@ -118,7 +118,13 @@ is_url = function (message) {
 
 event_loader = function (event, args) {
 	require(`./events/${event}.js`)(args)
-		.then(rspns => { if (rspns.result) { console.log(rspns.value) } })
+		.then(rspns => { 
+			if (rspns.result) {
+				console.log(rspns.value)
+			} else {
+				console.log('error: ', rspns.value);
+			}
+		})
 }
 
 client.on('ready', () => // This event will run if the bot starts, and logs in, successfully.
@@ -133,9 +139,9 @@ client.on('guildDelete', guild => // This event triggers when the bot joins a gu
 	event_loader('guildDelete', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
 );
 
-// client.on('channelDelete', guild => // This event triggers when the bot joins a guild.
-// 	event_loader('channelDelete', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
-// );
+client.on('channelDelete', channel => // This event triggers when the bot joins a guild.
+	event_loader('channelDelete', { 'channel': channel, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })
+);
 
 client.on('guildCreate', guild => // this event triggers when the bot is removed from a guild.
 	event_loader('guildCreate', { 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path })

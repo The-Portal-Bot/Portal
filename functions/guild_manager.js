@@ -100,10 +100,7 @@ module.exports =
 	,
 	
 	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_objct) {
-		console.log('spotify_channel: ', spotify_channel);
-		console.log('spotify_category: ', spotify_category);
 		if (spotify_category) { // with category
-			console.log('exei category');
 			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
 				.then(channel => {
 					guild_objct.spotify = channel.id
@@ -113,7 +110,6 @@ module.exports =
 				})
 				.catch(console.error);
 		} else { // without category
-			console.log('den exei category');
 			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
 				.then(channel => { guild_objct.spotify = channel.id })
 				.catch(console.error);
@@ -122,11 +118,8 @@ module.exports =
 	,
 
 	create_announcement_channel: function (guild, announcement_channel, announcement_category, guild_objct) {
-		console.log('announcement_channel: ', announcement_channel);
-		console.log('announcement_category: ', announcement_category);
 		if (announcement_category) { // with category
-			console.log('exei category');
-			return guild.channels.create(`${announcement}-annc`, { type: 'text' })
+			return guild.channels.create(`${announcement_channel}-annc`, { type: 'text' })
 				.then(channel => {
 					guild_objct.announcement = channel.id
 					guild.channels.create(announcement_category, { type: 'category' })
@@ -135,8 +128,7 @@ module.exports =
 				})
 				.catch(console.error);
 		} else { // without category
-			console.log('den exei category');
-			return guild.channels.create(announcement_channel, { type: 'text' })
+			return guild.channels.create(`${announcement_channel}-annc`, { type: 'text' })
 				.then(channel => { guild_objct.announcement = channel.id })
 				.catch(console.error);
 		}
@@ -144,8 +136,6 @@ module.exports =
 	,
 
 	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, creator_id) {
-		console.log('portal_channel: ', portal_channel);
-		console.log('portal_category: ', portal_category);
 		if (portal_category) { // with category
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
@@ -217,12 +207,65 @@ module.exports =
 				delete portal_list[key].voice_list[channel_to_delete.id];
 			}
 		}
-		channel_to_delete.delete()
-			.then(g => console.log(`Deleted channel with id: ${g}`))
-			.catch(console.error);
+		if(channel_to_delete.deletable) {
+			channel_to_delete.delete()
+				.then(g => console.log(`Deleted channel with id: ${g}`))
+				.catch(console.error);
+		}
 	}
 	,
 
+	delete_portal_channel: function (channel_to_delete, portal_list) {
+		for (let key in portal_list) {
+			if (key == channel_to_delete.id) {
+				delete portal_list[key];
+			}
+		}
+		if (channel_to_delete.deletable) {
+			channel_to_delete.delete()
+				.then(g => console.log(`Deleted channel with id: ${g}`))
+				.catch(console.error);
+		}
+	}
+	,
+
+	remove_channel_from_guild_list: function (channel_to_remove, guild_list) {
+		let type_of_channel = 0;
+		for (let portal_id in guild_list[channel_to_remove.guild.id].portal_list) {
+			console.log('inside portal_id: ' + portal_id + ' === ' + channel_to_remove.id)
+			if (portal_id === channel_to_remove.id) {
+				delete guild_list[channel_to_remove.guild.id].portal_list[portal_id];
+				type_of_channel = 1;
+				break;
+			} else {
+				for (let voice_id in guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list) {
+					console.log('inside voice_id: ' + voice_id + ' === ' + channel_to_remove.id)
+					if (voice_id === channel_to_remove.id) {
+						delete guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list[voice_id];
+						type_of_channel = 2;
+						break;
+					}
+				}
+			}
+		}
+		for (let urld_id in guild_list[channel_to_remove.guild.id].url_list) {
+			if (urld_id === +channel_to_remove.id) {
+				delete guild_list[channel_to_remove.guild.id].url_list[urld_id];
+				type_of_channel = 3;
+				break;
+			}
+		}
+		if (guild_list[channel_to_remove.guild.id].spotify === channel_to_remove.id) {
+			guild_list[channel_to_remove.guild.id].spotify = null;
+			type_of_channel = 4;
+		}
+		if (guild_list[channel_to_remove.guild.id].announcement === channel_to_remove.id) {
+			guild_list[channel_to_remove.guild.id].announcement = null;
+			type_of_channel = 5;
+		}
+		return type_of_channel;
+	}
+	,
 	//
 
 	generate_channel_name: function (voice_channel, portal_object, guild_object) {
