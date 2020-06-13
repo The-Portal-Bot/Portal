@@ -14,7 +14,7 @@ const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save'
 const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
 	{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }, 
 	{ command: 'announce', timeout: 2 }];
-const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify', 'announcement', 'focus'];
+const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify', 'announcement', 'focus', 'corona'];
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
@@ -54,9 +54,9 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 	}
 	field_array.forEach(row => {
 		if (row.emote === '') {
-			// rich_message.addBlankField();
+			rich_message.addField('\u200b', '\u200b');
 		} else {
-			rich_message.addField(`**${row.emote}**`, row.role, false); //row.inline);
+			rich_message.addField('**`' + row.emote + '`**', row.role, row.inline);
 		}
 	});
 
