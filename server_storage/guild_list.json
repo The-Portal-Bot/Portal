@@ -1,1 +1,40 @@
-{"228667314252283904":{"portal_list":{},"url_list":[],"role_list":{},"spotify":null,"announcement":null,"locale":"gr"},"705112209985896529":{"portal_list":{},"url_list":[],"role_list":{},"spotify":null,"announcement":null,"locale":"gr"},"710746690650374208":{"portal_list":{"721364435859406998":{"creator_id":"228666893068795905","regex_portal":"new one 2","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":0,"time_to_live":0,"refresh_rate":0,"locale":"gr","voice_list":{},"force_update":false,"last_update":1592057082088},"721365947264270377":{"creator_id":"228666893068795905","regex_portal":"asd","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":0,"time_to_live":0,"refresh_rate":0,"locale":"gr","voice_list":{},"force_update":false,"last_update":1592057442406},"721365949420273687":{"creator_id":"228666893068795905","regex_portal":"asd","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":0,"time_to_live":0,"refresh_rate":0,"locale":"gr","voice_list":{},"force_update":false,"last_update":1592057442963}},"url_list":[],"role_list":{},"spotify":null,"announcement":"721368366530691082","locale":"gr"}}
+{
+    "228667314252283904": {
+        "portal_list": {},
+        "url_list": [],
+        "role_list": {},
+        "spotify": null,
+        "announcement": null,
+        "locale": "gr"
+    },
+    "705112209985896529": {
+        "portal_list": {},
+        "url_list": [],
+        "role_list": {},
+        "spotify": null,
+        "announcement": null,
+        "locale": "gr"
+    },
+    "710746690650374208": {
+        "portal_list": {
+            "721373155633004564": {
+                "creator_id": "228666893068795905",
+                "regex_portal": "new",
+                "regex_voice": "G$#-P$member_count | $status_list",
+                "no_bots": false,
+                "limit_portal": 0,
+                "time_to_live": 0,
+                "refresh_rate": 0,
+                "locale": "gr",
+                "voice_list": {},
+                "force_update": false,
+                "last_update": 1592059160964
+            }
+        },
+        "url_list": [],
+        "role_list": {},
+        "spotify": null,
+        "announcement": null,
+        "locale": "gr"
+    }
+}

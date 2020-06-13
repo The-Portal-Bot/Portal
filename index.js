@@ -152,7 +152,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => // This event triggers
 );
 
 client.on('voiceStateUpdate', (oldState, newState) => // This event triggers when a member joins or leaves a voice channel
-	event_loader('voiceStateUpdate', { 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds, client: client })
+	event_loader('voiceStateUpdate', { 'client': client, 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds })
 );
 
 client.on('message', async message => {

@@ -202,11 +202,11 @@ module.exports =
 	,
 
 	delete_voice_channel: function (channel_to_delete, portal_list) {
-		for (let key in portal_list) {
-			if (portal_list[key].voice_list[channel_to_delete.id]) {
-				delete portal_list[key].voice_list[channel_to_delete.id];
-			}
-		}
+		// for (let key in portal_list) {
+		// 	if (portal_list[key].voice_list[channel_to_delete.id]) {
+		// 		delete portal_list[key].voice_list[channel_to_delete.id];
+		// 	}
+		// }
 		if(channel_to_delete.deletable) {
 			channel_to_delete.delete()
 				.then(g => console.log(`Deleted channel with id: ${g}`))

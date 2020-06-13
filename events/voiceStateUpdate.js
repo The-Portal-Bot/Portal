@@ -16,7 +16,6 @@ module.exports = async (args) => {
 
         let locale = args.portal_guilds[voiceConnection.channel.guild.id].locale;
         lclz_mngr.portal[locale].user_disconnected.voice(args.client);
-
     }
 
     let report_message = `from: ${oldChannel} to ${newChannel})\n`;
@@ -37,6 +36,12 @@ module.exports = async (args) => {
         } else if (guld_mngr.included_in_voice_list(oldChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // user left voice channel
             if (oldChannel.members.size === 0) {
                 guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
+            }
+            if (voiceConnection = args.client.voice.connections.find(connection => connection.channel.id === oldChannel.id)){
+                if (oldChannel.members.size === 1){
+                    voiceConnection.disconnect();
+                    guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
+                }
             }
         }
     } else if (newChannel !== null && oldChannel !== null) { // Moved from channel to channel
@@ -65,6 +70,13 @@ module.exports = async (args) => {
                 if (oldChannel.members.size === 0) {
                     guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
                 }
+                if (voiceConnection = args.client.voice.connections.find(connection => connection.channel.id === oldChannel.id)) {
+                    if (oldChannel.members.size === 1) {
+                        voiceConnection.disconnect();
+                        guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
+                    }
+                }
+
                 guld_mngr.create_voice_channel(args.newState, args.portal_guilds[args.newState.guild.id].portal_list[newChannel.id], args.newState.id);
                 guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list, args.portal_guilds[args.newState.guild.id]);
             } else if (guld_mngr.included_in_voice_list(newChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // Left created channel and joins another created
@@ -73,6 +85,13 @@ module.exports = async (args) => {
                 if (oldChannel.members.size === 0) {
                     guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
                 }
+                if (voiceConnection = args.client.voice.connections.find(connection => connection.channel.id === oldChannel.id)) {
+                    if (oldChannel.members.size === 1) {
+                        voiceConnection.disconnect();
+                        guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
+                    }
+                }
+
                 guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list, args.portal_guilds[args.newState.guild.id]);
             } else { // Left created channel and joins another unknown
                 report_message += `->dest: unknown\n`;
@@ -80,6 +99,13 @@ module.exports = async (args) => {
                 if (oldChannel.members.size === 0) {
                     guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
                 }
+                if (voiceConnection = args.client.voice.connections.find(connection => connection.channel.id === oldChannel.id)) {
+                    if (oldChannel.members.size === 1) {
+                        voiceConnection.disconnect();
+                        guld_mngr.delete_voice_channel(oldChannel, args.portal_guilds[args.newState.guild.id].portal_list);
+                    }
+                }
+
                 guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list, args.portal_guilds[args.newState.guild.id]);
             }
         } else {
