@@ -30,13 +30,13 @@ const client = new Discord.Client();
 
 // FUNCTIONS ------------------------------------------------------------------------------------ \\
 
-create_rich_embed = function (title, description, colour, field_array, thumbnail, member, from_bot) {
+create_rich_embed = function (title, description, colour, field_array, thumbnail, member, from_bot, url) {
 	const portal_icon_url = 'https://raw.githubusercontent.com/'+
 		'keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCQYV4EIHFZAOFV5CYK64X4YA';
 	const keybraker_url = 'https://github.com/keybraker';
 
 	let rich_message = new Discord.MessageEmbed()
-		.setURL()
+		.setURL(url)
 		.setTitle(title)
 		.setColor(colour)
 		// .setAuthor('Portal', portal_icon_url, keybraker_url)
@@ -53,12 +53,12 @@ create_rich_embed = function (title, description, colour, field_array, thumbnail
 		rich_message.setThumbnail(thumbnail)
 	}
 	field_array.forEach(row => {
-		if (row.emote === ``) {
+		if (row.emote === `` && row.role === ``) {
 			rich_message.addField(`\u200b`, `\u200b`);
 		} else {
 			rich_message.addField(
-				row.emote === `\u200b` ? `\u200b` : '`' + row.emote + '`',
-				row.role === `\u200b` ? `\u200b` : row.role,
+				row.emote === `` ? `\u200b` : '`' + row.emote + '`',
+				row.role === `` ? `\u200b` : row.role,
 				row.inline);
 		}
 	});

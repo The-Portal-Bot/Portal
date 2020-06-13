@@ -1,10 +1,11 @@
+const Discord = require('discord.js');
 const guld_mngr = require('./../functions/guild_manager');
 const lclz_mngr = require('./../functions/localization_manager');
 
 module.exports = async (args) => {
     let current_guild = args.newPresence.guild;
     let current_channel = args.newPresence.member.voice.channel;
-    
+
     if (!guld_mngr.included_in_portal_guilds(args.newPresence.guild.id, args.portal_guilds)) {
         return {
             result: false, value: lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled_away(args)
@@ -23,24 +24,29 @@ module.exports = async (args) => {
                     member.presence.activities.forEach(activity => {
                         if (activity.name === 'Spotify') {
                             if (args.portal_guilds[current_guild.id].spotify) {
-                                if(spotify = args.newPresence.guild.channels.cache.find(channel =>
+                                if (spotify = args.newPresence.guild.channels.cache.find(channel =>
                                     channel.id === args.portal_guilds[current_guild.id].spotify
                                 )) {
-                                    console.log('san tou xristou ta pathei', activity);
                                     spotify
-                                    .send(create_rich_embed(
-                                        `**${activity.details}**`,
-                                        ``,
-                                        '#1DB954',
-                                        [{
-                                            emote: `\u200b`,
-                                            role: `Artist: ***${activity.state}***\nAlbum: ***${activity.assets.largeText}***`,
-                                            inline: false
-                                        }],
-                                        activity.assets.largeImageURL(),
-                                        member,
-                                        false
-                                    ));
+                                        .send(create_rich_embed(
+                                            `**${activity.details}**`,
+                                            ``,
+                                            '#1DB954',
+                                            [{
+                                                emote: `Artist`,
+                                                role: `***${activity.state}***`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: `Album`,
+                                                role: `***${activity.assets.largeText}***`,
+                                                inline: true
+                                            }],
+                                            activity.assets.largeImageURL(),
+                                            member,
+                                            false,
+                                            ''//activity.party.id
+                                        ));
                                 }
                             }
                         }
