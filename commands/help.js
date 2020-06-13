@@ -12,7 +12,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         message.author.send(attr_objct.get_help()).catch(console.error);
         message.author.send(strc_objct.get_help()).catch(console.error);
     } else if (args.length === 1) {
-        if (args[0] === 'func') {
+        if (args[0] === 'cmmd') {
             message.author.send(cmmd_objct.get_help()).catch(console.error);
         } else if (args[0] === 'vrbl') {
             message.author.send(vrbl_objct.get_help()).catch(console.error);
