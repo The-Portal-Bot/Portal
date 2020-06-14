@@ -4,9 +4,12 @@ const vrbl_objct = require('../assets/properties/variable_list');
 const pipe_objct = require('../assets/properties/pipe_list');
 const attr_objct = require('../assets/properties/attribute_list');
 
-const class_guild = require('../classes/guild');
-const class_portal = require('../classes/portal');
-const class_role = require('../classes/role');
+const guild_class = require('../classes/guild_class');
+const portal_class = require('../classes/portal_class');
+const voice_class = require('../classes/voice_class');
+const role_class = require('../classes/role_class');
+
+const help_mngr = require('../functions/help_manager');
 
 module.exports =
 {
@@ -105,13 +108,13 @@ module.exports =
 	}
 	,
 
-	create_url_channel: function (guild, url_name, portal_category, url_list) {
+	create_url_channel: function (guild, url_name, url_category, url_list) {
 		if (portal_category) { // with category
 			guild.channels.create(`${url_name}-url`, { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
 
-					guild.channels.create(portal_category, { type: 'category' })
+					guild.channels.create(url_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
 				}).catch(console.error);
@@ -165,7 +168,7 @@ module.exports =
 		if (portal_category) { // with category
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
-					portal_objct[channel.id] = new class_portal.portal_channel(
+					portal_objct[channel.id] = new portal_class(
 						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
 						false, 0, 0, 0, 'gr', false, Date.now()
 					);
@@ -177,7 +180,7 @@ module.exports =
 		} else { // without category
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
-					portal_objct[channel.id] = new class_portal.portal_channel(
+					portal_objct[channel.id] = new portal_class(
 						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
 						false, 0, 0, 0, 'gr', false, Date.now()
 					);
@@ -191,7 +194,7 @@ module.exports =
 		state.channel.guild.channels.create('loading...', { type: 'voice', bitrate: 64000 })
 			.then(channel => {
 				channel.userLimit = portal_objct.user_limit_portal;
-				portal_objct['voice_list'][channel.id] = new class_portal.voice_channel(
+				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice,
 					false, 0, 0, 'gr', 1, Date.now()
 				);
@@ -206,17 +209,17 @@ module.exports =
 	,
 
 	create_role_message: function (message, role_list, title, desc, colour, role_emb) {
-		role_message_emb = create_rich_embed(title, desc, colour, role_emb);
+		role_message_emb = help_mngr.create_rich_embed(title, desc, colour, role_emb);
 		message.channel.send(role_message_emb)
 			.then(sent_message => {
 				// add roles emotes
-				role_list.push(new class_role.role_message(sent_message.id, role_emb));
+				role_list.push(new role_class(sent_message.id, role_emb));
 			});
 	}
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new class_guild({}, [], {}, null, null, `gr`, 0);
+		portal_guilds[guild_id] = new guild_class({}, [], {}, null, null, `gr`, 0);
 	}
 	,
 

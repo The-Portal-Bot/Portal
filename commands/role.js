@@ -15,7 +15,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         role_emb_prnt = [];
 
         role_emb_prnt.push(
-            { emote: 'Get Role', role: 'react with one of the following emotes to get this role', inline: false }
+            { emote: '', role: '**Get Role**: *react with one of the following emotes to get this role.*', inline: false }
         );
         for (let i = 0; i < role_map.length; i++) {
             role_emb_prnt.push(
@@ -26,8 +26,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
             );
         }
         role_emb_prnt.push(
-            { emote: '', role: '', inline: false },
-            { emote: 'Strip Role', role: 'react with one of the following emotes to strip this role', inline: false }
+            // { emote: '', role: '', inline: false },
+            { emote: '', role: '**Strip Role**: *react with one of the following emotes to strip this role.*', inline: false }
         );
         for (let i = 0; i < role_map.length; i++) {
             role_emb_prnt.push(

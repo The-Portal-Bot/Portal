@@ -55,7 +55,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
             } else if (json.results !== undefined && json.results[0].data !== 'none') {
                 daily_stats = json.results[0];
 
-                message.channel.send(help_mngr.create_rich_embed(`CoronaVirus stats for the world ${moment().format('DD/MM/YY')}`,
+                message.channel.send(help_mngr.create_rich_embed(`CoronaVirus stats for the World ${moment().format('DD/MM/YY')}`,
                     `https://thevirustracker.com/`, `#ff0000`, [
                     { emote: 'New cases', role: `+***${daily_stats.total_new_cases_today}***`, inline: true },
                     { emote: 'New deaths', role: `+***${daily_stats.total_new_deaths_today}***`, inline: true },

@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 
 client_talk = function (client, mp3) {
-    if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
-        voiceConnection.play(mp3);
+    if (client.voice !== undefined) {
+        if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
+            voiceConnection.play(mp3);
+        }
     }
 }
 
@@ -115,7 +117,7 @@ module.exports =
                     client_talk(client, `./assets/mp3s/en/user_disconnected_${random}.mp3`);
                 }
             },
-            
+
         },
         de:
         {
@@ -164,7 +166,7 @@ module.exports =
                     client_talk(client, `./assets/mp3s/de/user_disconnected_${random}.mp3`);
                 }
             },
-            
+
         }
     }
     ,
@@ -174,15 +176,15 @@ module.exports =
         gr:
         {
             ready: (args) => {
-                return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε `+
-                `${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`
+                return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε ` +
+                    `${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`
             },
             updating_guild: () => {
                 return `> Το αρχείο JSON των συντεχνιών ενημερώθηκε.`
             },
             presence_controlled_away: (args) => {
                 return `Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος μια ελεγχόμενης συντεχνίας, ` +
-                `έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία (${args.newPresence.guild.name})`
+                    `έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία (${args.newPresence.guild.name})`
             },
             presence_controlled: (args) => {
                 return `Ο χρήστης ${args.newPresence.member.displayName} έχει αλλάξει κατάσταση, ` +
@@ -199,7 +201,7 @@ module.exports =
             },
             presence_controlled_away: (args) => {
                 return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
-                `has changed presence, but is in another server (${args.newPresence.guild.name})`
+                    `has changed presence, but is in another server (${args.newPresence.guild.name})`
             },
             presence_controlled: (args) => {
                 return `${args.newPresence.member.displayName} has changed presence, ` +
@@ -216,7 +218,7 @@ module.exports =
             },
             presence_controlled_away: (args) => {
                 return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
-                `has changed presence, but is in another server (${args.newPresence.guild.name})`
+                    `has changed presence, but is in another server (${args.newPresence.guild.name})`
             },
             presence_controlled: (args) => {
                 return `${args.newPresence.member.displayName} has changed presence, ` +
