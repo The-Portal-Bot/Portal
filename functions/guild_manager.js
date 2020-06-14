@@ -219,7 +219,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new guild_class({}, [], {}, null, null, `gr`, 0);
+		portal_guilds[guild_id] = new guild_class({}, [], {}, null, null, `gr`, 0, false);
 	}
 	,
 

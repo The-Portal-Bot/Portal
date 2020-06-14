@@ -77,11 +77,11 @@ module.exports =
 			description: 'creates a role message.',
 			super_description: '**role**, creates a message that distributes roles.' +
 				'Roles can be given or striped by reacting to the message.\n' +
-				'example ./role [\n' +
-				'\t{ "emote_give": ":heart:", "emote_strip": ":poop:", "role": "moba" },\n' +
-				'\t{ "emote_give": ":rofl:", "emote_strip": ":dog:", "role": "fps" }\n' +
-				']\nThis will create a message giving/striping moba role with :heart:/:poop: and fps role with :rofl:/:dog:.',
-			args: '![{ "emote_give": ":heart:", "emote_strip": ":poop:", "role": "moba" }]'
+				'example ./role ```json\n' +
+				'[\n\t{ "give": ":heart:", "strip": ":poop:", "role": "moba" },\n' +
+				'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]```' +
+				'\nThis will create a message giving/striping moba role with :heart:/:poop: and fps role with :rofl:/:dog:.',
+			args: '```json\n![{ "give": ":heart:", "strip": ":poop:", "role": "moba" }]```'
 		},
 		{
 			name: 'save',

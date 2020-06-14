@@ -19,10 +19,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         );
         for (let i = 0; i < role_map.length; i++) {
             role_emb_prnt.push(
-                { emote: role_map[i].emote_give, role: role_map[i].role, inline: true }
+                { emote: role_map[i].give, role: role_map[i].role, inline: true }
             );
             role_emb.push(
-                { emote: role_map[i].emote_give, role: role_map[i].role, inline: true }
+                { emote: role_map[i].give, role: role_map[i].role, inline: true }
             );
         }
         role_emb_prnt.push(
@@ -31,10 +31,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         );
         for (let i = 0; i < role_map.length; i++) {
             role_emb_prnt.push(
-                { emote: role_map[i].emote_strip, role: role_map[i].role, inline: true }
+                { emote: role_map[i].strip, role: role_map[i].role, inline: true }
             );
             role_emb.push(
-                { emote: role_map[i].emote_strip, role: role_map[i].role, inline: true }
+                { emote: role_map[i].strip, role: role_map[i].role, inline: true }
             );
         }
         guld_mngr.create_role_message(message, portal_guilds[message.guild.id]['role_list'],
