@@ -1,3 +1,5 @@
+const help_mngr = require('./../../functions/help_manager');
+
 module.exports =
 {
 	is_command: function (arg) {
@@ -16,7 +18,7 @@ module.exports =
 				inline: true
 			});
 		}
-		return create_rich_embed('Commands',
+		return help_mngr.create_rich_embed('Commands',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#9775A9', func_array);
@@ -25,7 +27,7 @@ module.exports =
 		for (i = 0; i < this.commands.length; i++) {
 			let cmmd = this.commands[i]
 			if (cmmd.name === check) {
-				return create_rich_embed(
+				return help_mngr.create_rich_embed(
 					cmmd.name,
 					'Type: Command' +
 					'\nPrefix: ' + this.prefix +

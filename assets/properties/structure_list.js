@@ -1,3 +1,5 @@
+const help_mngr = require('./../../functions/help_manager');
+
 module.exports =
 {
 	is_structure: function (arg) {
@@ -18,7 +20,7 @@ module.exports =
 				inline: true
 			});
 		}
-		return create_rich_embed('Structures',
+		return help_mngr.create_rich_embed('Structures',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#EEB902', strc_array);
@@ -27,7 +29,7 @@ module.exports =
 		for (i = 0; i < this.structures.length; i++) {
 			let strc = this.structures[i]
 			if (strc.name === check) {
-				return create_rich_embed(
+				return help_mngr.create_rich_embed(
 					strc.name,
 					'Type: Structure' +
 					'\nPrefix: ' + this.prefix +

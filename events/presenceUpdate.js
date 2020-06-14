@@ -1,6 +1,6 @@
-const Discord = require('discord.js');
 const guld_mngr = require('./../functions/guild_manager');
 const lclz_mngr = require('./../functions/localization_manager');
+const help_mngr = require('./../functions/help_manager');
 
 module.exports = async (args) => {
     let current_guild = args.newPresence.guild;
@@ -28,7 +28,7 @@ module.exports = async (args) => {
                                     channel.id === args.portal_guilds[current_guild.id].spotify
                                 )) {
                                     spotify
-                                        .send(create_rich_embed(
+                                        .send(help_mngr.create_rich_embed(
                                             `**${activity.details}**`,
                                             ``,
                                             '#1DB954',

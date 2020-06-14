@@ -9,18 +9,18 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
             message.guild, portal_channel, portal_category, portal_guilds[message.guild.id].portal_list, message.member.id);
 
         return {
-            result: true, value: '*Portal channel and category have been created*' +
-                '*Keep in mind that after Discord\'s update*, ' +
-                '**channel names can be updated twice per ten minutes**'
+            result: true, value: `*Portal channel has been created.\n` +
+                `Keep in mind that due to Discord's limitations,*\n` +
+                `**channel names will be updated on a five minute interval.**`
         };
     } else if (portal_channel === '' && portal_category !== '') {
         guld_mngr.create_portal_channel(
             message.guild, portal_category, null, portal_guilds[message.guild.id].portal_list, message.member.id);
 
         return {
-            result: true, value: '*Portal channel has been created*' +
-                '*Keep in mind that after Discord\'s update*, ' +
-                '**channel names can be updated twice per ten minutes**'
+            result: true, value: `*Portal channel has been created.\n` +
+                `Keep in mind that due to Discord's limitations,*\n` +
+                `**channel names will be updated on a five minute interval.**`
         };
     } else {
         return {

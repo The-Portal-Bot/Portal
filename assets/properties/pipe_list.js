@@ -1,5 +1,6 @@
 const voca = require('voca');
 
+const help_mngr = require('./../../functions/help_manager');
 module.exports =
 {
 	is_pipe: function (arg) {
@@ -18,7 +19,7 @@ module.exports =
 				inline: true
 			});
 		}
-		return create_rich_embed('Pipes',
+		return help_mngr.create_rich_embed('Pipes',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#6EEB83', pipe_array);
@@ -27,7 +28,7 @@ module.exports =
 		for (i = 0; i < this.pipes.length; i++) {
 			let pipe = this.pipes[i]
 			if (pipe.name === check) {
-				return create_rich_embed(
+				return help_mngr.create_rich_embed(
 					pipe.name,
 					'Type: Pipe' +
 					'\nPrefix: ' + this.prefix +

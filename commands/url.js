@@ -19,10 +19,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         }
     }
 
-    if (spotify = message.guild.channels.cache.find(channel => channel.id == portal_guilds[message.guild.id].spotify)) {
-        guld_mngr.delete_channel(spotify);
-    }
-
+    // if (url = message.guild.channels.cache.find(channel => channel.id == portal_guilds[message.guild.id].url_list[message.channel.id])) {
+    //     guld_mngr.delete_channel(url);
+    // }
 
     if (args.length === 0) {
         portal_guilds[message.guild.id].url_list.push(message.channel.id);

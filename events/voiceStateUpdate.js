@@ -1,5 +1,6 @@
 const guld_mngr = require('./../functions/guild_manager');
 const lclz_mngr = require('./../functions/localization_manager');
+const help_mngr = require('./../functions/help_manager');
 
 module.exports = async (args) => {
     let newChannel = args.newState.channel; // join channel
@@ -127,7 +128,7 @@ module.exports = async (args) => {
     } else {
         report_message += `don't know how we got here\n`;
     }
-    update_portal_managed_guilds(true);
+    help_mngr.update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.portal_guilds);
     report_message += `\n`;
 
     return {

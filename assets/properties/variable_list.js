@@ -1,5 +1,7 @@
-const rtrv = require('../../functions/status_manager');
 const moment = require('moment');
+
+const rtrv = require('./../../functions/status_manager');
+const help_mngr = require('./../../functions/help_manager');
 
 module.exports =
 {
@@ -19,7 +21,7 @@ module.exports =
 				inline: true
 			});
 		}
-		return create_rich_embed('Variables',
+		return help_mngr.create_rich_embed('Variables',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#1BE7FF', vrbl_array);
@@ -28,7 +30,7 @@ module.exports =
 		for (i = 0; i < this.variables.length; i++) {
 			let vrbl = this.variables[i]
 			if (vrbl.name === check) {
-				return create_rich_embed(
+				return help_mngr.create_rich_embed(
 					vrbl.name,
 					'Type: Variable' +
 					'\nPrefix: ' + this.prefix +

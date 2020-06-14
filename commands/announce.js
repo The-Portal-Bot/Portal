@@ -1,4 +1,5 @@
 const lclz_mngr = require('./../functions/localization_manager');
+const help_mngr = require('./../functions/help_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
     if (!portal_guilds[message.guild.id].announcement) {
@@ -8,7 +9,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
     }
 
     message.guild.channels.cache.find(channel => channel.id === portal_guilds[message.guild.id].announcement)
-        .send(create_rich_embed(
+        .send(help_mngr.create_rich_embed(
             `**${args.join(' ').substr(0, args.join(' ').indexOf('|'))}**`,
             `**${args.join(' ').substr(args.join(' ').indexOf('|')+1)}**`,
             '#022e4e',

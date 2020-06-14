@@ -1,8 +1,8 @@
-const axios = require("axios");
-let request = require("request");
+const help_mngr = require('./../functions/help_manager');
+const lclz_mngr = require('./../functions/localization_manager');
+
 const https = require('follow-redirects').https;
 const moment = require('moment');
-const lclz_mngr = require('./../functions/localization_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path, user_match) => {
     let url = null;
@@ -25,7 +25,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
         'maxRedirects': 20
     };
 
-    let flow = true;
     let req = https.request(options, function (res) {
         let chunks = [];
 
@@ -37,11 +36,11 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
             let body = Buffer.concat(chunks);
             let json = JSON.parse(body.toString().substring(body.toString().indexOf('{')));
 
-            if (json.countrydata !== undefined) { console.log('mphka sto 1');
+            if (json.countrydata !== undefined) {
                 daily_stats = json.countrydata[0];
                 country_stats = json.countrydata[0].info;
 
-                message.channel.send(create_rich_embed(`CoronaVirus stats for ${country_stats.title} ${moment().format('DD/MM/YY')}`,
+                message.channel.send(help_mngr.create_rich_embed(`CoronaVirus stats for ${country_stats.title} ${moment().format('DD/MM/YY')}`,
                     `https://thevirustracker.com/`, `#ff0000`, [
                     { emote: 'New cases', role: `+***${daily_stats.total_new_cases_today}***`, inline: true },
                     { emote: 'New deaths', role: `+***${daily_stats.total_new_deaths_today}***`, inline: true },
@@ -53,10 +52,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
                     { emote: '% Diseased', role: `***${((daily_stats.total_deaths / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
                     { emote: 'Serious cases', role: `***${daily_stats.total_serious_cases}***`, inline: true }
                 ], null, null, true));
-            } else if (json.results !== undefined && json.results[0].data !== 'none') { console.log('mphka sto 2', json.results[0].data);
+            } else if (json.results !== undefined && json.results[0].data !== 'none') {
                 daily_stats = json.results[0];
 
-                message.channel.send(create_rich_embed(`CoronaVirus stats for the world ${moment().format('DD/MM/YY')}`,
+                message.channel.send(help_mngr.create_rich_embed(`CoronaVirus stats for the world ${moment().format('DD/MM/YY')}`,
                     `https://thevirustracker.com/`, `#ff0000`, [
                     { emote: 'New cases', role: `+***${daily_stats.total_new_cases_today}***`, inline: true },
                     { emote: 'New deaths', role: `+***${daily_stats.total_new_deaths_today}***`, inline: true },

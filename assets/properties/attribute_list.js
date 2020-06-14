@@ -1,3 +1,5 @@
+const help_mngr = require('./../../functions/help_manager');
+
 module.exports =
 {
 	is_attribute: function (arg) {
@@ -16,7 +18,7 @@ module.exports =
 				inline: true
 			});
 		}
-		return create_rich_embed('Attributes',
+		return help_mngr.create_rich_embed('Attributes',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#FF5714', attr_array);
@@ -25,7 +27,7 @@ module.exports =
 		for (i = 0; i < this.attributes.length; i++) {
 			let attr = this.attributes[i]
 			if (attr.name === check) {
-				return create_rich_embed(
+				return help_mngr.create_rich_embed(
 					attr.name,
 					'Type: Attribute' +
 					'\nPrefix: ' + this.prefix +
