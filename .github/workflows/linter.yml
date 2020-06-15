@@ -23,7 +23,10 @@ jobs:
       - name: Run linters
         uses: samuelmeuli/lint-action@v1
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ 'b5715961767930a1bcd190cc400ae36b01eb0e0c' }}
           # Enable linters
           eslint: true
           # prettier: true
+
+      - name: Commit Linter
+        uses: wagoid/commitlint-github-action@v1.6.0
