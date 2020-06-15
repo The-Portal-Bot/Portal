@@ -24,3 +24,4 @@ jobs:
 
       - name: Lint Action
       uses: samuelmeuli/lint-action@v1.5.3
+      with: slint: true
