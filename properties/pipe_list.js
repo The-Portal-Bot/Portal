@@ -1,16 +1,17 @@
 const voca = require('voca');
 
+const help_mngr = require('../functions/help_manager');
 module.exports =
 {
 	is_pipe: function (arg) {
-		for (i = 0; i < this.pipes.length; i++)
+		for (let i = 0; i < this.pipes.length; i++)
 			if (String(arg).substring(1, (String(this.pipes[i].name).length + 1)) == this.pipes[i].name)
 				return this.pipes[i].name;
 		return false;
 	},
 	get_help: function () {
 		let pipe_array = [];
-		for (i = 0; i < this.pipes.length; i++) {
+		for (let i = 0; i < this.pipes.length; i++) {
 			pipe_array.push({
 				emote: this.pipes[i].name,
 				role: '**desc**: *' + this.pipes[i].description + '*' +
@@ -18,16 +19,16 @@ module.exports =
 				inline: true
 			});
 		}
-		return create_rich_embed('Pipes',
+		return help_mngr.create_rich_embed('Pipes',
 			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#6EEB83', pipe_array);
 	},
 	get_help_super: function (check) {
-		for (i = 0; i < this.pipes.length; i++) {
-			let pipe = this.pipes[i]
+		for (let i = 0; i < this.pipes.length; i++) {
+			let pipe = this.pipes[i];
 			if (pipe.name === check) {
-				return create_rich_embed(
+				return help_mngr.create_rich_embed(
 					pipe.name,
 					'Type: Pipe' +
 					'\nPrefix: ' + this.prefix +
@@ -37,13 +38,13 @@ module.exports =
 						{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + pipe.args + '*', inline: false }
 					]
-				)
+				);
 			}
 		}
 		return false;
 	},
 	get: function (str, pipe) {
-		for (l = 0; l < this.pipes.length; l++) {
+		for (let l = 0; l < this.pipes.length; l++) {
 			if (pipe === this.pipes[l].name) {
 				return this.pipes[l].get(str);
 			}
@@ -113,8 +114,8 @@ module.exports =
 			description: 'returns the count of most common element in list',
 			super_description: '**populous_count**, returns the count of most common element in list.',
 			args: 'none',
-			get: (str) => {
-				return 'not yet implemented'
+			get: () => {
+				return 'not yet implemented';
 			}
 		},
 		{
@@ -122,8 +123,8 @@ module.exports =
 			description: 'returns the name of the most common element in list',
 			super_description: '**populous**, returns the name of the most common element in list.',
 			args: 'none',
-			get: (str) => {
-				return 'not yet implemented'
+			get: () => {
+				return 'not yet implemented';
 			}
 		},
 		{
@@ -136,4 +137,4 @@ module.exports =
 			}
 		}
 	]
-}
+};
