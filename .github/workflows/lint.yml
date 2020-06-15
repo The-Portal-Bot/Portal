@@ -1,6 +1,9 @@
 name: Lint
 
-on: push
+on:
+  push:
+    paths:
+    - '**.js'
 
 jobs:
   run-linters:
@@ -13,17 +16,11 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v1
-        with:
-          node-version: 12
+        with: node-version: 12
 
       # ESLint and Prettier must be in `package.json`
       - name: Install Node.js dependencies
         run: npm install
 
-      - name: Run linters
-        uses: samuelmeuli/lint-action@v1
-        with:
-          github_token: ${{ 'b5715961767930a1bcd190cc400ae36b01eb0e0c' }}
-          # Enable linters
-          eslint: true
-          prettier: true
+      - name: Lint Action
+      uses: samuelmeuli/lint-action@v1.5.3
