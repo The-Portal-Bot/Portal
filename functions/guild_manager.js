@@ -1,8 +1,10 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-cond-assign */
 const voca = require('voca');
 
-const vrbl_objct = require('../assets/properties/variable_list');
-const pipe_objct = require('../assets/properties/pipe_list');
-const attr_objct = require('../assets/properties/attribute_list');
+const vrbl_objct = require('../properties/variable_list');
+const pipe_objct = require('../properties/pipe_list');
+const attr_objct = require('../properties/attribute_list');
 
 const guild_class = require('../assets/classes/guild_class');
 const portal_class = require('../assets/classes/portal_class');
@@ -69,19 +71,19 @@ module.exports =
 
 	create_focus_channel: function (guild, portal_objct, member, focus_name, focus_time) {
 		
-		console.log('focus_name: ', focus_name)
-		console.log('focus_time: ', focus_time)
+		console.log('focus_name: ', focus_name);
+		console.log('focus_time: ', focus_time);
 
 		let return_value = null;
 		if (member_found = member.voice.channel.members.find(member_find => 
 			member_find.displayName === focus_name, focus_time)) {
 			const oldChannel = member.voice.channel;
-			let newChannel = null;
+			// let newChannel = null;
 			
 			guild.channels.create(
 				`${member.displayName}&${member_found.displayName}`, { type: 'voice', bitrate: 64000 })
 				.then(channel => {
-					newChannel = channel;
+					// newChannel = channel;
 					channel.userLimit = 2;
 					member.voice.setChannel(channel);
 					member_found.voice.setChannel(channel);
@@ -89,18 +91,18 @@ module.exports =
 
 			setTimeout(() => {
 				if (!oldChannel.deleted) {
-					member.voice.setChannel(oldChannel).then(moved => {
-						member_found.voice.setChannel(oldChannel).then(moved => {
-							if (newChannel.deletable()) {
-								newChannel.delete().catch(console.error);
-							}
-						}).catch(console.error);
-					}).catch(console.error);
+					// member.voice.setChannel(oldChannel).then(moved => {
+					// 	member_found.voice.setChannel(oldChannel).then(moved => {
+					// 		if (newChannel.deletable()) {
+					// 			newChannel.delete().catch(console.error);
+					// 		}
+					// 	}).catch(console.error);
+					// }).catch(console.error);
 				} else {
-					return_value =  `oldChannel.name was deleted before transport back could occur.`;
+					return_value =  'oldChannel.name was deleted before transport back could occur.';
 				}
 			}, focus_time * 60 * 1000);
-			if (return_value) { return return_value}
+			if (return_value) { return return_value; }
 			return true;
 		} else {
 			return false;
@@ -123,7 +125,7 @@ module.exports =
 				.then(channel => {
 					url_list.push(channel.id);
 					console.log('url_list = ' + url_list);
-				})
+				});
 		}
 	}
 	,
@@ -132,7 +134,7 @@ module.exports =
 		if (spotify_category) { // with category
 			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
 				.then(channel => {
-					guild_objct.spotify = channel.id
+					guild_objct.spotify = channel.id;
 					guild.channels.create(spotify_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
@@ -140,7 +142,7 @@ module.exports =
 				.catch(console.error);
 		} else { // without category
 			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
-				.then(channel => { guild_objct.spotify = channel.id })
+				.then(channel => { guild_objct.spotify = channel.id; })
 				.catch(console.error);
 		}
 	}
@@ -150,7 +152,7 @@ module.exports =
 		if (announcement_category) { // with category
 			return guild.channels.create(`${announcement_channel}-annc`, { type: 'text' })
 				.then(channel => {
-					guild_objct.announcement = channel.id
+					guild_objct.announcement = channel.id;
 					guild.channels.create(announcement_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
@@ -158,7 +160,7 @@ module.exports =
 				.catch(console.error);
 		} else { // without category
 			return guild.channels.create(`${announcement_channel}-annc`, { type: 'text' })
-				.then(channel => { guild_objct.announcement = channel.id })
+				.then(channel => { guild_objct.announcement = channel.id; })
 				.catch(console.error);
 		}
 	}
@@ -204,7 +206,7 @@ module.exports =
 				state.member.voice.setChannel(channel);
 			}).catch(console.error);
 
-		return
+		return;
 	}
 	,
 
@@ -219,7 +221,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new guild_class({}, [], {}, null, null, `gr`, 0, false);
+		portal_guilds[guild_id] = new guild_class({}, [], {}, null, null, 'gr', 0, false);
 	}
 	,
 
@@ -350,7 +352,7 @@ module.exports =
 					} else {
 						if (return_value = pipe_objct.get(
 							new_channel_name.substring(last_space_index, new_channel_name.length), pipe)) {
-							let str_for_pipe = return_value
+							let str_for_pipe = return_value;
 							new_channel_name = new_channel_name.substring(0, last_space_index);
 							new_channel_name += str_for_pipe;
 							i += voca.chars(pipe).length;
@@ -362,14 +364,14 @@ module.exports =
 
 			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
 				let inline = {
-					"==": (a, b) => { if (a == b) return true; else false; },
-					"===": (a, b) => { if (a === b) return true; else false; },
-					"!=": (a, b) => { if (a != b) return true; else false; },
-					"!==": (a, b) => { if (a !== b) return true; else false; },
-					">": (a, b) => { if (a > b) return true; else false; },
-					"<": (a, b) => { if (a < b) return true; else false; },
-					">=": (a, b) => { if (a >= b) return true; else false; },
-					"<=": (a, b) => { if (a <= b) return true; else false; }
+					'==': (a, b) => { if (a == b) return true; else false; },
+					'===': (a, b) => { if (a === b) return true; else false; },
+					'!=': (a, b) => { if (a != b) return true; else false; },
+					'!==': (a, b) => { if (a !== b) return true; else false; },
+					'>': (a, b) => { if (a > b) return true; else false; },
+					'<': (a, b) => { if (a < b) return true; else false; },
+					'>=': (a, b) => { if (a >= b) return true; else false; },
+					'<=': (a, b) => { if (a <= b) return true; else false; }
 				};
 
 				try {

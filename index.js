@@ -1,6 +1,8 @@
+/* eslint-disable no-cond-assign */
+/* eslint-disable no-undef */
 const file_system = require('file-system');
 
-const portal_managed_guilds_path = "./server_storage/guild_list.json";
+const portal_managed_guilds_path = './server_storage/guild_list.json';
 const config = require('./config.json'); // config.token / config.prefix
 
 const guld_mngr = require('./functions/guild_manager');
@@ -32,12 +34,12 @@ event_loader = function (event, args) {
 	require(`./events/${event}.js`)(args)
 		.then(rspns => { 
 			if (rspns.result) {
-				console.log(rspns.value)
+				console.log(rspns.value);
 			} else {
 				console.log('error: ', rspns.value);
 			}
-		})
-}
+		});
+};
 
 client.on('ready', () => // This event will run if the bot starts, and logs in, successfully.
 	event_loader('ready', {
@@ -137,8 +139,7 @@ client.on('message', async message => {
 	const cmd = args.shift().toLowerCase();
 
 	if (command_obj = guild_cooldownable.find(guild_cooldown => guild_cooldown.command === cmd)) {
-		if (member_obj = guild_cooldowns.find(active_cooldown => 
-			active_cooldown.command === command_obj.command)) {
+		if (member_obj = guild_cooldowns.find(active_cooldown => active_cooldown.command === command_obj.command)) {
 
 			const time_elapsed = Date.now() - member_obj.timestamp;
 			const timeout_time = command_obj.timeout * 60 * 1000;

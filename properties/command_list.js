@@ -1,16 +1,16 @@
-const help_mngr = require('./../../functions/help_manager');
+const help_mngr = require('../functions/help_manager');
 
 module.exports =
 {
 	is_command: function (arg) {
-		for (i = 0; i < this.commands.length; i++)
+		for (let i = 0; i < this.commands.length; i++)
 			if (String(arg).substring(1, (String(this.commands[i].name).length + 1)) == this.commands[i].name)
 				return this.commands[i].name;
 		return false;
 	},
 	get_help: function () {
 		let func_array = [];
-		for (i = 0; i < this.commands.length; i++) {
+		for (let i = 0; i < this.commands.length; i++) {
 			func_array.push({
 				emote: this.commands[i].name,
 				role: '**desc**: *' + this.commands[i].description + '*' +
@@ -24,8 +24,8 @@ module.exports =
 			'#9775A9', func_array);
 	},
 	get_help_super: function (check) {
-		for (i = 0; i < this.commands.length; i++) {
-			let cmmd = this.commands[i]
+		for (let i = 0; i < this.commands.length; i++) {
+			let cmmd = this.commands[i];
 			if (cmmd.name === check) {
 				return help_mngr.create_rich_embed(
 					cmmd.name,
@@ -37,7 +37,7 @@ module.exports =
 						{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + cmmd.args + '*', inline: false }
 					]
-				)
+				);
 			}
 		}
 		return false;
@@ -174,4 +174,4 @@ module.exports =
 			args: '<@country code>'
 		}	
 	]
-}
+};

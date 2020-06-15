@@ -1,9 +1,9 @@
-const help_mngr = require('./../../functions/help_manager');
+const help_mngr = require('../functions/help_manager');
 
 module.exports =
 {
 	is_structure: function (arg) {
-		for (i = 0; i < this.structures.length; i++) {
+		for (let i = 0; i < this.structures.length; i++) {
 			if (String(arg).substring(1, (String(this.structures[i].name).length + 1)) == this.structures[i].name) {
 				return this.structures[i].name;
 			}
@@ -12,7 +12,7 @@ module.exports =
 	},
 	get_help: function () {
 		let strc_array = [];
-		for (i = 0; i < this.structures.length; i++) {
+		for (let i = 0; i < this.structures.length; i++) {
 			strc_array.push({
 				emote: this.structures[i].name,
 				role: '**desc**: *' + this.structures[i].description + '*' +
@@ -26,8 +26,8 @@ module.exports =
 			'#EEB902', strc_array);
 	},
 	get_help_super: function (check) {
-		for (i = 0; i < this.structures.length; i++) {
-			let strc = this.structures[i]
+		for (let i = 0; i < this.structures.length; i++) {
+			let strc = this.structures[i];
 			if (strc.name === check) {
 				return help_mngr.create_rich_embed(
 					strc.name,
@@ -39,7 +39,7 @@ module.exports =
 						{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false }
 					]
-				)
+				);
 			}
 		}
 		return false;
@@ -60,4 +60,4 @@ module.exports =
 			args: 'JSON with: if, is, with, yes, no'
 		}
 	]
-}
+};

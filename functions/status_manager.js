@@ -3,11 +3,11 @@ const programs = require('../assets/jsons/program_list.json');
 
 module.exports = {
 	status_aliases: function (activities, locale) {
-		new_status = [];
+		let new_status = [];
 		
 		activities.forEach(activity => {
 			let found = false;			
-			for (l = 0; l < games.game_attributes.length; l++) {
+			for (let l = 0; l < games.game_attributes.length; l++) {
 				if (activity.name == games.game_attributes[l].status) {
 					if (locale === 'gr') {
 						new_status.push(games.game_attributes[l].locale.gr);
@@ -20,7 +20,7 @@ module.exports = {
 			}
 
 			if(!found) {
-				for (l = 0; l < programs.program_attributes.length; l++) {
+				for (let l = 0; l < programs.program_attributes.length; l++) {
 					if (activity.name == programs.program_attributes[l].status) {
 						if (locale === 'gr') {
 							new_status.push(programs.program_attributes[l].locale.gr);
@@ -56,9 +56,9 @@ module.exports = {
 
 		if (array_of_statuses.length === 0) {
 			if (voice_object.locale === 'gr') {
-				array_of_statuses.push("Άραγμα");
+				array_of_statuses.push('Άραγμα');
 			} else {
-				array_of_statuses.push("Chilling");
+				array_of_statuses.push('Chilling');
 			}
 		}
 	
