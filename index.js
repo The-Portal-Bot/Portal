@@ -12,11 +12,28 @@ let guild_cooldowns = new Array();
 let member_cooldowns = new Array();
 let user_match = {};
 
-const guild_cooldownable = [{ command: 'purge', timeout: 10 }, { command: 'save', timeout: 0.1 }];
-const member_cooldownable = [{ command: 'force', timeout: 5 }, { command: 'join', timeout: 1 },
-	{ command: 'leave', timeout: 1 }, { command: 'role', timeout: 1 }, { command: 'url', timeout: 1 }, 
-	{ command: 'announce', timeout: 2 }];
-const uncooldownable = ['help', 'ping', 'portal', 'run', 'set', 'spotify', 'announcement', 'focus', 'corona'];
+const guild_cooldownable = [
+	{ command: 'purge', timeout: 10 },
+	{ command: 'save', timeout: 0.1 }
+];
+const member_cooldownable = [
+	{ command: 'force', timeout: 5 },
+	{ command: 'join', timeout: 1 },
+	{ command: 'leave', timeout: 1 },
+	{ command: 'role', timeout: 1 },
+	{ command: 'url', timeout: 1 },
+	{ command: 'announce', timeout: 2 }
+];
+const uncooldownable = [
+	'help',
+	'ping', 'portal',
+	'run',
+	'set',
+	'spotify',
+	'announcement',
+	'focus',
+	'corona'
+];
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
@@ -32,7 +49,7 @@ const client = new Discord.Client();
 
 event_loader = function (event, args) {
 	require(`./events/${event}.js`)(args)
-		.then(rspns => { 
+		.then(rspns => {
 			if (rspns.result) {
 				console.log(rspns.value);
 			} else {
@@ -41,47 +58,43 @@ event_loader = function (event, args) {
 		});
 };
 
-client.on('ready', () => // This event will run if the bot starts, and logs in, successfully.
-	event_loader('ready', {
-		'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path
-	})
-);
+// This event will run if the bot starts, and logs in, successfully.
+client.on('ready', () => event_loader('ready',
+	{ 'client': client, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
+));
 
-client.on('shardReconnecting', id =>
-	event_loader('shardReconnecting', {
-		'id': id
-	})
-);
+// When bot connects to shard again ?
+client.on('shardReconnecting', id => event_loader('shardReconnecting',
+	{ 'id': id }
+));
 
-client.on('guildDelete', guild => // This event triggers when the bot joins a guild.
-	event_loader('guildDelete', {
-		'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path
-	})
-);
+// This event triggers when the bot joins a guild.
+client.on('guildDelete', guild => event_loader('guildDelete',
+	{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
+));
 
-client.on('channelDelete', channel => // This event triggers when the bot joins a guild.
-	event_loader('channelDelete', {
-		'channel': channel, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path
-	})
-);
+// This event triggers when the bot joins a guild.
+client.on('channelDelete', channel => event_loader('channelDelete',
+	{ 'channel': channel, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
+));
 
-client.on('guildCreate', guild => // this event triggers when the bot is removed from a guild.
-	event_loader('guildCreate', {
-		'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path
-	})
-);
+// this event triggers when the bot is removed from a guild.
+client.on('guildCreate', guild => event_loader('guildCreate',
+	{ 'guild': guild, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path }
+));
 
-client.on('presenceUpdate', (oldPresence, newPresence) => // This event triggers when the status of a guild member has changed
-	event_loader('presenceUpdate', {
-		'newPresence': newPresence, 'portal_guilds': portal_guilds
-	})
-);
+// This event triggers when the status of a guild member has changed
+client.on('presenceUpdate', (oldPresence, newPresence) => event_loader('presenceUpdate',
+	{ 'newPresence': newPresence, 'portal_guilds': portal_guilds }
+));
 
-client.on('voiceStateUpdate', (oldState, newState) => // This event triggers when a member joins or leaves a voice channel
-	event_loader('voiceStateUpdate', {
-		'client': client, 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds, 'portal_managed_guilds_path': portal_managed_guilds_path
-	})
-);
+// This event triggers when a member joins or leaves a voice channel
+client.on('voiceStateUpdate', (oldState, newState) => event_loader('voiceStateUpdate',
+	{
+		'client': client, 'oldState': oldState, 'newState': newState, 'portal_guilds': portal_guilds,
+		'portal_managed_guilds_path': portal_managed_guilds_path
+	}
+));
 
 client.on('message', async message => {
 	// runs on every single message received, from any channel or DM
@@ -113,7 +126,7 @@ client.on('message', async message => {
 			message,
 			message.author,
 			`${message.author}, the Spotify channel is read-only.`,
-			portal_guilds, 
+			portal_guilds,
 			client);
 		message.delete();
 		return;
@@ -125,7 +138,7 @@ client.on('message', async message => {
 			message,
 			message.author,
 			`${message.author}, the Announcement channel is read-only.`,
-			portal_guilds, 
+			portal_guilds,
 			client);
 		message.delete();
 		return;
@@ -159,7 +172,7 @@ client.on('message', async message => {
 				message,
 				message.author,
 				`${message.author} you need to wait ${remaining_min}:${remaining_sec}/${timeout_min}:${timeout_sec} `,
-				portal_guilds, 
+				portal_guilds,
 				client +
 				`to use ${command_obj.command} again as it was used again in ${message.guild.name}.`);
 
@@ -170,7 +183,7 @@ client.on('message', async message => {
 						guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
 						setTimeout(() => {
 							guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
-								active_cooldown.command !== 
+								active_cooldown.command !==
 								command_obj.command);
 						}, command_obj.timeout * 60 * 1000);
 					} else if (rspns !== false) {
@@ -187,7 +200,7 @@ client.on('message', async message => {
 							message,
 							message.author,
 							rspns.value,
-							portal_guilds, 
+							portal_guilds,
 							client);
 					}
 				});
@@ -197,7 +210,7 @@ client.on('message', async message => {
 		if (member_obj = member_cooldowns.find(active_cooldown =>
 			active_cooldown.member === message.author.id &&
 			active_cooldown.command === command_obj.command)) {
-				
+
 			const time_elapsed = Date.now() - member_obj.timestamp;
 			const timeout_time = command_obj.timeout * 60 * 1000;
 			const time_remaining = timeout_time - time_elapsed;
@@ -216,7 +229,7 @@ client.on('message', async message => {
 				message,
 				message.author,
 				`${message.author} you need to ${remaining_min}:${remaining_sec}/${timeout_min}:${timeout_sec} `,
-				portal_guilds, 
+				portal_guilds,
 				client +
 				`to use ${command_obj.command} again.`);
 
@@ -247,7 +260,7 @@ client.on('message', async message => {
 							message,
 							message.author,
 							rspns.value,
-							portal_guilds, 
+							portal_guilds,
 							client);
 					}
 				});
@@ -255,15 +268,15 @@ client.on('message', async message => {
 		}
 	} else if (uncooldownable.includes(cmd)) {
 		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path, user_match)
-			.then(rspns => { 
-				if(rspns) {
+			.then(rspns => {
+				if (rspns) {
 					help_mngr.message_reply(
 						rspns.result,
 						message.author.presence.member.voice.channel,
 						message,
 						message.author,
 						rspns.value,
-						portal_guilds, 
+						portal_guilds,
 						client);
 				}
 			});
