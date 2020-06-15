@@ -21,9 +21,9 @@ jobs:
         run: npm install
 
       - name: Run linters
-        uses: keybraker/lint-action@v1
+        uses: samuelmeuli/lint-action@v1
         with:
           github_token: ${{ 'b5715961767930a1bcd190cc400ae36b01eb0e0c' }}
           # Enable linters
           eslint: true
-          # prettier: true
+          prettier: true
