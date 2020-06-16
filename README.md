@@ -35,7 +35,7 @@ name | description | arguments | eligible for use | cooldown (mins)
 `leave` | _leaves current voice channel_ | _none_ | current portal owner | -
 `join` | _joins current voice channel and announces events_ | _none_ | everyone | 1 user
 `save` | _saves current state of server_ | _none_ | admin, admin-role/s | 5 server
-`announce` | _prints announcement in announcement channel_ | _@title \| @body_ | everyone | 5 user
+`announce` | _prints announcement in announcement channel_ | _@title \| @body_ | everyone | 1 user
 `force` | _clones current channel in order to force-update name_ | _none_ | admin, admin-role/s | 2 user
 
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
