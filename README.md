@@ -50,7 +50,7 @@ There are four types of data in **Portal™** bot:
 
 ## Variables
 * _prefix:_ __$__
-* _(Variables are defacto data sources that can be accessed though calling them)_
+* _(Variables are defacto data sources that can be accessed though calling them they are read-only)_
 
 variable | description
 --------- | ---------
@@ -78,7 +78,7 @@ variable | description
 
 ### Pipes
 * _prefix:_ __|__
-* _(Pipes are applied to variables in order to change their outcome)_
+* _(Pipes are applied to variables or strings in order to change their outcome)_
 
 pipe | type | description
 --------- | --------- | ---------
@@ -124,7 +124,7 @@ attributes | type | default | description
 
 Acknowledgments - **Discord.js** with the exeptional library [**Discord.js**](http://owl.phy.queensu.ca/~phil/exiftool/)
 <br>
-Author - **Ioannis Tsiakkas** - *(Keybraker)* - [Keybraker](https://github.com/keybraker)
+Author - **Ioannis Tsiakkas** - *(Keybraker)* - [**Keybraker**](https://github.com/keybraker)
 <br>
 Copyright © 2020 [**Portal™**](https://github.com/keybraker/portal-discord-bot)
 
