@@ -17,24 +17,24 @@ Features:
 ## Commands
 **Portal™ prefix: ./**
 
-name | description | arguments | more data | eligible for use | cooldown (mins)
---------- | --------- | --------- | --------- | --------- | ---------
-`portal` | _creates a portal voice channel_ | _!channel\_name \| @category\_name_ | | admin, admin-role/s | none
-`run` | _runs the given command string and returns its output_ | _!exec\_command_ | | everyone | 1
-`set` | _sets the value of an attribute_ | _!attribute !value_ | | voice owner/ portal owner, admin, admin-role/s | none
-`url` | _creates a new or sets the current channel as url-only_ | _@channel\_name \| @category\_name_ | | admin, admin-role/s | none
-`spotify` | _creates a new or sets the current channel as spotify_ | _@channel\_name \| @category\_name_ | there can be only one spotify channel | admin, admin-role/s | none
-`announcement` | _creates a new or sets the current channel as announcement_ | _@channel\_name \| @category\_name_ | there can be only one announcement channel | admin, admin-role/s | none
-`save` | _saves current state of server_ | _none_ | | admin, admin-role/s | 5
-`help` | _returns a help-list if specified returns specific description_ | _@specific\_command or @vrbl/@func/@pipe/@attr_ | | everyone | none
-`ping` | _returns round trip latency_ | _none_ | | everyone | 1
-`announce` | _prints announcement in announcement channel_ | _none_ | | everyone | 5
-`corona` | _replies with the daily state of corona virus cases_ | _@country code (gr, de, us, etc)_ | | everyone | none
-`focus` | _creates a new channel for two and puts them there for a specific time and returns them back to channel o origin_ | _!username @time (default 5minutes)_ | | everyone | none
-`force` | _clones current channel in order to force-update name_ | _none_ | | admin, admin-role/s | 2
-`join` | _joins current voice channel and announces events_ | _none_ | | everyone | 1
-`leave` | _leaves current voice channel_ | _none_ | | current portal owner | none
-`role` | _replies with a message that gives roles when an emote is added_ | `{json}` | | admin, admin-role/s | none
+name | description | arguments | eligible for use | cooldown (mins)
+--------- | --------- | --------- | --------- | ---------
+`portal` | _creates a portal voice channel_ | _!channel\_name \| @category\_name_ | admin, admin-role/s | none
+`run` | _runs the given command string and returns its output_ | _!exec\_command_ | everyone | 1
+`set` | _sets the value of an attribute_ | _!attribute !value_ | voice owner/ portal owner, admin, admin-role/s | none
+`url` | _creates a new or sets the current channel as url-only_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | none
+`spotify` | _creates a new or sets the current channel as spotify_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | none
+`announcement` | _creates a new or sets the current channel as announcement_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | none
+`save` | _saves current state of server_ | _none_ | admin, admin-role/s | 5
+`help` | _returns a help-list if specified returns specific description_ | _@specific\_command or @vrbl/@func/@pipe/@attr_ | everyone | none
+`ping` | _returns round trip latency_ | _none_ | everyone | 1
+`announce` | _prints announcement in announcement channel_ | _@title \| @body_ | | everyone | 5
+`corona` | _replies with the daily state of corona virus cases_ | _@country code (gr, de, us, etc)_ | everyone | none
+`focus` | _creates a new channel for two and puts them there for a specific time and returns them back to channel o origin_ | _!username @time (default 5minutes)_ | everyone | none
+`force` | _clones current channel in order to force-update name_ | _none_ | admin, admin-role/s | 2
+`join` | _joins current voice channel and announces events_ | _none_ | everyone | 1
+`leave` | _leaves current voice channel_ | _none_ | current portal owner | none
+`role` | _replies with a message that gives roles when an emote is added_ | `[{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false }]` | admin, admin-role/s | none
 
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
