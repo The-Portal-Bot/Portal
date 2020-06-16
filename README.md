@@ -11,6 +11,8 @@ Features:
 * Automatically generates voice channels.
 * Automatically updates the title of the channel in accordance to your regex guidlines.
 * Assignes and strips roles from users with a single reaction press.
+* Get the latest on the corona virus
+* Spotify / Announcement / URL channels that allow any server to create and maintain clean announcement channels without being verified.
 <br><br />
 ***
 
@@ -19,22 +21,22 @@ Features:
 
 name | description | arguments | eligible for use | cooldown (mins)
 --------- | --------- | --------- | --------- | ---------
-`portal` | _creates a portal voice channel_ | _!channel\_name \| @category\_name_ | admin, admin-role/s | none
-`run` | _runs the given command string and returns its output_ | _!exec\_command_ | everyone | 1
-`set` | _sets the value of an attribute_ | _!attribute !value_ | voice owner/ portal owner, admin, admin-role/s | none
-`url` | _creates a new or sets the current channel as url-only_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | none
-`spotify` | _creates a new or sets the current channel as spotify_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | none
-`announcement` | _creates a new or sets the current channel as announcement_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | none
-`save` | _saves current state of server_ | _none_ | admin, admin-role/s | 5
-`help` | _returns a help-list if specified returns specific description_ | _@specific\_command or @vrbl/@func/@pipe/@attr_ | everyone | none
-`ping` | _returns round trip latency_ | _none_ | everyone | 1
-`announce` | _prints announcement in announcement channel_ | _@title \| @body_ | | everyone | 5
-`corona` | _replies with the daily state of corona virus cases_ | _@country code (gr, de, us, etc)_ | everyone | none
-`focus` | _creates a new channel for two and puts them there for a specific time and returns them back to channel o origin_ | _!username @time (default 5minutes)_ | everyone | none
-`force` | _clones current channel in order to force-update name_ | _none_ | admin, admin-role/s | 2
-`join` | _joins current voice channel and announces events_ | _none_ | everyone | 1
-`leave` | _leaves current voice channel_ | _none_ | current portal owner | none
-`role` | _replies with a message that gives roles when an emote is added_ | `[{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false }]` | admin, admin-role/s | none
+`portal` | _creates a portal voice channel_ | _!channel\_name \| @category\_name_ | admin, admin-role/s | -
+`run` | _runs the given command string and returns its output_ | _!exec\_command_ | everyone | -
+`set` | _sets the value of an attribute_ | _!attribute !value_ | voice owner/ portal owner, admin, admin-role/s | -
+`url` | _creates a new or sets the current channel as url-only_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | -
+`spotify` | _creates a new or sets the current channel as spotify_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | -
+`announcement` | _creates a new or sets the current channel as announcement_ | _@channel\_name \| @category\_name_ | admin, admin-role/s | -
+`focus` | _creates focus channel for you and your requested user_ | _!username @time (default 5minutes)_ | everyone | -
+`help` | _returns a help-list if specified returns specific description_ | _@command/@vrbl/@func/@pipe/@attr_ | everyone | -
+`corona` | _replies with the daily state of corona virus cases_ | _@country code (gr, de, us, etc)_ | everyone | -
+`role` | _replies with a message that gives roles when an emote is added_ | `[{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false }]` | admin, admin-role/s | -
+`ping` | _returns round trip latency_ | _none_ | everyone | -
+`leave` | _leaves current voice channel_ | _none_ | current portal owner | -
+`join` | _joins current voice channel and announces events_ | _none_ | everyone | 1 user
+`save` | _saves current state of server_ | _none_ | admin, admin-role/s | 5 server
+`announce` | _prints announcement in announcement channel_ | _@title \| @body_ | everyone | 5 user
+`force` | _clones current channel in order to force-update name_ | _none_ | admin, admin-role/s | 2 user
 
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
@@ -54,8 +56,8 @@ There are four types of data in **Portal™** bot:
 
 variable | description
 --------- | ---------
-`\#` | _number of channel in list_
-`\##` | _number of channel in list with \#_
+`#` | _number of channel in list_
+`##` | _number of channel in list with \#_
 `date` | _full date: dd/mm/yyyy_
 `number_day` | _gets the day number_
 `name_day` | _gets the day name_
@@ -91,7 +93,7 @@ pipe | type | description
 `titleCase` | string | _returns an titleCase of the input_
 `camelCase` | string | _returns an camelCase of the input_
 `acronym` | string | _returns an acronym of the input_
-`word\#` | string | _returns \# words of the input_
+`word#` | string | _returns \# words of the input_
 `populous_count` | number | _returns the count of most common element in list_
 `populous` | list | _returns the name of the most common element in list_
 `summary_count` | number | _returns the count of members having a status_
@@ -102,9 +104,9 @@ pipe | type | description
 
 attributes | type | default | description
 --------- | --------- | --------- | --------- 
-`regex_portal` | string | _G$\#-P$member_count \| $status_list_ | _regex-guidelines for how to display portal's title_
-`regex_voice` | string | _G$\#-P$member_count \| $status_list_ | _regex-guidelines for how to display new voice (current portal)_
-`regex` | string | _G$\#-P$member_count \| $status_list_ | _sets regex-guidelines for current voice_
+`regex_portal` | string | _default regex [1]_ | _regex-guidelines for how to display portal's title_
+`regex_voice` | string | _default regex [1]_ | _regex-guidelines for how to display new voice (current portal)_
+`regex` | string | _default regex [1]_ | _sets regex-guidelines for current voice_
 `user_limit_portal` | number | 0 | _guidelines for max number of members for new voice channel from current portal_
 `user_limit_voice` | number | 0 | _guidelines for max number of members for current voice_
 `locale_guild` | string (gr/en/de) | gr | _locale used for **Portal™**'s interactions_
@@ -114,6 +116,17 @@ attributes | type | default | description
 `bitrate_voice` | number | 64000 | _bitrate of current voice channel_
 `position` | number | beneath portal | _position of channel_
 `last_update` | timestamp | timestamp | _returns the last update timestamp_
+
+[1] default regex: _G$\#-P$member_count \| $status_list_
+
+### Structures
+* _prefix:_ __{{__
+* _suffix:_ __}}__
+* _(Structures are grammatical attributes to control the structure of the output)_
+
+attributes | description | usage
+--------- | --------- | ---------
+`if` | conditional statement  | `{{ "if": "John", "is": "===", "with": "John", "yes": "same name", "no": "not the same name"}}`
 ***
 
 # About
