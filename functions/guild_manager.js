@@ -111,7 +111,7 @@ module.exports =
 	,
 
 	create_url_channel: function (guild, url_name, url_category, url_list) {
-		if (portal_category) { // with category
+		if (url_category) { // with category
 			guild.channels.create(`${url_name}-url`, { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
