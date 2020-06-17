@@ -111,41 +111,15 @@ client.on('message', async message => {
 	if (message.channel.type === 'dm') return;
 
 	// Check if something written in url channel
-	if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
-		if (help_mngr.is_url(message)) {
-			help_mngr.message_reply(
-				null,
-				message.author.presence.member.voice.channel,
-				message,
-				message.author,
-				`${message.author}, the URL channels are read-only.`,
-				portal_guilds,
-				client);
-			message.delete();
-			return;
-		}
-	}
-	if (portal_guilds[message.guild.id].spotify === message.channel.id) {
+	let channel_type = null;
+	if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) { channel_type = 'URL'; }
+	if (portal_guilds[message.guild.id].spotify === message.channel.id) { channel_type = 'Spotify'; }
+	if (portal_guilds[message.guild.id].announcement === message.channel.id) { channel_type = 'Announcement'; }
+
+	if (channel_type !== null && channel_type !== 'URL' || channel_type === 'URL' && !help_mngr.is_url(message)) {
 		help_mngr.message_reply(
-			null,
-			message.author.presence.member.voice.channel,
-			message,
-			message.author,
-			`${message.author}, the Spotify channel is read-only.`,
-			portal_guilds,
-			client);
-		message.delete();
-		return;
-	}
-	if (portal_guilds[message.guild.id].announcement === message.channel.id) {
-		help_mngr.message_reply(
-			null,
-			message.author.presence.member.voice.channel,
-			message,
-			message.author,
-			`${message.author}, the Announcement channel is read-only.`,
-			portal_guilds,
-			client);
+			null, message.author.presence.member.voice.channel, message, message.author,
+			`${message.author}, ${channel_type} channel is read-only.`, portal_guilds, client);
 		message.delete();
 		return;
 	}
@@ -157,7 +131,6 @@ client.on('message', async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
 
-	let time = null;
 	let type = null;
 
 	if (!(command_cooldown.guild[cmd] >= 0)) {
@@ -185,7 +158,7 @@ client.on('message', async message => {
 		(type === 'member' && active.member === message.author.id && active.command === cmd) ? true :
 			(type === 'guild' && active.command === cmd))) {
 
-		time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd]);
+		let time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd]);
 		help_mngr.message_reply(
 			false, message.author.presence.member.voice.channel, message, message.author,
 			`*${message.author} you need to wait* **${time.remaining_min}:${time.remaining_sec}` +
@@ -211,7 +184,7 @@ client.on('message', async message => {
 
 				help_mngr.message_reply(
 					true, message.author.presence.member.voice.channel,
-					message, message.author, rspns ? 'Executed correctly' : rspns.value, portal_guilds, client);
+					message, message.author, rspns === true ? 'executed correctly' : rspns.value, portal_guilds, client);
 				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
 			} else if (rspns === false) { console.log('rspns is false');
 				help_mngr.message_reply(
@@ -219,102 +192,6 @@ client.on('message', async message => {
 					message, message.author, 'rspns.value', portal_guilds, client);
 			}
 		});
-
-
-
-
-
-
-
-
-
-
-
-	// if (command_obj = guild_cooldownable.find(guild_cooldown => guild_cooldown.command === cmd)) {
-	// 	if (member_obj = guild_cooldowns.find(active_cooldown => active_cooldown.command === command_obj.command)) {
-
-	// 		let time = help_mngr.time_elapsed(member_obj.timestamp, command_obj.timeout);
-
-	// 		help_mngr.message_reply(
-	// 			false, message.author.presence.member.voice.channel, message, message.author,
-	// 			`${message.author} you need to wait ${time.remaining_min}:${time.remaining_sec}/${time.timeout_min}:${time.timeout_sec} `,
-	// 			portal_guilds, client + `to use ${command_obj.command} again as it was used again in ${message.guild.name}.`);
-
-	// 	} else {
-	// 		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
-	// 			.then(rspns => {
-	// 				if (rspns === true) {
-	// 					guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
-	// 					setTimeout(() => {
-	// 						guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
-	// 							active_cooldown.command !==
-	// 							command_obj.command);
-	// 					}, command_obj.timeout * 60 * 1000);
-	// 				} else if (rspns !== false) {
-	// 					if (rspns.result === true) {
-	// 						guild_cooldowns.push({ command: command_obj.command, timestamp: Date.now() });
-	// 						setTimeout(() => {
-	// 							guild_cooldowns = guild_cooldowns.filter(active_cooldown =>
-	// 								active_cooldown.command !== cmd);
-	// 						}, command_obj.timeout * 60 * 1000);
-	// 					}
-	// 					help_mngr.message_reply(
-	// 						rspns.result, message.author.presence.member.voice.channel,
-	// 						message, message.author, rspns.value, portal_guilds, client);
-	// 				}
-	// 			});
-	// 		help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
-	// 	}
-	// } else if (command_obj = member_cooldownable.find(member_cooldown => member_cooldown.command === cmd)) {
-	// 	if (member_obj = member_cooldowns.find(active_cooldown => active_cooldown.member === message.author.id && active_cooldown.command === command_obj.command)) {
-
-	// 		let time = help_mngr.time_elapsed(member_obj.timestamp, command_obj.timeout);
-
-	// 		help_mngr.message_reply(
-	// 			false, message.author.presence.member.voice.channel, message, message.author,
-	// 			`${message.author} you need to wait ${time.remaining_min}:${time.remaining_sec}/${time.timeout_min}:${time.timeout_sec} `,
-	// 			portal_guilds, client + `to use ${command_obj.command} again.`);
-
-	// 	} else {
-	// 		await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
-	// 			.then(rspns => {
-	// 				if (rspns === true) {
-	// 					member_cooldowns.push({ member: message.author.id, command: command_obj.command, timestamp: Date.now() });
-	// 					setTimeout(() => {
-	// 						member_cooldowns = member_cooldowns.filter(active_cooldown =>
-	// 							active_cooldown.member !== message.author.id &&
-	// 							active_cooldown.command !== cmd);
-	// 					}, command_obj.timeout * 60 * 1000);
-	// 				} else if (rspns !== false) {
-	// 					if (rspns.result === true) {
-	// 						member_cooldowns.push(
-	// 							{ member: message.author.id, command: command_obj.command, timestamp: Date.now() }
-	// 						);
-	// 						setTimeout(() => {
-	// 							member_cooldowns = member_cooldowns.filter(active_cooldown =>
-	// 								active_cooldown.member !== message.author.id &&
-	// 								active_cooldown.command !== cmd);
-	// 						}, command_obj.timeout * 60 * 1000);
-	// 					}
-	// 					help_mngr.message_reply(
-	// 						rspns.result, message.author.presence.member.voice.channel,
-	// 						message, message.author, rspns.value, portal_guilds, client);
-	// 				}
-	// 			});
-	// 		help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
-	// 	}
-	// } else if (uncooldownable.includes(cmd)) {
-	// 	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path, user_match)
-	// 		.then(rspns => {
-	// 			if (rspns) {
-	// 				help_mngr.message_reply(
-	// 					rspns.result, message.author.presence.member.voice.channel, 
-	// 					message, message.author, rspns.value, portal_guilds, client);
-	// 			}
-	// 		});
-	// 	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
-	// }
-
 });
 
 client.login(config.token);

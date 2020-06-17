@@ -121,7 +121,7 @@ module.exports = {
 			Math.round((time_remaining / 1000 / 60) - 1) : 0;
 		const remaining_sec = Math.round((time_remaining / 1000) % 60);
 
-		return { timeout_min, timeout_sec, remaining_min, remaining_sec }
+		return { timeout_min, timeout_sec, remaining_min, remaining_sec };
 	}
 
 
