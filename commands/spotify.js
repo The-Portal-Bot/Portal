@@ -35,8 +35,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	} else if (args.length > 0) {
 		const spotify_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
 		const spotify_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
-		console.log('1spotify_channel: ', spotify_channel);
-		console.log('2spotify_category: ', spotify_category);
 		
 		if (spotify_channel !== '') {
 			guld_mngr.create_spotify_channel(

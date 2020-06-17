@@ -14,7 +14,7 @@ let active_cooldown = {
 	guild: [], member: []
 };
 
-const command_cooldown = {
+const command_cooldown = { 
 	guild: {
 		purge: 10, save: 5
 	},
@@ -199,11 +199,9 @@ client.on('message', async message => {
 	await require(`./commands/${cmd}.js`)(
 		client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
-			if (rspns === true || (rspns !== false && rspns.result === true)) {
-				console.log('rspns is true or inst false');
+			if (rspns.result === true) {
 				active_cooldown[type].push({
-					member: message.author.id,
-					command: cmd,
+					member: message.author.id, command: cmd,
 					timestamp: Date.now()
 				});
 
@@ -217,14 +215,14 @@ client.on('message', async message => {
 					message, message.author, rspns === true ?
 						'executed correctly' :
 						rspns.value, portal_guilds, client);
+
 				help_mngr.update_portal_managed_guilds(
 					true, portal_managed_guilds_path, portal_guilds);
-			} else if (rspns === false) {
-				console.log('rspns is false');
-				help_mngr.message_reply(
-					false, message.author.presence.member.voice.channel,
-					message, message.author, 'rspns.value', portal_guilds, client);
 			}
+
+			help_mngr.message_reply(
+				rspns.result, message.author.presence.member.voice.channel,
+				message, message.author, rspns.value, portal_guilds, client);
 		});
 });
 
