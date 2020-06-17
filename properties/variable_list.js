@@ -220,6 +220,20 @@ module.exports =
 			}
 		},
 		{
+			name: 'member_active_count',
+			description: 'returns number of members with a status.',
+			super_description: '**member_with_status**, returns the number of members with a status.',
+			args: 'none',
+			get: (voice_channel) => {
+				let cnt = 0;
+				voice_channel.members.forEach((member) => {
+					if (member.presence.game !== null)
+						cnt++;
+				});
+				return cnt;
+			}
+		},
+		{
 			name: 'member_with_status',
 			description: 'returns number of members with a status.',
 			super_description: '**member_with_status**, returns the number of members with a status.',

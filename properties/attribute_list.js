@@ -196,18 +196,6 @@ module.exports =
 			}
 		},
 		{
-			name: 'force_update',
-			description: 'forces a channel creation and move of members to change name',
-			super_description: '**force_update**, forces a channel creation and move of members to change name',
-			args: '!true/false',
-			get: (voice_channel, voice_object) => {
-				return voice_object.force_update;
-			},
-			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				voice_object.force_update = Boolean(value);
-			}
-		},
-		{
 			name: 'last_update',
 			description: 'is the last time the channel name was updated',
 			super_description: '**last_update**, is the last time the channel name was updated',
