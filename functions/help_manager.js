@@ -85,13 +85,17 @@ module.exports = {
 
 	// channel should be removed !
 	message_reply: function (status, channel, message, user, str, portal_guilds, client) {
-		message.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }); });
-		if (status === true) {
-			message.react('✔️');
-		} else if (status === false) {
-			let locale = portal_guilds[message.guild.id].locale;
-			lclz_mngr.portal[locale].error.voice(client);
-			message.react('❌');
+		if (!message.channel.deleted) {
+			message.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }); });
+		}
+		if (!message.deleted) {
+			if (status === true) {
+				message.react('✔️');
+			} else if (status === false) {
+				let locale = portal_guilds[message.guild.id].locale;
+				lclz_mngr.portal[locale].error.voice(client);
+				message.react('❌');
+			}
 		}
 	}
 	,
