@@ -83,6 +83,7 @@ module.exports = {
 	}
 	,
 
+	// channel should be removed !
 	message_reply: function (status, channel, message, user, str, portal_guilds, client) {
 		message.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }); });
 		if (status === true) {
@@ -105,4 +106,23 @@ module.exports = {
 
 		return pattern.test(message.content);
 	}
+	,
+
+	time_elapsed: function (timestamp, timeout) {
+		const time_elapsed = Date.now() - timestamp;
+		const timeout_time = timeout * 60 * 1000;
+		const time_remaining = timeout_time - time_elapsed;
+
+		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
+			Math.round((time_remaining / 1000 / 60)) : 0;
+		const timeout_sec = Math.round((timeout_time / 1000) % 60);
+
+		const remaining_min = Math.round((time_remaining / 1000 / 60) - 1) > 0 ?
+			Math.round((time_remaining / 1000 / 60) - 1) : 0;
+		const remaining_sec = Math.round((time_remaining / 1000) % 60);
+
+		return { timeout_min, timeout_sec, remaining_min, remaining_sec }
+	}
+
+
 };
