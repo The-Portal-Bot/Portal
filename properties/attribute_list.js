@@ -1,4 +1,5 @@
 const help_mngr = require('../functions/help_manager');
+const locales = ['gr', 'en', 'de'];
 
 module.exports =
 {
@@ -54,8 +55,7 @@ module.exports =
 		for (let l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {
 				if (this.attributes[l].set !== undefined) {
-					this.attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value);
-					return 1;
+					return this.attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value);
 				}
 				return -1;
 			}
@@ -73,8 +73,8 @@ module.exports =
 				return portal_object.regex_portal;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				var args_arr = Array.prototype.slice.call(value);
-				portal_object.regex_portal = args_arr.slice(1).join(' ');
+				portal_object.regex_portal = value;
+				return 1;
 			}
 		},
 		{
@@ -86,8 +86,8 @@ module.exports =
 				return portal_object.regex_voice;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				var args_arr = Array.prototype.slice.call(value);
-				portal_object.regex_voice = args_arr.slice(1).join(' ');
+				portal_object.regex_voice = value;
+				return 1;
 			}
 		},
 		{
@@ -99,8 +99,8 @@ module.exports =
 				return voice_object.regex;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				var args_arr = Array.prototype.slice.call(value);
-				voice_object.regex = args_arr.slice(1).join(' ');
+				voice_object.regex = value;
+				return 1;
 			}
 		},
 		{
@@ -112,7 +112,11 @@ module.exports =
 				return portal_object.user_limit_portal;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				portal_object.user_limit_portal = Number(value);
+				if (value >= 0) {
+					portal_object.user_limit_portal = Number(value);
+					return 1;
+				}
+				return -5;
 			}
 		},
 		{
@@ -124,7 +128,11 @@ module.exports =
 				return voice_channel.userLimit;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				voice_channel.userLimit = Number(value);
+				if (value >= 0) {
+					voice_channel.userLimit = Number(value);
+					return 1;
+				}
+				return -5;
 			}
 		},
 		{
@@ -140,6 +148,7 @@ module.exports =
 					.then(channel => console.log(
 						`Channel's new position is ${channel.position} and should be ${value}`))
 					.catch(console.error);
+				return 1;
 			}
 		},
 		{
@@ -151,7 +160,12 @@ module.exports =
 				return voice_object.locale;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				voice_object.locale = String(value);
+				if (locales.includes(value)) {
+					voice_object.locale = String(value);
+					return 1;
+				} else {
+					return -4;
+				}
 			}
 		},
 		{
@@ -163,7 +177,12 @@ module.exports =
 				return portal_object.locale;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				portal_object.locale = String(value);
+				if (locales.includes(value)) {
+					portal_object.locale = String(value);
+					return 1;
+				} else {
+					return -4;
+				}
 			}
 		},
 		{
@@ -176,7 +195,12 @@ module.exports =
 				return guild_object.locale;
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				guild_object.locale = String(value);
+				if (locales.includes(value)) {
+					guild_object.locale = String(value);
+					return 1;
+				} else {
+					return -4;
+				}
 			}
 		},
 		{
@@ -193,6 +217,7 @@ module.exports =
 					.then(channel => console.log(
 						`Channel's new position is ${channel.bitrate} and should be ${value}`))
 					.catch(console.error);
+				return 1;
 			}
 		},
 		{
