@@ -7,7 +7,7 @@ const locales = ['gr', 'en', 'de'];
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	let current_portal_list = portal_guilds[message.guild.id].portal_list;
 	
-	if (message.member.voice.channel.id === undefined) {
+	if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
 		return {
 			result: false, value: '*You must be in a channel handled by* **Portal™** *to set attributes*'
 		};
@@ -23,9 +23,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				if (voice_key === message.member.voice.channel.id) {
 					let current_voice_channel = current_portal_list[portal_key].voice_list[voice_key];
 					let current_portal_channel = current_portal_list[portal_key];
-					if (message.member.id === current_voice_channel.creator_id) {
 
-						let value = [...args]; value.shift(); value = value.join(' ');					
+					if (message.member.id === current_voice_channel.creator_id) {
+						let value = [...args]; value.shift(); value = value.filter(val => val !== '\n').join(' ');					
 
 						let return_value = attr_objct.set(
 							message.member.voice.channel, current_voice_channel, current_portal_channel,

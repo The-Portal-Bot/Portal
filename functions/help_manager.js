@@ -69,9 +69,6 @@ module.exports = {
 	,
 
 	update_portal_managed_guilds: function (force, portal_managed_guilds_path, portal_guilds) {
-		console.log(lclz_mngr.console.gr.updating_guild());
-		console.log('portal_managed_guilds_path: ', portal_managed_guilds_path);
-
 		setTimeout(function () {
 			if (force) file_system.writeFileSync(
 				portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
@@ -92,8 +89,9 @@ module.exports = {
 			if (status === true) {
 				message.react('✔️');
 			} else if (status === false) {
-				let locale = portal_guilds[message.guild.id].locale;
-				lclz_mngr.portal[locale].error.voice(client);
+				// let locale = portal_guilds[message.guild.id].locale;
+				// lclz_mngr.portal[locale].error.voice(client);
+				lclz_mngr.client_talk(client, portal_guilds, 'error');
 				message.react('❌');
 			}
 		}

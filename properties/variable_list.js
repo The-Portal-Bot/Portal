@@ -65,9 +65,13 @@ module.exports =
 			get: (voice_channel, voice_object, portal_object) => {
 				let i = 0;
 				for (let key in portal_object) {
-					i++;
 					if (portal_object[key].voice_list[voice_channel.id] === voice_object) {
-						return '#' + i;
+						for (let key2 in portal_object[key].voice_list) {
+							i++;
+							if (portal_object[key].voice_list[key2] === voice_object) {
+								return '#' + i;
+							}
+						}
 					}
 				}
 				return '#' + '-1';
@@ -81,9 +85,13 @@ module.exports =
 			get: (voice_channel, voice_object, portal_object) => {
 				let i = 0;
 				for (let key in portal_object) {
-					i++;
 					if (portal_object[key].voice_list[voice_channel.id] === voice_object) {
-						return +i;
+						for (let key2 in portal_object[key].voice_list) {
+							i++;
+							if (portal_object[key].voice_list[key2] === voice_object) {
+								return +i;
+							}
+						}
 					}
 				}
 				return +-1;
@@ -272,6 +280,16 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return voice_object.creator_id;
+			}
+		},
+		{
+			name: 'last_update',
+			description: 'is the last time the channel name was updated',
+			super_description: '**last_update**, is the last time the channel name was updated',
+			args: 'none',
+			get: (voice_channel, voice_object) => {
+				return `${Math.round(((Date.now() - voice_object.last_update) / 1000 / 60))}m` +
+					`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`;
 			}
 		}
 	]

@@ -7,7 +7,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	let current_voice = message.member.voice.channel;
 
 	if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
-		lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].goodbye.voice(client);
+		// lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].goodbye.voice(client);
+		lclz_mngr.client_talk(client, portal_guilds, 'goodbye');
 		setTimeout(function () { voiceConnection.disconnect(); }, 3000);
 	}
 

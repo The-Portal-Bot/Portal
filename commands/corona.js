@@ -1,16 +1,39 @@
+/* eslint-disable no-cond-assign */
 /* eslint-disable no-unused-vars */
+const country_codes = require('./../assets/jsons/country_codes.json');
+// let portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
+
 const help_mngr = require('./../functions/help_manager');
 const lclz_mngr = require('./../functions/localization_manager');
 
 const https = require('https');
 const moment = require('moment');
+const voca = require('voca');
+
+const get_country_code = function (country) {
+	for (let i = 0; i < country_codes.length; i++) {
+		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country)) {
+			return country_codes[i].code;
+		} else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country)) {
+			return country_codes[i].code;			
+		}
+	}
+	return null;
+};
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path, user_match) => {
 	let url = null;
 	if (args.length === 0) {
 		url = '/free-api?global=stats';
 	} else if (args.length === 1) {
-		url = '/free-api?countryTotal=' + args[0];
+		let code = get_country_code(args[0]);
+		if (code !== null) {
+			url = '/free-api?countryTotal=' + code;
+		} else {
+			return {
+				result: false, value: `**${args[0]} is neither a country name nor a country code.**`
+			};
+		}
 	} else {
 		return {
 			result: false, value: '**You can run "./help corona" for help.**'
@@ -56,7 +79,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			} else if (json.results !== undefined && json.results[0].data !== 'none') {
 				let daily_stats = json.results[0];
 
-				message.channel.send(help_mngr.create_rich_embed(`CoronaVirus stats for the World ${moment().format('DD/MM/YY')}`,
+				message.channel.send(help_mngr.create_rich_embed(`CoronaVirus stats Globally ${moment().format('DD/MM/YY')}`,
 					'https://thevirustracker.com/', '#ff0000', [
 						{ emote: 'New cases', role: `+***${daily_stats.total_new_cases_today}***`, inline: true },
 						{ emote: 'New deaths', role: `+***${daily_stats.total_new_deaths_today}***`, inline: true },
@@ -73,7 +96,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					`**Could not find ${args[0]} country ("./help corona" for help).**`,
 					message.author).then(msg => { msg.delete({ timeout: 5000 }); });
 				let locale = portal_guilds[message.guild.id].locale;
-				lclz_mngr.portal[locale].error.voice(client);
+				// lclz_mngr.portal[locale].error.voice(client);
+				lclz_mngr.client_talk(client, portal_guilds, 'error');
 				message.react('❌');
 			}
 		});
@@ -86,6 +110,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	req.end();
 
 	return {
-		result: true, value: '**Make suer to always wait a bit for data as a response is on the way.**'
+		result: true, value: '**Make sure to always wait a bit for data as a response is on the way.**'
 	};
 };

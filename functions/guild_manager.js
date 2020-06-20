@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-undef */
 /* eslint-disable no-cond-assign */
 const voca = require('voca');
@@ -166,13 +167,13 @@ module.exports =
 	}
 	,
 
-	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, creator_id) {
+	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_objct, creator_id) {
 		if (portal_category) { // with category
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, 'gr', false, Date.now()
+						false, 0, 0, 0, guild_objct.locale, false, Date.now()
 					);
 					guild.channels.create(portal_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
@@ -184,7 +185,7 @@ module.exports =
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, 'gr', false, Date.now()
+						false, 0, 0, 0, guild_objct.locale, false, Date.now()
 					);
 				})
 				.catch(console.error);
@@ -283,15 +284,21 @@ module.exports =
 		for (let portal_id in portal_object) {
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
-				let new_name = this.regex_interpreter(voice_object.regex, voice_channel, voice_object, portal_object, guild_object);
-				if (voice_channel.name !== new_name) {
-					voice_channel.edit({ name: new_name })
-						.then(newChannel => console.log(
-							`Voice's new name from promise is ${newChannel.name}`))
-						.catch(console.log);
-					return true;
-				} else {
-					return false;
+				let new_name = this.regex_interpreter(
+					voice_object.regex, voice_channel, voice_object, portal_object, guild_object
+				);
+				if (new_name.length >= 1) {
+					if (voice_channel.name !== new_name.substring(0, 99)) {
+						voice_channel.edit({ name: new_name.substring(0, 99) })
+							.then(newChannel => 
+								console.log( `Voice's new name from promise is ${newChannel.name}`))
+							.catch(console.log);
+						return 1;
+					} else {
+						return 2;
+					}
+				} else { 
+					return 3;
 				}
 			}
 		}
@@ -300,6 +307,7 @@ module.exports =
 	,
 
 	regex_interpreter: function (regex, voice_channel, voice_object, portal_object, guild_object) {
+
 		let last_space_index = 0;
 		let last_vatiable_end_index = 0;
 		let last_attribute_end_index = 0;
@@ -312,8 +320,11 @@ module.exports =
 		for (let i = 0; i < regex.length; i++) {
 
 			if (regex[i] === vrbl_objct.prefix) {
+
 				if (vrbl = vrbl_objct.is_variable(regex.substring(i))) {
-					if (return_value = vrbl_objct.get(voice_channel, voice_object, portal_object, vrbl)) {
+					if (return_value = vrbl_objct.get(
+						voice_channel, voice_object, portal_object, vrbl)
+					) {
 						last_variable = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(vrbl).length;
@@ -324,7 +335,9 @@ module.exports =
 			} else if (regex[i] === attr_objct.prefix) {
 
 				if (attr = attr_objct.is_attribute(regex.substring(i))) {
-					if (return_value = attr_objct.get(voice_channel, voice_object, portal_object, guild_object, attr)) {
+					if (return_value = attr_objct.get(
+						voice_channel, voice_object, portal_object, guild_object, attr)
+					) {
 						last_attribute = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(attr).length;
@@ -363,7 +376,8 @@ module.exports =
 				}
 
 			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
-				let inline = {
+				
+				const inline = {
 					'==': (a, b) => { if (a == b) return true; else false; },
 					'===': (a, b) => { if (a === b) return true; else false; },
 					'!=': (a, b) => { if (a != b) return true; else false; },
@@ -377,23 +391,54 @@ module.exports =
 				try {
 					// did not put into structure_list due to many unnecessary function calls
 					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
-					if (inline[statement.is](
-						this.regex_interpreter(statement.if, voice_channel, voice_object, portal_object, guild_object),
-						this.regex_interpreter(statement.with, voice_channel, voice_object, portal_object, guild_object)
-					)) {
-						let value = this.regex_interpreter(statement.yes, voice_channel, voice_object, portal_object, guild_object);
-						if ('--' !== value)
-							new_channel_name += value;
-					} else {
-						let value = this.regex_interpreter(statement.no, voice_channel, voice_object, portal_object, guild_object);
-						if ('--' !== value)
-							new_channel_name += value;
+					let is_valid = false;
+
+					if (statement.hasOwnProperty('if')) {
+						if (statement.hasOwnProperty('is')) {
+							if (statement.hasOwnProperty('with')) {
+								if (statement.hasOwnProperty('yes')) {
+									if (statement.hasOwnProperty('no')) {
+										is_valid = true;
+									}
+								}
+							}
+						}
 					}
-					i += regex.substring(i + 1).indexOf('}}') + 2;
+					console.log('is_valid: ' + is_valid);
+					
+					if(!is_valid) {
+						new_channel_name += regex[i];
+						if (regex[i] === ' ') {
+							last_space_index = i + 1;
+						}
+					} else {
+						if (inline[statement.is](
+							this.regex_interpreter(
+								statement.if, voice_channel, voice_object, portal_object, guild_object
+							),
+							this.regex_interpreter(
+								statement.with, voice_channel, voice_object, portal_object, guild_object
+							)
+						)) {
+							let value = this.regex_interpreter(
+								statement.yes, voice_channel, voice_object, portal_object, guild_object
+							);
+							if ('--' !== value)
+								new_channel_name += value;
+						} else {
+							let value = this.regex_interpreter(
+								statement.no, voice_channel, voice_object, portal_object, guild_object
+							);
+							if ('--' !== value)
+								new_channel_name += value;
+						}
+						i += regex.substring(i + 1).indexOf('}}') + 2;
+					}
 				} catch (error) {
-					console.log('Error: in JSON parse: ', error);
+					console.log('error: in JSON parse: ', error);
 					new_channel_name += regex[i];
 				}
+
 			} else {
 				new_channel_name += regex[i];
 				if (regex[i] === ' ') {

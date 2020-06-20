@@ -8,17 +8,28 @@ module.exports = async (args) => {
 	let newChannel = args.newState.channel; // join channel
 	let oldChannel = args.oldState.channel; // left channel
 
+	if (oldChannel !== null && oldChannel !== undefined) {
+		if (newChannel !== null && newChannel !== undefined) {
+			if (newChannel.id === oldChannel.id) {
+				return {
+					result: true, value: 'changed voice state but remains in the same channel'
+				};
+			}
+		}
+	}
+
 	if (voiceConnection = args.client.voice.connections.find(connection =>
 		newChannel !== null && connection.channel.id === newChannel.id)) {
 
-		let locale = args.portal_guilds[voiceConnection.channel.guild.id].locale;
-		lclz_mngr.portal[locale].user_connected.voice(args.client);
-
+		// let locale = args.portal_guilds[voiceConnection.channel.guild.id].locale;
+		// lclz_mngr.portal[locale].user_connected.voice(args.client);
+		lclz_mngr.client_talk(args.client, args.portal_guilds, 'user_connected');
 	} else if (voiceConnection = args.client.voice.connections.find(connection =>
 		oldChannel !== null && connection.channel.id === oldChannel.id)) {
 
-		let locale = args.portal_guilds[voiceConnection.channel.guild.id].locale;
-		lclz_mngr.portal[locale].user_disconnected.voice(args.client);
+		// let locale = args.portal_guilds[voiceConnection.channel.guild.id].locale;
+		// lclz_mngr.portal[locale].user_disconnected.voice(args.client);
+		lclz_mngr.client_talk(args.client, args.portal_guilds, 'user_disconnected');
 	}
 
 	let report_message = 'from: ${oldChannel} to ${newChannel})\n';

@@ -1,15 +1,71 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
-client_talk = function (client, mp3) {
-	if (client.voice !== undefined) {
-		if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
-			voiceConnection.play(mp3);
-		}
-	}
-};
 
 module.exports =
 {
+	client_talk: function (client, guild_list, context) {
+		if (client.voice !== undefined) {
+			if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
+				for (let guild_id in guild_list) {
+					for (let portal_id in guild_list[guild_id].portal_list) {
+						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
+							if (voice_id === voiceConnection.channel.id) {
+								let locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
+								voiceConnection.play(`./assets/mp3s/${locale}/${context}_${0}.mp3`);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	,
+
+	client_write: function (message, guild_list, context) {
+		let locale = null;
+		console.log('perasa apo 0');
+		if (message !== null) { console.log('perasa apo 1');
+			if (message.member.voice !== undefined && message.member.voice !== null) { console.log('perasa apo 2');
+				for (let guild_id in guild_list) { console.log('perasa apo 3');
+					for (let portal_id in guild_list[guild_id].portal_list) { console.log('perasa apo 4');
+						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
+							if (voice_id === message.member.voice.channel.id) {//message.author.presence.member.voice.channel.id) {
+								locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
+								return this.portal[locale][context].text();
+							}
+						}
+					}
+				}
+			}
+		}
+
+		locale = guild_list[message.guild.id].locale;
+		return this.portal[locale][context].text();
+	}
+	,
+
+	client_log: function (guild_id, message, guild_list, context, args) {
+		let locale = null;
+		if (message !== null) {
+			if (message.author.voice !== undefined && message.author.voice !== null) {
+				for (let guild_id in guild_list) {
+					for (let portal_id in guild_list[guild_id].portal_list) {
+						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
+							if (voice_id === message.member.channel.id) {//message.author.presence.member.voice.channel.id) {
+								locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
+								return this.portal[locale][context].text(args);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		locale = guild_list[guild_id].locale;
+		return this.console[locale][context](args);
+	}
+	,
+
 	portal:
 	{
 		gr:
@@ -28,7 +84,6 @@ module.exports =
 					return 'Αποχαιρετώ, καλή συνέχεια σε όλους.';
 				},
 				voice: (client) => {
-					console.log('\n\n\n\neprepe na eixa mpei');
 					let random = Math.floor(Math.random() * Math.floor(1));
 					client_talk(client, `./assets/mp3s/gr/goodbye_${random}.mp3`);
 				}
@@ -179,7 +234,7 @@ module.exports =
 				return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε ` +
 					`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`;
 			},
-			updating_guild: () => {
+			updating_guild: (args) => {
 				return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε.';
 			},
 			presence_controlled_away: (args) => {
@@ -189,14 +244,15 @@ module.exports =
 			presence_controlled: (args) => {
 				return `Ο χρήστης ${args.newPresence.member.displayName} έχει αλλάξει κατάσταση, ` +
 					`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.newPresence.guild.name})`;
-			},
+			}
 		},
 		en:
 		{
-			ready: (users_count, channels_count, guild_count) => {
-				return `Bot has started, with ${users_count} users, in ${channels_count} channels from ${guild_count} guilds.`;
+			ready: (args) => {
+				return `Bot has started, with ${args.client.users.cache.size} users, ` +
+					`in ${args.client.channels.cache.size} channels from ε ${args.client.guilds.cache.size} guilds.`;
 			},
-			updating_guild: () => {
+			updating_guild: (args) => {
 				return '> Guild JSON file has been updated.';
 			},
 			presence_controlled_away: (args) => {
@@ -206,14 +262,14 @@ module.exports =
 			presence_controlled: (args) => {
 				return `${args.newPresence.member.displayName} has changed presence, ` +
 					`in controlled server (${args.newPresence.guild.name})`;
-			},
+			}
 		},
 		de:
 		{
-			ready: (users_count, channels_count, guild_count) => {
-				return `Bot hat ${users_count} Mitglieder in ${channel_count} Kanälen von ${guild_count} Gilden gestartet.`;
+			ready: (args) => {
+				return `Bot hat ${args.client.users.cache.size} Mitglieder in ${channel_count} Kanälen von ${guild_count} Gilden gestartet.`;
 			},
-			updating_guild: () => {
+			updating_guild: (args) => {
 				return '> Die JSON Datei der Gilde wurde aktualisiert.';
 			},
 			presence_controlled_away: (args) => {
@@ -223,7 +279,7 @@ module.exports =
 			presence_controlled: (args) => {
 				return `${args.newPresence.member.displayName} has changed presence, ` +
 					`in controlled server (${args.newPresence.guild.name})`;
-			},
+			}
 		}
 	}
 };

@@ -10,7 +10,8 @@ module.exports = async (args) => {
 
 	if (!guld_mngr.included_in_portal_guilds(args.newPresence.guild.id, args.portal_guilds)) {
 		return {
-			result: false, value: lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled_away(args)
+			result: false, value: lclz_mngr.client_log(current_guild.id, null, args.portal_guilds, 'presence_controlled_away', args)
+			//lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled_away(args)
 		};
 	}
 
@@ -47,7 +48,6 @@ module.exports = async (args) => {
 											activity.assets.largeImageURL(),
 											member,
 											false,
-											''//activity.party.id
 										));
 								}
 							}
@@ -56,8 +56,19 @@ module.exports = async (args) => {
 				});
 
 				if ((Date.now() - current_voice_channel.last_update) >= 300000) {
-					if (guld_mngr.generate_channel_name(current_channel, current_portal_list, args.portal_guilds[current_guild.id])) {
+					switch (guld_mngr.generate_channel_name(current_channel, current_portal_list,
+						args.portal_guilds[current_guild.id])) {
+					case 1:
 						current_voice_channel.last_update = Date.now();
+						break;
+					case 2:
+						console.log('new name channel is the same as old');
+						break;
+					case 3:
+						console.log('new channel name is lesser than length');
+						break;
+					default:
+
 					}
 				}
 			}
@@ -65,6 +76,7 @@ module.exports = async (args) => {
 	}
 
 	return {
-		result: true, value: lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled(args)
+		result: true, value: lclz_mngr.client_log(current_guild.id, null, args.portal_guilds, 'presence_controlled', args)
+		//lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled(args)
 	};
 };

@@ -51,9 +51,9 @@ module.exports =
 				'Portal channels are a portal to an infinite amount of voice channels, by entering ' +
 				'a voice channel you are redirected to a newly created voice channel that you are ' +
 				'the owner of. When everyone leaves the channel will be destroyed.\n' +
-				'example: ./portal fps_portal Games\nThis line will create a portal channel with the ' +
-				'name fps_portal, a category named GAMES and put the fps_portal channel in GAMES category.',
-			args: '<!channel_name> <@category_name>'
+				'example: `./portal fps portal | All Games`\nThis line will create a portal channel with the ' +
+				'name fps portal, a category named ALL GAMES.',
+			args: '<!channel_name> | <@category_name>'
 		},
 		{
 			name: 'run',

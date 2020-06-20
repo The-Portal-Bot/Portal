@@ -12,10 +12,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			if (guld_mngr.included_in_voice_list(current_voice.id, portal_guilds[message.guild.id].portal_list)) {
 				current_voice.join()
 					.then(con => {
-						lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.voice(client);
+						// lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.voice(client);
+						lclz_mngr.client_talk(client, portal_guilds, 'hello');
 					})
 					.catch(e => { console.log(e); });
-
 
 			} else {
 				return {
@@ -34,6 +34,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	}
 	console.log(`portal_guilds[${current_voice.guild.id}].locale: ` + portal_guilds[current_voice.guild.id].locale);
 	return {
-		result: true, value: lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.text()
+		result: true, value: lclz_mngr.client_write(message, portal_guilds, 'hello')
+		// lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.text()
 	};
 };

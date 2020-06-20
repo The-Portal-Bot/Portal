@@ -196,7 +196,8 @@ client.on('message', async message => {
 		return;
 	}
 
-	await require(`./commands/${cmd}.js`)(
+	// await require(`./commands/${cmd}.js`)(
+	require(`./commands/${cmd}.js`)(
 		client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
 			if (rspns.result === true) {

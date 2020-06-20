@@ -104,6 +104,58 @@ module.exports =
 			}
 		},
 		{
+			name: 'locale_guild',
+			description: 'locale_guild of the guild',
+			super_description: '**locale_guild**, guild locale makes the bot talk your language and all communication is done' +
+				'in your local language',
+			args: 'en/gr',
+			get: (voice_channel, voice_object, portal_object, guild_object) => {
+				return guild_object.locale;
+			},
+			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
+				if (locales.includes(value)) {
+					guild_object.locale = String(value);
+					return 1;
+				} else {
+					return -4;
+				}
+			}
+		},
+		{
+			name: 'locale_portal',
+			description: 'locale_portal of current channel',
+			super_description: '**locale_portal**, returns/language used in statuses',
+			args: 'en/gr',
+			get: (voice_channel, voice_object, portal_object) => {
+				return portal_object.locale;
+			},
+			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
+				if (locales.includes(value)) {
+					portal_object.locale = String(value);
+					return 1;
+				} else {
+					return -4;
+				}
+			}
+		},
+		{
+			name: 'locale',
+			description: 'locale of current channel',
+			super_description: '**locale**, returns/language used in statuses',
+			args: 'en/gr',
+			get: (voice_channel, voice_object) => {
+				return voice_object.locale;
+			},
+			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
+				if (locales.includes(value)) {
+					voice_object.locale = String(value);
+					return 1;
+				} else {
+					return -4;
+				}
+			}
+		},
+		{
 			name: 'user_limit_portal',
 			description: 'returns/maximum number of members guideline for portal',
 			super_description: '**user_limit_portal**, returns/maximum number of members guideline for portal',
@@ -120,9 +172,9 @@ module.exports =
 			}
 		},
 		{
-			name: 'user_limit_voice',
+			name: 'user_limit',
 			description: 'returns/maximum number of members allowed',
-			super_description: '**user_limit_voice**, returns/maximum number of members allowed',
+			super_description: '**user_limit**, returns/maximum number of members allowed',
 			args: '!number of maximum members',
 			get: (voice_channel) => {
 				return voice_channel.userLimit;
@@ -152,58 +204,6 @@ module.exports =
 			}
 		},
 		{
-			name: 'locale_voice',
-			description: 'locale_voice of current channel',
-			super_description: '**locale_voice**, returns/language used in statuses',
-			args: 'en/gr',
-			get: (voice_channel, voice_object) => {
-				return voice_object.locale;
-			},
-			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				if (locales.includes(value)) {
-					voice_object.locale = String(value);
-					return 1;
-				} else {
-					return -4;
-				}
-			}
-		},
-		{
-			name: 'locale_portal',
-			description: 'locale_portal of current channel',
-			super_description: '**locale_portal**, returns/language used in statuses',
-			args: 'en/gr',
-			get: (voice_channel, voice_object, portal_object) => {
-				return portal_object.locale;
-			},
-			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				if (locales.includes(value)) {
-					portal_object.locale = String(value);
-					return 1;
-				} else {
-					return -4;
-				}
-			}
-		},
-		{
-			name: 'locale_guild',
-			description: 'locale_guild of the guild',
-			super_description: '**locale_guild**, guild locale makes the bot talk your language and all communication is done' +
-				'in your local language',
-			args: 'en/gr',
-			get: (voice_channel, voice_object, portal_object, guild_object) => {
-				return guild_object.locale;
-			},
-			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
-				if (locales.includes(value)) {
-					guild_object.locale = String(value);
-					return 1;
-				} else {
-					return -4;
-				}
-			}
-		},
-		{
 			name: 'bitrate',
 			description: 'returns/bitrate of channel',
 			super_description: '**bitrate** returns/bitrate of channel,',
@@ -219,17 +219,6 @@ module.exports =
 					.catch(console.error);
 				return 1;
 			}
-		},
-		{
-			name: 'last_update',
-			description: 'is the last time the channel name was updated',
-			super_description: '**last_update**, is the last time the channel name was updated',
-			args: 'none',
-			get: (voice_channel, voice_object) => {
-				return `${Math.round(((Date.now() - voice_object.last_update) / 1000 / 60))}m` +
-					`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`;
-			}
 		}
 	]
 };
-
