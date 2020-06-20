@@ -4,6 +4,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
 	
 	return {
-		result: true, value: '**Updated portal guild json.**'
+		result: true, value: '*updated portal guild json.*'
 	};
 };

@@ -10,8 +10,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		try {
 			role_map = JSON.parse(args.join(' '));
 		} catch (error) {
-			message.channel.send('Roles must be in JSON format for more info ./help role_giver');
-			return;
+			// message.channel.send('Roles must be in JSON format for more info ./help role_giver');
+			return {
+				result: false, value: '*roles must be in JSON format for more info ./help role_giver*'
+			};
 		}
 		let role_emb = [];
 		let role_emb_prnt = [];
@@ -44,11 +46,11 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		message.react('✔️');
 	} else {
 		return {
-			result: false, value: '**You can run "./help role" for help.**'
+			result: false, value: '*you can run "./help role" for help.*'
 		};
 	}
 
 	return {
-		result: true, value: '**Role giver message has been created.**'
+		result: true, value: '*role giver message has been created.*'
 	};
 };

@@ -83,7 +83,7 @@ module.exports = {
 	// channel should be removed !
 	message_reply: function (status, channel, message, user, str, portal_guilds, client) {
 		if (!message.channel.deleted) {
-			message.channel.send(str, user).then(msg => { msg.delete({ timeout: 5000 }); });
+			message.channel.send(`${user}, ${str}`, user).then(msg => { msg.delete({ timeout: 5000 }); });
 		}
 		if (!message.deleted) {
 			if (status === true) {

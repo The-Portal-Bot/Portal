@@ -5,17 +5,17 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	if (args.length === 0) {
 		if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
 			return {
-				result: true, value: '**This already is a URL channel.**'
+				result: true, value: '*this already is a URL channel.*'
 			};
 		}
 		if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
 			return {
-				result: true, value: '**This can\'t be set as a URL channel for it is the Announcement channel.**'
+				result: true, value: '*this can\'t be set as a URL channel for it is the Announcement channel.*'
 			};
 		}
 		if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
 			return {
-				result: true, value: '**This can\'t be set as a URL channel for it is the Spotify channel.**'
+				result: true, value: '*this can\'t be set as a URL channel for it is the Spotify channel.*'
 			};
 		}
 	}
@@ -28,7 +28,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		portal_guilds[message.guild.id].url_list.push(message.channel.id);
 
 		return {
-			result: true, value: '**This is now the url channel.**'
+			result: true, value: '*this is now the url channel.*'
 		};
 	} else if (args.length > 0) {
 		const url_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
@@ -39,18 +39,18 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				message.guild, url_channel, url_category, portal_guilds[message.guild.id].url_list);
 
 			return {
-				result: true, value: '*Url channel and category have been created*'
+				result: true, value: '*url channel and category have been created*'
 			};
 		} else if (url_channel === '' && url_category !== '') {
 			guld_mngr.create_url_channel(
 				message.guild, url_category, null, portal_guilds[message.guild.id].url_list);
 
 			return {
-				result: true, value: '*Url channel has been created*'
+				result: true, value: '*url channel has been created*'
 			};
 		} else {
 			return {
-				result: false, value: '**You can run "./help url" for help.**'
+				result: false, value: '*you can run "./help url" for help.*'
 			};
 		}
 	}
