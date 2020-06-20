@@ -7,11 +7,11 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 	if (current_voice === null) {
 		return {
-			result: false, value: '*You must be in a channel handled by* **Portal™** *to run commands.*'
+			result: false, value: '*you must be in a channel handled by* **Portal™** *to run commands.*'
 		};
 	} else if (!guld_mngr.included_in_voice_list(current_voice.channelID, current_portal_list)) {
 		return {
-			result: false, value: '*The channel you are in is not handled by* **Portal™**'
+			result: false, value: '*the channel you are in is not handled by* **Portal™**'
 		};
 	}
 
@@ -33,6 +33,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	}
 
 	return {
-		result: true, value: '**Command ran successfully.**'
+		result: true, value: '*command ran successfully.*'
 	};
 };

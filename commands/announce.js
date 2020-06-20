@@ -5,7 +5,7 @@ const help_mngr = require('./../functions/help_manager');
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	if (!portal_guilds[message.guild.id].announcement) {
 		return {
-			result: false, value: '**Announcements channel has not been set.**'
+			result: false, value: '*announcements channel has not been set.*'
 		};
 	}
 
@@ -17,7 +17,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		title = '';
 	} else if (body === '' && title === '') {
 		return {
-			result: false, value: '**You can run "./help announce" for help.**'
+			result: false, value: '*you can run "./help announce" for help.*'
 		};
 	}
 
@@ -27,6 +27,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		));
 
 	return {
-		result: true, value: '**Announcement was sent successfully.**'
+		result: true, value: '*announcement was sent successfully.*'
 	};
 };

@@ -7,17 +7,17 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	if (args.length === 0) {
 		if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
 			return {
-				result: true, value: '**This already is, the Announcement channel.**'
+				result: true, value: '*this already is, the Announcement channel.*'
 			};
 		}
 		if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
 			return {
-				result: true, value: '**This can\'t be set as the Announcemennt channel for it is the Spotify channel.**'
+				result: true, value: '*this can\'t be set as the Announcemennt channel for it is the Spotify channel.*'
 			};
 		}
 		if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
 			return {
-				result: true, value: '**This can\'t be set as the Spotify channel for it is an url channel.**'
+				result: true, value: '*this can\'t be set as the Spotify channel for it is an url channel.*'
 			};
 		}
 	}
@@ -30,7 +30,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		portal_guilds[message.guild.id].announcement = message.channel.id;
 
 		return {
-			result: true, value: '**This is now the Announcement channel.**'
+			result: true, value: '*this is now the Announcement channel.*'
 		};
 	} else if (args.length > 0) {
 		const announcement_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
@@ -42,7 +42,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				message.guild, announcement_channel, announcement_category, portal_guilds[message.guild.id]);
 
 			return {
-				result: true, value: '*Announcement channel and category have been created*'
+				result: true, value: '*announcement channel and category have been created*'
 			};
 		} else if (announcement_channel === '' && announcement_category !== '') {
 			console.log('den exei category');
@@ -50,11 +50,11 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				message.guild, announcement_category, null, portal_guilds[message.guild.id]);
 
 			return {
-				result: true, value: '*Announcement channel has been created*'
+				result: true, value: '*announcement channel has been created*'
 			};
 		} else {
 			return {
-				result: false, value: '**You can run "./help announcement" for help.**'
+				result: false, value: '*you can run "./help announcement" for help.*'
 			};
 		}
 	}

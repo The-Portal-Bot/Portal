@@ -11,7 +11,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			portal_guilds, message.member.id);
 
 		return {
-			result: true, value: '*Portal channel has been created.\n' +
+			result: true, value: '*portal channel has been created.\n' +
 				'Keep in mind that due to Discord\'s limitations,*\n' +
 				'**channel names will be updated on a five minute interval.**'
 		};
@@ -21,13 +21,13 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			portal_guilds, message.member.id);
 
 		return {
-			result: true, value: '*Portal channel has been created.\n' +
+			result: true, value: '*portal channel has been created.\n' +
 				'Keep in mind that due to Discord\'s limitations,*\n' +
 				'**channel names will be updated on a five minute interval.**'
 		};
 	} else {
 		return {
-			result: false, value: '**You can run "./help portal" for help.**'
+			result: false, value: '*you can run "./help portal" for help.*'
 		};
 	}
 };

@@ -31,12 +31,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			url = '/free-api?countryTotal=' + code;
 		} else {
 			return {
-				result: false, value: `**${args[0]} is neither a country name nor a country code.**`
+				result: false, value: `*${args[0]} is neither a country name nor a country code.*`
 			};
 		}
 	} else {
 		return {
-			result: false, value: '**You can run "./help corona" for help.**'
+			result: false, value: '*you can run "./help corona" for help.*'
 		};
 	}
 
@@ -95,8 +95,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				message.channel.send(
 					`**Could not find ${args[0]} country ("./help corona" for help).**`,
 					message.author).then(msg => { msg.delete({ timeout: 5000 }); });
-				let locale = portal_guilds[message.guild.id].locale;
-				// lclz_mngr.portal[locale].error.voice(client);
 				lclz_mngr.client_talk(client, portal_guilds, 'error');
 				message.react('❌');
 			}

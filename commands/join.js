@@ -24,17 +24,16 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			}
 		} else {
 			return {
-				result: false, value: 'Your current channel is on another guild.' // localize
+				result: false, value: 'your current channel is on another guild.' // localize
 			};
 		}
 	} else {
 		return {
-			result: false, value: 'You are not connected to any channel.' // localize
+			result: false, value: 'you are not connected to any channel.' // localize
 		};
 	}
-	console.log(`portal_guilds[${current_voice.guild.id}].locale: ` + portal_guilds[current_voice.guild.id].locale);
+
 	return {
 		result: true, value: lclz_mngr.client_write(message, portal_guilds, 'hello')
-		// lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.text()
 	};
 };

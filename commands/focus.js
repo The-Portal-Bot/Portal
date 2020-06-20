@@ -23,7 +23,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 						message.member, focus_name, focus_time)) {
 						if (return_value === true) {
 							return {
-								result: false, value: '**You can run "./help focus" for help.**'
+								result: false, value: '*you can run "./help focus" for help.*'
 							};
 						} else {
 							return {
@@ -32,7 +32,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 						}
 					} else {
 						return {
-							result: false, value: '**Could not find user in current voice channel.**'
+							result: false, value: '*could not find user in current voice channel.*'
 						};
 					}
 				}
@@ -44,7 +44,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	if (!flow) {
 		user_match[message.member.displayName] = { name: focus_name, time: focus_time };
 		return {
-			result: false, value: `**User ${focus_name} has not set any request.**` +
+			result: false, value: `*user **${focus_name}** has not set any request.*` +
 				` A request has been added on your behalf with ${focus_name} for ${focus_time} minutes`
 		};
 	}

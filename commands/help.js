@@ -37,12 +37,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			message.author.send(strc_detailed).catch(console.error);
 		} else {
 			return {
-				result: false, value: `${message.author.username}, **${args[0]}**, *does not exist in Portal™,` +
-					'You can run "./help help" for help.*'
+				result: false, value: `**${args[0]}**, *does not exist in Portal™,` +
+					'you can run "./help help" for help.*'
 			};
 		}
 	}
 	return {
-		result: true, value: `${message.author.username}, I sent you a private message`
+		result: true, value: 'I sent you a private message'
 	};
 };
