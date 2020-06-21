@@ -68,31 +68,36 @@ module.exports = {
 	}
 	,
 
-	update_portal_managed_guilds: function (force, portal_managed_guilds_path, portal_guilds) {
-		setTimeout(function () {
-			if (force) file_system.writeFileSync(
-				portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
-			);
-			else file_system.writeFile(
-				portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
-			);
-		}, 1000);
+	update_portal_managed_guilds: async function (force, portal_managed_guilds_path, portal_guilds) {
+		return new Promise((resolve) => { //, reject) => {
+			setTimeout(() => {
+				if (force) file_system.writeFileSync(
+					portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
+				);
+				else file_system.writeFile(
+					portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
+				);
+			}, 1000);
+			return resolve ({ result: true, value: '*updated portal guild json.*' });
+		});
 	}
 	,
 
 	// channel should be removed !
 	message_reply: function (status, channel, message, user, str, portal_guilds, client) {
 		if (!message.channel.deleted) {
-			message.channel.send(`${user}, ${str}`, user).then(msg => { msg.delete({ timeout: 5000 }); });
+			message.channel
+				.send(`${user}, ${str}`)
+				.then(msg => { msg.delete({ timeout: 5000 }); });
 		}
 		if (!message.deleted) {
 			if (status === true) {
-				message.react('✔️');
+				message
+					.react('✔️');
 			} else if (status === false) {
-				// let locale = portal_guilds[message.guild.id].locale;
-				// lclz_mngr.portal[locale].error.voice(client);
 				lclz_mngr.client_talk(client, portal_guilds, 'error');
-				message.react('❌');
+				message
+					.react('❌');
 			}
 		}
 	}
@@ -113,10 +118,26 @@ module.exports = {
 	time_elapsed: function (timestamp, timeout) {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;
+
+		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
+			Math.round((timeout_time / 1000 / 60)) : 0;
+		const timeout_sec = Math.round((timeout_time / 1000) % 60);
+
+		const remaining_min = Math.round((time_elapsed / 1000 / 60) - 1) > 0 ?
+			Math.round((time_elapsed / 1000 / 60) - 1) : 0;
+		const remaining_sec = Math.round((time_elapsed / 1000) % 60);
+
+		return { timeout_min, timeout_sec, remaining_min, remaining_sec };
+	}
+	,
+
+	time_remaining: function (timestamp, timeout) {
+		const time_elapsed = Date.now() - timestamp;
+		const timeout_time = timeout * 60 * 1000;
 		const time_remaining = timeout_time - time_elapsed;
 
 		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
-			Math.round((time_remaining / 1000 / 60)) : 0;
+			Math.round((timeout_time / 1000 / 60)) : 0;
 		const timeout_sec = Math.round((timeout_time / 1000) % 60);
 
 		const remaining_min = Math.round((time_remaining / 1000 / 60) - 1) > 0 ?

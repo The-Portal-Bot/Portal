@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const guld_mngr = require('./../functions/guild_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
