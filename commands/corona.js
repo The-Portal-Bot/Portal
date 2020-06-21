@@ -85,11 +85,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					return resolve({ result: true, value: '*Global corona stats.*' });
 				} else {
 					return resolve({ result: false, value: `*${args[0]} is neither a country name nor a country code.*` });
-					// message.channel.send(
-					// 	`**Could not find ${args[0]} country ("./help corona" for help).**`,
-					// 	message.author).then(msg => { msg.delete({ timeout: 5000 }); });
-					// lclz_mngr.client_talk(client, portal_guilds, 'error');
-					// message.react('❌');
 				}
 			})
 			.catch(rspns => {

@@ -7,6 +7,7 @@ const config = require('./config.json'); // config.token / config.prefix
 
 const guld_mngr = require('./functions/guild_manager');
 const help_mngr = require('./functions/help_manager');
+const lclz_mngr = require('./functions/localization_manager');
 
 let user_match = {};
 
@@ -98,7 +99,8 @@ client.on('guildCreate', guild =>
 client.on('presenceUpdate', (oldPresence, newPresence) =>
 	event_loader('presenceUpdate',
 		{
-			'newPresence': newPresence, 'portal_guilds': portal_guilds
+			'client': client, 'portal_guilds': portal_guilds,
+			'newPresence': newPresence
 		}
 	));
 
@@ -122,25 +124,24 @@ client.on('message', async message => {
 
 	// Check if something written in url channel
 	let channel_type = null, channel_support = null;
-	if (guld_mngr.included_in_url_list(
-		message.channel.id, portal_guilds[message.guild.id])) {
+	if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
 		channel_type = 'URL'; channel_support = 'url';
-	}
-	if (portal_guilds[message.guild.id].spotify === message.channel.id) {
+	} else if (portal_guilds[message.guild.id].spotify === message.channel.id) {
 		channel_type = 'Spotify'; channel_support = 'read';
-	}
-	if (portal_guilds[message.guild.id].announcement === message.channel.id) {
+	} else if (portal_guilds[message.guild.id].announcement === message.channel.id) {
 		channel_type = 'Announcement'; channel_support = 'read';
 	}
 
-	if ((channel_type !== null && channel_type !== 'URL') ||
-		channel_type === 'URL' && !help_mngr.is_url(message)) {
+	if ((channel_type !== null && channel_type !== 'URL') || channel_type === 'URL' && !help_mngr.is_url(message.content)) {
+		lclz_mngr.client_talk(client, portal_guilds, 'read_only');
 		help_mngr.message_reply(
 			null, message.author.presence.member.voice.channel, message, 
 			message.author, `${channel_type} channel is ${channel_support}-only.`,
 			portal_guilds, client);
 		message.delete();
 		return;
+	} else if (channel_type === 'URL') {
+		lclz_mngr.client_talk(client, portal_guilds, 'new_link');
 	}
 
 	// Ignore any message that does not start with prefix
