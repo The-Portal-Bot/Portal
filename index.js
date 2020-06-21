@@ -137,8 +137,8 @@ client.on('message', async message => {
 		channel_type === 'URL' && !help_mngr.is_url(message)) {
 		help_mngr.message_reply(
 			null, message.author.presence.member.voice.channel, message, 
-			message.author, `${message.author}, ${channel_type} ` +
-			`channel is ${channel_support}-only.`, portal_guilds, client);
+			message.author, `${channel_type} channel is ${channel_support}-only.`,
+			portal_guilds, client);
 		message.delete();
 		return;
 	}
@@ -183,22 +183,21 @@ client.on('message', async message => {
 			true :
 			(type === 'guild' && active.command === cmd))) {
 
-		let time = help_mngr.time_elapsed(
-			active.timestamp,command_cooldown[type][cmd]);
+		let time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd]);
+
 		help_mngr.message_reply(
 			false, message.author.presence.member.voice.channel,
-			message, message.author, `*${message.author} you need to wait* ` +
-			`**${time.remaining_min}:${time.remaining_sec}/${time.timeout_min}` +
-			`:${time.timeout_sec}** *to use* **${cmd}** *again${type === 'member' ?
-				'.*' : `, as it was used again in* **${message.guild.name}**.`}`,
+			message, message.author, `*you need to wait* **${time.remaining_min}:${time.remaining_sec}/`+
+			`${time.timeout_min}:${time.timeout_sec}** *to use* **${cmd}** *again${type === 'member' 
+				? '.*'
+				: `, as it was used again in* **${message.guild.name}**.`}`,
 			portal_guilds, client);
 
 		return;
 	}
 
 	// await require(`./commands/${cmd}.js`)(
-	require(`./commands/${cmd}.js`)(
-		client, message, args, portal_guilds, portal_managed_guilds_path)
+	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
 			if (rspns.result === true) {
 				active_cooldown[type].push({
