@@ -103,7 +103,7 @@ module.exports = {
 	}
 	,
 
-	is_url: function (message) {
+	is_url: function (potential_url) {
 		var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -111,7 +111,7 @@ module.exports = {
 			'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
 			'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
 
-		return pattern.test(message.content);
+		return pattern.test(potential_url);
 	}
 	,
 

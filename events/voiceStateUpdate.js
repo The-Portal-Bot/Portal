@@ -20,15 +20,9 @@ module.exports = async (args) => {
 
 	if (voiceConnection = args.client.voice.connections.find(connection =>
 		newChannel !== null && connection.channel.id === newChannel.id)) {
-
-		// let locale = args.portal_guilds[voiceConnection.channel.guild.id].locale;
-		// lclz_mngr.portal[locale].user_connected.voice(args.client);
 		lclz_mngr.client_talk(args.client, args.portal_guilds, 'user_connected');
 	} else if (voiceConnection = args.client.voice.connections.find(connection =>
 		oldChannel !== null && connection.channel.id === oldChannel.id)) {
-
-		// let locale = args.portal_guilds[voiceConnection.channel.guild.id].locale;
-		// lclz_mngr.portal[locale].user_disconnected.voice(args.client);
 		lclz_mngr.client_talk(args.client, args.portal_guilds, 'user_disconnected');
 	}
 

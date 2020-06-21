@@ -11,7 +11,6 @@ module.exports = async (args) => {
 	if (!guld_mngr.included_in_portal_guilds(args.newPresence.guild.id, args.portal_guilds)) {
 		return {
 			result: false, value: lclz_mngr.client_log(current_guild.id, null, args.portal_guilds, 'presence_controlled_away', args)
-			//lclz_mngr.console[args.portal_guilds[current_guild.id].locale].presence_controlled_away(args)
 		};
 	}
 
@@ -20,9 +19,6 @@ module.exports = async (args) => {
 		for (let key in args.portal_guilds[current_guild.id].portal_list) {
 			if (current_voice_channel = current_portal_list[key].voice_list[current_channel.id]) {
 
-				console.log(`${Math.round(((Date.now() - current_voice_channel.last_update) / 1000 / 60))}m` +
-					`${Math.round(((Date.now() - current_voice_channel.last_update) / 1000) % 60)}s / 5m0s`);
-
 				current_channel.members.forEach(member => {
 					member.presence.activities.forEach(activity => {
 						if (activity.name === 'Spotify') {
@@ -30,6 +26,7 @@ module.exports = async (args) => {
 								if (spotify = args.newPresence.guild.channels.cache.find(channel =>
 									channel.id === args.portal_guilds[current_guild.id].spotify
 								)) {
+									lclz_mngr.client_talk(args.client, args.portal_guilds, 'new_song');
 									spotify
 										.send(help_mngr.create_rich_embed(
 											`**${activity.details}**`,

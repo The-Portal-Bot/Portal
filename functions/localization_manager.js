@@ -11,7 +11,8 @@ module.exports =
 						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
 							if (voice_id === voiceConnection.channel.id) {
 								let locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
-								voiceConnection.play(`./assets/mp3s/${locale}/${context}_${0}.mp3`);
+								let random = Math.floor(Math.random() * Math.floor(3));
+								voiceConnection.play(`./assets/mp3s/${locale}/${context}_${random}.mp3`);
 							}
 						}
 					}
@@ -24,14 +25,18 @@ module.exports =
 	client_write: function (message, guild_list, context) {
 		let locale = null;
 		console.log('perasa apo 0');
-		if (message !== null) { console.log('perasa apo 1');
-			if (message.member.voice !== undefined && message.member.voice !== null) { console.log('perasa apo 2');
-				for (let guild_id in guild_list) { console.log('perasa apo 3');
-					for (let portal_id in guild_list[guild_id].portal_list) { console.log('perasa apo 4');
+		if (message !== null) {
+			console.log('perasa apo 1');
+			if (message.member.voice !== undefined && message.member.voice !== null) {
+				console.log('perasa apo 2');
+				for (let guild_id in guild_list) {
+					console.log('perasa apo 3');
+					for (let portal_id in guild_list[guild_id].portal_list) {
+						console.log('perasa apo 4');
 						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
 							if (voice_id === message.member.voice.channel.id) {//message.author.presence.member.voice.channel.id) {
 								locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
-								return this.portal[locale][context].text();
+								return this.portal[context][locale]();
 							}
 						}
 					}
@@ -40,7 +45,7 @@ module.exports =
 		}
 
 		locale = guild_list[message.guild.id].locale;
-		return this.portal[locale][context].text();
+		return this.portal[context][locale]();
 	}
 	,
 
@@ -53,7 +58,7 @@ module.exports =
 						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
 							if (voice_id === message.member.channel.id) {//message.author.presence.member.voice.channel.id) {
 								locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
-								return this.portal[locale][context].text(args);
+								return this.console[locale][context].text(args);
 							}
 						}
 					}
@@ -68,160 +73,50 @@ module.exports =
 
 	portal:
 	{
-		gr:
-		{
-			hello: {
-				text: () => {
-					return 'Γειά σας, το Πόρταλ είναι εδώ.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(1));
-					client_talk(client, `./assets/mp3s/gr/hello_${random}.mp3`);
-				}
-			},
-			goodbye: {
-				text: () => {
-					return 'Αποχαιρετώ, καλή συνέχεια σε όλους.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(1));
-					client_talk(client, `./assets/mp3s/gr/goodbye_${random}.mp3`);
-				}
-			},
-			announcement: {
-				text: () => {
-					return 'Υπάρχει μια νέα ανακοίνωση.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(0));
-					client_talk(client, `./assets/mp3s/gr/announcement_${random}.mp3`);
-				}
-			},
-			error: {
-				text: () => {
-					return 'Κάτι δεν πήγε καλά.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(0));
-					client_talk(client, `./assets/mp3s/gr/error_${random}.mp3`);
-				}
-			},
-			user_connected: {
-				text: (user) => {
-					return `Ο χρήστης ${user} συνδέθηκε στο κανάλι.`;
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(2));
-					client_talk(client, `./assets/mp3s/gr/user_connected_${random}.mp3`);
-				}
-			},
-			user_disconnected: {
-				text: (user) => {
-					return `Ο χρήστης ${user} αποχώρησε από το κανάλι.`;
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(2));
-					client_talk(client, `./assets/mp3s/gr/user_disconnected_${random}.mp3`);
-				}
-			}
+		hello: {
+			gr: () => { return 'Γειά σας, το Πόρταλ είναι εδώ.'; },
+			en: () => { return 'Cheers love, Portal\'s here.'; },
+			de: () => { return 'Hallo, Portal ist da.'; }
 		},
-		en:
-		{
-			hello: {
-				text: () => {
-					return 'Cheers love, Portal\'s here.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(0));
-					client_talk(client, `./assets/mp3s/en/hello_${random}.mp3`);
-				}
-			},
-			goodbye: {
-				text: () => {
-					return 'Goodbye everyone.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(1));
-					client_talk(client, `./assets/mp3s/en/goodbye_${random}.mp3`);
-				}
-			},
-			error: {
-				text: () => {
-					return 'Κάτι δεν πήγε καλά.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(0));
-					client_talk(client, `./assets/mp3s/gr/error_${random}.mp3`);
-				}
-			},
-			user_connected: {
-				text: (user) => {
-					return `User ${user} connected to the channel.`;
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(0));
-					client_talk(client, `./assets/mp3s/en/user_connected_${random}.mp3`);
-				}
-			},
-			user_disconnected: {
-				text: (user) => {
-					return `User ${user} disconnected from the channel.`;
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(0));
-					client_talk(client, `./assets/mp3s/en/user_disconnected_${random}.mp3`);
-				}
-			},
-
+		goodbye: {
+			gr: () => { return 'Αποχαιρετώ, καλή συνέχεια σε όλους.'; },
+			en: () => { return 'Goodbye everyone.'; },
+			de: () => { return 'Auf Wiedersehen alle.'; }
 		},
-		de:
-		{
-			hello: {
-				text: () => {
-					return 'Hallo, Portal ist da.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(1));
-					client_talk(client, `./assets/mp3s/de/hello_${random}.mp3`);
-				}
-			},
-			goodbye: {
-				text: () => {
-					return 'Auf Wiedersehen alle.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(1));
-					client_talk(client, `./assets/mp3s/de/goodbye_${random}.mp3`);
-				}
-			},
-			error: {
-				text: () => {
-					return 'Κάτι δεν πήγε καλά.';
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(0));
-					client_talk(client, `./assets/mp3s/gr/error_${random}.mp3`);
-				}
-			},
-			user_connected: {
-				text: (user) => {
-					return `Mitglied ${user} hat sich zum Kanal verbunden.`;
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(1));
-					client_talk(client, `./assets/mp3s/de/user_connected_${random}.mp3`);
-				}
-			},
-			user_disconnected: {
-				text: (user) => {
-					return `Mitglied ${user} hat sich vom Kanal unverbunden.`;
-				},
-				voice: (client) => {
-					let random = Math.floor(Math.random() * Math.floor(1));
-					client_talk(client, `./assets/mp3s/de/user_disconnected_${random}.mp3`);
-				}
-			},
-
+		announcement: {
+			gr: (user) => { return `O ${user} έκανε μια ανακοίνωση.`; },
+			en: (user) => { return `${user} made an announcement.`; },
+			de: (user) => { return `${user} hat eine Ankündigung gemacht.`; }
+		},
+		spotify: {
+			gr: (user) => { return `O ${user} έβαλε νέο κομμάτι.`; },
+			en: (user) => { return `${user} listens to a new song.`; },
+			de: (user) => { return `${user} hört sich ein neues Lied an.`; }
+		},
+		url: {
+			gr: (user) => { return `O ${user} ανέβασε έναν νέο σύνδεσμο.`; },
+			en: (user) => { return `${user} sent a new link.`; },
+			de: (user) => { return `${user} hat einen neuen Link geschickt.`; }
+		},
+		read__only: {
+			gr: (user) => { return `${user}, το κανάλι είναι μόνο για ανάγνωση.`; },
+			en: (user) => { return `${user}, the channel is read-only.`; },
+			de: (user) => { return `${user}, der Kanal ist schreibgeschütz.`; }
+		},
+		error: {
+			gr: (user) => { return `${user}, κάτι δεν πήγε καλά.`; },
+			en: (user) => { return `${user}, something went wrong.`; },
+			de: (user) => { return `${user}, etwas ist schief gelaufen.`; }
+		},
+		user_connected: {
+			gr: (user) => { return `Ο χρήστης ${user} συνδέθηκε στο κανάλι.`; },
+			en: (user) => { return `User ${user} connected to the channel.`; },
+			de: (user) => { return `Mitglied ${user} hat sich zum Kanal verbunden.`; }
+		},
+		user_disconnected: {
+			gr: (user) => { return `Ο χρήστης ${user} αποχώρησε από το κανάλι.`; },
+			en: (user) => { return `User ${user} disconnected from the channel.`; },
+			de: (user) => { return `Mitglied ${user} hat sich vom Kanal unverbunden.`; }
 		}
 	}
 	,

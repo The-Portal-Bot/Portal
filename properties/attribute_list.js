@@ -165,7 +165,10 @@ module.exports =
 			},
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
 				if (value >= 0) {
+					console.log('setting ' + portal_object.regex_portal + ' to ' + Number(value));
+					console.log('was portal_object.user_limit_portal: ' + portal_object.user_limit_portal);
 					portal_object.user_limit_portal = Number(value);
+					console.log('is portal_object.user_limit_portal: ' + portal_object.user_limit_portal);
 					return 1;
 				}
 				return -5;
