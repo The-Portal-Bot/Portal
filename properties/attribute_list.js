@@ -36,7 +36,8 @@ module.exports =
 					'#FF5714',
 					[
 						{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },
-						{ emote: 'Arguments', role: '*' + attr.args + '*', inline: false }
+						{ emote: 'Arguments', role: '*' + attr.args + '*', inline: false },
+						{ emote: 'Example', role: '*' + attr.example + '*', inline: false }
 					]
 				);
 			}
@@ -68,6 +69,7 @@ module.exports =
 			name: 'regex_portal',
 			description: 'returns/sets title-guidelines of portal channel',
 			super_description: '**regex_portal**, returns/sets title-guidelines of portal channel',
+			example: '&regex_portal',
 			args: '!regex',
 			get: (voice_channel, voice_object, portal_object) => {
 				return portal_object.regex_portal;
@@ -81,6 +83,7 @@ module.exports =
 			name: 'regex_voice',
 			description: 'returns/sets the default title for created voice channels',
 			super_description: '**regex_voice**, returns/sets the default title for created voice channels',
+			example: '&regex_voice',
 			args: '!regex',
 			get: (voice_channel, voice_object, portal_object) => {
 				return portal_object.regex_voice;
@@ -94,6 +97,7 @@ module.exports =
 			name: 'regex',
 			description: 'returns/sets the title for current voice channel',
 			super_description: '**regex**, returns/sets the title for current voice channel',
+			example: '&regex',
 			args: '!regex',
 			get: (voice_channel, voice_object) => {
 				return voice_object.regex;
@@ -108,7 +112,8 @@ module.exports =
 			description: 'locale_guild of the guild',
 			super_description: '**locale_guild**, guild locale makes the bot talk your language and all communication is done' +
 				'in your local language',
-			args: 'en/gr',
+			example: '&locale_guild',
+			args: 'en/gr/de',
 			get: (voice_channel, voice_object, portal_object, guild_object) => {
 				return guild_object.locale;
 			},
@@ -125,7 +130,8 @@ module.exports =
 			name: 'locale_portal',
 			description: 'locale_portal of current channel',
 			super_description: '**locale_portal**, returns/language used in statuses',
-			args: 'en/gr',
+			example: '&locale_portal',
+			args: 'en/gr/de',
 			get: (voice_channel, voice_object, portal_object) => {
 				return portal_object.locale;
 			},
@@ -142,7 +148,8 @@ module.exports =
 			name: 'locale',
 			description: 'locale of current channel',
 			super_description: '**locale**, returns/language used in statuses',
-			args: 'en/gr',
+			example: '&locale',
+			args: 'en/gr/de',
 			get: (voice_channel, voice_object) => {
 				return voice_object.locale;
 			},
@@ -159,7 +166,8 @@ module.exports =
 			name: 'user_limit_portal',
 			description: 'returns/maximum number of members guideline for portal',
 			super_description: '**user_limit_portal**, returns/maximum number of members guideline for portal',
-			args: '!number of maximum members',
+			example: '&user_limit_portal',
+			args: '!number of maximum members (0 is infinite)',
 			get: (voice_channel, voice_object, portal_object) => {
 				return portal_object.user_limit_portal;
 			},
@@ -178,7 +186,8 @@ module.exports =
 			name: 'user_limit',
 			description: 'returns/maximum number of members allowed',
 			super_description: '**user_limit**, returns/maximum number of members allowed',
-			args: '!number of maximum members',
+			example: '&user_limit',
+			args: '!number of maximum members (0 is infinite)',
 			get: (voice_channel) => {
 				return voice_channel.userLimit;
 			},
@@ -194,6 +203,7 @@ module.exports =
 			name: 'position',
 			description: 'returns/the position of the channel',
 			super_description: '**position**, returns/the position of the channel',
+			example: '&position',
 			args: '!position of channel',
 			get: (voice_channel) => {
 				return voice_channel.position;
@@ -210,6 +220,7 @@ module.exports =
 			name: 'bitrate',
 			description: 'returns/bitrate of channel',
 			super_description: '**bitrate** returns/bitrate of channel,',
+			example: '&bitrate',
 			args: 'number',
 			get: (voice_channel) => {
 				return voice_channel.bitrate;

@@ -37,7 +37,8 @@ module.exports =
 					'#EEB902',
 					[
 						{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
-						{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false }
+						{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false },
+						{ emote: 'Example', role: '*' + strc.example + '*', inline: false }
 					]
 				);
 			}
@@ -57,6 +58,8 @@ module.exports =
 				'it is the same name.\nOperator is can take values: ==, ===, !=, !==, >, <, >=, <=.\n'+
 				'> You can read the statement as: if John is equal with John ? yes, same name or no, not same name.\n'+
 				'> You cannot encapsulate if statements.',
+			example: '{{\n\t"if": "John", "is": "===", "with": "John",\n\t' +
+				'"yes": "same name", "no": "not the same name"\n}}',
 			args: 'JSON with: if, is, with, yes, no'
 		}
 	]

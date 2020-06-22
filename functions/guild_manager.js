@@ -199,7 +199,7 @@ module.exports =
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice,
-					false, 0, 0, 'gr', 1, Date.now()
+					false, 0, 0, portal_objct.locale, 1, Date.now()
 				);
 				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
 					channel.setParent(state.channel.parentID);
