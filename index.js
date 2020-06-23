@@ -200,7 +200,9 @@ client.on('message', async message => {
 	// await require(`./commands/${cmd}.js`)(
 	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
+			console.log('vazo to ' + cmd + 'sto active ooldown');
 			if (rspns.result === true) {
+
 				active_cooldown[type].push({
 					member: message.author.id, command: cmd,
 					timestamp: Date.now()

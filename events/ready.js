@@ -9,6 +9,6 @@ module.exports = async (args) => {
 	);
 
 	return {
-		result: true, value: lclz_mngr.console.gr.ready(args)
+		result: true, value: lclz_mngr.console.ready.en(args)
 	};
 };

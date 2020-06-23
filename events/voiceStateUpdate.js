@@ -32,7 +32,7 @@ module.exports = async (args) => {
 		report_message += 'null->existing\n';
 
 		if (guld_mngr.included_in_portal_list(newChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // user joined portal channel
-			guld_mngr.create_voice_channel(args.newState, args.portal_guilds[args.newState.guild.id].portal_list[newChannel.id], args.newState.id);
+			guld_mngr.create_voice_channel(args.newState, args.portal_guilds[args.newState.guild.id].portal_list[newChannel.id], newChannel, args.newState.id);
 			guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list, args.portal_guilds[args.newState.guild.id]);
 		} else if (guld_mngr.included_in_voice_list(newChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // user joined voice channel
 			guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list, args.portal_guilds[args.newState.guild.id]);
@@ -85,7 +85,7 @@ module.exports = async (args) => {
 					}
 				}
 
-				guld_mngr.create_voice_channel(args.newState, args.portal_guilds[args.newState.guild.id].portal_list[newChannel.id], args.newState.id);
+				guld_mngr.create_voice_channel(args.newState, args.portal_guilds[args.newState.guild.id].portal_list[newChannel.id], newChannel, args.newState.id);
 				guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list, args.portal_guilds[args.newState.guild.id]);
 			} else if (guld_mngr.included_in_voice_list(newChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // Left created channel and joins another created
 				report_message += '->dest: voice_list\n';
@@ -122,7 +122,7 @@ module.exports = async (args) => {
 			if (guld_mngr.included_in_portal_list(newChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // Joined portal channel
 				report_message += '->dest: portal_list\n';
 
-				guld_mngr.create_voice_channel(args.newState, args.portal_guilds[args.newState.guild.id].portal_list[newChannel.id], args.newState.id);
+				guld_mngr.create_voice_channel(args.newState, args.portal_guilds[args.newState.guild.id].portal_list[newChannel.id], newChannel, args.newState.id);
 				guld_mngr.generate_channel_name(newChannel, args.portal_guilds[args.newState.guild.id].portal_list, args.portal_guilds[args.newState.guild.id]);
 			}
 			else if (guld_mngr.included_in_voice_list(newChannel.id, args.portal_guilds[args.newState.guild.id].portal_list)) { // left created channel and joins another created

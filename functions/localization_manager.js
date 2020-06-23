@@ -12,7 +12,7 @@ module.exports =
 							if (voice_id === voiceConnection.channel.id) {
 								let locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
 								let random = Math.floor(Math.random() * Math.floor(3));
-								voiceConnection.play(`./assets/mp3s/${locale}/${context}_${random}.mp3`);
+								voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
 							}
 						}
 					}
@@ -24,15 +24,10 @@ module.exports =
 
 	client_write: function (message, guild_list, context) {
 		let locale = null;
-		console.log('perasa apo 0');
 		if (message !== null) {
-			console.log('perasa apo 1');
 			if (message.member.voice !== undefined && message.member.voice !== null) {
-				console.log('perasa apo 2');
 				for (let guild_id in guild_list) {
-					console.log('perasa apo 3');
 					for (let portal_id in guild_list[guild_id].portal_list) {
-						console.log('perasa apo 4');
 						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
 							if (voice_id === message.member.voice.channel.id) {//message.author.presence.member.voice.channel.id) {
 								locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
@@ -58,7 +53,7 @@ module.exports =
 						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
 							if (voice_id === message.member.channel.id) {//message.author.presence.member.voice.channel.id) {
 								locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
-								return this.console[locale][context].text(args);
+								return this.console[context][locale].text(args);
 							}
 						}
 					}
@@ -67,7 +62,7 @@ module.exports =
 		}
 
 		locale = guild_list[guild_id].locale;
-		return this.console[locale][context](args);
+		return this.console[context][locale](args);
 	}
 	,
 
@@ -123,58 +118,33 @@ module.exports =
 
 	console:
 	{
-		gr:
-		{
-			ready: (args) => {
-				return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε ` +
-					`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`;
-			},
-			updating_guild: (args) => {
-				return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε.';
-			},
-			presence_controlled_away: (args) => {
-				return `Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος μια ελεγχόμενης συντεχνίας, ` +
-					`έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία (${args.newPresence.guild.name})`;
-			},
-			presence_controlled: (args) => {
-				return `Ο χρήστης ${args.newPresence.member.displayName} έχει αλλάξει κατάσταση, ` +
-					`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.newPresence.guild.name})`;
-			}
+		ready: {
+			gr: (args) => { return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε ` +
+				`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`; },
+			en: (args) => { return `Bot has started, with ${args.client.users.cache.size} users, ` +
+				`in ${args.client.channels.cache.size} channels from ε ${args.client.guilds.cache.size} guilds.`; },
+			de: (args) => { return `Bot hat ${args.client.users.cache.size} Mitglieder in ${channel_count} Kanälen von ${guild_count} Gilden gestartet.`; }
 		},
-		en:
-		{
-			ready: (args) => {
-				return `Bot has started, with ${args.client.users.cache.size} users, ` +
-					`in ${args.client.channels.cache.size} channels from ε ${args.client.guilds.cache.size} guilds.`;
-			},
-			updating_guild: (args) => {
-				return '> Guild JSON file has been updated.';
-			},
-			presence_controlled_away: (args) => {
-				return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
-					`has changed presence, but is in another server (${args.newPresence.guild.name})`;
-			},
-			presence_controlled: (args) => {
-				return `${args.newPresence.member.displayName} has changed presence, ` +
-					`in controlled server (${args.newPresence.guild.name})`;
-			}
+		updating_guild: {
+			gr: (args) => { return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε.'; },
+			en: (args) => { return '> Guild JSON file has been updated.'; },
+			de: (args) => { return '> Die JSON Datei der Gilde wurde aktualisiert.'; }
 		},
-		de:
-		{
-			ready: (args) => {
-				return `Bot hat ${args.client.users.cache.size} Mitglieder in ${channel_count} Kanälen von ${guild_count} Gilden gestartet.`;
-			},
-			updating_guild: (args) => {
-				return '> Die JSON Datei der Gilde wurde aktualisiert.';
-			},
-			presence_controlled_away: (args) => {
-				return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
-					`has changed presence, but is in another server (${args.newPresence.guild.name})`;
-			},
-			presence_controlled: (args) => {
-				return `${args.newPresence.member.displayName} has changed presence, ` +
-					`in controlled server (${args.newPresence.guild.name})`;
-			}
+		presence_controlled_away: {
+			gr: (args) => { return `Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος μια ελεγχόμενης συντεχνίας, ` +
+				`έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία (${args.newPresence.guild.name})`; },
+			en: (args) => { return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
+				`has changed presence, but is in another server (${args.newPresence.guild.name})`; },
+			de: (args) => { return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
+				`has changed presence, but is in another server (${args.newPresence.guild.name})`; }
+		},
+		presence_controlled: {
+			gr: (args) => { return `Ο χρήστης ${args.newPresence.member.displayName} έχει αλλάξει κατάσταση, ` +
+				`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.newPresence.guild.name})`; },
+			en: (args) => { return `${args.newPresence.member.displayName} has changed presence, ` +
+				`in controlled server (${args.newPresence.guild.name})`; },
+			de: (args) => { return `${args.newPresence.member.displayName} has changed presence, ` +
+				`in controlled server (${args.newPresence.guild.name})`; }
 		}
 	}
 };

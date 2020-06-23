@@ -193,8 +193,10 @@ module.exports =
 	}
 	,
 
-	create_voice_channel: function (state, portal_objct, creator_id) {
-		state.channel.guild.channels.create('loading...', { type: 'voice', bitrate: 64000 })
+	create_voice_channel: function (state, portal_objct, portal_channel, creator_id) {
+		state.channel.guild.channels.create('loading...', { 
+			type: 'voice', bitrate: 64000, position: portal_channel.position 
+		})
 			.then(channel => {
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
