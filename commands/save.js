@@ -4,7 +4,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	return new Promise((resolve) => {
 		help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds)
 			.then((response) => {
-				resolve(response);
+				return resolve(response);
 			})
 			.catch(console);
 	});

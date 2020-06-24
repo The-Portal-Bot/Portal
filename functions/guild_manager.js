@@ -130,7 +130,7 @@ module.exports =
 		}
 	}
 	,
-	
+
 	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_objct) {
 		if (spotify_category) { // with category
 			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
@@ -224,7 +224,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new guild_class({}, [], {}, null, null, 'gr', 0, false);
+		portal_guilds[guild_id] = new guild_class({}, [], [], {}, null, null, 'gr', 0, false);
 	}
 	,
 

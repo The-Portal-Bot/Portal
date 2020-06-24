@@ -83,6 +83,13 @@ module.exports = {
 	}
 	,
 
+	is_authorized: function (auth_list, member) {
+		return !member.hasPermission('ADMINISTRATOR')
+			? member.roles.cache.some(role => auth_list.some(auth => auth === role.id))
+			: true;
+	}
+	,
+
 	// channel should be removed !
 	message_reply: function (status, channel, message, user, str, portal_guilds, client) {
 		if (!message.channel.deleted) {

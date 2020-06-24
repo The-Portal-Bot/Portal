@@ -24,7 +24,7 @@ const command_cooldown = {
 	},
 	none: {
 		portal: 0, help: 0, ping: 0, run: 0, set: 0, role: 0, spotify: 0,
-		announcement: 0, url: 0, focus: 0, corona: 0, leave: 0
+		announcement: 0, url: 0, focus: 0, corona: 0, leave: 0, auth_role_add: 0, auth_role_rem: 0
 	}
 };
 
@@ -151,6 +151,16 @@ client.on('message', async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
 
+	if (!help_mngr.is_authorized(portal_guilds[message.guild.id].auth_list, message.member)) {
+		help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
+			'you are not authorized to access this command', portal_guilds, client);
+		console.log('you are not authorized to access this command');
+	} else {
+		help_mngr.message_reply(null, message.author.presence.member.voice.channel, message, message.author,
+			'you are authorized to access this command', portal_guilds, client);
+		console.log('you are authorized to access this command');
+	}
+
 	let type = null;
 
 	if (!(command_cooldown.guild[cmd] >= 0)) {
@@ -197,7 +207,6 @@ client.on('message', async message => {
 		return;
 	}
 
-	// await require(`./commands/${cmd}.js`)(
 	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
 			console.log('vazo to ' + cmd + 'sto active ooldown');
