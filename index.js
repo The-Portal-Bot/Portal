@@ -154,11 +154,6 @@ client.on('message', async message => {
 	if (!help_mngr.is_authorized(portal_guilds[message.guild.id].auth_list, message.member)) {
 		help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
 			'you are not authorized to access this command', portal_guilds, client);
-		console.log('you are not authorized to access this command');
-	} else {
-		help_mngr.message_reply(null, message.author.presence.member.voice.channel, message, message.author,
-			'you are authorized to access this command', portal_guilds, client);
-		console.log('you are authorized to access this command');
 	}
 
 	let type = null;
