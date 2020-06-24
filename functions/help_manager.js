@@ -122,6 +122,11 @@ module.exports = {
 	}
 	,
 
+	pad: function (num, size) {
+		var s = '0' + num;
+		return s.substr(s.length - size);
+	}
+	,
 	time_elapsed: function (timestamp, timeout) {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;

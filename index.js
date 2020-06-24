@@ -166,10 +166,8 @@ client.on('message', async message => {
 					.then(rspns => {
 						if (rspns) {
 							help_mngr.message_reply(
-								rspns.result,
-								message.author.presence.member.voice.channel,
-								message, message.author, rspns.value,
-								portal_guilds, client);
+								rspns.result, message.author.presence.member.voice.channel,
+								message, message.author, rspns.value, portal_guilds, client);
 						}
 					});
 				help_mngr.update_portal_managed_guilds(true, 
@@ -184,17 +182,13 @@ client.on('message', async message => {
 	}
 
 	if (active = active_cooldown[type].find(active =>
-		(type === 'member' &&
-			active.member === message.author.id && active.command === cmd) ? 
-			true :
-			(type === 'guild' && active.command === cmd))) {
-
+		(type === 'member' && active.member === message.author.id && active.command === cmd)
+			? true : (type === 'guild' && active.command === cmd))) {
 		let time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd]);
 
-		help_mngr.message_reply(
-			false, message.author.presence.member.voice.channel,
-			message, message.author, `*you need to wait* **${time.remaining_min}:${time.remaining_sec}/`+
-			`${time.timeout_min}:${time.timeout_sec}** *to use* **${cmd}** *again${type === 'member' 
+		help_mngr.message_reply( false, message.author.presence.member.voice.channel, message,
+			message.author, `*you need to wait* **${help_mngr.pad(time.remaining_min)}:${help_mngr.pad(time.remaining_sec)}/`+
+			`${help_mngr.pad(time.timeout_min)}:${help_mngr.pad(time.timeout_sec)}** *to use* **${cmd}** *again${type === 'member' 
 				? '.*'
 				: `, as it was used again in* **${message.guild.name}**.`}`,
 			portal_guilds, client);
