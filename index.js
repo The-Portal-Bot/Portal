@@ -141,7 +141,7 @@ client.on('message', async message => {
 		message.delete();
 		return;
 	} else if (channel_type === 'URL') {
-		lclz_mngr.client_talk(client, portal_guilds, 'new_link');
+		lclz_mngr.client_talk(client, portal_guilds, 'url');
 	}
 
 	// Ignore any message that does not start with prefix
@@ -154,6 +154,9 @@ client.on('message', async message => {
 	if (!help_mngr.is_authorized(portal_guilds[message.guild.id].auth_list, message.member)) {
 		help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
 			'you are not authorized to access this command', portal_guilds, client);
+	} else {
+		// help_mngr.message_reply(true, message.author.presence.member.voice.channel, message, message.author,
+		// 	'you are authorized to access this command', portal_guilds, client);
 	}
 
 	let type = null;
@@ -198,7 +201,7 @@ client.on('message', async message => {
 
 	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
-			console.log('vazo to ' + cmd + 'sto active ooldown');
+			console.log('vazo to ' + cmd + 'stoactive ooldown');
 			if (rspns.result === true) {
 
 				active_cooldown[type].push({

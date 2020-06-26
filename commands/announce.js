@@ -22,7 +22,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			.send(help_mngr.create_rich_embed(
 				title, `@here ${body}`, '#022e4e', [], null, message.member, false
 			));
-		lclz_mngr.client_talk(client, portal_guilds, 'announcement');
+		lclz_mngr.client_talk(client, portal_guilds, 'announce');
 
 		return resolve ({ result: true, value: '*announcement was sent successfully.*' });
 	});
