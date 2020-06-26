@@ -130,7 +130,7 @@ module.exports =
 		}
 	}
 	,
-	
+
 	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_objct) {
 		if (spotify_category) { // with category
 			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
@@ -168,12 +168,14 @@ module.exports =
 	,
 
 	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_objct, creator_id) {
+		console.log('guild_objct: ', guild_objct);
+
 		if (portal_category) { // with category
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, guild_objct.locale, false, Date.now()
+						false, 0, 0, 0, guild_objct[guild.id].locale, false, Date.now()
 					);
 					guild.channels.create(portal_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
@@ -185,7 +187,7 @@ module.exports =
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, guild_objct.locale, false, Date.now()
+						false, 0, 0, 0, guild_objct[guild.id].locale, false, Date.now()
 					);
 				})
 				.catch(console.error);
@@ -224,7 +226,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new guild_class({}, [], {}, null, null, 'gr', 0, false);
+		portal_guilds[guild_id] = new guild_class({}, [], [], {}, null, null, 'gr', 0, false);
 	}
 	,
 
@@ -282,12 +284,12 @@ module.exports =
 
 	//
 
-	generate_channel_name: function (voice_channel, portal_object, guild_object) {
+	generate_channel_name: function (voice_channel, portal_object, guild_objct) {
 		for (let portal_id in portal_object) {
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
 				let new_name = this.regex_interpreter(
-					voice_object.regex, voice_channel, voice_object, portal_object, guild_object
+					voice_object.regex, voice_channel, voice_object, portal_object, guild_objct
 				);
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
@@ -308,7 +310,7 @@ module.exports =
 	}
 	,
 
-	regex_interpreter: function (regex, voice_channel, voice_object, portal_object, guild_object) {
+	regex_interpreter: function (regex, voice_channel, voice_object, portal_object, guild_objct) {
 
 		let last_space_index = 0;
 		let last_vatiable_end_index = 0;
@@ -338,7 +340,7 @@ module.exports =
 
 				if (attr = attr_objct.is_attribute(regex.substring(i))) {
 					if (return_value = attr_objct.get(
-						voice_channel, voice_object, portal_object, guild_object, attr)
+						voice_channel, voice_object, portal_object, guild_objct, attr)
 					) {
 						last_attribute = return_value;
 						new_channel_name += return_value;
@@ -416,20 +418,20 @@ module.exports =
 					} else {
 						if (inline[statement.is](
 							this.regex_interpreter(
-								statement.if, voice_channel, voice_object, portal_object, guild_object
+								statement.if, voice_channel, voice_object, portal_object, guild_objct
 							),
 							this.regex_interpreter(
-								statement.with, voice_channel, voice_object, portal_object, guild_object
+								statement.with, voice_channel, voice_object, portal_object, guild_objct
 							)
 						)) {
 							let value = this.regex_interpreter(
-								statement.yes, voice_channel, voice_object, portal_object, guild_object
+								statement.yes, voice_channel, voice_object, portal_object, guild_objct
 							);
 							if ('--' !== value)
 								new_channel_name += value;
 						} else {
 							let value = this.regex_interpreter(
-								statement.no, voice_channel, voice_object, portal_object, guild_object
+								statement.no, voice_channel, voice_object, portal_object, guild_objct
 							);
 							if ('--' !== value)
 								new_channel_name += value;

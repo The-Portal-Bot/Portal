@@ -18,7 +18,7 @@ display_spotify_song = function (current_guild, current_channel, args) {
 			if (activity.name === 'Spotify') {
 				if (spotify = args.newPresence.guild.channels.cache.find(channel =>
 					channel.id === args.portal_guilds[current_guild.id].spotify)) {
-					lclz_mngr.client_talk(args.client, args.portal_guilds, 'new_song');
+					lclz_mngr.client_talk(args.client, args.portal_guilds, 'spotify');
 					spotify
 						.send(help_mngr.create_rich_embed(
 							`**${activity.details}**`,
@@ -28,12 +28,12 @@ display_spotify_song = function (current_guild, current_channel, args) {
 								{
 									emote: 'Artist',
 									role: `***${activity.state}***`,
-									inline: true
+									inline: false
 								},
 								{
 									emote: 'Album',
 									role: `***${activity.assets.largeText}***`,
-									inline: true
+									inline: false
 								}
 							],
 							activity.assets.largeImageURL(),

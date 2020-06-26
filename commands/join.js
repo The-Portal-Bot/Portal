@@ -13,8 +13,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				if (guld_mngr.included_in_voice_list(current_voice.id, portal_guilds[message.guild.id].portal_list)) {
 					current_voice.join()
 						.then(con => {
-							// lclz_mngr.portal[portal_guilds[current_voice.guild.id].locale].hello.voice(client);
-							lclz_mngr.client_talk(client, portal_guilds, 'hello');
+							lclz_mngr.client_talk(client, portal_guilds, 'join');
 						})
 						.catch(e => { console.log(e); });
 
@@ -28,6 +27,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			return resolve ({ result: false, value: 'you are not connected to any channel.'  }); // localize
 		}
 
-		return resolve ({ result: true, value: lclz_mngr.client_write(message, portal_guilds, 'hello') });
+		return resolve ({ result: true, value: lclz_mngr.client_write(message, portal_guilds, 'join') });
 	});
 };

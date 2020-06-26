@@ -83,6 +83,13 @@ module.exports = {
 	}
 	,
 
+	is_authorized: function (auth_list, member) {
+		return !member.hasPermission('ADMINISTRATOR')
+			? member.roles.cache.some(role => auth_list.some(auth => auth === role.id))
+			: true;
+	}
+	,
+
 	// channel should be removed !
 	message_reply: function (status, channel, message, user, str, portal_guilds, client) {
 		if (!message.channel.deleted) {
@@ -95,7 +102,7 @@ module.exports = {
 				message
 					.react('✔️');
 			} else if (status === false) {
-				lclz_mngr.client_talk(client, portal_guilds, 'error');
+				lclz_mngr.client_talk(client, portal_guilds, 'fail');
 				message
 					.react('❌');
 			}
@@ -115,6 +122,14 @@ module.exports = {
 	}
 	,
 
+	pad: function (num) {
+		if (num.toString().length >= 2) {
+			return num;
+		} else {
+			return '0' + num;
+		}
+	}
+	,
 	time_elapsed: function (timestamp, timeout) {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;

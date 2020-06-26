@@ -30,21 +30,23 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 							let return_value = attr_objct.set(
 								message.member.voice.channel, current_voice_channel, current_portal_channel,
-								portal_guilds[message.guild.id], args[0], value
+								portal_guilds[message.guild.id], args[0], value, message.member
 							);
 
 							switch (return_value) {
 							case 1:
 								return resolve ({ result: true, value: `*attribute ${args[0]} set to ${value} successfully*` });
 							case -1:
-								return resolve ({ result: false, value: `*attribute ${args[0]} is read only*` });
+								return resolve({ result: false, value: `*${args[0]} is not an attribute*` });
 							case -2:
-								return resolve ({ result: false, value: `*${args[0]} is not an attribute*` });
+								return resolve ({ result: false, value: `*${args[0]} can only be set by an administrator*` });
 							case -3:
-								return resolve ({ result: false, value: `*${args[0]} is not an attribute*` });
+								return resolve({ result: false, value: `*${args[0]} can only be set by the portal creator*` });
 							case -4:
-								return resolve ({ result: false, value: `*locale can only be ${locales.join(', ')}*` });
+								return resolve({ result: false, value: `*${args[0]} can only be set by the voice creator*` });
 							case -5:
+								return resolve ({ result: false, value: `*locale can only be ${locales.join(', ')}*` });
+							case -6:
 								return resolve ({ result: false, value: `*${args[0]} can be a number from 0-n (0 means unlimited)*` });
 							default:
 								return resolve ({ result: false, value: `*${args[0]} cannot be set*` });

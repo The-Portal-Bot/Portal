@@ -52,16 +52,33 @@ module.exports =
 		}
 		return -1;
 	},
-	set: function (voice_channel, voice_object, portal_object, guild_object, attr, value) {
+	set: function (voice_channel, voice_object, portal_object, guild_object, attr, value, member) {
 		for (let l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {
-				if (this.attributes[l].set !== undefined) {
-					return this.attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value);
+				switch (this.attributes[l].auth) {
+				case 'admin':
+					if (!member.hasPermission('ADMINISTRATOR')) {
+						return -2;
+					}
+					break;
+				case 'portal':
+					if(portal_object.creator_id !== member.id) {
+						return -3;
+					}
+					break;
+				case 'voice':
+					if(voice_object.creator_id !== member.id) {
+						return -4;
+					}
+					break;
+				default:
+					break;
 				}
-				return -1;
+
+				return this.attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value);
 			}
 		}
-		return -2;
+		return -1;
 	},
 	prefix: '&',
 	attributes: [
@@ -77,7 +94,8 @@ module.exports =
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
 				portal_object.regex_portal = value;
 				return 1;
-			}
+			},
+			auth: 'portal'
 		},
 		{
 			name: 'regex_voice',
@@ -91,7 +109,8 @@ module.exports =
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
 				portal_object.regex_voice = value;
 				return 1;
-			}
+			},
+			auth: 'portal'
 		},
 		{
 			name: 'regex',
@@ -105,7 +124,8 @@ module.exports =
 			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
 				voice_object.regex = value;
 				return 1;
-			}
+			},
+			auth: 'voice'
 		},
 		{
 			name: 'locale_guild',
@@ -122,9 +142,10 @@ module.exports =
 					guild_object.locale = String(value);
 					return 1;
 				} else {
-					return -4;
+					return -5;
 				}
-			}
+			},
+			auth: 'admin'
 		},
 		{
 			name: 'locale_portal',
@@ -140,9 +161,10 @@ module.exports =
 					portal_object.locale = String(value);
 					return 1;
 				} else {
-					return -4;
+					return -5;
 				}
-			}
+			},
+			auth: 'portal'
 		},
 		{
 			name: 'locale',
@@ -158,9 +180,10 @@ module.exports =
 					voice_object.locale = String(value);
 					return 1;
 				} else {
-					return -4;
+					return -5;
 				}
-			}
+			},
+			auth: 'voice'
 		},
 		{
 			name: 'user_limit_portal',
@@ -179,8 +202,9 @@ module.exports =
 					console.log('is portal_object.user_limit_portal: ' + portal_object.user_limit_portal);
 					return 1;
 				}
-				return -5;
-			}
+				return -6;
+			},
+			auth: 'portal'
 		},
 		{
 			name: 'user_limit',
@@ -196,8 +220,9 @@ module.exports =
 					voice_channel.userLimit = Number(value);
 					return 1;
 				}
-				return -5;
-			}
+				return -6;
+			},
+			auth: 'voice'
 		},
 		{
 			name: 'position',
@@ -214,7 +239,8 @@ module.exports =
 						`Channel's new position is ${channel.position} and should be ${value}`))
 					.catch(console.error);
 				return 1;
-			}
+			},
+			auth: 'voice'
 		},
 		{
 			name: 'bitrate',
@@ -232,7 +258,8 @@ module.exports =
 						`Channel's new position is ${channel.bitrate} and should be ${value}`))
 					.catch(console.error);
 				return 1;
-			}
+			},
+			auth: 'voice'
 		}
 	]
 };

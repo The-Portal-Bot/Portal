@@ -68,17 +68,17 @@ module.exports =
 
 	portal:
 	{
-		hello: {
+		join: {
 			gr: () => { return 'Γειά σας, το Πόρταλ είναι εδώ.'; },
 			en: () => { return 'Cheers love, Portal\'s here.'; },
 			de: () => { return 'Hallo, Portal ist da.'; }
 		},
-		goodbye: {
+		leave: {
 			gr: () => { return 'Αποχαιρετώ, καλή συνέχεια σε όλους.'; },
 			en: () => { return 'Goodbye everyone.'; },
 			de: () => { return 'Auf Wiedersehen alle.'; }
 		},
-		announcement: {
+		announce: {
 			gr: (user) => { return `O ${user} έκανε μια ανακοίνωση.`; },
 			en: (user) => { return `${user} made an announcement.`; },
 			de: (user) => { return `${user} hat eine Ankündigung gemacht.`; }
@@ -98,7 +98,7 @@ module.exports =
 			en: (user) => { return `${user}, the channel is read-only.`; },
 			de: (user) => { return `${user}, der Kanal ist schreibgeschütz.`; }
 		},
-		error: {
+		fail: {
 			gr: (user) => { return `${user}, κάτι δεν πήγε καλά.`; },
 			en: (user) => { return `${user}, something went wrong.`; },
 			de: (user) => { return `${user}, etwas ist schief gelaufen.`; }

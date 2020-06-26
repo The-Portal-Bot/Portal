@@ -24,7 +24,7 @@ const command_cooldown = {
 	},
 	none: {
 		portal: 0, help: 0, ping: 0, run: 0, set: 0, role: 0, spotify: 0,
-		announcement: 0, url: 0, focus: 0, corona: 0, leave: 0
+		announcement: 0, url: 0, focus: 0, corona: 0, leave: 0, auth_role_add: 0, auth_role_rem: 0
 	}
 };
 
@@ -141,7 +141,7 @@ client.on('message', async message => {
 		message.delete();
 		return;
 	} else if (channel_type === 'URL') {
-		lclz_mngr.client_talk(client, portal_guilds, 'new_link');
+		lclz_mngr.client_talk(client, portal_guilds, 'url');
 	}
 
 	// Ignore any message that does not start with prefix
@@ -150,6 +150,14 @@ client.on('message', async message => {
 	// Separate function name, and arguments of function
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
+
+	if (!help_mngr.is_authorized(portal_guilds[message.guild.id].auth_list, message.member)) {
+		help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
+			'you are not authorized to access this command', portal_guilds, client);
+	} else {
+		// help_mngr.message_reply(true, message.author.presence.member.voice.channel, message, message.author,
+		// 	'you are authorized to access this command', portal_guilds, client);
+	}
 
 	let type = null;
 
@@ -161,10 +169,8 @@ client.on('message', async message => {
 					.then(rspns => {
 						if (rspns) {
 							help_mngr.message_reply(
-								rspns.result,
-								message.author.presence.member.voice.channel,
-								message, message.author, rspns.value,
-								portal_guilds, client);
+								rspns.result, message.author.presence.member.voice.channel,
+								message, message.author, rspns.value, portal_guilds, client);
 						}
 					});
 				help_mngr.update_portal_managed_guilds(true, 
@@ -179,17 +185,13 @@ client.on('message', async message => {
 	}
 
 	if (active = active_cooldown[type].find(active =>
-		(type === 'member' &&
-			active.member === message.author.id && active.command === cmd) ? 
-			true :
-			(type === 'guild' && active.command === cmd))) {
-
+		(type === 'member' && active.member === message.author.id && active.command === cmd)
+			? true : (type === 'guild' && active.command === cmd))) {
 		let time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd]);
 
-		help_mngr.message_reply(
-			false, message.author.presence.member.voice.channel,
-			message, message.author, `*you need to wait* **${time.remaining_min}:${time.remaining_sec}/`+
-			`${time.timeout_min}:${time.timeout_sec}** *to use* **${cmd}** *again${type === 'member' 
+		help_mngr.message_reply( false, message.author.presence.member.voice.channel, message,
+			message.author, `*you need to wait* **${help_mngr.pad(time.remaining_min)}:${help_mngr.pad(time.remaining_sec)}/`+
+			`${help_mngr.pad(time.timeout_min)}:${help_mngr.pad(time.timeout_sec)}** *to use* **${cmd}** *again${type === 'member' 
 				? '.*'
 				: `, as it was used again in* **${message.guild.name}**.`}`,
 			portal_guilds, client);
@@ -197,10 +199,9 @@ client.on('message', async message => {
 		return;
 	}
 
-	// await require(`./commands/${cmd}.js`)(
 	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
-			console.log('vazo to ' + cmd + 'sto active ooldown');
+			console.log('vazo to ' + cmd + 'stoactive ooldown');
 			if (rspns.result === true) {
 
 				active_cooldown[type].push({
