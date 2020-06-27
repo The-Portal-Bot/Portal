@@ -250,15 +250,23 @@ module.exports =
 		let type_of_channel = 0;
 		for (let portal_id in guild_list[channel_to_remove.guild.id].portal_list) {
 			if (portal_id === channel_to_remove.id) {
-				delete guild_list[channel_to_remove.guild.id].portal_list[portal_id];
-				type_of_channel = 1;
-				break;
+				if (channel_to_remove.deletable) {
+					if (!channel_to_remove.deleted) {
+						delete guild_list[channel_to_remove.guild.id].portal_list[portal_id];
+						type_of_channel = 1;
+						break;
+					}
+				}
 			} else {
 				for (let voice_id in guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list) {
 					if (voice_id === channel_to_remove.id) {
-						delete guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list[voice_id];
-						type_of_channel = 2;
-						break;
+						if (channel_to_remove.deletable) {
+							if (!channel_to_remove.deleted) {
+								delete guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list[voice_id];
+								type_of_channel = 2;
+								break;
+							}
+						}
 					}
 				}
 			}

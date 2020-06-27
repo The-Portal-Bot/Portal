@@ -46,7 +46,7 @@ event_loader = function (event, args) {
 			if (rspns.result) {
 				console.log(rspns.value);
 			} else {
-				console.log('error: ', rspns.value);
+				console.log('ERROR: ', rspns.value);
 			}
 		});
 };
