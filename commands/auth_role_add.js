@@ -16,7 +16,7 @@ module.exports = async (client, message, args, portal_guilds) => {
 			}
 			
 			portal_guilds[message.guild.id].auth_list.push(role.id);
-			resolve({ result: true, value: `role ${args[0]} is not in role list.` });
+			resolve({ result: true, value: `role ${args[0]} has been added to role list.` });
 		} else {
 			resolve({ result: false, value: `role ${args[0]} does not exist in guild "${message.guild}".` });
 		}
