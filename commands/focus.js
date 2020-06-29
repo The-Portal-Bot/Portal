@@ -15,8 +15,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 		if (Object.getOwnPropertyNames(user_match).length !== 0) {
 			for (let key in user_match) {
-				console.log('1) ' + key + ' === ' + focus_name);
-				console.log('2) ' + user_match[key].name + ' === ' + message.member.displayName);
 				if (key === focus_name) {
 					if (user_match[key].name == message.member.displayName) {
 						if (return_value = guld_mngr.create_focus_channel(
@@ -34,7 +32,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				}
 			}
 		}
-
 
 		if (!flow) {
 			user_match[message.member.displayName] = { name: focus_name, time: focus_time };

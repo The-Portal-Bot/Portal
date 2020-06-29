@@ -30,13 +30,11 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			const announcement_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
 			if (announcement_channel !== '') {
-				console.log('exei category');
 				guld_mngr.create_announcement_channel(
 					message.guild, announcement_channel, announcement_category, portal_guilds[message.guild.id]);
 
 				return resolve ({ result: true, value: '*announcement channel and category have been created*' });
 			} else if (announcement_channel === '' && announcement_category !== '') {
-				console.log('den exei category');
 				guld_mngr.create_announcement_channel(
 					message.guild, announcement_category, null, portal_guilds[message.guild.id]);
 

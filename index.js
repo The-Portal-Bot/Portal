@@ -23,8 +23,8 @@ const command_cooldown = {
 		force: 5, join: 1, announce: 2
 	},
 	none: {
-		portal: 0, help: 0, ping: 0, run: 0, set: 0, role: 0, spotify: 0,
-		announcement: 0, url: 0, focus: 0, corona: 0, leave: 0, auth_role_add: 0, auth_role_rem: 0
+		portal: 0, help: 0, ping: 0, run: 0, set: 0, role: 0, spotify: 0, announcement: 0,
+		setup: 0, url: 0, focus: 0, corona: 0, leave: 0, auth_role_add: 0, auth_role_rem: 0
 	}
 };
 

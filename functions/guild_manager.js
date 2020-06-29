@@ -125,7 +125,6 @@ module.exports =
 			guild.channels.create(`${url_name}-url`, { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
-					console.log('url_list = ' + url_list);
 				});
 		}
 	}
@@ -168,8 +167,6 @@ module.exports =
 	,
 
 	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_objct, creator_id) {
-		console.log('guild_objct: ', guild_objct);
-
 		if (portal_category) { // with category
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
