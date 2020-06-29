@@ -165,8 +165,7 @@ client.on('message', async message => {
 	if (!(command_cooldown.guild[cmd] >= 0)) {
 		if (!(command_cooldown.member[cmd] >= 0)) {
 			if (command_cooldown.none[cmd] === 0) {
-				await require(`./commands/${cmd}.js`)(client, message, args,
-					portal_guilds, portal_managed_guilds_path, user_match)
+				require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path, user_match)
 					.then(rspns => {
 						if (rspns) {
 							help_mngr.message_reply(
@@ -200,11 +199,9 @@ client.on('message', async message => {
 		return;
 	}
 
-	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+	require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
 		.then(rspns => {
-			console.log('vazo to ' + cmd + 'stoactive ooldown');
 			if (rspns.result === true) {
-
 				active_cooldown[type].push({
 					member: message.author.id, command: cmd,
 					timestamp: Date.now()

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const help_mngr = require('../functions/help_manager');
 const locales = ['gr', 'en', 'de'];
 
@@ -129,8 +130,8 @@ module.exports =
 		},
 		{
 			name: 'locale_guild',
-			description: 'locale_guild of the guild',
-			super_description: '**locale_guild**, guild locale makes the bot talk your language and all communication is done' +
+			description: 'returns/sets locale_guild of the guild',
+			super_description: '**locale_guild**, returns/sets guild locale makes the bot talk your language and all communication is done' +
 				'in your local language',
 			example: '&locale_guild',
 			args: 'en/gr/de',
@@ -149,8 +150,8 @@ module.exports =
 		},
 		{
 			name: 'locale_portal',
-			description: 'locale_portal of current channel',
-			super_description: '**locale_portal**, returns/language used in statuses',
+			description: 'returns/sets locale_portal of current channel',
+			super_description: '**locale_portal**, returns/sets language used in statuses',
 			example: '&locale_portal',
 			args: 'en/gr/de',
 			get: (voice_channel, voice_object, portal_object) => {
@@ -168,8 +169,8 @@ module.exports =
 		},
 		{
 			name: 'locale',
-			description: 'locale of current channel',
-			super_description: '**locale**, returns/language used in statuses',
+			description: 'returns/sets locale of current channel',
+			super_description: '**locale**, returns/sets language used in statuses',
 			example: '&locale',
 			args: 'en/gr/de',
 			get: (voice_channel, voice_object) => {
@@ -187,8 +188,8 @@ module.exports =
 		},
 		{
 			name: 'user_limit_portal',
-			description: 'returns/maximum number of members guideline for portal',
-			super_description: '**user_limit_portal**, returns/maximum number of members guideline for portal',
+			description: 'returns/sets maximum number of members guideline for portal',
+			super_description: '**user_limit_portal**, returns/sets maximum number of members guideline for portal',
 			example: '&user_limit_portal',
 			args: '!number of maximum members (0 is infinite)',
 			get: (voice_channel, voice_object, portal_object) => {
@@ -208,8 +209,8 @@ module.exports =
 		},
 		{
 			name: 'user_limit',
-			description: 'returns/maximum number of members allowed',
-			super_description: '**user_limit**, returns/maximum number of members allowed',
+			description: 'returns/sets maximum number of members allowed',
+			super_description: '**user_limit**, returns/sets maximum number of members allowed',
 			example: '&user_limit',
 			args: '!number of maximum members (0 is infinite)',
 			get: (voice_channel) => {
@@ -226,8 +227,8 @@ module.exports =
 		},
 		{
 			name: 'position',
-			description: 'returns/the position of the channel',
-			super_description: '**position**, returns/the position of the channel',
+			description: 'returns/sets the position of the channel',
+			super_description: '**position**, returns/sets the position of the channel',
 			example: '&position',
 			args: '!position of channel',
 			get: (voice_channel) => {
@@ -244,8 +245,8 @@ module.exports =
 		},
 		{
 			name: 'bitrate',
-			description: 'returns/bitrate of channel',
-			super_description: '**bitrate** returns/bitrate of channel,',
+			description: 'returns/sets bitrate of channel',
+			super_description: '**bitrate** returns/sets bitrate of channel',
 			example: '&bitrate',
 			args: 'number',
 			get: (voice_channel) => {
@@ -258,6 +259,92 @@ module.exports =
 						`Channel's new position is ${channel.bitrate} and should be ${value}`))
 					.catch(console.error);
 				return 1;
+			},
+			auth: 'voice'
+		},
+		{
+			name: 'ann_announce_portal',
+			description: 'returns/sets whether Portal announces events in current portals spawned channels',
+			super_description: '**ann_announce_portal** returns/sets whether Portal announces events in '+
+				'current portals spawned channels',
+			example: '&ann_announce_portal',
+			args: 'true/false',
+			get: (voice_channel, voice_object, portal_object, guild_object) => {
+				return portal_object.ann_announce;
+			},
+			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
+				if (value === 'true') {
+					portal_object.ann_announce = true;
+					return 1;
+				} else if (value === 'false') {
+					portal_object.ann_announce = false;
+					return 1;
+				}
+				return -7;
+			},
+			auth: 'portal'
+		},
+		{
+			name: 'ann_user_portal',
+			description: 'returns/sets whether Portal announces user\'s join or leave from current portals spawned channels',
+			super_description: '**ann_user_portal** returns/sets whether Portal announces user\'s join or leave from '+
+				'current portals spawned channels',
+			example: '&ann_user_portal',
+			args: 'true/false',
+			get: (voice_channel, voice_object, portal_object, guild_object) => {
+				return portal_object.ann_user;
+			},
+			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
+				if (value === 'true') {
+					portal_object.ann_user = true;
+					return 1;
+				} else if (value === 'false') {
+					portal_object.ann_user = false;
+					return 1;
+				}
+				return -7;
+			},
+			auth: 'portal'
+		},
+		{
+			name: 'ann_announce',
+			description: 'returns/sets whether Portal announces events in current channel',
+			super_description: '**ann_announce** returns/sets whether Portal announces events in current channel',
+			example: '&ann_announce',
+			args: 'true/false',
+			get: (voice_channel, voice_object, portal_object, guild_object) => {
+				return voice_object.ann_announce;
+			},
+			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
+				if (value === 'true') {
+					voice_object.ann_announce = true;
+					return 1;
+				} else if (value === 'false') {
+					voice_object.ann_announce = false;
+					return 1;
+				}
+				return -7;
+			},
+			auth: 'voice'
+		},
+		{
+			name: 'ann_user',
+			description: 'returns/sets whether Portal announces user\'s join or leave from current channel',
+			super_description: '**ann_user** returns/sets whether Portal announces user\'s join or leave from current channel',
+			example: '&ann_user',
+			args: 'true/false',
+			get: (voice_channel, voice_object, portal_object, guild_object) => {
+				return voice_object.ann_user;
+			},
+			set: (voice_channel, voice_object, portal_object, guild_object, value) => {
+				if (value === 'true') {
+					voice_object.ann_user = true;
+					return 1;
+				} else if (value === 'false') {
+					voice_object.ann_user = false;
+					return 1;
+				}
+				return -7;
 			},
 			auth: 'voice'
 		}

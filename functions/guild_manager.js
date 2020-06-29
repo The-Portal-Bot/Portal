@@ -174,8 +174,8 @@ module.exports =
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
-						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, guild_objct[guild.id].locale, false, Date.now()
+						creator_id, portal_channel, 'G$#-P$member_count | $status_list',
+						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
 					);
 					guild.channels.create(portal_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
@@ -186,8 +186,8 @@ module.exports =
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
-						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, guild_objct[guild.id].locale, false, Date.now()
+						creator_id, portal_channel, 'G$#-P$member_count | $status_list',
+						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
 					);
 				})
 				.catch(console.error);
@@ -202,8 +202,8 @@ module.exports =
 			.then(channel => {
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
-					creator_id, portal_objct.regex_voice,
-					false, 0, 0, portal_objct.locale, 1, Date.now()
+					creator_id, portal_objct.regex_voice, false, 0, 0,
+					portal_objct.locale, portal_objct.ann_announce, portal_objct.ann_user
 				);
 				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
 					channel.setParent(state.channel.parentID);
@@ -226,7 +226,7 @@ module.exports =
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new guild_class({}, [], [], {}, null, null, 'gr', 0, false);
+		portal_guilds[guild_id] = new guild_class({}, [], [], {}, null, null, 'en', 0, false);
 	}
 	,
 
@@ -447,7 +447,7 @@ module.exports =
 						i += regex.substring(i + 1).indexOf('}}') + 2;
 					}
 				} catch (error) {
-					console.log('error: in JSON parse: ', error);
+					console.log('ERROR: in JSON parse: ', error);
 					new_channel_name += regex[i];
 				}
 

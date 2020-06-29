@@ -47,7 +47,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 							case -5:
 								return resolve ({ result: false, value: `*locale can only be ${locales.join(', ')}*` });
 							case -6:
-								return resolve ({ result: false, value: `*${args[0]} can be a number from 0-n (0 means unlimited)*` });
+								return resolve({ result: false, value: `*${args[0]} can be a number from 0-n (0 means unlimited)*` });
+							case -7:
+								return resolve({ result: false, value: `*${args[0]} can only be true or false*` });
 							default:
 								return resolve ({ result: false, value: `*${args[0]} cannot be set*` });
 							}
