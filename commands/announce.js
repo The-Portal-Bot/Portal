@@ -5,7 +5,7 @@ const help_mngr = require('./../functions/help_manager');
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		if (!portal_guilds[message.guild.id].announcement) {
-			return resolve ({ result: false, value: '*announcements channel has not been set.*' });
+			return resolve ({ result: false, value: 'announcements channel has not been set.' });
 		}
 
 		let body = args.join(' ').substr(0, args.join(' ').indexOf('|'));
@@ -15,7 +15,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			body = title;
 			title = '';
 		} else if (body === '' && title === '') {
-			return resolve ({ result: false, value: '*you can run "./help announce" for help.*' });
+			return resolve ({ result: false, value: 'you can run "./help announce" for help.' });
 		}
 
 		message.guild.channels.cache.find(channel => channel.id === portal_guilds[message.guild.id].announcement)
@@ -24,6 +24,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			));
 		lclz_mngr.client_talk(client, portal_guilds, 'announce');
 
-		return resolve ({ result: true, value: '*announcement was sent successfully.*' });
+		return resolve ({ result: true, value: 'announcement was sent successfully.' });
 	});
 };

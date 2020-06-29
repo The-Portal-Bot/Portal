@@ -48,9 +48,11 @@ module.exports = {
 		voice_channel.members.forEach(member => {
 			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
 				let status = this.status_aliases(member.presence.activities, voice_object.locale);
-				if (!array_of_statuses.includes(status)) {
-					array_of_statuses.push(status);
-				}
+				status.forEach(stat => {
+					if (!array_of_statuses.includes(stat)) {
+						array_of_statuses.push(stat);
+					}
+				});
 			}
 		});
 

@@ -28,16 +28,21 @@ module.exports = {
 		if (thumbnail) {
 			rich_message.setThumbnail(thumbnail);
 		}
-		field_array.forEach(row => {
-			if (row.emote === '' && row.role === '') {
-				rich_message.addField('\u200b', '\u200b');
-			} else {
-				rich_message.addField(
-					row.emote === '' ? '\u200b' : '`' + row.emote + '`',
-					row.role === '' ? '\u200b' : row.role,
-					row.inline);
-			}
-		});
+
+		if (field_array) {
+			field_array.forEach(row => {
+				if (row.emote === '' && row.role === '') {
+					rich_message.addField('\u200b', '\u200b');
+				} else {
+					rich_message.addField(
+						row.emote === '' ? '\u200b' : '`' + row.emote + '`',
+						row.role === '' ? '\u200b' : row.role,
+						row.inline);
+				}
+			});
+		} else {
+			rich_message.addField('\u200b', '\u200b');
+		}
 
 		return rich_message;
 	}

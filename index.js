@@ -17,14 +17,14 @@ let active_cooldown = {
 
 const command_cooldown = { 
 	guild: {
-		purge: 10, save: 5
+		purge: 10, save: 5, setup: 10
 	},
 	member: {
 		force: 5, join: 1, announce: 2
 	},
 	none: {
 		portal: 0, help: 0, ping: 0, run: 0, set: 0, role: 0, spotify: 0, announcement: 0,
-		setup: 0, url: 0, focus: 0, corona: 0, leave: 0, auth_role_add: 0, auth_role_rem: 0
+		url: 0, focus: 0, corona: 0, leave: 0, auth_role_add: 0, auth_role_rem: 0
 	}
 };
 
@@ -77,6 +77,15 @@ client.on('guildDelete', guild =>
 		}
 	));
 
+// this event triggers when the bot is removed from a guild.
+client.on('guildCreate', guild =>
+	event_loader('guildCreate',
+		{
+			'guild': guild, 'portal_guilds': portal_guilds,
+			'portal_managed_guilds_path': portal_managed_guilds_path
+		}
+	));
+
 // This event triggers when the bot joins a guild.
 client.on('channelDelete', channel =>
 	event_loader('channelDelete',
@@ -86,11 +95,20 @@ client.on('channelDelete', channel =>
 		}
 	));
 
-// this event triggers when the bot is removed from a guild.
-client.on('guildCreate', guild =>
-	event_loader('guildCreate',
+// This event triggers when a new member joins a guild.
+client.on('guildMemberAdd', member =>
+	event_loader('guildMemberAdd',
 		{
-			'guild': guild, 'portal_guilds': portal_guilds,
+			'member': member, 'portal_guilds': portal_guilds,
+			'portal_managed_guilds_path': portal_managed_guilds_path
+		}
+	));
+
+// This event triggers when a new member leaves a guild.
+client.on('guildMemberRemove', member =>
+	event_loader('guildMemberRemove',
+		{
+			'member': member, 'portal_guilds': portal_guilds,
 			'portal_managed_guilds_path': portal_managed_guilds_path
 		}
 	));
