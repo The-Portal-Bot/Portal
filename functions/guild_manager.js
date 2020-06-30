@@ -243,31 +243,24 @@ module.exports =
 	}
 	,
 
-	remove_channel_from_guild_list: function (channel_to_remove, guild_list) {
+	channel_deleted_update_state: function (channel_to_remove, guild_list) {
 		let type_of_channel = 0;
 		for (let portal_id in guild_list[channel_to_remove.guild.id].portal_list) {
 			if (portal_id === channel_to_remove.id) {
-				if (channel_to_remove.deletable) {
-					if (!channel_to_remove.deleted) {
-						delete guild_list[channel_to_remove.guild.id].portal_list[portal_id];
-						type_of_channel = 1;
-						break;
-					}
-				}
+				delete guild_list[channel_to_remove.guild.id].portal_list[portal_id];
+				type_of_channel = 1;
+				break;
 			} else {
 				for (let voice_id in guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list) {
 					if (voice_id === channel_to_remove.id) {
-						if (channel_to_remove.deletable) {
-							if (!channel_to_remove.deleted) {
-								delete guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list[voice_id];
-								type_of_channel = 2;
-								break;
-							}
-						}
+						delete guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list[voice_id];
+						type_of_channel = 2;
+						break;
 					}
 				}
 			}
 		}
+
 		for (let urld_id in guild_list[channel_to_remove.guild.id].url_list) {
 			if (urld_id === +channel_to_remove.id) {
 				delete guild_list[channel_to_remove.guild.id].url_list[urld_id];

@@ -41,7 +41,7 @@ module.exports = {
 		return new_status;
 	}
 	,
-
+	
 	get_status_list: function (voice_channel, voice_object) {
 		let array_of_statuses = [];
 
