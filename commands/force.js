@@ -15,6 +15,16 @@ const renameKey = (objct, oldKey, newKey) => {
 	return objct;
 };
 
+const copyKey = (objct, oldKey, cpyKey) => {
+	if (oldKey !== cpyKey) {
+		if (objct.voice_list.hasOwnProperty(oldKey)) {
+			objct.voice_list[cpyKey] = objct.voice_list[oldKey];
+			return objct;
+		}
+	}
+	return objct;
+};
+
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		let current_portal_list = portal_guilds[message.guild.id].portal_list;
@@ -44,19 +54,23 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 						name: updated_name
 					})
 						.then(clone => {
+							current_portal = copyKey(
+								current_portal,
+								message.member.voice.channel.id,
+								'intermidiary'
+							);
+
 							message.member.voice.channel.members.forEach(member => {
 								member.voice.setChannel(clone);
 							});
-
+							
 							setTimeout(() => {
 								current_portal = renameKey(
 									current_portal,
-									message.member.voice.channel.id,
+									'intermidiary',
 									clone.id
 								);
-							}, 5000);
-							
-							// guld_mngr.delete_channel(message.member.voice.channel);
+							}, 2000);
 						})
 						.catch(error => {
 							return resolve({

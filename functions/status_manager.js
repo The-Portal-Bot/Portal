@@ -49,7 +49,7 @@ module.exports = {
 			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
 				let status = this.status_aliases(member.presence.activities, voice_object.locale);
 				status.forEach(stat => {
-					if (!array_of_statuses.includes(stat)) {
+					if (!array_of_statuses.includes(stat) && stat !== './help') {
 						array_of_statuses.push(stat);
 					}
 				});
