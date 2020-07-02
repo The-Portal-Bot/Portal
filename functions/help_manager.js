@@ -22,9 +22,11 @@ module.exports = {
 		if (from_bot) {
 			rich_message.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		}
+
 		if (member) {
 			rich_message.setAuthor(member.displayName, member.user.avatarURL());
 		}
+
 		if (thumbnail) {
 			rich_message.setThumbnail(thumbnail);
 		}

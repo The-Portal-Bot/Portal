@@ -4,8 +4,8 @@ const help_mngr = require('./../functions/help_manager');
 const type_of_channel = { 0: 'Unknown', 1: 'Portal', 2: 'Voice', 3: 'Url', 4: 'Spotify', 5: 'Announcement' };
 
 module.exports = async (args) => {
-	let return_value = guld_mngr.channel_deleted_update_state(args.channel, args.portal_guilds);
-	help_mngr.update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.portal_guilds);
+	let return_value = guld_mngr.channel_deleted_update_state(args.channel, args.guild_list);
+	help_mngr.update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
 
 	if (return_value === 0) {
 		return {

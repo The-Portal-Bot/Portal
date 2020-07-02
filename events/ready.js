@@ -5,7 +5,7 @@ module.exports = async (args) => {
 	// Changing Portal bots status
 	args.client.user.setActivity('./help', { url: 'https://github.com/keybraker', type: 'LISTENING' });
 	args.client.guilds.cache.forEach(guild =>
-		help_mngr.portal_init(guild, args.portal_managed_guilds_path, args.portal_guilds)
+		help_mngr.portal_init(guild, args.portal_managed_guilds_path, args.guild_list)
 	);
 
 	return {

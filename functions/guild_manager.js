@@ -286,8 +286,8 @@ module.exports =
 		for (let portal_id in portal_object) {
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
-				let new_name = this.regex_interpreter(
-					voice_object.regex, voice_channel, voice_object, portal_object, guild_objct
+				let new_name = this.regex_interpreter(voice_object.regex, voice_channel,
+					voice_object, portal_object, guild_objct
 				);
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
@@ -324,9 +324,7 @@ module.exports =
 			if (regex[i] === vrbl_objct.prefix) {
 
 				if (vrbl = vrbl_objct.is_variable(regex.substring(i))) {
-					if (return_value = vrbl_objct.get(
-						voice_channel, voice_object, portal_object, vrbl)
-					) {
+					if (return_value = vrbl_objct.get(voice_channel, voice_object, portal_object, vrbl)) {
 						last_variable = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(vrbl).length;
