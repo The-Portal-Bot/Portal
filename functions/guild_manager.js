@@ -212,18 +212,32 @@ module.exports =
 	}
 	,
 
-	create_role_message: function (message, role_list, title, desc, colour, role_emb) {
+	create_role_message: function (message, role_list, title, desc, colour, role_emb, role_map) {
 		role_message_emb = help_mngr.create_rich_embed(title, desc, colour, role_emb);
 		message.channel.send(role_message_emb)
 			.then(sent_message => {
-				// add roles emotes
-				role_list.push(new role_class(sent_message.id, role_emb));
+				for (let i = 0; i < role_map.length; i++) {
+					sent_message.react(role_map[i].give);
+					sent_message.react(role_map[i].strip);
+				}
+				role_list[sent_message.id] = new role_class(role_map);
 			});
 	}
 	,
 
 	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new guild_class({}, [], [], {}, null, null, 'en', 0, false);
+		const portal_list = {};
+		const url_list = [];
+		const role_list = {};
+		const auth_role = [];
+		const spotify = null;
+		const announcement = null;
+		const locale = 'en';
+		const announce =  0;
+		const premium = false;
+
+		portal_guilds[guild_id] = new guild_class(portal_list, url_list, role_list,
+			auth_role, spotify, announcement, locale, announce, premium);
 	}
 	,
 

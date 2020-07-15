@@ -135,6 +135,16 @@ client.on('voiceStateUpdate', (oldState, newState) =>
 		}
 	));
 
+// This event triggers when a member reacts to a message
+client.on('messageReactionAdd', (reaction, user) =>
+	event_loader('voiceStateUpdate',
+		{
+			'client': client, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path,
+			'reaction': reaction, 'user': user
+		}
+	));
+
 client.on('message', async message => {
 	// runs on every single message received, from any channel or DM
 	// Ignore other bots and also itself ('botception')

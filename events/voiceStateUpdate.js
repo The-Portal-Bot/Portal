@@ -5,6 +5,12 @@ const lclz_mngr = require('./../functions/localization_manager');
 const help_mngr = require('./../functions/help_manager');
 
 module.exports = async (args) => {
+	if (args.newState === undefined || args.oldState == undefined) {
+		return {
+			result: true, value: 'state of undefined'
+		};
+	}
+
 	let newChannel = args.newState.channel; // join channel
 	let oldChannel = args.oldState.channel; // left channel
 

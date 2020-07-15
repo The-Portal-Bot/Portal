@@ -41,12 +41,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				);
 			}
 			guld_mngr.create_role_message(message, portal_guilds[message.guild.id]['role_list'],
-				'Portal Role Assigner', '', '#FF7F00', role_emb_prnt);
+				'Portal Role Assigner', '', '#FF7F00', role_emb_prnt, role_map);
 			message.react('✔️');
 		} else {
 			return resolve ({ result: false, value: '*you can run "./help role" for help.*' });
 		}
 
-		return resolve ({ result: true, value: '*role giver message has been created.*' });
+		return resolve ({ result: true, value: '*role message has been created.*' });
 	});
 };
