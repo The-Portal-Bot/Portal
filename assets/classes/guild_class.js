@@ -1,7 +1,8 @@
 module.exports = class {
-	constructor(portal_list, url_list, role_list, auth_role, spotify,
+	constructor(portal_list, member_list, url_list, role_list, auth_role, spotify,
 		announcement, locale, announce, premium) {
 		this.portal_list = portal_list;
+		this.member_list = member_list;
 		this.url_list = url_list;
 		this.role_list = role_list;
 		this.auth_role = auth_role;

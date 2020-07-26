@@ -1,6 +1,31 @@
 /* eslint-disable no-undef */
 module.exports = 
 {
+	calculate_rank: function (user) {
+		if (user.points > user.tier * 1000) {
+			user.level++;
+			user.tier++;
+			user.points -= user.tier * 1000;
+
+			return true;
+		}
+
+		return false;
+	}
+	,
+
+	add_points: function (message, guild_list) {
+		const user = guild_list[message.guild.id].member_list[message.author.id];
+		user.points += message.content.length * 0.1;
+		
+		if(this.calculate_rank(user)) {
+			return user.level;
+		}
+
+		return false;
+	}
+	,
+
 	kick: function (message, args)
 	{
 		// This command must be limited to mods and admins. In this example we just hardcode the role names.
@@ -29,7 +54,6 @@ module.exports =
 			.catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
 		message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
 	}
-	
 	,
 
 	ban: function (message, args)

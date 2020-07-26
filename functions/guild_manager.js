@@ -11,6 +11,7 @@ const guild_class = require('../assets/classes/guild_class');
 const portal_class = require('../assets/classes/portal_class');
 const voice_class = require('../assets/classes/voice_class');
 const role_class = require('../assets/classes/role_class');
+const member_class = require('../assets/classes/member_class');
 
 const help_mngr = require('../functions/help_manager');
 
@@ -225,8 +226,23 @@ module.exports =
 	}
 	,
 
-	insert_guild: function (guild_id, portal_guilds) {
+	create_member_list: function (guild_id, client) {
+		let member_list = {};
+		let guild = client.guilds.cache.find(guild => guild.id === guild_id);
+
+		guild.members.cache.forEach(member => {
+			if (member.id !== '704400876860735569') {
+				member_list[member.id] = new member_class(1, 0, 0, 0);
+			}
+		});
+
+		return member_list;
+	}
+	,
+
+	insert_guild: function (guild_id, portal_guilds, client) {
 		const portal_list = {};
+		const member_list = this.create_member_list(guild_id, client);
 		const url_list = [];
 		const role_list = {};
 		const auth_role = [];
@@ -236,7 +252,7 @@ module.exports =
 		const announce =  0;
 		const premium = false;
 
-		portal_guilds[guild_id] = new guild_class(portal_list, url_list, role_list,
+		portal_guilds[guild_id] = new guild_class(portal_list, member_list, url_list, role_list,
 			auth_role, spotify, announcement, locale, announce, premium);
 	}
 	,

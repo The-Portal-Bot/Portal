@@ -8,6 +8,7 @@ const config = require('./config.json'); // config.token / config.prefix
 const guld_mngr = require('./functions/guild_manager');
 const help_mngr = require('./functions/help_manager');
 const lclz_mngr = require('./functions/localization_manager');
+const user_mngr = require('./functions/user_manager');
 
 let user_match = {};
 
@@ -84,7 +85,7 @@ client.on('guildDelete', guild =>
 client.on('guildCreate', guild =>
 	event_loader('guildCreate',
 		{
-			'guild': guild, 'guild_list': guild_list,
+			'client': client, 'guild': guild, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path
 		}
 	));
@@ -174,6 +175,11 @@ client.on('message', async message => {
 	} else if (channel_type === 'URL') {
 		lclz_mngr.client_talk(client, guild_list, 'url');
 	}
+
+	// ranking system
+	user_mngr.add_points(message, guild_list);
+	help_mngr.update_portal_managed_guilds(true,
+		portal_managed_guilds_path, guild_list);
 
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
