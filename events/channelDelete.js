@@ -16,6 +16,6 @@ module.exports = async (args) => {
 
 	return {
 		result: true, value: `Channel of type ${type_of_channel[return_value].toString()} ` +
-			`has been removed from, guild: ${args.channel.guild.name} - id: ${args.channel.guild.id})`
+			`has been removed from, guild: ${args.channel.guild.name} - id: ${args.channel.guild.id}`
 	};
 };

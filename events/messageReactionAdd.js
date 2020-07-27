@@ -25,7 +25,7 @@ module.exports = async (args) => {
 				let role = args.message.guild.roles.find(role => role.name === role_give);
 				args.message.member.roles.remove(role);
 			} else {
-				
+
 			}	
 		}		
 	}

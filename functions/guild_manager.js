@@ -232,7 +232,7 @@ module.exports =
 
 		guild.members.cache.forEach(member => {
 			if (member.id !== '704400876860735569') {
-				member_list[member.id] = new member_class(1, 0, 0, 0);
+				member_list[member.id] = new member_class(1, 0, 0, 0, null);
 			}
 		});
 
@@ -250,10 +250,11 @@ module.exports =
 		const announcement = null;
 		const locale = 'en';
 		const announce =  0;
+		const level_speed = 'normal';
 		const premium = false;
 
 		portal_guilds[guild_id] = new guild_class(portal_list, member_list, url_list, role_list,
-			auth_role, spotify, announcement, locale, announce, premium);
+			auth_role, spotify, announcement, locale, announce, level_speed, premium);
 	}
 	,
 
@@ -434,7 +435,6 @@ module.exports =
 							}
 						}
 					}
-					console.log('is_valid: ' + is_valid);
 					
 					if(!is_valid) {
 						new_channel_name += regex[i];

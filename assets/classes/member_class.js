@@ -1,8 +1,10 @@
 module.exports = class {
-	constructor(level, rank, points, tier) {
+	constructor(level, rank, tier, points, timestamp) {
 		this.level = level;
 		this.rank = rank;
-		this.points = points;
 		this.tier = tier;
+		this.points = points;
+
+		this.timestamp = timestamp;
 	}
 };

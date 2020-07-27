@@ -1,10 +1,17 @@
 /* eslint-disable no-undef */
+const help_mngr = require('./../functions/help_manager');
+
+leveling_speed = { 'slow': 0.01, 'normal': 0.05, 'fast': 0.1 };
+
 module.exports = 
 {
 	calculate_rank: function (user) {
-		if (user.points > user.tier * 1000) {
+		if (user.points >= user.tier * 1000) {
 			user.level++;
-			user.tier++;
+			if (user.level % 5 === 0) {
+				user.tier++;
+			}
+
 			user.points -= user.tier * 1000;
 
 			return true;
@@ -14,11 +21,58 @@ module.exports =
 	}
 	,
 
-	add_points: function (message, guild_list) {
+	update_timestamp: function (voiceState, guild_list) {
+		const user = guild_list[voiceState.guild.id].member_list[voiceState.member.id];
+		const speed = guild_list[voiceState.guild.id].leveling_speed;
+
+		if (user.timestamp === null) {
+			user.timestamp = new Date();
+		} else {
+			return this.add_points_time(user, speed);
+		}
+
+		return false;
+	}
+	,
+
+	add_points_time: function (user, speed) {
+		const voice_time = help_mngr.time_elapsed(user.timestamp, 0);
+
+		user.points += voice_time.remaining_sec * leveling_speed[speed];
+		user.points += voice_time.remaining_min * leveling_speed[speed] * 60 * 1.15;
+		user.points += voice_time.remaining_hrs * leveling_speed[speed] * 60 * 60 * 1.25;
+
+		user.timestamp = null;
+
+		if (this.calculate_rank(user)) {
+			return user.level;
+		}
+
+		return false;
+	}
+	,
+
+	add_points_message: function (message, guild_list) {
 		const user = guild_list[message.guild.id].member_list[message.author.id];
-		user.points += message.content.length * 0.1;
-		
-		if(this.calculate_rank(user)) {
+		const speed = guild_list[message.guild.id].leveling_speed;
+
+		user.points += message.content.length * leveling_speed[speed];
+
+		if (this.calculate_rank(user)) {
+			return user.level;
+		}
+
+		return false;
+	}
+	,
+
+	add_points_voice: function (message, guild_list) {
+		const user = guild_list[message.guild.id].member_list[message.author.id];
+		const speed = guild_list[message.guild.id].leveling_speed;
+
+		user.points += message.content.length * leveling_speed[speed];
+
+		if (this.calculate_rank(user)) {
 			return user.level;
 		}
 

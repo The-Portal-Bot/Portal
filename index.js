@@ -24,10 +24,11 @@ const command_cooldown = {
 		join: {time: 1, auth: false}, announce: {time: 2, auth: false}
 	},
 	none: {
-		force: { time: 0, auth: false }, portal: { time: 0, auth: true}, help: {time: 0, auth: false}, ping: {time: 0, auth: false},
-		run: {time: 0, auth: false}, set: {time: 0, auth: false}, role: {time: 0, auth: false},
-		spotify: { time: 0, auth: true }, announcement: { time: 0, auth: true }, url: { time: 0, auth: true},
-		focus: {time: 0, auth: false}, corona: {time: 0, auth: false}, leave: {time: 0, auth: false},
+		level: { time: 0, auth: false }, force: { time: 0, auth: false }, portal: { time: 0, auth: true},
+		help: {time: 0, auth: false}, ping: {time: 0, auth: false}, run: {time: 0, auth: false},
+		set: {time: 0, auth: false}, role: {time: 0, auth: false}, spotify: { time: 0, auth: true },
+		announcement: { time: 0, auth: true }, url: { time: 0, auth: true}, leave: {time: 0, auth: false},
+		focus: {time: 0, auth: false}, corona: {time: 0, auth: false},
 		auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true}
 	}
 };
@@ -177,7 +178,7 @@ client.on('message', async message => {
 	}
 
 	// ranking system
-	user_mngr.add_points(message, guild_list);
+	user_mngr.add_points_message(message, guild_list);
 	help_mngr.update_portal_managed_guilds(true,
 		portal_managed_guilds_path, guild_list);
 
