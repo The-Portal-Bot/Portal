@@ -13,6 +13,10 @@ module.exports = async (args) => {
 			`${args.member.displayName} left ${args.member.guild}.`
 		));
 
+	if (args.member.id !== '704400876860735569') {
+		delete args.guild_list[args.member.guild.id].member_list[args.member.id];
+	}
+
 	return {
 		result: true, value: 'Member added to guild'
 	};
