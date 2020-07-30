@@ -8,6 +8,7 @@ const config = require('./config.json'); // config.token / config.prefix
 const guld_mngr = require('./functions/guild_manager');
 const help_mngr = require('./functions/help_manager');
 const lclz_mngr = require('./functions/localization_manager');
+const user_mngr = require('./functions/user_manager');
 
 let user_match = {};
 
@@ -17,14 +18,18 @@ let active_cooldown = {
 
 const command_cooldown = { 
 	guild: {
-		purge: 10, save: 5
+		purge: { time: 10, auth: true }, save: { time: 5, auth: true }, setup: { time: 10, auth: true}
 	},
 	member: {
-		force: 5, join: 1, announce: 2
+		join: {time: 1, auth: false}, announce: {time: 2, auth: false}
 	},
 	none: {
-		portal: 0, help: 0, ping: 0, run: 0, set: 0, role: 0, spotify: 0,
-		announcement: 0, url: 0, focus: 0, corona: 0, leave: 0, auth_role_add: 0, auth_role_rem: 0
+		level: { time: 0, auth: false }, force: { time: 0, auth: false }, portal: { time: 0, auth: true},
+		help: {time: 0, auth: false}, ping: {time: 0, auth: false}, run: {time: 0, auth: false},
+		set: {time: 0, auth: false}, role: {time: 0, auth: false}, spotify: { time: 0, auth: true },
+		announcement: { time: 0, auth: true }, url: { time: 0, auth: true}, leave: {time: 0, auth: false},
+		focus: {time: 0, auth: false}, corona: {time: 0, auth: false},
+		auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true}
 	}
 };
 
@@ -38,7 +43,7 @@ const client = new Discord.Client();
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
 let portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
-let portal_guilds = JSON.parse(portal_managed_guilds);
+let guild_list = JSON.parse(portal_managed_guilds);
 
 event_loader = function (event, args) {
 	require(`./events/${event}.js`)(args)
@@ -46,7 +51,7 @@ event_loader = function (event, args) {
 			if (rspns.result) {
 				console.log(rspns.value);
 			} else {
-				console.log('error: ', rspns.value);
+				console.log('ERROR: ', rspns.value);
 			}
 		});
 };
@@ -55,7 +60,7 @@ event_loader = function (event, args) {
 client.on('ready', () =>
 	event_loader('ready',
 		{
-			'client': client, 'portal_guilds': portal_guilds,
+			'client': client, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path
 		}
 	));
@@ -72,16 +77,7 @@ client.on('shardReconnecting', id =>
 client.on('guildDelete', guild =>
 	event_loader('guildDelete',
 		{
-			'guild': guild, 'portal_guilds': portal_guilds,
-			'portal_managed_guilds_path': portal_managed_guilds_path
-		}
-	));
-
-// This event triggers when the bot joins a guild.
-client.on('channelDelete', channel =>
-	event_loader('channelDelete',
-		{
-			'channel': channel, 'portal_guilds': portal_guilds,
+			'guild': guild, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path
 		}
 	));
@@ -90,7 +86,34 @@ client.on('channelDelete', channel =>
 client.on('guildCreate', guild =>
 	event_loader('guildCreate',
 		{
-			'guild': guild, 'portal_guilds': portal_guilds,
+			'client': client, 'guild': guild, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path
+		}
+	));
+
+// This event triggers when the bot joins a guild.
+client.on('channelDelete', channel =>
+	event_loader('channelDelete',
+		{
+			'channel': channel, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path
+		}
+	));
+
+// This event triggers when a new member joins a guild.
+client.on('guildMemberAdd', member =>
+	event_loader('guildMemberAdd',
+		{
+			'member': member, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path
+		}
+	));
+
+// This event triggers when a new member leaves a guild.
+client.on('guildMemberRemove', member =>
+	event_loader('guildMemberRemove',
+		{
+			'member': member, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path
 		}
 	));
@@ -99,7 +122,7 @@ client.on('guildCreate', guild =>
 client.on('presenceUpdate', (oldPresence, newPresence) =>
 	event_loader('presenceUpdate',
 		{
-			'client': client, 'portal_guilds': portal_guilds,
+			'client': client, 'guild_list': guild_list,
 			'newPresence': newPresence
 		}
 	));
@@ -108,9 +131,19 @@ client.on('presenceUpdate', (oldPresence, newPresence) =>
 client.on('voiceStateUpdate', (oldState, newState) =>
 	event_loader('voiceStateUpdate',
 		{
-			'client': client, 'portal_guilds': portal_guilds,
+			'client': client, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 			'oldState': oldState, 'newState': newState
+		}
+	));
+
+// This event triggers when a member reacts to a message
+client.on('messageReactionAdd', (reaction, user) =>
+	event_loader('voiceStateUpdate',
+		{
+			'client': client, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path,
+			'reaction': reaction, 'user': user
 		}
 	));
 
@@ -124,25 +157,30 @@ client.on('message', async message => {
 
 	// Check if something written in url channel
 	let channel_type = null, channel_support = null;
-	if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
+	if (guld_mngr.included_in_url_list(message.channel.id, guild_list[message.guild.id])) {
 		channel_type = 'URL'; channel_support = 'url';
-	} else if (portal_guilds[message.guild.id].spotify === message.channel.id) {
+	} else if (guild_list[message.guild.id].spotify === message.channel.id) {
 		channel_type = 'Spotify'; channel_support = 'read';
-	} else if (portal_guilds[message.guild.id].announcement === message.channel.id) {
+	} else if (guild_list[message.guild.id].announcement === message.channel.id) {
 		channel_type = 'Announcement'; channel_support = 'read';
 	}
 
 	if ((channel_type !== null && channel_type !== 'URL') || channel_type === 'URL' && !help_mngr.is_url(message.content)) {
-		lclz_mngr.client_talk(client, portal_guilds, 'read_only');
+		lclz_mngr.client_talk(client, guild_list, 'read_only');
 		help_mngr.message_reply(
 			null, message.author.presence.member.voice.channel, message, 
 			message.author, `${channel_type} channel is ${channel_support}-only.`,
-			portal_guilds, client);
+			guild_list, client);
 		message.delete();
 		return;
 	} else if (channel_type === 'URL') {
-		lclz_mngr.client_talk(client, portal_guilds, 'url');
+		lclz_mngr.client_talk(client, guild_list, 'url');
 	}
+
+	// ranking system
+	user_mngr.add_points_message(message, guild_list);
+	help_mngr.update_portal_managed_guilds(true,
+		portal_managed_guilds_path, guild_list);
 
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
@@ -150,60 +188,65 @@ client.on('message', async message => {
 	// Separate function name, and arguments of function
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
-
-	if (!help_mngr.is_authorized(portal_guilds[message.guild.id].auth_list, message.member)) {
-		help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
-			'you are not authorized to access this command', portal_guilds, client);
-	} else {
-		// help_mngr.message_reply(true, message.author.presence.member.voice.channel, message, message.author,
-		// 	'you are authorized to access this command', portal_guilds, client);
-	}
-
 	let type = null;
 
-	if (!(command_cooldown.guild[cmd] >= 0)) {
-		if (!(command_cooldown.member[cmd] >= 0)) {
-			if (command_cooldown.none[cmd] === 0) {
-				await require(`./commands/${cmd}.js`)(client, message, args,
-					portal_guilds, portal_managed_guilds_path, user_match)
-					.then(rspns => {
-						if (rspns) {
-							help_mngr.message_reply(
-								rspns.result, message.author.presence.member.voice.channel,
-								message, message.author, rspns.value, portal_guilds, client);
-						}
-					});
-				help_mngr.update_portal_managed_guilds(true, 
-					portal_managed_guilds_path, portal_guilds);
-			}
-			return;
-		} else {
-			type = 'member';
-		}
-	} else {
+	if (command_cooldown.guild[cmd]) {
 		type = 'guild';
+	} else {
+		if (command_cooldown.member[cmd]) {
+			type = 'member';
+		} else {
+			if (command_cooldown.none[cmd]) {
+				type = 'none';
+			} else {
+				return;
+			}
+		}
+	}
+
+	if (command_cooldown[type][cmd].auth && !help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member)) {
+		help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
+			'you are not authorized to access this command', guild_list, client);
+		return;
+	}
+	// else {
+	// 	help_mngr.message_reply(true, message.author.presence.member.voice.channel, message, message.author,
+	// 		'you are authorized to access this command', guild_list, client);
+	// }
+
+	if (type === 'none' && command_cooldown.none[cmd].time === 0) {
+		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path, user_match)
+			.then(rspns => {
+				if (rspns) {
+					help_mngr.message_reply(
+						rspns.result, message.author.presence.member.voice.channel,
+						message, message.author, rspns.value, guild_list, client);
+				}
+			});
+		help_mngr.update_portal_managed_guilds(true, 
+			portal_managed_guilds_path, guild_list);
+
+		return;
 	}
 
 	if (active = active_cooldown[type].find(active =>
 		(type === 'member' && active.member === message.author.id && active.command === cmd)
 			? true : (type === 'guild' && active.command === cmd))) {
-		let time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd]);
+		let time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd].time);
 
 		help_mngr.message_reply( false, message.author.presence.member.voice.channel, message,
 			message.author, `*you need to wait* **${help_mngr.pad(time.remaining_min)}:${help_mngr.pad(time.remaining_sec)}/`+
 			`${help_mngr.pad(time.timeout_min)}:${help_mngr.pad(time.timeout_sec)}** *to use* **${cmd}** *again${type === 'member' 
 				? '.*'
 				: `, as it was used again in* **${message.guild.name}**.`}`,
-			portal_guilds, client);
+			guild_list, client);
 
 		return;
 	}
 
-	await require(`./commands/${cmd}.js`)(client, message, args, portal_guilds, portal_managed_guilds_path)
+	require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 		.then(rspns => {
-			console.log('vazo to ' + cmd + 'stoactive ooldown');
 			if (rspns.result === true) {
-
 				active_cooldown[type].push({
 					member: message.author.id, command: cmd,
 					timestamp: Date.now()
@@ -212,21 +255,21 @@ client.on('message', async message => {
 				setTimeout(() => {
 					active_cooldown[type] = active_cooldown[type].filter(
 						active => active.command !== cmd);
-				}, command_cooldown[type][cmd] * 60 * 1000);
+				}, command_cooldown[type][cmd].time * 60 * 1000);
 
 				help_mngr.message_reply(
 					true, message.author.presence.member.voice.channel,
 					message, message.author, rspns === true ?
 						'executed correctly' :
-						rspns.value, portal_guilds, client);
+						rspns.value, guild_list, client);
 
 				help_mngr.update_portal_managed_guilds(
-					true, portal_managed_guilds_path, portal_guilds);
+					true, portal_managed_guilds_path, guild_list);
 			}
 
 			help_mngr.message_reply(
 				rspns.result, message.author.presence.member.voice.channel,
-				message, message.author, rspns.value, portal_guilds, client);
+				message, message.author, rspns.value, guild_list, client);
 		});
 });
 

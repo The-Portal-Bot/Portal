@@ -66,17 +66,15 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object, portal_object) => {
 				let i = 0;
-				for (let key in portal_object) {
-					if (portal_object[key].voice_list[voice_channel.id] === voice_object) {
-						for (let key2 in portal_object[key].voice_list) {
-							i++;
-							if (portal_object[key].voice_list[key2] === voice_object) {
-								return '#' + i;
-							}
+				if (portal_object.voice_list[voice_channel.id]) {
+					for (let voice_key in portal_object.voice_list) {
+						i++;
+						if (portal_object.voice_list[voice_key] === voice_channel.id) {
+							return '#' + i.toString();
 						}
 					}
 				}
-				return '#' + '-1';
+				return '#-1';
 			}
 		},{
 			name: '#',
@@ -87,17 +85,20 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object, portal_object) => {
 				let i = 0;
-				for (let key in portal_object) {
-					if (portal_object[key].voice_list[voice_channel.id] === voice_object) {
-						for (let key2 in portal_object[key].voice_list) {
+				for(let portal_key in portal_object) {
+					console.log('portal_key: ', portal_key);
+					if (portal_object[portal_key].voice_list[voice_channel.id]) {
+						console.log('voice_channel.id: ', voice_channel.id);
+						for (let voice_key in portal_object[portal_key].voice_list) {
 							i++;
-							if (portal_object[key].voice_list[key2] === voice_object) {
-								return +i;
+							if (portal_object[portal_key].voice_list[voice_key] === voice_channel.id) {
+								console.log('return ' + i.toString() + ';');
+								return i.toString();
 							}
 						}
 					}
 				}
-				return +-1;
+				return '-1';
 			}
 		},
 		{

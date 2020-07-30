@@ -22,22 +22,29 @@ module.exports = {
 		if (from_bot) {
 			rich_message.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		}
+
 		if (member) {
 			rich_message.setAuthor(member.displayName, member.user.avatarURL());
 		}
+
 		if (thumbnail) {
 			rich_message.setThumbnail(thumbnail);
 		}
-		field_array.forEach(row => {
-			if (row.emote === '' && row.role === '') {
-				rich_message.addField('\u200b', '\u200b');
-			} else {
-				rich_message.addField(
-					row.emote === '' ? '\u200b' : '`' + row.emote + '`',
-					row.role === '' ? '\u200b' : row.role,
-					row.inline);
-			}
-		});
+
+		if (field_array) {
+			field_array.forEach(row => {
+				if (row.emote === '' && row.role === '') {
+					rich_message.addField('\u200b', '\u200b');
+				} else {
+					rich_message.addField(
+						row.emote === '' ? '\u200b' : '`' + row.emote + '`',
+						row.role === '' ? '\u200b' : row.role,
+						row.inline);
+				}
+			});
+		} else {
+			rich_message.addField('\u200b', '\u200b');
+		}
 
 		return rich_message;
 	}
@@ -130,6 +137,7 @@ module.exports = {
 		}
 	}
 	,
+
 	time_elapsed: function (timestamp, timeout) {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;
@@ -138,11 +146,20 @@ module.exports = {
 			Math.round((timeout_time / 1000 / 60)) : 0;
 		const timeout_sec = Math.round((timeout_time / 1000) % 60);
 
-		const remaining_min = Math.round((time_elapsed / 1000 / 60) - 1) > 0 ?
-			Math.round((time_elapsed / 1000 / 60) - 1) : 0;
-		const remaining_sec = Math.round((time_elapsed / 1000) % 60);
+		const remaining_hrs = Math.round(
+			(time_elapsed / 1000 / 60 / 60)) > 0
+			? Math.round((time_elapsed / 1000 / 60 / 60))
+			: 0;
+		const remaining_min = Math.round(
+			(time_elapsed / 1000 / 60) - 1) > 0
+			? Math.round((time_elapsed / 1000 / 60) - 1)
+			: 0;
+		const remaining_sec = Math.round(
+			(time_elapsed / 1000) % 60) > 0
+			? Math.round((time_elapsed / 1000) % 60)
+			: 0;
 
-		return { timeout_min, timeout_sec, remaining_min, remaining_sec };
+		return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
 	}
 	,
 
@@ -151,12 +168,16 @@ module.exports = {
 		const timeout_time = timeout * 60 * 1000;
 		const time_remaining = timeout_time - time_elapsed;
 
-		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
-			Math.round((timeout_time / 1000 / 60)) : 0;
-		const timeout_sec = Math.round((timeout_time / 1000) % 60);
+		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0
+			? Math.round((timeout_time / 1000 / 60))
+			: 0;
+		const timeout_sec = Math.round((timeout_time / 1000) % 60)
+			? Math.round((timeout_time / 1000) % 60)
+			: 0;
+		const remaining_min = Math.round((time_remaining / 1000 / 60) - 1) > 0
+			? Math.round((time_remaining / 1000 / 60) - 1)
+			: 0;
 
-		const remaining_min = Math.round((time_remaining / 1000 / 60) - 1) > 0 ?
-			Math.round((time_remaining / 1000 / 60) - 1) : 0;
 		const remaining_sec = Math.round((time_remaining / 1000) % 60);
 
 		return { timeout_min, timeout_sec, remaining_min, remaining_sec };

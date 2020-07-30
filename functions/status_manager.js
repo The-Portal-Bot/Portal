@@ -41,16 +41,18 @@ module.exports = {
 		return new_status;
 	}
 	,
-
+	
 	get_status_list: function (voice_channel, voice_object) {
 		let array_of_statuses = [];
 
 		voice_channel.members.forEach(member => {
 			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
 				let status = this.status_aliases(member.presence.activities, voice_object.locale);
-				if (!array_of_statuses.includes(status)) {
-					array_of_statuses.push(status);
-				}
+				status.forEach(stat => {
+					if (!array_of_statuses.includes(stat) && stat !== './help') {
+						array_of_statuses.push(stat);
+					}
+				});
 			}
 		});
 

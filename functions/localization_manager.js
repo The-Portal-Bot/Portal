@@ -1,18 +1,28 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
 
 module.exports =
 {
 	client_talk: function (client, guild_list, context) {
+		let check = null;
+		if (context === 'fail' || context === 'announce' || context === 'spotify' || context === 'url') {
+			check = 'ann_announce';
+		} else if (context === 'user_connected' || context === 'user_disconnected') {
+			check = 'ann_user';
+		}
+
 		if (client.voice !== undefined) {
 			if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
 				for (let guild_id in guild_list) {
 					for (let portal_id in guild_list[guild_id].portal_list) {
 						for (let voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
 							if (voice_id === voiceConnection.channel.id) {
-								let locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
-								let random = Math.floor(Math.random() * Math.floor(3));
-								voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+								if (!check || guild_list[guild_id].portal_list[portal_id].voice_list[voice_id][check]) {
+									let locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
+									let random = Math.floor(Math.random() * Math.floor(3));
+									voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+								}
 							}
 						}
 					}

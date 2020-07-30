@@ -11,6 +11,7 @@ const guild_class = require('../assets/classes/guild_class');
 const portal_class = require('../assets/classes/portal_class');
 const voice_class = require('../assets/classes/voice_class');
 const role_class = require('../assets/classes/role_class');
+const member_class = require('../assets/classes/member_class');
 
 const help_mngr = require('../functions/help_manager');
 
@@ -125,7 +126,6 @@ module.exports =
 			guild.channels.create(`${url_name}-url`, { type: 'text' })
 				.then(channel => {
 					url_list.push(channel.id);
-					console.log('url_list = ' + url_list);
 				});
 		}
 	}
@@ -168,14 +168,12 @@ module.exports =
 	,
 
 	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_objct, creator_id) {
-		console.log('guild_objct: ', guild_objct);
-
 		if (portal_category) { // with category
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
-						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, guild_objct[guild.id].locale, false, Date.now()
+						creator_id, portal_channel, 'G$#-P$member_count | $status_list',
+						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
 					);
 					guild.channels.create(portal_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
@@ -186,8 +184,8 @@ module.exports =
 			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
-						creator_id, portal_channel, 'G$#-P$member_count | $status_list', {},
-						false, 0, 0, 0, guild_objct[guild.id].locale, false, Date.now()
+						creator_id, portal_channel, 'G$#-P$member_count | $status_list',
+						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
 					);
 				})
 				.catch(console.error);
@@ -202,8 +200,8 @@ module.exports =
 			.then(channel => {
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
-					creator_id, portal_objct.regex_voice,
-					false, 0, 0, portal_objct.locale, 1, Date.now()
+					creator_id, portal_objct.regex_voice, false, 0, 0,
+					portal_objct.locale, portal_objct.ann_announce, portal_objct.ann_user
 				);
 				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
 					channel.setParent(state.channel.parentID);
@@ -215,18 +213,48 @@ module.exports =
 	}
 	,
 
-	create_role_message: function (message, role_list, title, desc, colour, role_emb) {
+	create_role_message: function (message, role_list, title, desc, colour, role_emb, role_map) {
 		role_message_emb = help_mngr.create_rich_embed(title, desc, colour, role_emb);
 		message.channel.send(role_message_emb)
 			.then(sent_message => {
-				// add roles emotes
-				role_list.push(new role_class(sent_message.id, role_emb));
+				for (let i = 0; i < role_map.length; i++) {
+					sent_message.react(role_map[i].give);
+					sent_message.react(role_map[i].strip);
+				}
+				role_list[sent_message.id] = new role_class(role_map);
 			});
 	}
 	,
 
-	insert_guild: function (guild_id, portal_guilds) {
-		portal_guilds[guild_id] = new guild_class({}, [], [], {}, null, null, 'gr', 0, false);
+	create_member_list: function (guild_id, client) {
+		let member_list = {};
+		let guild = client.guilds.cache.find(guild => guild.id === guild_id);
+
+		guild.members.cache.forEach(member => {
+			if (member.id !== '704400876860735569') {
+				member_list[member.id] = new member_class(1, 0, 0, 0, null);
+			}
+		});
+
+		return member_list;
+	}
+	,
+
+	insert_guild: function (guild_id, portal_guilds, client) {
+		const portal_list = {};
+		const member_list = this.create_member_list(guild_id, client);
+		const url_list = [];
+		const role_list = {};
+		const auth_role = [];
+		const spotify = null;
+		const announcement = null;
+		const locale = 'en';
+		const announce =  0;
+		const level_speed = 'normal';
+		const premium = false;
+
+		portal_guilds[guild_id] = new guild_class(portal_list, member_list, url_list, role_list,
+			auth_role, spotify, announcement, locale, announce, level_speed, premium);
 	}
 	,
 
@@ -246,7 +274,7 @@ module.exports =
 	}
 	,
 
-	remove_channel_from_guild_list: function (channel_to_remove, guild_list) {
+	channel_deleted_update_state: function (channel_to_remove, guild_list) {
 		let type_of_channel = 0;
 		for (let portal_id in guild_list[channel_to_remove.guild.id].portal_list) {
 			if (portal_id === channel_to_remove.id) {
@@ -263,6 +291,7 @@ module.exports =
 				}
 			}
 		}
+
 		for (let urld_id in guild_list[channel_to_remove.guild.id].url_list) {
 			if (urld_id === +channel_to_remove.id) {
 				delete guild_list[channel_to_remove.guild.id].url_list[urld_id];
@@ -288,8 +317,8 @@ module.exports =
 		for (let portal_id in portal_object) {
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
-				let new_name = this.regex_interpreter(
-					voice_object.regex, voice_channel, voice_object, portal_object, guild_objct
+				let new_name = this.regex_interpreter(voice_object.regex, voice_channel,
+					voice_object, portal_object, guild_objct
 				);
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
@@ -326,9 +355,7 @@ module.exports =
 			if (regex[i] === vrbl_objct.prefix) {
 
 				if (vrbl = vrbl_objct.is_variable(regex.substring(i))) {
-					if (return_value = vrbl_objct.get(
-						voice_channel, voice_object, portal_object, vrbl)
-					) {
+					if (return_value = vrbl_objct.get(voice_channel, voice_object, portal_object, vrbl)) {
 						last_variable = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(vrbl).length;
@@ -408,7 +435,6 @@ module.exports =
 							}
 						}
 					}
-					console.log('is_valid: ' + is_valid);
 					
 					if(!is_valid) {
 						new_channel_name += regex[i];
@@ -439,7 +465,7 @@ module.exports =
 						i += regex.substring(i + 1).indexOf('}}') + 2;
 					}
 				} catch (error) {
-					console.log('error: in JSON parse: ', error);
+					console.log('ERROR: in JSON parse: ', error);
 					new_channel_name += regex[i];
 				}
 
