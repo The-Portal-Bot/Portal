@@ -6,6 +6,18 @@ const guld_mngr = require('./guild_manager');
 
 module.exports = {
 
+	getJSON: function (str) {
+		let data = null;
+		try {
+			data = JSON.parse(str);
+		} catch (error) {
+			return null;
+		}
+
+		return data;
+	}
+	,
+
 	create_rich_embed: function (title, description, colour, field_array, thumbnail, member, from_bot, url) {
 		const portal_icon_url = 'https://raw.githubusercontent.com/' +
 			'keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCQYV4EIHFZAOFV5CYK64X4YA';
