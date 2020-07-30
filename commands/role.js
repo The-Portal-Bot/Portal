@@ -5,7 +5,7 @@ const guld_mngr = require('./../functions/guild_manager');
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		let roles = [...message.guild.roles.cache];
-
+		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
 		if (args.length > 0) {
 			let role_map = help_mngr.getJSON(args.join(' '));
 			if(role_map === null) {
@@ -24,6 +24,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				inline: false
 			});
 			for (let i = 0; i < role_map.length; i++) {
+				console.log('giveRino: ', role_map[i].give);
 				role_emb_display.push({
 					emote: role_map[i].give,
 					role: role_map[i].role,

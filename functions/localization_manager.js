@@ -132,7 +132,7 @@ module.exports =
 			gr: (args) => { return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε ` +
 				`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`; },
 			en: (args) => { return `Bot has started, with ${args.client.users.cache.size} users, ` +
-				`in ${args.client.channels.cache.size} channels from ε ${args.client.guilds.cache.size} guilds.`; },
+				`in ${args.client.channels.cache.size} channels from ${args.client.guilds.cache.size} guilds.`; },
 			de: (args) => { return `Bot hat ${args.client.users.cache.size} Mitglieder in ${channel_count} Kanälen von ${guild_count} Gilden gestartet.`; }
 		},
 		updating_guild: {

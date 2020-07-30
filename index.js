@@ -53,10 +53,12 @@ if(guild_list === null) {
 event_loader = function (event, args) {
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value);
-			} else {
-				console.log('ERROR: ', rspns.value);
+			if(rspns !== null) {
+				if (rspns.result) {
+					console.log(rspns.value);
+				} else {
+					console.log('ERROR: ', rspns.value);
+				}
 			}
 		});
 };
@@ -143,12 +145,12 @@ client.on('voiceStateUpdate', (oldState, newState) =>
 	));
 
 // This event triggers when a member reacts to a message
-client.on('messageReactionAdd', (reaction, user) =>
-	event_loader('voiceStateUpdate',
+client.on('messageReactionAdd', (messageReaction, user) =>
+	event_loader('messageReactionAdd',
 		{
 			'client': client, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
-			'reaction': reaction, 'user': user
+			'messageReaction': messageReaction, 'user': user
 		}
 	));
 

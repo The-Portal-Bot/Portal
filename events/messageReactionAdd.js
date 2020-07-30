@@ -2,37 +2,71 @@
 // const help_mngr = require('../functions/help_manager');
 
 module.exports = async (args) => {
-	if (args.reaction.partial) {
+	if(args.user.bot) return null;
+	console.log(args.messageReaction);
+	if (args.messageReaction.partial) {
 		try {
-			await args.reaction.fetch();
+			await args.messageReaction.fetch();
 		} catch (error) {
 			console.log('Something went wrong when fetching the message: ', error);
 			return {
-				result: false, value: 'Something went wrong when fetching the message: ' + error
+				result: false,
+				value: 'Something went wrong when fetching the message: ' + error
 			};
 		}
 	}
-	// if current message is in role list
-	if (args.guild_list[args.reaction.message.guild.id].role_list[args.reaction.message.id]) {
-		let message_reaction_list = args.guild_list[args.reaction.message.guild.id].role_list[args.reaction.message.id];
-		for (let i = 0; i < message_reaction_list.role_emote_map.length; i++) {
-			if (message_reaction_list.role_emote_map[i].give === args.reaction.emote) {
-				let role_give = message_reaction_list.role_emote_map[i].role;
-				let role = args.message.guild.roles.find(role => role.name === role_give);
-				args.message.member.roles.add(role);
-			} else if (message_reaction_list.role_emote_map[i].strip === args.reaction.emote) {
-				let role_give = message_reaction_list.role_emote_map[i].role;
-				let role = args.message.guild.roles.find(role => role.name === role_give);
-				args.message.member.roles.remove(role);
-			} else {
 
+	const current_guild = args.guild_list[args.messageReaction.message.guild.id];
+
+	if (current_guild.role_list[args.messageReaction.message.id]) {
+		
+		const current_role_list = current_guild.role_list[args.messageReaction.message.id];
+		const current_role_map = current_role_list.role_emote_map;
+
+		for (let i = 0; i < current_role_map.length; i++) {
+			console.log(current_role_map[i].give, ' === ', args.messageReaction.emoji.name);
+			console.log(current_role_map[i].strip, ' === ', args.messageReaction.emoji.name);
+
+			if (current_role_map[i].give === args.messageReaction.emoji.name) {
+				let role = args.messageReaction.message.guild.roles.cache
+					.find(role => role.name === current_role_map[i].role);
+
+				if (role) {
+					args.messageReaction.message.member.roles
+						.add(role);
+				} else {
+					return {result: false, value: `there is not role ${current_role_map[i].role}`};
+				}
+				return {
+					result: true,
+					value: `you have been added to role ${current_role_map[i].role}`
+				};
+			} else if (current_role_map[i].strip === args.messageReaction.emoji.name) {
+				let role = args.messageReaction.message.guild.roles.cache
+					.find(role => role.name === current_role_map[i].role);
+
+				if (role) {
+					args.messageReaction.message.member.roles
+						.remove(role);
+				} else {
+					return {result: false, value: `there is not role ${current_role_map[i].role}`};
+				}
+				return {
+					result: true,
+					value: `you have been striped from role ${current_role_map[i].role}`
+				};
+			} else {
+				return {
+					result: true,
+					value: 'there was something wrong with the role giver message'
+				};
 			}	
 		}		
 	}
 	// Now the message has been cached and is fully available
-	console.log(`${args.reaction.message.author}'s message "${args.reaction.message.content}" gained a reaction!`);
-	// The reaction is now also fully available and the properties will be reflected accurately:
-	console.log(`${args.reaction.count} user(s) have given the same reaction to this message!`);
+	console.log(`${args.messageReaction.message.author}'s message "${args.messageReaction.message.content}" gained a messageReaction!`);
+	// The messageReaction is now also fully available and the properties will be reflected accurately:
+	console.log(`${args.messageReaction.count} user(s) have given the same messageReaction to this message!`);
 
 	
 };
