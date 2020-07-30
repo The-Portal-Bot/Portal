@@ -421,8 +421,10 @@ module.exports =
 
 				try {
 					// did not put into structure_list due to many unnecessary function calls
-					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 					let is_valid = false;
+					let statement = help_mngr.getJSON(
+						regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1)
+					);
 
 					if (statement.hasOwnProperty('if')) {
 						if (statement.hasOwnProperty('is')) {

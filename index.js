@@ -43,7 +43,12 @@ const client = new Discord.Client();
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
 let portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
-let guild_list = JSON.parse(portal_managed_guilds);
+let guild_list = help_mngr.getJSON(portal_managed_guilds);
+
+if(guild_list === null) {
+	console.log('guild json is corrupt');
+	return;
+}
 
 event_loader = function (event, args) {
 	require(`./events/${event}.js`)(args)

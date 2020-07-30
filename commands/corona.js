@@ -48,7 +48,13 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 		http_mngr(options)
 			.then(rspns => {
-				let json = JSON.parse(rspns.toString().substring(rspns.toString().indexOf('{')));
+				let json = help_mngr.getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
+				if(json === null) {
+					return resolve ({ 
+						result: false, 
+						value: 'data from source was corrupted'
+					});
+				}
 
 				if (json.countrydata !== undefined) {
 					let daily_stats = json.countrydata[0];
