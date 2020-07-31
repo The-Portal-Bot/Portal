@@ -38,7 +38,7 @@ const Discord = require('discord.js');
 
 // This is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
-const client = new Discord.Client();
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
