@@ -70,6 +70,17 @@ module.exports =
 	,
 
 	//
+	
+	is_role: function (guild, role_name) {
+		let role = guild.roles.cache
+			.find(role => role.name === role_name);
+
+		if (role) return role;
+		else return null;
+	}
+	,
+
+	//
 
 	create_focus_channel: function (guild, portal_objct, member, focus_name, focus_time) {
 		

@@ -32,11 +32,15 @@ module.exports = async (args) => {
 					.find(role => role.name === current_role_map[i].role);
 
 				if (role) {
-					args.messageReaction.message.member.roles
-						.add(role);
+					args.messageReaction.message.guild.members.cache.find(member =>
+						member.id === args.user.id
+					).roles.add(role);
 				} else {
 					return {result: false, value: `there is not role ${current_role_map[i].role}`};
 				}
+				let msg = args.messageReaction.message;
+				args.messageReaction.remove();
+				msg.react(current_role_map[i].give);
 				return {
 					result: true,
 					value: `you have been added to role ${current_role_map[i].role}`
@@ -46,11 +50,15 @@ module.exports = async (args) => {
 					.find(role => role.name === current_role_map[i].role);
 
 				if (role) {
-					args.messageReaction.message.member.roles
-						.remove(role);
+					args.messageReaction.message.guild.members.cache.find(member =>
+						member.id === args.user.id
+					).roles.remove(role);
 				} else {
 					return {result: false, value: `there is not role ${current_role_map[i].role}`};
 				}
+				let msg = args.messageReaction.message;
+				args.messageReaction.remove();
+				msg.react(current_role_map[i].strip);
 				return {
 					result: true,
 					value: `you have been striped from role ${current_role_map[i].role}`
@@ -60,8 +68,11 @@ module.exports = async (args) => {
 					result: true,
 					value: 'there was something wrong with the role giver message'
 				};
-			}	
-		}		
+			}
+
+			
+			
+		}
 	}
 	// Now the message has been cached and is fully available
 	console.log(`${args.messageReaction.message.author}'s message "${args.messageReaction.message.content}" gained a messageReaction!`);

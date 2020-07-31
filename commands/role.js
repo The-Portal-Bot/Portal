@@ -24,7 +24,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				inline: false
 			});
 			for (let i = 0; i < role_map.length; i++) {
-				console.log('giveRino: ', role_map[i].give);
+				if(!guld_mngr.is_role(message.guild, role_map[i].role)) {
+					return resolve ({ 
+						result: false, 
+						value: `${role_map[i].role} is not a role in ${message.guild}`
+					});
+				}
 				role_emb_display.push({
 					emote: role_map[i].give,
 					role: role_map[i].role,
@@ -43,6 +48,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				inline: false
 			});
 			for (let i = 0; i < role_map.length; i++) {
+				if(!guld_mngr.is_role(message.guild, role_map[i].role)) {
+					return resolve ({ 
+						result: false, 
+						value: `${role_map[i].role} is not a role in ${message.guild}`
+					});
+				}
 				role_emb_display.push({
 					emote: role_map[i].strip,
 					role: role_map[i].role,
