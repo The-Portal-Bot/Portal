@@ -38,20 +38,28 @@ const Discord = require('discord.js');
 
 // This is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
-const client = new Discord.Client();
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 // List of all managed channels in servers
 // let guilds = require('./server_storage/guild_list.json');
 let portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
-let guild_list = JSON.parse(portal_managed_guilds);
+let guild_list = help_mngr.getJSON(portal_managed_guilds);
+
+if(guild_list === null) {
+	console.log('guild json is corrupt');
+	return;
+}
 
 event_loader = function (event, args) {
+	console.log(`event triggered, ${event}`);
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
-			if (rspns.result) {
-				console.log(rspns.value);
-			} else {
-				console.log('ERROR: ', rspns.value);
+			if(rspns !== null && rspns !== undefined) {
+				if (rspns.result) {
+					console.log(rspns.value);
+				} else {
+					console.log('ERROR: ', rspns.value);
+				}
 			}
 		});
 };
@@ -138,12 +146,22 @@ client.on('voiceStateUpdate', (oldState, newState) =>
 	));
 
 // This event triggers when a member reacts to a message
-client.on('messageReactionAdd', (reaction, user) =>
-	event_loader('voiceStateUpdate',
+client.on('messageReactionAdd', (messageReaction, user) =>
+	event_loader('messageReactionAdd',
 		{
 			'client': client, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
-			'reaction': reaction, 'user': user
+			'messageReaction': messageReaction, 'user': user
+		}
+	));
+
+// This event triggers when a message is deleted
+client.on('messageDelete', (message) =>
+	event_loader('messageDelete',
+		{
+			'client': client, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path,
+			'message': message
 		}
 	));
 

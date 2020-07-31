@@ -22,6 +22,8 @@ module.exports =
 	,
 
 	update_timestamp: function (voiceState, guild_list) {
+		if (voiceState.member.user.bot) return;
+
 		const user = guild_list[voiceState.guild.id].member_list[voiceState.member.id];
 		const speed = guild_list[voiceState.guild.id].level_speed;
 

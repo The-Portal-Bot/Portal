@@ -70,6 +70,17 @@ module.exports =
 	,
 
 	//
+	
+	is_role: function (guild, role_name) {
+		let role = guild.roles.cache
+			.find(role => role.name === role_name);
+
+		if (role) return role;
+		else return null;
+	}
+	,
+
+	//
 
 	create_focus_channel: function (guild, portal_objct, member, focus_name, focus_time) {
 		
@@ -421,8 +432,10 @@ module.exports =
 
 				try {
 					// did not put into structure_list due to many unnecessary function calls
-					let statement = JSON.parse(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 					let is_valid = false;
+					let statement = help_mngr.getJSON(
+						regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1)
+					);
 
 					if (statement.hasOwnProperty('if')) {
 						if (statement.hasOwnProperty('is')) {

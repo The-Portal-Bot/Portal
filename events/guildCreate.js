@@ -9,7 +9,7 @@ module.exports = async (args) => {
 	help_mngr.update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
 
 	return {
-		result: true, value: `Portal joined guild ${args.guild.name} 
-			[${args.guild.id}] which has ${args.guild.memberCount} members.`
+		result: true, value: `Portal joined guild ${args.guild.name} [${args.guild.id}] ` + 
+			`which has ${args.guild.memberCount} members.`
 	};
 };
