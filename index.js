@@ -51,9 +51,10 @@ if(guild_list === null) {
 }
 
 event_loader = function (event, args) {
+	console.log(`event triggered, ${event}`);
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
-			if(rspns !== null) {
+			if(rspns !== null && rspns !== undefined) {
 				if (rspns.result) {
 					console.log(rspns.value);
 				} else {
@@ -151,6 +152,16 @@ client.on('messageReactionAdd', (messageReaction, user) =>
 			'client': client, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 			'messageReaction': messageReaction, 'user': user
+		}
+	));
+
+// This event triggers when a message is deleted
+client.on('messageDelete', (message) =>
+	event_loader('messageDelete',
+		{
+			'client': client, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path,
+			'message': message
 		}
 	));
 

@@ -76,7 +76,8 @@ module.exports =
 			name: 'role',
 			description: 'creates a role message.',
 			super_description: '**role**, creates a message that distributes roles.' +
-				'Roles can be given or striped by reacting to the message.\n',
+				'Roles can be given or striped by reacting to the message.\n' +
+				'(Please make sure you have no space infront or behind *role name* or *emotes*)',
 			example: 'json\n./role ' +
 				'[\n\t{ "give": ":heart:", "strip": ":poop:", "role": "moba" },\n' +
 				'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]' +
