@@ -1,18 +1,28 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
-const cmmd_objct = require('../properties/command_list');
-const vrbl_objct = require('../properties/variable_list');
-const pipe_objct = require('../properties/pipe_list');
-const attr_objct = require('../properties/attribute_list');
-const strc_objct = require('../properties/structure_list');
+const help_mngr = require('../functions/help_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		if (portal_guilds[message.guild.id].member_list[message.member.id]) {
-			return resolve ({ result: true,
-				value: `your level is **${portal_guilds[message.guild.id].member_list[message.member.id].level}**` });
+			const member_info = portal_guilds[message.guild.id].member_list[message.member.id];
+
+			message.channel.send(help_mngr.create_rich_embed(
+				false,
+				false,
+				'#00FFFF',
+				[
+					{ emote: 'level', role: `***${member_info.level}***`, inline: true },
+					{ emote: 'rank', role: `***${member_info.rank}***`, inline: true },
+					{ emote: 'tier', role: `***${member_info.tier}***`, inline: true },
+					{ emote: 'points', role: `***${member_info.points}***`, inline: false }
+				], 
+				false,
+				message.member,
+				false));
+
+			return resolve (null);
 		}
-		return resolve ({ result: false, value: 'you are not in the charts' });
 	});
 };
