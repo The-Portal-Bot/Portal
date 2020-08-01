@@ -1,1 +1,731 @@
-{"731942147531735121":{"portal_list":{"737263111387611167":{"creator_id":"228666893068795905","regex_portal":"CS:GO ","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":0,"time_to_live":0,"refresh_rate":0,"locale":"en","voice_list":{"737264637971791982":{"creator_id":"228666893068795905","regex":"G$#-P$member_count | $status_list","no_bots":false,"time_to_live":0,"refresh_rate":0,"locale":"en","ann_announce":false,"ann_user":true}},"ann_announce":false,"ann_user":true}},"member_list":{"228666893068795905":{"level":3,"rank":0,"points":null,"tier":1,"timestamp":"2020-07-31T18:11:00.178Z"}},"url_list":[],"role_list":{},"auth_role":[],"spotify":null,"announcement":null,"locale":"en","announce":0,"premium":false,"leveling_speed":"normal"},"228667314252283904":{"portal_list":{"737444678395232366":{"creator_id":"228666893068795905","regex_portal":"portal to game","regex_voice":"G$#-P$member_count | $status_list","no_bots":false,"limit_portal":0,"time_to_live":0,"refresh_rate":0,"locale":"en","voice_list":{},"ann_announce":false,"ann_user":true}},"member_list":{"537023025585848324":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"294539338119643137":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"642089816573607946":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"408684029039083520":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"540559238733234207":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"522844906243489793":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"178621820457582602":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"590848955563376640":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"268865339041775618":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"231106885577605120":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"235088799074484224":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"326471246114062356":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"407615955812745217":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"533778497747812352":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"374865385909911553":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"395667507270254592":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"178625392586915840":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"406938957348339722":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"507202866537168906":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"142672003717922817":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"231373985420541952":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"534340160494632980":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"270707420831940618":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"659699741373759491":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"488405995979145236":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"233682014283235331":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"433795733230059520":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"148526306500280320":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"684814451345719316":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"232875205523931136":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"155149108183695360":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"370277653812477973":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"698597773712293938":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"690272852720746610":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"234402593256767491":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"231763688405598218":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"228666893068795905":{"level":5,"rank":0,"tier":1,"points":-991.2,"timestamp":null},"404022320055975936":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"461124948560445450":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"231780831268438016":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"419927488563642375":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"474551305621340160":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"449245494217015309":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"159985870458322944":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"408955131690876938":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"476002321868914689":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"370147462893142017":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"317434205057318913":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"400770504539242496":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"547905866255433758":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"248252695801102338":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"545021835432034304":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"362967897452314624":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"534388011857608705":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"394537380914397189":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"249594733150732290":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"346306540308922387":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"562010354540871712":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"233339202698215425":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"427540698544472085":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"222753236686209024":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"230995663607824386":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"285416786566971393":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"386599272587722752":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"245633518829305866":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"322031419176124420":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"437935131936686120":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"397774224493903872":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"398910271164252167":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"688036058080083968":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"233681213506715649":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"358644113543004173":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"141355428352229376":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"424232862296834050":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null}},"url_list":[],"role_list":{},"auth_role":[],"spotify":null,"announcement":null,"locale":"en","announce":0,"level_speed":"normal","premium":false},"705112209985896529":{"portal_list":{},"member_list":{"155149108183695360":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"159985870458322944":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"178621820457582602":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"222753236686209024":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"228666893068795905":{"level":5,"rank":0,"tier":1,"points":-973.9000000000001,"timestamp":null},"230995663607824386":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"235088799074484224":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"268865339041775618":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"317434205057318913":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"408955131690876938":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"428866923267358721":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"476002321868914689":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null}},"url_list":[],"role_list":{},"auth_role":[],"spotify":null,"announcement":null,"locale":"en","announce":0,"level_speed":"normal","premium":false},"710746690650374208":{"portal_list":{},"member_list":{"159985870458322944":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null},"228666893068795905":{"level":5,"rank":0,"tier":1,"points":-983.0499999999998,"timestamp":null},"235088799074484224":{"level":1,"rank":0,"tier":0,"points":0,"timestamp":null}},"url_list":[],"role_list":{"738873307167719465":{"role_emote_map":[{"give":"💯","strip":"💩","role":"tsiakkas"}]}},"auth_role":[],"spotify":null,"announcement":null,"locale":"en","announce":0,"level_speed":"normal","premium":false}}
+{
+  "731942147531735121": {
+    "portal_list": {
+      "737263111387611167": {
+        "creator_id": "228666893068795905",
+        "regex_portal": "CS:GO ",
+        "regex_voice": "G$#-P$member_count | $status_list",
+        "no_bots": false,
+        "limit_portal": 0,
+        "time_to_live": 0,
+        "refresh_rate": 0,
+        "locale": "en",
+        "voice_list": {
+          "737264637971791982": {
+            "creator_id": "228666893068795905",
+            "regex": "G$#-P$member_count | $status_list",
+            "no_bots": false,
+            "time_to_live": 0,
+            "refresh_rate": 0,
+            "locale": "en",
+            "ann_announce": false,
+            "ann_user": true
+          }
+        },
+        "ann_announce": false,
+        "ann_user": true
+      }
+    },
+    "member_list": {
+      "228666893068795905": {
+        "level": 3,
+        "rank": 0,
+        "points": null,
+        "tier": 1,
+        "timestamp": "2020-07-31T18:11:00.178Z"
+      }
+    },
+    "url_list": [],
+    "role_list": {},
+    "auth_role": [],
+    "spotify": null,
+    "announcement": null,
+    "locale": "en",
+    "announce": 0,
+    "premium": false,
+    "leveling_speed": "normal"
+  },
+  "228667314252283904": {
+    "portal_list": {
+      "737444678395232366": {
+        "creator_id": "228666893068795905",
+        "regex_portal": "portal to game",
+        "regex_voice": "G$#-P$member_count | $status_list",
+        "no_bots": false,
+        "limit_portal": 0,
+        "time_to_live": 0,
+        "refresh_rate": 0,
+        "locale": "en",
+        "voice_list": {},
+        "ann_announce": false,
+        "ann_user": true
+      }
+    },
+    "member_list": {
+      "537023025585848324": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "294539338119643137": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "642089816573607946": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "408684029039083520": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "540559238733234207": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "522844906243489793": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "178621820457582602": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "590848955563376640": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "268865339041775618": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "231106885577605120": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "235088799074484224": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "326471246114062356": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "407615955812745217": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "533778497747812352": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "374865385909911553": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "395667507270254592": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "178625392586915840": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "406938957348339722": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "507202866537168906": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "142672003717922817": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "231373985420541952": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "534340160494632980": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "270707420831940618": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "659699741373759491": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "488405995979145236": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "233682014283235331": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "433795733230059520": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "148526306500280320": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "684814451345719316": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "232875205523931136": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "155149108183695360": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "370277653812477973": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "698597773712293938": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "690272852720746610": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "234402593256767491": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "231763688405598218": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "228666893068795905": {
+        "level": 5,
+        "rank": 0,
+        "tier": 1,
+        "points": -991.2,
+        "timestamp": null
+      },
+      "404022320055975936": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "461124948560445450": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "231780831268438016": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "419927488563642375": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "474551305621340160": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "449245494217015309": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "159985870458322944": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "408955131690876938": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "476002321868914689": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "370147462893142017": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "317434205057318913": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "400770504539242496": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "547905866255433758": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "248252695801102338": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "545021835432034304": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "362967897452314624": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "534388011857608705": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "394537380914397189": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "249594733150732290": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "346306540308922387": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "562010354540871712": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "233339202698215425": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "427540698544472085": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "222753236686209024": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "230995663607824386": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "285416786566971393": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "386599272587722752": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "245633518829305866": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "322031419176124420": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "437935131936686120": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "397774224493903872": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "398910271164252167": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "688036058080083968": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "233681213506715649": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "358644113543004173": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "141355428352229376": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "424232862296834050": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      }
+    },
+    "url_list": [],
+    "role_list": {},
+    "auth_role": [],
+    "spotify": null,
+    "announcement": null,
+    "locale": "en",
+    "announce": 0,
+    "level_speed": "normal",
+    "premium": false
+  },
+  "705112209985896529": {
+    "portal_list": {},
+    "member_list": {
+      "155149108183695360": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "159985870458322944": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "178621820457582602": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "222753236686209024": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "228666893068795905": {
+        "level": 5,
+        "rank": 0,
+        "tier": 1,
+        "points": -973.9000000000001,
+        "timestamp": null
+      },
+      "230995663607824386": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "235088799074484224": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "268865339041775618": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "317434205057318913": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "408955131690876938": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "428866923267358721": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "476002321868914689": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      }
+    },
+    "url_list": [],
+    "role_list": {},
+    "auth_role": [],
+    "spotify": null,
+    "announcement": null,
+    "locale": "en",
+    "announce": 0,
+    "level_speed": "normal",
+    "premium": false
+  },
+  "710746690650374208": {
+    "portal_list": {},
+    "member_list": {
+      "159985870458322944": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      },
+      "228666893068795905": {
+        "level": 5,
+        "rank": 0,
+        "tier": 1,
+        "points": 150.35,
+        "timestamp": null
+      },
+      "235088799074484224": {
+        "level": 1,
+        "rank": 0,
+        "tier": 0,
+        "points": 0,
+        "timestamp": null
+      }
+    },
+    "url_list": [],
+    "role_list": {
+      "738873307167719465": {
+        "role_emote_map": [{ "give": "💯", "strip": "💩", "role": "tsiakkas" }]
+      }
+    },
+    "auth_role": [],
+    "spotify": null,
+    "announcement": null,
+    "locale": "en",
+    "announce": 0,
+    "level_speed": "normal",
+    "premium": false
+  }
+}
