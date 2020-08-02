@@ -25,33 +25,45 @@ module.exports = {
 
 		let rich_message = new Discord.MessageEmbed()
 			.setURL(url)
-			.setTitle(title)
 			.setColor(colour)
 			// .setAuthor('Portal', portal_icon_url, keybraker_url)
-			.setDescription(description)
 			.setTimestamp();
 
+		if(title) {
+			rich_message
+				.setTitle(title);
+		}
+		if(description) {
+			rich_message
+				.setTitle(description);
+		}
 		if (from_bot) {
-			rich_message.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
+			rich_message
+				.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		}
 
 		if (member) {
-			rich_message.setAuthor(member.displayName, member.user.avatarURL());
+			rich_message
+				.setAuthor(member.displayName, member.user.avatarURL());
 		}
 
 		if (thumbnail) {
-			rich_message.setThumbnail(thumbnail);
+			rich_message
+				.setThumbnail(thumbnail);
 		}
 
 		if (field_array) {
 			field_array.forEach(row => {
 				if (row.emote === '' && row.role === '') {
-					rich_message.addField('\u200b', '\u200b');
+					rich_message
+						.addField('\u200b', '\u200b');
 				} else {
-					rich_message.addField(
-						row.emote === '' ? '\u200b' : '`' + row.emote + '`',
-						row.role === '' ? '\u200b' : row.role,
-						row.inline);
+					rich_message
+						.addField(
+							row.emote === '' ? '\u200b' : '`' + row.emote + '`',
+							row.role === '' ? '\u200b' : row.role,
+							row.inline
+						);
 				}
 			});
 		} else {
