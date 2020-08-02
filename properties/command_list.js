@@ -80,9 +80,33 @@ module.exports =
 				'(Please make sure you have no space infront or behind *role name* or *emotes*)',
 			example: 'json\n./role ' +
 				'[\n\t{ "give": ":heart:", "strip": ":poop:", "role": "moba" },\n' +
-				'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]' +
+				'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]\n' +
 				'\n>This will create a message giving/striping moba role with :heart:/:poop: and fps role with :rofl:/:dog:.',
 			args: '```json\nJSON array of objects:\n{ "give": ":heart:", "strip": ":poop:", "role": "moba" }```'
+		},
+		{
+			name: 'level',
+			description: 'returns your level card.',
+			super_description: '**level**, returns your level card with all member stats.',
+			example: './level',
+			args: 'none'
+		},
+		{
+			name: 'set_ranks',
+			description: 'creates your ranking system.',
+			super_description: '**ranks**, creates your ranking system by which roles are distributed by reachig.' +
+				'certain levels that have been defined.',
+			example: 'json\n./role ' +
+				'[\n\t{ "level": "2", "role": "Alpha" },\n' +
+				'\t{ "level": "5", "role": "Beta" }\n]\n',
+			args: '```json\nJSON array of objects:\n{ "level": "2", "role": "Alpha" }```'
+		},
+		{
+			name: 'ranks',
+			description: 'returns your Ranking system of current server.',
+			super_description: '**ranks**, returns your Ranking system of current server (if one is set).',
+			example: './ranks',
+			args: 'none'
 		},
 		{
 			name: 'save',
@@ -185,6 +209,6 @@ module.exports =
 				'You can give input lower or upper case ex: gr or GR if none is given global stats are displayed.',
 			example: './corona code, ./corona country, ./corona',
 			args: '<@country code>, <@country country>'
-		}	
+		}
 	]
 };

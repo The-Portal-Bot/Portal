@@ -256,6 +256,7 @@ module.exports =
 		const member_list = this.create_member_list(guild_id, client);
 		const url_list = [];
 		const role_list = {};
+		const ranks = {};
 		const auth_role = [];
 		const spotify = null;
 		const announcement = null;
@@ -265,7 +266,7 @@ module.exports =
 		const premium = false;
 
 		portal_guilds[guild_id] = new guild_class(portal_list, member_list, url_list, role_list,
-			auth_role, spotify, announcement, locale, announce, level_speed, premium);
+			ranks, auth_role, spotify, announcement, locale, announce, level_speed, premium);
 	}
 	,
 
