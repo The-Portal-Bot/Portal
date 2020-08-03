@@ -9,13 +9,13 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		if (ranks) {
 			let ranks_msg = [];
 			ranks.forEach(rank => {
-				ranks_msg.push({ emote: `level ${rank.level}`, role: `***${rank.role}***`, inline: true });
+				ranks_msg.push({ emote: `level ${rank.level}`, role: `***${rank.role}***`, inline: false });
 			});
 
 			message.channel.send(help_mngr.create_rich_embed(
 				false,
 				false,
-				'#00FFFF',
+				'#FF4500',
 				ranks_msg, 
 				false,
 				message.member,

@@ -7,11 +7,13 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		let roles = [...message.guild.roles.cache];
 
 		if (args.length > 0) {
-			const is_rank = function (rank) { return !!rank.level && !!rank.role; };
-			const is_role = function (rank) { return !roles.some(role => {
-				console.log(role.name, ' === ', rank.role);
-				return !(role.name === rank.role); });
+			const is_rank = function (rank) {
+				return !!rank.level && !!rank.role;
 			};
+			const is_role = function (rank) {
+				return roles.some(role => role[1].hoist ? role[1].name === rank.role : false); 
+			};
+			
 			let new_ranks = help_mngr.getJSON(args.join(' '));
 			console.log(new_ranks);
 			if(new_ranks === null) {
