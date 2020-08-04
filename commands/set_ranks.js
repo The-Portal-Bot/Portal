@@ -10,6 +10,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			const is_rank = function (rank) {
 				return !!rank.level && !!rank.role;
 			};
+			// is_role already exists in guild manager, keep the best
 			const is_role = function (rank) {
 				return roles.some(role => role[1].hoist ? role[1].name === rank.role : false); 
 			};
@@ -34,7 +35,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					value: '*a role given does not exist in server, for more info ./help ranks*'
 				});
 			}
-				
+			new_ranks.forEach(rank => {
+				rank.level = +rank.level;
+				rank['id'] = roles.find(role => role[1].name === rank.role)[0];
+			});
 			portal_guilds[message.guild.id].ranks = new_ranks;
 		} else {
 			return resolve ({ 

@@ -5,6 +5,18 @@ level_speed = { 'slow': 0.01, 'normal': 0.05, 'fast': 0.1 };
 
 module.exports = 
 {
+	give_role_from_rankup: function(user, member, ranks, guild) {
+		const new_rank = ranks.find(rank => rank.level === user.level);
+		if(new_rank === null || new_rank === undefined) return;
+
+		const new_role = guild.roles.cache.find(role => role.id === new_rank.id);
+		if(new_role === null || new_role === undefined) return;
+
+		if (!member.roles.cache.some(role => role === new_role)) 
+			member.roles.add(new_role);
+	}
+	,
+
 	calculate_rank: function (user) {
 		if (user.points >= user.tier * 1000) {
 			user.level++;
@@ -13,27 +25,7 @@ module.exports =
 			}
 
 			user.points -= user.tier * 1000;
-
-			return true;
 		}
-
-		return false;
-	}
-	,
-
-	update_timestamp: function (voiceState, guild_list) {
-		if (voiceState.member.user.bot) return;
-
-		const user = guild_list[voiceState.guild.id].member_list[voiceState.member.id];
-		const speed = guild_list[voiceState.guild.id].level_speed;
-
-		if (user.timestamp === null) {
-			user.timestamp = new Date();
-		} else {
-			return this.add_points_time(user, speed);
-		}
-
-		return false;
 	}
 	,
 
@@ -45,11 +37,30 @@ module.exports =
 		user.points += voice_time.remaining_hrs * level_speed[speed] * 60 * 60 * 1.25;
 
 		user.timestamp = null;
+	}
+	,
 
-		if (this.calculate_rank(user)) {
-			return user.level;
+	update_timestamp: function (voiceState, guild_list) {
+		if (voiceState.member.user.bot) return;
+
+		const guild = voiceState.guild;
+		const ranks = guild_list[voiceState.guild.id].ranks;
+		const user = guild_list[voiceState.guild.id].member_list[voiceState.member.id];
+		const member = voiceState.member;
+		const speed = guild_list[voiceState.guild.id].level_speed;
+		const cached_level = user.level;
+
+		if (user.timestamp === null) {
+			user.timestamp = new Date();
+			return false;
 		}
 
+		this.add_points_time(user, speed, ranks);
+		this.calculate_rank(user);
+		this.give_role_from_rankup(user, member, ranks, guild);
+
+		if (user.level > cached_level)
+			return user.level;
 		return false;
 	}
 	,

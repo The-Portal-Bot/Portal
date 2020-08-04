@@ -26,7 +26,7 @@ module.exports = async (args) => {
 
 			if (current_role_map[i].give === args.messageReaction.emoji.name) {
 				let role = args.messageReaction.message.guild.roles.cache
-					.find(role => role.name === current_role_map[i].role);
+					.find(role => role.id === current_role_map[i].id);
 
 				if (role) {
 					args.messageReaction.message.guild.members.cache.find(member =>
@@ -52,7 +52,7 @@ module.exports = async (args) => {
 				};
 			} else if (current_role_map[i].strip === args.messageReaction.emoji.name) {
 				let role = args.messageReaction.message.guild.roles.cache
-					.find(role => role.name === current_role_map[i].role);
+					.find(role => role.id === current_role_map[i].id);
 
 				if (role) {
 					args.messageReaction.message.guild.members.cache.find(member =>
