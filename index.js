@@ -18,17 +18,18 @@ let active_cooldown = {
 
 const command_cooldown = { 
 	guild: {
-		purge: { time: 10, auth: true }, save: { time: 5, auth: true }, setup: { time: 10, auth: true}
+		purge: { time: 10, auth: true }, save: { time: 5, auth: true },
+		setup: { time: 10, auth: true}, set_ranks: { time: 10, auth: true }
 	},
 	member: {
 		join: {time: 1, auth: false}, announce: {time: 2, auth: false}
 	},
 	none: {
-		level: { time: 0, auth: false }, force: { time: 0, auth: false }, portal: { time: 0, auth: true},
-		help: {time: 0, auth: false}, ping: {time: 0, auth: false}, run: {time: 0, auth: false},
+		ranks: { time: 0, auth: false }, level: { time: 0, auth: false }, force: { time: 0, auth: false },
+		portal: { time: 0, auth: true}, help: {time: 0, auth: false}, ping: {time: 0, auth: false},
 		set: {time: 0, auth: false}, role: {time: 0, auth: false}, spotify: { time: 0, auth: true },
 		announcement: { time: 0, auth: true }, url: { time: 0, auth: true}, leave: {time: 0, auth: false},
-		focus: {time: 0, auth: false}, corona: {time: 0, auth: false},
+		focus: {time: 0, auth: false}, corona: {time: 0, auth: false}, run: {time: 0, auth: false},
 		auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true}
 	}
 };
@@ -51,7 +52,7 @@ if(guild_list === null) {
 }
 
 event_loader = function (event, args) {
-	console.log(`event triggered, ${event}`);
+	console.log(`event emitted: ${event}`);
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
 			if(rspns !== null && rspns !== undefined) {

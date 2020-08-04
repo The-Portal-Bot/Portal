@@ -179,23 +179,31 @@ module.exports =
 	,
 
 	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_objct, creator_id) {
+	
 		if (portal_category) { // with category
-			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
+			return guild.channels
+				.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
-						creator_id, portal_channel, 'G$#-P$member_count | $status_list',
+						creator_id,
+						portal_channel,
+						guild_objct[guild.id].premium ? 'G$#-P$member_count | $status_list' : 'Channel $#',
 						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
 					);
-					guild.channels.create(portal_category, { type: 'category' })
+					guild.channels
+						.create(portal_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
 				})
 				.catch(console.error);
 		} else { // without category
-			return guild.channels.create(portal_channel, { type: 'voice', bitrate: 8000 })
+			return guild.channels
+				.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
-						creator_id, portal_channel, 'G$#-P$member_count | $status_list',
+						creator_id,
+						portal_channel,
+						guild_objct[guild.id].premium ? 'G$#-P$member_count | $status_list' : 'CHN$# CNT$member_count',
 						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
 					);
 				})
@@ -256,6 +264,7 @@ module.exports =
 		const member_list = this.create_member_list(guild_id, client);
 		const url_list = [];
 		const role_list = {};
+		const ranks = {};
 		const auth_role = [];
 		const spotify = null;
 		const announcement = null;
@@ -265,7 +274,7 @@ module.exports =
 		const premium = false;
 
 		portal_guilds[guild_id] = new guild_class(portal_list, member_list, url_list, role_list,
-			auth_role, spotify, announcement, locale, announce, level_speed, premium);
+			ranks, auth_role, spotify, announcement, locale, announce, level_speed, premium);
 	}
 	,
 
