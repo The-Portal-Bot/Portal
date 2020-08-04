@@ -52,7 +52,7 @@ if(guild_list === null) {
 }
 
 event_loader = function (event, args) {
-	console.log(`event triggered, ${event}`);
+	console.log(`event emitted: ${event}`);
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
 			if(rspns !== null && rspns !== undefined) {
