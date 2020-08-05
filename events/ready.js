@@ -4,11 +4,8 @@ const help_mngr = require('./../functions/help_manager');
 module.exports = async (args) => {
 	// Changing Portal bots status
 	args.client.user.setActivity('./help', { url: 'https://github.com/keybraker', type: 'LISTENING' });
-	args.client.guilds.cache.forEach(guild =>
-		help_mngr.portal_init(guild, args.portal_managed_guilds_path, args.guild_list)
-	);
+	args.client.guilds.cache
+		.forEach(guild => help_mngr.portal_init(guild, args.portal_managed_guilds_path, args.guild_list));
 
-	return {
-		result: true, value: lclz_mngr.console.ready.en(args)
-	};
+	return { result: true, value: lclz_mngr.console.ready.en(args) };
 };

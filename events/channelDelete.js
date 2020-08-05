@@ -9,13 +9,15 @@ module.exports = async (args) => {
 
 	if (return_value === 0) {
 		return {
-			result: false, value: 'Could not find channel that has been removed in json guild file ' +
+			result: false,
+			value: 'Could not find channel that has been removed in json guild file ' +
 				`(guild: ${args.channel.guild.name} - id: ${args.channel.guild.id})`
 		};
 	}
 
 	return {
-		result: true, value: `Channel of type ${type_of_channel[return_value].toString()} ` +
+		result: true,
+		value: `Channel of type ${type_of_channel[return_value].toString()} ` +
 			`has been removed from, guild: ${args.channel.guild.name} - id: ${args.channel.guild.id}`
 	};
 };
