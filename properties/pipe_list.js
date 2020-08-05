@@ -20,7 +20,7 @@ module.exports =
 			});
 		}
 		return help_mngr.create_rich_embed('Pipes',
-			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'Prefix: ' + this.prefix + '\nData manipulating pipes.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#6EEB83', pipe_array);
 	},
@@ -55,20 +55,12 @@ module.exports =
 	prefix: '|',
 	pipes: [
 		{
-			name: 'upperCase',
-			description: 'returns an upperCase of the input',
-			super_description: '**upperCase**, makes all characters upper-case.',
-			example: '(variable, string)|upperCase',
+			name: 'camelCase',
+			description: 'returns an camelCase of the input',
+			super_description: '**camelCase**, connects words and makes the first character upper-case.',
+			example: '(variable, string)|camelCase',
 			args: 'none',
-			get: (str) => { return voca.upperCase(str); }
-		},
-		{
-			name: 'lowerCase',
-			description: 'returns an lowerCase of the input',
-			super_description: '**lowerCase**, makes all characters lower-case.',
-			example: '(variable, string)|lowerCase',
-			args: 'none',
-			get: (str) => { return voca.lowerCase(str); }
+			get: (str) => { return voca.camelCase(str); }
 		},
 		{
 			name: 'capitalize',
@@ -87,46 +79,20 @@ module.exports =
 			get: (str) => { return voca.decapitalize(str); }
 		},
 		{
-			name: 'souvlakiCase',
-			description: 'returns an souvlakiCase of the input',
-			super_description: '**souvlakiCase**, connects all words with \'-\', like a greek souvlaki.',
-			example: '(variable, string)|souvlakiCase',
+			name: 'lowerCase',
+			description: 'returns an lowerCase of the input',
+			super_description: '**lowerCase**, makes all characters lower-case.',
+			example: '(variable, string)|lowerCase',
 			args: 'none',
-			get: (str) => { return voca.kebabCase(str); }
+			get: (str) => { return voca.lowerCase(str); }
 		},
 		{
-			name: 'snakeCase',
-			description: 'returns an snakeCase of the input',
-			super_description: '**snakeCase**, connects all words with \'_\', like a snake.',
-			example: '(variable, string)|snakeCase',
+			name: 'upperCase',
+			description: 'returns an upperCase of the input',
+			super_description: '**upperCase**, makes all characters upper-case.',
+			example: '(variable, string)|upperCase',
 			args: 'none',
-			get: (str) => { return voca.snakeCase(str); }
-		},
-		{
-			name: 'titleCase',
-			description: 'returns an titleCase of the input',
-			super_description: '**titleCase**, makes every words first character upper-case.',
-			example: '(variable, string)|titleCase',
-			args: 'none',
-			get: (str) => { return voca.titleCase(str); }
-		},
-		{
-			name: 'camelCase',
-			description: 'returns an camelCase of the input',
-			super_description: '**camelCase**, connects words and makes the first character upper-case.',
-			example: '(variable, string)|camelCase',
-			args: 'none',
-			get: (str) => { return voca.camelCase(str); }
-		},
-		{
-			name: 'populous_count',
-			description: 'returns the count of most common element in list',
-			super_description: '**populous_count**, returns the count of most common element in list.',
-			example: '(array)|populous_count',
-			args: 'none',
-			get: () => {
-				return 'not yet implemented';
-			}
+			get: (str) => { return voca.upperCase(str); }
 		},
 		{
 			name: 'populous',
@@ -139,6 +105,32 @@ module.exports =
 			}
 		},
 		{
+			name: 'populous_count',
+			description: 'returns the count of most common element in list',
+			super_description: '**populous_count**, returns the count of most common element in list.',
+			example: '(array)|populous_count',
+			args: 'none',
+			get: () => {
+				return 'not yet implemented';
+			}
+		},
+		{
+			name: 'snakeCase',
+			description: 'returns an snakeCase of the input',
+			super_description: '**snakeCase**, connects all words with \'_\', like a snake.',
+			example: '(variable, string)|snakeCase',
+			args: 'none',
+			get: (str) => { return voca.snakeCase(str); }
+		},
+		{
+			name: 'souvlakiCase',
+			description: 'returns an souvlakiCase of the input',
+			super_description: '**souvlakiCase**, connects all words with \'-\', like a greek souvlaki.',
+			example: '(variable, string)|souvlakiCase',
+			args: 'none',
+			get: (str) => { return voca.kebabCase(str); }
+		},
+		{
 			name: 'summary_count',
 			description: 'returns the count of members having a status',
 			super_description: '**summary_count**, returns the count of members having a status',
@@ -147,6 +139,14 @@ module.exports =
 			get: (str) => {
 				return voca.words(str).length;
 			}
+		},
+		{
+			name: 'titleCase',
+			description: 'returns an titleCase of the input',
+			super_description: '**titleCase**, makes every words first character upper-case.',
+			example: '(variable, string)|titleCase',
+			args: 'none',
+			get: (str) => { return voca.titleCase(str); }
 		}
 	]
 };

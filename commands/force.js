@@ -1,11 +1,10 @@
-/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-unused-vars */
 const guld_mngr = require('./../functions/guild_manager');
-const attr_objct = require('../properties/attribute_list');
 
 const renameKey = (objct, oldKey, newKey) => {
 	if (oldKey !== newKey) {
-		if (objct.voice_list.hasOwnProperty(oldKey)) {
+		if (Object.prototype.hasOwnProperty.call(objct.voice_list, oldKey)) {
+		// if (objct.voice_list.hasOwnProperty(oldKey)) {
 			objct.voice_list[newKey] = objct.voice_list[oldKey];
 			delete objct.voice_list[oldKey];
 
@@ -17,7 +16,8 @@ const renameKey = (objct, oldKey, newKey) => {
 
 const copyKey = (objct, oldKey, cpyKey) => {
 	if (oldKey !== cpyKey) {
-		if (objct.voice_list.hasOwnProperty(oldKey)) {
+		if (Object.prototype.hasOwnProperty.call(objct.voice_list, oldKey)) {
+		// if (objct.voice_list.hasOwnProperty(oldKey)) {
 			objct.voice_list[cpyKey] = objct.voice_list[oldKey];
 			return objct;
 		}
@@ -31,11 +31,13 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
 			return resolve({
-				result: false, value: '*you must be in a channel handled by* **Portal™***.*'
+				result: false,
+				value: '*you must be in a channel handled by* **Portal™***.*'
 			});
 		} else if (!guld_mngr.included_in_voice_list(message.member.voice.channel.id, current_portal_list)) {
 			return resolve({
-				result: false, value: '*the channel you are in is not handled by* **Portal™***.*'
+				result: false,
+				value: '*the channel you are in is not handled by* **Portal™***.*'
 			});
 		}
 
@@ -47,8 +49,14 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				let current_voice = current_portal.voice_list[message.member.voice.channel.id];
 				if (current_voice.creator_id === message.member.id) {
 
-					let updated_name = guld_mngr.regex_interpreter(current_voice.regex, message.member.voice.channel,
-						current_voice, current_portal_list, portal_guilds);
+					let updated_name = guld_mngr.regex_interpreter(
+						current_voice.regex,
+						message.member.voice.channel,
+						current_voice,
+						current_portal_list,
+						portal_guilds,
+						message.guild
+					);
 
 					message.member.voice.channel.clone({
 						name: updated_name
@@ -66,20 +74,20 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 							
 							setTimeout(() => {
 								current_portal = renameKey(
-									current_portal,
-									'intermidiary',
-									clone.id
+									current_portal, 'intermidiary', clone.id
 								);
 							}, 2000);
 						})
 						.catch(error => {
 							return resolve({
-								result: true, value: `*an error occured why trying to force update.\n${error}*`
+								result: true,
+								value: `*an error occured why trying to force update.\n${error}*`
 							});
 						});
 				} else {
 					return resolve({
-						result: false, value: '*you must be the creator of the voice channel to force update it.*'
+						result: false,
+						value: '*you must be the creator of the voice channel to force update it.*'
 					});
 				}
 			}

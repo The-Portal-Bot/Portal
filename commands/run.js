@@ -7,9 +7,15 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		let current_portal_list = portal_guilds[message.guild.id].portal_list;
 
 		if (current_voice === null) {
-			return resolve ({ result: false, value: '*you must be in a channel handled by* **Portal™** *to run commands.*' });
+			return resolve ({
+				result: false,
+				value: '*you must be in a channel handled by* **Portal™** *to run commands.*'
+			});
 		} else if (!guld_mngr.included_in_voice_list(current_voice.channelID, current_portal_list)) {
-			return resolve ({ result: false, value: '*the channel you are in is not handled by* **Portal™**' });
+			return resolve ({
+				result: false,
+				value: '*the channel you are in is not handled by* **Portal™**'
+			});
 		}
 
 		for (let key in current_portal_list) {
@@ -21,14 +27,18 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 								args.join(' '),
 								current_voice.channel,
 								current_portal_list[key].voice_list[current_voice.channelID],
-								current_portal_list[key],
-								portal_guilds[message.guild.id]
+								current_portal_list,
+								portal_guilds[message.guild.id],
+								message.guild
 							)
 						);
 					});
 			}
 		}
 
-		return resolve ({ result: true, value: '*command ran successfully.*' });
+		return resolve ({
+			result: true,
+			value: '*command ran successfully.*'
+		});
 	});
 };

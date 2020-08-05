@@ -24,29 +24,34 @@ module.exports = {
 		const keybraker_url = 'https://github.com/keybraker';
 
 		let rich_message = new Discord.MessageEmbed()
-			.setURL(url)
-			.setColor(colour)
-			// .setAuthor('Portal', portal_icon_url, keybraker_url)
 			.setTimestamp();
+			// .setAuthor('Portal', portal_icon_url, keybraker_url)
+
 
 		if(title) {
 			rich_message
 				.setTitle(title);
 		}
+		if(url) {
+			rich_message
+				.setURL(url);
+		}
+		if(colour) {
+			rich_message
+				.setColor(colour);
+		}
 		if(description) {
 			rich_message
-				.setTitle(description);
+				.setDescription(description);
 		}
 		if (from_bot) {
 			rich_message
 				.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		}
-
 		if (member) {
 			rich_message
 				.setAuthor(member.displayName, member.user.avatarURL());
 		}
-
 		if (thumbnail) {
 			rich_message
 				.setThumbnail(thumbnail);
@@ -54,14 +59,19 @@ module.exports = {
 
 		if (field_array) {
 			field_array.forEach(row => {
-				if (row.emote === '' && row.role === '') {
+				if ((row.emote === '' || row.emote === null || row.emote === false) &&
+					(row.role === '') || row.role === null || row.role === false) {
 					rich_message
 						.addField('\u200b', '\u200b');
 				} else {
 					rich_message
 						.addField(
-							row.emote === '' ? '\u200b' : '`' + row.emote + '`',
-							row.role === '' ? '\u200b' : row.role,
+							(row.emote === '' || row.emote === null || row.emote === false)
+								? '\u200b'
+								: '`' + row.emote + '`',
+							(row.role === '' || row.role === null || row.role === false)
+								? '\u200b'
+								: row.role,
 							row.inline
 						);
 				}

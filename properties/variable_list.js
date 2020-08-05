@@ -22,7 +22,7 @@ module.exports =
 			});
 		}
 		return help_mngr.create_rich_embed('Variables',
-			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'Prefix: ' + this.prefix + '\nEditable variables of Portal channel.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#1BE7FF', vrbl_array);
 	},
@@ -46,17 +46,35 @@ module.exports =
 		}
 		return false;
 	},
-	get: function (voice_channel, voice_object, portal_object, vrbl) {
-		for (let l = 0; l < this.variables.length; l++) {
-			if (vrbl === this.variables[l].name) {
-				return this.variables[l].get(voice_channel, voice_object, portal_object);
-			}
-		}
+	get: function (voice_channel, voice_object, portal_list_object, guild_object, guild, vrbl) {
+		for (let l = 0; l < this.variables.length; l++)
+			if (vrbl === this.variables[l].name)
+				return this.variables[l].get(voice_channel, voice_object, portal_list_object, guild_object, guild);
 		return -1;
 	},
 
 	prefix: '$',
 	variables: [
+		{
+			name: '#',
+			description: 'returns the channel number in list.',
+			super_description: '**#**, returns the channel number in list, if it was created first .'+
+			'it will display 1, if third 3, etc.',
+			example: '$#',
+			args: 'none',
+			get: (voice_channel, voice_object, portal_list_object) => {
+				let i = 0;
+				for(let portal_key in portal_list_object) {
+					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
+						for (let voice_key in portal_list_object[portal_key].voice_list) {
+							i++;
+							if (voice_key === voice_channel.id) return i.toString();
+						}
+					}
+				}
+				return '0';
+			}
+		},
 		{
 			name: '##',
 			description: 'returns the channel number in list with # in the front.',
@@ -64,11 +82,11 @@ module.exports =
 				'it will display #1, if third #3, etc.',
 			example: '$##',
 			args: 'none',
-			get: (voice_channel, voice_object, portal_object) => {
+			get: (voice_channel, voice_object, portal_list_object) => {
 				let i = 0;
-				for(let portal_key in portal_object) {
-					if (portal_object[portal_key].voice_list[voice_channel.id]) {
-						for (let voice_key in portal_object[portal_key].voice_list) {
+				for(let portal_key in portal_list_object) {
+					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
+						for (let voice_key in portal_list_object[portal_key].voice_list) {
 							i++;
 							if (voice_key === voice_channel.id) return '#' + i.toString();
 						}
@@ -76,24 +94,32 @@ module.exports =
 				}
 				return '#0';
 			}
-		},{
-			name: '#',
-			description: 'returns the channel number in list.',
-			super_description: '**#**, returns the channel number in list, if it was created first .'+
-			'it will display 1, if third 3, etc.',
-			example: '$#',
+		},
+		{
+			name: 'creator_portal',
+			description: 'returns the creator of current voice channel\'s portal.',
+			super_description: '**creator_portal**, returns the creator of current voice channel\'s portal.',
+			example: '$creator_portal',
 			args: 'none',
-			get: (voice_channel, voice_object, portal_object) => {
-				let i = 0;
-				for(let portal_key in portal_object) {
-					if (portal_object[portal_key].voice_list[voice_channel.id]) {
-						for (let voice_key in portal_object[portal_key].voice_list) {
-							i++;
-							if (voice_key === voice_channel.id) return i.toString();
-						}
+			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
+				for(let portal_key in portal_list_object)
+					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
+						let display_name = guild.members.cache
+							.find(member => member.id === portal_list_object[portal_key].creator_id).displayName;
+						return display_name ? display_name : 'portal creator left';
 					}
-				}
-				return '0';
+			}
+		},
+		{
+			name: 'creator_voice',
+			description: 'returns the creator of current voice channel.',
+			super_description: '**creator_voice**, returns the creator of current voice channel.',
+			example: '$creator_voice',
+			args: 'none',
+			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
+				let display_name = guild.members.cache
+					.find(member => member.id === voice_object.creator_id).displayName;
+				return display_name ? display_name : 'voice creator left';
 			}
 		},
 		{
@@ -187,13 +213,65 @@ module.exports =
 			}
 		},
 		{
-			name: 'status_list',
-			description: 'returns the list of current member statuses.',
-			super_description: '**status_list**, returns the list of all current members statuses.',
-			example: '$status_list',
+			name: 'member_active_count',
+			description: 'returns number of members with a status.',
+			super_description: '**member_with_status**, returns the number of members with a status.',
+			example: '$member_active_count',
 			args: 'none',
-			get: (voice_channel, voice_object) => { 
-				return rtrv.get_status_list(voice_channel, voice_object);
+			get: (voice_channel) => {
+				let cnt = 0;
+				voice_channel.members.forEach((member) => {
+					if (member.presence.game !== null)
+						cnt++;
+				});
+				return cnt;
+			}
+		},
+		{
+			name: 'member_count',
+			description: 'returns number of members in channel.',
+			super_description: '**member_count**, returns the number of members in channel.',
+			example: '$member_count',
+			args: 'none',
+			get: (voice_channel) => {
+				return voice_channel.members.size;
+			}
+		},
+		{
+			name: 'member_history',
+			description: 'returns a list of all members that have connected to the channel.',
+			super_description: '**member_history**, returns a list of all members that have connected to the channel.',
+			example: '$member_history',
+			args: 'none',
+			get: () => {
+				return 'no_yet_implemented';
+			}
+		},
+		{
+			name: 'member_list',
+			description: 'returns the currently played games.',
+			super_description: '**member_list**, returns the currentstatuses.',
+			example: '$member_list',
+			args: 'none',
+			get: (voice_channel) => {
+				let mmbr_lst = [];
+				voice_channel.members.forEach(member => { mmbr_lst.push(member.displayName); });
+				return mmbr_lst;
+			}
+		},
+		{
+			name: 'member_with_status',
+			description: 'returns number of members with a status.',
+			super_description: '**member_with_status**, returns the number of members with a status.',
+			example: '$member_with_status',
+			args: 'none',
+			get: (voice_channel) => {
+				let cnt = 0;
+				voice_channel.members.forEach((member) => {
+					if (member.presence.game !== null)
+						cnt++;
+				});
+				return cnt;
 			}
 		},
 		{
@@ -219,85 +297,13 @@ module.exports =
 			}
 		},
 		{
-			name: 'member_list',
-			description: 'returns the currently played games.',
-			super_description: '**member_list**, returns the currentstatuses.',
-			example: '$member_list',
+			name: 'status_list',
+			description: 'returns the list of current member statuses.',
+			super_description: '**status_list**, returns the list of all current members statuses.',
+			example: '$status_list',
 			args: 'none',
-			get: (voice_channel) => {
-				let mmbr_lst = [];
-				voice_channel.members.forEach(member => { mmbr_lst.push(member.displayName); });
-				return mmbr_lst;
-			}
-		},
-		{
-			name: 'member_count',
-			description: 'returns number of members in channel.',
-			super_description: '**member_count**, returns the number of members in channel.',
-			example: '$member_count',
-			args: 'none',
-			get: (voice_channel) => {
-				return voice_channel.members.size;
-			}
-		},
-		{
-			name: 'member_active_count',
-			description: 'returns number of members with a status.',
-			super_description: '**member_with_status**, returns the number of members with a status.',
-			example: '$member_active_count',
-			args: 'none',
-			get: (voice_channel) => {
-				let cnt = 0;
-				voice_channel.members.forEach((member) => {
-					if (member.presence.game !== null)
-						cnt++;
-				});
-				return cnt;
-			}
-		},
-		{
-			name: 'member_with_status',
-			description: 'returns number of members with a status.',
-			super_description: '**member_with_status**, returns the number of members with a status.',
-			example: '$member_with_status',
-			args: 'none',
-			get: (voice_channel) => {
-				let cnt = 0;
-				voice_channel.members.forEach((member) => {
-					if (member.presence.game !== null)
-						cnt++;
-				});
-				return cnt;
-			}
-		},
-		{
-			name: 'member_history',
-			description: 'returns a list of all members that have connected to the channel.',
-			super_description: '**member_history**, returns a list of all members that have connected to the channel.',
-			example: '$member_history',
-			args: 'none',
-			get: () => {
-				return 'no_yet_implemented';
-			}
-		},
-		{
-			name: 'creator_portal',
-			description: 'returns the creator of current voice channel\'s portal.',
-			super_description: '**creator_portal**, returns the creator of current voice channel\'s portal.',
-			example: '$creator_portal',
-			args: 'none',
-			get: (voice_channel, voice_object, portal_object) => {
-				return portal_object.creator_id;
-			}
-		},
-		{
-			name: 'creator_voice',
-			description: 'returns the creator of current voice channel.',
-			super_description: '**creator_voice**, returns the creator of current voice channel.',
-			example: '$creator_voice',
-			args: 'none',
-			get: (voice_channel, voice_object) => {
-				return voice_object.creator_id;
+			get: (voice_channel, voice_object) => { 
+				return rtrv.get_status_list(voice_channel, voice_object);
 			}
 		},
 		{

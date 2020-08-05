@@ -30,7 +30,7 @@ const command_cooldown = {
 		set: {time: 0, auth: false}, role: {time: 0, auth: false}, spotify: { time: 0, auth: true },
 		announcement: { time: 0, auth: true }, url: { time: 0, auth: true}, leave: {time: 0, auth: false},
 		focus: {time: 0, auth: false}, corona: {time: 0, auth: false}, run: {time: 0, auth: false},
-		auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true}
+		auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true}, about: { time: 0, auth: false}
 	}
 };
 
@@ -176,6 +176,7 @@ client.on('message', async message => {
 
 	// Check if something written in url channel
 	let channel_type = null, channel_support = null;
+
 	if (guld_mngr.included_in_url_list(message.channel.id, guild_list[message.guild.id])) {
 		channel_type = 'URL'; channel_support = 'url';
 	} else if (guild_list[message.guild.id].spotify === message.channel.id) {
@@ -184,7 +185,8 @@ client.on('message', async message => {
 		channel_type = 'Announcement'; channel_support = 'read';
 	}
 
-	if ((channel_type !== null && channel_type !== 'URL') || channel_type === 'URL' && !help_mngr.is_url(message.content)) {
+	if ((channel_type !== null && channel_type !== 'URL') || 
+		channel_type === 'URL' && !help_mngr.is_url(message.content)) {
 		lclz_mngr.client_talk(client, guild_list, 'read_only');
 		help_mngr.message_reply(
 			null, message.author.presence.member.voice.channel, message, 
@@ -223,10 +225,12 @@ client.on('message', async message => {
 		}
 	}
 
-	if (command_cooldown[type][cmd].auth && !help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member)) {
-		help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
-			'you are not authorized to access this command', guild_list, client);
-		return;
+	if (command_cooldown[type][cmd].auth) {
+		if (!help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member)) {
+			help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
+				'you are not authorized to access this command', guild_list, client);
+			return;
+		}
 	}
 	// else {
 	// 	help_mngr.message_reply(true, message.author.presence.member.voice.channel, message, message.author,
@@ -253,9 +257,11 @@ client.on('message', async message => {
 			? true : (type === 'guild' && active.command === cmd))) {
 		let time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd].time);
 
-		help_mngr.message_reply( false, message.author.presence.member.voice.channel, message,
-			message.author, `*you need to wait* **${help_mngr.pad(time.remaining_min)}:${help_mngr.pad(time.remaining_sec)}/`+
-			`${help_mngr.pad(time.timeout_min)}:${help_mngr.pad(time.timeout_sec)}** *to use* **${cmd}** *again${type === 'member' 
+		help_mngr.message_reply(
+			false, message.author.presence.member.voice.channel, message,
+			message.author, `*you need to wait* **${help_mngr.pad(time.remaining_min)}:` +
+			`${help_mngr.pad(time.remaining_sec)}/${help_mngr.pad(time.timeout_min)}:` +
+			`${help_mngr.pad(time.timeout_sec)}** *to use* **${cmd}** *again${type === 'member' 
 				? '.*'
 				: `, as it was used again in* **${message.guild.name}**.`}`,
 			guild_list, client);

@@ -6,6 +6,7 @@ module.exports = async (args) => {
 	help_mngr.update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
 
 	return {
-		result: true, value: `Portal has been removed from: ${args.guild.name} (id: ${args.guild.id})`
+		result: true,
+		value: `Portal has been removed from: ${args.guild.name} (id: ${args.guild.id})`
 	};
 };
