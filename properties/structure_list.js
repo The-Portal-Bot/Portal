@@ -21,7 +21,7 @@ module.exports =
 			});
 		}
 		return help_mngr.create_rich_embed('Structures',
-			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'Prefix: ' + this.prefix + '\nStructural functionality.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#EEB902', strc_array);
 	},

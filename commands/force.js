@@ -50,8 +50,13 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				if (current_voice.creator_id === message.member.id) {
 
 					let updated_name = guld_mngr.regex_interpreter(
-						current_voice.regex, message.member.voice.channel,
-						current_voice, current_portal_list, portal_guilds);
+						current_voice.regex,
+						message.member.voice.channel,
+						current_voice,
+						current_portal_list,
+						portal_guilds,
+						message.guild
+					);
 
 					message.member.voice.channel.clone({
 						name: updated_name

@@ -20,7 +20,7 @@ module.exports =
 			});
 		}
 		return help_mngr.create_rich_embed('Pipes',
-			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'Prefix: ' + this.prefix + '\nData manipulating pipes.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#6EEB83', pipe_array);
 	},

@@ -44,15 +44,19 @@ module.exports = async (args) => {
 					args.newState, args.guild_list[args.newState.guild.id].portal_list[newChannel.id],
 					newChannel, args.newState.id);
 				guld_mngr.generate_channel_name(
-					newChannel, args.guild_list[args.newState.guild.id].portal_list,
-					args.guild_list[args.newState.guild.id]);
+					newChannel,
+					args.guild_list[args.newState.guild.id].portal_list,
+					args.guild_list[args.newState.guild.id],
+					args.newState.guild);
 
 			} else if (guld_mngr.included_in_voice_list(
 				newChannel.id, args.guild_list[args.newState.guild.id].portal_list)) { // joined voice channel
 
 				guld_mngr.generate_channel_name(
-					newChannel, args.guild_list[args.newState.guild.id].portal_list,
-					args.guild_list[args.newState.guild.id]);
+					newChannel,
+					args.guild_list[args.newState.guild.id].portal_list,
+					args.guild_list[args.newState.guild.id],
+					args.newState.guild);
 				user_mngr.update_timestamp(args.newState, args.guild_list); // points for voice
 
 			} else { // joined other channel
@@ -102,8 +106,10 @@ module.exports = async (args) => {
 					report_message += '->dest: voice_list\n';
 					report_message += 'has been handled before\n';
 					guld_mngr.generate_channel_name(
-						newChannel, args.guild_list[args.newState.guild.id].portal_list,
-						args.guild_list[args.newState.guild.id]);
+						newChannel,
+						args.guild_list[args.newState.guild.id].portal_list,
+						args.guild_list[args.newState.guild.id],
+						args.newState.guild);
 
 				}
 
@@ -140,8 +146,10 @@ module.exports = async (args) => {
 						args.newState, args.guild_list[args.newState.guild.id].portal_list[newChannel.id],
 						newChannel, args.newState.id);
 					guld_mngr.generate_channel_name(
-						newChannel, args.guild_list[args.newState.guild.id].portal_list,
-						args.guild_list[args.newState.guild.id]);
+						newChannel,
+						args.guild_list[args.newState.guild.id].portal_list,
+						args.guild_list[args.newState.guild.id],
+						args.newState.guild);
 				} else if (guld_mngr.included_in_voice_list(
 					newChannel.id, args.guild_list[args.newState.guild.id].portal_list)) { // moved from voice to voice
 
@@ -164,8 +172,10 @@ module.exports = async (args) => {
 					}
 
 					guld_mngr.generate_channel_name(
-						newChannel, args.guild_list[args.newState.guild.id].portal_list,
-						args.guild_list[args.newState.guild.id]);
+						newChannel,
+						args.guild_list[args.newState.guild.id].portal_list,
+						args.guild_list[args.newState.guild.id],
+						args.newState.guild);
 
 				} else { // moved from voice to other
 
@@ -187,8 +197,10 @@ module.exports = async (args) => {
 					}
 
 					guld_mngr.generate_channel_name(
-						newChannel, args.guild_list[args.newState.guild.id].portal_list,
-						args.guild_list[args.newState.guild.id]);
+						newChannel,
+						args.guild_list[args.newState.guild.id].portal_list,
+						args.guild_list[args.newState.guild.id],
+						args.newState.guild);
 				}
 
 			} else {
@@ -203,8 +215,10 @@ module.exports = async (args) => {
 						args.newState, args.guild_list[args.newState.guild.id].portal_list[newChannel.id],
 						newChannel, args.newState.id);
 					guld_mngr.generate_channel_name(
-						newChannel, args.guild_list[args.newState.guild.id].portal_list,
-						args.guild_list[args.newState.guild.id]);
+						newChannel,
+						args.guild_list[args.newState.guild.id].portal_list,
+						args.guild_list[args.newState.guild.id],
+						args.newState.guild);
 
 				}
 				else if (guld_mngr.included_in_voice_list(
@@ -212,8 +226,10 @@ module.exports = async (args) => {
 					report_message += '->dest: voice_list\n';
 
 					guld_mngr.generate_channel_name(
-						newChannel, args.guild_list[args.newState.guild.id].portal_list,
-						args.guild_list[args.newState.guild.id]);
+						newChannel,
+						args.guild_list[args.newState.guild.id].portal_list,
+						args.guild_list[args.newState.guild.id],
+						args.newState.guild);
 
 				}
 			}

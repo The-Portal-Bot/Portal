@@ -27,8 +27,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 								args.join(' '),
 								current_voice.channel,
 								current_portal_list[key].voice_list[current_voice.channelID],
-								current_portal_list[key],
-								portal_guilds[message.guild.id]
+								current_portal_list,
+								portal_guilds[message.guild.id],
+								message.guild
 							)
 						);
 					});

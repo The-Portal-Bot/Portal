@@ -22,7 +22,7 @@ module.exports =
 			});
 		}
 		return help_mngr.create_rich_embed('Variables',
-			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'Prefix: ' + this.prefix + '\nEditable variables of Portal channel.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#1BE7FF', vrbl_array);
 	},
@@ -46,12 +46,10 @@ module.exports =
 		}
 		return false;
 	},
-	get: function (voice_channel, voice_object, portal_object, vrbl) {
-		for (let l = 0; l < this.variables.length; l++) {
-			if (vrbl === this.variables[l].name) {
-				return this.variables[l].get(voice_channel, voice_object, portal_object);
-			}
-		}
+	get: function (voice_channel, voice_object, portal_list_object, guild_object, guild, vrbl) {
+		for (let l = 0; l < this.variables.length; l++)
+			if (vrbl === this.variables[l].name)
+				return this.variables[l].get(voice_channel, voice_object, portal_list_object, guild_object, guild);
 		return -1;
 	},
 
@@ -64,11 +62,11 @@ module.exports =
 			'it will display 1, if third 3, etc.',
 			example: '$#',
 			args: 'none',
-			get: (voice_channel, voice_object, portal_object) => {
+			get: (voice_channel, voice_object, portal_list_object) => {
 				let i = 0;
-				for(let portal_key in portal_object) {
-					if (portal_object[portal_key].voice_list[voice_channel.id]) {
-						for (let voice_key in portal_object[portal_key].voice_list) {
+				for(let portal_key in portal_list_object) {
+					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
+						for (let voice_key in portal_list_object[portal_key].voice_list) {
 							i++;
 							if (voice_key === voice_channel.id) return i.toString();
 						}
@@ -84,11 +82,11 @@ module.exports =
 				'it will display #1, if third #3, etc.',
 			example: '$##',
 			args: 'none',
-			get: (voice_channel, voice_object, portal_object) => {
+			get: (voice_channel, voice_object, portal_list_object) => {
 				let i = 0;
-				for(let portal_key in portal_object) {
-					if (portal_object[portal_key].voice_list[voice_channel.id]) {
-						for (let voice_key in portal_object[portal_key].voice_list) {
+				for(let portal_key in portal_list_object) {
+					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
+						for (let voice_key in portal_list_object[portal_key].voice_list) {
 							i++;
 							if (voice_key === voice_channel.id) return '#' + i.toString();
 						}
@@ -103,8 +101,11 @@ module.exports =
 			super_description: '**creator_portal**, returns the creator of current voice channel\'s portal.',
 			example: '$creator_portal',
 			args: 'none',
-			get: (voice_channel, voice_object, portal_object) => {
-				return portal_object.creator_id;
+			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
+				for(let portal_key in portal_list_object)
+					if (portal_list_object[portal_key].voice_list[voice_channel.id])
+						return guild.members.cache
+							.find(member => member.id === portal_list_object[portal_key].creator_id).displayName;
 			}
 		},
 		{
@@ -113,8 +114,9 @@ module.exports =
 			super_description: '**creator_voice**, returns the creator of current voice channel.',
 			example: '$creator_voice',
 			args: 'none',
-			get: (voice_channel, voice_object) => {
-				return voice_object.creator_id;
+			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
+				return guild.members.cache
+					.find(member => member.id === voice_object.creator_id).displayName;
 			}
 		},
 		{

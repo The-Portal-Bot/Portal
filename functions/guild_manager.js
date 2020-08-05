@@ -1,6 +1,3 @@
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable no-undef */
-/* eslint-disable no-cond-assign */
 const voca = require('voca');
 
 const vrbl_objct = require('../properties/variable_list');
@@ -18,53 +15,45 @@ const help_mngr = require('../functions/help_manager');
 module.exports =
 {
 	included_in_portal_guilds: function (guild_id, portal_guilds) {
-		if (portal_guilds[guild_id] !== undefined) {
+		if (portal_guilds[guild_id] !== undefined)
 			return true;
-		}
 		return false;
 	}
 	,
 
 	included_in_portal_list: function (channel_id, portal_list) {
-		if (portal_list[channel_id]) {
+		if (portal_list[channel_id])
 			return true;
-		}
 		return false;
 	}
 	,
 
 	included_in_voice_list: function (channel_id, portal_list) {
-		for (let key in portal_list) {
-			if (portal_list[key].voice_list[channel_id]) {
+		for (let key in portal_list)
+			if (portal_list[key].voice_list[channel_id])
 				return true;
-			}
-		}
 		return false;
 	}
 	,
 
-	included_in_url_list: function (channel_id, guild_objct) {
-		for (let i = 0; i < guild_objct.url_list.length; i++) {
-			if (guild_objct.url_list[i] === channel_id) {
+	included_in_url_list: function (channel_id, guild_object) {
+		for (let i = 0; i < guild_object.url_list.length; i++)
+			if (guild_object.url_list[i] === channel_id)
 				return true;
-			}
-		}
 		return false;
 	}
 	,
 
-	is_spotify_channel: function (channel_id, guild_objct) {
-		if (guild_objct.spotify === channel_id) {
+	is_spotify_channel: function (channel_id, guild_object) {
+		if (guild_object.spotify === channel_id)
 			return true;
-		}
 		return false;
 	}
 	,
 
-	is_announcement_channel: function (channel_id, guild_objct) {
-		if (guild_objct.announcement === channel_id) {
+	is_announcement_channel: function (channel_id, guild_object) {
+		if (guild_object.announcement === channel_id)
 			return true;
-		}
 		return false;
 	}
 	,
@@ -75,8 +64,10 @@ module.exports =
 		let role = guild.roles.cache
 			.find(role => role.name === role_name);
 
-		if (role) return role;
-		else return null;
+		if (role)
+			return role;
+		else
+			return null;
 	}
 	,
 
@@ -88,8 +79,10 @@ module.exports =
 		console.log('focus_time: ', focus_time);
 
 		let return_value = null;
-		if (member_found = member.voice.channel.members.find(member_find => 
-			member_find.displayName === focus_name, focus_time)) {
+		let member_found = member.voice.channel.members
+			.find(member_find => member_find.displayName === focus_name, focus_time);
+
+		if (member_found) {
 			const oldChannel = member.voice.channel;
 			// let newChannel = null;
 			
@@ -126,60 +119,66 @@ module.exports =
 	create_url_channel: function (guild, url_name, url_category, url_list) {
 		if (url_category) { // with category
 			guild.channels.create(`${url_name}-url`, { type: 'text' })
-				.then(channel => {
-					url_list.push(channel.id);
-
-					guild.channels.create(url_category, { type: 'category' })
+				.then(channel => { 
+					url_list
+						.push(channel.id);
+					guild.channels
+						.create(url_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
-				}).catch(console.error);
+				})
+				.catch(console.error);
 		} else { // withou category
-			guild.channels.create(`${url_name}-url`, { type: 'text' })
-				.then(channel => {
-					url_list.push(channel.id);
-				});
+			guild.channels
+				.create(`${url_name}-url`, { type: 'text' })
+				.then(channel => url_list.push(channel.id) );
 		}
 	}
 	,
 
-	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_objct) {
+	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_object) {
 		if (spotify_category) { // with category
-			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
+			return guild.channels
+				.create(`${spotify_channel}-sptfy`, { type: 'text' })
 				.then(channel => {
-					guild_objct.spotify = channel.id;
-					guild.channels.create(spotify_category, { type: 'category' })
+					guild_object.spotify = channel.id;
+					guild.channels
+						.create(spotify_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
 				})
 				.catch(console.error);
 		} else { // without category
-			return guild.channels.create(`${spotify_channel}-sptfy`, { type: 'text' })
-				.then(channel => { guild_objct.spotify = channel.id; })
+			return guild.channels
+				.create(`${spotify_channel}-sptfy`, { type: 'text' })
+				.then(channel => { guild_object.spotify = channel.id; })
 				.catch(console.error);
 		}
 	}
 	,
 
-	create_announcement_channel: function (guild, announcement_channel, announcement_category, guild_objct) {
+	create_announcement_channel: function (guild, announcement_channel, announcement_category, guild_object) {
 		if (announcement_category) { // with category
-			return guild.channels.create(`${announcement_channel}-annc`, { type: 'text' })
+			return guild.channels
+				.create(`${announcement_channel}-annc`, { type: 'text' })
 				.then(channel => {
-					guild_objct.announcement = channel.id;
-					guild.channels.create(announcement_category, { type: 'category' })
+					guild_object.announcement = channel.id;
+					guild.channels
+						.create(announcement_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
 				})
 				.catch(console.error);
 		} else { // without category
-			return guild.channels.create(`${announcement_channel}-annc`, { type: 'text' })
-				.then(channel => { guild_objct.announcement = channel.id; })
+			return guild.channels
+				.create(`${announcement_channel}-annc`, { type: 'text' })
+				.then(channel => { guild_object.announcement = channel.id; })
 				.catch(console.error);
 		}
 	}
 	,
 
-	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_objct, creator_id) {
-	
+	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_object, creator_id) {
 		if (portal_category) { // with category
 			return guild.channels
 				.create(portal_channel, { type: 'voice', bitrate: 8000 })
@@ -187,8 +186,8 @@ module.exports =
 					portal_objct[channel.id] = new portal_class(
 						creator_id,
 						portal_channel,
-						guild_objct[guild.id].premium ? 'G$#-P$member_count | $status_list' : 'Channel $#',
-						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
+						guild_object[guild.id].premium ? 'G$#-P$member_count | $status_list' : 'Channel $#',
+						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true
 					);
 					guild.channels
 						.create(portal_category, { type: 'category' })
@@ -203,8 +202,8 @@ module.exports =
 					portal_objct[channel.id] = new portal_class(
 						creator_id,
 						portal_channel,
-						guild_objct[guild.id].premium ? 'G$#-P$member_count | $status_list' : 'CHN$# CNT$member_count',
-						{}, false, 0, 0, 0, guild_objct[guild.id].locale, false, true
+						guild_object[guild.id].premium ? 'G$#-P$member_count | $status_list' : 'CHN$# CNT$member_count',
+						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true
 					);
 				})
 				.catch(console.error);
@@ -213,28 +212,29 @@ module.exports =
 	,
 
 	create_voice_channel: function (state, portal_objct, portal_channel, creator_id) {
-		state.channel.guild.channels.create('loading...', { 
-			type: 'voice', bitrate: 64000, position: portal_channel.position 
-		})
+		state.channel.guild.channels
+			.create('loading...', { type: 'voice', bitrate: 64000, position: portal_channel.position  })
 			.then(channel => {
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice, false, 0, 0,
 					portal_objct.locale, portal_objct.ann_announce, portal_objct.ann_user
 				);
-				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
+				if (state.channel.parentID !== null && state.channel.parentID !== undefined)
 					channel.setParent(state.channel.parentID);
-				}
+				
 				state.member.voice.setChannel(channel);
-			}).catch(console.error);
+			})
+			.catch(console.error);
 
 		return;
 	}
 	,
 
 	create_role_message: function (message, role_list, title, desc, colour, role_emb, role_map) {
-		role_message_emb = help_mngr.create_rich_embed(title, desc, colour, role_emb);
-		message.channel.send(role_message_emb)
+		let role_message_emb = help_mngr.create_rich_embed(title, desc, colour, role_emb);
+		message.channel
+			.send(role_message_emb)
 			.then(sent_message => {
 				for (let i = 0; i < role_map.length; i++) {
 					sent_message.react(role_map[i].give);
@@ -250,9 +250,8 @@ module.exports =
 		let guild = client.guilds.cache.find(guild => guild.id === guild_id);
 
 		guild.members.cache.forEach(member => {
-			if (member.id !== '704400876860735569') {
+			if (member.id !== '704400876860735569')
 				member_list[member.id] = new member_class(1, 0, 0, 0, null);
-			}
 		});
 
 		return member_list;
@@ -287,7 +286,8 @@ module.exports =
 
 	delete_channel: function (channel_to_delete) {
 		if (channel_to_delete.deletable) {
-			channel_to_delete.delete()
+			channel_to_delete
+				.delete()
 				.then(g => console.log(`Deleted channel with id: ${g}`))
 				.catch(console.error);
 		}
@@ -333,18 +333,23 @@ module.exports =
 
 	//
 
-	generate_channel_name: function (voice_channel, portal_object, guild_objct) {
+	generate_channel_name: function (voice_channel, portal_object, guild_object, guild) {
 		for (let portal_id in portal_object) {
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				let voice_object = portal_object[portal_id].voice_list[voice_channel.id];
-				let new_name = this.regex_interpreter(voice_object.regex, voice_channel,
-					voice_object, portal_object, guild_objct
+
+				let new_name = this.regex_interpreter(
+					voice_object.regex,
+					voice_channel,
+					voice_object,
+					portal_object,
+					guild_object,
+					guild
 				);
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
 						voice_channel.edit({ name: new_name.substring(0, 99) })
-							.then(newChannel => 
-								console.log( `Voice's new name from promise is ${newChannel.name}`))
+							.then(newChannel => console.log( `Voice's new name from promise is ${newChannel.name}`))
 							.catch(console.log);
 						return 1;
 					} else {
@@ -359,7 +364,7 @@ module.exports =
 	}
 	,
 
-	regex_interpreter: function (regex, voice_channel, voice_object, portal_object, guild_objct) {
+	regex_interpreter: function (regex, voice_channel, voice_object, portal_object, guild_object, guild) {
 
 		let last_space_index = 0;
 		let last_vatiable_end_index = 0;
@@ -374,53 +379,89 @@ module.exports =
 
 			if (regex[i] === vrbl_objct.prefix) {
 
-				if (vrbl = vrbl_objct.is_variable(regex.substring(i))) {
-					if (return_value = vrbl_objct.get(voice_channel, voice_object, portal_object, vrbl)) {
+				let vrbl = vrbl_objct.is_variable(regex.substring(i));
+
+				if (vrbl) {
+					let return_value = vrbl_objct
+						.get(voice_channel, voice_object, portal_object, guild_object, guild, vrbl);
+
+					if (return_value) {
 						last_variable = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(vrbl).length;
 						last_vatiable_end_index = i;
-					} else { new_channel_name += regex[i]; }
-				} else { new_channel_name += regex[i]; }
+					} else { 
+						new_channel_name += regex[i]; 
+					}
+				} else {
+					new_channel_name += regex[i]; 
+				}
 
 			} else if (regex[i] === attr_objct.prefix) {
 
-				if (attr = attr_objct.is_attribute(regex.substring(i))) {
-					if (return_value = attr_objct.get(
-						voice_channel, voice_object, portal_object, guild_objct, attr)
-					) {
+				let attr = attr_objct.is_attribute(regex.substring(i));
+
+				if (attr) {
+					let return_value = attr_objct
+						.get(voice_channel, voice_object, portal_object, guild_object, attr);
+
+					if (return_value) {
 						last_attribute = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(attr).length;
 						last_attribute_end_index = i;
-					} else { new_channel_name += regex[i]; }
-				} else { new_channel_name += regex[i]; }
+					} else { 
+						new_channel_name += regex[i]; 
+					}
+				} else { 
+					new_channel_name += regex[i]; 
+				}
 
 			} else if (regex[i] === pipe_objct.prefix) {
 
-				if (pipe = pipe_objct.is_pipe(regex.substring(i))) {
+				let pipe = pipe_objct.is_pipe(regex.substring(i));
+
+				if (pipe) {
 					if (last_vatiable_end_index + 1 === i) {
-						if (return_value = pipe_objct.get(last_variable, pipe)) {
+
+						let return_value = pipe_objct.get(last_variable, pipe);
+
+						if (return_value) {
 							new_channel_name = new_channel_name.substring(0,
 								voca.chars(new_channel_name).length - voca.chars(last_variable).length);
 							new_channel_name += return_value;
 							i += voca.chars(pipe).length;
-						} else { new_channel_name += regex[i]; }
+						} else { 
+							new_channel_name += regex[i]; 
+						}
+
 					} else if (last_attribute_end_index + 1 === i) {
-						if (return_value = pipe_objct.get(last_attribute, pipe)) {
+
+						let return_value = pipe_objct.get(last_attribute, pipe);
+
+						if (return_value) {
 							new_channel_name = new_channel_name.substring(0,
 								voca.chars(new_channel_name).length - voca.chars(last_attribute).length);
 							new_channel_name += return_value;
 							i += voca.chars(pipe).length;
-						} else { new_channel_name += regex[i]; }
+						} else { 
+							new_channel_name += regex[i]; 
+						}
+
 					} else {
-						if (return_value = pipe_objct.get(
-							new_channel_name.substring(last_space_index, new_channel_name.length), pipe)) {
+
+						let return_value = pipe_objct
+							.get(new_channel_name.substring(last_space_index, new_channel_name.length), pipe);
+
+						if (return_value) {
 							let str_for_pipe = return_value;
 							new_channel_name = new_channel_name.substring(0, last_space_index);
 							new_channel_name += str_for_pipe;
 							i += voca.chars(pipe).length;
-						} else { new_channel_name += regex[i]; }
+						} else { 
+							new_channel_name += regex[i];
+						}
+
 					}
 				} else {
 					new_channel_name += regex[i];
@@ -429,28 +470,27 @@ module.exports =
 			} else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
 				
 				const inline = {
-					'==': (a, b) => { if (a == b) return true; else false; },
-					'===': (a, b) => { if (a === b) return true; else false; },
-					'!=': (a, b) => { if (a != b) return true; else false; },
-					'!==': (a, b) => { if (a !== b) return true; else false; },
-					'>': (a, b) => { if (a > b) return true; else false; },
-					'<': (a, b) => { if (a < b) return true; else false; },
-					'>=': (a, b) => { if (a >= b) return true; else false; },
-					'<=': (a, b) => { if (a <= b) return true; else false; }
+					'==':	(a, b) => (a == b) ? true : false,
+					'===':	(a, b) => (a === b) ? true : false,
+					'!=':	(a, b) => (a != b) ? true : false,
+					'!==':	(a, b) => (a !== b) ? true : false,
+					'>':	(a, b) => (a > b) ? true : false,
+					'<':	(a, b) => (a < b) ? true : false,
+					'>=':	(a, b) => (a >= b) ? true : false,
+					'<=':	(a, b) => (a <= b) ? true : false
 				};
 
 				try {
 					// did not put into structure_list due to many unnecessary function calls
 					let is_valid = false;
-					let statement = help_mngr.getJSON(
-						regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1)
-					);
+					let statement = help_mngr
+						.getJSON(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 
-					if (statement.hasOwnProperty('if')) {
-						if (statement.hasOwnProperty('is')) {
-							if (statement.hasOwnProperty('with')) {
-								if (statement.hasOwnProperty('yes')) {
-									if (statement.hasOwnProperty('no')) {
+					if (Object.prototype.hasOwnProperty.call(statement, 'if')) {
+						if (Object.prototype.hasOwnProperty.call(statement, 'is')) {
+							if (Object.prototype.hasOwnProperty.call(statement, 'with')) {
+								if (Object.prototype.hasOwnProperty.call(statement, 'yes')) {
+									if (Object.prototype.hasOwnProperty.call(statement, 'no')) {
 										is_valid = true;
 									}
 								}
@@ -460,26 +500,25 @@ module.exports =
 					
 					if(!is_valid) {
 						new_channel_name += regex[i];
-						if (regex[i] === ' ') {
+						if (regex[i] === ' ')
 							last_space_index = i + 1;
-						}
 					} else {
 						if (inline[statement.is](
 							this.regex_interpreter(
-								statement.if, voice_channel, voice_object, portal_object, guild_objct
+								statement.if, voice_channel, voice_object, portal_object, guild_object, guild
 							),
 							this.regex_interpreter(
-								statement.with, voice_channel, voice_object, portal_object, guild_objct
+								statement.with, voice_channel, voice_object, portal_object, guild_object, guild
 							)
 						)) {
 							let value = this.regex_interpreter(
-								statement.yes, voice_channel, voice_object, portal_object, guild_objct
+								statement.yes, voice_channel, voice_object, portal_object, guild_object, guild
 							);
 							if ('--' !== value)
 								new_channel_name += value;
 						} else {
 							let value = this.regex_interpreter(
-								statement.no, voice_channel, voice_object, portal_object, guild_objct
+								statement.no, voice_channel, voice_object, portal_object, guild_object, guild
 							);
 							if ('--' !== value)
 								new_channel_name += value;
@@ -493,17 +532,15 @@ module.exports =
 
 			} else {
 				new_channel_name += regex[i];
-				if (regex[i] === ' ') {
+				if (regex[i] === ' ')
 					last_space_index = i + 1;
-				}
 			}
 		}
 
-		if (new_channel_name === '') {
+		if (new_channel_name === '')
 			return '.';
-		} else {
-			return new_channel_name;
-		}
+		return new_channel_name;
+		
 	}
 };
 

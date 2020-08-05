@@ -49,7 +49,8 @@ display_spotify_song = function (current_guild, current_channel, args) {
 };
 
 update_channel_name = function (current_voice_channel, current_guild, current_channel, current_portal_list, args) {
-	switch (guld_mngr.generate_channel_name(current_channel, current_portal_list, args.guild_list[current_guild.id])) {
+	switch (guld_mngr.generate_channel_name(
+		current_channel, current_portal_list, args.guild_list[current_guild.id], current_guild)) {
 	case 1:
 		current_voice_channel.last_update = Date.now();
 		break;

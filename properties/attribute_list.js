@@ -21,7 +21,7 @@ module.exports =
 			});
 		}
 		return help_mngr.create_rich_embed('Attributes',
-			'Prefix: ' + this.prefix + '\nCommands to access portal bot.' +
+			'Prefix: ' + this.prefix + '\nimmutable statistics of Portal channel.' +
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#FF5714', attr_array);
 	},
