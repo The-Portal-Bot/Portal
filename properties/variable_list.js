@@ -103,9 +103,11 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
 				for(let portal_key in portal_list_object)
-					if (portal_list_object[portal_key].voice_list[voice_channel.id])
-						return guild.members.cache
+					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
+						let display_name = guild.members.cache
 							.find(member => member.id === portal_list_object[portal_key].creator_id).displayName;
+						return display_name ? display_name : 'portal creator left';
+					}
 			}
 		},
 		{
@@ -115,8 +117,9 @@ module.exports =
 			example: '$creator_voice',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
-				return guild.members.cache
+				let display_name = guild.members.cache
 					.find(member => member.id === voice_object.creator_id).displayName;
+				return display_name ? display_name : 'voice creator left';
 			}
 		},
 		{
