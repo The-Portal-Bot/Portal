@@ -5,13 +5,22 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	return new Promise((resolve) => {
 		if (args.length === 0) {
 			if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
-				resolve ({ result: true, value: '*this already is a URL channel.*' });
+				resolve ({
+					result: true,
+					value: '*this already is a URL channel.*'
+				});
 			}
 			if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
-				resolve ({ result: true, value: '*this can\'t be set as a URL channel for it is the Announcement channel.*' });
+				resolve ({
+					result: true,
+					value: '*this can\'t be set as a URL channel for it is the Announcement channel.*'
+				});
 			}
 			if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
-				resolve ({ result: true, value: '*this can\'t be set as a URL channel for it is the Spotify channel.*' });
+				resolve ({
+					result: true,
+					value: '*this can\'t be set as a URL channel for it is the Spotify channel.*'
+				});
 			}
 		}
 

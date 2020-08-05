@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
@@ -133,7 +134,8 @@ module.exports =
 				`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`; },
 			en: (args) => { return `Bot has started, with ${args.client.users.cache.size} users, ` +
 				`in ${args.client.channels.cache.size} channels from ${args.client.guilds.cache.size} guilds.`; },
-			de: (args) => { return `Bot hat ${args.client.users.cache.size} Mitglieder in ${channel_count} Kanälen von ${guild_count} Gilden gestartet.`; }
+			de: (args) => { return `Bot hat ${args.client.users.cache.size} Mitglieder in ${channel_count} ` +
+				`Kanälen von ${guild_count} Gilden gestartet.`; }
 		},
 		updating_guild: {
 			gr: (args) => { return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε.'; },
@@ -141,8 +143,9 @@ module.exports =
 			de: (args) => { return '> Die JSON Datei der Gilde wurde aktualisiert.'; }
 		},
 		presence_controlled_away: {
-			gr: (args) => { return `Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος μια ελεγχόμενης συντεχνίας, ` +
-				`έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία (${args.newPresence.guild.name})`; },
+			gr: (args) => { return `Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος ` +
+				`μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ` +
+				`(${args.newPresence.guild.name})`; },
 			en: (args) => { return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
 				`has changed presence, but is in another server (${args.newPresence.guild.name})`; },
 			de: (args) => { return `${args.newPresence.member.displayName} who is a member of a handled server, ` +

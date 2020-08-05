@@ -24,11 +24,17 @@ module.exports = {
 		const keybraker_url = 'https://github.com/keybraker';
 
 		let rich_message = new Discord.MessageEmbed()
-			.setURL(url)
-			.setColor(colour)
-			// .setAuthor('Portal', portal_icon_url, keybraker_url)
 			.setTimestamp();
+			// .setAuthor('Portal', portal_icon_url, keybraker_url)
 
+		if(url) {
+			rich_message
+				.setURL(url);
+		}
+		if(colour) {
+			rich_message
+				.setColor(colour);
+		}
 		if(title) {
 			rich_message
 				.setTitle(title);
@@ -41,12 +47,10 @@ module.exports = {
 			rich_message
 				.setFooter('Portal bot by Keybraker', portal_icon_url, keybraker_url);
 		}
-
 		if (member) {
 			rich_message
 				.setAuthor(member.displayName, member.user.avatarURL());
 		}
-
 		if (thumbnail) {
 			rich_message
 				.setThumbnail(thumbnail);

@@ -8,7 +8,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 		if (portal_channel !== '') {
 			guld_mngr.create_portal_channel(
-				message.guild, portal_channel, portal_category, portal_guilds[message.guild.id].portal_list,
+				message.guild, portal_channel, portal_category,
+				portal_guilds[message.guild.id].portal_list,
 				portal_guilds, message.member.id);
 
 			return resolve ({
@@ -18,7 +19,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			});
 		} else if (portal_channel === '' && portal_category !== '') {
 			guld_mngr.create_portal_channel(
-				message.guild, portal_category, null, portal_guilds[message.guild.id].portal_list,
+				message.guild, portal_category, null,
+				portal_guilds[message.guild.id].portal_list,
 				portal_guilds, message.member.id);
 
 			return resolve ({

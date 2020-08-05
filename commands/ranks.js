@@ -9,21 +9,23 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		if (ranks) {
 			let ranks_msg = [];
 			ranks.forEach(rank => {
-				ranks_msg.push({ emote: `level ${rank.level}`, role: `***${rank.role}***`, inline: false });
+				ranks_msg.push({
+					emote: `level ${rank.level}`,
+					role: `***${rank.role}***`,
+					inline: false
+				});
 			});
 
-			message.channel.send(help_mngr.create_rich_embed(
-				false,
-				false,
-				'#FF4500',
-				ranks_msg, 
-				false,
-				message.member,
-				false));
+			message.channel.send(
+				help_mngr.create_rich_embed(
+					false, false, '#FF4500', ranks_msg, 
+					false, message.member, false
+				)
+			);
 		} else {
 			message.channel.send('There is no ranking yet.');
 		}
 
-		return resolve (null);
+		return resolve(null);
 	});
 };
