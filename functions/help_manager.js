@@ -27,6 +27,11 @@ module.exports = {
 			.setTimestamp();
 			// .setAuthor('Portal', portal_icon_url, keybraker_url)
 
+
+		if(title) {
+			rich_message
+				.setTitle(title);
+		}
 		if(url) {
 			rich_message
 				.setURL(url);
@@ -35,13 +40,9 @@ module.exports = {
 			rich_message
 				.setColor(colour);
 		}
-		if(title) {
-			rich_message
-				.setTitle(title);
-		}
 		if(description) {
 			rich_message
-				.setTitle(description);
+				.setDescription(description);
 		}
 		if (from_bot) {
 			rich_message
@@ -58,14 +59,19 @@ module.exports = {
 
 		if (field_array) {
 			field_array.forEach(row => {
-				if (row.emote === '' && row.role === '') {
+				if ((row.emote === '' || row.emote === null || row.emote === false) &&
+					(row.role === '') || row.role === null || row.role === false) {
 					rich_message
 						.addField('\u200b', '\u200b');
 				} else {
 					rich_message
 						.addField(
-							row.emote === '' ? '\u200b' : '`' + row.emote + '`',
-							row.role === '' ? '\u200b' : row.role,
+							(row.emote === '' || row.emote === null || row.emote === false)
+								? '\u200b'
+								: '`' + row.emote + '`',
+							(row.role === '' || row.role === null || row.role === false)
+								? '\u200b'
+								: row.role,
 							row.inline
 						);
 				}

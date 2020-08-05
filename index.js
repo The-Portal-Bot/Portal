@@ -30,7 +30,7 @@ const command_cooldown = {
 		set: {time: 0, auth: false}, role: {time: 0, auth: false}, spotify: { time: 0, auth: true },
 		announcement: { time: 0, auth: true }, url: { time: 0, auth: true}, leave: {time: 0, auth: false},
 		focus: {time: 0, auth: false}, corona: {time: 0, auth: false}, run: {time: 0, auth: false},
-		auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true}
+		auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true}, about: { time: 0, auth: false}
 	}
 };
 
