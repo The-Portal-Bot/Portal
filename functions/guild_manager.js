@@ -346,7 +346,8 @@ module.exports =
 					guild_object,
 					guild
 				);
-				if (new_name.length >= 1) {
+
+				if (new_name.length >= 1) { // check if it works correctly tsiakkas
 					if (voice_channel.name !== new_name.substring(0, 99)) {
 						voice_channel.edit({ name: new_name.substring(0, 99) })
 							.then(newChannel => console.log( `Voice's new name from promise is ${newChannel.name}`))

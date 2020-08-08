@@ -5,7 +5,6 @@ const help_mngr = require('./../functions/help_manager');
 
 time_out_repeat = function (current_voice_channel, current_guild, current_channel, current_portal_list, args, mins) {
 	setTimeout(() => {
-		console.log('updating channel name');
 		this.update_channel_name(current_voice_channel, current_guild, current_channel, current_portal_list, args);
 		this.time_out_repeat(current_voice_channel, current_guild, current_channel, current_portal_list, args, mins);
 	}, mins * 60 * 1000);
@@ -49,8 +48,8 @@ display_spotify_song = function (current_guild, current_channel, args) {
 };
 
 update_channel_name = function (current_voice_channel, current_guild, current_channel, current_portal_list, args) {
-	switch (guld_mngr.generate_channel_name(
-		current_channel, current_portal_list, args.guild_list[current_guild.id], current_guild)) {
+	switch (guld_mngr.generate_channel_name(current_channel, current_portal_list,
+		args.guild_list[current_guild.id], current_guild)) {
 	case 1:
 		current_voice_channel.last_update = Date.now();
 		break;
