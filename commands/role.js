@@ -2,18 +2,31 @@
 const help_mngr = require('./../functions/help_manager');
 const guld_mngr = require('./../functions/guild_manager');
 
+const multiple_same_emote = function (emote_map) {
+	for (let i=0; i < emote_map.length; i++)
+		for (let j=i+1; j < emote_map.length; j++) 
+			if (emote_map[i].give === emote_map[j].give)
+				return true;
+			else if (emote_map[i].give === emote_map[j].strip)
+				return true;
+			else if (emote_map[i].strip === emote_map[j].give)
+				return true;
+			else if (emote_map[i].strip === emote_map[j].strip)
+				return true;
+
+	return false;
+};
+
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		let roles = [...message.guild.roles.cache];
 		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
 		if (args.length > 0) {
 			let role_map = help_mngr.getJSON(args.join(' '));
-			if(role_map === null) {
-				return resolve ({ 
-					result: false, 
-					value: '*roles must be in JSON format for more info ./help role*'
-				});
-			}
+			if(role_map === null)
+				return resolve ({ result: false, value: '*roles must be in JSON format for more info ./help role*' });
+			if(multiple_same_emote(role_map))
+				return resolve ({ result: false, value: '*emotes should differ ./help role*' });
 
 			let role_emb_value = [];
 			let role_emb_display = [];
