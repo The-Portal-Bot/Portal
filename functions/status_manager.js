@@ -46,22 +46,24 @@ module.exports = {
 		let array_of_statuses = [];
 
 		voice_channel.members.forEach(member => {
-			if (member.presence.activities !== undefined && member.presence.activities.length > 0) {
-				let status = this.status_aliases(member.presence.activities, voice_object.locale);
-				status.forEach(stat => {
-					if (!array_of_statuses.includes(stat) && stat !== './help') {
-						array_of_statuses.push(stat);
-					}
-				});
-			}
+			if(!member.user.bot)
+				if (member.presence.activities !== undefined)
+					if(member.presence.activities.length > 0)
+						this.status_aliases(member.presence.activities, voice_object.locale)
+							.forEach(stat => {
+								if (!array_of_statuses.includes(stat))
+									array_of_statuses.push(stat);
+							});
 		});
 
 		if (array_of_statuses.length === 0) {
 			if (voice_object.locale === 'gr') {
 				array_of_statuses.push('Άραγμα');
-			} else {
+			} else if (voice_object.locale === 'de') {
+				array_of_statuses.push('Chillen');
+			} else  {
 				array_of_statuses.push('Chilling');
-			}
+			} 
 		}
 	
 		return array_of_statuses;

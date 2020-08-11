@@ -6,6 +6,7 @@ level_speed = { 'slow': 0.01, 'normal': 0.05, 'fast': 0.1 };
 module.exports = 
 {
 	give_role_from_rankup: function(user, member, ranks, guild) {
+		if (ranks) return;
 		const new_rank = ranks.find(rank => rank.level === user.level);
 		if(new_rank === null || new_rank === undefined) return;
 

@@ -65,13 +65,20 @@ update_channel_name = function (current_voice_channel, current_guild, current_ch
 };
 
 module.exports = async (args) => {
+	if (args.newPresence.user.bot) 
+		return {
+			result: false,
+			value: 'not handling bot presence update'
+		};
+
 	let current_guild = args.newPresence.guild;
 	let current_channel = args.newPresence.member.voice.channel;
 
 	if (!guld_mngr.included_in_portal_guilds(args.newPresence.guild.id, args.guild_list)) {
 		return {
 			result: false,
-			value: lclz_mngr.client_log(current_guild.id, null, args.guild_list, 'presence_controlled_away', args)
+			value: lclz_mngr
+				.client_log(current_guild.id, null, args.guild_list, 'presence_controlled_away', args)
 		};
 	}
 
