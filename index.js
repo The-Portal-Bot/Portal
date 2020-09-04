@@ -22,10 +22,10 @@ const command_cooldown = {
 		setup: { time: 10, auth: true}, set_ranks: { time: 10, auth: true }
 	},
 	member: {
-		join: {time: 1, auth: false}, announce: {time: 2, auth: false}
+		join: { time: 1, auth: false }, announce: { time: 2, auth: false }
 	},
 	none: {
-		ranks: { time: 0, auth: false }, level: { time: 0, auth: false }, force: { time: 0, auth: false },
+		play: { time: 0, auth: false }, ranks: { time: 0, auth: false }, level: { time: 0, auth: false }, force: { time: 0, auth: false },
 		portal: { time: 0, auth: true}, help: {time: 0, auth: false}, ping: {time: 0, auth: false},
 		set: {time: 0, auth: false}, role: {time: 0, auth: false}, spotify: { time: 0, auth: true },
 		announcement: { time: 0, auth: true }, url: { time: 0, auth: true}, leave: {time: 0, auth: false},

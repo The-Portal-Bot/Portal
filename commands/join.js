@@ -14,7 +14,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					current_voice.join()
 						.then(con => { lclz_mngr.client_talk(client, portal_guilds, 'join'); })
 						.catch(e => { console.log(e); });
-
 				} else {
 					return resolve ({ result: false, value: 'I can only connect to my channels.'  }); // localize
 				}

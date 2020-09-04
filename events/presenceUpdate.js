@@ -67,7 +67,7 @@ update_channel_name = function (current_voice_channel, current_guild, current_ch
 module.exports = async (args) => {
 	if (args.newPresence.user.bot) 
 		return {
-			result: false,
+			result: true,
 			value: 'not handling bot presence update'
 		};
 
