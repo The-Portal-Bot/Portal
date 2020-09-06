@@ -6,7 +6,7 @@ module.exports = async (args) => {
 	args.client.user
 		.setActivity('./help', { url: 'https://github.com/keybraker', type: 'LISTENING' });
 	args.client.guilds.cache
-		.forEach(guild => help_mngr.empty_channel_remover(guild, args.guild_list,args.portal_managed_guilds_path));
+		.forEach(guild => help_mngr.empty_channel_remover(guild, args.guild_list, args.portal_managed_guilds_path));
 
 	return { result: true, value: lclz_mngr.console.ready.en(args) };
 };

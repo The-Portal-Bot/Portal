@@ -8,10 +8,10 @@ const help_mngr = require('../functions/help_manager');
 const moment = require('moment');
 const voca = require('voca');
 
-const is_bad_word = function (sentence) {
-	for (let i=0; i<sentence.length; i++) {
-		for (let country in bad_words_by_country) {
-			for (let j=0; j<bad_words_by_country[country].length; j++) {
+const is_bad_word = function(sentence) {
+	for (let i = 0; i < sentence.length; i++) {
+		for (const country in bad_words_by_country) {
+			for (let j = 0; j < bad_words_by_country[country].length; j++) {
 				if (bad_words_by_country[country][j] === sentence[i]) {
 					return sentence[i];
 				}
@@ -25,10 +25,11 @@ const is_bad_word = function (sentence) {
 module.exports = async (args) => {
 	return new Promise((resolve) => {
 		const is_bad = is_bad_word(args);
-		if (is_bad)
+		if (is_bad) {
 			return resolve({
 				result: false,
-				value: `please do not swear **!${is_bad}**`
+				value: `please do not swear **!${is_bad}**`,
 			});
+		}
 	});
 };

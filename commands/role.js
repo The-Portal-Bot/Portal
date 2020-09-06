@@ -80,7 +80,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			}
 			role_map.forEach(elem => elem['id'] = roles.find(role => role[1].name === elem.role)[0]);
 			guld_mngr.create_role_message(
-				message, portal_guilds[message.guild.id]['role_list'],
+				message.channel, portal_guilds[message.guild.id]['role_list'],
 				'Portal Role Assigner', '', '#FF7F00', role_emb_display, role_map
 			);
 

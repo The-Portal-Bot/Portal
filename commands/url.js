@@ -22,6 +22,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					value: '*this can\'t be set as a URL channel for it is the Spotify channel.*'
 				});
 			}
+			if (guld_mngr.is_music_channel(message.channel.id, portal_guilds[message.guild.id])) {
+				resolve ({
+					result: true,
+					value: '*this can\'t be set as a URL channel for it is the Music channel.*'
+				});
+			}
 		}
 
 		// if (url = message.guild.channels.cache.find(channel => 

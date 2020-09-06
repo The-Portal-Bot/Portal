@@ -16,10 +16,16 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					value: '*this can\'t be set as the Announcemennt channel for it is the Spotify channel.*'
 				});
 			}
+			if (guld_mngr.is_music_channel(message.channel.id, portal_guilds[message.guild.id])) {
+				resolve ({
+					result: true,
+					value: '*this can\'t be set as a Announcemennt channel for it is the Music channel.*'
+				});
+			}
 			if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
 				return resolve ({
 					result: true,
-					value: '*this can\'t be set as the Spotify channel for it is an url channel.*'
+					value: '*this can\'t be set as the Announcemennt channel for it is an url channel.*'
 				});
 			}
 		}

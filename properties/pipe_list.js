@@ -3,20 +3,20 @@ const voca = require('voca');
 const help_mngr = require('../functions/help_manager');
 module.exports =
 {
-	is_pipe: function (arg) {
-		for (let i = 0; i < this.pipes.length; i++)
-			if (String(arg).substring(1, (String(this.pipes[i].name).length + 1)) == this.pipes[i].name)
-				return this.pipes[i].name;
+	is_pipe: function(arg) {
+		for (let i = 0; i < this.pipes.length; i++) {
+			if (String(arg).substring(1, (String(this.pipes[i].name).length + 1)) == this.pipes[i].name) {return this.pipes[i].name;}
+		}
 		return false;
 	},
-	get_help: function () {
-		let pipe_array = [];
+	get_help: function() {
+		const pipe_array = [];
 		for (let i = 0; i < this.pipes.length; i++) {
 			pipe_array.push({
 				emote: this.pipes[i].name,
 				role: '**desc**: *' + this.pipes[i].description + '*' +
 					'\n**args**: *' + this.pipes[i].args + '*',
-				inline: true
+				inline: true,
 			});
 		}
 		return help_mngr.create_rich_embed('Pipes',
@@ -24,9 +24,9 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#6EEB83', pipe_array);
 	},
-	get_help_super: function (check) {
+	get_help_super: function(check) {
 		for (let i = 0; i < this.pipes.length; i++) {
-			let pipe = this.pipes[i];
+			const pipe = this.pipes[i];
 			if (pipe.name === check) {
 				return help_mngr.create_rich_embed(
 					pipe.name,
@@ -37,14 +37,14 @@ module.exports =
 					[
 						{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + pipe.args + '*', inline: false },
-						{ emote: 'Example', role: '*' + pipe.example + '*', inline: false }
-					]
+						{ emote: 'Example', role: '*' + pipe.example + '*', inline: false },
+					],
 				);
 			}
 		}
 		return false;
 	},
-	get: function (str, pipe) {
+	get: function(str, pipe) {
 		for (let l = 0; l < this.pipes.length; l++) {
 			if (pipe === this.pipes[l].name) {
 				return this.pipes[l].get(str);
@@ -60,7 +60,7 @@ module.exports =
 			super_description: '**camelCase**, connects words and makes the first character upper-case.',
 			example: '(variable, string)|camelCase',
 			args: 'none',
-			get: (str) => { return voca.camelCase(str); }
+			get: (str) => { return voca.camelCase(str); },
 		},
 		{
 			name: 'capitalize',
@@ -68,7 +68,7 @@ module.exports =
 			super_description: '**capitalize**, makes the first character upper-case.',
 			example: '(variable, string)|capitalize',
 			args: 'none',
-			get: (str) => { return voca.capitalize(str); }
+			get: (str) => { return voca.capitalize(str); },
 		},
 		{
 			name: 'decapitalize',
@@ -76,7 +76,7 @@ module.exports =
 			super_description: '**decapitalize**, makes the first character lower-case.',
 			example: '(variable, string)|decapitalize',
 			args: 'none',
-			get: (str) => { return voca.decapitalize(str); }
+			get: (str) => { return voca.decapitalize(str); },
 		},
 		{
 			name: 'lowerCase',
@@ -84,7 +84,7 @@ module.exports =
 			super_description: '**lowerCase**, makes all characters lower-case.',
 			example: '(variable, string)|lowerCase',
 			args: 'none',
-			get: (str) => { return voca.lowerCase(str); }
+			get: (str) => { return voca.lowerCase(str); },
 		},
 		{
 			name: 'upperCase',
@@ -92,7 +92,7 @@ module.exports =
 			super_description: '**upperCase**, makes all characters upper-case.',
 			example: '(variable, string)|upperCase',
 			args: 'none',
-			get: (str) => { return voca.upperCase(str); }
+			get: (str) => { return voca.upperCase(str); },
 		},
 		{
 			name: 'populous',
@@ -102,7 +102,7 @@ module.exports =
 			args: 'none',
 			get: () => {
 				return 'not yet implemented';
-			}
+			},
 		},
 		{
 			name: 'populous_count',
@@ -112,7 +112,7 @@ module.exports =
 			args: 'none',
 			get: () => {
 				return 'not yet implemented';
-			}
+			},
 		},
 		{
 			name: 'snakeCase',
@@ -120,7 +120,7 @@ module.exports =
 			super_description: '**snakeCase**, connects all words with \'_\', like a snake.',
 			example: '(variable, string)|snakeCase',
 			args: 'none',
-			get: (str) => { return voca.snakeCase(str); }
+			get: (str) => { return voca.snakeCase(str); },
 		},
 		{
 			name: 'souvlakiCase',
@@ -128,7 +128,7 @@ module.exports =
 			super_description: '**souvlakiCase**, connects all words with \'-\', like a greek souvlaki.',
 			example: '(variable, string)|souvlakiCase',
 			args: 'none',
-			get: (str) => { return voca.kebabCase(str); }
+			get: (str) => { return voca.kebabCase(str); },
 		},
 		{
 			name: 'summary_count',
@@ -138,7 +138,7 @@ module.exports =
 			args: 'none',
 			get: (str) => {
 				return voca.words(str).length;
-			}
+			},
 		},
 		{
 			name: 'titleCase',
@@ -146,7 +146,7 @@ module.exports =
 			super_description: '**titleCase**, makes every words first character upper-case.',
 			example: '(variable, string)|titleCase',
 			args: 'none',
-			get: (str) => { return voca.titleCase(str); }
-		}
-	]
+			get: (str) => { return voca.titleCase(str); },
+		},
+	],
 };
