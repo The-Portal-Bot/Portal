@@ -10,10 +10,10 @@ const voice_class = require('../assets/classes/voice_class');
 const role_class = require('../assets/classes/role_class');
 const member_class = require('../assets/classes/member_class');
 
-const help_mngr = require('../functions/help_manager');
+const help_mngr = require('./help_manager');
 
-module.exports =
-{
+module.exports = {
+
 	included_in_portal_guilds: function (guild_id, portal_guilds) {
 		if (portal_guilds[guild_id] !== undefined)
 			return true;
@@ -269,11 +269,12 @@ module.exports =
 		const announcement = null;
 		const locale = 'en';
 		const announce =  0;
-		const level_speed = 'normal';
+		const level_speed = 'normal'; 
+		const dispatcher = null;
 		const premium = false;
 
 		portal_guilds[guild_id] = new guild_class(portal_list, member_list, url_list, role_list,
-			ranks, auth_role, spotify, announcement, locale, announce, level_speed, premium);
+			ranks, auth_role, spotify, announcement, locale, announce, level_speed, dispatcher, premium);
 	}
 	,
 
@@ -284,7 +285,7 @@ module.exports =
 	}
 	,
 
-	delete_channel: function (channel_to_delete) {
+	delete_channel: (channel_to_delete) => {
 		if (channel_to_delete.deletable) {
 			channel_to_delete
 				.delete()
@@ -302,9 +303,12 @@ module.exports =
 				type_of_channel = 1;
 				break;
 			} else {
-				for (let voice_id in guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list) {
+				const current_voice_list = guild_list[channel_to_remove.guild.id]
+					.portal_list[portal_id]
+					.voice_list;
+				for (let voice_id in current_voice_list) {
 					if (voice_id === channel_to_remove.id) {
-						delete guild_list[channel_to_remove.guild.id].portal_list[portal_id].voice_list[voice_id];
+						delete current_voice_list[voice_id];
 						type_of_channel = 2;
 						break;
 					}

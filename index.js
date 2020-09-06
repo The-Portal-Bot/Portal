@@ -136,16 +136,6 @@ client.on('presenceUpdate', (oldPresence, newPresence) =>
 		}
 	));
 
-// This event triggers when a member joins or leaves a voice channel
-client.on('voiceStateUpdate', (oldState, newState) =>
-	event_loader('voiceStateUpdate',
-		{
-			'client': client, 'guild_list': guild_list,
-			'portal_managed_guilds_path': portal_managed_guilds_path,
-			'oldState': oldState, 'newState': newState
-		}
-	));
-
 // This event triggers when a member reacts to a message
 client.on('messageReactionAdd', (messageReaction, user) =>
 	event_loader('messageReactionAdd',
@@ -163,6 +153,16 @@ client.on('messageDelete', (message) =>
 			'client': client, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 			'message': message
+		}
+	));
+
+// This event triggers when a member joins or leaves a voice channel
+client.on('voiceStateUpdate', (oldState, newState) =>
+	event_loader('voiceStateUpdate',
+		{
+			'client': client, 'guild_list': guild_list,
+			'portal_managed_guilds_path': portal_managed_guilds_path,
+			'oldState': oldState, 'newState': newState
 		}
 	));
 

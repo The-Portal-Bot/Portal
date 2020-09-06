@@ -10,43 +10,57 @@ const voca = require('voca');
 const get_country_code = function (country) {
 	for (let i = 0; i < country_codes.length; i++) {
 		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country)) {
-			return country_codes[i].code;
+			return country_codes[i].name;
 		} else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country)) {
-			return country_codes[i].code;
+			return country_codes[i].name;
 		}
 	}
+
 	return null;
 };
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path, user_match) => {
 	return new Promise((resolve) => {
-		let url = null;
-		if (args.length === 0) {
-			url = '/free-api?global=stats';
-		} else if (args.length === 1) {
-			let code = get_country_code(args[0]);
-			if (code !== null) {
-				url = '/free-api?countryTotal=' + code;
-			} else {
+		let code = null;
+
+		if (args.length === 1)
+		{
+			code = get_country_code(args[0]);
+			if (code === null)
+			{
 				return resolve ({
 					result: false,
 					value: `*${args[0]} is neither a country name nor a country code.*`
 				});
 			}
-		} else {
+		}
+		else if(args.length > 1)
+		{
 			return resolve ({
 				result: false,
 				value: '*you can run "./help corona" for help.*'
 			});
 		}
+		else
+		{
+			return resolve ({
+				result: false,
+				value: '*Global stats are temporarily unavailable.*'
+			});
+		}
 
 		let options = {
 			'method': 'GET',
-			'hostname': 'api.thevirustracker.com',
-			'path': url,
-			'headers': {},
-			'maxRedirects': 20
+			'hostname': 'covid-193.p.rapidapi.com',
+			'port': null,
+			'path': '/statistics',
+			'headers': {
+				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
+				'x-rapidapi-key': 'b883903090msh7eef2b50e6cbe9cp1ff439jsnee4d6c48061f',
+				'useQueryString': true
+			}
 		};
+		
 
 		http_mngr(options)
 			.then(rspns => {
@@ -58,80 +72,43 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					});
 				}
 
-				if (json.countrydata !== undefined) {
-					let daily_stats = json.countrydata[0];
-					let country_stats = json.countrydata[0].info;
+				if (json.errors.length === 0) {
+					const country_data = json.response.find(data => data.country === code);
 
 					message.channel.send(
-						help_mngr.create_rich_embed(`COVID19 ${country_stats.title} stats ${moment().format('DD/MM/YY')}`,
-							'https://thevirustracker.com/', '#FF0000', [
+						help_mngr.create_rich_embed(`COVID19 ${country_data.country} stats ${moment().format('DD/MM/YY')}`,
+							'covid-19 be api-sports', '#FF0000', [
 								{
-									emote: 'New cases',
-									role: `+***${daily_stats.total_new_cases_today}***`, inline: true },
+									emote: 'NEW cases',
+									role: `***${country_data.cases.new}***`, inline: true },
 								{
-									emote: 'New deaths',
-									role: `+***${daily_stats.total_new_deaths_today}***`, inline: true },
+									emote: 'NEW deaths',
+									role: `***${country_data.deaths.new}***`, inline: true },
 								{
-									emote: 'Danger rank',
-									role: `***${daily_stats.total_danger_rank}***`, inline: true },
+									emote: 'Tests P1M',
+									role: `***${country_data.tests['1M_pop']}***`, inline: true },
 								{
-									emote: 'Total cases',
-									role: `***${daily_stats.total_cases}***`, inline: true },
+									emote: 'Cases',
+									role: `***${country_data.cases.total}***`, inline: true },
 								{
-									emote: 'Total deaths',
-									role: `***${daily_stats.total_deaths}***`, inline: true },
+									emote: 'Deaths',
+									role: `***${country_data.deaths.total}***`, inline: true },
 								{
-									emote: 'Total recovered',
-									role: `***${daily_stats.total_recovered}***`, inline: true },
+									emote: 'Recovered',
+									role: `***${country_data.cases.recovered}***`, inline: true },
 								{
-									emote: '% Recovered',
-									role: `***${((daily_stats.total_recovered / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
+									emote: '%Recovered',
+									role: `***${((country_data.cases.recovered / country_data.cases.total) * 100)
+										.toFixed(2)}%***`, inline: true },
 								{
-									emote: '% Diseased',
-									role: `***${((daily_stats.total_deaths / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
+									emote: '%Diseased',
+									role: `***${((country_data.deaths.total / country_data.cases.total) * 100)
+										.toFixed(2)}%***`, inline: true },
 								{
-									emote: 'Serious cases',
-									role: `***${daily_stats.total_serious_cases}***`, inline: true }
+									emote: 'Critical',
+									role: `***${country_data.cases.critical}***`, inline: true }
 							], null, null, true));
-					return resolve({ result: true, value: `*${country_stats.title} corona stats.*` });
-				} else if (json.results !== undefined && json.results[0].data !== 'none') {
-					let daily_stats = json.results[0];
-
-					message.channel.send(
-						help_mngr.create_rich_embed(`COVID19 Global stats ${moment().format('DD/MM/YY')}`,
-							'https://thevirustracker.com/', '#FF0000', [
-								{
-									emote: 'New cases',
-									role: `+***${daily_stats.total_new_cases_today}***`, inline: true },
-								{
-									emote: 'New deaths',
-									role: `+***${daily_stats.total_new_deaths_today}***`, inline: true },
-								{
-									emote: 'Danger rank',
-									role: '***-***', inline: true },
-								{
-									emote: 'Total cases',
-									role: `***${daily_stats.total_cases}***`, inline: true },
-								{
-									emote: 'Total deaths',
-									role: `***${daily_stats.total_deaths}***`, inline: true },
-								{
-									emote: 'Total recovered',
-									role: `***${daily_stats.total_recovered}***`, inline: true },
-								{
-									emote: '% Recovered',
-									role: `***${((daily_stats.total_recovered / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
-								{
-									emote: '% Diseased',
-									role: `***${((daily_stats.total_deaths / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
-								{
-									emote: 'Serious cases',
-									role: `***${daily_stats.total_serious_cases}***`, inline: true }
-							], null, null, true));
-					return resolve({
-						result: true,
-						value: '*Global corona stats.*'
-					});
+					return resolve({ result: true, value: `*${country_data.country} corona stats.*` });
 				} else {
 					return resolve({
 						result: false,

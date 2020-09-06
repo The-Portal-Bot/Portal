@@ -4,6 +4,10 @@ const help_mngr = require('./../functions/help_manager');
 const user_mngr = require('./../functions/user_manager');
 
 module.exports = async (args) => {
+
+	if (args.newState.member.user.bot) 
+		return { result: true, value: 'not handling bot voice state update' };
+
 	if (args.newState === undefined || args.oldState == undefined)
 		return { result: true, value: 'state of undefined' };
 

@@ -1,10 +1,74 @@
 const Discord = require('discord.js');
 const file_system = require('file-system');
+const lodash = require('lodash');
 
+// const guld_mngr = require('./guild_manager'); // circular module call doesnt work !
 const lclz_mngr = require('./localization_manager');
-const guld_mngr = require('./guild_manager');
 
 module.exports = {
+
+	join_user_voice: async function (client, message, portal_guilds, join) { // localize
+		return new Promise((resolve) => {
+			let current_voice = message.member.voice.channel;
+
+			
+			console.log('JOIN > 1');
+
+			if (current_voice === null) {
+				return resolve ({ result: false, value: 'you are not connected to any channel.' });
+			}
+			
+			console.log('JOIN > 2');
+
+			if (current_voice.guild.id !== message.guild.id) {
+				return resolve ({ result: false, value: 'your current channel is on another guild.' });
+			}
+			const portal_list = portal_guilds[message.guild.id].portal_list;
+			
+			console.log('JOIN > 3');
+
+			let included_in_voice_list = false;
+			for (let key in portal_list)
+				if (portal_list[key].voice_list[current_voice.id])
+					included_in_voice_list = true;
+
+			if (!included_in_voice_list) {
+				console.log('I can only connect to my channels.');
+				return resolve ({ result: false, value: 'I can only connect to my channels.' });
+			}
+			
+			console.log('JOIN > 4');
+
+			const existing_voiceConnection = client.voice.connections.find(connection => 
+				connection.channel.id === message.member.voice.channel.id);
+
+			console.log('JOIN > 5');
+
+			if (existing_voiceConnection) {
+				return resolve ({
+					result: true,
+					value: 'already in voice channel',
+					voice_connection: existing_voiceConnection
+				});
+			}
+			
+			console.log('JOIN > 6');
+
+			// let new_voice_connection = null;
+			current_voice.join()
+				.then(conn => {
+					if(join) lclz_mngr.client_talk(client, portal_guilds, 'join');
+					
+					return resolve ({
+						result: true,
+						value: lclz_mngr.client_write(message, portal_guilds, 'join'),
+						voice_connection: conn
+					});
+				})
+				.catch(e => { console.log('ERRROINO: ', e); });
+		});
+	}
+	,
 
 	getJSON: function (str) {
 		let data = null;
@@ -84,27 +148,25 @@ module.exports = {
 	}
 	,
 
-	channel_clean_up: function (channel, current_guild) {
-		if (current_guild.channels.cache.some((guild_channel) => {
-			if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
-				guld_mngr.delete_channel(guild_channel);
-				return true;
+	empty_channel_remover: function (current_guild, portal_guilds, portal_managed_guilds_path) {
+		current_guild.channels.cache.forEach(channel => {
+			for(let portal_channel in portal_guilds[current_guild.id].portal_list) {
+				if(portal_guilds[current_guild.id].portal_list[portal_channel].voice_list[channel.id])
+					if(!channel.members.size) {
+						console.log('Deleting channel: ', channel.name, 'from ', channel.guild.name);
+						// guld_mngr.delete_channel(channel);
+						if (channel.deletable) {
+							channel
+								.delete()
+								.then(g => console.log(`Deleted channel with id: ${g}`))
+								.catch(console.error);
+						}
+						return true;
+					}
+				return false;
 			}
-		}));
-	}
-	,
+		});
 
-	portal_init: function (current_guild, portal_managed_guilds_path, portal_guilds) {
-		const keys = Object.keys(portal_guilds);
-		const servers = keys.map(key => ({ key: key, value: portal_guilds[key] }));
-
-		for (let l = 0; l < servers.length; l++) {
-			for (let i = 0; i < servers[l].value.portal_list.length; i++) {
-				for (let j = 0; j < servers[l].value.portal_list[i].voice_list.length; j++) {
-					this.channel_clean_up(servers[l].value.portal_list[i].voice_list[j], current_guild);
-				}
-			}
-		}
 		this.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
 	}
 	,
@@ -112,12 +174,24 @@ module.exports = {
 	update_portal_managed_guilds: async function (force, portal_managed_guilds_path, portal_guilds) {
 		return new Promise((resolve) => { //, reject) => {
 			setTimeout(() => {
-				if (force) file_system.writeFileSync(
-					portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
-				);
-				else file_system.writeFile(
-					portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
-				);
+				let portal_guilds_no_voice = lodash.cloneDeep(portal_guilds);
+				for(let guild_id in portal_guilds_no_voice) {
+					portal_guilds_no_voice[guild_id].dispatcher = null;
+				}
+
+				if (force) {
+					file_system.writeFileSync(
+						portal_managed_guilds_path,
+						JSON.stringify(portal_guilds_no_voice),
+						'utf8'
+					);
+				} else { 
+					file_system.writeFile(
+						portal_managed_guilds_path,
+						JSON.stringify(portal_guilds_no_voice),
+						'utf8'
+					);
+				}
 			}, 1000);
 			return resolve ({ result: true, value: '*updated portal guild json.*' });
 		});
@@ -216,6 +290,5 @@ module.exports = {
 
 		return { timeout_min, timeout_sec, remaining_min, remaining_sec };
 	}
-
 
 };

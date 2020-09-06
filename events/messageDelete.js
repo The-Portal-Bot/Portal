@@ -9,7 +9,7 @@ module.exports = async (args) => {
 
 		return {
 			result: true,
-			value: `role message ${args.message} was deleted and successfully removed from json`
+			value: 'role message was deleted and successfully removed from json'
 		};
 	}
 };
