@@ -149,25 +149,31 @@ module.exports = {
 		}
 	},
 
-	create_music_channel: function(guild, music_channel, music_category, guild_object) {
-		if (music_category) { // with category
-			return guild.channels
-				.create(`${music_channel}-music`, { type: 'text' })
-				.then(channel => {
-					guild_object.music_data.message_id = channel.id;
-					guild.channels
-						.create(music_category, { type: 'category' })
-						.then(cat_channel => channel.setParent(cat_channel))
-						.catch(console.error);
-				})
-				.catch(console.error);
-		}
-		else { // without category
-			return guild.channels
-				.create(`${music_channel}-music`, { type: 'text' })
-				.then(channel => { guild_object.music_data.message_id = channel.id; })
-				.catch(console.error);
-		}
+	create_music_channel: async function(guild, music_channel, music_category, guild_object) {
+		return new Promise((resolve) => {
+			if (music_category) { // with category
+				guild.channels
+					.create(`${music_channel}-music`, { type: 'text' })
+					.then(channel => {
+						guild_object.music_data.message_id = channel.id;
+						guild.channels
+							.create(music_category, { type: 'category' })
+							.then(cat_channel => channel.setParent(cat_channel))
+							.catch(error => { return resolve(error); });
+						return resolve(channel);
+					})
+					.catch(error => { return resolve(error); });
+			}
+			else { // without category
+				guild.channels
+					.create(`${music_channel}-music`, { type: 'text' })
+					.then(channel => {
+						guild_object.music_data.message_id = channel.id;
+						return resolve(channel);
+					})
+					.catch(error => { return resolve(error); });
+			}
+		});
 	},
 
 	create_announcement_channel: function(guild, announcement_channel, announcement_category, guild_object) {
@@ -267,10 +273,11 @@ module.exports = {
 			'just type and I\'ll play',
 			'#0000FF',
 			false,
-			thumbnail,
+			false,
 			false,
 			true,
 			false,
+			thumbnail,
 		);
 
 		channel

@@ -10,13 +10,17 @@ module.exports = {
 
 	play: async function(client, message, search_term, portal_guilds) {
 		return new Promise((resolve) => {
-			if(!message.member.voice.channel) {return resolve ({ result: false, value: 'you are not connected to any channel.' });}
+			if(!message.member.voice.channel) {
+				return resolve({ result: false, value: 'you are not connected to any channel.' });
+			}
 
 			const current_guild_id = message.member.voice.channel.guild.id;
 			let current_dispatcher = portal_guilds[current_guild_id].dispatcher;
 			const current_music_queue = portal_guilds[current_guild_id].music_queue;
 
-			if(current_dispatcher !== null && current_dispatcher !== undefined) {return resolve ({ result: false, value: 'already playing song.' });}
+			if(current_dispatcher !== null && current_dispatcher !== undefined) {
+				return resolve({ result: false, value: 'already playing song.' });
+			}
 
 			help_mngr.join_user_voice(client, message, portal_guilds, false)
 				.then(join_attempt => {

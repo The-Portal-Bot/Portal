@@ -12,11 +12,16 @@ module.exports = {
 			yts.title,
 			yts.url,
 			'#0000FF',
+			[
+				{ emote: 'Duration', role: yts.timestamp, inline: true },
+				{ emote: 'Views', role: yts.views, inline: true },
+				{ emote: 'Uploaded', role: yts.ago, inline: true },
+			],
 			false,
-			yts.thumbnail,
 			false,
 			true,
 			false,
+			yts.thumbnail,
 		);
 		const channel = guild_object.channels.cache.get(guild.music_data.channel_id);
 
@@ -90,15 +95,14 @@ module.exports = {
 		return data;
 	},
 
-	create_rich_embed: function(title, description, colour, field_array, thumbnail, member, from_bot, url) {
-		const portal_icon_url = 'https://raw.githubusercontent.com/' +
-			'keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCQYV4EIHFZAOFV5CYK64X4YA';
+	create_rich_embed: function(title, description, colour, field_array, thumbnail, member, from_bot, url, image) {
+		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+			'.github.io/master/assets/img/logo.png';
 		const keybraker_url = 'https://github.com/keybraker';
 
 		const rich_message = new Discord.MessageEmbed()
 			.setTimestamp();
 			// .setAuthor('Portal', portal_icon_url, keybraker_url)
-
 
 		if(title) {
 			rich_message
@@ -127,6 +131,11 @@ module.exports = {
 		if (thumbnail) {
 			rich_message
 				.setThumbnail(thumbnail);
+		}
+		if (image) {
+			console.log('image :>> ', image);
+			rich_message
+				.setImage(image);
 		}
 
 		if (field_array) {
