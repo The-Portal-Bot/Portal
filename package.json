@@ -12,9 +12,12 @@
     "discord.js": "^12.2.0",
     "ffmpeg-static": "^4.2.2",
     "file-system": "^2.2.2",
+    "lodash": "^4.17.20",
     "moment": "^2.25.3",
     "sentiment": "^5.0.2",
-    "voca": "^1.4.0"
+    "voca": "^1.4.0",
+    "yt-search": "^2.3.0",
+    "ytdl-core": "^3.2.2"
   },
   "devDependencies": {
     "eslint": "^7.2.0",

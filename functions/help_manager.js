@@ -1,32 +1,156 @@
 const Discord = require('discord.js');
 const file_system = require('file-system');
+const lodash = require('lodash');
 
+// const guld_mngr = require('./guild_manager'); // circular module call doesnt work !
 const lclz_mngr = require('./localization_manager');
-const guld_mngr = require('./guild_manager');
+
+const role_class = require('../assets/classes/role_class');
 
 module.exports = {
 
-	getJSON: function (str) {
+	create_role_message: function(channel, role_list, title, desc, colour, role_emb, role_map) {
+		const role_message_emb = this.create_rich_embed(title, desc, colour, role_emb);
+		channel
+			.send(role_message_emb)
+			.then(sent_message => {
+				for (let i = 0; i < role_map.length; i++) {
+					sent_message.react(role_map[i].give);
+					sent_message.react(role_map[i].strip);
+				}
+				role_list[sent_message.id] = new role_class(role_map);
+			})
+			.catch(error => console.log(error));
+	},
+
+	create_music_message: function(channel, thumbnail, guild_object) {
+		const music_message_emb = this.create_rich_embed(
+			'Music Player',
+			'just type and I\'ll play',
+			'#0000FF',
+			[
+				{ emote: 'Duration', role: '-', inline: true },
+				{ emote: 'Views', role: '-', inline: true },
+				{ emote: 'Uploaded', role: '-', inline: true },
+			],
+			false,
+			false,
+			true,
+			false,
+			thumbnail,
+		);
+
+		channel
+			.send(music_message_emb)
+			.then(sent_message => {
+				sent_message.react('▶️');
+				sent_message.react('⏸');
+				sent_message.react('⏹');
+				sent_message.react('⏭');
+
+				guild_object.music_data.message_id = sent_message.id;
+			});
+	},
+
+	update_message: function(guild, guild_object, yts) {
+		const music_message_emb = this.create_rich_embed(
+			yts.title,
+			yts.url,
+			'#0000FF',
+			[
+				{ emote: 'Duration', role: yts.timestamp, inline: true },
+				{ emote: 'Views', role: yts.views, inline: true },
+				{ emote: 'Uploaded', role: yts.ago, inline: true },
+			],
+			false,
+			false,
+			true,
+			false,
+			yts.thumbnail,
+		);
+		const channel = guild_object.channels.cache
+			.get(guild.music_data.channel_id);
+
+		channel.messages.channel.messages
+			.fetch(guild.music_data.message_id)
+			.then(message => {
+				message.edit(music_message_emb)
+					.then(msg =>
+						console.log(`Updated the content of a message to ${msg.content}`))
+					.catch(console.error);
+			})
+			.catch(console.error);
+	},
+
+	join_user_voice: async function(client, message, portal_guilds, join) { // localize
+		return new Promise((resolve) => {
+			const current_voice = message.member.voice.channel;
+
+			if (current_voice === null) {
+				return resolve ({ result: false, value: 'you are not connected to any channel.' });
+			}
+
+			if (current_voice.guild.id !== message.guild.id) {
+				return resolve ({ result: false, value: 'your current channel is on another guild.' });
+			}
+			const portal_list = portal_guilds[message.guild.id].portal_list;
+
+			let included_in_voice_list = false;
+			for (const key in portal_list) {
+				if (portal_list[key].voice_list[current_voice.id]) {included_in_voice_list = true;}
+			}
+
+			if (!included_in_voice_list) {
+				console.log('I can only connect to my channels.');
+				return resolve ({ result: false, value: 'I can only connect to my channels.' });
+			}
+
+			const existing_voiceConnection = client.voice.connections.find(connection =>
+				connection.channel.id === message.member.voice.channel.id);
+
+			if (existing_voiceConnection) {
+				return resolve ({
+					result: true,
+					value: 'already in voice channel',
+					voice_connection: existing_voiceConnection,
+				});
+			}
+
+			// let new_voice_connection = null;
+			current_voice.join()
+				.then(conn => {
+					if(join) lclz_mngr.client_talk(client, portal_guilds, 'join');
+
+					return resolve ({
+						result: true,
+						value: lclz_mngr.client_write(message, portal_guilds, 'join'),
+						voice_connection: conn,
+					});
+				})
+				.catch(e => { console.log('ERRROINO: ', e); });
+		});
+	},
+
+	getJSON: function(str) {
 		let data = null;
 		try {
 			data = JSON.parse(str);
-		} catch (error) {
+		}
+		catch (error) {
 			return null;
 		}
 
 		return data;
-	}
-	,
+	},
 
-	create_rich_embed: function (title, description, colour, field_array, thumbnail, member, from_bot, url) {
-		const portal_icon_url = 'https://raw.githubusercontent.com/' +
-			'keybraker/portal-discord-bot/master/assets/img/logo.png?token=AFS7NCQYV4EIHFZAOFV5CYK64X4YA';
+	create_rich_embed: function(title, description, colour, field_array, thumbnail, member, from_bot, url, image) {
+		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+			'.github.io/master/assets/img/logo.png';
 		const keybraker_url = 'https://github.com/keybraker';
 
-		let rich_message = new Discord.MessageEmbed()
+		const rich_message = new Discord.MessageEmbed()
 			.setTimestamp();
 			// .setAuthor('Portal', portal_icon_url, keybraker_url)
-
 
 		if(title) {
 			rich_message
@@ -56,14 +180,20 @@ module.exports = {
 			rich_message
 				.setThumbnail(thumbnail);
 		}
+		if (image) {
+			console.log('image :>> ', image);
+			rich_message
+				.setImage(image);
+		}
 
 		if (field_array) {
 			field_array.forEach(row => {
 				if ((row.emote === '' || row.emote === null || row.emote === false) &&
-					(row.role === '') || row.role === null || row.role === false) {
+					(row.role === '' || row.role === null || row.role === false)) {
 					rich_message
 						.addField('\u200b', '\u200b');
-				} else {
+				}
+				else {
 					rich_message
 						.addField(
 							(row.emote === '' || row.emote === null || row.emote === false)
@@ -72,87 +202,98 @@ module.exports = {
 							(row.role === '' || row.role === null || row.role === false)
 								? '\u200b'
 								: row.role,
-							row.inline
+							row.inline,
 						);
 				}
 			});
-		} else {
+		}
+		else {
 			rich_message.addField('\u200b', '\u200b');
 		}
 
 		return rich_message;
-	}
-	,
+	},
 
-	channel_clean_up: function (channel, current_guild) {
-		if (current_guild.channels.cache.some((guild_channel) => {
-			if (guild_channel.id === channel.id && guild_channel.members.size === 0) {
-				guld_mngr.delete_channel(guild_channel);
-				return true;
-			}
-		}));
-	}
-	,
-
-	portal_init: function (current_guild, portal_managed_guilds_path, portal_guilds) {
-		const keys = Object.keys(portal_guilds);
-		const servers = keys.map(key => ({ key: key, value: portal_guilds[key] }));
-
-		for (let l = 0; l < servers.length; l++) {
-			for (let i = 0; i < servers[l].value.portal_list.length; i++) {
-				for (let j = 0; j < servers[l].value.portal_list[i].voice_list.length; j++) {
-					this.channel_clean_up(servers[l].value.portal_list[i].voice_list[j], current_guild);
+	empty_channel_remover: function(current_guild, portal_guilds, portal_managed_guilds_path) {
+		current_guild.channels.cache.forEach(channel => {
+			for(const portal_channel in portal_guilds[current_guild.id].portal_list) {
+				if(portal_guilds[current_guild.id].portal_list[portal_channel].voice_list[channel.id]) {
+					if(!channel.members.size) {
+						console.log('Deleting channel: ', channel.name, 'from ', channel.guild.name);
+						// guld_mngr.delete_channel(channel);
+						if (channel.deletable) {
+							channel
+								.delete()
+								.then(g => console.log(`Deleted channel with id: ${g}`))
+								.catch(console.error);
+						}
+						return true;
+					}
 				}
+				return false;
 			}
-		}
-		this.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
-	}
-	,
+		});
 
-	update_portal_managed_guilds: async function (force, portal_managed_guilds_path, portal_guilds) {
-		return new Promise((resolve) => { //, reject) => {
+		this.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
+	},
+
+	update_portal_managed_guilds: async function(force, portal_managed_guilds_path, portal_guilds) {
+		return new Promise((resolve) => { // , reject) => {
 			setTimeout(() => {
-				if (force) file_system.writeFileSync(
-					portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
-				);
-				else file_system.writeFile(
-					portal_managed_guilds_path, JSON.stringify(portal_guilds), 'utf8'
-				);
+				const portal_guilds_no_voice = lodash.cloneDeep(portal_guilds);
+				for(const guild_id in portal_guilds_no_voice) {
+					portal_guilds_no_voice[guild_id].dispatcher = null;
+				}
+
+				if (force) {
+					file_system.writeFileSync(
+						portal_managed_guilds_path,
+						JSON.stringify(portal_guilds_no_voice),
+						'utf8',
+					);
+				}
+				else {
+					file_system.writeFile(
+						portal_managed_guilds_path,
+						JSON.stringify(portal_guilds_no_voice),
+						'utf8',
+					);
+				}
 			}, 1000);
 			return resolve ({ result: true, value: '*updated portal guild json.*' });
 		});
-	}
-	,
+	},
 
-	is_authorized: function (auth_list, member) {
+	is_authorized: function(auth_list, member) {
 		return !member.hasPermission('ADMINISTRATOR')
 			? member.roles.cache.some(role => auth_list.some(auth => auth === role.id))
 			: true;
-	}
-	,
+	},
 
 	// channel should be removed !
-	message_reply: function (status, channel, message, user, str, portal_guilds, client) {
+	message_reply: function(status, channel, message, user, str, portal_guilds, client, to_delete = false) {
 		if (!message.channel.deleted) {
 			message.channel
 				.send(`${user}, ${str}`)
-				.then(msg => { msg.delete({ timeout: 5000 }); });
+				.then(msg => { msg.delete({ timeout: 5000 }); })
+				.catch(error => console.log(error));
 		}
 		if (!message.deleted) {
-			if (status === true) {
-				message
-					.react('✔️');
-			} else if (status === false) {
+			if(to_delete) {
+				message.delete();
+			}
+			else if (status === true) {
+				message.react('✔️');
+			}
+			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
-				message
-					.react('❌');
+				message.react('❌');
 			}
 		}
-	}
-	,
+	},
 
-	is_url: function (potential_url) {
-		var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+	is_url: function(potential_url) {
+		const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
 			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
@@ -160,19 +301,18 @@ module.exports = {
 			'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
 
 		return pattern.test(potential_url);
-	}
-	,
+	},
 
-	pad: function (num) {
+	pad: function(num) {
 		if (num.toString().length >= 2) {
 			return num;
-		} else {
+		}
+		else {
 			return '0' + num;
 		}
-	}
-	,
+	},
 
-	time_elapsed: function (timestamp, timeout) {
+	time_elapsed: function(timestamp, timeout) {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;
 
@@ -194,10 +334,9 @@ module.exports = {
 			: 0;
 
 		return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
-	}
-	,
+	},
 
-	time_remaining: function (timestamp, timeout) {
+	time_remaining: function(timestamp, timeout) {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;
 		const time_remaining = timeout_time - time_elapsed;
@@ -215,7 +354,6 @@ module.exports = {
 		const remaining_sec = Math.round((time_remaining / 1000) % 60);
 
 		return { timeout_min, timeout_sec, remaining_min, remaining_sec };
-	}
-
+	},
 
 };

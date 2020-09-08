@@ -4,12 +4,12 @@ const https = require('https');
 
 module.exports = async (options) => {
 	return new Promise((resolve, reject) => {
-		let req = https.request(options, function (res) {
-			let chunks = [];
+		const req = https.request(options, function(res) {
+			const chunks = [];
 
-			res.on('data', function (chunk) { chunks.push(chunk); });
-			res.on('end', function (chunk) { return resolve(Buffer.concat(chunks)); });
-			res.on('error', function (error) { return reject(false); });
+			res.on('data', function(chunk) { chunks.push(chunk); });
+			res.on('end', function(chunk) { return resolve(Buffer.concat(chunks)); });
+			res.on('error', function(error) { return reject(false); });
 		});
 
 		req.end();

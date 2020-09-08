@@ -14,8 +14,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					{ emote: 'Level', role: `***${member_info.level}***`, inline: true },
 					{ emote: 'Rank', role: `***${member_info.rank}***`, inline: true },
 					{ emote: 'Tier', role: `***${member_info.tier}***`, inline: true },
-					{ emote: 'Points', role: `***${member_info.points}***`, inline: false }
-				], 
+					{ emote: 'Points', role: `***${member_info.points}***`, inline: false },
+				],
 				false,
 				message.member,
 				false));

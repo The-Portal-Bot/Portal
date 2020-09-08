@@ -14,13 +14,14 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		if (body === '' && title !== '') {
 			body = title;
 			title = '';
-		} else if (body === '' && title === '') {
+		}
+		else if (body === '' && title === '') {
 			return resolve ({ result: false, value: 'you can run "./help announce" for help.' });
 		}
 
 		message.guild.channels.cache.find(channel => channel.id === portal_guilds[message.guild.id].announcement)
 			.send(help_mngr.create_rich_embed(
-				title, `@here ${body}`, '#022E4E', [], null, message.member, false
+				title, `@here ${body}`, '#022E4E', [], null, message.member, false,
 			));
 		lclz_mngr.client_talk(client, portal_guilds, 'announce');
 

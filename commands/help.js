@@ -25,57 +25,68 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			message.author
 				.send(strc_objct.get_help())
 				.catch(console.error);
-		} else if (args.length === 1) {
+		}
+		else if (args.length === 1) {
 			if (args[0] === 'commands') {
 				message.author
 					.send(cmmd_objct.get_help())
 					.catch(console.error);
-			} else if (args[0] === 'variables') {
+			}
+			else if (args[0] === 'variables') {
 				message.author
 					.send(vrbl_objct.get_help())
 					.catch(console.error);
-			} else if (args[0] === 'pipes') {
+			}
+			else if (args[0] === 'pipes') {
 				message.author
 					.send(pipe_objct.get_help())
 					.catch(console.error);
-			} else if (args[0] === 'attributes') {
+			}
+			else if (args[0] === 'attributes') {
 				message.author
 					.send(attr_objct.get_help())
 					.catch(console.error);
-			} else if (args[0] === 'structures') {
+			}
+			else if (args[0] === 'structures') {
 				message.author
 					.send(strc_objct.get_help())
 					.catch(console.error);
-			} else if (func_detailed = cmmd_objct.get_help_super(args[0])) {
+			}
+			else if (func_detailed = cmmd_objct.get_help_super(args[0])) {
 				message.author
 					.send(func_detailed)
 					.catch(console.error);
-			} else if (vrbl_detailed = vrbl_objct.get_help_super(args[0])) {
+			}
+			else if (vrbl_detailed = vrbl_objct.get_help_super(args[0])) {
 				message.author
 					.send(vrbl_detailed)
 					.catch(console.error);
-			} else if (pipe_detailed = pipe_objct.get_help_super(args[0])) {
+			}
+			else if (pipe_detailed = pipe_objct.get_help_super(args[0])) {
 				message.author
 					.send(pipe_detailed)
 					.catch(console.error);
-			} else if (attr_detailed = attr_objct.get_help_super(args[0])) {
+			}
+			else if (attr_detailed = attr_objct.get_help_super(args[0])) {
 				message.author
 					.send(attr_detailed)
 					.catch(console.error);
-			} else if (strc_detailed = strc_objct.get_help_super(args[0])) {
+			}
+			else if (strc_detailed = strc_objct.get_help_super(args[0])) {
 				message.author
 					.send(strc_detailed)
 					.catch(console.error);
-			} else {
-				return resolve ({ 
+			}
+			else {
+				return resolve ({
 					result: false,
-					value: `**${args[0]}**, *does not exist in Portal™, you can run "./help help" for help.*`
+					value: `**${args[0]}**, *does not exist in Portal™, you can run "./help help" for help.*`,
 				});
 			}
 		}
 		return resolve ({
 			result: true,
-			value: 'I sent you a private message'
+			value: 'I sent you a private message',
 		});
 	});
 };

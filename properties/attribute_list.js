@@ -4,20 +4,20 @@ const locales = ['gr', 'en', 'de'];
 
 module.exports =
 {
-	is_attribute: function (arg) {
-		for (let i = 0; i < this.attributes.length; i++)
-			if (String(arg).substring(1, (String(this.attributes[i].name).length + 1)) == this.attributes[i].name)
-				return this.attributes[i].name;
+	is_attribute: function(arg) {
+		for (let i = 0; i < this.attributes.length; i++) {
+			if (String(arg).substring(1, (String(this.attributes[i].name).length + 1)) == this.attributes[i].name) {return this.attributes[i].name;}
+		}
 		return false;
 	},
-	get_help: function () {
-		let attr_array = [];
+	get_help: function() {
+		const attr_array = [];
 		for (let i = 0; i < this.attributes.length; i++) {
 			attr_array.push({
 				emote: this.attributes[i].name,
 				role: '**desc**: *' + this.attributes[i].description + '*' +
 					'\n**args**: *' + this.attributes[i].args + '*',
-				inline: true
+				inline: true,
 			});
 		}
 		return help_mngr.create_rich_embed('Attributes',
@@ -25,9 +25,9 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#FF5714', attr_array);
 	},
-	get_help_super: function (check) {
+	get_help_super: function(check) {
 		for (let i = 0; i < this.attributes.length; i++) {
-			let attr = this.attributes[i];
+			const attr = this.attributes[i];
 			if (attr.name === check) {
 				return help_mngr.create_rich_embed(
 					attr.name,
@@ -38,14 +38,14 @@ module.exports =
 					[
 						{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + attr.args + '*', inline: false },
-						{ emote: 'Example', role: '*' + attr.example + '*', inline: false }
-					]
+						{ emote: 'Example', role: '*' + attr.example + '*', inline: false },
+					],
 				);
 			}
 		}
 		return false;
 	},
-	get: function (voice_channel, voice_object, portal_object, guild_object, attr) {
+	get: function(voice_channel, voice_object, portal_object, guild_object, attr) {
 		for (let l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {
 				return this.attributes[l].get(voice_channel, voice_object, portal_object, guild_object);
@@ -53,7 +53,7 @@ module.exports =
 		}
 		return -1;
 	},
-	set: function (voice_channel, voice_object, portal_object, guild_object, attr, value, member) {
+	set: function(voice_channel, voice_object, portal_object, guild_object, attr, value, member) {
 		for (let l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {
 				switch (this.attributes[l].auth) {
@@ -96,18 +96,19 @@ module.exports =
 				if (value === 'true') {
 					voice_object.ann_announce = true;
 					return 1;
-				} else if (value === 'false') {
+				}
+				else if (value === 'false') {
 					voice_object.ann_announce = false;
 					return 1;
 				}
 				return -7;
 			},
-			auth: 'voice'
+			auth: 'voice',
 		},
 		{
 			name: 'ann_announce_portal',
 			description: 'returns/sets whether Portal announces events in current portals spawned channels',
-			super_description: '**ann_announce_portal** returns/sets whether Portal announces events in '+
+			super_description: '**ann_announce_portal** returns/sets whether Portal announces events in ' +
 				'current portals spawned channels',
 			example: '&ann_announce_portal',
 			args: 'true/false',
@@ -118,13 +119,14 @@ module.exports =
 				if (value === 'true') {
 					portal_object.ann_announce = true;
 					return 1;
-				} else if (value === 'false') {
+				}
+				else if (value === 'false') {
 					portal_object.ann_announce = false;
 					return 1;
 				}
 				return -7;
 			},
-			auth: 'portal'
+			auth: 'portal',
 		},
 		{
 			name: 'ann_user',
@@ -139,18 +141,19 @@ module.exports =
 				if (value === 'true') {
 					voice_object.ann_user = true;
 					return 1;
-				} else if (value === 'false') {
+				}
+				else if (value === 'false') {
 					voice_object.ann_user = false;
 					return 1;
 				}
 				return -7;
 			},
-			auth: 'voice'
+			auth: 'voice',
 		},
 		{
 			name: 'ann_user_portal',
 			description: 'returns/sets whether Portal announces user\'s join or leave from current portals spawned channels',
-			super_description: '**ann_user_portal** returns/sets whether Portal announces user\'s join or leave from '+
+			super_description: '**ann_user_portal** returns/sets whether Portal announces user\'s join or leave from ' +
 				'current portals spawned channels',
 			example: '&ann_user_portal',
 			args: 'true/false',
@@ -161,13 +164,14 @@ module.exports =
 				if (value === 'true') {
 					portal_object.ann_user = true;
 					return 1;
-				} else if (value === 'false') {
+				}
+				else if (value === 'false') {
 					portal_object.ann_user = false;
 					return 1;
 				}
 				return -7;
 			},
-			auth: 'portal'
+			auth: 'portal',
 		},
 		{
 			name: 'bitrate',
@@ -186,7 +190,7 @@ module.exports =
 					.catch(console.error);
 				return 1;
 			},
-			auth: 'voice'
+			auth: 'voice',
 		},
 		{
 			name: 'locale',
@@ -201,11 +205,12 @@ module.exports =
 				if (locales.includes(value)) {
 					voice_object.locale = String(value);
 					return 1;
-				} else {
+				}
+				else {
 					return -5;
 				}
 			},
-			auth: 'voice'
+			auth: 'voice',
 		},
 		{
 			name: 'locale_guild',
@@ -221,11 +226,12 @@ module.exports =
 				if (locales.includes(value)) {
 					guild_object.locale = String(value);
 					return 1;
-				} else {
+				}
+				else {
 					return -5;
 				}
 			},
-			auth: 'admin'
+			auth: 'admin',
 		},
 		{
 			name: 'locale_portal',
@@ -240,11 +246,12 @@ module.exports =
 				if (locales.includes(value)) {
 					portal_object.locale = String(value);
 					return 1;
-				} else {
+				}
+				else {
 					return -5;
 				}
 			},
-			auth: 'portal'
+			auth: 'portal',
 		},
 		{
 			name: 'position',
@@ -262,7 +269,7 @@ module.exports =
 					.catch(console.error);
 				return 1;
 			},
-			auth: 'voice'
+			auth: 'voice',
 		},
 		{
 			name: 'regex',
@@ -277,7 +284,7 @@ module.exports =
 				voice_object.regex = value;
 				return 1;
 			},
-			auth: 'voice'
+			auth: 'voice',
 		},
 		{
 			name: 'regex_portal',
@@ -292,7 +299,7 @@ module.exports =
 				portal_object.regex_portal = value;
 				return 1;
 			},
-			auth: 'portal'
+			auth: 'portal',
 		},
 		{
 			name: 'regex_voice',
@@ -307,7 +314,7 @@ module.exports =
 				portal_object.regex_voice = value;
 				return 1;
 			},
-			auth: 'portal'
+			auth: 'portal',
 		},
 		{
 			name: 'user_limit',
@@ -325,7 +332,7 @@ module.exports =
 				}
 				return -6;
 			},
-			auth: 'voice'
+			auth: 'voice',
 		},
 		{
 			name: 'user_limit_portal',
@@ -343,7 +350,7 @@ module.exports =
 				}
 				return -6;
 			},
-			auth: 'portal'
-		}
-	]
+			auth: 'portal',
+		},
+	],
 };

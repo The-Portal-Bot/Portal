@@ -19,7 +19,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 	// 	guld_mngr.delete_guild(message.guild.id, portal_guilds);
 	// 	guld_mngr.insert_guild(message.guild.id, portal_guilds, portal_managed_guilds_path);
-		
+
 	// 	return {
 	// 		result: true, value: '**Purge done.**'
 	// 	};

@@ -7,24 +7,26 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
 				return resolve ({
 					result: true,
-					value: '*this already is, the Spotify channel.*'
-				});
+					value: '*this already is, the Spotify channel.*' });
+			}
+			if (guld_mngr.is_music_channel(message.channel.id, portal_guilds[message.guild.id])) {
+				resolve ({
+					result: true,
+					value: '*this can\'t be set as a Spotify channel for it is the Music channel.*' });
 			}
 			if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
 				return resolve ({
 					result: true,
-					value: '*this can\'t be set as the Spotify channel for it is the Announcement channel.*'
-				});
+					value: '*this can\'t be set as the Spotify channel for it is the Announcement channel.*' });
 			}
 			if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
 				return resolve ({
 					result: true,
-					value: '*this can\'t be set as the Spotify channel for it is an url channel.*'
-				});
+					value: '*this can\'t be set as the Spotify channel for it is an url channel.*' });
 			}
 		}
 
-		let spotify = message.guild.channels.cache
+		const spotify = message.guild.channels.cache
 			.find(channel => channel.id == portal_guilds[message.guild.id].spotify);
 
 		if (spotify) guld_mngr.delete_channel(spotify);
@@ -34,9 +36,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 			return resolve ({
 				result: true,
-				value: '*this is now the Spotify channel.*'
-			});
-		} else if (args.length > 0) {
+				value: '*this is now the Spotify channel.*' });
+		}
+		else if (args.length > 0) {
 			const spotify_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
 			const spotify_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
@@ -46,21 +48,20 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 				return resolve ({
 					result: true,
-					value: '*spotify channel and category have been created*'
-				});
-			} else if (spotify_channel === '' && spotify_category !== '') {
+					value: '*spotify channel and category have been created*' });
+			}
+			else if (spotify_channel === '' && spotify_category !== '') {
 				guld_mngr.create_spotify_channel(
 					message.guild, spotify_category, null, portal_guilds[message.guild.id]);
 
 				return resolve ({
 					result: true,
-					value: '*spotify channel has been created*'
-				});
-			} else {
+					value: '*spotify channel has been created*' });
+			}
+			else {
 				return resolve ({
 					result: false,
-					value: '*you can run "./help spotify" for help.*'
-				});
+					value: '*you can run "./help spotify" for help.*' });
 			}
 		}
 	});

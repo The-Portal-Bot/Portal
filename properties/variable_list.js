@@ -5,20 +5,22 @@ const help_mngr = require('../functions/help_manager');
 
 module.exports =
 {
-	is_variable: function (arg) {
-		for (let i = 0; i < this.variables.length; i++)
-			if (String(arg).substring(1, (String(this.variables[i].name).length + 1)) == this.variables[i].name)
+	is_variable: function(arg) {
+		for (let i = 0; i < this.variables.length; i++) {
+			if (String(arg).substring(1, (String(this.variables[i].name).length + 1)) == this.variables[i].name) {
 				return this.variables[i].name;
+			}
+		}
 		return false;
 	},
-	get_help: function () {
-		let vrbl_array = [];
+	get_help: function() {
+		const vrbl_array = [];
 		for (let i = 0; i < this.variables.length; i++) {
 			vrbl_array.push({
 				emote: this.variables[i].name,
 				role: '**desc**: *' + this.variables[i].description + '*' +
 					'\n**args**: *' + this.variables[i].args + '*',
-				inline: true
+				inline: true,
 			});
 		}
 		return help_mngr.create_rich_embed('Variables',
@@ -26,9 +28,9 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#1BE7FF', vrbl_array);
 	},
-	get_help_super: function (check) {
+	get_help_super: function(check) {
 		for (let i = 0; i < this.variables.length; i++) {
-			let vrbl = this.variables[i];
+			const vrbl = this.variables[i];
 			if (vrbl.name === check) {
 				return help_mngr.create_rich_embed(
 					vrbl.name,
@@ -39,17 +41,19 @@ module.exports =
 					[
 						{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
 						{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false },
-						{ emote: 'Example', role: '```' + vrbl.example + '```', inline: false }
-					]
+						{ emote: 'Example', role: '```' + vrbl.example + '```', inline: false },
+					],
 				);
 			}
 		}
 		return false;
 	},
-	get: function (voice_channel, voice_object, portal_list_object, guild_object, guild, vrbl) {
-		for (let l = 0; l < this.variables.length; l++)
-			if (vrbl === this.variables[l].name)
+	get: function(voice_channel, voice_object, portal_list_object, guild_object, guild, vrbl) {
+		for (let l = 0; l < this.variables.length; l++) {
+			if (vrbl === this.variables[l].name) {
 				return this.variables[l].get(voice_channel, voice_object, portal_list_object, guild_object, guild);
+			}
+		}
 		return -1;
 	},
 
@@ -58,42 +62,43 @@ module.exports =
 		{
 			name: '#',
 			description: 'returns the channel number in list.',
-			super_description: '**#**, returns the channel number in list, if it was created first .'+
+			super_description: '**#**, returns the channel number in list, if it was created first .' +
 			'it will display 1, if third 3, etc.',
 			example: '$#',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object) => {
 				let i = 0;
-				for(let portal_key in portal_list_object) {
+				for(const portal_key in portal_list_object) {
 					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
-						for (let voice_key in portal_list_object[portal_key].voice_list) {
+						for (const voice_key in portal_list_object[portal_key].voice_list) {
 							i++;
 							if (voice_key === voice_channel.id) return i.toString();
 						}
 					}
 				}
 				return '0';
-			}
+			},
 		},
 		{
 			name: '##',
 			description: 'returns the channel number in list with # in the front.',
-			super_description: '**##**, returns the channel number in list with # in the front, if it was created first ' +
+			super_description: '**##**, returns the channel number in list with # ' +
+				'in the front, if it was created first ' +
 				'it will display #1, if third #3, etc.',
 			example: '$##',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object) => {
 				let i = 0;
-				for(let portal_key in portal_list_object) {
+				for(const portal_key in portal_list_object) {
 					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
-						for (let voice_key in portal_list_object[portal_key].voice_list) {
+						for (const voice_key in portal_list_object[portal_key].voice_list) {
 							i++;
 							if (voice_key === voice_channel.id) return '#' + i.toString();
 						}
 					}
 				}
 				return '#0';
-			}
+			},
 		},
 		{
 			name: 'creator_portal',
@@ -102,13 +107,14 @@ module.exports =
 			example: '$creator_portal',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
-				for(let portal_key in portal_list_object)
+				for(const portal_key in portal_list_object) {
 					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
-						let display_name = guild.members.cache
+						const display_name = guild.members.cache
 							.find(member => member.id === portal_list_object[portal_key].creator_id).displayName;
 						return display_name ? display_name : 'portal creator left';
 					}
-			}
+				}
+			},
 		},
 		{
 			name: 'creator_voice',
@@ -117,10 +123,10 @@ module.exports =
 			example: '$creator_voice',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
-				let display_name = guild.members.cache
+				const display_name = guild.members.cache
 					.find(member => member.id === voice_object.creator_id).displayName;
 				return display_name ? display_name : 'voice creator left';
-			}
+			},
 		},
 		{
 			name: 'date',
@@ -130,7 +136,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).subtract(10, 'days').calendar();
-			}
+			},
 		},
 		{
 			name: 'number_day',
@@ -140,7 +146,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).date();
-			}
+			},
 		},
 		{
 			name: 'name_day',
@@ -150,7 +156,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('dddd');
-			}
+			},
 		},
 		{
 			name: 'month',
@@ -160,7 +166,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('mmmm');
-			}
+			},
 		},
 		{
 			name: 'year',
@@ -170,7 +176,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('yyyy');
-			}
+			},
 		},
 		{
 			name: 'time',
@@ -180,7 +186,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('h:mm:ss');
-			}
+			},
 		},
 		{
 			name: 'hour',
@@ -190,7 +196,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('h');
-			}
+			},
 		},
 		{
 			name: 'minute',
@@ -200,7 +206,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('mm');
-			}
+			},
 		},
 		{
 			name: 'second',
@@ -210,7 +216,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('ss');
-			}
+			},
 		},
 		{
 			name: 'member_active_count',
@@ -221,11 +227,10 @@ module.exports =
 			get: (voice_channel) => {
 				let cnt = 0;
 				voice_channel.members.forEach((member) => {
-					if (member.presence.game !== null)
-						cnt++;
+					if (member.presence.game !== null) {cnt++;}
 				});
 				return cnt;
-			}
+			},
 		},
 		{
 			name: 'member_count',
@@ -235,7 +240,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel) => {
 				return voice_channel.members.size;
-			}
+			},
 		},
 		{
 			name: 'member_history',
@@ -245,7 +250,7 @@ module.exports =
 			args: 'none',
 			get: () => {
 				return 'no_yet_implemented';
-			}
+			},
 		},
 		{
 			name: 'member_list',
@@ -254,10 +259,10 @@ module.exports =
 			example: '$member_list',
 			args: 'none',
 			get: (voice_channel) => {
-				let mmbr_lst = [];
+				const mmbr_lst = [];
 				voice_channel.members.forEach(member => { mmbr_lst.push(member.displayName); });
 				return mmbr_lst;
-			}
+			},
 		},
 		{
 			name: 'member_with_status',
@@ -268,11 +273,10 @@ module.exports =
 			get: (voice_channel) => {
 				let cnt = 0;
 				voice_channel.members.forEach((member) => {
-					if (member.presence.game !== null)
-						cnt++;
+					if (member.presence.game !== null) {cnt++;}
 				});
 				return cnt;
-			}
+			},
 		},
 		{
 			name: 'status_count',
@@ -281,10 +285,10 @@ module.exports =
 			example: '$status_count',
 			args: 'none',
 			get: (voice_channel, voice_object) => {
-				let status_list = rtrv.get_status_list(voice_channel, voice_object);
+				const status_list = rtrv.get_status_list(voice_channel, voice_object);
 				if (typeof status_list === 'object' && status_list !== null) { return 0; }
 				else { status_list.length; }
-			}
+			},
 		},
 		{
 			name: 'status_history',
@@ -294,7 +298,7 @@ module.exports =
 			args: 'none',
 			get: () => {
 				return 'no_yet_implemented';
-			}
+			},
 		},
 		{
 			name: 'status_list',
@@ -302,9 +306,9 @@ module.exports =
 			super_description: '**status_list**, returns the list of all current members statuses.',
 			example: '$status_list',
 			args: 'none',
-			get: (voice_channel, voice_object) => { 
+			get: (voice_channel, voice_object) => {
 				return rtrv.get_status_list(voice_channel, voice_object);
-			}
+			},
 		},
 		{
 			name: 'last_update',
@@ -315,8 +319,8 @@ module.exports =
 			get: (voice_channel, voice_object) => {
 				return `${Math.round(((Date.now() - voice_object.last_update) / 1000 / 60))}m` +
 					`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`;
-			}
-		}
-	]
+			},
+		},
+	],
 };
 
