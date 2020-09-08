@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 const guld_mngr = require('../functions/guild_manager');
+const help_mngr = require('../functions/help_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
@@ -41,8 +42,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 		if (args.length === 0) {
 			current_channel.music_data.channel_id = message.channel.id;
-			guld_mngr.create_music_message(
-				message.guild.channels.cache.find(channel => channel.id === current_channel.music_data.channel_id),
+			help_mngr.create_music_message(
+				message.guild.channels.cache.find(channel =>
+					channel.id === current_channel.music_data.channel_id),
 				portal_icon_url,
 				portal_guilds[message.guild.id],
 			);
@@ -62,7 +64,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			if (music_channel !== '') {
 				guld_mngr.create_music_channel(message.guild, music_channel, music_category, current_channel)
 					.then(channel =>
-						guld_mngr.create_music_message(
+						help_mngr.create_music_message(
 							channel,
 							portal_icon_url,
 							portal_guilds[message.guild.id],
@@ -76,7 +78,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			else if (music_channel === '' && music_category !== '') {
 				guld_mngr.create_music_channel(message.guild, music_category, null, current_channel)
 					.then(channel =>
-						guld_mngr.create_music_message(
+						help_mngr.create_music_message(
 							channel,
 							portal_icon_url,
 							portal_guilds[message.guild.id],

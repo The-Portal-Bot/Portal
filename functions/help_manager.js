@@ -5,7 +5,52 @@ const lodash = require('lodash');
 // const guld_mngr = require('./guild_manager'); // circular module call doesnt work !
 const lclz_mngr = require('./localization_manager');
 
+const role_class = require('../assets/classes/role_class');
+
 module.exports = {
+
+	create_role_message: function(channel, role_list, title, desc, colour, role_emb, role_map) {
+		const role_message_emb = this.create_rich_embed(title, desc, colour, role_emb);
+		channel
+			.send(role_message_emb)
+			.then(sent_message => {
+				for (let i = 0; i < role_map.length; i++) {
+					sent_message.react(role_map[i].give);
+					sent_message.react(role_map[i].strip);
+				}
+				role_list[sent_message.id] = new role_class(role_map);
+			})
+			.catch(error => console.log(error));
+	},
+
+	create_music_message: function(channel, thumbnail, guild_object) {
+		const music_message_emb = this.create_rich_embed(
+			'Music Player',
+			'just type and I\'ll play',
+			'#0000FF',
+			[
+				{ emote: 'Duration', role: '-', inline: true },
+				{ emote: 'Views', role: '-', inline: true },
+				{ emote: 'Uploaded', role: '-', inline: true },
+			],
+			false,
+			false,
+			true,
+			false,
+			thumbnail,
+		);
+
+		channel
+			.send(music_message_emb)
+			.then(sent_message => {
+				sent_message.react('▶️');
+				sent_message.react('⏸');
+				sent_message.react('⏹');
+				sent_message.react('⏭');
+
+				guild_object.music_data.message_id = sent_message.id;
+			});
+	},
 
 	update_message: function(guild, guild_object, yts) {
 		const music_message_emb = this.create_rich_embed(
@@ -23,12 +68,15 @@ module.exports = {
 			false,
 			yts.thumbnail,
 		);
-		const channel = guild_object.channels.cache.get(guild.music_data.channel_id);
+		const channel = guild_object.channels.cache
+			.get(guild.music_data.channel_id);
 
-		channel.messages.channel.messages.fetch(guild.music_data.message_id)
+		channel.messages.channel.messages
+			.fetch(guild.music_data.message_id)
 			.then(message => {
 				message.edit(music_message_emb)
-					.then(msg => console.log(`Updated the content of a message to ${msg.content}`))
+					.then(msg =>
+						console.log(`Updated the content of a message to ${msg.content}`))
 					.catch(console.error);
 			})
 			.catch(console.error);
@@ -223,14 +271,18 @@ module.exports = {
 	},
 
 	// channel should be removed !
-	message_reply: function(status, channel, message, user, str, portal_guilds, client) {
+	message_reply: function(status, channel, message, user, str, portal_guilds, client, to_delete = false) {
 		if (!message.channel.deleted) {
 			message.channel
 				.send(`${user}, ${str}`)
-				.then(msg => { msg.delete({ timeout: 5000 }); });
+				.then(msg => { msg.delete({ timeout: 5000 }); })
+				.catch(error => console.log(error));
 		}
 		if (!message.deleted) {
-			if (status === true) {
+			if(to_delete) {
+				message.delete();
+			}
+			else if (status === true) {
 				message.react('✔️');
 			}
 			else if (status === false) {

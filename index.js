@@ -140,7 +140,6 @@ client.on('messageReactionAdd', (messageReaction, user) =>
 	event_loader('messageReactionAdd',
 		{
 			'client': client, 'guild_list': guild_list,
-			'portal_managed_guilds_path': portal_managed_guilds_path,
 			'messageReaction': messageReaction, 'user': user,
 		},
 	));
@@ -193,10 +192,16 @@ client.on('message', async message => {
 		channel_talk = 'read_only';
 	}
 	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
-		play_mngr.play(client, message, message.content.toString(), guild_list)
-			.then(joined => console.log(joined))
-			.catch(error => console.log(error));
-		message.delete();
+		play_mngr.start(client, message, message.content.toString(), guild_list)
+			.then(joined => {
+				help_mngr.message_reply(
+					joined.result, message.author.presence.member.voice.channel,
+					message, message.author, joined.value, guild_list, client, true);
+			})
+			.catch(error => {
+				console.log(error);
+				message.delete();
+			});
 		return;
 	}
 	else if (guild_list[message.guild.id].announcement === message.channel.id) {
@@ -309,9 +314,7 @@ client.on('message', async message => {
 
 				help_mngr.message_reply(
 					true, message.author.presence.member.voice.channel,
-					message, message.author, rspns === true ?
-						'executed correctly' :
-						rspns.value, guild_list, client);
+					message, message.author, rspns ? 'executed correctly' : rspns.value, guild_list, client);
 
 				help_mngr.update_portal_managed_guilds(
 					true, portal_managed_guilds_path, guild_list);

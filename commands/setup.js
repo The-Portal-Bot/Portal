@@ -5,10 +5,12 @@ const guld_mngr = require('../functions/guild_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
-		if (spotify = message.guild.channels.cache.find(channel => channel.id == portal_guilds[message.guild.id].spotify)) {
+		if (spotify = message.guild.channels.cache.find(channel =>
+			channel.id == portal_guilds[message.guild.id].spotify)) {
 			guld_mngr.delete_channel(spotify);
 		}
-		if (announcement = message.guild.channels.cache.find(channel => channel.id == portal_guilds[message.guild.id].announcement)) {
+		if (announcement = message.guild.channels.cache.find(channel =>
+			channel.id == portal_guilds[message.guild.id].announcement)) {
 			guld_mngr.delete_channel(announcement);
 		}
 
@@ -21,9 +23,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			message.guild, 'general', null, portal_guilds[message.guild.id]);
 		guld_mngr.create_url_channel(
 			message.guild, 'general', null, portal_guilds[message.guild.id].url_list);
-		
+
 		return resolve({
-			result: true, value: '*setup has ran succesfully*'
-		});		
+			result: true, value: '*setup has ran succesfully*',
+		});
 	});
 };

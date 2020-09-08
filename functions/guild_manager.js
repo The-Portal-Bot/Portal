@@ -7,7 +7,6 @@ const attr_objct = require('../properties/attribute_list');
 const guild_class = require('../assets/classes/guild_class');
 const portal_class = require('../assets/classes/portal_class');
 const voice_class = require('../assets/classes/voice_class');
-const role_class = require('../assets/classes/role_class');
 const member_class = require('../assets/classes/member_class');
 
 const help_mngr = require('./help_manager');
@@ -252,44 +251,6 @@ module.exports = {
 			.catch(console.error);
 
 		return;
-	},
-
-	create_role_message: function(channel, role_list, title, desc, colour, role_emb, role_map) {
-		const role_message_emb = help_mngr.create_rich_embed(title, desc, colour, role_emb);
-		channel
-			.send(role_message_emb)
-			.then(sent_message => {
-				for (let i = 0; i < role_map.length; i++) {
-					sent_message.react(role_map[i].give);
-					sent_message.react(role_map[i].strip);
-				}
-				role_list[sent_message.id] = new role_class(role_map);
-			});
-	},
-
-	create_music_message: function(channel, thumbnail, guild_object) {
-		const music_message_emb = help_mngr.create_rich_embed(
-			'Music Player',
-			'just type and I\'ll play',
-			'#0000FF',
-			false,
-			false,
-			false,
-			true,
-			false,
-			thumbnail,
-		);
-
-		channel
-			.send(music_message_emb)
-			.then(sent_message => {
-				sent_message.react('▶️');
-				sent_message.react('⏸');
-				sent_message.react('⏹');
-				sent_message.react('⏭');
-
-				guild_object.music_data.message_id = sent_message.id;
-			});
 	},
 
 	create_member_list: function(guild_id, client) {

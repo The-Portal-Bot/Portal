@@ -7,11 +7,12 @@ const help_mngr = require('../functions/help_manager');
 const moment = require('moment');
 const voca = require('voca');
 
-const get_country_code = function (country) {
+const get_country_code = function(country) {
 	for (let i = 0; i < country_codes.length; i++) {
 		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country)) {
 			return country_codes[i].code;
-		} else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country)) {
+		}
+		else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country)) {
 			return country_codes[i].code;
 		}
 	}
@@ -23,44 +24,47 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		let url = null;
 		if (args.length === 0) {
 			url = '/free-api?global=stats';
-		} else if (args.length === 1) {
-			let code = get_country_code(args[0]);
+		}
+		else if (args.length === 1) {
+			const code = get_country_code(args[0]);
 			if (code !== null) {
 				url = '/free-api?countryTotal=' + code;
-			} else {
+			}
+			else {
 				return resolve ({
 					result: false,
-					value: `*${args[0]} is neither a country name nor a country code.*`
+					value: `*${args[0]} is neither a country name nor a country code.*`,
 				});
 			}
-		} else {
+		}
+		else {
 			return resolve ({
 				result: false,
-				value: '*you can run "./help corona" for help.*'
+				value: '*you can run "./help corona" for help.*',
 			});
 		}
 
-		let options = {
+		const options = {
 			'method': 'GET',
 			'hostname': 'api.thevirustracker.com',
 			'path': url,
 			'headers': {},
-			'maxRedirects': 20
+			'maxRedirects': 20,
 		};
 
 		http_mngr(options)
 			.then(rspns => {
-				let json = help_mngr.getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
+				const json = help_mngr.getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
 				if(json === null) {
-					return resolve ({ 
-						result: false, 
-						value: 'data from source was corrupted'
+					return resolve ({
+						result: false,
+						value: 'data from source was corrupted',
 					});
 				}
 
 				if (json.countrydata !== undefined) {
-					let daily_stats = json.countrydata[0];
-					let country_stats = json.countrydata[0].info;
+					const daily_stats = json.countrydata[0];
+					const country_stats = json.countrydata[0].info;
 
 					message.channel.send(
 						help_mngr.create_rich_embed(`COVID19 ${country_stats.title} stats ${moment().format('DD/MM/YY')}`,
@@ -91,11 +95,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 									role: `***${((daily_stats.total_deaths / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
 								{
 									emote: 'Serious cases',
-									role: `***${daily_stats.total_serious_cases}***`, inline: true }
+									role: `***${daily_stats.total_serious_cases}***`, inline: true },
 							], null, null, true));
 					return resolve({ result: true, value: `*${country_stats.title} corona stats.*` });
-				} else if (json.results !== undefined && json.results[0].data !== 'none') {
-					let daily_stats = json.results[0];
+				}
+				else if (json.results !== undefined && json.results[0].data !== 'none') {
+					const daily_stats = json.results[0];
 
 					message.channel.send(
 						help_mngr.create_rich_embed(`COVID19 Global stats ${moment().format('DD/MM/YY')}`,
@@ -126,23 +131,24 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 									role: `***${((daily_stats.total_deaths / daily_stats.total_cases) * 100).toFixed(2)}%***`, inline: true },
 								{
 									emote: 'Serious cases',
-									role: `***${daily_stats.total_serious_cases}***`, inline: true }
+									role: `***${daily_stats.total_serious_cases}***`, inline: true },
 							], null, null, true));
 					return resolve({
 						result: true,
-						value: '*Global corona stats.*'
+						value: '*Global corona stats.*',
 					});
-				} else {
+				}
+				else {
 					return resolve({
 						result: false,
-						value: `*${args[0]} is neither a country name nor a country code.*`
+						value: `*${args[0]} is neither a country name nor a country code.*`,
 					});
 				}
 			})
 			.catch(rspns => {
 				return resolve({
 					result: false,
-					value: '*Could not access the server*'
+					value: '*Could not access the server*',
 				});
 			});
 	});

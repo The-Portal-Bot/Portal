@@ -8,18 +8,29 @@ const ytdl = require('ytdl-core');
 
 module.exports = {
 
-	play: async function(client, message, search_term, portal_guilds) {
+	start: async function(client, message, search_term, portal_guilds) {
 		return new Promise((resolve) => {
 			if(!message.member.voice.channel) {
 				return resolve({ result: false, value: 'you are not connected to any channel.' });
 			}
 
-			const current_guild_id = message.member.voice.channel.guild.id;
-			let current_dispatcher = portal_guilds[current_guild_id].dispatcher;
-			const current_music_queue = portal_guilds[current_guild_id].music_queue;
+			const guild_id = message.member.voice.channel.guild.id;
+			const current_dispatcher = portal_guilds[guild_id].dispatcher;
+			const current_music_queue = portal_guilds[guild_id].music_queue;
 
 			if(current_dispatcher !== null && current_dispatcher !== undefined) {
-				return resolve({ result: false, value: 'already playing song.' });
+				yts(search_term)
+					.then(yts_attempt => {
+						if (yts_attempt) {
+							current_music_queue.push(yts_attempt.videos[0]);
+						}
+						else {
+							console.log('could not find youtube video');
+							return resolve ({ result: false, value: 'could not find youtube video' });
+						}
+					})
+					.catch(error => console.log(error));
+				return resolve({ result: false, value: 'already playing song, your song has been added in list.' });
 			}
 
 			help_mngr.join_user_voice(client, message, portal_guilds, false)
@@ -28,14 +39,13 @@ module.exports = {
 						yts(search_term)
 							.then(yts_attempt => {
 								if (yts_attempt) {
-									current_music_queue.push(yts_attempt.videos[0]);
-									current_dispatcher = join_attempt.voice_connection
+									portal_guilds[guild_id].dispatcher = join_attempt.voice_connection
 										.play(ytdl(yts_attempt.videos[0].url, { filter: 'audioonly' }));
-									help_mngr.update_message(portal_guilds[current_guild_id],
+									help_mngr.update_message(portal_guilds[guild_id],
 										message.member.voice.channel.guild, yts_attempt.videos[0]);
+									return resolve ({ result: false, value: 'playing video' });
 								}
 								else {
-									console.log('could not find youtube video');
 									return resolve ({ result: false, value: 'could not find youtube video' });
 								}
 							})
@@ -50,10 +60,24 @@ module.exports = {
 		});
 	},
 
-	pause: async function(message, portal_guilds) {
+	play: async function(guild_id, portal_guilds) {
 		return new Promise((resolve) => {
-			const current_guild_id = message.member.voice.channel.guild.id;
-			const current_dispatcher = portal_guilds[current_guild_id].dispatcher;
+			const current_dispatcher = portal_guilds[guild_id].dispatcher;
+
+			if(current_dispatcher !== null && current_dispatcher !== undefined) {
+				if(current_dispatcher.paused) {current_dispatcher.resume();}
+
+				return resolve ({ result: false, value: 'song has been resumed.' });
+			}
+			else {
+				return resolve ({ result: false, value: 'nothing playing write now.' });
+			}
+		});
+	},
+
+	pause: async function(guild_id, portal_guilds) {
+		return new Promise((resolve) => {
+			const current_dispatcher = portal_guilds[guild_id].dispatcher;
 
 			if(current_dispatcher !== null && current_dispatcher !== undefined) {
 				if(!current_dispatcher.paused) {
@@ -67,35 +91,79 @@ module.exports = {
 		});
 	},
 
-	resume: async function(message, portal_guilds) {
+	stop: async function(guild_id, portal_guilds, guild_object) {
 		return new Promise((resolve) => {
-			const current_guild_id = message.member.voice.channel.guild.id;
-			const current_dispatcher = portal_guilds[current_guild_id].dispatcher;
+			const current_dispatcher = portal_guilds[guild_id].dispatcher;
+
+			const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+					'.github.io/master/assets/img/logo.png';
+			help_mngr.update_message(portal_guilds[guild_id],
+				guild_object,
+				{
+					title: 'Music Player',
+					url: 'just type and I\'ll play',
+					timestamp: '-',
+					views: '-',
+					ago: '-',
+					thumbnail: portal_icon_url,
+				});
 
 			if(current_dispatcher !== null && current_dispatcher !== undefined) {
-				if(current_dispatcher.paused) {current_dispatcher.resume();}
-
-				return resolve ({ result: false, value: 'song has been resumed.' });
+				if(!current_dispatcher.paused) {
+					current_dispatcher.pause();
+				}
+				portal_guilds[guild_id].dispatcher = null;
+				return resolve ({ result: false, value: 'song has been stopped.' });
 			}
 			else {
+				portal_guilds[guild_id].dispatcher = null;
 				return resolve ({ result: false, value: 'nothing playing write now.' });
 			}
 		});
 	},
 
-	skip: async function(message, portal_guilds) {
+	skip: async function(guild_id, portal_guilds, client, guild_object) {
 		return new Promise((resolve) => {
-			const current_guild_id = message.member.voice.channel.guild.id;
-			let current_dispatcher = portal_guilds[current_guild_id].dispatcher;
-			const current_music_queue = portal_guilds[current_guild_id].music_queue;
+			const current_dispatcher = portal_guilds[guild_id].dispatcher;
+			const current_music_queue = portal_guilds[guild_id].music_queue;
 
 			if(current_dispatcher !== null && current_dispatcher !== undefined) {
-				if(!current_dispatcher.paused) {current_dispatcher.pause();}
+				if(current_music_queue.length > 0) {
+					const next_yts_video = current_music_queue.shift();
 
-				current_dispatcher = null;
+					const voiceConnection = client.voice.connections
+						.find(connection => connection.channel.id);
 
-				if(current_music_queue.length > 0) {current_music_queue.shift();}
-				else {return resolve ({ result: false, value: 'nothing playing write now.' });}
+					if (voiceConnection) {
+						portal_guilds[guild_id].dispatcher = voiceConnection
+							.play(ytdl(next_yts_video.url, { filter: 'audioonly' }));
+
+						help_mngr.update_message(
+							portal_guilds[guild_id],
+							guild_object,
+							next_yts_video,
+						);
+					}
+				}
+				else {
+					const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+					'.github.io/master/assets/img/logo.png';
+					help_mngr.update_message(portal_guilds[guild_id],
+						guild_object,
+						{
+							title: 'Music Player',
+							url: 'just type and I\'ll play',
+							timestamp: '-',
+							views: '-',
+							ago: '-',
+							thumbnail: portal_icon_url,
+						});
+					if(!current_dispatcher.paused) {
+						current_dispatcher.pause();
+					}
+					portal_guilds[guild_id].dispatcher = null;
+					return resolve ({ result: false, value: 'music list is empty' });
+				}
 
 				return resolve ({ result: false, value: 'song has been skipped.' });
 			}

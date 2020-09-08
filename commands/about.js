@@ -15,38 +15,38 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				{
 					emote: 'Creator',
 					role: '***Keybraker***',
-					inline: true
+					inline: true,
 				},
 				{
 					emote: 'Created',
 					role: '***2020***',
-					inline: true
+					inline: true,
 				},
 				{
 					emote: 'Website',
 					role: '***https://portal-bot.xyz***',
-					inline: true
+					inline: true,
 				},
 				{
 					emote: 'FAQ',
 					role: '',
-					inline: false
+					inline: false,
 				},
 				{
 					emote: 'Does Portal have Premium ?',
 					role: 'Yes with great features and you can get it at ***https://portal-bot.xyz/premium/***',
-					inline: false
+					inline: false,
 				},
 				{
 					emote: 'What features does Portal have ?',
 					role: 'Yes lots of them, you can explore them at ***https://portal-bot.xyz/features/***',
-					inline: false
-				}
-			], 
+					inline: false,
+				},
+			],
 			false,
 			client.user.member,
 			true,
-			'https://portal-bot.xyz/'
+			'https://portal-bot.xyz/',
 		));
 
 		return resolve(null);

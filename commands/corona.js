@@ -7,11 +7,12 @@ const help_mngr = require('./../functions/help_manager');
 const moment = require('moment');
 const voca = require('voca');
 
-const get_country_code = function (country) {
+const get_country_code = function(country) {
 	for (let i = 0; i < country_codes.length; i++) {
 		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country)) {
 			return country_codes[i].name;
-		} else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country)) {
+		}
+		else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country)) {
 			return country_codes[i].name;
 		}
 	}
@@ -23,33 +24,29 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	return new Promise((resolve) => {
 		let code = null;
 
-		if (args.length === 1)
-		{
+		if (args.length === 1) {
 			code = get_country_code(args[0]);
-			if (code === null)
-			{
+			if (code === null) {
 				return resolve ({
 					result: false,
-					value: `*${args[0]} is neither a country name nor a country code.*`
+					value: `*${args[0]} is neither a country name nor a country code.*`,
 				});
 			}
 		}
-		else if(args.length > 1)
-		{
+		else if(args.length > 1) {
 			return resolve ({
 				result: false,
-				value: '*you can run "./help corona" for help.*'
+				value: '*you can run "./help corona" for help.*',
 			});
 		}
-		else
-		{
+		else {
 			return resolve ({
 				result: false,
-				value: '*Global stats are temporarily unavailable.*'
+				value: '*Global stats are temporarily unavailable.*',
 			});
 		}
 
-		let options = {
+		const options = {
 			'method': 'GET',
 			'hostname': 'covid-193.p.rapidapi.com',
 			'port': null,
@@ -57,18 +54,18 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			'headers': {
 				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
 				'x-rapidapi-key': 'b883903090msh7eef2b50e6cbe9cp1ff439jsnee4d6c48061f',
-				'useQueryString': true
-			}
+				'useQueryString': true,
+			},
 		};
-		
+
 
 		http_mngr(options)
 			.then(rspns => {
-				let json = help_mngr.getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
+				const json = help_mngr.getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
 				if(json === null) {
-					return resolve ({ 
-						result: false, 
-						value: 'data from source was corrupted'
+					return resolve ({
+						result: false,
+						value: 'data from source was corrupted',
 					});
 				}
 
@@ -106,20 +103,21 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 										.toFixed(2)}%***`, inline: true },
 								{
 									emote: 'Critical',
-									role: `***${country_data.cases.critical}***`, inline: true }
+									role: `***${country_data.cases.critical}***`, inline: true },
 							], null, null, true));
 					return resolve({ result: true, value: `*${country_data.country} corona stats.*` });
-				} else {
+				}
+				else {
 					return resolve({
 						result: false,
-						value: `*${args[0]} is neither a country name nor a country code.*`
+						value: `*${args[0]} is neither a country name nor a country code.*`,
 					});
 				}
 			})
 			.catch(rspns => {
 				return resolve({
 					result: false,
-					value: '*Could not access the server*'
+					value: '*Could not access the server*',
 				});
 			});
 	});

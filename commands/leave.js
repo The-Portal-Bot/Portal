@@ -7,7 +7,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 	return new Promise((resolve) => {
 		if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
 			lclz_mngr.client_talk(client, portal_guilds, 'leave');
-			setTimeout(function () { voiceConnection.disconnect(); }, 3000);
+			setTimeout(function() { voiceConnection.disconnect(); }, 3000);
 		}
 
 		return resolve ({ result: true, value: lclz_mngr.client_write(message, portal_guilds, 'leave') });

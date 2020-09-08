@@ -15,9 +15,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			return resolve ({
 				result: true, value: '*portal channel has been created.\n' +
 					'Keep in mind that due to Discord\'s limitations,*\n' +
-					'**channel names will be updated on a five minute interval.**'
+					'**channel names will be updated on a five minute interval.**',
 			});
-		} else if (portal_channel === '' && portal_category !== '') {
+		}
+		else if (portal_channel === '' && portal_category !== '') {
 			guld_mngr.create_portal_channel(
 				message.guild, portal_category, null,
 				portal_guilds[message.guild.id].portal_list,
@@ -26,9 +27,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			return resolve ({
 				result: true, value: '*portal channel has been created.\n' +
 					'Keep in mind that due to Discord\'s limitations,*\n' +
-					'**channel names will be updated on a five minute interval.**'
+					'**channel names will be updated on a five minute interval.**',
 			});
-		} else {
+		}
+		else {
 			return resolve ({ result: false, value: '*you can run "./help portal" for help.*' });
 		}
 	});
