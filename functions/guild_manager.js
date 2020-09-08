@@ -154,7 +154,7 @@ module.exports = {
 				guild.channels
 					.create(`${music_channel}-music`, { type: 'text' })
 					.then(channel => {
-						guild_object.music_data.message_id = channel.id;
+						guild_object.music_data.channel_id = channel.id;
 						guild.channels
 							.create(music_category, { type: 'category' })
 							.then(cat_channel => channel.setParent(cat_channel))
@@ -167,7 +167,7 @@ module.exports = {
 				guild.channels
 					.create(`${music_channel}-music`, { type: 'text' })
 					.then(channel => {
-						guild_object.music_data.message_id = channel.id;
+						guild_object.music_data.channel_id = channel.id;
 						return resolve(channel);
 					})
 					.catch(error => { return resolve(error); });
