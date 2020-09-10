@@ -55,10 +55,10 @@ event_loader = function(event, args) {
 		.then(rspns => {
 			if(rspns !== null && rspns !== undefined) {
 				if (rspns.result) {
-					console.log(rspns.value);
+					console.log('True:\t', rspns.value);
 				}
 				else {
-					console.log('ERROR: ', rspns.value);
+					console.log('False:\t', rspns.value);
 				}
 			}
 		});
