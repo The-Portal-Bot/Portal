@@ -272,17 +272,17 @@ module.exports = {
 		const ranks = {};
 		const auth_role = [];
 		const spotify = null;
-		const music_data = { channel_id: null, message: null };
+		const music_data = { channel_id: null, message_id: null, votes: [] };
 		const music_queue = [];
+		const dispatcher = null;
 		const announcement = null;
 		const locale = 'en';
 		const announce = 0;
 		const level_speed = 'normal';
-		const dispatcher = null;
 		const premium = false;
 
 		portal_guilds[guild_id] = new guild_class(portal_list, member_list, url_list, role_list, ranks, auth_role,
-			spotify, music_data, music_queue, announcement, locale, announce, level_speed, dispatcher, premium);
+			spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium);
 	},
 
 	//

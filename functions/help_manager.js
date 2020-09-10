@@ -105,14 +105,14 @@ module.exports = {
 				return resolve ({ result: false, value: 'I can only connect to my channels.' });
 			}
 
-			const existing_voiceConnection = client.voice.connections.find(connection =>
+			const existing_voice_connection = client.voice.connections.find(connection =>
 				connection.channel.id === message.member.voice.channel.id);
 
-			if (existing_voiceConnection) {
+			if (existing_voice_connection) {
 				return resolve ({
 					result: true,
 					value: 'already in voice channel',
-					voice_connection: existing_voiceConnection,
+					voice_connection: existing_voice_connection,
 				});
 			}
 
@@ -181,7 +181,6 @@ module.exports = {
 				.setThumbnail(thumbnail);
 		}
 		if (image) {
-			console.log('image :>> ', image);
 			rich_message
 				.setImage(image);
 		}

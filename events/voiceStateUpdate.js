@@ -2,9 +2,14 @@ const guld_mngr = require('./../functions/guild_manager');
 const lclz_mngr = require('./../functions/localization_manager');
 const help_mngr = require('./../functions/help_manager');
 const user_mngr = require('./../functions/user_manager');
+const musc_mngr = require('./../functions/music_manager');
 
 module.exports = async (args) => {
-	if (args.newState === undefined || args.oldState == undefined) {return { result: true, value: 'state of undefined' };}
+	if (args.newState === undefined || args.oldState == undefined) {
+		return {
+			result: true, value: 'state of undefined',
+		};
+	}
 
 	const newChannel = args.newState.channel; // join channel
 	const oldChannel = args.oldState.channel; // left channel
@@ -21,11 +26,15 @@ module.exports = async (args) => {
 
 	const newVoiceConnection = args.client.voice.connections
 		.find(connection => newChannel !== null && connection.channel.id === newChannel.id);
-	if (newVoiceConnection && !args.newState.member.user.bot) {lclz_mngr.client_talk(args.client, args.guild_list, 'user_connected');}
+	if (newVoiceConnection && !args.newState.member.user.bot) {
+		lclz_mngr.client_talk(args.client, args.guild_list, 'user_connected');
+	}
 
 	const oldVoiceConnection = args.client.voice.connections
 		.find(connection => oldChannel !== null && connection.channel.id === oldChannel.id);
-	if (oldVoiceConnection && !args.newState.member.user.bot) {lclz_mngr.client_talk(args.client, args.guild_list, 'user_disconnected');}
+	if (oldVoiceConnection && !args.newState.member.user.bot) {
+		lclz_mngr.client_talk(args.client, args.guild_list, 'user_disconnected');
+	}
 
 	let report_message = `from: ${oldChannel} to ${newChannel}\n`;
 
@@ -84,6 +93,7 @@ module.exports = async (args) => {
 					if (oldChannel.members.size === 1) {
 						voiceConnection.disconnect();
 						guld_mngr.delete_channel(oldChannel, args.guild_list[args.newState.guild.id].portal_list);
+						musc_mngr.stop(args.newState.guild.id, args.guild_list, oldChannel.guild);
 					}
 				}
 			}
@@ -136,11 +146,9 @@ module.exports = async (args) => {
 
 					if (voiceConnection) {
 						if (oldChannel.members.size === 1) {
-
 							voiceConnection.disconnect();
-							guld_mngr.delete_channel(
-								oldChannel, args.guild_list[args.newState.guild.id].portal_list);
-
+							guld_mngr.delete_channel(oldChannel, args.guild_list[args.newState.guild.id].portal_list);
+							musc_mngr.stop(args.newState.guild.id, args.guild_list, oldChannel.guild);
 						}
 					}
 
@@ -169,8 +177,8 @@ module.exports = async (args) => {
 					if (voiceConnection) {
 						if (oldChannel.members.size === 1) {
 							voiceConnection.disconnect();
-							guld_mngr.delete_channel(
-								oldChannel, args.guild_list[args.newState.guild.id].portal_list);
+							guld_mngr.delete_channel(oldChannel, args.guild_list[args.newState.guild.id].portal_list);
+							musc_mngr.stop(args.newState.guild.id, args.guild_list, oldChannel.guild);
 						}
 					}
 
@@ -196,6 +204,7 @@ module.exports = async (args) => {
 						if (oldChannel.members.size === 1) {
 							voiceConnection.disconnect();
 							guld_mngr.delete_channel(oldChannel, args.guild_list[args.newState.guild.id].portal_list);
+							musc_mngr.stop(args.newState.guild.id, args.guild_list, oldChannel.guild);
 						}
 
 					}

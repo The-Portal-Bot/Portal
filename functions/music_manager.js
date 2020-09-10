@@ -38,7 +38,7 @@ module.exports = {
 					if (join_attempt.result === true) {
 						yts(search_term)
 							.then(yts_attempt => {
-								if (yts_attempt) {
+								if (yts_attempt && yts_attempt.videos.length > 0) {
 									portal_guilds[guild_id].dispatcher = join_attempt.voice_connection
 										.play(ytdl(yts_attempt.videos[0].url, { filter: 'audioonly' }));
 									help_mngr.update_message(portal_guilds[guild_id],
@@ -96,8 +96,9 @@ module.exports = {
 			const current_dispatcher = portal_guilds[guild_id].dispatcher;
 
 			const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-					'.github.io/master/assets/img/logo.png';
-			help_mngr.update_message(portal_guilds[guild_id],
+				'.github.io/master/assets/img/logo.png';
+			help_mngr.update_message(
+				portal_guilds[guild_id],
 				guild_object,
 				{
 					title: 'Music Player',

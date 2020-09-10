@@ -46,20 +46,30 @@ module.exports =
 	prefix: './',
 	commands: [
 		{
+			name: 'about',
+			description: 'returns a message with information about Portal Bot.',
+			super_description: '**about**, returns a message with information about Portal Bot.' +
+				'Links for features and premium upgrade path is also given.',
+			example: './about',
+			args: 'none',
+		},
+		{
 			name: 'announce',
-			description: 'makes an announcement via portal bot to the announcement channel or creates new if arguments are given.',
-			super_description: '**announce**, announce makes an announcement via portal bot to the announcement channel, ' +
-				'./announce hello im jhon | i want to play games, Here what goes until the "|" is the title and the ' +
-				'the rest it the body your message.',
+			description: 'makes an announcement via portal bot to the announcement channel or creates a new channel' +
+				' if arguments are given.',
+			super_description: '**announce**, announce makes an announcement via portal bot to the announcement' +
+				' channel, ./announce hello im jhon | i want to play games, Here what goes until the "|" is the' +
+				' title and the the rest it the body your message.',
 			example: './announce body | title',
 			args: '<@title> | <@description>',
 		},
 		{
 			name: 'announcement',
-			description: 'sets the text channel you wrote the command as the announcement channel or creates new if arguments are given.',
-			super_description: '**announcement**, sets the text channel you wrote the command as the announcement channel, ' +
-				'which means that every time someone times an announcement is displayed there. If channel is given as ' +
-				'argument, a new channel is created and set as announcements channel.',
+			description: 'sets the text channel you wrote the command in as the announcement channel or creates a' +
+				' new channel if arguments are given.',
+			super_description: '**announcement**, sets the text channel you wrote the command in as the announcement' +
+				'channel, which means that every time someone times an announcement is displayed there. If channel is' +
+				' given as argument, a new channel is created and set as announcements channel.',
 			example: './announcement announcement_name | announcement_category, ./announcement announcement_name, ./announcement',
 			args: '<@channel_name> | <@category_name>',
 		},
@@ -103,8 +113,8 @@ module.exports =
 		{
 			name: 'force',
 			description: 'creates a new channel and moves all users to new channel.',
-			super_description: '**force**, creates a new channel and moves all users to new channel, ' +
-				'in order to get a new channel name if cooldown is still in effect.',
+			super_description: '**force**, creates a new channel and moves all users to new channel,' +
+				' in order to get a new channel name if cooldown is still in effect.',
 			example: './force',
 			args: 'none',
 		},
@@ -121,8 +131,8 @@ module.exports =
 		{
 			name: 'join',
 			description: 'joins the caller\'s voice channel.',
-			super_description: '**join**, joins the caller\'s voice channel. Makes announcements about people that ' +
-				'left and people that joined, and talks loudly every response',
+			super_description: '**join**, joins the caller\'s voice channel. Makes announcements about people that' +
+				' left and people that joined, and talks loudly every response',
 			example: './join',
 			args: 'none',
 		},
@@ -139,6 +149,16 @@ module.exports =
 			super_description: '**level**, returns your level card with all member stats.',
 			example: './level',
 			args: 'none',
+		},
+		{
+			name: 'music',
+			description: 'sets the text channel you wrote the command in as the music channel or creates a new channel' +
+				' if arguments are given.',
+			super_description: '**music**, sets the text channel you wrote the command in as the music channel or' +
+				' creates a new channel if arguments are given. In the music channel there is a music player and' +
+				' nothing else. Users can request songs write there and play/pause/stop/skip the current song.',
+			example: './music music_name | music_category, ./music music_name, ./music',
+			args: '<@channel_name> | <@category_name>',
 		},
 		{
 			name: 'ping',
@@ -220,8 +240,9 @@ module.exports =
 		},
 		{
 			name: 'spotify',
-			description: 'sets the text channel you wrote the command as the Spotify channel or creates new if arguments are given.',
-			super_description: '**spotify**, sets the text channel you wrote the command as the Spotify channel, ' +
+			description: 'sets the text channel you wrote the command in as the Spotify channel or creates a new channel' +
+				' if arguments are given.',
+			super_description: '**spotify**, sets the text channel you wrote the command in as the Spotify channel, ' +
 				'which means that every time someone listens to a song on Spotify it will be displayed. If channel is given as ' +
 				'argument, a new channel is created and set as Spotify channel.',
 			example: './spotify spotify_name | spotify_category, ./spotify spotify_name, ./spotify',
@@ -229,13 +250,13 @@ module.exports =
 		},
 		{
 			name: 'url',
-			ddescription: 'sets the text channel you wrote the command as the url channel or creates new if arguments are given.',
-			super_description: '**url**, sets the text channel you wrote the command as the url channel, ' +
+			ddescription: 'sets the text channel you wrote the command in as the url channel or creates a new channel' +
+				' if arguments are given.',
+			super_description: '**url**, sets the text channel you wrote the command in as the url channel, ' +
 				'which means that every time someone listens to a song on url it will be displayed. If channel is given as ' +
 				'argument, a new channel is created and set as url channel.',
 			example: './url url_name | url_category, ./url url_name, ./url',
 			args: '<@channel_name> | <@category_name>',
 		},
-
 	],
 };
