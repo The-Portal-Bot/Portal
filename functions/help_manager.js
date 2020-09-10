@@ -181,7 +181,6 @@ module.exports = {
 				.setThumbnail(thumbnail);
 		}
 		if (image) {
-			console.log('image :>> ', image);
 			rich_message
 				.setImage(image);
 		}

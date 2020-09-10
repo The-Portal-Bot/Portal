@@ -96,8 +96,9 @@ module.exports = {
 			const current_dispatcher = portal_guilds[guild_id].dispatcher;
 
 			const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-					'.github.io/master/assets/img/logo.png';
-			help_mngr.update_message(portal_guilds[guild_id],
+				'.github.io/master/assets/img/logo.png';
+			help_mngr.update_message(
+				portal_guilds[guild_id],
 				guild_object,
 				{
 					title: 'Music Player',
