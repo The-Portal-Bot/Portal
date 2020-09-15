@@ -1,11 +1,15 @@
 {
   "name": "portal",
-  "version": "1.0.0",
+  "author": "Ioannis Tsiakkas",
+  "version": "1.2.0",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "lint": "eslint ./"
+    "test": "mocha",
+    "lint": "eslint '**/*.js'",
+    "fix": "eslint --fix '**/*.js'"
   },
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
