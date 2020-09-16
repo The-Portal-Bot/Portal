@@ -225,7 +225,7 @@ module.exports = {
 						portal_channel,
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
-							: 'CHN$# CNT$member_count',
+							: 'Channel $#',
 						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true,
 					);
 				})
@@ -234,9 +234,15 @@ module.exports = {
 	},
 
 	create_voice_channel: function(state, portal_objct, portal_channel, creator_id) {
+		console.log('portal_channel.position :>> ', portal_channel.position);
 		state.channel.guild.channels
-			.create('loading...', { type: 'voice', bitrate: 64000, position: portal_channel.position })
+			.create('loading...', {
+				type: 'voice',
+				bitrate: 64000,
+				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
+			})
 			.then(channel => {
+				console.log('channel.position :>> ', channel.position);
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice, false, 0, 0,

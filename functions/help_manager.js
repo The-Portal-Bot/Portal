@@ -215,21 +215,28 @@ module.exports = {
 
 	empty_channel_remover: function(current_guild, portal_guilds, portal_managed_guilds_path) {
 		current_guild.channels.cache.forEach(channel => {
-			for(const portal_channel in portal_guilds[current_guild.id].portal_list) {
-				if(portal_guilds[current_guild.id].portal_list[portal_channel].voice_list[channel.id]) {
-					if(!channel.members.size) {
-						console.log('Deleting channel: ', channel.name, 'from ', channel.guild.name);
-						// guld_mngr.delete_channel(channel);
-						if (channel.deletable) {
-							channel
-								.delete()
-								.then(g => console.log(`Deleted channel with id: ${g}`))
-								.catch(console.error);
+			if(portal_guilds[current_guild.id]) {
+				for(const portal_channel in portal_guilds[current_guild.id].portal_list) {
+					if(portal_guilds[current_guild.id].portal_list[portal_channel].voice_list[channel.id]) {
+						if(!channel.members.size) {
+							console.log('Deleting channel: ', channel.name, 'from ', channel.guild.name);
+							// guld_mngr.delete_channel(channel);
+							if (channel.deletable) {
+								channel
+									.delete()
+									.then(g => console.log(`Deleted channel with id: ${g}`))
+									.catch(console.error);
+							}
+							return true;
 						}
-						return true;
 					}
+					return false;
 				}
-				return false;
+			}
+			else {
+				current_guild.leave()
+					.then(guild => console.log(`Left guild ${guild}`))
+					.catch(console.error);
 			}
 		});
 
@@ -283,10 +290,12 @@ module.exports = {
 			}
 			else if (status === true) {
 				message.react('✔️');
+				message.delete({ timeout: 10000 });
 			}
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
 				message.react('❌');
+				message.delete({ timeout: 10000 });
 			}
 		}
 	},

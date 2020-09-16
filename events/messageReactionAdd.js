@@ -10,7 +10,6 @@ const reaction_role_manager = function(args) {
 	if (!current_guild.role_list[args.messageReaction.message.id]) {
 		return { result: null, value: 'message is not role giving' };
 	}
-
 	const current_role_list = current_guild.role_list[args.messageReaction.message.id];
 	const current_role_map = current_role_list.role_emote_map;
 	const current_member = args.messageReaction.message.guild.members.cache
@@ -86,7 +85,7 @@ const reaction_role_manager = function(args) {
 
 const reaction_music_manager = function(args) {
 	const current_guild = args.guild_list[args.messageReaction.message.guild.id];
-	if (!current_guild.music_data.message_id === args.messageReaction.message.id) {
+	if (current_guild.music_data.message_id !== args.messageReaction.message.id) {
 		return { result: null, value: 'message is not music player' };
 	}
 	const voice_connection_in_reaction_guild = args.client.voice.connections.find(connection =>
@@ -184,6 +183,7 @@ module.exports = async (args) => {
 
 	const return_value_music = reaction_music_manager(args);
 	console.log('return_value_music :>> ', return_value_music);
+
 	if(return_value_music.result !== null) {
 		console.log('INSIDE 2');
 		return return_value_music;
