@@ -68,18 +68,19 @@ module.exports = {
 			false,
 			yts.thumbnail,
 		);
-		const channel = guild_object.channels.cache
-			.get(guild.music_data.channel_id);
+		const channel = guild_object.channels.cache.get(guild.music_data.channel_id);
 
-		channel.messages.channel.messages
-			.fetch(guild.music_data.message_id)
-			.then(message => {
-				message.edit(music_message_emb)
-					.then(msg =>
-						console.log(`Updated the content of a message to ${msg.content}`))
-					.catch(console.error);
-			})
-			.catch(console.error);
+		if(channel) {
+			channel.messages.channel.messages
+				.fetch(guild.music_data.message_id)
+				.then(message => {
+					message.edit(music_message_emb)
+						.then(msg =>
+							console.log(`Updated the content of a message to ${msg.content}`))
+						.catch(console.error);
+				})
+				.catch(console.error);
+		}
 	},
 
 	join_user_voice: async function(client, message, portal_guilds, join) { // localize

@@ -85,6 +85,7 @@ const reaction_role_manager = function(args) {
 
 const reaction_music_manager = function(args) {
 	const current_guild = args.guild_list[args.messageReaction.message.guild.id];
+	console.log(`${current_guild.music_data.message_id} !== ${args.messageReaction.message.id}`);
 	if (current_guild.music_data.message_id !== args.messageReaction.message.id) {
 		return { result: null, value: 'message is not music player' };
 	}
@@ -127,7 +128,7 @@ const reaction_music_manager = function(args) {
 			return_value.value = 'stoping player';
 			musc_mngr.stop(args.messageReaction.message.guild.id, args.guild_list,
 				args.messageReaction.message.guild);
-			args.guild_list[args.messageReaction.message.guild.id].music_data.votes = [];
+			current_guild.music_data.votes = [];
 		}
 		else {
 			return_value.value = `${votes}/${users / 2} (majority needed to stop/admins)`;
@@ -136,7 +137,7 @@ const reaction_music_manager = function(args) {
 	}
 	case '⏭' : {
 		if(!current_guild.music_data.votes.includes(args.user.id)) {
-			votes.push(args.user.id);
+			current_guild.music_data.votes.push(args.user.id);
 		}
 
 		const votes = current_guild.music_data.votes.length;
@@ -146,7 +147,7 @@ const reaction_music_manager = function(args) {
 			return_value.value = 'skipping video';
 			musc_mngr.skip(args.messageReaction.message.guild.id, args.guild_list,
 				args.client, args.messageReaction.message.guild);
-			args.guild_list[args.messageReaction.message.guild.id].music_data.votes = [];
+			current_guild.music_data.votes = [];
 		}
 		else {
 			return_value.value = `${votes}/${users / 2} (majority needed to skip/admins)`;
