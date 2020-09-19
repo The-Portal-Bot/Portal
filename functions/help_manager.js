@@ -291,12 +291,12 @@ module.exports = {
 			}
 			else if (status === true) {
 				message.react('✔️');
-				message.delete({ timeout: 10000 });
+				message.delete({ timeout: 5000 });
 			}
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
 				message.react('❌');
-				message.delete({ timeout: 10000 });
+				message.delete({ timeout: 5000 });
 			}
 		}
 	},
