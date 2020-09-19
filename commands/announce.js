@@ -20,9 +20,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		}
 
 		message.guild.channels.cache.find(channel => channel.id === portal_guilds[message.guild.id].announcement)
-			.send(help_mngr.create_rich_embed(
-				title, `@here ${body}`, '#022E4E', [], null, message.member, false,
-			));
+			.send(help_mngr.create_rich_embed(title, `@here ${body}`, '#022E4E', [], null, message.member, false));
+
 		lclz_mngr.client_talk(client, portal_guilds, 'announce');
 
 		return resolve ({ result: true, value: 'announcement was sent successfully.' });

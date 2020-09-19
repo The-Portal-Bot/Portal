@@ -10,6 +10,7 @@ const voice_class = require('../assets/classes/voice_class');
 const member_class = require('../assets/classes/member_class');
 
 const help_mngr = require('./help_manager');
+const musc_mngr = require('./music_manager');
 
 module.exports = {
 
@@ -225,7 +226,7 @@ module.exports = {
 						portal_channel,
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
-							: 'CHN$# CNT$member_count',
+							: 'Channel $#',
 						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true,
 					);
 				})
@@ -234,9 +235,15 @@ module.exports = {
 	},
 
 	create_voice_channel: function(state, portal_objct, portal_channel, creator_id) {
+		console.log('portal_channel.position :>> ', portal_channel.position);
 		state.channel.guild.channels
-			.create('loading...', { type: 'voice', bitrate: 64000, position: portal_channel.position })
+			.create('loading...', {
+				type: 'voice',
+				bitrate: 64000,
+				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
+			})
 			.then(channel => {
+				console.log('channel.position :>> ', channel.position);
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice, false, 0, 0,
@@ -301,17 +308,18 @@ module.exports = {
 	},
 
 	channel_deleted_update_state: function(channel_to_remove, guild_list) {
-		let type_of_channel = 0;
-		for (const portal_id in guild_list[channel_to_remove.guild.id].portal_list) {
+		const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
+		const current_guild = guild_list[channel_to_remove.guild.id];
+		let type_of_channel = TypesOfChannel.Unknown;
+
+		for (const portal_id in current_guild.portal_list) {
 			if (portal_id === channel_to_remove.id) {
-				delete guild_list[channel_to_remove.guild.id].portal_list[portal_id];
+				delete current_guild.portal_list[portal_id];
 				type_of_channel = 1;
 				break;
 			}
 			else {
-				const current_voice_list = guild_list[channel_to_remove.guild.id]
-					.portal_list[portal_id]
-					.voice_list;
+				const current_voice_list = current_guild.portal_list[portal_id].voice_list;
 				for (const voice_id in current_voice_list) {
 					if (voice_id === channel_to_remove.id) {
 						delete current_voice_list[voice_id];
@@ -322,20 +330,29 @@ module.exports = {
 			}
 		}
 
-		for (const urld_id in guild_list[channel_to_remove.guild.id].url_list) {
-			if (urld_id === +channel_to_remove.id) {
-				delete guild_list[channel_to_remove.guild.id].url_list[urld_id];
-				type_of_channel = 3;
+		for (const url_id in current_guild.url_list) {
+			if (url_id === +channel_to_remove.id) {
+				delete current_guild.url_list[url_id];
+				type_of_channel = TypesOfChannel.Url;
 				break;
 			}
 		}
-		if (guild_list[channel_to_remove.guild.id].spotify === channel_to_remove.id) {
-			guild_list[channel_to_remove.guild.id].spotify = null;
-			type_of_channel = 4;
+		if (current_guild.spotify === channel_to_remove.id) {
+			current_guild.spotify = null;
+			type_of_channel = TypesOfChannel.Spotify;
 		}
-		if (guild_list[channel_to_remove.guild.id].announcement === channel_to_remove.id) {
-			guild_list[channel_to_remove.guild.id].announcement = null;
-			type_of_channel = 5;
+		if (current_guild.announcement === channel_to_remove.id) {
+			current_guild.announcement = null;
+			type_of_channel = TypesOfChannel.Announcement;
+		}
+		if (current_guild.music_data.channel_id === channel_to_remove.id) {
+			musc_mngr.stop(channel_to_remove.guild.id, guild_list, channel_to_remove.guild);
+
+			current_guild.music_data.channel_id = null;
+			current_guild.music_data.message_id = null;
+			current_guild.music_data.votes = [];
+			current_guild.dispatcher = null;
+			type_of_channel = TypesOfChannel.Music;
 		}
 		return type_of_channel;
 	},

@@ -6,7 +6,7 @@ const help_mngr = require('../functions/help_manager');
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		const ranks = portal_guilds[message.guild.id].ranks;
-		if (ranks) {
+		if (ranks && ranks.length > 0) {
 			const ranks_msg = [];
 			ranks.forEach(rank => {
 				ranks_msg.push({

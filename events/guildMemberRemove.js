@@ -1,9 +1,8 @@
 const help_mngr = require('../functions/help_manager');
 
 module.exports = async (args) => {
-	if (!args.guild_list[args.member.guild.id].announcement) {
-		return {
-			result: false, value: 'announcements channel has not been set.' };
+	if (!args.guild_list[args.member.guild.id] || !args.guild_list[args.member.guild.id].announcement) {
+		return { result: false, value: 'announcements channel has not been set.' };
 	}
 
 	args.member.guild.channels.cache

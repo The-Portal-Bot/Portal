@@ -21,74 +21,66 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			});
 		}
 
-		if (args.length > 1) { // check for type accuracy and make better
+		if (args.length > 1) {
 			for (const portal_key in current_portal_list) {
 				for (const voice_key in current_portal_list[portal_key].voice_list) {
 					if (voice_key === message.member.voice.channel.id) {
 						const current_voice_channel = current_portal_list[portal_key].voice_list[voice_key];
 						const current_portal_channel = current_portal_list[portal_key];
 
-						if (message.member.id === current_voice_channel.creator_id) {
-							let value = [...args]; value.shift();
-							value = value.filter(val => val !== '\n').join(' ');
+						let value = [...args]; value.shift();
+						value = value.filter(val => val !== '\n').join(' ');
 
-							const return_value = attr_objct.set(
-								message.member.voice.channel, current_voice_channel, current_portal_channel,
-								portal_guilds[message.guild.id], args[0], value, message.member,
-							);
+						const return_value = attr_objct.set(
+							message.member.voice.channel, current_voice_channel, current_portal_channel,
+							portal_guilds[message.guild.id], args[0], value, message.member,
+						);
 
-							switch (return_value) {
-							case 1:
-								return resolve ({
-									result: true,
-									value: `*attribute ${args[0]} set to ${value} successfully.*`,
-								});
-							case -1:
-								return resolve({
-									result: false,
-									value: `*${args[0]} is not an attribute.*`,
-								});
-							case -2:
-								return resolve ({
-									result: false,
-									value: `*${args[0]} can only be set by an administrator.*`,
-								});
-							case -3:
-								return resolve({
-									result: false,
-									value: `*${args[0]} can only be set by the portal creator.*`,
-								});
-							case -4:
-								return resolve({
-									result: false,
-									value: `*${args[0]} can only be set by the voice creator.*`,
-								});
-							case -5:
-								return resolve ({
-									result: false,
-									value: `*locale can only be ${locales.join(', ')}.*`,
-								});
-							case -6:
-								return resolve({
-									result: false,
-									value: `*${args[0]} can be a number from 0-n (0 means unlimited).*`,
-								});
-							case -7:
-								return resolve({
-									result: false,
-									value: `*${args[0]} can only be true or false.*`,
-								});
-							default:
-								return resolve ({
-									result: false,
-									value: `*${args[0]} cannot be set.*`,
-								});
-							}
-						}
-						else {
+						switch (return_value) {
+						case 1:
+							return resolve ({
+								result: true,
+								value: `*attribute ${args[0]} set to ${value} successfully.*`,
+							});
+						case -1:
+							return resolve({
+								result: false,
+								value: `*${args[0]} is not an attribute.*`,
+							});
+						case -2:
 							return resolve ({
 								result: false,
-								value: `*only the channel creator can change attribute: ${args[0]}.*`,
+								value: `*${args[0]} can only be set by an administrator.*`,
+							});
+						case -3:
+							return resolve({
+								result: false,
+								value: `*${args[0]} can only be set by the portal creator.*`,
+							});
+						case -4:
+							return resolve({
+								result: false,
+								value: `*${args[0]} can only be set by the voice creator.*`,
+							});
+						case -5:
+							return resolve ({
+								result: false,
+								value: `*locale can only be ${locales.join(', ')}.*`,
+							});
+						case -6:
+							return resolve({
+								result: false,
+								value: `*${args[0]} can be a number from 0-n (0 means unlimited).*`,
+							});
+						case -7:
+							return resolve({
+								result: false,
+								value: `*${args[0]} can only be true or false.*`,
+							});
+						default:
+							return resolve ({
+								result: false,
+								value: `*${args[0]} cannot be set.*`,
 							});
 						}
 					}
