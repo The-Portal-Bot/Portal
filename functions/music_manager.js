@@ -10,6 +10,9 @@ module.exports = {
 
 	start: async function(client, message, search_term, portal_guilds) {
 		return new Promise((resolve) => {
+			if(!search_term || search_term === '') {
+				return resolve({ result: false, value: 'cannot search for nothing.' });
+			}
 			if(!message.member.voice.channel) {
 				return resolve({ result: false, value: 'you are not connected to any channel.' });
 			}

@@ -1,5 +1,16 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/PortalDB', { useNewUrlParser: true })
+	.catch(error => {
+		console.error.bind(console, 'PortallDB connection error:');
+		console.log('Could not connect to PortalDB (mongo) with error:\n', error);
+		return -1;
+	});
+
+const PortalDB = mongoose.connection;
+PortalDB.once('open', function() { console.log('we\'re connected!'); });
+
 const file_system = require('file-system');
 
 const portal_managed_guilds_path = './server_storage/guild_list.json';
@@ -256,7 +267,10 @@ client.on('message', async message => {
 	}
 
 	if (command_cooldown[type][cmd].auth) {
-		if (!help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member)) {
+		const is_user_authorized = help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member);
+		console.log('is_user_authorized :>> ', is_user_authorized);
+
+		if (!is_user_authorized) {
 			help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
 				'you are not authorized to access this command', guild_list, client);
 			return;

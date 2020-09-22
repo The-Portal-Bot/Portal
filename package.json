@@ -18,7 +18,9 @@
     "file-system": "^2.2.2",
     "lodash": "^4.17.20",
     "moment": "^2.25.3",
+    "mongoose": "^5.10.6",
     "sentiment": "^5.0.2",
+    "validator": "^13.1.17",
     "voca": "^1.4.0",
     "yt-search": "^2.3.0",
     "ytdl-core": "^3.2.2"

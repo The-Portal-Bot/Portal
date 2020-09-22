@@ -272,8 +272,16 @@ module.exports = {
 	},
 
 	is_authorized: function(auth_list, member) {
+		member.roles.cache.some(role =>
+			console.log('role.id :>> ', role.id),
+		);
 		return !member.hasPermission('ADMINISTRATOR')
-			? member.roles.cache.some(role => auth_list.some(auth => auth === role.id))
+			? member.roles.cache !== undefined && member.roles.cache !== null
+				? member.roles.cache.some(role =>
+					auth_list
+						? auth_list.some(auth => auth === role.id)
+						: false)
+				: false
 			: true;
 	},
 
@@ -287,16 +295,26 @@ module.exports = {
 		}
 		if (!message.deleted) {
 			if(to_delete) {
-				message.delete();
+				message
+					.delete()
+					.catch(error => console.log(error));
 			}
 			else if (status === true) {
-				message.react('✔️');
-				message.delete({ timeout: 5000 });
+				message
+					.react('✔️')
+					.catch(error => console.log(error));
+				message
+					.delete({ timeout: 5000 })
+					.catch(error => console.log(error));
 			}
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
-				message.react('❌');
-				message.delete({ timeout: 5000 });
+				message
+					.react('❌')
+					.catch(error => console.log(error));
+				message
+					.delete({ timeout: 5000 })
+					.catch(error => console.log(error));
 			}
 		}
 	},
