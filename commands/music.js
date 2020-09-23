@@ -62,30 +62,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			let value = null;
 
 			if (music_channel !== '') {
-				guld_mngr.create_music_channel(message.guild, music_channel, music_category, current_channel)
-					.then(channel =>
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							portal_guilds[message.guild.id],
-						),
-					)
-					.catch(console.error);
-
+				guld_mngr.create_music_channel(message.guild, music_channel, music_category, current_channel);
 				result = true;
 				value = '*music channel and category have been created*';
 			}
 			else if (music_channel === '' && music_category !== '') {
-				guld_mngr.create_music_channel(message.guild, music_category, null, current_channel)
-					.then(channel =>
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							portal_guilds[message.guild.id],
-						),
-					)
-					.catch(console.error);
-
+				guld_mngr.create_music_channel(message.guild, music_category, null, current_channel);
 				result = true;
 				value = '*music channel has been created*';
 			}

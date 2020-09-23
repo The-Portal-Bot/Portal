@@ -122,7 +122,7 @@ module.exports = {
 				})
 				.catch(console.error);
 		}
-		else if (url_category) {
+		else if (url_category) { // with category given
 			guild.channels
 				.create(`${url_name}-url`, { type: 'text' }, { parent: url_category })
 				.then(channel => {
@@ -151,7 +151,7 @@ module.exports = {
 				})
 				.catch(console.error);
 		}
-		else if (spotify_category) {
+		else if (spotify_category) { // with category given
 			return guild.channels
 				.create(`${spotify_channel}-sptfy`, { type: 'text' }, { parent: spotify_category })
 				.then(channel => {
@@ -169,6 +169,8 @@ module.exports = {
 	},
 
 	create_music_channel: async function(guild, music_channel, music_category, guild_object) {
+		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+			'.github.io/master/assets/img/logo.png';
 		return new Promise((resolve) => {
 			if (music_category && typeof music_category === 'string') { // with category
 				guild.channels
@@ -179,17 +181,25 @@ module.exports = {
 							.create(music_category, { type: 'category' })
 							.then(cat_channel => channel.setParent(cat_channel))
 							.catch(error => resolve(error));
-						return resolve(channel);
+						help_mngr.create_music_message(
+							channel,
+							portal_icon_url,
+							guild_object,
+						);
 					})
 					.catch(error => resolve(error));
 			}
-			else if (music_category) {
+			else if (music_category) { // with category given
 				guild.channels
 					.create(`${music_channel}-music`, { type: 'text' }, { parent: music_category })
 					.then(channel => {
 						channel.setParent(music_category);
 						guild_object.music_data.channel_id = channel.id;
-						return resolve(channel);
+						help_mngr.create_music_message(
+							channel,
+							portal_icon_url,
+							guild_object,
+						);
 					})
 					.catch(error => resolve(error));
 			}
@@ -198,7 +208,11 @@ module.exports = {
 					.create(`${music_channel}-music`, { type: 'text' })
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
-						return resolve(channel);
+						help_mngr.create_music_message(
+							channel,
+							portal_icon_url,
+							guild_object,
+						);
 					})
 					.catch(error => resolve(error));
 			}
@@ -218,7 +232,7 @@ module.exports = {
 				})
 				.catch(console.error);
 		}
-		else if (announcement_category) {
+		else if (announcement_category) { // with category given
 			return guild.channels
 				.create(`${announcement_channel}-annc`, { type: 'text' }, { parent: announcement_category })
 				.then(channel => {
@@ -255,7 +269,7 @@ module.exports = {
 				})
 				.catch(console.error);
 		}
-		else if (portal_category) {
+		else if (portal_category) { // with category given
 			return guild.channels
 				.create(portal_channel, { type: 'voice', bitrate: 8000 }, { parent: portal_category })
 				.then(channel => {
