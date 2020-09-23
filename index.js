@@ -1,15 +1,15 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/PortalDB', { useNewUrlParser: true })
-	.catch(error => {
-		console.error.bind(console, 'PortallDB connection error:');
-		console.log('Could not connect to PortalDB (mongo) with error:\n', error);
-		return -1;
-	});
+// const mongoose = require('mongoose');
+// mongoose.connect('mongodb://localhost/PortalDB', { useNewUrlParser: true })
+// 	.catch(error => {
+// 		console.error.bind(console, 'PortallDB connection error:');
+// 		console.log('Could not connect to PortalDB (mongo) with error:\n', error);
+// 		return -1;
+// 	});
 
-const PortalDB = mongoose.connection;
-PortalDB.once('open', function() { console.log('we\'re connected!'); });
+// const PortalDB = mongoose.connection;
+// PortalDB.once('open', function() { console.log('we\'re connected!'); });
 
 const file_system = require('file-system');
 
@@ -241,7 +241,7 @@ client.on('message', async message => {
 			if (rspns) {
 				help_mngr.message_reply(
 					rspns.result, message.author.presence.member.voice.channel,
-					message, message.author, rspns.value, guild_list, client);
+					message, message.author, rspns.value, guild_list, client, false);
 			}
 		});
 

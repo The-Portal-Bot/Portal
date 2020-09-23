@@ -286,7 +286,7 @@ module.exports = {
 	},
 
 	// channel should be removed !
-	message_reply: function(status, channel, message, user, str, portal_guilds, client, to_delete = false) {
+	message_reply: function(status, channel, message, user, str, portal_guilds, client, to_delete = true) {
 		if (!message.channel.deleted) {
 			message.channel
 				.send(`${user}, ${str}`)
@@ -294,27 +294,26 @@ module.exports = {
 				.catch(error => console.log(error));
 		}
 		if (!message.deleted) {
-			if(to_delete) {
-				message
-					.delete()
-					.catch(error => console.log(error));
-			}
-			else if (status === true) {
+			if (status === true) {
 				message
 					.react('✔️')
 					.catch(error => console.log(error));
-				message
-					.delete({ timeout: 5000 })
-					.catch(error => console.log(error));
+				if(to_delete) {
+					message
+						.delete({ timeout: 5000 })
+						.catch(error => console.log(error));
+				}
 			}
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
 				message
 					.react('❌')
 					.catch(error => console.log(error));
-				message
-					.delete({ timeout: 5000 })
-					.catch(error => console.log(error));
+				if(to_delete) {
+					message
+						.delete({ timeout: 5000 })
+						.catch(error => console.log(error));
+				}
 			}
 		}
 	},
