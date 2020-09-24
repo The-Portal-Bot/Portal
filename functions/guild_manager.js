@@ -174,7 +174,10 @@ module.exports = {
 		return new Promise((resolve) => {
 			if (music_category && typeof music_category === 'string') { // with category
 				guild.channels
-					.create(`${music_channel}-music`, { type: 'text' })
+					.create(`${music_channel}-music`, {
+						type: 'text',
+						topic: 'Music Channel from Portal',
+					})
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
 						guild.channels
@@ -191,7 +194,11 @@ module.exports = {
 			}
 			else if (music_category) { // with category given
 				guild.channels
-					.create(`${music_channel}-music`, { type: 'text' }, { parent: music_category })
+					.create(`${music_channel}-music`, {
+						type: 'text',
+						topic: 'Music Channel from Portal',
+						parent: music_category,
+					})
 					.then(channel => {
 						channel.setParent(music_category);
 						guild_object.music_data.channel_id = channel.id;
@@ -205,7 +212,10 @@ module.exports = {
 			}
 			else { // without category
 				guild.channels
-					.create(`${music_channel}-music`, { type: 'text' })
+					.create(`${music_channel}-music`, {
+						topic: 'Music Channel from Portal',
+						type: 'text',
+					})
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
 						help_mngr.create_music_message(

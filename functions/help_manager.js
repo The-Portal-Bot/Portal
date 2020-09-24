@@ -47,6 +47,7 @@ module.exports = {
 				sent_message.react('⏸');
 				sent_message.react('⏹');
 				sent_message.react('⏭');
+				sent_message.react('📜');
 
 				guild_object.music_data.message_id = sent_message.id;
 			});

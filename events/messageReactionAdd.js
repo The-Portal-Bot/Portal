@@ -85,7 +85,7 @@ const reaction_role_manager = function(args) {
 
 const reaction_music_manager = function(args) {
 	const current_guild = args.guild_list[args.messageReaction.message.guild.id];
-	console.log(`${current_guild.music_data.message_id} !== ${args.messageReaction.message.id}`);
+
 	if (current_guild.music_data.message_id !== args.messageReaction.message.id) {
 		return { result: null, value: 'message is not music player' };
 	}
@@ -108,7 +108,8 @@ const reaction_music_manager = function(args) {
 	switch(args.messageReaction.emoji.name) {
 	case '▶️' : {
 		return_value.value = 'resuming player';
-		musc_mngr.play(args.messageReaction.message.guild.id, args.guild_list);
+		musc_mngr.play(args.messageReaction.message.guild.id, args.guild_list,
+			args.client, args.messageReaction.message.guild);
 		break;
 	}
 	case '⏸' : {
@@ -124,7 +125,7 @@ const reaction_music_manager = function(args) {
 		const votes = current_guild.music_data.votes.length;
 		const users = voice_connection_in_reaction_guild.channel.members.filter(member => !member.user.bot).size;
 
-		if (votes >= users / 2) {
+		if (votes >= users / 2 || args.user.presence.member.hasPermission('ADMINISTRATOR')) {
 			return_value.value = 'stoping player';
 			musc_mngr.stop(args.messageReaction.message.guild.id, args.guild_list,
 				args.messageReaction.message.guild);
@@ -143,7 +144,7 @@ const reaction_music_manager = function(args) {
 		const votes = current_guild.music_data.votes.length;
 		const users = voice_connection_in_reaction_guild.channel.members.filter(member => !member.user.bot).size;
 
-		if (votes >= users / 2) {
+		if (votes >= users / 2 || args.user.presence.member.hasPermission('ADMINISTRATOR')) {
 			return_value.value = 'skipping video';
 			musc_mngr.skip(args.messageReaction.message.guild.id, args.guild_list,
 				args.client, args.messageReaction.message.guild);
@@ -153,6 +154,11 @@ const reaction_music_manager = function(args) {
 			return_value.value = `${votes}/${users / 2} (majority needed to skip/admins)`;
 		}
 		break;
+	}
+	case '📜' : {
+		const current_music_queue = args.guild_list[args.messageReaction.message.guild.id].music_queue;
+		return_value.value = `Music Queue:\n${current_music_queue.map((video, i) =>
+			`${i + 1}. ;;${video.title}`).join('--\n').toString()}::`;
 	}
 	}
 
@@ -176,17 +182,12 @@ module.exports = async (args) => {
 	}
 
 	const return_value_role = reaction_role_manager(args);
-	console.log('return_value_role :>> ', return_value_role);
 	if(return_value_role.result !== null) {
-		console.log('INSIDE 1');
 		return return_value_role;
 	}
 
 	const return_value_music = reaction_music_manager(args);
-	console.log('return_value_music :>> ', return_value_music);
-
 	if(return_value_music.result !== null) {
-		console.log('INSIDE 2');
 		return return_value_music;
 	}
 

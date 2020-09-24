@@ -17,10 +17,10 @@ module.exports =
 		if (client.voice !== undefined) {
 			if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
 				for (const guild_id in guild_list) {
-					if (guild_list[guild_id].dispatcher) {
-						for (const portal_id in guild_list[guild_id].portal_list) {
-							for (const voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
-								if (voice_id === voiceConnection.channel.id) {
+					for (const portal_id in guild_list[guild_id].portal_list) {
+						for (const voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
+							if (voice_id === voiceConnection.channel.id) {
+								if (!guild_list[guild_id].dispatcher) {
 									if (!check || guild_list[guild_id].portal_list[portal_id].voice_list[voice_id][check]) {
 										const locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
 										const random = Math.floor(Math.random() * Math.floor(3));

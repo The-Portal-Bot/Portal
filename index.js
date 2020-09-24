@@ -65,11 +65,19 @@ event_loader = function(event, args) {
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
 			if(rspns !== null && rspns !== undefined) {
-				if (rspns.result) {
-					console.log('True:\t', rspns.value);
+				if(event === 'messageReactionAdd') {
+					const music_channel_id = args.guild_list[args.messageReaction.message.guild.id]
+						.music_data.channel_id;
+					const music_channel = args.messageReaction.message.guild.channels.cache
+						.find(channel => channel.id === music_channel_id);
+
+					music_channel
+						.send(`${args.user}, ${rspns.value.toString()}`)
+						.then(msg => { msg.delete({ timeout: 5000 }); })
+						.catch(error => console.log(error));
 				}
 				else {
-					console.log('False:\t', rspns.value);
+					console.log(rspns.result, rspns.value);
 				}
 			}
 		});
@@ -202,7 +210,7 @@ client.on('message', async message => {
 		channel_support = 'read';
 		channel_talk = 'read_only';
 	}
-	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
+	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) { // tsiakkas
 		play_mngr.start(client, message, message.content.toString(), guild_list)
 			.then(joined => {
 				help_mngr.message_reply(

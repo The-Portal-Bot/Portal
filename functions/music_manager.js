@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-const guld_mngr = require('./guild_manager');
-const lclz_mngr = require('./localization_manager');
 const help_mngr = require('./help_manager');
 
 const yts = require('yt-search');
@@ -28,7 +25,6 @@ module.exports = {
 							current_music_queue.push(yts_attempt.videos[0]);
 						}
 						else {
-							console.log('could not find youtube video');
 							return resolve ({ result: false, value: 'could not find youtube video' });
 						}
 					})
@@ -46,6 +42,14 @@ module.exports = {
 										.play(ytdl(yts_attempt.videos[0].url, { filter: 'audioonly' }));
 									help_mngr.update_message(portal_guilds[guild_id],
 										message.member.voice.channel.guild, yts_attempt.videos[0]);
+
+									portal_guilds[guild_id].dispatcher.on('speaking', value => {
+										if (!value) {
+											this.skip(guild_id, portal_guilds,
+												client, message.guild);
+											portal_guilds[guild_id].music_data.votes = [];
+										}
+									});
 									return resolve ({ result: false, value: 'playing video' });
 								}
 								else {
@@ -63,12 +67,20 @@ module.exports = {
 		});
 	},
 
-	play: async function(guild_id, portal_guilds) {
+	play: async function(guild_id, portal_guilds, client, guild_object) {
 		return new Promise((resolve) => {
 			const current_dispatcher = portal_guilds[guild_id].dispatcher;
 
 			if(current_dispatcher !== null && current_dispatcher !== undefined) {
-				if(current_dispatcher.paused) {current_dispatcher.resume();}
+				if(current_dispatcher.paused) {
+					current_dispatcher.resume();
+					portal_guilds[guild_id].dispatcher.on('speaking', value => {
+						if (!value) {
+							this.skip(guild_id, portal_guilds, client, guild_object);
+							portal_guilds[guild_id].music_data.votes = [];
+						}
+					});
+				}
 
 				return resolve ({ result: false, value: 'song has been resumed.' });
 			}
@@ -147,6 +159,34 @@ module.exports = {
 							guild_object,
 							next_yts_video,
 						);
+
+						portal_guilds[guild_id].dispatcher.on('speaking', value => {
+							if (!value) {
+								if(current_music_queue.length > 0) {
+									console.log('continue');
+									this.skip(guild_id, portal_guilds, client, guild_object);
+									portal_guilds[guild_id].music_data.votes = [];
+								}
+								else {
+									console.log('end');
+									const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+										'.github.io/master/assets/img/logo.png';
+									help_mngr.update_message(
+										portal_guilds[guild_id],
+										guild_object,
+										{
+											title: 'Music Player',
+											url: 'just type and I\'ll play',
+											timestamp: '-',
+											views: '-',
+											ago: '-',
+											thumbnail: portal_icon_url,
+										});
+									portal_guilds[guild_id].pause = null;
+									portal_guilds[guild_id].dispatcher = null;
+								}
+							}
+						});
 					}
 				}
 				else {
