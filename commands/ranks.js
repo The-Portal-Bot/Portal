@@ -21,12 +21,16 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					false, false, '#FF4500', ranks_msg,
 					false, message.member, false,
 				),
-			);
+			).then(msg => {
+				msg.delete({ timeout: 10000 });
+			});
+
+			resolve(true);
 		}
 		else {
-			message.channel.send('There is no ranking yet.');
+			resolve({ result: true, value: 'There is no ranking yet.' });
 		}
 
-		return resolve(null);
+		resolve({ result: true, value: 'There is no ranking yet.' });
 	});
 };

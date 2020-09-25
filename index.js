@@ -292,14 +292,21 @@ client.on('message', async message => {
 	if (type === 'none' && command_cooldown.none[cmd].time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then(rspns => {
-				if (rspns) {
-					help_mngr.message_reply(
-						rspns.result, message.author.presence.member.voice.channel,
-						message, message.author, rspns.value, guild_list, client);
+				if (rspns.result === true) {
+					help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
+						message.author, rspns ? 'executed correctly' : rspns.value, guild_list, client);
 				}
+				else if (rspns.result === false) {
+					help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
+						message.author, rspns.value, guild_list, client);
+				}
+
+				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+
+				help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,
+					message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
 			});
-		help_mngr.update_portal_managed_guilds(true,
-			portal_managed_guilds_path, guild_list);
+
 
 		return;
 	}
@@ -334,17 +341,18 @@ client.on('message', async message => {
 						active => active.command !== cmd);
 				}, command_cooldown[type][cmd].time * 60 * 1000);
 
-				help_mngr.message_reply(
-					true, message.author.presence.member.voice.channel,
-					message, message.author, rspns ? 'executed correctly' : rspns.value, guild_list, client);
-
-				help_mngr.update_portal_managed_guilds(
-					true, portal_managed_guilds_path, guild_list);
+				help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
+					message.author, rspns ? 'executed correctly' : rspns.value, guild_list, client);
+			}
+			else if (rspns.result === false) {
+				help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
+					message.author, rspns.value, guild_list, client);
 			}
 
-			help_mngr.message_reply(
-				rspns.result, message.author.presence.member.voice.channel,
-				message, message.author, rspns.value, guild_list, client);
+			help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+
+			help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,
+				message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
 		});
 });
 
