@@ -288,7 +288,8 @@ module.exports = {
 	},
 
 	// channel should be removed !
-	message_reply: function(status, channel, message, user, str, portal_guilds, client, to_delete = true) {
+	message_reply: function(status, channel, message, user, str, portal_guilds,
+		client, to_delete = true, emote_pass = '✔️', emote_fail = '❌') {
 		if (!message.channel.deleted) {
 			message.channel
 				.send(`${user}, ${str}`)
@@ -298,7 +299,7 @@ module.exports = {
 		if (!message.deleted) {
 			if (status === true) {
 				message
-					.react('✔️')
+					.react(emote_pass)
 					.catch(error => console.log(error));
 				if(to_delete) {
 					message
@@ -309,7 +310,7 @@ module.exports = {
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
 				message
-					.react('❌')
+					.react(emote_fail)
 					.catch(error => console.log(error));
 				if(to_delete) {
 					message

@@ -19,12 +19,10 @@ const reaction_role_manager = function(args) {
 		if(current_role_map[i].give === args.messageReaction.emoji.name) { // give role
 			if (!args.messageReaction.message.guild.roles.cache.has(current_role_map[i].id)) { // guild has role
 				clear_user_reactions(args);
-				console.log({ result: false, value: `role ${current_role_map[i].give} does not exist` });
 				return { result: false, value: `role ${current_role_map[i].give} does not exist` };
 			}
 			if (current_member.roles.cache.has(current_role_map[i].id)) { // member has role
 				clear_user_reactions(args);
-				console.log({ result: false, value: `you already have role ${current_role_map[i].give}` });
 				return { result: false, value: `you already have role ${current_role_map[i].give}` };
 			}
 
@@ -39,12 +37,10 @@ const reaction_role_manager = function(args) {
 			}
 			catch (error) {
 				clear_user_reactions(args);
-				console.log({ result: false, value: `failed to add role ${current_role_map[i].give}` });
 				return { result: false, value: `failed to add role ${current_role_map[i].give}` };
 			}
 
 			clear_user_reactions(args);
-			console.log({ result: true, value: `you have been added to role ${current_role_map[i].give}` });
 			return { result: true, value: `you have been added to role ${current_role_map[i].give}` };
 
 		}
@@ -52,12 +48,10 @@ const reaction_role_manager = function(args) {
 
 			if (!args.messageReaction.message.guild.roles.cache.has(current_role_map[i].id)) { // guild has role
 				clear_user_reactions(args);
-				console.log({ result: false, value: `role ${current_role_map[i].strip} does not exist` });
 				return { result: false, value: `role ${current_role_map[i].strip} does not exist` };
 			}
 			if (!current_member.roles.cache.has(current_role_map[i].id)) { // member does not has role
 				clear_user_reactions(args);
-				console.log({ result: false, value: `you do not have role ${current_role_map[i].strip}` });
 				return { result: false, value: `you do not have role ${current_role_map[i].strip}` };
 			}
 
@@ -72,12 +66,10 @@ const reaction_role_manager = function(args) {
 			}
 			catch (error) {
 				clear_user_reactions(args);
-				console.log({ result: false, value: `failed to remove role ${current_role_map[i].strip}` });
 				return { result: false, value: `failed to remove role ${current_role_map[i].strip}` };
 			}
 
 			clear_user_reactions(args);
-			console.log({ result: true, value: `you have been striped from role ${current_role_map[i].strip}` });
 			return { result: true, value: `you have been striped from role ${current_role_map[i].strip}` };
 		}
 	}
@@ -88,7 +80,6 @@ const reaction_music_manager = function(args) {
 	let voice_connection_in_reaction_guild = null;
 
 	if(args.messageReaction.emoji.name !== '📜' && args.messageReaction.emoji.name !== '❌') {
-		console.log('apart');
 		if (current_guild.music_data.message_id !== args.messageReaction.message.id) {
 			return { result: null, value: 'message is not music player' };
 		}
