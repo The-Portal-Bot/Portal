@@ -157,8 +157,16 @@ const reaction_music_manager = function(args) {
 	}
 	case '📜' : {
 		const current_music_queue = args.guild_list[args.messageReaction.message.guild.id].music_queue;
-		return_value.value = `Music Queue:\n${current_music_queue.map((video, i) =>
-			`${i + 1}. ;;${video.title}`).join('--\n').toString()}::`;
+		const music_queue = current_music_queue.length > 0
+			? '\n' + current_music_queue.map((video, i) => `${i + 1}. **${video.title}`).join('**\n').toString() + '**'
+			: ' empty';
+		return_value.value = `Music queue:${music_queue}`;
+		break;
+	}
+	case '❌' : {
+		args.guild_list[args.messageReaction.message.guild.id].music_queue = [];
+		return_value.value = 'Music queue: has been cleared.';
+		break;
 	}
 	}
 

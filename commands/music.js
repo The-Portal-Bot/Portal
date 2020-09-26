@@ -78,8 +78,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				});
 			}
 
-			console.log('2 FRIEND OF MINE');
-
 			return resolve ({
 				result: result,
 				value: value,
