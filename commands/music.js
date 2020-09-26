@@ -38,7 +38,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		const music = message.guild.channels.cache
 			.find(channel => channel.id == current_channel.music_data.channel_id);
 
-		if (music) guld_mngr.delete_channel(music);
+		if (music) guld_mngr.delete_channel(music, message);
 
 		if (args.length === 0) {
 			current_channel.music_data.channel_id = message.channel.id;

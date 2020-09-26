@@ -198,6 +198,4 @@ module.exports = async (args) => {
 	if(return_value_music.result !== null) {
 		return return_value_music;
 	}
-
-	return { result: false, value: 'Message is neither music player nor role giving' };
 };

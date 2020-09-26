@@ -376,8 +376,60 @@ module.exports = {
 		delete portal_guilds[guild_id];
 	},
 
-	delete_channel: (channel_to_delete) => {
-		if (channel_to_delete.deletable) {
+	delete_channel: (channel_to_delete, message, isPortal = false) => {
+		if(!isPortal) {
+			const author = message.author;
+			const channel_to_delete_name = channel_to_delete.name;
+
+			message.channel
+				.send(`${message.author}, do you wish to delete channel **"${channel_to_delete}"**\n` +
+					'(yes / no)?')
+				.then(question_msg => {
+					const filter = m => m.author.id === author.id;
+					const collector = message.channel.createMessageCollector(filter, { time: 10000 });
+
+					collector.on('collect', m => {
+						if(m.content === 'yes') {
+							if (channel_to_delete.deletable) {
+								channel_to_delete
+									.delete()
+									.then(g => console.log(`Deleted channel with id: ${g}`))
+									.catch(console.error);
+
+								m.channel.send(`Deleted channel **"${channel_to_delete_name}"**.`)
+									.then(msg => { msg.delete({ timeout: 5000 }); })
+									.catch(error => console.log(error));
+							}
+							else {
+								message.channel.send(`Channel **"${channel_to_delete}"** is not deletable.`)
+									.then(msg => { msg.delete({ timeout: 5000 }); })
+									.catch(error => console.log(error));
+							}
+
+							collector.stop();
+
+						}
+						else if(m.content === 'no') {
+							message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted.`)
+								.then(msg => { msg.delete({ timeout: 5000 }); })
+								.catch(error => console.log(error));
+
+							collector.stop();
+						}
+					});
+
+					collector.on('end', collected => {
+						for (const reply_message of collected.values()) {
+							if (reply_message.deletable) {
+								reply_message.delete().catch(console.error);
+							}
+						}
+						question_msg.delete({ timeout: 5000 });
+					});
+				})
+				.catch(error => console.log(error));
+		}
+		else if (channel_to_delete.deletable) {
 			channel_to_delete
 				.delete()
 				.then(g => console.log(`Deleted channel with id: ${g}`))

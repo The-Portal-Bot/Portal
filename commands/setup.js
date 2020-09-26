@@ -12,7 +12,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					if(channel.id === portal_guilds[message.guild.id].spotify ||
 					channel.id === portal_guilds[message.guild.id].announcement ||
 					channel.id === portal_guilds[message.guild.id].music_data.channel_id) {
-						guld_mngr.delete_channel(channel);
+						guld_mngr.delete_channel(channel, message);
 					}
 				});
 
