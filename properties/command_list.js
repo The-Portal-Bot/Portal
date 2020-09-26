@@ -228,7 +228,7 @@ module.exports =
 			example: 'json\n./role ' +
 				'[\n\t{ "level": "2", "role": "Alpha" },\n' +
 				'\t{ "level": "5", "role": "Beta" }\n]\n',
-			args: '```json\nJSON array of objects:\n{ "level": "2", "role": "Alpha" }```',
+			args: '```json\nJSON array of objects:\n[{ "level": "2", "role": "Alpha" }]```',
 		},
 		{
 			name: 'setup',

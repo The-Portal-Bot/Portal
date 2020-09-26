@@ -32,7 +32,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 		// if (url = message.guild.channels.cache.find(channel =>
 		// channel.id == portal_guilds[message.guild.id].url_list[message.channel.id])) {
-		//     guld_mngr.delete_channel(url);
+		//     guld_mngr.delete_channel(url, message);
 		// }
 
 		if (args.length === 0) {

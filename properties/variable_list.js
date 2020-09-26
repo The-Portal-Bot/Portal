@@ -227,7 +227,7 @@ module.exports =
 			get: (voice_channel) => {
 				let cnt = 0;
 				voice_channel.members.forEach((member) => {
-					if (member.presence.game !== null) {cnt++;}
+					if (member.presence.game !== null && !member.user.bot) {cnt++;}
 				});
 				return cnt;
 			},
@@ -239,7 +239,11 @@ module.exports =
 			example: '$member_count',
 			args: 'none',
 			get: (voice_channel) => {
-				return voice_channel.members.size;
+				let cnt = 0;
+				voice_channel.members.forEach((member) => {
+					if (!member.user.bot) {cnt++;}
+				});
+				return cnt;
 			},
 		},
 		{

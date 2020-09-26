@@ -29,7 +29,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		const spotify = message.guild.channels.cache
 			.find(channel => channel.id == portal_guilds[message.guild.id].spotify);
 
-		if (spotify) guld_mngr.delete_channel(spotify);
+		if (spotify) guld_mngr.delete_channel(spotify, message);
 
 		if (args.length === 0) {
 			portal_guilds[message.guild.id].spotify = message.channel.id;

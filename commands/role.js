@@ -21,8 +21,16 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
 		if (args.length > 0) {
 			const role_map = help_mngr.getJSON(args.join(' '));
-			if(role_map === null) {return resolve ({ result: false, value: '*roles must be in JSON format for more info ./help role*' });}
-			if(multiple_same_emote(role_map)) {return resolve ({ result: false, value: '*emotes should differ ./help role*' });}
+			if(role_map === null) {
+				return resolve (
+					{ result: false, value: '*roles must be in JSON format for more info ./help role*' },
+				);
+			}
+			if(multiple_same_emote(role_map)) {
+				return resolve (
+					{ result: false, value: '*emotes should differ ./help role*' },
+				);
+			}
 
 			const role_emb_value = [];
 			const role_emb_display = [];

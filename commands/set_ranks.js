@@ -16,11 +16,16 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			};
 
 			const new_ranks = help_mngr.getJSON(args.join(' '));
-			console.log(new_ranks);
 			if(new_ranks === null) {
 				return resolve ({
 					result: false,
-					value: '*ranking must be in JSON format, for more info ./help ranks*',
+					value: '*ranking must be in Array JSON format, for more info ./help ranks*',
+				});
+			}
+			if(!Array.isArray(new_ranks)) {
+				return resolve ({
+					result: false,
+					value: '*ranking must be in Array JSON format, for more info ./help ranks*',
 				});
 			}
 			if(!new_ranks.every(is_rank)) {

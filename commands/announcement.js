@@ -33,7 +33,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		const announcement = message.guild.channels.cache
 			.find(channel => channel.id == portal_guilds[message.guild.id].announcement);
 
-		if (announcement) guld_mngr.delete_channel(announcement);
+		if (announcement) guld_mngr.delete_channel(announcement, message);
 
 		if (args.length === 0) {
 			portal_guilds[message.guild.id].announcement = message.channel.id;

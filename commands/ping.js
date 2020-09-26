@@ -2,18 +2,18 @@
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
-		const message_ping = message.channel.send('...')
+		const message_ping = message.channel.send('*initial*')
 			.then(message_sent => {
-				message_sent.edit(
-					`Pong!\nLatency of rtt is ${message_sent.createdTimestamp - message.createdTimestamp}ms.\n` +
-					`Latency to portal is ${client.ws.ping}ms`,
-				);
+				message_sent
+					.edit(
+						`RTT    latency:\t**${message_sent.createdTimestamp - message.createdTimestamp}** *ms*.\n` +
+						`Portal latency:\t**${client.ws.ping}** *ms*`)
+					.then(msg => {
+						msg.delete({ timeout: 15000 });
+					});
 			})
 			.catch(console.error);
 
-		resolve({
-			result: true,
-			value: '*ping ran successfully.*',
-		});
+		resolve({ result: true, value: '*pong*' });
 	});
 };

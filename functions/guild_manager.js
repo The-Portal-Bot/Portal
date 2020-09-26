@@ -109,8 +109,9 @@ module.exports = {
 	},
 
 	create_url_channel: function(guild, url_name, url_category, url_list) {
-		if (url_category) { // with category
-			guild.channels.create(`${url_name}-url`, { type: 'text' })
+		if (url_category && typeof url_category === 'string') { // with category
+			guild.channels
+				.create(`${url_name}-url`, { type: 'text' })
 				.then(channel => {
 					url_list
 						.push(channel.id);
@@ -121,7 +122,16 @@ module.exports = {
 				})
 				.catch(console.error);
 		}
-		else { // withou category
+		else if (url_category) { // with category given
+			guild.channels
+				.create(`${url_name}-url`, { type: 'text' }, { parent: url_category })
+				.then(channel => {
+					channel.setParent(url_category);
+					url_list.push(channel.id);
+				})
+				.catch(console.error);
+		}
+		else { // without category
 			guild.channels
 				.create(`${url_name}-url`, { type: 'text' })
 				.then(channel => url_list.push(channel.id));
@@ -129,7 +139,7 @@ module.exports = {
 	},
 
 	create_spotify_channel: function(guild, spotify_channel, spotify_category, guild_object) {
-		if (spotify_category) { // with category
+		if (spotify_category && typeof spotify_category === 'string') { // with category
 			return guild.channels
 				.create(`${spotify_channel}-sptfy`, { type: 'text' })
 				.then(channel => {
@@ -138,6 +148,15 @@ module.exports = {
 						.create(spotify_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
+				})
+				.catch(console.error);
+		}
+		else if (spotify_category) { // with category given
+			return guild.channels
+				.create(`${spotify_channel}-sptfy`, { type: 'text' }, { parent: spotify_category })
+				.then(channel => {
+					channel.setParent(spotify_category);
+					guild_object.spotify = channel.id;
 				})
 				.catch(console.error);
 		}
@@ -150,34 +169,68 @@ module.exports = {
 	},
 
 	create_music_channel: async function(guild, music_channel, music_category, guild_object) {
+		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+			'.github.io/master/assets/img/logo.png';
 		return new Promise((resolve) => {
-			if (music_category) { // with category
+			if (music_category && typeof music_category === 'string') { // with category
 				guild.channels
-					.create(`${music_channel}-music`, { type: 'text' })
+					.create(`${music_channel}-music`, {
+						type: 'text',
+						topic: 'Music Channel from Portal',
+					})
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
 						guild.channels
 							.create(music_category, { type: 'category' })
 							.then(cat_channel => channel.setParent(cat_channel))
-							.catch(error => { return resolve(error); });
-						return resolve(channel);
+							.catch(error => resolve(error));
+						help_mngr.create_music_message(
+							channel,
+							portal_icon_url,
+							guild_object,
+						);
 					})
-					.catch(error => { return resolve(error); });
+					.catch(error => resolve(error));
+			}
+			else if (music_category) { // with category given
+				guild.channels
+					.create(`${music_channel}-music`, {
+						type: 'text',
+						topic: 'Music Channel from Portal',
+						parent: music_category,
+					})
+					.then(channel => {
+						channel.setParent(music_category);
+						guild_object.music_data.channel_id = channel.id;
+						help_mngr.create_music_message(
+							channel,
+							portal_icon_url,
+							guild_object,
+						);
+					})
+					.catch(error => resolve(error));
 			}
 			else { // without category
 				guild.channels
-					.create(`${music_channel}-music`, { type: 'text' })
+					.create(`${music_channel}-music`, {
+						topic: 'Music Channel from Portal',
+						type: 'text',
+					})
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
-						return resolve(channel);
+						help_mngr.create_music_message(
+							channel,
+							portal_icon_url,
+							guild_object,
+						);
 					})
-					.catch(error => { return resolve(error); });
+					.catch(error => resolve(error));
 			}
 		});
 	},
 
 	create_announcement_channel: function(guild, announcement_channel, announcement_category, guild_object) {
-		if (announcement_category) { // with category
+		if (announcement_category && typeof announcement_category === 'string') { // with category
 			return guild.channels
 				.create(`${announcement_channel}-annc`, { type: 'text' })
 				.then(channel => {
@@ -186,6 +239,15 @@ module.exports = {
 						.create(announcement_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
+				})
+				.catch(console.error);
+		}
+		else if (announcement_category) { // with category given
+			return guild.channels
+				.create(`${announcement_channel}-annc`, { type: 'text' }, { parent: announcement_category })
+				.then(channel => {
+					channel.setParent(announcement_category);
+					guild_object.announcement = channel.id;
 				})
 				.catch(console.error);
 		}
@@ -198,7 +260,7 @@ module.exports = {
 	},
 
 	create_portal_channel: function(guild, portal_channel, portal_category, portal_objct, guild_object, creator_id) {
-		if (portal_category) { // with category
+		if (portal_category && typeof portal_category === 'string') { // with category
 			return guild.channels
 				.create(portal_channel, { type: 'voice', bitrate: 8000 })
 				.then(channel => {
@@ -214,6 +276,22 @@ module.exports = {
 						.create(portal_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(console.error);
+				})
+				.catch(console.error);
+		}
+		else if (portal_category) { // with category given
+			return guild.channels
+				.create(portal_channel, { type: 'voice', bitrate: 8000 }, { parent: portal_category })
+				.then(channel => {
+					channel.setParent(portal_category);
+					portal_objct[channel.id] = new portal_class(
+						creator_id,
+						portal_channel,
+						guild_object[guild.id].premium
+							? 'G$#-P$member_count | $status_list'
+							: 'Channel $#',
+						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true,
+					);
 				})
 				.catch(console.error);
 		}
@@ -298,8 +376,61 @@ module.exports = {
 		delete portal_guilds[guild_id];
 	},
 
-	delete_channel: (channel_to_delete) => {
-		if (channel_to_delete.deletable) {
+	delete_channel: (channel_to_delete, message, isPortal = false) => {
+		if(!isPortal) {
+			const author = message.author;
+			const channel_to_delete_name = channel_to_delete.name;
+			let channel_deleted = false;
+
+			message.channel
+				.send(`${message.author}, do you wish to delete old music channel **"${channel_to_delete}"** (yes / no) ?`)
+				.then(question_msg => {
+					const filter = m => m.author.id === author.id;
+					const collector = message.channel.createMessageCollector(filter, { time: 10000 });
+
+					collector.on('collect', m => {
+						if(m.content === 'yes') {
+							if (channel_to_delete.deletable) {
+								channel_to_delete
+									.delete()
+									.then(g => console.log(`Deleted channel with id: ${g}`))
+									.catch(console.error);
+
+								m.channel.send(`Deleted channel **"${channel_to_delete_name}"**.`)
+									.then(msg => { msg.delete({ timeout: 5000 }); })
+									.catch(error => console.log(error));
+
+								channel_deleted = true;
+							}
+							else {
+								message.channel.send(`Channel **"${channel_to_delete}"** is not deletable.`)
+									.then(msg => { msg.delete({ timeout: 5000 }); })
+									.catch(error => console.log(error));
+							}
+							collector.stop();
+						}
+						else if(m.content === 'no') {
+							collector.stop();
+						}
+					});
+
+					collector.on('end', collected => {
+						for (const reply_message of collected.values()) {
+							if (reply_message.deletable) {
+								reply_message.delete().catch(console.error);
+							}
+						}
+						if (!channel_deleted) {
+							message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted.`)
+								.then(msg => { msg.delete({ timeout: 5000 }); })
+								.catch(error => console.log(error));
+						}
+						question_msg.delete({ timeout: 5000 });
+					});
+				})
+				.catch(error => console.log(error));
+		}
+		else if (channel_to_delete.deletable) {
 			channel_to_delete
 				.delete()
 				.then(g => console.log(`Deleted channel with id: ${g}`))

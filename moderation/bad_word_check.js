@@ -13,7 +13,7 @@ const is_bad_word = function(sentence) {
 		for (const country in bad_words_by_country) {
 			for (let j = 0; j < bad_words_by_country[country].length; j++) {
 				if (bad_words_by_country[country][j] === sentence[i]) {
-					return sentence[i];
+					return { word: sentence[i], country: country };
 				}
 			}
 		}
@@ -28,7 +28,7 @@ module.exports = async (args) => {
 		if (is_bad) {
 			return resolve({
 				result: false,
-				value: `please do not swear **!${is_bad}**`,
+				value: `please do not swear **!${is_bad.word} (${is_bad.country	})**`,
 			});
 		}
 	});

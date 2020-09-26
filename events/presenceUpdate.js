@@ -84,7 +84,9 @@ module.exports = async (args) => {
 			const current_voice_channel = current_portal_list[key].voice_list[current_channel.id];
 
 			if (current_voice_channel) {
-				if (args.guild_list[current_guild.id].spotify !== null) {display_spotify_song(current_guild, current_channel, args);}
+				if (args.guild_list[current_guild.id].spotify !== null) {
+					display_spotify_song(current_guild, current_channel, args);
+				}
 
 				time_out_repeat(current_voice_channel, current_guild, current_channel, current_portal_list, args, 5);
 			}

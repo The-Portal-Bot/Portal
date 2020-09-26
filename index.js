@@ -1,5 +1,16 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
+// const mongoose = require('mongoose');
+// mongoose.connect('mongodb://localhost/PortalDB', { useNewUrlParser: true })
+// 	.catch(error => {
+// 		console.error.bind(console, 'PortallDB connection error:');
+// 		console.log('Could not connect to PortalDB (mongo) with error:\n', error);
+// 		return -1;
+// 	});
+
+// const PortalDB = mongoose.connection;
+// PortalDB.once('open', function() { console.log('we\'re connected!'); });
+
 const file_system = require('file-system');
 
 const portal_managed_guilds_path = './server_storage/guild_list.json';
@@ -54,11 +65,19 @@ event_loader = function(event, args) {
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
 			if(rspns !== null && rspns !== undefined) {
-				if (rspns.result) {
-					console.log('True:\t', rspns.value);
+				if(event === 'messageReactionAdd') {
+					const music_channel_id = args.guild_list[args.messageReaction.message.guild.id]
+						.music_data.channel_id;
+					const music_channel = args.messageReaction.message.guild.channels.cache
+						.find(channel => channel.id === music_channel_id);
+
+					music_channel
+						.send(`${args.user}, ${rspns.value.toString()}`)
+						.then(msg => { msg.delete({ timeout: 5000 }); })
+						.catch(error => console.log(error));
 				}
 				else {
-					console.log('False:\t', rspns.value);
+					console.log(rspns.result, rspns.value);
 				}
 			}
 		});
@@ -191,7 +210,7 @@ client.on('message', async message => {
 		channel_support = 'read';
 		channel_talk = 'read_only';
 	}
-	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
+	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) { // tsiakkas
 		play_mngr.start(client, message, message.content.toString(), guild_list)
 			.then(joined => {
 				help_mngr.message_reply(
@@ -227,10 +246,11 @@ client.on('message', async message => {
 
 	require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
 		.then(rspns => {
+			message.react('🚩');
 			if (rspns) {
 				help_mngr.message_reply(
-					rspns.result, message.author.presence.member.voice.channel,
-					message, message.author, rspns.value, guild_list, client);
+					rspns.result, message.author.presence.member.voice.channel, message, message.author,
+					rspns.value, guild_list, client, false, '✔️', '🚩');
 			}
 		});
 
@@ -256,7 +276,10 @@ client.on('message', async message => {
 	}
 
 	if (command_cooldown[type][cmd].auth) {
-		if (!help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member)) {
+		const is_user_authorized = help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member);
+		console.log('is_user_authorized :>> ', is_user_authorized);
+
+		if (!is_user_authorized) {
 			help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
 				'you are not authorized to access this command', guild_list, client);
 			return;
@@ -270,14 +293,21 @@ client.on('message', async message => {
 	if (type === 'none' && command_cooldown.none[cmd].time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then(rspns => {
-				if (rspns) {
-					help_mngr.message_reply(
-						rspns.result, message.author.presence.member.voice.channel,
-						message, message.author, rspns.value, guild_list, client);
+				if (rspns.result === true) {
+					help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
+						message.author, rspns.value, guild_list, client);
 				}
+				else if (rspns.result === false) {
+					help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
+						message.author, rspns.value, guild_list, client);
+				}
+
+				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+
+				// help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,
+				// 	message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
 			});
-		help_mngr.update_portal_managed_guilds(true,
-			portal_managed_guilds_path, guild_list);
+
 
 		return;
 	}
@@ -312,17 +342,18 @@ client.on('message', async message => {
 						active => active.command !== cmd);
 				}, command_cooldown[type][cmd].time * 60 * 1000);
 
-				help_mngr.message_reply(
-					true, message.author.presence.member.voice.channel,
-					message, message.author, rspns ? 'executed correctly' : rspns.value, guild_list, client);
-
-				help_mngr.update_portal_managed_guilds(
-					true, portal_managed_guilds_path, guild_list);
+				help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
+					message.author, rspns ? 'executed correctly' : rspns.value, guild_list, client);
+			}
+			else if (rspns.result === false) {
+				help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
+					message.author, rspns.value, guild_list, client);
 			}
 
-			help_mngr.message_reply(
-				rspns.result, message.author.presence.member.voice.channel,
-				message, message.author, rspns.value, guild_list, client);
+			help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+
+			help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,
+				message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
 		});
 });
 

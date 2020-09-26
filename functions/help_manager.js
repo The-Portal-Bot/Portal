@@ -47,6 +47,8 @@ module.exports = {
 				sent_message.react('⏸');
 				sent_message.react('⏹');
 				sent_message.react('⏭');
+				sent_message.react('📜');
+				sent_message.react('❌');
 
 				guild_object.music_data.message_id = sent_message.id;
 			});
@@ -272,13 +274,22 @@ module.exports = {
 	},
 
 	is_authorized: function(auth_list, member) {
+		member.roles.cache.some(role =>
+			console.log('role.id :>> ', role.id),
+		);
 		return !member.hasPermission('ADMINISTRATOR')
-			? member.roles.cache.some(role => auth_list.some(auth => auth === role.id))
+			? member.roles.cache !== undefined && member.roles.cache !== null
+				? member.roles.cache.some(role =>
+					auth_list
+						? auth_list.some(auth => auth === role.id)
+						: false)
+				: false
 			: true;
 	},
 
 	// channel should be removed !
-	message_reply: function(status, channel, message, user, str, portal_guilds, client, to_delete = false) {
+	message_reply: function(status, channel, message, user, str, portal_guilds,
+		client, to_delete = true, emote_pass = '✔️', emote_fail = '❌') {
 		if (!message.channel.deleted) {
 			message.channel
 				.send(`${user}, ${str}`)
@@ -286,17 +297,26 @@ module.exports = {
 				.catch(error => console.log(error));
 		}
 		if (!message.deleted) {
-			if(to_delete) {
-				message.delete();
-			}
-			else if (status === true) {
-				message.react('✔️');
-				message.delete({ timeout: 5000 });
+			if (status === true) {
+				message
+					.react(emote_pass)
+					.catch(error => console.log(error));
+				if(to_delete) {
+					message
+						.delete({ timeout: 5000 })
+						.catch(error => console.log(error));
+				}
 			}
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
-				message.react('❌');
-				message.delete({ timeout: 5000 });
+				message
+					.react(emote_fail)
+					.catch(error => console.log(error));
+				if(to_delete) {
+					message
+						.delete({ timeout: 5000 })
+						.catch(error => console.log(error));
+				}
 			}
 		}
 	},
