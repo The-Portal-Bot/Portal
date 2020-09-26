@@ -85,24 +85,27 @@ const reaction_role_manager = function(args) {
 
 const reaction_music_manager = function(args) {
 	const current_guild = args.guild_list[args.messageReaction.message.guild.id];
+	let voice_connection_in_reaction_guild = null;
 
-	if (current_guild.music_data.message_id !== args.messageReaction.message.id) {
-		return { result: null, value: 'message is not music player' };
+	if(args.messageReaction.emoji.name !== '📜' && args.messageReaction.emoji.name !== '❌') {
+		console.log('apart');
+		if (current_guild.music_data.message_id !== args.messageReaction.message.id) {
+			return { result: null, value: 'message is not music player' };
+		}
+		voice_connection_in_reaction_guild = args.client.voice.connections.find(connection =>
+			connection.channel.guild.id === args.messageReaction.message.guild.id,
+		);
+		if (!voice_connection_in_reaction_guild) {
+			clear_user_reactions(args);
+			return { result: false, value: 'portal is not playing music write now' };
+		}
+		const is_member_in_same_channel_as_portal = voice_connection_in_reaction_guild.channel.members
+			.some(member => member.id === args.user.presence.member.id);
+		if (!is_member_in_same_channel_as_portal) {
+			clear_user_reactions(args);
+			return { result: false, value: 'you must be in the same channel with portal to control music' };
+		}
 	}
-	const voice_connection_in_reaction_guild = args.client.voice.connections.find(connection =>
-		connection.channel.guild.id === args.messageReaction.message.guild.id,
-	);
-	if (!voice_connection_in_reaction_guild) {
-		clear_user_reactions(args);
-		return { result: false, value: 'portal is not playing music write now' };
-	}
-	const is_member_in_same_channel_as_portal = voice_connection_in_reaction_guild.channel.members
-		.some(member => member.id === args.user.presence.member.id);
-	if (!is_member_in_same_channel_as_portal) {
-		clear_user_reactions(args);
-		return { result: false, value: 'you must be in the same channel with portal to control music' };
-	}
-
 	const return_value = { result: true, value: '' };
 
 	switch(args.messageReaction.emoji.name) {
