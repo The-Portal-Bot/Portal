@@ -380,10 +380,10 @@ module.exports = {
 		if(!isPortal) {
 			const author = message.author;
 			const channel_to_delete_name = channel_to_delete.name;
+			let channel_deleted = false;
 
 			message.channel
-				.send(`${message.author}, do you wish to delete channel **"${channel_to_delete}"**\n` +
-					'(yes / no)?')
+				.send(`${message.author}, do you wish to delete old music channel **"${channel_to_delete}"** (yes / no) ?`)
 				.then(question_msg => {
 					const filter = m => m.author.id === author.id;
 					const collector = message.channel.createMessageCollector(filter, { time: 10000 });
@@ -399,21 +399,17 @@ module.exports = {
 								m.channel.send(`Deleted channel **"${channel_to_delete_name}"**.`)
 									.then(msg => { msg.delete({ timeout: 5000 }); })
 									.catch(error => console.log(error));
+
+								channel_deleted = true;
 							}
 							else {
 								message.channel.send(`Channel **"${channel_to_delete}"** is not deletable.`)
 									.then(msg => { msg.delete({ timeout: 5000 }); })
 									.catch(error => console.log(error));
 							}
-
 							collector.stop();
-
 						}
 						else if(m.content === 'no') {
-							message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted.`)
-								.then(msg => { msg.delete({ timeout: 5000 }); })
-								.catch(error => console.log(error));
-
 							collector.stop();
 						}
 					});
@@ -423,6 +419,11 @@ module.exports = {
 							if (reply_message.deletable) {
 								reply_message.delete().catch(console.error);
 							}
+						}
+						if (!channel_deleted) {
+							message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted.`)
+								.then(msg => { msg.delete({ timeout: 5000 }); })
+								.catch(error => console.log(error));
 						}
 						question_msg.delete({ timeout: 5000 });
 					});

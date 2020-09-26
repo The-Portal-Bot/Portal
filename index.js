@@ -294,7 +294,7 @@ client.on('message', async message => {
 			.then(rspns => {
 				if (rspns.result === true) {
 					help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
-						message.author, rspns ? 'executed correctly' : rspns.value, guild_list, client);
+						message.author, rspns.value, guild_list, client);
 				}
 				else if (rspns.result === false) {
 					help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
@@ -303,8 +303,8 @@ client.on('message', async message => {
 
 				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
-				help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,
-					message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
+				// help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,
+				// 	message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
 			});
 
 
