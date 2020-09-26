@@ -1,7 +1,8 @@
 const help_mngr = require('./help_manager');
 
 const yts = require('yt-search');
-const ytdl = require('ytdl-core');
+// const ytdl = require('ytdl-core');
+const ytdl = require('discord-ytdl-core');
 
 module.exports = {
 
@@ -38,18 +39,23 @@ module.exports = {
 						yts(search_term)
 							.then(yts_attempt => {
 								if (yts_attempt && yts_attempt.videos.length > 0) {
-									portal_guilds[guild_id].dispatcher = join_attempt.voice_connection
-										.play(ytdl(yts_attempt.videos[0].url, { filter: 'audioonly' }));
+									const stream = ytdl(yts_attempt.videos[0].url, {
+										filter: 'audioonly',
+										opusEncoded: false,
+										fmt: 'mp3',
+									});
+
+									portal_guilds[guild_id].dispatcher = join_attempt.voice_connection.play(stream);
+
 									help_mngr.update_message(portal_guilds[guild_id],
 										message.member.voice.channel.guild, yts_attempt.videos[0]);
 
-									portal_guilds[guild_id].dispatcher.on('speaking', value => {
-										if (!value) {
-											this.skip(guild_id, portal_guilds,
-												client, message.guild);
-											portal_guilds[guild_id].music_data.votes = [];
-										}
+									portal_guilds[guild_id].dispatcher.on('finish', () => {
+										console.log('\nevent triggered: finish\n');
+										this.skip(guild_id, portal_guilds, client, message.guild);
+										portal_guilds[guild_id].music_data.votes = [];
 									});
+
 									return resolve ({ result: false, value: 'playing video' });
 								}
 								else {
@@ -70,19 +76,50 @@ module.exports = {
 	play: async function(guild_id, portal_guilds, client, guild_object) {
 		return new Promise((resolve) => {
 			const current_dispatcher = portal_guilds[guild_id].dispatcher;
+			console.log('\neimai edo');
 
 			if(current_dispatcher !== null && current_dispatcher !== undefined) {
 				if(current_dispatcher.paused) {
 					current_dispatcher.resume();
-					portal_guilds[guild_id].dispatcher.on('speaking', value => {
-						if (!value) {
-							this.skip(guild_id, portal_guilds, client, guild_object);
-							portal_guilds[guild_id].music_data.votes = [];
-						}
+
+					portal_guilds[guild_id].dispatcher.on('finish', () => {
+						console.log('\nevent triggered: finish\n');
+						this.skip(guild_id, portal_guilds, client, guild_object);
+						portal_guilds[guild_id].music_data.votes = [];
+					});
+
+					return resolve ({ result: false, value: 'song has been resumed.' });
+				}
+			}
+			else if (current_dispatcher === null) {
+				console.log('einai null');
+
+				const next_yts_video = portal_guilds[guild_id].music_queue.shift();
+				const voice_connection = client.voice.connections.find(connection => connection.channel.id);
+
+				if (voice_connection) {
+					console.log('mpika');
+					portal_guilds[guild_id].dispatcher = voice_connection
+						.play(ytdl(next_yts_video.url, { filter: 'audioonly' }));
+
+					help_mngr.update_message(portal_guilds[guild_id], guild_object, next_yts_video);
+
+					const stream = ytdl(next_yts_video.url, {
+						filter: 'audioonly',
+						opusEncoded: false,
+						fmt: 'mp3',
+					});
+
+					portal_guilds[guild_id].dispatcher = voice_connection.play(stream);
+					help_mngr.update_message(portal_guilds[guild_id], guild_object, next_yts_video);
+					portal_guilds[guild_id].dispatcher.on('finish', () => {
+						console.log('\nevent triggered: finish\n');
+						this.skip(guild_id, portal_guilds, client, guild_object);
+						portal_guilds[guild_id].music_data.votes = [];
 					});
 				}
 
-				return resolve ({ result: false, value: 'song has been resumed.' });
+				return resolve ({ result: false, value: 'next video playing.' });
 			}
 			else {
 				return resolve ({ result: false, value: 'nothing playing write now.' });
@@ -145,48 +182,56 @@ module.exports = {
 
 			if(current_dispatcher !== null && current_dispatcher !== undefined) {
 				if(current_music_queue.length > 0) {
-					const next_yts_video = current_music_queue.shift();
+					const next_yts_video = portal_guilds[guild_id].music_queue.shift();
+					const voice_connection = client.voice.connections.find(connection => connection.channel.id);
 
-					const voiceConnection = client.voice.connections
-						.find(connection => connection.channel.id);
-
-					if (voiceConnection) {
-						portal_guilds[guild_id].dispatcher = voiceConnection
+					if (voice_connection) {
+						portal_guilds[guild_id].dispatcher = voice_connection
 							.play(ytdl(next_yts_video.url, { filter: 'audioonly' }));
 
-						help_mngr.update_message(
-							portal_guilds[guild_id],
-							guild_object,
-							next_yts_video,
-						);
+						help_mngr.update_message(portal_guilds[guild_id], guild_object, next_yts_video);
 
-						portal_guilds[guild_id].dispatcher.on('speaking', value => {
-							if (!value) {
-								if(current_music_queue.length > 0) {
-									console.log('continue');
-									this.skip(guild_id, portal_guilds, client, guild_object);
-									portal_guilds[guild_id].music_data.votes = [];
-								}
-								else {
-									console.log('end');
-									const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-										'.github.io/master/assets/img/logo.png';
-									help_mngr.update_message(
-										portal_guilds[guild_id],
-										guild_object,
-										{
-											title: 'Music Player',
-											url: 'just type and I\'ll play',
-											timestamp: '-',
-											views: '-',
-											ago: '-',
-											thumbnail: portal_icon_url,
-										});
-									portal_guilds[guild_id].pause = null;
-									portal_guilds[guild_id].dispatcher = null;
-								}
-							}
+						const stream = ytdl(next_yts_video.url, {
+							filter: 'audioonly',
+							opusEncoded: false,
+							fmt: 'mp3',
 						});
+
+						portal_guilds[guild_id].dispatcher = voice_connection.play(stream);
+						help_mngr.update_message(portal_guilds[guild_id], guild_object, next_yts_video);
+						portal_guilds[guild_id].dispatcher.on('finish', () => {
+							console.log('\nevent triggered: finish\n');
+							this.skip(guild_id, portal_guilds, client, guild_object);
+							portal_guilds[guild_id].music_data.votes = [];
+						});
+
+						// portal_guilds[guild_id].dispatcher.on('speaking', value => {
+						// 	if (!value) {
+						// 		if(current_music_queue.length > 0) {
+						// 			console.log('continue');
+						// 			this.skip(guild_id, portal_guilds, client, guild_object);
+						// 			portal_guilds[guild_id].music_data.votes = [];
+						// 		}
+						// 		else {
+						// 			console.log('end');
+						// 			const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+						// 				'.github.io/master/assets/img/logo.png';
+						// 			help_mngr.update_message(
+						// 				portal_guilds[guild_id],
+						// 				guild_object,
+						// 				{
+						// 					title: 'Music Player',
+						// 					url: 'just type and I\'ll play',
+						// 					timestamp: '-',
+						// 					views: '-',
+						// 					ago: '-',
+						// 					thumbnail: portal_icon_url,
+						// 				});
+						// 			portal_guilds[guild_id].pause = null;
+						// 			portal_guilds[guild_id].dispatcher = null;
+						// 		}
+						// 	}
+						// });
 					}
 				}
 				else {

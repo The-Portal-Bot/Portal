@@ -3,16 +3,15 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
 
+const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
+const type_of_action = ['user_connected', 'user_disconnected'];
+
 module.exports =
 {
 	client_talk: function(client, guild_list, context) {
 		let check = null;
-		if (context === 'fail' || context === 'announce' || context === 'spotify' || context === 'url') {
-			check = 'ann_announce';
-		}
-		else if (context === 'user_connected' || context === 'user_disconnected') {
-			check = 'ann_user';
-		}
+		if (type_of_announcement.includes(context)) { check = 'ann_announce'; }
+		else if (type_of_action.includes(context)) { check = 'ann_user'; }
 
 		if (client.voice !== undefined) {
 			if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
@@ -104,7 +103,7 @@ module.exports =
 			en: (user) => { return `${user} sent a new link.`; },
 			de: (user) => { return `${user} hat einen neuen Link geschickt.`; },
 		},
-		read__only: {
+		read_only: {
 			gr: (user) => { return `${user}, το κανάλι είναι μόνο για ανάγνωση.`; },
 			en: (user) => { return `${user}, the channel is read-only.`; },
 			de: (user) => { return `${user}, der Kanal ist schreibgeschütz.`; },
