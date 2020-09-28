@@ -343,7 +343,9 @@ module.exports = {
 		const guild = client.guilds.cache.find(cached_guild => cached_guild.id === guild_id);
 
 		guild.members.cache.forEach(member => {
-			if (member.id !== '704400876860735569') {member_list[member.id] = new member_class(1, 0, 0, 0, null);}
+			if (member.id !== '704400876860735569' && !member.user.bot) {
+				member_list[member.id] = new member_class(1, 0, 0, 0, null);
+			}
 		});
 
 		return member_list;

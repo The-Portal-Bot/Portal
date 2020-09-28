@@ -10,7 +10,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			const ranks_msg = [];
 			ranks.forEach(rank => {
 				ranks_msg.push({
-					emote: `level ${rank.level}`,
+					emote: `At level ${rank.level}, you get role`,
 					role: `***${rank.role}***`,
 					inline: false,
 				});
@@ -25,7 +25,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				msg.delete({ timeout: 10000 });
 			});
 
-			resolve(true);
+			resolve({ result: true, value: '' });
 		}
 		else {
 			resolve({ result: true, value: 'There is no ranking yet.' });

@@ -33,13 +33,13 @@ const command_cooldown = {
 		join: { time: 1, auth: false }, announce: { time: 2, auth: false },
 	},
 	none: {
-		ranks: { time: 0, auth: false }, level: { time: 0, auth: false }, force: { time: 0, auth: false },
-		portal: { time: 0, auth: true }, help: { time: 0, auth: false }, ping: { time: 0, auth: false },
-		set: { time: 0, auth: false }, role: { time: 0, auth: false }, spotify: { time: 0, auth: true },
-		music: { time: 0, auth: true }, announcement: { time: 0, auth: true }, url: { time: 0, auth: true },
-		leave: { time: 0, auth: false }, focus: { time: 0, auth: false }, corona: { time: 0, auth: false },
-		run: { time: 0, auth: false }, auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true },
-		about: { time: 0, auth: false },
+		leaderboard: { time: 0, auth: false }, ranks: { time: 0, auth: false }, level: { time: 0, auth: false },
+		force: { time: 0, auth: false }, portal: { time: 0, auth: true }, help: { time: 0, auth: false },
+		ping: { time: 0, auth: false }, set: { time: 0, auth: false }, role: { time: 0, auth: false },
+		spotify: { time: 0, auth: true }, music: { time: 0, auth: true }, announcement: { time: 0, auth: true },
+		url: { time: 0, auth: true }, leave: { time: 0, auth: false }, focus: { time: 0, auth: false },
+		corona: { time: 0, auth: false }, run: { time: 0, auth: false }, auth_role_add: { time: 0, auth: true },
+		auth_role_rem: { time: 0, auth: true },	about: { time: 0, auth: false },
 	},
 };
 
@@ -293,15 +293,16 @@ client.on('message', async message => {
 	if (type === 'none' && command_cooldown.none[cmd].time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then(rspns => {
-				if (rspns.result === true) {
-					help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
-						message.author, rspns.value, guild_list, client);
+				if(rspns) {
+					if (rspns.result === true) {
+						help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
+							message.author, rspns.value, guild_list, client);
+					}
+					else if (rspns.result === false) {
+						help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
+							message.author, rspns.value, guild_list, client);
+					}
 				}
-				else if (rspns.result === false) {
-					help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
-						message.author, rspns.value, guild_list, client);
-				}
-
 				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 				// help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,

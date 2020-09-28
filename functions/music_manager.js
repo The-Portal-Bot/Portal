@@ -1,8 +1,8 @@
 const help_mngr = require('./help_manager');
 
 const yts = require('yt-search');
-// const ytdl = require('ytdl-core');
-const ytdl = require('discord-ytdl-core');
+const ytdl = require('ytdl-core');
+// const ytdl = require('discord-ytdl-core');
 
 module.exports = {
 
@@ -43,6 +43,7 @@ module.exports = {
 										filter: 'audioonly',
 										opusEncoded: false,
 										fmt: 'mp3',
+										highWaterMark: 2048,
 									});
 
 									portal_guilds[guild_id].dispatcher = join_attempt.voice_connection.play(stream);

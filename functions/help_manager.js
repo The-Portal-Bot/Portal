@@ -190,23 +190,16 @@ module.exports = {
 
 		if (field_array) {
 			field_array.forEach(row => {
-				if ((row.emote === '' || row.emote === null || row.emote === false) &&
-					(row.role === '' || row.role === null || row.role === false)) {
-					rich_message
-						.addField('\u200b', '\u200b');
-				}
-				else {
-					rich_message
-						.addField(
-							(row.emote === '' || row.emote === null || row.emote === false)
-								? '\u200b'
-								: '`' + row.emote + '`',
-							(row.role === '' || row.role === null || row.role === false)
-								? '\u200b'
-								: row.role,
-							row.inline,
-						);
-				}
+				rich_message
+					.addField(
+						(row.emote === '' || row.emote === null || row.emote === false)
+							? '\u200b'
+							: '`' + row.emote + '`',
+						(row.role === '' || row.role === null || row.role === false)
+							? '\u200b'
+							: row.role,
+						row.inline,
+					);
 			});
 		}
 		else {
