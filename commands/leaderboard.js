@@ -11,16 +11,17 @@ const compare = function(member_a, member_b) {
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
-		if (args.length > 0) {
-			if (portal_guilds[message.guild.id].member_list) {
-				member_list = portal_guilds[message.guild.id].member_list;
-				const member_levels = [];
+		member_list = portal_guilds[message.guild.id].member_list;
+		let length = args.length > 0 ? +args[0] : Object.keys(member_list).length;
 
+		if(!isNaN(length)) {
+			if (portal_guilds[message.guild.id].member_list) {
+				const member_levels = [];
 				Object.keys(member_list).sort(compare).forEach((member_id, i) => {
 					const this_member = message.guild.members.cache
 						.find(member => member.id === member_id);
 
-					if (this_member !== undefined) {
+					if (this_member !== undefined && length > 0) {
 						member_levels.push(
 							{
 								emote: `${i}. ${this_member.displayName}`,
@@ -28,6 +29,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 								inline: false,
 							},
 						);
+						length--;
 					}
 					else {
 						console.log('member_id :>> ', member_id);
@@ -53,5 +55,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				});
 			}
 		}
+		else {
+			resolve({
+				result: false,
+				value: '*you can run "./help leaderboard" for help.*',
+			});
+		}
+
 	});
 };

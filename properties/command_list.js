@@ -144,6 +144,13 @@ module.exports =
 			args: 'none',
 		},
 		{
+			name: 'leaderboard',
+			description: 'returns the leaderboard.',
+			super_description: '**leaderboard**, returns the leaderboard.',
+			example: './leaderboard 5',
+			args: '<@number_of_ranks>',
+		},
+		{
 			name: 'level',
 			description: 'returns your level card.',
 			super_description: '**level**, returns your level card with all member stats.',

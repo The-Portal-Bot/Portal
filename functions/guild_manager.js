@@ -111,7 +111,7 @@ module.exports = {
 	create_url_channel: function(guild, url_name, url_category, url_list) {
 		if (url_category && typeof url_category === 'string') { // with category
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text' })
+				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' })
 				.then(channel => {
 					url_list
 						.push(channel.id);
@@ -124,7 +124,7 @@ module.exports = {
 		}
 		else if (url_category) { // with category given
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text' }, { parent: url_category })
+				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' }, { parent: url_category })
 				.then(channel => {
 					channel.setParent(url_category);
 					url_list.push(channel.id);
@@ -133,7 +133,7 @@ module.exports = {
 		}
 		else { // without category
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text' })
+				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' })
 				.then(channel => url_list.push(channel.id));
 		}
 	},
@@ -141,7 +141,7 @@ module.exports = {
 	create_spotify_channel: function(guild, spotify_channel, spotify_category, guild_object) {
 		if (spotify_category && typeof spotify_category === 'string') { // with category
 			return guild.channels
-				.create(`${spotify_channel}-sptfy`, { type: 'text' })
+				.create(`${spotify_channel}-sptfy`, { type: 'text', topic: 'Portal Spotify' })
 				.then(channel => {
 					guild_object.spotify = channel.id;
 					guild.channels
@@ -153,7 +153,7 @@ module.exports = {
 		}
 		else if (spotify_category) { // with category given
 			return guild.channels
-				.create(`${spotify_channel}-sptfy`, { type: 'text' }, { parent: spotify_category })
+				.create(`${spotify_channel}-sptfy`, { type: 'text', topic: 'Portal Spotify' }, { parent: spotify_category })
 				.then(channel => {
 					channel.setParent(spotify_category);
 					guild_object.spotify = channel.id;
@@ -162,7 +162,7 @@ module.exports = {
 		}
 		else { // without category
 			return guild.channels
-				.create(`${spotify_channel}-sptfy`, { type: 'text' })
+				.create(`${spotify_channel}-sptfy`, { type: 'text', topic: 'Portal Spotify' })
 				.then(channel => { guild_object.spotify = channel.id; })
 				.catch(console.error);
 		}
@@ -176,7 +176,7 @@ module.exports = {
 				guild.channels
 					.create(`${music_channel}-music`, {
 						type: 'text',
-						topic: 'Music Channel from Portal',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
 					})
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
@@ -196,7 +196,7 @@ module.exports = {
 				guild.channels
 					.create(`${music_channel}-music`, {
 						type: 'text',
-						topic: 'Music Channel from Portal',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
 						parent: music_category,
 					})
 					.then(channel => {
@@ -213,7 +213,7 @@ module.exports = {
 			else { // without category
 				guild.channels
 					.create(`${music_channel}-music`, {
-						topic: 'Music Channel from Portal',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
 						type: 'text',
 					})
 					.then(channel => {
@@ -232,7 +232,7 @@ module.exports = {
 	create_announcement_channel: function(guild, announcement_channel, announcement_category, guild_object) {
 		if (announcement_category && typeof announcement_category === 'string') { // with category
 			return guild.channels
-				.create(`${announcement_channel}-annc`, { type: 'text' })
+				.create(`${announcement_channel}-annc`, { type: 'text', topic: 'Portal Announcements' })
 				.then(channel => {
 					guild_object.announcement = channel.id;
 					guild.channels
@@ -244,7 +244,7 @@ module.exports = {
 		}
 		else if (announcement_category) { // with category given
 			return guild.channels
-				.create(`${announcement_channel}-annc`, { type: 'text' }, { parent: announcement_category })
+				.create(`${announcement_channel}-annc`, { type: 'text', topic: 'Portal Announcements' }, { parent: announcement_category })
 				.then(channel => {
 					channel.setParent(announcement_category);
 					guild_object.announcement = channel.id;
@@ -253,7 +253,7 @@ module.exports = {
 		}
 		else { // without category
 			return guild.channels
-				.create(`${announcement_channel}-annc`, { type: 'text' })
+				.create(`${announcement_channel}-annc`, { type: 'text', topic: 'Portal Announcements' })
 				.then(channel => { guild_object.announcement = channel.id; })
 				.catch(console.error);
 		}
