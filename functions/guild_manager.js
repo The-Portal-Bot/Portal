@@ -509,7 +509,7 @@ module.exports = {
 		}
 
 		for (const url_id in current_guild.url_list) {
-			if (url_id === +channel_to_remove.id) {
+			if (url_id === channel_to_remove.id) {
 				delete current_guild.url_list[url_id];
 				type_of_channel = TypesOfChannel.Url;
 				break;

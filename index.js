@@ -281,13 +281,19 @@ client.on('message', async message => {
 
 	if (command_cooldown[type][cmd].auth) {
 		const is_user_authorized = help_mngr.is_authorized(guild_list[message.guild.id].auth_role, message.member);
-		console.log('is_user_authorized :>> ', is_user_authorized);
 
 		if (!is_user_authorized) {
 			help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
 				'you are not authorized to access this command', guild_list, client);
 			return;
 		}
+	}
+
+	if (command_cooldown[type][cmd].premium && !guild_list[message.guild.id].premium) {
+		help_mngr.message_reply(
+			false, message.author.presence.member.voice.channel, message,
+			message.author, 'this server is not premium', guild_list, client);
+		return;
 	}
 	// else {
 	// 	help_mngr.message_reply(true, message.author.presence.member.voice.channel, message, message.author,

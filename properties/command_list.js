@@ -83,6 +83,15 @@ module.exports =
 			args: '<@role_name>',
 		},
 		{
+			name: 'auth_roles',
+			description: 'auth_roles will display all the authorization roles that allow user to use portal .',
+			super_description: '**auth_roles**, auth_roles will add a role to the autorized list of roles that ' +
+				' can access certain commands. Selected roles will be granted higher access to more powerful Portal ' +
+				' commands that can manipulate the flow of the server.',
+			example: './auth_role_rem one_role',
+			args: '<@role_name>',
+		},
+		{
 			name: 'auth_role_rem',
 			description: 'auth_role_rem will remove a role to the autorized list of roles that can access certain commands.',
 			super_description: '**auth_role_rem**, auth_role_rem will remove a role to the autorized list of roles that ' +

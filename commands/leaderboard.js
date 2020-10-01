@@ -18,10 +18,9 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			if (portal_guilds[message.guild.id].member_list) {
 				const member_levels = [];
 				Object.keys(member_list).sort(compare).forEach((member_id, i) => {
-					const this_member = message.guild.members.cache
-						.find(member => member.id === member_id);
+					const this_member = message.guild.members.cache.find(member => member.id === member_id);
 
-					if (this_member !== undefined && length > 0) {
+					if (this_member !== null && this_member !== undefined && length > 0) {
 						member_levels.push(
 							{
 								emote: `${i}. ${this_member.displayName}`,
