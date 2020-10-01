@@ -266,15 +266,12 @@ module.exports = {
 		});
 	},
 
-	is_authorized: function(auth_list, member) {
-		member.roles.cache.some(role =>
-			console.log('role.id :>> ', role.id),
-		);
+	is_authorized: function(auth_role, member) {
 		return !member.hasPermission('ADMINISTRATOR')
 			? member.roles.cache !== undefined && member.roles.cache !== null
 				? member.roles.cache.some(role =>
-					auth_list
-						? auth_list.some(auth => auth === role.id)
+					auth_role
+						? auth_role.some(auth => auth === role.id)
 						: false)
 				: false
 			: true;
