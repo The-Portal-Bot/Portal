@@ -4,7 +4,7 @@ const member_class = require('../assets/classes/member_class');
 module.exports = async (args) => {
 	const join_message = `member: ${args.member.presence.user}\n` +
 		`id: ${args.member.guild.id}\n` +
-		`left: ${args.member.guild}.`;
+		`joined: ${args.member.guild}.`;
 
 	if (args.guild_list[args.member.guild.id].announcement) {
 		args.member.guild.channels.cache

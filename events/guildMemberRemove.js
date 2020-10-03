@@ -3,7 +3,7 @@ const help_mngr = require('../functions/help_manager');
 module.exports = async (args) => {
 	const leave_message = `member: ${args.member.presence.user}\n` +
 		`id: ${args.member.guild.id}\n` +
-		`joined: ${args.member.guild}.`;
+		`left: ${args.member.guild}.`;
 
 	if (args.guild_list[args.member.guild.id] || !args.guild_list[args.member.guild.id].announcement) {
 		args.member.guild.channels.cache

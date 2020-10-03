@@ -244,9 +244,14 @@ client.on('message', async message => {
 	}
 
 	// ranking system
-	user_mngr.add_points_message(message, guild_list);
-	help_mngr.update_portal_managed_guilds(true,
-		portal_managed_guilds_path, guild_list);
+	const level = user_mngr.add_points_message(message, guild_list);
+	if(level) {
+		help_mngr.message_reply(
+			null, message.author.presence.member.voice.channel, message,
+			message.author, `You reached level ${level}!`,
+			guild_list, client);
+	}
+	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 	require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
 		.then(rspns => {

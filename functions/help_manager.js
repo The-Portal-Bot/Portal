@@ -335,8 +335,9 @@ module.exports = {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;
 
-		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
-			Math.round((timeout_time / 1000 / 60)) : 0;
+		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0
+			? Math.round((timeout_time / 1000 / 60))
+			: 0;
 		const timeout_sec = Math.round((timeout_time / 1000) % 60);
 
 		const remaining_hrs = Math.round(
