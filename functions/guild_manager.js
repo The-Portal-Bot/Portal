@@ -493,7 +493,7 @@ module.exports = {
 		for (const portal_id in current_guild.portal_list) {
 			if (portal_id === channel_to_remove.id) {
 				delete current_guild.portal_list[portal_id];
-				type_of_channel = 1;
+				type_of_channel = TypesOfChannel.Portal;
 				break;
 			}
 			else {
@@ -501,16 +501,17 @@ module.exports = {
 				for (const voice_id in current_voice_list) {
 					if (voice_id === channel_to_remove.id) {
 						delete current_voice_list[voice_id];
-						type_of_channel = 2;
+						type_of_channel = TypesOfChannel.Voice;
 						break;
 					}
 				}
 			}
 		}
 
-		for (const url_id in current_guild.url_list) {
-			if (url_id === channel_to_remove.id) {
-				delete current_guild.url_list[url_id];
+		for (let i = 0; i < current_guild.url_list.length; i++) {
+			console.log(`${current_guild.url_list[i]} === ${channel_to_remove.id}`);
+			if (current_guild.url_list[i] === channel_to_remove.id) {
+				current_guild.url_list.splice(i, 1);
 				type_of_channel = TypesOfChannel.Url;
 				break;
 			}

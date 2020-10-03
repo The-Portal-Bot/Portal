@@ -9,7 +9,7 @@ module.exports = async (args) => {
 	if (return_value === 0) {
 		return {
 			result: false,
-			value: 'Could not find channel that has been removed in json guild file ' +
+			value: 'removed channel is not controlled by Portal' +
 				`(guild: ${args.channel.guild.name} - id: ${args.channel.guild.id})`,
 		};
 	}
@@ -17,8 +17,8 @@ module.exports = async (args) => {
 		help_mngr.update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
 		return {
 			result: true,
-			value: `Channel of type ${type_of_channel[return_value].toString()} ` +
-			`has been removed from, guild: ${args.channel.guild.name} - id: ${args.channel.guild.id}`,
+			value: `${type_of_channel[return_value].toString()} channel, has been removed from ` +
+			`guild: ${args.channel.guild.name} - id: ${args.channel.guild.id}`,
 		};
 	}
 };
