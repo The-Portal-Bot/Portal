@@ -280,7 +280,7 @@ module.exports = {
 	// channel should be removed !
 	message_reply: function(status, channel, message, user, str, portal_guilds,
 		client, to_delete = true, emote_pass = '✔️', emote_fail = '❌') {
-		if (!message.channel.deleted) {
+		if (!message.channel.deleted && str !== null) {
 			message.channel
 				.send(`${user}, ${str}`)
 				.then(msg => { msg.delete({ timeout: 5000 }); })

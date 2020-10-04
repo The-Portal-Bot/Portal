@@ -77,48 +77,55 @@ module.exports = {
 
 	//
 
-	create_focus_channel: function(guild, portal_objct, member, focus_name, focus_time) {
+	create_focus_channel: async function(guild, member, member_found, focus_time) {
+		return new Promise((resolve) => {
+			const return_value = { result: false, value: '*you can run "./help focus" for help.*' };
 
-		console.log('focus_name: ', focus_name);
-		console.log('focus_time: ', focus_time);
-
-		let return_value = null;
-		const member_found = member.voice.channel.members
-			.find(member_find => member_find.displayName === focus_name, focus_time);
-
-		if (member_found) {
 			const oldChannel = member.voice.channel;
-			// let newChannel = null;
+			let newChannel = null;
 
 			guild.channels.create(
-				`${member.displayName}&${member_found.displayName}`, { type: 'voice', bitrate: 64000 })
+				`${member.displayName}&${member_found.displayName}`, {
+					type: 'voice',
+					bitrate: 64000,
+					userLimit: 2,
+				})
 				.then(channel => {
-					// newChannel = channel;
-					channel.userLimit = 2;
+					newChannel = channel;
 					member.voice.setChannel(channel);
 					member_found.voice.setChannel(channel);
-				}).catch(console.error);
+
+					console.log('mpika edo 1');
+					return_value.result = true;
+					return_value.value = 'users have been moved.';
+				})
+				.catch(console.error);
 
 			setTimeout(() => {
+				console.log('mpika edo 2');
 				if (!oldChannel.deleted) {
-					// member.voice.setChannel(oldChannel).then(moved => {
-					// 	member_found.voice.setChannel(oldChannel).then(moved => {
-					// 		if (newChannel.deletable()) {
-					// 			newChannel.delete().catch(console.error);
-					// 		}
-					// 	}).catch(console.error);
-					// }).catch(console.error);
+					member.voice.setChannel(oldChannel)
+						.then(() => {
+							member_found.voice.setChannel(oldChannel)
+								.then(() => {
+									if (newChannel.deletable) {
+										newChannel.delete().catch(console.error);
+										return_value.result = true;
+										return_value.value = 'focus ended properly.';
+										return resolve (return_value);
+									}
+								}).catch(console.error);
+						}).catch(console.error);
+
+
 				}
 				else {
-					return_value = 'oldChannel.name was deleted before transport back could occur.';
+					return_value.result = false;
+					return_value.value = 'could not move to original channel because it was deleted.';
+					return resolve (return_value);
 				}
 			}, focus_time * 60 * 1000);
-			if (return_value) { return return_value; }
-			return true;
-		}
-		else {
-			return false;
-		}
+		});
 	},
 
 	create_url_channel: function(guild, url_name, url_category, url_list) {

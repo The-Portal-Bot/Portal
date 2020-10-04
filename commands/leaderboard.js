@@ -45,7 +45,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					true),
 				);
 
-				return resolve (null);
+				return resolve ({ result: true, value: null });
 			}
 			else {
 				resolve({

@@ -18,10 +18,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				],
 				false,
 				message.member,
-				false),
-			);
+				false,
+			));
 
-			return resolve (null);
+			return resolve ({ result: true, value: null });
 		}
 		else {
 			resolve({ result: false, value: 'there is no rank for you, please contact Portal Bot maintainer.' });

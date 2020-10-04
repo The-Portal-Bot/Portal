@@ -31,10 +31,11 @@ const command_cooldown = {
 	},
 	member: {
 		join: { time: 1, auth: false, premium: true }, announce: { time: 2, auth: false, premium: true },
+		force: { time: 5, auth: true, premium: true },
 	},
 	none: {
 		leaderboard: { time: 0, auth: false, premium: false }, ranks: { time: 0, auth: false, premium: true },
-		level: { time: 0, auth: false, premium: false }, force: { time: 0, auth: false, premium: true },
+		level: { time: 0, auth: false, premium: false }, about: { time: 0, auth: false, premium: false },
 		portal: { time: 0, auth: true, premium: false }, help: { time: 0, auth: false, premium: false },
 		ping: { time: 0, auth: false, premium: false }, set: { time: 0, auth: false, premium: true },
 		role: { time: 0, auth: false, premium: true }, spotify: { time: 0, auth: true, premium: true },
@@ -43,7 +44,6 @@ const command_cooldown = {
 		focus: { time: 0, auth: false, premium: true }, corona: { time: 0, auth: false, premium: false },
 		run: { time: 0, auth: false, premium: true }, auth_roles: { time: 0, auth: true, premium: true },
 		auth_role_add: { time: 0, auth: true, premium: true }, auth_role_rem: { time: 0, auth: true, premium: true },
-		about: { time: 0, auth: false, premium: false },
 	},
 };
 

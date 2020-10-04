@@ -30,21 +30,6 @@ module.exports =
 
 	add_points_time: function(user, speed) {
 		const voice_time = help_mngr.time_elapsed(user.timestamp, 0);
-		console.log('voice_time.remaining_sec :>> ', voice_time.remaining_sec);
-		console.log('voice_time.remaining_min :>> ', voice_time.remaining_min);
-		console.log('voice_time.remaining_hrs :>> ', voice_time.remaining_hrs);
-
-		console.log('voice_time.remaining_sec * level_speed[speed] :>> ', voice_time.remaining_sec * level_speed[speed]);
-		console.log('voice_time.remaining_min * level_speed[speed] :>> ', voice_time.remaining_min * level_speed[speed]);
-		console.log('voice_time.remaining_hrs * level_speed[speed] :>> ', voice_time.remaining_hrs * level_speed[speed]);
-
-		console.log('voice_time.remaining_sec * level_speed[speed] :>> ', voice_time.remaining_sec * level_speed[speed]);
-		console.log('voice_time.remaining_min * level_speed[speed] * 60 * 1.15 :>> ', voice_time.remaining_min * level_speed[speed] * 60 * 1.15);
-		console.log('voice_time.remaining_hrs * level_speed[speed] * 60 * 60 * 1.25 :>> ', voice_time.remaining_hrs * level_speed[speed] * 60 * 60 * 1.25);
-
-		console.log('Math.round(voice_time.remaining_sec * level_speed[speed]) :>> ', Math.round(voice_time.remaining_sec * level_speed[speed]));
-		console.log('Math.round(voice_time.remaining_min * level_speed[speed] * 60 * 1.15) :>> ', Math.round(voice_time.remaining_min * level_speed[speed] * 60 * 1.15));
-		console.log('Math.round(voice_time.remaining_hrs * level_speed[speed] * 60 * 60 * 1.25) :>> ', Math.round(voice_time.remaining_hrs * level_speed[speed] * 60 * 60 * 1.25));
 
 		user.points += Math.round(voice_time.remaining_sec * level_speed[speed]);
 		user.points += Math.round(voice_time.remaining_min * level_speed[speed] * 60 * 1.15);
@@ -79,7 +64,6 @@ module.exports =
 	add_points_message: function(message, guild_list) {
 		const user = guild_list[message.guild.id].member_list[message.author.id];
 		const speed = guild_list[message.guild.id].level_speed;
-		console.log('message.content.length * level_speed[speed] :>> ', message.content.length * level_speed[speed]);
 		const points = message.content.length * level_speed[speed];
 
 		user.points += points > 5 ? 5 : Math.round(points);
