@@ -3,54 +3,44 @@
 /* eslint-disable no-cond-assign */
 const guld_mngr = require('../functions/guild_manager');
 
-const ask_member_to_join = function(requester, member_to_join) {
-	member_to_join
-		.send(`${requester}, would like to talk to you, do you want ** (yes / no) ?`)
-		.then(question_msg => {
-			const filter = m => m.author.id === author.id;
-			const collector = message.channel.createMessageCollector(filter, { time: 10000 });
+const ask_for_focus = async function(message, requester, focus_time) {
+	return new Promise((resolve) => {
 
-			collector.on('collect', m => {
-				if(m.content === 'yes') {
-					if (channel_to_delete.deletable) {
-						channel_to_delete
-							.delete()
-							.then(g => console.log(`Deleted channel with id: ${g}`))
-							.catch(console.error);
+		message.channel
+			.send(`${requester.user}, member ${message.author}, would like to talk in ` +
+				`private for ${focus_time}, do you (yes / no) ?`)
+			.then(question_msg => {
+				let reply = false;
+				const filter = m => m.author.id === requester.user.id;
+				const collector = message.channel.createMessageCollector(filter, { time: 10000 });
 
-						m.channel.send(`Deleted channel **"${channel_to_delete_name}"**.`)
-							.then(msg => { msg.delete({ timeout: 5000 }); })
-							.catch(error => console.log(error));
-
-						channel_deleted = true;
+				collector.on('collect', m => {
+					if(m.content === 'yes') {
+						reply = true;
+						collector.stop();
 					}
-					else {
-						message.channel.send(`Channel **"${channel_to_delete}"** is not deletable.`)
-							.then(msg => { msg.delete({ timeout: 5000 }); })
-							.catch(error => console.log(error));
+					else if(m.content === 'no') {
+						collector.stop();
 					}
-					collector.stop();
-				}
-				else if(m.content === 'no') {
-					collector.stop();
-				}
+				});
+
+				collector.on('end', collected => {
+					for (const reply_message of collected.values()) {
+						if (reply_message.deletable) {
+							reply_message.delete().catch(console.error);
+						}
+					}
+					if(question_msg.deletable) {
+						question_msg.delete();
+					}
+					return resolve (reply);
+				});
+			})
+			.catch(error => {
+				console.log('error: ', error);
+				return resolve (false);
 			});
-
-			collector.on('end', collected => {
-				for (const reply_message of collected.values()) {
-					if (reply_message.deletable) {
-						reply_message.delete().catch(console.error);
-					}
-				}
-				if (!channel_deleted) {
-					message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted.`)
-						.then(msg => { msg.delete({ timeout: 5000 }); })
-						.catch(error => console.log(error));
-				}
-				question_msg.delete({ timeout: 5000 });
-			});
-		})
-		.catch(error => console.log(error));
+	});
 };
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
@@ -86,17 +76,20 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		}
 
 		const member_found = message.member.voice.channel.members.find(member => {
-			console.log(`${member.displayName} === ${focus_name}`);
 			if (member.displayName === focus_name || member.id === focus_name) {
 				return true;
 			}
 		});
 
 		if (member_found) {
-			guld_mngr.create_focus_channel(message.guild, message.member, member_found, focus_time)
-				.then(return_value => {
-					console.log('perasa');
-					return resolve (return_value);
+			ask_for_focus(message, member_found, focus_time)
+				.then(result => {
+					if(result) {
+						guld_mngr.create_focus_channel(message.guild, message.member, member_found, focus_time)
+							.then(return_value => {
+								return resolve (return_value);
+							});
+					}
 				});
 		}
 		else {
