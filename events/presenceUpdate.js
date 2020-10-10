@@ -57,7 +57,7 @@ update_channel_name = function(current_voice_channel, current_guild, current_cha
 		console.log('new name channel is the same as old');
 		break;
 	case 3:
-		console.log('new channel name is lesser than length');
+		console.log('new channel name is empty');
 		break;
 	default:
 		break;

@@ -18,21 +18,22 @@ module.exports =
 
 	calculate_rank: function(user) {
 		if (user.points >= user.tier * 1000) {
+			user.points -= user.tier * 1000;
 			user.level++;
 			if (user.level % 5 === 0) {
 				user.tier++;
 			}
 
-			user.points -= user.tier * 1000;
+			return user.level;
 		}
 	},
 
 	add_points_time: function(user, speed) {
 		const voice_time = help_mngr.time_elapsed(user.timestamp, 0);
 
-		user.points += voice_time.remaining_sec * level_speed[speed];
-		user.points += voice_time.remaining_min * level_speed[speed] * 60 * 1.15;
-		user.points += voice_time.remaining_hrs * level_speed[speed] * 60 * 60 * 1.25;
+		user.points += Math.round(voice_time.remaining_sec * level_speed[speed]);
+		user.points += Math.round(voice_time.remaining_min * level_speed[speed] * 60 * 1.15);
+		user.points += Math.round(voice_time.remaining_hrs * level_speed[speed] * 60 * 60 * 1.25);
 
 		user.timestamp = null;
 	},
@@ -63,24 +64,12 @@ module.exports =
 	add_points_message: function(message, guild_list) {
 		const user = guild_list[message.guild.id].member_list[message.author.id];
 		const speed = guild_list[message.guild.id].level_speed;
+		const points = message.content.length * level_speed[speed];
 
-		user.points += message.content.length * level_speed[speed];
-
-		if (this.calculate_rank(user)) {
-			return user.level;
-		}
-
-		return false;
-	},
-
-	add_points_voice: function(message, guild_list) {
-		const user = guild_list[message.guild.id].member_list[message.author.id];
-		const speed = guild_list[message.guild.id].level_speed;
-
-		user.points += message.content.length * level_speed[speed];
-
-		if (this.calculate_rank(user)) {
-			return user.level;
+		user.points += points > 5 ? 5 : Math.round(points);
+		const level = this.calculate_rank(user);
+		if (level) {
+			return level;
 		}
 
 		return false;

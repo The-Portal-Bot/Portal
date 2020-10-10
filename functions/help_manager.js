@@ -190,23 +190,16 @@ module.exports = {
 
 		if (field_array) {
 			field_array.forEach(row => {
-				if ((row.emote === '' || row.emote === null || row.emote === false) &&
-					(row.role === '' || row.role === null || row.role === false)) {
-					rich_message
-						.addField('\u200b', '\u200b');
-				}
-				else {
-					rich_message
-						.addField(
-							(row.emote === '' || row.emote === null || row.emote === false)
-								? '\u200b'
-								: '`' + row.emote + '`',
-							(row.role === '' || row.role === null || row.role === false)
-								? '\u200b'
-								: row.role,
-							row.inline,
-						);
-				}
+				rich_message
+					.addField(
+						(row.emote === '' || row.emote === null || row.emote === false)
+							? '\u200b'
+							: '`' + row.emote + '`',
+						(row.role === '' || row.role === null || row.role === false)
+							? '\u200b'
+							: row.role,
+						row.inline,
+					);
 			});
 		}
 		else {
@@ -273,15 +266,12 @@ module.exports = {
 		});
 	},
 
-	is_authorized: function(auth_list, member) {
-		member.roles.cache.some(role =>
-			console.log('role.id :>> ', role.id),
-		);
+	is_authorized: function(auth_role, member) {
 		return !member.hasPermission('ADMINISTRATOR')
 			? member.roles.cache !== undefined && member.roles.cache !== null
 				? member.roles.cache.some(role =>
-					auth_list
-						? auth_list.some(auth => auth === role.id)
+					auth_role
+						? auth_role.some(auth => auth === role.id)
 						: false)
 				: false
 			: true;
@@ -290,7 +280,7 @@ module.exports = {
 	// channel should be removed !
 	message_reply: function(status, channel, message, user, str, portal_guilds,
 		client, to_delete = true, emote_pass = '✔️', emote_fail = '❌') {
-		if (!message.channel.deleted) {
+		if (!message.channel.deleted && str !== null) {
 			message.channel
 				.send(`${user}, ${str}`)
 				.then(msg => { msg.delete({ timeout: 5000 }); })
@@ -345,8 +335,9 @@ module.exports = {
 		const time_elapsed = Date.now() - timestamp;
 		const timeout_time = timeout * 60 * 1000;
 
-		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0 ?
-			Math.round((timeout_time / 1000 / 60)) : 0;
+		const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0
+			? Math.round((timeout_time / 1000 / 60))
+			: 0;
 		const timeout_sec = Math.round((timeout_time / 1000) % 60);
 
 		const remaining_hrs = Math.round(

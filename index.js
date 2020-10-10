@@ -26,20 +26,24 @@ const active_cooldown = { guild: [], member: [] };
 
 const command_cooldown = {
 	guild: {
-		purge: { time: 10, auth: true }, save: { time: 5, auth: true },
-		setup: { time: 10, auth: true }, set_ranks: { time: 10, auth: true },
+		purge: { time: 10, auth: true, premium: true }, save: { time: 5, auth: true, premium: true },
+		setup: { time: 10, auth: true, premium: true }, set_ranks: { time: 10, auth: true, premium: true },
 	},
 	member: {
-		join: { time: 1, auth: false }, announce: { time: 2, auth: false },
+		join: { time: 1, auth: false, premium: true }, announce: { time: 2, auth: false, premium: true },
+		force: { time: 5, auth: true, premium: true },
 	},
 	none: {
-		ranks: { time: 0, auth: false }, level: { time: 0, auth: false }, force: { time: 0, auth: false },
-		portal: { time: 0, auth: true }, help: { time: 0, auth: false }, ping: { time: 0, auth: false },
-		set: { time: 0, auth: false }, role: { time: 0, auth: false }, spotify: { time: 0, auth: true },
-		music: { time: 0, auth: true }, announcement: { time: 0, auth: true }, url: { time: 0, auth: true },
-		leave: { time: 0, auth: false }, focus: { time: 0, auth: false }, corona: { time: 0, auth: false },
-		run: { time: 0, auth: false }, auth_role_add: { time: 0, auth: true }, auth_role_rem: { time: 0, auth: true },
-		about: { time: 0, auth: false },
+		leaderboard: { time: 0, auth: false, premium: false }, ranks: { time: 0, auth: false, premium: true },
+		level: { time: 0, auth: false, premium: false }, about: { time: 0, auth: false, premium: false },
+		portal: { time: 0, auth: true, premium: false }, help: { time: 0, auth: false, premium: false },
+		ping: { time: 0, auth: false, premium: false }, set: { time: 0, auth: false, premium: true },
+		role: { time: 0, auth: false, premium: true }, spotify: { time: 0, auth: true, premium: true },
+		music: { time: 0, auth: true, premium: true }, announcement: { time: 0, auth: true, premium: true },
+		url: { time: 0, auth: true, premium: true }, leave: { time: 0, auth: false, premium: true },
+		focus: { time: 0, auth: false, premium: true }, corona: { time: 0, auth: false, premium: false },
+		run: { time: 0, auth: false, premium: true }, auth_roles: { time: 0, auth: true, premium: true },
+		auth_role_add: { time: 0, auth: true, premium: true }, auth_role_rem: { time: 0, auth: true, premium: true },
 	},
 };
 
@@ -205,11 +209,11 @@ client.on('message', async message => {
 			channel_talk = 'read_only';
 		}
 	}
-	else if (guild_list[message.guild.id].spotify === message.channel.id) {
-		channel_type = 'Spotify';
-		channel_support = 'read';
-		channel_talk = 'read_only';
-	}
+	// else if (guild_list[message.guild.id].spotify === message.channel.id) {
+	// 	channel_type = 'Spotify';
+	// 	channel_support = 'read';
+	// 	channel_talk = 'read_only';
+	// }
 	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) { // tsiakkas
 		play_mngr.start(client, message, message.content.toString(), guild_list)
 			.then(joined => {
@@ -223,11 +227,11 @@ client.on('message', async message => {
 			});
 		return;
 	}
-	else if (guild_list[message.guild.id].announcement === message.channel.id) {
-		channel_type = 'Announcement';
-		channel_support = 'read';
-		channel_talk = 'read_only';
-	}
+	// else if (guild_list[message.guild.id].announcement === message.channel.id) {
+	// 	channel_type = 'Announcement';
+	// 	channel_support = 'read';
+	// 	channel_talk = 'read_only';
+	// }
 
 	if (channel_type !== null && channel_support !== null && channel_talk !== null) {
 		lclz_mngr.client_talk(client, guild_list, channel_talk);
@@ -240,9 +244,14 @@ client.on('message', async message => {
 	}
 
 	// ranking system
-	user_mngr.add_points_message(message, guild_list);
-	help_mngr.update_portal_managed_guilds(true,
-		portal_managed_guilds_path, guild_list);
+	const level = user_mngr.add_points_message(message, guild_list);
+	if(level) {
+		help_mngr.message_reply(
+			null, message.author.presence.member.voice.channel, message,
+			message.author, `You reached level ${level}!`,
+			guild_list, client);
+	}
+	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 	require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
 		.then(rspns => {
@@ -276,14 +285,20 @@ client.on('message', async message => {
 	}
 
 	if (command_cooldown[type][cmd].auth) {
-		const is_user_authorized = help_mngr.is_authorized(guild_list[message.guild.id].auth_list, message.member);
-		console.log('is_user_authorized :>> ', is_user_authorized);
+		const is_user_authorized = help_mngr.is_authorized(guild_list[message.guild.id].auth_role, message.member);
 
 		if (!is_user_authorized) {
 			help_mngr.message_reply(false, message.author.presence.member.voice.channel, message, message.author,
 				'you are not authorized to access this command', guild_list, client);
 			return;
 		}
+	}
+
+	if (command_cooldown[type][cmd].premium && !guild_list[message.guild.id].premium) {
+		help_mngr.message_reply(
+			false, message.author.presence.member.voice.channel, message,
+			message.author, 'this server is not premium', guild_list, client);
+		return;
 	}
 	// else {
 	// 	help_mngr.message_reply(true, message.author.presence.member.voice.channel, message, message.author,
@@ -293,15 +308,16 @@ client.on('message', async message => {
 	if (type === 'none' && command_cooldown.none[cmd].time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then(rspns => {
-				if (rspns.result === true) {
-					help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
-						message.author, rspns.value, guild_list, client);
+				if(rspns) {
+					if (rspns.result === true) {
+						help_mngr.message_reply(true, message.author.presence.member.voice.channel, message,
+							message.author, rspns.value, guild_list, client);
+					}
+					else if (rspns.result === false) {
+						help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
+							message.author, rspns.value, guild_list, client);
+					}
 				}
-				else if (rspns.result === false) {
-					help_mngr.message_reply(rspns.result, message.author.presence.member.voice.channel, message,
-						message.author, rspns.value, guild_list, client);
-				}
-
 				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 				// help_mngr.message_reply(rspns, message.author.presence.member.voice.channel, message,

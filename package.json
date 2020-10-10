@@ -7,7 +7,6 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "mocha",
     "lint": "eslint '**/*.js'",
     "fix": "eslint --fix '**/*.js'"
   },

@@ -12,6 +12,19 @@ const member_class = require('../assets/classes/member_class');
 const help_mngr = require('./help_manager');
 const musc_mngr = require('./music_manager');
 
+const getOptions = function(guild, topic) {
+	return {
+		type: 'text',
+		topic: topic,
+		permissionOverwrites: [
+			{
+				id: guild.id,
+				deny: ['SEND_MESSAGES'],
+			},
+		],
+	};
+};
+
 module.exports = {
 
 	included_in_portal_guilds: function(guild_id, portal_guilds) {
@@ -64,54 +77,59 @@ module.exports = {
 
 	//
 
-	create_focus_channel: function(guild, portal_objct, member, focus_name, focus_time) {
+	create_focus_channel: async function(guild, member, member_found, focus_time) {
+		return new Promise((resolve) => {
+			const return_value = { result: false, value: '*you can run "./help focus" for help.*' };
 
-		console.log('focus_name: ', focus_name);
-		console.log('focus_time: ', focus_time);
-
-		let return_value = null;
-		const member_found = member.voice.channel.members
-			.find(member_find => member_find.displayName === focus_name, focus_time);
-
-		if (member_found) {
 			const oldChannel = member.voice.channel;
-			// let newChannel = null;
+			let newChannel = null;
 
 			guild.channels.create(
-				`${member.displayName}&${member_found.displayName}`, { type: 'voice', bitrate: 64000 })
+				`${member.displayName}&${member_found.displayName}`, {
+					type: 'voice',
+					bitrate: 64000,
+					userLimit: 2,
+				})
 				.then(channel => {
-					// newChannel = channel;
-					channel.userLimit = 2;
+					newChannel = channel;
 					member.voice.setChannel(channel);
 					member_found.voice.setChannel(channel);
-				}).catch(console.error);
+
+					return_value.result = true;
+					return_value.value = 'users have been moved.';
+				})
+				.catch(console.error);
 
 			setTimeout(() => {
 				if (!oldChannel.deleted) {
-					// member.voice.setChannel(oldChannel).then(moved => {
-					// 	member_found.voice.setChannel(oldChannel).then(moved => {
-					// 		if (newChannel.deletable()) {
-					// 			newChannel.delete().catch(console.error);
-					// 		}
-					// 	}).catch(console.error);
-					// }).catch(console.error);
+					member.voice.setChannel(oldChannel)
+						.then(() => {
+							member_found.voice.setChannel(oldChannel)
+								.then(() => {
+									if (newChannel.deletable) {
+										newChannel.delete().catch(console.error);
+										return_value.result = true;
+										return_value.value = 'focus ended properly.';
+										return resolve (return_value);
+									}
+								}).catch(console.error);
+						}).catch(console.error);
+
+
 				}
 				else {
-					return_value = 'oldChannel.name was deleted before transport back could occur.';
+					return_value.result = false;
+					return_value.value = 'could not move to original channel because it was deleted.';
+					return resolve (return_value);
 				}
 			}, focus_time * 60 * 1000);
-			if (return_value) { return return_value; }
-			return true;
-		}
-		else {
-			return false;
-		}
+		});
 	},
 
 	create_url_channel: function(guild, url_name, url_category, url_list) {
 		if (url_category && typeof url_category === 'string') { // with category
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text' })
+				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' })
 				.then(channel => {
 					url_list
 						.push(channel.id);
@@ -124,7 +142,7 @@ module.exports = {
 		}
 		else if (url_category) { // with category given
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text' }, { parent: url_category })
+				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' }, { parent: url_category })
 				.then(channel => {
 					channel.setParent(url_category);
 					url_list.push(channel.id);
@@ -133,7 +151,7 @@ module.exports = {
 		}
 		else { // without category
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text' })
+				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' })
 				.then(channel => url_list.push(channel.id));
 		}
 	},
@@ -141,7 +159,10 @@ module.exports = {
 	create_spotify_channel: function(guild, spotify_channel, spotify_category, guild_object) {
 		if (spotify_category && typeof spotify_category === 'string') { // with category
 			return guild.channels
-				.create(`${spotify_channel}-sptfy`, { type: 'text' })
+				.create(
+					`${spotify_channel}-sptfy`,
+					getOptions(guild, 'Portal Spotify'),
+				)
 				.then(channel => {
 					guild_object.spotify = channel.id;
 					guild.channels
@@ -153,7 +174,11 @@ module.exports = {
 		}
 		else if (spotify_category) { // with category given
 			return guild.channels
-				.create(`${spotify_channel}-sptfy`, { type: 'text' }, { parent: spotify_category })
+				.create(
+					`${spotify_channel}-sptfy`,
+					getOptions(guild, 'Portal Spotify'),
+					{ parent: spotify_category },
+				)
 				.then(channel => {
 					channel.setParent(spotify_category);
 					guild_object.spotify = channel.id;
@@ -162,8 +187,13 @@ module.exports = {
 		}
 		else { // without category
 			return guild.channels
-				.create(`${spotify_channel}-sptfy`, { type: 'text' })
-				.then(channel => { guild_object.spotify = channel.id; })
+				.create(
+					`${spotify_channel}-sptfy`,
+					getOptions(guild, 'Portal Spotify'),
+				)
+				.then(channel => {
+					guild_object.spotify = channel.id;
+				})
 				.catch(console.error);
 		}
 	},
@@ -174,10 +204,13 @@ module.exports = {
 		return new Promise((resolve) => {
 			if (music_category && typeof music_category === 'string') { // with category
 				guild.channels
-					.create(`${music_channel}-music`, {
-						type: 'text',
-						topic: 'Music Channel from Portal',
-					})
+					.create(
+						`${music_channel}-music`,
+						{
+							type: 'text',
+							topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
+						},
+					)
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
 						guild.channels
@@ -194,11 +227,14 @@ module.exports = {
 			}
 			else if (music_category) { // with category given
 				guild.channels
-					.create(`${music_channel}-music`, {
-						type: 'text',
-						topic: 'Music Channel from Portal',
-						parent: music_category,
-					})
+					.create(
+						`${music_channel}-music`,
+						{
+							type: 'text',
+							topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
+						},
+						{ parent: music_category },
+					)
 					.then(channel => {
 						channel.setParent(music_category);
 						guild_object.music_data.channel_id = channel.id;
@@ -212,10 +248,13 @@ module.exports = {
 			}
 			else { // without category
 				guild.channels
-					.create(`${music_channel}-music`, {
-						topic: 'Music Channel from Portal',
-						type: 'text',
-					})
+					.create(
+						`${music_channel}-music`,
+						{
+							type: 'text',
+							topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
+						},
+					)
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
 						help_mngr.create_music_message(
@@ -232,7 +271,10 @@ module.exports = {
 	create_announcement_channel: function(guild, announcement_channel, announcement_category, guild_object) {
 		if (announcement_category && typeof announcement_category === 'string') { // with category
 			return guild.channels
-				.create(`${announcement_channel}-annc`, { type: 'text' })
+				.create(
+					`${announcement_channel}-annc`,
+					getOptions(guild, 'Portal Announcements'),
+				)
 				.then(channel => {
 					guild_object.announcement = channel.id;
 					guild.channels
@@ -244,7 +286,12 @@ module.exports = {
 		}
 		else if (announcement_category) { // with category given
 			return guild.channels
-				.create(`${announcement_channel}-annc`, { type: 'text' }, { parent: announcement_category })
+				.create(
+					`${announcement_channel}-annc`,
+					getOptions(guild, 'Portal Announcements',
+					),
+					{ parent: announcement_category },
+				)
 				.then(channel => {
 					channel.setParent(announcement_category);
 					guild_object.announcement = channel.id;
@@ -253,7 +300,10 @@ module.exports = {
 		}
 		else { // without category
 			return guild.channels
-				.create(`${announcement_channel}-annc`, { type: 'text' })
+				.create(
+					`${announcement_channel}-annc`,
+					getOptions(guild, 'Portal Announcements'),
+				)
 				.then(channel => { guild_object.announcement = channel.id; })
 				.catch(console.error);
 		}
@@ -313,7 +363,6 @@ module.exports = {
 	},
 
 	create_voice_channel: function(state, portal_objct, portal_channel, creator_id) {
-		console.log('portal_channel.position :>> ', portal_channel.position);
 		state.channel.guild.channels
 			.create('loading...', {
 				type: 'voice',
@@ -321,7 +370,6 @@ module.exports = {
 				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
 			})
 			.then(channel => {
-				console.log('channel.position :>> ', channel.position);
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice, false, 0, 0,
@@ -343,7 +391,9 @@ module.exports = {
 		const guild = client.guilds.cache.find(cached_guild => cached_guild.id === guild_id);
 
 		guild.members.cache.forEach(member => {
-			if (member.id !== '704400876860735569') {member_list[member.id] = new member_class(1, 0, 0, 0, null);}
+			if (member.id !== '704400876860735569' && !member.user.bot) {
+				member_list[member.id] = new member_class(1, 0, 0, 0, null);
+			}
 		});
 
 		return member_list;
@@ -446,7 +496,7 @@ module.exports = {
 		for (const portal_id in current_guild.portal_list) {
 			if (portal_id === channel_to_remove.id) {
 				delete current_guild.portal_list[portal_id];
-				type_of_channel = 1;
+				type_of_channel = TypesOfChannel.Portal;
 				break;
 			}
 			else {
@@ -454,16 +504,17 @@ module.exports = {
 				for (const voice_id in current_voice_list) {
 					if (voice_id === channel_to_remove.id) {
 						delete current_voice_list[voice_id];
-						type_of_channel = 2;
+						type_of_channel = TypesOfChannel.Voice;
 						break;
 					}
 				}
 			}
 		}
 
-		for (const url_id in current_guild.url_list) {
-			if (url_id === +channel_to_remove.id) {
-				delete current_guild.url_list[url_id];
+		for (let i = 0; i < current_guild.url_list.length; i++) {
+			console.log(`${current_guild.url_list[i]} === ${channel_to_remove.id}`);
+			if (current_guild.url_list[i] === channel_to_remove.id) {
+				current_guild.url_list.splice(i, 1);
 				type_of_channel = TypesOfChannel.Url;
 				break;
 			}
@@ -714,6 +765,3 @@ module.exports = {
 
 	},
 };
-
-// console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));
-// console.log('Object.getOwnPropertyNames(state.user)= ', Object.getOwnPropertyNames(state.user));

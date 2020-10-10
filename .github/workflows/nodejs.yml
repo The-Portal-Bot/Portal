@@ -5,24 +5,22 @@ name: lint and test
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   pass_code_from_linter:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Run linter for nodejs versions ${{ matrix.node-version }}
-    - uses: actions/setup-node@v1
-      with: node-version: ${{ matrix.node-version }}
-    - name: Install dependencies
-    - run: npm ci
-    - run: npm lint
-    - run: npm run build --if-present
+   steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+          check-latest: true
+      - run: npm install
+      - run: npm ci
+      - run: npm lint
+      - run: npm run build --if-present
