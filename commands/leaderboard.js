@@ -31,7 +31,10 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 						length--;
 					}
 					else {
-						console.log('member_id :>> ', member_id);
+						resolve({
+							result: false,
+							value: '*a member has been stored incorrectly please contact Portal maintainter.*',
+						});
 					}
 				});
 

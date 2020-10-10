@@ -37,7 +37,6 @@ const ask_for_focus = async function(message, requester, focus_time) {
 				});
 			})
 			.catch(error => {
-				console.log('error: ', error);
 				return resolve (false);
 			});
 	});

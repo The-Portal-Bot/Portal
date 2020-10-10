@@ -95,14 +95,12 @@ module.exports = {
 					member.voice.setChannel(channel);
 					member_found.voice.setChannel(channel);
 
-					console.log('mpika edo 1');
 					return_value.result = true;
 					return_value.value = 'users have been moved.';
 				})
 				.catch(console.error);
 
 			setTimeout(() => {
-				console.log('mpika edo 2');
 				if (!oldChannel.deleted) {
 					member.voice.setChannel(oldChannel)
 						.then(() => {
@@ -365,7 +363,6 @@ module.exports = {
 	},
 
 	create_voice_channel: function(state, portal_objct, portal_channel, creator_id) {
-		console.log('portal_channel.position :>> ', portal_channel.position);
 		state.channel.guild.channels
 			.create('loading...', {
 				type: 'voice',
@@ -373,7 +370,6 @@ module.exports = {
 				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
 			})
 			.then(channel => {
-				console.log('channel.position :>> ', channel.position);
 				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice, false, 0, 0,
@@ -769,6 +765,3 @@ module.exports = {
 
 	},
 };
-
-// console.log('Object.getOwnPropertyNames(state)= ', Object.getOwnPropertyNames(state));
-// console.log('Object.getOwnPropertyNames(state.user)= ', Object.getOwnPropertyNames(state.user));
