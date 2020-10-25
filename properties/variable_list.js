@@ -63,14 +63,15 @@ module.exports =
 			name: '#',
 			description: 'returns the channel number in list.',
 			super_description: '**#**, returns the channel number in list, if it was created first .' +
-			'it will display 1, if third 3, etc.',
+				'it will display 1, if third 3, etc.',
 			example: '$#',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object) => {
 				let i = 0;
-				for(const portal_key in portal_list_object) {
+				for (const portal_key in portal_list_object) {
 					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
 						for (const voice_key in portal_list_object[portal_key].voice_list) {
+							console.log('voice_key :>> ', voice_key);
 							i++;
 							if (voice_key === voice_channel.id) return i.toString();
 						}
@@ -89,7 +90,7 @@ module.exports =
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object) => {
 				let i = 0;
-				for(const portal_key in portal_list_object) {
+				for (const portal_key in portal_list_object) {
 					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
 						for (const voice_key in portal_list_object[portal_key].voice_list) {
 							i++;
@@ -107,7 +108,7 @@ module.exports =
 			example: '$creator_portal',
 			args: 'none',
 			get: (voice_channel, voice_object, portal_list_object, guild_object, guild) => {
-				for(const portal_key in portal_list_object) {
+				for (const portal_key in portal_list_object) {
 					if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
 						const display_name = guild.members.cache
 							.find(member => member.id === portal_list_object[portal_key].creator_id).displayName;
@@ -139,33 +140,44 @@ module.exports =
 			},
 		},
 		{
-			name: 'number_day',
+			name: 'day_number',
 			description: 'returns the day number.',
-			super_description: '**number_day**, returns the day number.',
-			example: '$number_day',
+			super_description: '**day_number**, returns the day number.',
+			example: '$day_number',
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).date();
 			},
 		},
 		{
-			name: 'name_day',
+			name: 'day_name',
 			description: 'returns the day name.',
-			super_description: '**name_day**, returns the day name.',
-			example: '$name_day',
+			super_description: '**day_name**, returns the day name.',
+			example: '$day_name',
 			args: 'none',
 			get: (voice_channel, voice_object) => {
 				return moment().locale(voice_object.locale).format('dddd');
 			},
 		},
 		{
-			name: 'month',
-			description: 'returns the month.',
-			super_description: '**month**, returns the month.',
-			example: '$month',
+			name: 'month_number',
+			description: 'returns the month by number.',
+			super_description: '**month_number**, returns the month by number.',
+			example: '$month_number',
 			args: 'none',
 			get: (voice_channel, voice_object) => {
-				return moment().locale(voice_object.locale).format('mmmm');
+				return moment().locale(voice_object.locale).format('M');
+			},
+		},
+		{
+			name: 'month_name',
+			description: 'returns the month by name.',
+			super_description: '**month_name**, returns the month by name.',
+			example: '$month_name',
+			args: 'none',
+			get: (voice_channel, voice_object) => {
+				return moment().locale(voice_object.locale)
+					.startOf('month').format('MMMM');
 			},
 		},
 		{
@@ -227,7 +239,7 @@ module.exports =
 			get: (voice_channel) => {
 				let cnt = 0;
 				voice_channel.members.forEach((member) => {
-					if (member.presence.game !== null && !member.user.bot) {cnt++;}
+					if (member.presence.game !== null && !member.user.bot) { cnt++; }
 				});
 				return cnt;
 			},
@@ -241,7 +253,7 @@ module.exports =
 			get: (voice_channel) => {
 				let cnt = 0;
 				voice_channel.members.forEach((member) => {
-					if (!member.user.bot) {cnt++;}
+					if (!member.user.bot) { cnt++; }
 				});
 				return cnt;
 			},
@@ -277,7 +289,7 @@ module.exports =
 			get: (voice_channel) => {
 				let cnt = 0;
 				voice_channel.members.forEach((member) => {
-					if (member.presence.game !== null) {cnt++;}
+					if (member.presence.game !== null) { cnt++; }
 				});
 				return cnt;
 			},

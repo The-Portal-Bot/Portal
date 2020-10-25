@@ -117,7 +117,8 @@ const reaction_music_manager = function(args) {
 		}
 
 		const votes = current_guild.music_data.votes.length;
-		const users = voice_connection_in_reaction_guild.channel.members.filter(member => !member.user.bot).size;
+		const users = voice_connection_in_reaction_guild.channel.members
+			.filter(member => !member.user.bot).size;
 
 		if (votes >= users / 2 || args.user.presence.member.hasPermission('ADMINISTRATOR')) {
 			return_value.value = 'stoping player';
@@ -136,7 +137,8 @@ const reaction_music_manager = function(args) {
 		}
 
 		const votes = current_guild.music_data.votes.length;
-		const users = voice_connection_in_reaction_guild.channel.members.filter(member => !member.user.bot).size;
+		const users = voice_connection_in_reaction_guild.channel.members
+			.filter(member => !member.user.bot).size;
 
 		if (votes >= users / 2 || args.user.presence.member.hasPermission('ADMINISTRATOR')) {
 			return_value.value = 'skipping video';

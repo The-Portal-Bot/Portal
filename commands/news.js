@@ -47,14 +47,15 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 
 		const options = {
 			'method': 'GET',
-			'hostname': 'covid-193.p.rapidapi.com',
+			'hostname': 'http://newsapi.org',
 			'port': null,
-			'path': '/statistics',
+			'path': '/v2/everything',
 			'headers': {
-				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
-				'x-rapidapi-key': 'b883903090msh7eef2b50e6cbe9cp1ff439jsnee4d6c48061f',
-				'useQueryString': true,
-			},
+				'q': 'bitcoin',
+				'orgfrom': '2020-09-19',
+				'sortBy': 'publishedAt',
+				'apiKey': 'publishedAt',
+			},  
 		};
 
 		http_mngr(options)
