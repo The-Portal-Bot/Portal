@@ -253,15 +253,15 @@ client.on('message', async message => {
 	}
 	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
-	require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
-		.then(rspns => {
-			message.react('🚩');
-			if (rspns) {
-				help_mngr.message_reply(
-					rspns.result, message.author.presence.member.voice.channel, message, message.author,
-					rspns.value, guild_list, client, false, '✔️', '🚩');
-			}
-		});
+	// require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
+	// 	.then(rspns => {
+	// 		message.react('🚩');
+	// 		if (rspns) {
+	// 			help_mngr.message_reply(
+	// 				rspns.result, message.author.presence.member.voice.channel, message, message.author,
+	// 				rspns.value, guild_list, client, false, '✔️', '🚩');
+	// 		}
+	// 	});
 
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
