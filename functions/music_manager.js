@@ -1,8 +1,8 @@
 const help_mngr = require('./help_manager');
 
 const yts = require('yt-search');
-const ytdl = require('ytdl-core');
-// const ytdl = require('discord-ytdl-core');
+// const ytdl = require('ytdl-core');
+const ytdl = require('discord-ytdl-core');
 
 module.exports = {
 
@@ -39,13 +39,13 @@ module.exports = {
 						yts(search_term)
 							.then(yts_attempt => {
 								if (yts_attempt && yts_attempt.videos.length > 0) {
+									console.log('yts_attempt.videos[0] :>> ', yts_attempt.videos[0]);
 									const stream = ytdl(yts_attempt.videos[0].url, {
 										filter: 'audioonly',
 										opusEncoded: false,
 										fmt: 'mp3',
 										highWaterMark: 2048,
 									});
-
 									portal_guilds[guild_id].dispatcher = join_attempt.voice_connection.play(stream);
 
 									help_mngr.update_message(portal_guilds[guild_id],
