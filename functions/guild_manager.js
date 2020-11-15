@@ -217,11 +217,7 @@ module.exports = {
 							.create(music_category, { type: 'category' })
 							.then(cat_channel => channel.setParent(cat_channel))
 							.catch(error => resolve(error));
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							guild_object,
-						);
+						help_mngr.create_music_message(channel, portal_icon_url, guild_object);
 					})
 					.catch(error => resolve(error));
 			}
@@ -238,11 +234,7 @@ module.exports = {
 					.then(channel => {
 						channel.setParent(music_category);
 						guild_object.music_data.channel_id = channel.id;
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							guild_object,
-						);
+						help_mngr.create_music_message(channel, portal_icon_url, guild_object);
 					})
 					.catch(error => resolve(error));
 			}
@@ -257,11 +249,7 @@ module.exports = {
 					)
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							guild_object,
-						);
+						help_mngr.create_music_message(channel, portal_icon_url, guild_object);
 					})
 					.catch(error => resolve(error));
 			}
@@ -312,7 +300,7 @@ module.exports = {
 	create_portal_channel: function(guild, portal_channel, portal_category, portal_objct, guild_object, creator_id) {
 		if (portal_category && typeof portal_category === 'string') { // with category
 			return guild.channels
-				.create(portal_channel, { type: 'voice', bitrate: 64000 })
+				.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id,
@@ -331,7 +319,7 @@ module.exports = {
 		}
 		else if (portal_category) { // with category given
 			return guild.channels
-				.create(portal_channel, { type: 'voice', bitrate: 64000 }, { parent: portal_category })
+				.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 }, { parent: portal_category })
 				.then(channel => {
 					channel.setParent(portal_category);
 					portal_objct[channel.id] = new portal_class(
@@ -347,7 +335,7 @@ module.exports = {
 		}
 		else { // without category
 			return guild.channels
-				.create(portal_channel, { type: 'voice', bitrate: 64000 })
+				.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id,
@@ -366,19 +354,16 @@ module.exports = {
 		state.channel.guild.channels
 			.create('loading...', {
 				type: 'voice',
-				bitrate: 64000,
+				bitrate: 96000,
 				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
+				userLimit: portal_objct.user_limit_portal,
+				parent: state.channel.parentID ? state.channel.parentID : null,
 			})
 			.then(channel => {
-				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice, false, 0, 0,
 					portal_objct.locale, portal_objct.ann_announce, portal_objct.ann_user,
 				);
-				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
-					channel.setParent(state.channel.parentID);
-				}
-
 				state.member.voice.setChannel(channel);
 			})
 			.catch(console.error);
