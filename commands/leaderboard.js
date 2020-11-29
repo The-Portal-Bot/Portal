@@ -12,7 +12,9 @@ const compare = function(member_a, member_b) {
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		member_list = portal_guilds[message.guild.id].member_list;
-		let length = args.length > 0 ? +args[0] : Object.keys(member_list).length;
+		let length = (+args.length > 0 && Object.keys(member_list).length >= args.length) 
+			? +args[0] 
+			: 9;
 
 		if(!isNaN(length)) {
 			if (portal_guilds[message.guild.id].member_list) {
@@ -23,7 +25,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					if (this_member !== null && this_member !== undefined && length > 0) {
 						member_levels.push(
 							{
-								emote: `${i}. ${this_member.displayName}`,
+								emote: `${i+1}. ${this_member.displayName}`,
 								role: `points: ${Math.round(member_list[member_id].points)}`,
 								inline: false,
 							},

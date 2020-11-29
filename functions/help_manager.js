@@ -77,8 +77,7 @@ module.exports = {
 				.fetch(guild.music_data.message_id)
 				.then(message => {
 					message.edit(music_message_emb)
-						.then(msg =>
-							console.log(`Updated the content of a message to ${msg.content}`))
+						.then(msg => console.log(`Updated the content of a message to ${msg.content}`))
 						.catch(console.error);
 				})
 				.catch(console.error);
@@ -130,7 +129,7 @@ module.exports = {
 						voice_connection: conn,
 					});
 				})
-				.catch(e => { console.log('ERRROINO: ', e); });
+				.catch(e => { console.log('ERROR CREATING VOICE CONNECTION TO CHANNEL: ', e); });
 		});
 	},
 

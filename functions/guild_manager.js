@@ -15,7 +15,7 @@ const musc_mngr = require('./music_manager');
 const getOptions = function(guild, topic) {
 	return {
 		type: 'text',
-		topic: topic,
+		topic: `by Portal, ${topic}`,
 		permissionOverwrites: [
 			{
 				id: guild.id,
@@ -129,7 +129,7 @@ module.exports = {
 	create_url_channel: function(guild, url_name, url_category, url_list) {
 		if (url_category && typeof url_category === 'string') { // with category
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' })
+				.create(`${url_name}`, { type: 'text', topic: 'Portal URL-only' })
 				.then(channel => {
 					url_list
 						.push(channel.id);
@@ -142,7 +142,7 @@ module.exports = {
 		}
 		else if (url_category) { // with category given
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' }, { parent: url_category })
+				.create(`${url_name}`, { type: 'text', topic: 'Portal URL-only' }, { parent: url_category })
 				.then(channel => {
 					channel.setParent(url_category);
 					url_list.push(channel.id);
@@ -151,7 +151,7 @@ module.exports = {
 		}
 		else { // without category
 			guild.channels
-				.create(`${url_name}-url`, { type: 'text', topic: 'Portal URL-only' })
+				.create(`${url_name}`, { type: 'text', topic: 'Portal URL-only' })
 				.then(channel => url_list.push(channel.id));
 		}
 	},
@@ -160,8 +160,8 @@ module.exports = {
 		if (spotify_category && typeof spotify_category === 'string') { // with category
 			return guild.channels
 				.create(
-					`${spotify_channel}-sptfy`,
-					getOptions(guild, 'Portal Spotify'),
+					`${spotify_channel}`,
+					getOptions(guild, 'Displays music users in portal channels are listening too'),
 				)
 				.then(channel => {
 					guild_object.spotify = channel.id;
@@ -175,8 +175,8 @@ module.exports = {
 		else if (spotify_category) { // with category given
 			return guild.channels
 				.create(
-					`${spotify_channel}-sptfy`,
-					getOptions(guild, 'Portal Spotify'),
+					`${spotify_channel}`,
+					getOptions(guild, 'Displays music users in portal channels are listening too'),
 					{ parent: spotify_category },
 				)
 				.then(channel => {
@@ -188,8 +188,8 @@ module.exports = {
 		else { // without category
 			return guild.channels
 				.create(
-					`${spotify_channel}-sptfy`,
-					getOptions(guild, 'Portal Spotify'),
+					`${spotify_channel}`,
+					getOptions(guild, 'Displays music users in portal channels are listening too'),
 				)
 				.then(channel => {
 					guild_object.spotify = channel.id;
@@ -205,7 +205,7 @@ module.exports = {
 			if (music_category && typeof music_category === 'string') { // with category
 				guild.channels
 					.create(
-						`${music_channel}-music`,
+						`${music_channel}`,
 						{
 							type: 'text',
 							topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
@@ -217,18 +217,14 @@ module.exports = {
 							.create(music_category, { type: 'category' })
 							.then(cat_channel => channel.setParent(cat_channel))
 							.catch(error => resolve(error));
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							guild_object,
-						);
+						help_mngr.create_music_message(channel, portal_icon_url, guild_object);
 					})
 					.catch(error => resolve(error));
 			}
 			else if (music_category) { // with category given
 				guild.channels
 					.create(
-						`${music_channel}-music`,
+						`${music_channel}`,
 						{
 							type: 'text',
 							topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
@@ -238,18 +234,14 @@ module.exports = {
 					.then(channel => {
 						channel.setParent(music_category);
 						guild_object.music_data.channel_id = channel.id;
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							guild_object,
-						);
+						help_mngr.create_music_message(channel, portal_icon_url, guild_object);
 					})
 					.catch(error => resolve(error));
 			}
 			else { // without category
 				guild.channels
 					.create(
-						`${music_channel}-music`,
+						`${music_channel}`,
 						{
 							type: 'text',
 							topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
@@ -257,11 +249,7 @@ module.exports = {
 					)
 					.then(channel => {
 						guild_object.music_data.channel_id = channel.id;
-						help_mngr.create_music_message(
-							channel,
-							portal_icon_url,
-							guild_object,
-						);
+						help_mngr.create_music_message(channel, portal_icon_url, guild_object);
 					})
 					.catch(error => resolve(error));
 			}
@@ -272,8 +260,8 @@ module.exports = {
 		if (announcement_category && typeof announcement_category === 'string') { // with category
 			return guild.channels
 				.create(
-					`${announcement_channel}-annc`,
-					getOptions(guild, 'Portal Announcements'),
+					`${announcement_channel}`,
+					getOptions(guild, 'Announcements channel, for both portal, users and admins'),
 				)
 				.then(channel => {
 					guild_object.announcement = channel.id;
@@ -287,8 +275,8 @@ module.exports = {
 		else if (announcement_category) { // with category given
 			return guild.channels
 				.create(
-					`${announcement_channel}-annc`,
-					getOptions(guild, 'Portal Announcements',
+					`${announcement_channel}`,
+					getOptions(guild, 'Announcements channel, for both portal, users and admins',
 					),
 					{ parent: announcement_category },
 				)
@@ -301,8 +289,8 @@ module.exports = {
 		else { // without category
 			return guild.channels
 				.create(
-					`${announcement_channel}-annc`,
-					getOptions(guild, 'Portal Announcements'),
+					`${announcement_channel}`,
+					getOptions(guild, 'Announcements channel, for both portal, users and admins'),
 				)
 				.then(channel => { guild_object.announcement = channel.id; })
 				.catch(console.error);
@@ -312,7 +300,7 @@ module.exports = {
 	create_portal_channel: function(guild, portal_channel, portal_category, portal_objct, guild_object, creator_id) {
 		if (portal_category && typeof portal_category === 'string') { // with category
 			return guild.channels
-				.create(portal_channel, { type: 'voice', bitrate: 8000 })
+				.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id,
@@ -320,7 +308,7 @@ module.exports = {
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
 							: 'Channel $#',
-						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true,
+						{}, false, 2, 0, 0, guild_object[guild.id].locale, false, true,
 					);
 					guild.channels
 						.create(portal_category, { type: 'category' })
@@ -331,7 +319,7 @@ module.exports = {
 		}
 		else if (portal_category) { // with category given
 			return guild.channels
-				.create(portal_channel, { type: 'voice', bitrate: 8000 }, { parent: portal_category })
+				.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 }, { parent: portal_category })
 				.then(channel => {
 					channel.setParent(portal_category);
 					portal_objct[channel.id] = new portal_class(
@@ -340,14 +328,14 @@ module.exports = {
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
 							: 'Channel $#',
-						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true,
+						{}, false, 2, 0, 0, guild_object[guild.id].locale, false, true,
 					);
 				})
 				.catch(console.error);
 		}
 		else { // without category
 			return guild.channels
-				.create(portal_channel, { type: 'voice', bitrate: 8000 })
+				.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 				.then(channel => {
 					portal_objct[channel.id] = new portal_class(
 						creator_id,
@@ -355,7 +343,7 @@ module.exports = {
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
 							: 'Channel $#',
-						{}, false, 0, 0, 0, guild_object[guild.id].locale, false, true,
+						{}, false, 2, 0, 0, guild_object[guild.id].locale, false, true,
 					);
 				})
 				.catch(console.error);
@@ -366,19 +354,16 @@ module.exports = {
 		state.channel.guild.channels
 			.create('loading...', {
 				type: 'voice',
-				bitrate: 64000,
+				bitrate: 96000,
 				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
+				userLimit: portal_objct.user_limit_portal,
+				parent: state.channel.parentID ? state.channel.parentID : null,
 			})
 			.then(channel => {
-				channel.userLimit = portal_objct.user_limit_portal;
 				portal_objct['voice_list'][channel.id] = new voice_class(
 					creator_id, portal_objct.regex_voice, false, 0, 0,
 					portal_objct.locale, portal_objct.ann_announce, portal_objct.ann_user,
 				);
-				if (state.channel.parentID !== null && state.channel.parentID !== undefined) {
-					channel.setParent(state.channel.parentID);
-				}
-
 				state.member.voice.setChannel(channel);
 			})
 			.catch(console.error);

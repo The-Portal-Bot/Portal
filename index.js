@@ -209,12 +209,7 @@ client.on('message', async message => {
 			channel_talk = 'read_only';
 		}
 	}
-	// else if (guild_list[message.guild.id].spotify === message.channel.id) {
-	// 	channel_type = 'Spotify';
-	// 	channel_support = 'read';
-	// 	channel_talk = 'read_only';
-	// }
-	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) { // tsiakkas
+	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
 		play_mngr.start(client, message, message.content.toString(), guild_list)
 			.then(joined => {
 				help_mngr.message_reply(
@@ -227,11 +222,6 @@ client.on('message', async message => {
 			});
 		return;
 	}
-	// else if (guild_list[message.guild.id].announcement === message.channel.id) {
-	// 	channel_type = 'Announcement';
-	// 	channel_support = 'read';
-	// 	channel_talk = 'read_only';
-	// }
 
 	if (channel_type !== null && channel_support !== null && channel_talk !== null) {
 		lclz_mngr.client_talk(client, guild_list, channel_talk);
@@ -253,15 +243,15 @@ client.on('message', async message => {
 	}
 	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
-	require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
-		.then(rspns => {
-			message.react('🚩');
-			if (rspns) {
-				help_mngr.message_reply(
-					rspns.result, message.author.presence.member.voice.channel, message, message.author,
-					rspns.value, guild_list, client, false, '✔️', '🚩');
-			}
-		});
+	// require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
+	// 	.then(rspns => {
+	// 		message.react('🚩');
+	// 		if (rspns) {
+	// 			help_mngr.message_reply(
+	// 				rspns.result, message.author.presence.member.voice.channel, message, message.author,
+	// 				rspns.value, guild_list, client, false, '✔️', '🚩');
+	// 		}
+	// 	});
 
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;

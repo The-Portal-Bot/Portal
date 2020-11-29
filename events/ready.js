@@ -8,6 +8,7 @@ module.exports = async (args) => {
 	args.client.guilds.cache.forEach(guild => {
 		console.log(`${guild} (${guild.id})`);
 		help_mngr.empty_channel_remover(guild, args.guild_list, args.portal_managed_guilds_path);
+		help_mngr
 	});
 
 	return { result: true, value: lclz_mngr.console.ready.en(args) };

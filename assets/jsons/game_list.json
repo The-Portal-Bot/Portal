@@ -28,7 +28,7 @@
       "status": "Apex Legends",
       "type": "game",
       "locale": {
-        "en": "Apex Legends",
+        "en": "Apex",
         "gr": "Κορυφαίοι Θρύλοι"
       }
     },
@@ -54,22 +54,6 @@
       "locale": {
         "en": "Don't Starve Together",
         "gr": "Μην Πεθάνετε Μαζί"
-      }
-    },
-    {
-      "status": "Apex Legends",
-      "type": "game",
-      "locale": {
-        "en": "Apex Legends",
-        "gr": "Κορυφαίοι Θρύλοι"
-      }
-    },
-    {
-      "status": "Apex Legends",
-      "type": "game",
-      "locale": {
-        "en": "Apex Legends",
-        "gr": "Κορυφαίοι Θρύλοι"
       }
     },
     {
