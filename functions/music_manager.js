@@ -90,7 +90,6 @@ module.exports = {
 				}
 			}
 			else if (current_dispatcher === null) {
-
 				const next_yts_video = portal_guilds[guild_id].music_queue.shift();
 				const voice_connection = client.voice.connections.find(connection => connection.channel.id);
 

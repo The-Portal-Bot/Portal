@@ -112,6 +112,10 @@ const reaction_music_manager = function(args) {
 		break;
 	}
 	case '⏹' : {
+		if(current_guild.dispatcher !== null && current_guild.dispatcher !== undefined) {
+			return_value.value = 'player is not connected';
+			break;
+		}
 		if(!current_guild.music_data.votes.includes(args.user.id)) {
 			current_guild.music_data.votes.push(args.user.id);
 		}
@@ -120,18 +124,28 @@ const reaction_music_manager = function(args) {
 		const users = voice_connection_in_reaction_guild.channel.members
 			.filter(member => !member.user.bot).size;
 
-		if (votes >= users / 2 || args.user.presence.member.hasPermission('ADMINISTRATOR')) {
-			return_value.value = 'stoping player';
+		if (votes >= users / 2) {
+			return_value.value = 'stopping player (majority)';
+			musc_mngr.stop(args.messageReaction.message.guild.id, args.guild_list,
+				args.messageReaction.message.guild);
+			current_guild.music_data.votes = [];
+		}
+		else if (args.user.presence.member.hasPermission('ADMINISTRATOR')) {
+			return_value.value = 'stopping player (admin)';
 			musc_mngr.stop(args.messageReaction.message.guild.id, args.guild_list,
 				args.messageReaction.message.guild);
 			current_guild.music_data.votes = [];
 		}
 		else {
-			return_value.value = `${votes}/${users / 2} (majority needed to stop/admins)`;
+			return_value.value = `${votes}/${users / 2} (majority or admin authorization needed to stop)`;
 		}
 		break;
 	}
 	case '⏭' : {
+		if(current_guild.dispatcher !== null && current_guild.dispatcher !== undefined) {
+			return_value.value = 'player is not connected';
+			break;
+		}
 		if(!current_guild.music_data.votes.includes(args.user.id)) {
 			current_guild.music_data.votes.push(args.user.id);
 		}
@@ -140,14 +154,20 @@ const reaction_music_manager = function(args) {
 		const users = voice_connection_in_reaction_guild.channel.members
 			.filter(member => !member.user.bot).size;
 
-		if (votes >= users / 2 || args.user.presence.member.hasPermission('ADMINISTRATOR')) {
-			return_value.value = 'skipping video';
+		if (votes >= users / 2) {
+			return_value.value = 'skipping video (majority)';
+			musc_mngr.skip(args.messageReaction.message.guild.id, args.guild_list,
+				args.client, args.messageReaction.message.guild);
+			current_guild.music_data.votes = [];
+		}
+		else if (args.user.presence.member.hasPermission('ADMINISTRATOR')) {
+			return_value.value = 'skipping video (admin)';
 			musc_mngr.skip(args.messageReaction.message.guild.id, args.guild_list,
 				args.client, args.messageReaction.message.guild);
 			current_guild.music_data.votes = [];
 		}
 		else {
-			return_value.value = `${votes}/${users / 2} (majority needed to skip/admins)`;
+			return_value.value = `${votes}/${users / 2} (majority or admin authorization needed to skip)`;
 		}
 		break;
 	}
