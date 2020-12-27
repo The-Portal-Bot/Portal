@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const country_codes = require('../assets/jsons/country_codes.json');
+const country_codes = require('../../assets/jsons/country_codes.json');
 
 const http_mngr = require('../functions/http_requests');
 const help_mngr = require('../functions/help_manager');

@@ -13,8 +13,8 @@
 
 const file_system = require('file-system');
 
-const portal_managed_guilds_path = './server_storage/guild_list.json';
-const config = require('./config.json'); // config.token / config.prefix
+const portal_managed_guilds_path = './database/guild_list.json';
+const config = require('../config.json'); // config.token / config.prefix
 
 const guld_mngr = require('./functions/guild_manager');
 const help_mngr = require('./functions/help_manager');

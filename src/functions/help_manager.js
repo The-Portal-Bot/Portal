@@ -5,7 +5,7 @@ const lodash = require('lodash');
 // const guld_mngr = require('./guild_manager'); // circular module call doesnt work !
 const lclz_mngr = require('./localization_manager');
 
-const role_class = require('../assets/classes/role_class');
+const role_class = require('../../assets/classes/role_class');
 
 module.exports = {
 

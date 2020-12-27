@@ -1,5 +1,5 @@
-const games = require('../assets/jsons/game_list.json');
-const programs = require('../assets/jsons/program_list.json');
+const games = require('../../assets/jsons/game_list.json');
+const programs = require('../../assets/jsons/program_list.json');
 
 module.exports = {
 	status_aliases: function(activities, locale) {

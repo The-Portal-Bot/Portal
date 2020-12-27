@@ -4,10 +4,10 @@ const vrbl_objct = require('../properties/variable_list');
 const pipe_objct = require('../properties/pipe_list');
 const attr_objct = require('../properties/attribute_list');
 
-const guild_class = require('../assets/classes/guild_class');
-const portal_class = require('../assets/classes/portal_class');
-const voice_class = require('../assets/classes/voice_class');
-const member_class = require('../assets/classes/member_class');
+const guild_class = require('../../assets/classes/guild_class');
+const portal_class = require('../../assets/classes/portal_class');
+const voice_class = require('../../assets/classes/voice_class');
+const member_class = require('../../assets/classes/member_class');
 
 const help_mngr = require('./help_manager');
 const musc_mngr = require('./music_manager');

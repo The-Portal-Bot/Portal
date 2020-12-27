@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-const country_codes = require('../assets/jsons/country_codes_2.json');
-const bad_words_by_country = require('../assets/jsons/bad_words_by_country.json');
+const country_codes = require('../../assets/jsons/country_codes_2.json');
+const bad_words_by_country = require('../../assets/jsons/bad_words_by_country.json');
 
 const http_mngr = require('../functions/http_requests');
 const help_mngr = require('../functions/help_manager');
