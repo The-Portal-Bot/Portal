@@ -3,10 +3,10 @@
   "author": "Ioannis Tsiakkas",
   "version": "1.2.0",
   "private": true,
-  "main": "index.js",
+  "main": "portal.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node portal.js",
+    "dev": "nodemon portal.js",
     "lint": "eslint **/*.js",
     "lint-fix": "eslint --fix **/*.js",
     "dview": "npm-dview"

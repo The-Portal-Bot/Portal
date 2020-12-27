@@ -290,23 +290,19 @@ module.exports = {
 				message
 					.react(emote_pass)
 					.catch(error => console.log(error));
-				if(to_delete) {
-					message
-						.delete({ timeout: 5000 })
-						.catch(error => console.log(error));
-				}
+				
 			}
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');
 				message
 					.react(emote_fail)
 					.catch(error => console.log(error));
-				if(to_delete) {
-					message
-						.delete({ timeout: 5000 })
-						.catch(error => console.log(error));
-				}
 			}
+			// if(to_delete) {
+			// 	message
+			// 		.delete({ timeout: 5000 })
+			// 		.catch(error => console.log(error));
+			// }
 		}
 	},
 
