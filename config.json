@@ -1,5 +1,9 @@
 {
   "token"  : "NzU1ODI1ODcwMTAyNTkzNjI2.X2I7sQ.nDesKkpHU-m5wdxZOdXmChlgnXU",
   "prefix" : ".//",
-  "ownder_id" : 228666893068795905
+  "owner_id" : 228666893068795905,
+  "portal_id" : 755825870102593626,
+  "delete_msg" : false,
+  "delete_msg_after" : 5,
+  "always_reply" : true
 }
