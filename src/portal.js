@@ -11,53 +11,30 @@
 // const PortalDB = mongoose.connection;
 // PortalDB.once('open', function() { console.log('we\'re connected!'); });
 
-const file_system = require('file-system');
-
+// list of all managed channels in servers
 const portal_managed_guilds_path = './database/guild_list.json';
-const config = require('../config.json'); // config.token / config.prefix
 
+const config = require('../config.json');
+const guild_list = require('../database/guild_list.json');
+const cooldown_list = require('../assets/jsons/cooldown_list.json');
+
+const profanity = require('./moderation/profanity.js')
 const guld_mngr = require('./functions/guild_manager');
 const help_mngr = require('./functions/help_manager');
 const lclz_mngr = require('./functions/localization_manager');
 const user_mngr = require('./functions/user_manager');
 const play_mngr = require('./functions/music_manager');
 
-const active_cooldown = { guild: [], member: [] };
+var Filter = require('bad-words');
 
-const command_cooldown = {
-	guild: {
-		purge: { time: 10, auth: true, premium: true }, save: { time: 5, auth: true, premium: true },
-		setup: { time: 10, auth: true, premium: true }, set_ranks: { time: 10, auth: true, premium: true },
-	},
-	member: {
-		join: { time: 1, auth: false, premium: true }, announce: { time: 2, auth: false, premium: true },
-		force: { time: 5, auth: true, premium: true },
-	},
-	none: {
-		leaderboard: { time: 0, auth: false, premium: false }, ranks: { time: 0, auth: false, premium: true },
-		level: { time: 0, auth: false, premium: false }, about: { time: 0, auth: false, premium: false },
-		portal: { time: 0, auth: true, premium: false }, help: { time: 0, auth: false, premium: false },
-		ping: { time: 0, auth: false, premium: false }, set: { time: 0, auth: false, premium: true },
-		role: { time: 0, auth: false, premium: true }, spotify: { time: 0, auth: true, premium: true },
-		music: { time: 0, auth: true, premium: true }, announcement: { time: 0, auth: true, premium: true },
-		url: { time: 0, auth: true, premium: true }, leave: { time: 0, auth: false, premium: true },
-		focus: { time: 0, auth: false, premium: true }, corona: { time: 0, auth: false, premium: false },
-		run: { time: 0, auth: false, premium: true }, auth_roles: { time: 0, auth: true, premium: true },
-		auth_role_add: { time: 0, auth: true, premium: true }, auth_role_rem: { time: 0, auth: true, premium: true },
-	},
-};
-
-// Load up the discord.js library
+// load up the discord.js library
 const Discord = require('discord.js');
 
-// This is the client the Portal Bot. Some people call it bot, some people call
+// this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
-// List of all managed channels in servers
-// let guilds = require('./server_storage/guild_list.json');
-const portal_managed_guilds = file_system.readFileSync(portal_managed_guilds_path);
-const guild_list = help_mngr.getJSON(portal_managed_guilds);
+const active_cooldown = { guild: [], member: [] };
 
 if (guild_list === null) {
 	console.log('guild json is corrupt');
@@ -248,15 +225,14 @@ ranking_system = function (message) {
 };
 
 word_check = function (message) {
-	// require('./moderation/bad_word_check.js')(message.content.trim().split(/ +/g))
-	// 	.then(rspns => {
-	// 		message.react('🚩');
-	// 		if (rspns) {
-	// 			help_mngr.message_reply(
-	// 				rspns.result, message.channel, message, message.author,
-	// 				rspns.value, guild_list, client, false, '✔️', '🚩');
-	// 		}
-	// 	});
+	if (profanity(message.content)) {
+		message.react('🚩');
+		message.author
+				.send("try not to use profanities")
+				.catch(console.error);
+		// help_mngr.message_reply(false, message.channel, message, message.author,
+		// 	"try not to use profanities", guild_list, client, false, '✔️', '🚩');
+	}
 };
 
 
@@ -288,20 +264,20 @@ client.on('message', async message => {
 	const cmd = args.shift().toLowerCase();
 	let type = null;
 
-	if (command_cooldown.guild[cmd]) {
+	if (cooldown_list.guild[cmd]) {
 		type = 'guild';
 	}
-	else if (command_cooldown.member[cmd]) {
+	else if (cooldown_list.member[cmd]) {
 		type = 'member';
 	}
-	else if (command_cooldown.none[cmd]) {
+	else if (cooldown_list.none[cmd]) {
 		type = 'none';
 	}
 	else {
 		return;
 	}
 
-	if (command_cooldown[type][cmd].auth) {
+	if (cooldown_list[type][cmd].auth) {
 		const is_user_authorized = help_mngr.is_authorized(
 			guild_list[message.guild.id].auth_role, message.member);
 
@@ -312,14 +288,14 @@ client.on('message', async message => {
 		}
 	}
 
-	if (command_cooldown[type][cmd].premium && !guild_list[message.guild.id].premium) {
+	if (cooldown_list[type][cmd].premium && !guild_list[message.guild.id].premium) {
 		help_mngr.message_reply(
 			false, message.channel, message,
 			message.author, 'this server is not premium', guild_list, client);
 		return;
 	}
 
-	if (type === 'none' && command_cooldown.none[cmd].time === 0) {
+	if (type === 'none' && cooldown_list.none[cmd].time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then(rspns => {
 				help_mngr.message_reply(rspns.result, message.channel, message,
@@ -339,7 +315,7 @@ client.on('message', async message => {
 	});
 
 	if (active) {
-		const time = help_mngr.time_elapsed(active.timestamp, command_cooldown[type][cmd].time);
+		const time = help_mngr.time_elapsed(active.timestamp, cooldown_list[type][cmd].time);
 		const type_for_msg = type === 'member' ? '.*' : `, as it was used again in* **${message.guild.name}**.`;
 
 		help_mngr.message_reply(false, message.channel, message, message.author,
@@ -358,7 +334,7 @@ client.on('message', async message => {
 
 				setTimeout(() => {
 					active_cooldown[type] = active_cooldown[type].filter(active => active.command !== cmd);
-				}, command_cooldown[type][cmd].time * 60 * 1000);
+				}, cooldown_list[type][cmd].time * 60 * 1000);
 			}
 			help_mngr.message_reply(rspns, message.channel, message,
 				message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
