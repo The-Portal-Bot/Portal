@@ -308,7 +308,7 @@ module.exports = {
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
 							: 'Channel $#',
-						{}, false, 2, 0, 0, guild_object[guild.id].locale, false, true,
+						{}, false, 2, 0, 0, guild_object[guild.id].locale, true, true,
 					);
 					guild.channels
 						.create(portal_category, { type: 'category' })
@@ -328,7 +328,7 @@ module.exports = {
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
 							: 'Channel $#',
-						{}, false, 2, 0, 0, guild_object[guild.id].locale, false, true,
+						{}, false, 2, 0, 0, guild_object[guild.id].locale, true, true,
 					);
 				})
 				.catch(console.error);
@@ -343,7 +343,7 @@ module.exports = {
 						guild_object[guild.id].premium
 							? 'G$#-P$member_count | $status_list'
 							: 'Channel $#',
-						{}, false, 2, 0, 0, guild_object[guild.id].locale, false, true,
+						{}, false, 2, 0, 0, guild_object[guild.id].locale, true, true,
 					);
 				})
 				.catch(console.error);

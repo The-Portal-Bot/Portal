@@ -68,7 +68,8 @@ event_loader = function (event, args) {
 client.on('ready', () =>
 	event_loader('ready',
 		{
-			'client': client, 'guild_list': guild_list,
+			'client': client, 
+			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
 	)
@@ -87,7 +88,8 @@ client.on('shardReconnecting', id =>
 client.on('guildDelete', guild =>
 	event_loader('guildDelete',
 		{
-			'guild': guild, 'guild_list': guild_list,
+			'guild': guild, 
+			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
 	)
@@ -107,7 +109,8 @@ client.on('guildCreate', guild =>
 client.on('channelDelete', channel =>
 	event_loader('channelDelete',
 		{
-			'channel': channel, 'guild_list': guild_list,
+			'channel': channel, 
+			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
 	)
@@ -117,7 +120,8 @@ client.on('channelDelete', channel =>
 client.on('guildMemberAdd', member =>
 	event_loader('guildMemberAdd',
 		{
-			'member': member, 'guild_list': guild_list,
+			'member': member, 
+			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
 	)
@@ -127,7 +131,8 @@ client.on('guildMemberAdd', member =>
 client.on('guildMemberRemove', member =>
 	event_loader('guildMemberRemove',
 		{
-			'member': member, 'guild_list': guild_list,
+			'member': member, 
+			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
 	)
@@ -147,8 +152,10 @@ client.on('presenceUpdate', (oldPresence, newPresence) =>
 client.on('messageReactionAdd', (messageReaction, user) =>
 	event_loader('messageReactionAdd',
 		{
-			'client': client, 'guild_list': guild_list,
-			'messageReaction': messageReaction, 'user': user,
+			'client': client,
+			'guild_list': guild_list,
+			'messageReaction': messageReaction,
+			'user': user,
 		},
 	)
 );
@@ -157,7 +164,8 @@ client.on('messageReactionAdd', (messageReaction, user) =>
 client.on('messageDelete', (message) =>
 	event_loader('messageDelete',
 		{
-			'client': client, 'guild_list': guild_list,
+			'client': client,
+			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 			'message': message,
 		},
@@ -170,7 +178,8 @@ client.on('voiceStateUpdate', (oldState, newState) =>
 		{
 			'client': client, 'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
-			'oldState': oldState, 'newState': newState,
+			'oldState': oldState,
+			'newState': newState,
 		},
 	)
 );
@@ -228,8 +237,8 @@ word_check = function (message) {
 	if (profanity(message.content)) {
 		message.react('🚩');
 		message.author
-				.send("try not to use profanities")
-				.catch(console.error);
+			.send("try not to use profanities")
+			.catch(console.error);
 		// help_mngr.message_reply(false, message.channel, message, message.author,
 		// 	"try not to use profanities", guild_list, client, false, '✔️', '🚩');
 	}
