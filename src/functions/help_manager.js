@@ -280,7 +280,7 @@ module.exports = {
 
 	// channel should be removed !
 	message_reply: function (status, channel, message, user, str, portal_guilds,
-		client, to_delete = true, emote_pass = '✔️', emote_fail = '❌') {
+		client, to_delete = false, emote_pass = '✔️', emote_fail = '❌') {
 		if (!message.channel.deleted && str !== null) {
 			message.channel
 				.send(`${user}, ${str}`)
@@ -300,11 +300,11 @@ module.exports = {
 					.react(emote_fail)
 					.catch(error => console.log(error));
 			}
-			// if(to_delete) {
-			// 	message
-			// 		.delete({ timeout: 5000 })
-			// 		.catch(error => console.log(error));
-			// }
+			if(to_delete) {
+				message
+					.delete({ timeout: 5000 })
+					.catch(error => console.log(error));
+			}
 		}
 	},
 

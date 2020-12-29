@@ -25,8 +25,6 @@ const lclz_mngr = require('./functions/localization_manager');
 const user_mngr = require('./functions/user_manager');
 const play_mngr = require('./functions/music_manager');
 
-var Filter = require('bad-words');
-
 // load up the discord.js library
 const Discord = require('discord.js');
 
@@ -199,11 +197,10 @@ portal_channel_handler = function (message) {
 		}
 	}
 	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
-		play_mngr.start(client, message, message.content.toString(), guild_list)
+		play_mngr.start(client, message, message.content, guild_list)
 			.then(joined => {
-				help_mngr.message_reply(
-					joined.result, message.channel,
-					message, message.author, joined.value, guild_list, client, true);
+				help_mngr.message_reply(joined.result, message.channel, message,
+					message.author, joined.value, guild_list, client, true);
 			})
 			.catch(error => {
 				console.log(error);

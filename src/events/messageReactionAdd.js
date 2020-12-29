@@ -91,7 +91,10 @@ const reaction_music_manager = function(args) {
 			return { result: false, value: 'portal is not playing music write now' };
 		}
 		const is_member_in_same_channel_as_portal = voice_connection_in_reaction_guild.channel.members
-			.some(member => member.id === args.user.presence.member.id);
+			.some(member => {
+				console.log(member.id ,' === ' , args.user.id);
+				return member.id === args.user.id;
+			});
 		if (!is_member_in_same_channel_as_portal) {
 			clear_user_reactions(args);
 			return { result: false, value: 'you must be in the same channel with portal to control music' };

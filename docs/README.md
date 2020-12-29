@@ -1,5 +1,8 @@
 ![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg)
 
+**Disclaimer[0]:**
+> Portal will never record conversations or store anything you type
+
 **Disclaimer[1]:**
 > Discord update their server rate limit to twice per 10 minutes
 > [The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel.](https://github.com/discordjs/discord.js/issues/4327)
@@ -13,12 +16,14 @@ Features:
 * Automatically generates voice channels.
 * Automatically updates the title of the channel in accordance to your regex guidlines.
 * Assignes and strips roles from users with a single reaction press.
+* Creates temporary "focus" channels for private conversations.
 * Get the latest on the corona virus
 * Spotify / Announcement / URL channels that allow any server to create and maintain clean announcement channels without being verified.
 <br><br />
 ***
 
 ## Commands
+
 **Portal™ prefix: ./**
 
 | name | description | arguments | eligible for use | cooldown (mins) |
@@ -56,6 +61,7 @@ Features:
 ***
 
 ## Regex Interpreter
+
 There are four types of data in **Portal™** bot:
 1. variables
 2. attributes
@@ -63,10 +69,11 @@ There are four types of data in **Portal™** bot:
 3. structures
 
 ## Variables
+
 * _prefix:_ __$__
 * _(Variables are defacto data sources that can be accessed though calling them they are read-only)_
 
-| variable | description |
+| Variable | Description |
 | :--------- | :--------- |
 `#` | _number of channel in list_
 `##` | _number of channel in list with \#_
@@ -90,11 +97,12 @@ There are four types of data in **Portal™** bot:
 `creator_portal` | _creator of current voice\'s portal_
 `creator_voice` | _creator of current voice_
 
-### Pipes
+## Pipes
+
 * _prefix:_ __|__
 * _(Pipes are applied to variables or strings in order to change their outcome)_
 
-| pipe | type | description |
+| Pipe | Type | Description |
 | :--------- | :--------- | :--------- |
 `upperCase` | string | _returns an upperCase of the input_
 `lowerCase` | string | _returns an lowerCase of the input_
@@ -110,11 +118,12 @@ There are four types of data in **Portal™** bot:
 `populous` | list | _returns the name of the most common element in list_
 `summary_count` | number | _returns the count of members having a status_
 
-### Attributes
+## Attributes
+
 * _prefix:_ __@__
 * _(Attributes are values that a channel has from its inception and are subject to change)_
 
-| attributes | type | default | description |
+| Attributes | Type | Default | Description |
 | :--------- | :--------- | :--------- | :---------  |
 `regex_portal` | string | _default regex_ | _regex-guidelines for how to display portal's title_
 `regex_voice` | string | _default regex_ | _regex-guidelines for how to display new voice (current portal)_
@@ -131,26 +140,27 @@ There are four types of data in **Portal™** bot:
 
 * default regex: _G$\#-P$member_count \| $status_list_
 
-### Structures
+## Structures
+
 * _prefix:_ __{{__
 * _suffix:_ __}}__
 * _(Structures are grammatical attributes to control the structure of the output)_
 
-| attributes | description | usage |
+| Attributes | Description | Usage |
 | :--------- | :--------- | :--------- |
 `if` | conditional statement  | `{{ "if": "John", "is": "===", "with": "John", "yes": "same name", "no": "not the same name"}}`
 ***
 
-# About
+# Versioning
 
+* v1.0.1: 16/6/20 Beta ^
+* v0.1.0: 18/5/20
 * v0.0.0: 5/5/20 Alpha ^
-* v1.0.0: 18/5/20
-* v1.5.0: 16/6/20 Beta ^
 
-Acknowledgments - **Discord.js** with the exeptional library [**Discord.js**](http://owl.phy.queensu.ca/~phil/exiftool/)
-<br>
-Author - **Ioannis Tsiakkas** - *(Keybraker)* - [**Keybraker**](https://github.com/keybraker)
-<br>
-Copyright © 2020 [**Portal™**](https://github.com/keybraker/portal-discord-bot)
+### Acknowledgements
 
+> Acknowledgments - _[Discord.js](https://discord.js.org/#/)_<br>
+> Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
+> License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_<br>
 
+Copyrights © Keybraker 2020 [Portal](https://github.com/keybraker/portal-discord-bot), All rights reserved
