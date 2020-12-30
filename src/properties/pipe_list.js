@@ -3,13 +3,13 @@ const voca = require('voca');
 const help_mngr = require('../functions/help_manager');
 module.exports =
 {
-	is_pipe: function(arg) {
+	is_pipe: function (arg) {
 		for (let i = 0; i < this.pipes.length; i++) {
-			if (String(arg).substring(1, (String(this.pipes[i].name).length + 1)) == this.pipes[i].name) {return this.pipes[i].name;}
+			if (String(arg).substring(1, (String(this.pipes[i].name).length + 1)) == this.pipes[i].name) { return this.pipes[i].name; }
 		}
 		return false;
 	},
-	get_help: function() {
+	get_help: function () {
 		const pipe_array = [];
 		for (let i = 0; i < this.pipes.length; i++) {
 			pipe_array.push({
@@ -24,7 +24,7 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#6EEB83', pipe_array);
 	},
-	get_help_super: function(check) {
+	get_help_super: function (check) {
 		for (let i = 0; i < this.pipes.length; i++) {
 			const pipe = this.pipes[i];
 			if (pipe.name === check) {
@@ -44,7 +44,7 @@ module.exports =
 		}
 		return false;
 	},
-	get: function(str, pipe) {
+	get: function (str, pipe) {
 		for (let l = 0; l < this.pipes.length; l++) {
 			if (pipe === this.pipes[l].name) {
 				return this.pipes[l].get(str);

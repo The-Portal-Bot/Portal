@@ -5,7 +5,7 @@ const help_mngr = require('../functions/help_manager');
 
 module.exports =
 {
-	is_variable: function(arg) {
+	is_variable: function (arg) {
 		for (let i = 0; i < this.variables.length; i++) {
 			if (String(arg).substring(1, (String(this.variables[i].name).length + 1)) == this.variables[i].name) {
 				return this.variables[i].name;
@@ -13,7 +13,7 @@ module.exports =
 		}
 		return false;
 	},
-	get_help: function() {
+	get_help: function () {
 		const vrbl_array = [];
 		for (let i = 0; i < this.variables.length; i++) {
 			vrbl_array.push({
@@ -28,7 +28,7 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#1BE7FF', vrbl_array);
 	},
-	get_help_super: function(check) {
+	get_help_super: function (check) {
 		for (let i = 0; i < this.variables.length; i++) {
 			const vrbl = this.variables[i];
 			if (vrbl.name === check) {
@@ -48,7 +48,7 @@ module.exports =
 		}
 		return false;
 	},
-	get: function(voice_channel, voice_object, portal_list_object, guild_object, guild, vrbl) {
+	get: function (voice_channel, voice_object, portal_list_object, guild_object, guild, vrbl) {
 		for (let l = 0; l < this.variables.length; l++) {
 			if (vrbl === this.variables[l].name) {
 				return this.variables[l].get(voice_channel, voice_object, portal_list_object, guild_object, guild);

@@ -300,7 +300,7 @@ module.exports = {
 					.react(emote_fail)
 					.catch(error => console.log(error));
 			}
-			if(to_delete) {
+			if (to_delete) {
 				message
 					.delete({ timeout: 5000 })
 					.catch(error => console.log(error));

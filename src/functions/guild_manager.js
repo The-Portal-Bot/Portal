@@ -12,7 +12,7 @@ const member_class = require('../../assets/classes/member_class');
 const help_mngr = require('./help_manager');
 const musc_mngr = require('./music_manager');
 
-const getOptions = function(guild, topic) {
+const getOptions = function (guild, topic) {
 	return {
 		type: 'text',
 		topic: `by Portal, ${topic}`,
@@ -27,57 +27,57 @@ const getOptions = function(guild, topic) {
 
 module.exports = {
 
-	included_in_portal_guilds: function(guild_id, portal_guilds) {
-		if (portal_guilds[guild_id] !== undefined) {return true;}
+	included_in_portal_guilds: function (guild_id, portal_guilds) {
+		if (portal_guilds[guild_id] !== undefined) { return true; }
 		return false;
 	},
 
-	included_in_portal_list: function(channel_id, portal_list) {
-		if (portal_list[channel_id]) {return true;}
+	included_in_portal_list: function (channel_id, portal_list) {
+		if (portal_list[channel_id]) { return true; }
 		return false;
 	},
 
-	included_in_voice_list: function(channel_id, portal_list) {
+	included_in_voice_list: function (channel_id, portal_list) {
 		for (const key in portal_list) {
-			if (portal_list[key].voice_list[channel_id]) {return true;}
+			if (portal_list[key].voice_list[channel_id]) { return true; }
 		}
 		return false;
 	},
 
-	included_in_url_list: function(channel_id, guild_object) {
+	included_in_url_list: function (channel_id, guild_object) {
 		for (let i = 0; i < guild_object.url_list.length; i++) {
-			if (guild_object.url_list[i] === channel_id) {return true;}
+			if (guild_object.url_list[i] === channel_id) { return true; }
 		}
 		return false;
 	},
 
-	is_spotify_channel: function(channel_id, guild_object) {
-		if (guild_object.spotify === channel_id) {return true;}
+	is_spotify_channel: function (channel_id, guild_object) {
+		if (guild_object.spotify === channel_id) { return true; }
 		return false;
 	},
 
-	is_music_channel: function(channel_id, guild_object) {
-		if (guild_object.music_data.channel_id === channel_id) {return true;}
+	is_music_channel: function (channel_id, guild_object) {
+		if (guild_object.music_data.channel_id === channel_id) { return true; }
 		return false;
 	},
 
-	is_announcement_channel: function(channel_id, guild_object) {
-		if (guild_object.announcement === channel_id) {return true;}
+	is_announcement_channel: function (channel_id, guild_object) {
+		if (guild_object.announcement === channel_id) { return true; }
 		return false;
 	},
 
 	//
 
-	is_role: function(guild, role_name) {
+	is_role: function (guild, role_name) {
 		const role = guild.roles.cache.find(cached_role => cached_role.name === role_name);
 
-		if (role) {return role;}
-		else {return null;}
+		if (role) { return role; }
+		else { return null; }
 	},
 
 	//
 
-	create_focus_channel: async function(guild, member, member_found, focus_time) {
+	create_focus_channel: async function (guild, member, member_found, focus_time) {
 		return new Promise((resolve) => {
 			const return_value = { result: false, value: '*you can run "./help focus" for help.*' };
 
@@ -86,10 +86,10 @@ module.exports = {
 
 			guild.channels.create(
 				`${member.displayName}&${member_found.displayName}`, {
-					type: 'voice',
-					bitrate: 64000,
-					userLimit: 2,
-				})
+				type: 'voice',
+				bitrate: 64000,
+				userLimit: 2,
+			})
 				.then(channel => {
 					newChannel = channel;
 					member.voice.setChannel(channel);
@@ -110,7 +110,7 @@ module.exports = {
 										newChannel.delete().catch(console.error);
 										return_value.result = true;
 										return_value.value = 'focus ended properly.';
-										return resolve (return_value);
+										return resolve(return_value);
 									}
 								}).catch(console.error);
 						}).catch(console.error);
@@ -120,13 +120,13 @@ module.exports = {
 				else {
 					return_value.result = false;
 					return_value.value = 'could not move to original channel because it was deleted.';
-					return resolve (return_value);
+					return resolve(return_value);
 				}
 			}, focus_time * 60 * 1000);
 		});
 	},
 
-	create_url_channel: function(guild, url_name, url_category, url_list) {
+	create_url_channel: function (guild, url_name, url_category, url_list) {
 		if (url_category && typeof url_category === 'string') { // with category
 			guild.channels
 				.create(`${url_name}`, { type: 'text', topic: 'Portal URL-only' })
@@ -156,7 +156,7 @@ module.exports = {
 		}
 	},
 
-	create_spotify_channel: function(guild, spotify_channel, spotify_category, guild_object) {
+	create_spotify_channel: function (guild, spotify_channel, spotify_category, guild_object) {
 		if (spotify_category && typeof spotify_category === 'string') { // with category
 			return guild.channels
 				.create(
@@ -198,7 +198,7 @@ module.exports = {
 		}
 	},
 
-	create_music_channel: async function(guild, music_channel, music_category, guild_object) {
+	create_music_channel: async function (guild, music_channel, music_category, guild_object) {
 		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 			'.github.io/master/assets/img/logo.png';
 		return new Promise((resolve) => {
@@ -256,7 +256,7 @@ module.exports = {
 		});
 	},
 
-	create_announcement_channel: function(guild, announcement_channel, announcement_category, guild_object) {
+	create_announcement_channel: function (guild, announcement_channel, announcement_category, guild_object) {
 		if (announcement_category && typeof announcement_category === 'string') { // with category
 			return guild.channels
 				.create(
@@ -297,7 +297,7 @@ module.exports = {
 		}
 	},
 
-	create_portal_channel: function(guild, portal_channel, portal_category, portal_objct, guild_object, creator_id) {
+	create_portal_channel: function (guild, portal_channel, portal_category, portal_objct, guild_object, creator_id) {
 		if (portal_category && typeof portal_category === 'string') { // with category
 			return guild.channels
 				.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
@@ -350,7 +350,7 @@ module.exports = {
 		}
 	},
 
-	create_voice_channel: function(state, portal_objct, portal_channel, creator_id) {
+	create_voice_channel: function (state, portal_objct, portal_channel, creator_id) {
 		state.channel.guild.channels
 			.create('loading...', {
 				type: 'voice',
@@ -371,7 +371,7 @@ module.exports = {
 		return;
 	},
 
-	create_member_list: function(guild_id, client) {
+	create_member_list: function (guild_id, client) {
 		const member_list = {};
 		const guild = client.guilds.cache.find(cached_guild => cached_guild.id === guild_id);
 		console.log('new guild :>> ', guild);
@@ -386,7 +386,7 @@ module.exports = {
 		return member_list;
 	},
 
-	insert_guild: function(guild_id, portal_guilds, client) {
+	insert_guild: function (guild_id, portal_guilds, client) {
 		const portal_list = {};
 		const member_list = this.create_member_list(guild_id, client);
 		const url_list = [];
@@ -409,12 +409,12 @@ module.exports = {
 
 	//
 
-	delete_guild: function(guild_id, portal_guilds) {
+	delete_guild: function (guild_id, portal_guilds) {
 		delete portal_guilds[guild_id];
 	},
 
 	delete_channel: (channel_to_delete, message, isPortal = false) => {
-		if(!isPortal) {
+		if (!isPortal) {
 			const author = message.author;
 			const channel_to_delete_name = channel_to_delete.name;
 			let channel_deleted = false;
@@ -426,7 +426,7 @@ module.exports = {
 					const collector = message.channel.createMessageCollector(filter, { time: 10000 });
 
 					collector.on('collect', m => {
-						if(m.content === 'yes') {
+						if (m.content === 'yes') {
 							if (channel_to_delete.deletable) {
 								channel_to_delete
 									.delete()
@@ -446,7 +446,7 @@ module.exports = {
 							}
 							collector.stop();
 						}
-						else if(m.content === 'no') {
+						else if (m.content === 'no') {
 							collector.stop();
 						}
 					});
@@ -475,7 +475,7 @@ module.exports = {
 		}
 	},
 
-	channel_deleted_update_state: function(channel_to_remove, guild_list) {
+	channel_deleted_update_state: function (channel_to_remove, guild_list) {
 		const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
 		const current_guild = guild_list[channel_to_remove.guild.id];
 		let type_of_channel = TypesOfChannel.Unknown;
@@ -528,7 +528,7 @@ module.exports = {
 
 	//
 
-	generate_channel_name: function(voice_channel, portal_object, guild_object, guild) {
+	generate_channel_name: function (voice_channel, portal_object, guild_object, guild) {
 		for (const portal_id in portal_object) {
 			if (portal_object[portal_id].voice_list[voice_channel.id]) {
 				const voice_object = portal_object[portal_id].voice_list[voice_channel.id];
@@ -561,7 +561,7 @@ module.exports = {
 		return false;
 	},
 
-	regex_interpreter: function(regex, voice_channel, voice_object, portal_object, guild_object, guild) {
+	regex_interpreter: function (regex, voice_channel, voice_object, portal_object, guild_object, guild) {
 
 		let last_space_index = 0;
 		let last_vatiable_end_index = 0;
@@ -680,14 +680,14 @@ module.exports = {
 			else if (regex[i] === '{' && (regex[i + 1] !== undefined && regex[i + 1] === '{')) {
 
 				const inline = {
-					'==':	(a, b) => (a == b) ? true : false,
-					'===':	(a, b) => (a === b) ? true : false,
-					'!=':	(a, b) => (a != b) ? true : false,
-					'!==':	(a, b) => (a !== b) ? true : false,
-					'>':	(a, b) => (a > b) ? true : false,
-					'<':	(a, b) => (a < b) ? true : false,
-					'>=':	(a, b) => (a >= b) ? true : false,
-					'<=':	(a, b) => (a <= b) ? true : false,
+					'==': (a, b) => (a == b) ? true : false,
+					'===': (a, b) => (a === b) ? true : false,
+					'!=': (a, b) => (a != b) ? true : false,
+					'!==': (a, b) => (a !== b) ? true : false,
+					'>': (a, b) => (a > b) ? true : false,
+					'<': (a, b) => (a < b) ? true : false,
+					'>=': (a, b) => (a >= b) ? true : false,
+					'<=': (a, b) => (a <= b) ? true : false,
 				};
 
 				try {
@@ -708,9 +708,9 @@ module.exports = {
 						}
 					}
 
-					if(!is_valid) {
+					if (!is_valid) {
 						new_channel_name += regex[i];
-						if (regex[i] === ' ') {last_space_index = i + 1;}
+						if (regex[i] === ' ') { last_space_index = i + 1; }
 					}
 					else {
 						if (inline[statement.is](
@@ -724,13 +724,13 @@ module.exports = {
 							const value = this.regex_interpreter(
 								statement.yes, voice_channel, voice_object, portal_object, guild_object, guild,
 							);
-							if (value !== '--') {new_channel_name += value;}
+							if (value !== '--') { new_channel_name += value; }
 						}
 						else {
 							const value = this.regex_interpreter(
 								statement.no, voice_channel, voice_object, portal_object, guild_object, guild,
 							);
-							if (value !== '--') {new_channel_name += value;}
+							if (value !== '--') { new_channel_name += value; }
 						}
 						i += regex.substring(i + 1).indexOf('}}') + 2;
 					}
@@ -743,11 +743,11 @@ module.exports = {
 			}
 			else {
 				new_channel_name += regex[i];
-				if (regex[i] === ' ') {last_space_index = i + 1;}
+				if (regex[i] === ' ') { last_space_index = i + 1; }
 			}
 		}
 
-		if (new_channel_name === '') {return '.';}
+		if (new_channel_name === '') { return '.'; }
 		return new_channel_name;
 
 	},

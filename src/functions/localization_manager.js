@@ -8,7 +8,7 @@ const type_of_action = ['user_connected', 'user_disconnected'];
 
 module.exports =
 {
-	client_talk: function(client, guild_list, context) {
+	client_talk: function (client, guild_list, context) {
 		let check = null;
 		if (type_of_announcement.includes(context)) { check = 'ann_announce'; }
 		else if (type_of_action.includes(context)) { check = 'ann_user'; }
@@ -34,7 +34,7 @@ module.exports =
 		}
 	},
 
-	client_write: function(message, guild_list, context) {
+	client_write: function (message, guild_list, context) {
 		let locale = null;
 		if (message !== null) {
 			if (message.member.voice !== undefined && message.member.voice !== null) {
@@ -55,7 +55,7 @@ module.exports =
 		return this.portal[context][locale]();
 	},
 
-	client_log: function(guild_id, message, guild_list, context, args) {
+	client_log: function (guild_id, message, guild_list, context, args) {
 		let locale = null;
 		if (message !== null) {
 			if (message.author.voice !== undefined && message.author.voice !== null) {
@@ -130,15 +130,15 @@ module.exports =
 		ready: {
 			gr: (args) => {
 				return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε ` +
-				`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`;
+					`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`;
 			},
 			en: (args) => {
 				return `Bot has started, with ${args.client.users.cache.size} users, ` +
-				`in ${args.client.channels.cache.size} channels from ${args.client.guilds.cache.size} guilds.`;
+					`in ${args.client.channels.cache.size} channels from ${args.client.guilds.cache.size} guilds.`;
 			},
 			de: (args) => {
 				return `Bot hat ${args.client.users.cache.size} Mitglieder in ${channel_count} ` +
-				`Kanälen von ${guild_count} Gilden gestartet.`;
+					`Kanälen von ${guild_count} Gilden gestartet.`;
 			},
 		},
 		updating_guild: {
@@ -149,30 +149,30 @@ module.exports =
 		presence_controlled_away: {
 			gr: (args) => {
 				return `Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος ` +
-				`μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ` +
-				`(${args.newPresence.guild.name})`;
+					`μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ` +
+					`(${args.newPresence.guild.name})`;
 			},
 			en: (args) => {
 				return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
-				`has changed presence, but is in another server (${args.newPresence.guild.name})`;
+					`has changed presence, but is in another server (${args.newPresence.guild.name})`;
 			},
 			de: (args) => {
 				return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
-				`has changed presence, but is in another server (${args.newPresence.guild.name})`;
+					`has changed presence, but is in another server (${args.newPresence.guild.name})`;
 			},
 		},
 		presence_controlled: {
 			gr: (args) => {
 				return `Ο χρήστης ${args.newPresence.member.displayName} έχει αλλάξει κατάσταση, ` +
-				`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.newPresence.guild.name})`;
+					`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.newPresence.guild.name})`;
 			},
 			en: (args) => {
 				return `${args.newPresence.member.displayName} has changed presence, ` +
-				`in controlled server (${args.newPresence.guild.name})`;
+					`in controlled server (${args.newPresence.guild.name})`;
 			},
 			de: (args) => {
 				return `${args.newPresence.member.displayName} has changed presence, ` +
-				`in controlled server (${args.newPresence.guild.name})`;
+					`in controlled server (${args.newPresence.guild.name})`;
 			},
 		},
 	},

@@ -19,7 +19,6 @@ Features:
 * Creates temporary "focus" channels for private conversations.
 * Get the latest on the corona virus
 * Spotify / Announcement / URL channels that allow any server to create and maintain clean announcement channels without being verified.
-<br><br />
 
 ***
 
@@ -55,6 +54,7 @@ Features:
 | `url`           | _creates a new or sets the current channel as url-only_          | _@channel\_name \| @category\_name_  | admin, admin-role/s                            | -               |
 
 * _(Pipes are applied to variables or strings in order to change their outcome)_
+* _(default regex: G$#-P$member_count | $status_list)_
 
 * symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
 * symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
@@ -63,30 +63,24 @@ Features:
 
 ## Regex Interpreter
 
-There are four types of data in **Portal™**:
-1. [Variables](https://github.com/keybraker/portal-discord-bot/docs/Variables.md)
-2. [Attributes](https://github.com/keybraker/portal-discord-bot/docs/Attributes.md)
-3. [Pipes](https://github.com/keybraker/portal-discord-bot/docs/Pipes.md)
-3. [Structures](https://github.com/keybraker/portal-discord-bot/docs/Structures.md)
+There are four types of data:
+1. [Variables](https://github.com/keybraker/portal-discord-bot/docs/Variables.md), are data used to fetch information for the current state of the channel you are in.
+2. [Attributes](https://github.com/keybraker/portal-discord-bot/docs/Attributes.md), are configuration data for Portal's use. 
+3. [Pipes](https://github.com/keybraker/portal-discord-bot/docs/Pipes.md), are functions that you can pass the strings or Variables to manipulate their outcome. 
+4. [Structures](https://github.com/keybraker/portal-discord-bot/docs/Structures.md), are conditional flow manipulators.
 
-> **Variables:** are data used to fetch information for the current state of the channel you are in.
+## Release History
 
-> **Attributes** are configuration data for Portal's use. 
-
-> **Pipes** are functions that you can pass the strings or Variables to manipulate their outcome. 
-
-> **Structures** are conditional flow manipulators.
-
-## Versioning
-
-* v1.0.1: 16/6/20 Beta ^
-* v0.1.0: 18/5/20
-* v0.0.0: 5/5/20 Alpha ^
+| Version | Date       | Argument |
+| :------ | :--------- | :------- |
+| 1.0.1   | 16-06-2020 | _Beta_   |
+| 0.5.0   | 18-05-2020 |          |
+| 0.0.1   | 05-05-2020 | _Alpha_  |
 
 ## Acknowledgements
 
-> Acknowledgments - _[Discord.js](https://discord.js.org/#/)_<br>
-> Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
-> License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_<br>
+> Acknowledgments - _[Discord.js](https://discord.js.org/#/)_
+> Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_
+> License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
 
 Copyrights © Keybraker 2020 [Portal](https://github.com/keybraker/portal-discord-bot), All rights reserved

@@ -2,7 +2,7 @@ const games = require('../../assets/jsons/game_list.json');
 const programs = require('../../assets/jsons/program_list.json');
 
 module.exports = {
-	status_aliases: function(activities, locale) {
+	status_aliases: function (activities, locale) {
 		const new_status = [];
 
 		activities.forEach(activity => {
@@ -20,7 +20,7 @@ module.exports = {
 				}
 			}
 
-			if(!found) {
+			if (!found) {
 				for (let l = 0; l < programs.program_attributes.length; l++) {
 					if (activity.name == programs.program_attributes[l].status) {
 						if (locale === 'gr') {
@@ -35,7 +35,7 @@ module.exports = {
 				}
 			}
 
-			if(!found) {
+			if (!found) {
 				new_status.push(activity.name);
 			}
 		});
@@ -43,13 +43,13 @@ module.exports = {
 		return new_status;
 	},
 
-	get_status_list: function(voice_channel, voice_object) {
+	get_status_list: function (voice_channel, voice_object) {
 		const array_of_statuses = [];
 
 		voice_channel.members.forEach(member => {
-			if(!member.user.bot) {
+			if (!member.user.bot) {
 				if (member.presence.activities !== undefined) {
-					if(member.presence.activities.length > 0) {
+					if (member.presence.activities.length > 0) {
 						this.status_aliases(member.presence.activities, voice_object.locale)
 							.forEach(stat => {
 								if (!array_of_statuses.includes(stat)) {

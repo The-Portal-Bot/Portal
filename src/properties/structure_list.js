@@ -2,7 +2,7 @@ const help_mngr = require('../functions/help_manager');
 
 module.exports =
 {
-	is_structure: function(arg) {
+	is_structure: function (arg) {
 		for (let i = 0; i < this.structures.length; i++) {
 			if (String(arg).substring(1, (String(this.structures[i].name).length + 1)) == this.structures[i].name) {
 				return this.structures[i].name;
@@ -10,7 +10,7 @@ module.exports =
 		}
 		return false;
 	},
-	get_help: function() {
+	get_help: function () {
 		const strc_array = [];
 		for (let i = 0; i < this.structures.length; i++) {
 			strc_array.push({
@@ -25,7 +25,7 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#EEB902', strc_array);
 	},
-	get_help_super: function(check) {
+	get_help_super: function (check) {
 		for (let i = 0; i < this.structures.length; i++) {
 			const strc = this.structures[i];
 			if (strc.name === check) {

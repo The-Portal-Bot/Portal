@@ -4,13 +4,13 @@ const locales = ['gr', 'en', 'de'];
 
 module.exports =
 {
-	is_attribute: function(arg) {
+	is_attribute: function (arg) {
 		for (let i = 0; i < this.attributes.length; i++) {
-			if (String(arg).substring(1, (String(this.attributes[i].name).length + 1)) == this.attributes[i].name) {return this.attributes[i].name;}
+			if (String(arg).substring(1, (String(this.attributes[i].name).length + 1)) == this.attributes[i].name) { return this.attributes[i].name; }
 		}
 		return false;
 	},
-	get_help: function() {
+	get_help: function () {
 		const attr_array = [];
 		for (let i = 0; i < this.attributes.length; i++) {
 			attr_array.push({
@@ -25,7 +25,7 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#FF5714', attr_array);
 	},
-	get_help_super: function(check) {
+	get_help_super: function (check) {
 		for (let i = 0; i < this.attributes.length; i++) {
 			const attr = this.attributes[i];
 			if (attr.name === check) {
@@ -45,7 +45,7 @@ module.exports =
 		}
 		return false;
 	},
-	get: function(voice_channel, voice_object, portal_object, guild_object, attr) {
+	get: function (voice_channel, voice_object, portal_object, guild_object, attr) {
 		for (let l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {
 				return this.attributes[l].get(voice_channel, voice_object, portal_object, guild_object);
@@ -53,27 +53,27 @@ module.exports =
 		}
 		return -1;
 	},
-	set: function(voice_channel, voice_object, portal_object, guild_object, attr, value, member) {
+	set: function (voice_channel, voice_object, portal_object, guild_object, attr, value, member) {
 		for (let l = 0; l < this.attributes.length; l++) {
 			if (attr === this.attributes[l].name) {
 				switch (this.attributes[l].auth) {
-				case 'admin':
-					if (!member.hasPermission('ADMINISTRATOR')) {
-						return -2;
-					}
-					break;
-				case 'portal':
-					if(portal_object.creator_id !== member.id) {
-						return -3;
-					}
-					break;
-				case 'voice':
-					if(voice_object.creator_id !== member.id) {
-						return -4;
-					}
-					break;
-				default:
-					break;
+					case 'admin':
+						if (!member.hasPermission('ADMINISTRATOR')) {
+							return -2;
+						}
+						break;
+					case 'portal':
+						if (portal_object.creator_id !== member.id) {
+							return -3;
+						}
+						break;
+					case 'voice':
+						if (voice_object.creator_id !== member.id) {
+							return -4;
+						}
+						break;
+					default:
+						break;
 				}
 
 				return this.attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value);

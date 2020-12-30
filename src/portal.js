@@ -66,7 +66,7 @@ event_loader = function (event, args) {
 client.on('ready', () =>
 	event_loader('ready',
 		{
-			'client': client, 
+			'client': client,
 			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
@@ -86,7 +86,7 @@ client.on('shardReconnecting', id =>
 client.on('guildDelete', guild =>
 	event_loader('guildDelete',
 		{
-			'guild': guild, 
+			'guild': guild,
 			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
@@ -107,7 +107,7 @@ client.on('guildCreate', guild =>
 client.on('channelDelete', channel =>
 	event_loader('channelDelete',
 		{
-			'channel': channel, 
+			'channel': channel,
 			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
@@ -118,7 +118,7 @@ client.on('channelDelete', channel =>
 client.on('guildMemberAdd', member =>
 	event_loader('guildMemberAdd',
 		{
-			'member': member, 
+			'member': member,
 			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},
@@ -129,7 +129,7 @@ client.on('guildMemberAdd', member =>
 client.on('guildMemberRemove', member =>
 	event_loader('guildMemberRemove',
 		{
-			'member': member, 
+			'member': member,
 			'guild_list': guild_list,
 			'portal_managed_guilds_path': portal_managed_guilds_path,
 		},

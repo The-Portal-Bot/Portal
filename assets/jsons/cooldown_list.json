@@ -119,6 +119,11 @@
 			"auth": false,
 			"premium": false
 		},
+		"roll": {
+			"time": 0,
+			"auth": false,
+			"premium": false
+		},
 		"run": {
 			"time": 0,
 			"auth": false,

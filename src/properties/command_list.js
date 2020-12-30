@@ -2,13 +2,13 @@ const help_mngr = require('../functions/help_manager');
 
 module.exports =
 {
-	is_command: function(arg) {
+	is_command: function (arg) {
 		for (let i = 0; i < this.commands.length; i++) {
-			if (String(arg).substring(1, (String(this.commands[i].name).length + 1)) == this.commands[i].name) {return this.commands[i].name;}
+			if (String(arg).substring(1, (String(this.commands[i].name).length + 1)) == this.commands[i].name) { return this.commands[i].name; }
 		}
 		return false;
 	},
-	get_help: function() {
+	get_help: function () {
 		const func_array = [];
 		for (let i = 0; i < this.commands.length; i++) {
 			func_array.push({
@@ -23,7 +23,7 @@ module.exports =
 			'\n**!**: *mandatory*, **@**: *optional*',
 			'#9775A9', func_array);
 	},
-	get_help_super: function(check) {
+	get_help_super: function (check) {
 		for (let i = 0; i < this.commands.length; i++) {
 			const cmmd = this.commands[i];
 			if (cmmd.name === check) {
@@ -211,6 +211,14 @@ module.exports =
 				'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]\n' +
 				'\n>This will create a message giving/striping moba role with :heart:/:poop: and fps role with :rofl:/:dog:.',
 			args: '```json\nJSON array of objects:\n{ "give": ":heart:", "strip": ":poop:", "role": "moba" }```',
+		},
+		{
+			name: 'roll',
+			description: 'rolls requested dice.',
+			super_description: '**roll**, rolls requested dice you can also combine rolls.' +
+				'Rolls are following the same philosophy as roll20 does.',
+			example: './roll 3d12+5',
+			args: 'a roll configuration like 1d6',
 		},
 		{
 			name: 'run',
