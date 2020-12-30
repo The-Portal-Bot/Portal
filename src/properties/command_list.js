@@ -218,7 +218,7 @@ module.exports =
 			super_description: '**roll**, rolls requested dice you can also combine rolls.' +
 				'Rolls are following the same philosophy as roll20 does.',
 			example: './roll 3d12+5',
-			args: 'a roll configuration like 1d6',
+			args: '<!roll configuration>',
 		},
 		{
 			name: 'run',

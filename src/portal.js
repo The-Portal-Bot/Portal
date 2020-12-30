@@ -1,5 +1,3 @@
-/* eslint-disable no-cond-assign */
-/* eslint-disable no-undef */
 // const mongoose = require('mongoose');
 // mongoose.connect('mongodb://localhost/PortalDB', { useNewUrlParser: true })
 // 	.catch(error => {
@@ -39,7 +37,7 @@ if (guild_list === null) {
 	return;
 }
 
-event_loader = function (event, args) {
+const event_loader = function (event, args) {
 	console.log(`event emitted: ${event}`);
 	require(`./events/${event}.js`)(args)
 		.then(rspns => {
@@ -182,7 +180,7 @@ client.on('voiceStateUpdate', (oldState, newState) =>
 	)
 );
 
-portal_channel_handler = function (message) {
+const portal_channel_handler = function (message) {
 	let channel_type = null, channel_support = null, channel_talk = null;
 
 	if (guld_mngr.included_in_url_list(message.channel.id, guild_list[message.guild.id])) {
@@ -220,24 +218,13 @@ portal_channel_handler = function (message) {
 	}
 };
 
-ranking_system = function (message) {
+const ranking_system = function (message) {
 	const level = user_mngr.add_points_message(message, guild_list);
 	if (level) {
 		help_mngr.message_reply(
 			null, message.channel, message,
 			message.author, `You reached level ${level}!`,
 			guild_list, client);
-	}
-};
-
-word_check = function (message) {
-	if (profanity(message.content)) {
-		message.react('🚩');
-		message.author
-			.send("try not to use profanities")
-			.catch(console.error);
-		// help_mngr.message_reply(false, message.channel, message, message.author,
-		// 	"try not to use profanities", guild_list, client, false, '✔️', '🚩');
 	}
 };
 
@@ -258,7 +245,14 @@ client.on('message', async message => {
 	ranking_system(message);
 
 	// word check
-	word_check(message);
+	if (profanity(message.content)) {
+		message.react('🚩');
+		message.author
+			.send("try not to use profanities")
+			.catch(console.error);
+		// help_mngr.message_reply(false, message.channel, message, message.author,
+		// 	"try not to use profanities", guild_list, client, false, '✔️', '🚩');
+	}
 
 	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
@@ -311,11 +305,14 @@ client.on('message', async message => {
 		return;
 	}
 
-	const active = active_cooldown[type].find(active => {
-		if (type === 'member' && active.member === message.author.id && active.command === cmd) {
-			return true;
-		} else if (type === 'guild' && active.command === cmd) {
-			return true;
+	const active = active_cooldown[type].find(active_current => {
+		if (active_current.command === cmd) {
+			if (type === 'member' && active_current.member === message.author.id) {
+				return true;
+			}
+			if (type === 'guild') {
+				return true;
+			}
 		}
 		return false;
 	});
@@ -339,7 +336,7 @@ client.on('message', async message => {
 				active_cooldown[type].push({ member: message.author.id, command: cmd, timestamp: Date.now() });
 
 				setTimeout(() => {
-					active_cooldown[type] = active_cooldown[type].filter(active => active.command !== cmd);
+					active_cooldown[type] = active_cooldown[type].filter(active_current.command !== cmd);
 				}, cooldown_list[type][cmd].time * 60 * 1000);
 			}
 			help_mngr.message_reply(rspns, message.channel, message,
