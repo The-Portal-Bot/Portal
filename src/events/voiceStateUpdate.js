@@ -39,7 +39,6 @@ module.exports = async (args) => {
 	let report_message = `from: ${oldChannel} to ${newChannel}\n`;
 
 	if (oldChannel === null) {
-
 		if (newChannel !== null) { // joined from null
 			report_message += 'null->existing\n';
 
@@ -73,10 +72,8 @@ module.exports = async (args) => {
 
 			}
 		}
-
 	}
 	else if (oldChannel !== null) { // Left from existing
-
 		if (newChannel === null) {
 			report_message += 'existing->null\n';
 
@@ -97,9 +94,7 @@ module.exports = async (args) => {
 					}
 				}
 			}
-
 			user_mngr.update_timestamp(args.newState, args.guild_list); // points calculation from any channel
-
 		}
 		else if (newChannel !== null) { // Moved from channel to channel
 			report_message += 'existing->existing\n';
@@ -121,12 +116,9 @@ module.exports = async (args) => {
 						args.guild_list[args.newState.guild.id].portal_list,
 						args.guild_list[args.newState.guild.id],
 						args.newState.guild);
-
 				}
-
 			}
-			else if (guld_mngr.included_in_voice_list(
-				oldChannel.id, args.guild_list[args.newState.guild.id].portal_list)) {
+			else if (guld_mngr.included_in_voice_list(oldChannel.id, args.guild_list[args.newState.guild.id].portal_list)) {
 
 				report_message += '->source: voice_list\n';
 
@@ -161,8 +153,7 @@ module.exports = async (args) => {
 						args.guild_list[args.newState.guild.id],
 						args.newState.guild);
 				}
-				else if (guld_mngr.included_in_voice_list(
-					newChannel.id, args.guild_list[args.newState.guild.id].portal_list)) { // moved from voice to voice
+				else if (guld_mngr.included_in_voice_list(newChannel.id, args.guild_list[args.newState.guild.id].portal_list)) { // moved from voice to voice
 
 					report_message += '->dest: voice_list\n';
 
@@ -215,10 +206,8 @@ module.exports = async (args) => {
 						args.guild_list[args.newState.guild.id],
 						args.newState.guild);
 				}
-
 			}
 			else {
-
 				report_message += '->source: other voice\n';
 
 				if (guld_mngr.included_in_portal_list(
@@ -244,7 +233,6 @@ module.exports = async (args) => {
 						args.guild_list[args.newState.guild.id].portal_list,
 						args.guild_list[args.newState.guild.id],
 						args.newState.guild);
-
 				}
 			}
 		}

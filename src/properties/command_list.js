@@ -146,6 +146,15 @@ module.exports =
 			args: 'none',
 		},
 		{
+			name: 'joke',
+			description: 'returns a joke.',
+			super_description: '**joke**, returns a joke. You can specify the category of joke by' +
+				' using arguments: dad, chuck, blonde, knock-knock, animal or jod.' +
+				' By default it is about you.',
+			example: './joke',
+			args: '<@category>',
+		},
+		{
 			name: 'leave',
 			description: 'leaves the voice channel portal is currently in.',
 			super_description: '**leave**, leaves the voice channel portal is currently in.',

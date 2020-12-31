@@ -292,7 +292,6 @@ module.exports = {
 				message
 					.react(emote_pass)
 					.catch(error => console.log(error));
-
 			}
 			else if (status === false) {
 				lclz_mngr.client_talk(client, portal_guilds, 'fail');

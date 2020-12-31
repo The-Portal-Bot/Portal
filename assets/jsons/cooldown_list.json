@@ -3,146 +3,180 @@
 		"purge": {
 			"time": 10,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"save": {
 			"time": 5,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"setup": {
 			"time": 10,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"set_ranks": {
 			"time": 10,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		}
 	},
 	"member": {
 		"join": {
 			"time": 1,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"announce": {
 			"time": 2,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"force": {
 			"time": 5,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		}
 	},
 	"none": {
 		"leaderboard": {
 			"time": 0,
 			"auth": false,
-			"premium": false
+			"premium": false,
+			"auto_delete": true
 		},
 		"ranks": {
 			"time": 0,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"level": {
 			"time": 0,
 			"auth": false,
-			"premium": false
+			"premium": false,
+			"auto_delete": true
 		},
 		"about": {
 			"time": 0,
 			"auth": false,
-			"premium": false
+			"premium": false,
+			"auto_delete": true
 		},
 		"portal": {
 			"time": 0,
 			"auth": true,
-			"premium": false
+			"premium": false,
+			"auto_delete": true
 		},
 		"help": {
 			"time": 0,
 			"auth": false,
-			"premium": false
+			"premium": false,
+			"auto_delete": true
 		},
 		"ping": {
 			"time": 0,
 			"auth": false,
-			"premium": false
+			"premium": false,
+			"auto_delete": true
 		},
 		"set": {
 			"time": 0,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"role": {
 			"time": 0,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"spotify": {
 			"time": 0,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"music": {
 			"time": 0,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"announcement": {
 			"time": 0,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"url": {
 			"time": 0,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"leave": {
 			"time": 0,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"focus": {
 			"time": 0,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"corona": {
 			"time": 0,
 			"auth": false,
-			"premium": false
+			"premium": false,
+			"auto_delete": false
 		},
 		"roll": {
 			"time": 0,
 			"auth": false,
-			"premium": false
+			"premium": false,
+			"auto_delete": false
 		},
 		"run": {
 			"time": 0,
 			"auth": false,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"auth_roles": {
 			"time": 0,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"auth_role_add": {
 			"time": 0,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
 		},
 		"auth_role_rem": {
 			"time": 0,
 			"auth": true,
-			"premium": true
+			"premium": true,
+			"auto_delete": true
+		},
+		"joke": {
+			"time": 0,
+			"auth": false,
+			"premium": false,
+			"auto_delete": false
 		}
 	}
 }

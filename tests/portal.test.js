@@ -1,16 +1,12 @@
-const { group, test, command, beforeStart, afterAll, expect } = require("corde");
-const { client, loginBot } = require("..");
+// const { MockMessage, MockTextChannel } = require("jest-discordjs-mocks");
+// const { client, log_portal } = require('../src/portal');
 
-// beforeStart(() => {
-//   loginBot();
-// });
+test("discord.js mock test", () => {
+  // const message = new MockMessage();
+  // const channel = new MockTextChannel();
+  // message.content = "test";
+  // message.channel = channel;
+  // callMyFunctionToTestHere(message);
 
-group("main commands", () => {
-  test("hello command should return 'Hello!!'", () => {
-    expect("hello").toReturn("Hello!!");
-  });
-});
-
-afterAll(() => {
-  client.destroy();
+  expect(true).toBe(true);
 });

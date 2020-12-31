@@ -14,7 +14,8 @@ module.exports =
 		else if (type_of_action.includes(context)) { check = 'ann_user'; }
 
 		if (client.voice !== undefined) {
-			if (voiceConnection = client.voice.connections.find(connection => connection.channel.id)) {
+			const voiceConnection = client.voice.connections.find(connection => connection.channel.id);
+			if (voiceConnection) {
 				for (const guild_id in guild_list) {
 					for (const portal_id in guild_list[guild_id].portal_list) {
 						for (const voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {

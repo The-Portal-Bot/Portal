@@ -5,10 +5,8 @@ const help_mngr = require('../functions/help_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
-		const member_info = portal_guilds[message.guild.id].member_list[message.member.id];
-
 		message.channel.send(help_mngr.create_rich_embed(
-			'About Portal',
+			'About',
 			'a portal to a managed discord server',
 			'#1DB954',
 			[
@@ -23,23 +21,13 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 					inline: true,
 				},
 				{
-					emote: 'Website',
-					role: '***https://portal-bot.xyz***',
+					emote: 'Version',
+					role: '***1.0.2***',
 					inline: true,
 				},
 				{
-					emote: 'FAQ',
-					role: '',
-					inline: false,
-				},
-				{
-					emote: 'Does Portal have Premium ?',
-					role: 'Yes with great features and you can get it at ***https://portal-bot.xyz/premium/***',
-					inline: false,
-				},
-				{
-					emote: 'What features does Portal have ?',
-					role: 'Yes lots of them, you can explore them at ***https://portal-bot.xyz/features/***',
+					emote: 'For help just type',
+					role: './help',
 					inline: false,
 				},
 			],
@@ -49,6 +37,6 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			'https://portal-bot.xyz/',
 		));
 
-		return resolve(null);
+		return resolve ({ result: true, value: 'about message.' });
 	});
 };

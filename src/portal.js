@@ -34,7 +34,7 @@ const active_cooldown = { guild: [], member: [] };
 
 if (guild_list === null) {
 	console.log('guild json is corrupt');
-	return;
+	exit();
 }
 
 const event_loader = function (event, args) {
@@ -180,55 +180,6 @@ client.on('voiceStateUpdate', (oldState, newState) =>
 	)
 );
 
-const portal_channel_handler = function (message) {
-	let channel_type = null, channel_support = null, channel_talk = null;
-
-	if (guld_mngr.included_in_url_list(message.channel.id, guild_list[message.guild.id])) {
-		if (help_mngr.is_url(message.content)) {
-			lclz_mngr.client_talk(client, guild_list, 'url');
-			return;
-		}
-		else {
-			channel_type = 'URL';
-			channel_support = 'url';
-			channel_talk = 'read_only';
-		}
-	}
-	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
-		play_mngr.start(client, message, message.content, guild_list)
-			.then(joined => {
-				help_mngr.message_reply(joined.result, message.channel, message,
-					message.author, joined.value, guild_list, client, true);
-			})
-			.catch(error => {
-				console.log(error);
-				message.delete();
-			});
-		return;
-	}
-
-	if (channel_type !== null && channel_support !== null && channel_talk !== null) {
-		lclz_mngr.client_talk(client, guild_list, channel_talk);
-		help_mngr.message_reply(
-			null, message.channel, message,
-			message.author, `${channel_type} channel is ${channel_support}-only.`,
-			guild_list, client);
-		message.delete();
-		return;
-	}
-};
-
-const ranking_system = function (message) {
-	const level = user_mngr.add_points_message(message, guild_list);
-	if (level) {
-		help_mngr.message_reply(
-			null, message.channel, message,
-			message.author, `You reached level ${level}!`,
-			guild_list, client);
-	}
-};
-
-
 // runs on every single message received, from any channel or DM
 client.on('message', async message => {
 
@@ -299,7 +250,7 @@ client.on('message', async message => {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then(rspns => {
 				help_mngr.message_reply(rspns.result, message.channel, message,
-					message.author, rspns.value, guild_list, client);
+					message.author, rspns.value, guild_list, client, cooldown_list[type][cmd].auto_delete);
 				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 			});
 		return;
@@ -339,14 +290,71 @@ client.on('message', async message => {
 					active_cooldown[type] = active_cooldown[type].filter(active_current.command !== cmd);
 				}, cooldown_list[type][cmd].time * 60 * 1000);
 			}
-			help_mngr.message_reply(rspns, message.channel, message,
-				message.author, rspns ? 'executed correctly' : 'executed falsely', guild_list, client);
+			console.log('cooldown_list[type][cmd].auto_delete :>> ', cooldown_list[type][cmd].auto_delete);
+			help_mngr.message_reply(rspns, message.channel, message, message.author,
+				rspns ? 'executed correctly' : 'executed falsely', guild_list, client,
+				cooldown_list[type][cmd].auto_delete);
 
 			help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 		});
 });
 
-client.login(config.token);
+function portal_channel_handler(message) {
+	let channel_type = null, channel_support = null, channel_talk = null;
+
+	if (guld_mngr.included_in_url_list(message.channel.id, guild_list[message.guild.id])) {
+		if (help_mngr.is_url(message.content)) {
+			lclz_mngr.client_talk(client, guild_list, 'url');
+			return;
+		}
+		else {
+			channel_type = 'URL';
+			channel_support = 'url';
+			channel_talk = 'read_only';
+		}
+	}
+	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
+		play_mngr.start(client, message, message.content, guild_list)
+			.then(joined => {
+				help_mngr.message_reply(joined.result, message.channel, message,
+					message.author, joined.value, guild_list, client, true);
+			})
+			.catch(error => {
+				console.log(error);
+				message.delete();
+			});
+		return;
+	}
+
+	if (channel_type !== null && channel_support !== null && channel_talk !== null) {
+		lclz_mngr.client_talk(client, guild_list, channel_talk);
+		help_mngr.message_reply(
+			null, message.channel, message,
+			message.author, `${channel_type} channel is ${channel_support}-only.`,
+			guild_list, client);
+		message.delete();
+		return;
+	}
+}
+
+function ranking_system(message) {
+	const level = user_mngr.add_points_message(message, guild_list);
+	if (level) {
+		help_mngr.message_reply(
+			null, message.channel, message,
+			message.author, `You reached level ${level}!`,
+			guild_list, client);
+	}
+}
+
+function log_portal() {
+	client.login(config.token);
+}
+
+log_portal();
+
+exports.client = client;
+exports.log_portal = log_portal;
 
 // console.log('Object.getOwnPropertyNames(message)= ', Object.getOwnPropertyNames(message))
 // console.log('Object.getOwnPropertyNames(message.author)= ', Object.getOwnPropertyNames(message.author))

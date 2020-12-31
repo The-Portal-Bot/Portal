@@ -28,51 +28,49 @@ const getOptions = function (guild, topic) {
 module.exports = {
 
 	included_in_portal_guilds: function (guild_id, portal_guilds) {
-		if (portal_guilds[guild_id] !== undefined) { return true; }
-		return false;
+		return portal_guilds[guild_id] !== undefined;
 	},
 
 	included_in_portal_list: function (channel_id, portal_list) {
-		if (portal_list[channel_id]) { return true; }
-		return false;
+		return portal_list[channel_id];
 	},
 
 	included_in_voice_list: function (channel_id, portal_list) {
 		for (const key in portal_list) {
-			if (portal_list[key].voice_list[channel_id]) { return true; }
+			if (portal_list[key].voice_list[channel_id]) {
+				return true;
+			}
 		}
 		return false;
 	},
 
 	included_in_url_list: function (channel_id, guild_object) {
 		for (let i = 0; i < guild_object.url_list.length; i++) {
-			if (guild_object.url_list[i] === channel_id) { return true; }
+			if (guild_object.url_list[i] === channel_id) {
+				return true;
+			}
 		}
 		return false;
 	},
 
 	is_spotify_channel: function (channel_id, guild_object) {
-		if (guild_object.spotify === channel_id) { return true; }
-		return false;
+		return guild_object.spotify === channel_id;
 	},
 
 	is_music_channel: function (channel_id, guild_object) {
-		if (guild_object.music_data.channel_id === channel_id) { return true; }
-		return false;
+		return guild_object.music_data.channel_id === channel_id;
 	},
 
 	is_announcement_channel: function (channel_id, guild_object) {
-		if (guild_object.announcement === channel_id) { return true; }
-		return false;
+		return guild_object.announcement === channel_id;
 	},
 
 	//
 
 	is_role: function (guild, role_name) {
-		const role = guild.roles.cache.find(cached_role => cached_role.name === role_name);
-
-		if (role) { return role; }
-		else { return null; }
+		const role = guild.roles.cache.find(cached_role =>
+			cached_role.name === role_name);
+		return role ? role : null;
 	},
 
 	//
@@ -114,7 +112,6 @@ module.exports = {
 									}
 								}).catch(console.error);
 						}).catch(console.error);
-
 
 				}
 				else {
