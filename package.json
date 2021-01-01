@@ -1,33 +1,34 @@
 {
   "name": "portal",
   "author": "Ioannis Tsiakkas",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
-  "main": "index.js",
+  "main": "src/portal.ts",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "lint": "eslint **/*.js",
-    "lint-fix": "eslint --fix **/*.js",
-    "dview": "npm-dview"
+    "start": "node src/portal.js",
+    "start_ts": "tsc src/portal.ts",
+    "test": "jest",
+    "dev": "nodemon src/portal.ts"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
-    "discord-ytdl-core": "^4.0.9",
-    "discord.js": "^12.2.0",
-    "ffmpeg-static": "^4.2.2",
+    "@discordjs/opus": "^0.3.3",
+    "discord-ytdl-core": "^5.0.0",
+    "discord.js": "^12.5.1",
+    "ffmpeg-static": "^4.2.7",
     "file-system": "^2.2.2",
+    "give-me-a-joke": "^0.4.0",
+    "jest": "^26.6.3",
+    "jest-discordjs-mocks": "^1.0.2",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "mongoose": "^5.10.9",
-    "sentiment": "^5.0.2",
-    "validator": "^13.1.17",
+    "roll": "^1.3.1",
     "voca": "^1.4.0",
-    "yt-search": "^2.3.2",
-    "ytdl-core": "^3.3.0"
+    "yt-search": "^2.5.1",
+    "ytdl-core": "^4.2.1"
   },
   "devDependencies": {
-    "eslint": "^7.11.0",
-    "nodemon": "^2.0.4"
+    "@types/node": "^10.17.50",
+    "eslint": "^7.16.0",
+    "nodemon": "^2.0.6"
   }
 }

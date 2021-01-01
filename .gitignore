@@ -116,3 +116,6 @@ dist
 
 #guild status
 .server_storage/guild_list.json
+
+#build
+build/*
