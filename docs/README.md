@@ -64,10 +64,10 @@ Features:
 ## Regex Interpreter
 
 There are four types of data:
-1. [Variables](https://github.com/keybraker/portal-discord-bot/docs/Variables.md), are data used to fetch information for the current state of the channel you are in.
-2. [Attributes](https://github.com/keybraker/portal-discord-bot/docs/Attributes.md), are configuration data for Portal's use. 
-3. [Pipes](https://github.com/keybraker/portal-discord-bot/docs/Pipes.md), are functions that you can pass the strings or Variables to manipulate their outcome. 
-4. [Structures](https://github.com/keybraker/portal-discord-bot/docs/Structures.md), are conditional flow manipulators.
+1. [Variables](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Variables.md), are data used to fetch information for the current state of the channel you are in.
+2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Attributes.md), are configuration data for Portal's use. 
+3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Pipes.md), are functions that you can pass the strings or Variables to manipulate their outcome. 
+4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Structures.md), are conditional flow manipulators.
 
 ## Release History
 
