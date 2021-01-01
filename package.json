@@ -3,11 +3,12 @@
   "author": "Ioannis Tsiakkas",
   "version": "1.2.1",
   "private": true,
-  "main": "src/portal.js",
+  "main": "src/portal.ts",
   "scripts": {
     "start": "node src/portal.js",
+    "start_ts": "tsc src/portal.ts",
     "test": "jest",
-    "dev": "nodemon src/portal.js"
+    "dev": "nodemon src/portal.ts"
   },
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
@@ -26,6 +27,7 @@
     "ytdl-core": "^4.2.1"
   },
   "devDependencies": {
+    "@types/node": "^10.17.50",
     "eslint": "^7.16.0",
     "nodemon": "^2.0.6"
   }
