@@ -1,5 +1,5 @@
-const guld_mngr = require('../libraries/guild_manager');
-const help_mngr = require('../libraries/help_manager');
+const guld_mngr = require('../libraries/guildOps');
+const help_mngr = require('../libraries/helpOps');
 
 module.exports = async (args) => {
 	// Inserting guild to portal's guild list if it does not exist

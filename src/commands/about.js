@@ -38,7 +38,7 @@ var _this = this;
 module.exports = function (client, message, args, portal_guilds, portal_managed_guilds_path) { return __awaiter(_this, void 0, void 0, function () {
     var help_mngr;
     return __generator(this, function (_a) {
-        help_mngr = require('../libraries/help_manager');
+        help_mngr = require('../libraries/helpOps');
         return [2 /*return*/, new Promise(function (resolve) {
                 message.channel.send(help_mngr.create_rich_embed('About', 'a portal to a managed discord server', '#1DB954', [
                     {

@@ -1,5 +1,5 @@
-const guld_mngr = require('../libraries/guild_manager');
-const help_mngr = require('../libraries/help_manager');
+const guld_mngr = require('../libraries/guildOps');
+const help_mngr = require('../libraries/helpOps');
 
 const type_of_channel = { 0: 'Unknown', 1: 'Portal', 2: 'Voice', 3: 'Url', 4: 'Spotify', 5: 'Announcement', 6: 'Music' };
 

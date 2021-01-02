@@ -2,9 +2,9 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
 const { Message } = require('discord.js');
-const guld_mngr = require('../libraries/guild_manager');
+const guld_mngr = require('../libraries/guildOps');
 
-module.exports = async (client, message: Message, args, portal_guilds, portal_managed_guilds_path) => {
+module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		message.guild.channels
 			.create('portal-hub', { type: 'category' })

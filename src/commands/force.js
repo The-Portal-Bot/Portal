@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const guld_mngr = require('../libraries/guild_manager');
+const guld_mngr = require('../libraries/guildOps');
 
 const renameKey = (objct, oldKey, newKey) => {
 	if (oldKey !== newKey) {

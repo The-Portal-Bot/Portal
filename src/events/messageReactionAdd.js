@@ -1,4 +1,4 @@
-const musc_mngr = require('../libraries/music_manager');
+const musc_mngr = require('../libraries/musicOps');
 
 const clear_user_reactions = function(args) {
 	args.messageReaction.message.reactions.cache

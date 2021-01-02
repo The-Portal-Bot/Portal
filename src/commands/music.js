@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-const guld_mngr = require('../libraries/guild_manager');
-const help_mngr = require('../libraries/help_manager');
+const guld_mngr = require('../libraries/guildOps');
+const help_mngr = require('../libraries/helpOps');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {

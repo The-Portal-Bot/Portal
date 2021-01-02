@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { create_rich_embed } from '../libraries/help_manager';
+import { create_rich_embed } from '../libraries/helpOps';
 import { ObjectFunction } from './TypePortal';
 
 export const command_prefix: string = './';

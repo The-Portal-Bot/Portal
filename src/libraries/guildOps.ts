@@ -14,8 +14,8 @@ import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
 import { MemberPrtl } from '../types/classes/MemberPrtl';
 
-import { create_music_message, getJSON, inline_operator } from './help_manager';
-import { stop } from './music_manager';
+import { create_music_message, getJSON, inline_operator } from './helpOps';
+import { stop } from './musicOps';
 import { ReturnPormise } from "../types/classes/ReturnPormise";
 
 function getOptions(guild: Guild, topic: string): GuildCreateChannelOptions {
@@ -35,11 +35,11 @@ export function included_in_portal_guilds(guild_id: string, portal_guilds: any):
 	return portal_guilds[guild_id] !== undefined;
 };
 
-export function included_in_portal_list(channel_id: number, portal_list: any): boolean {
+export function included_in_portal_list(channel_id: string, portal_list: any): boolean {
 	return portal_list[channel_id];
 };
 
-export function included_in_voice_list(channel_id: number, portal_list: any): boolean {
+export function included_in_voice_list(channel_id: string, portal_list: any): boolean {
 	for (const key in portal_list) {
 		if (portal_list[key].voice_list[channel_id]) {
 			return true;
@@ -48,7 +48,7 @@ export function included_in_voice_list(channel_id: number, portal_list: any): bo
 	return false;
 };
 
-export function included_in_url_list(channel_id: number, guild_object: any): boolean {
+export function included_in_url_list(channel_id: string, guild_object: any): boolean {
 	for (let i = 0; i < guild_object.url_list.length; i++) {
 		if (guild_object.url_list[i] === channel_id) {
 			return true;
@@ -57,15 +57,15 @@ export function included_in_url_list(channel_id: number, guild_object: any): boo
 	return false;
 };
 
-export function is_spotify_channel(channel_id: number, guild_object: any): boolean {
+export function is_spotify_channel(channel_id: string, guild_object: any): boolean {
 	return guild_object.spotify === channel_id;
 };
 
-export function is_music_channel(channel_id: number, guild_object: any): boolean {
+export function is_music_channel(channel_id: string, guild_object: any): boolean {
 	return guild_object.music_data.channel_id === channel_id;
 };
 
-export function is_announcement_channel(channel_id: number, guild_object: any): boolean {
+export function is_announcement_channel(channel_id: string, guild_object: any): boolean {
 	return guild_object.announcement === channel_id;
 };
 
@@ -209,7 +209,7 @@ export function create_spotify_channel(guild: Guild, spotify_channel: TextChanne
 };
 
 export async function create_music_channel(guild: Guild, music_channel: string,
-	music_category: string | CategoryChannel, guild_object: any): void {
+	music_category: string | CategoryChannel, guild_object: any): Promise<void> {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 	return new Promise((resolve) => {
@@ -449,8 +449,8 @@ export function insert_guild(guild_id: string, portal_guilds: any, client: Clien
 	const level_speed: string = 'normal';
 	const premium: boolean = false;
 
-	portal_guilds[guild_id] = new GuildPrtl(portal_list, member_list, url_list, role_list, ranks, auth_role,
-		spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium);
+	portal_guilds.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
+		spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium));
 };
 
 //

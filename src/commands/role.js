@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-const help_mngr = require('../libraries/help_manager');
-const guld_mngr = require('../libraries/guild_manager');
+const help_mngr = require('../libraries/helpOps');
+const guld_mngr = require('../libraries/guildOps');
 
 const multiple_same_emote = function(emote_map) {
 	for (let i = 0; i < emote_map.length; i++) {

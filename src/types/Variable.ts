@@ -1,9 +1,9 @@
 import moment from 'moment';
 
-import { get_status_list } from '../libraries/status_manager';
-import { create_rich_embed } from '../libraries/help_manager';
+import { get_status_list } from '../libraries/statusOps';
+import { create_rich_embed } from '../libraries/helpOps';
 import { ObjectFunction } from './TypePortal';
-import { Guild, MessageEmbed, VoiceChannel } from 'discord.js';
+import { Guild, GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
 
 export const variable_prefix: string = '$';
 const variables: ObjectFunction[] = [
@@ -65,12 +65,9 @@ const variables: ObjectFunction[] = [
 			}
 			for (const portal_key in portal_list_object) {
 				if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
-					if (!guild || guild.members !== undefined || guild.members.cache !== undefined) {
-						return 'it seems there are no members';
-					}
-					const display_name: string = guild.members.cache.find(member =>
-						member.id === portal_list_object[portal_key].creator_id).displayName;
-					return display_name ? display_name : 'portal creator left';
+					const member: GuildMember | undefined = guild.members.cache.find(member_current =>
+						member_current.id === portal_list_object[portal_key].creator_id);
+					return member !== undefined ? member.displayName : 'portal creator left';
 				}
 			}
 		},
@@ -84,9 +81,9 @@ const variables: ObjectFunction[] = [
 		example: '$creator_voice',
 		args: 'none',
 		get: (voice_channel: VoiceChannel, voice_object: any, portal_list_object: any, guild_object: any, guild: Guild) => {
-			const display_name = guild.members.cache.find(member =>
-				member.id === voice_object.creator_id).displayName;
-			return display_name ? display_name : 'voice creator left';
+			const member: GuildMember | undefined = guild.members.cache.find(member_current =>
+				member_current.id === voice_object.creator_id);
+			return member !== undefined ? member.displayName : 'voice creator left';
 		},
 		set: null,
 		auth: 'none'
@@ -294,10 +291,7 @@ const variables: ObjectFunction[] = [
 		args: 'none',
 		get: (voice_channel: VoiceChannel, voice_object: any) => {
 			const status_list: string[] = get_status_list(voice_channel, voice_object);
-			if (typeof status_list === 'object' && status_list !== null) {
-				return 0;
-			}
-			status_list.length;
+			return status_list.length;
 		},
 		set: null,
 		auth: 'none'

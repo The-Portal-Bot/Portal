@@ -1,4 +1,4 @@
-const help_mngr = require('../libraries/help_manager');
+const help_mngr = require('../libraries/helpOps');
 
 module.exports = async (args) => {
 	const leave_message = `member: ${args.member.presence.user}\n` +

@@ -1,10 +1,10 @@
 export class MusicData {
-	public channel_id: number | undefined;
-	public message_id: number | undefined;
+	public channel_id: string | undefined;
+	public message_id: string | undefined;
 	public votes: string[] | undefined;
 
-	constructor(channel_id: number,
-		message_id: number,
+	constructor(channel_id: string,
+		message_id: string,
 		votes: string[]) {
 		this.channel_id = channel_id;
 		this.message_id = message_id;
@@ -13,6 +13,7 @@ export class MusicData {
 }
 
 export class GuildPrtl {
+	public id: string;
 	public portal_list: {};
 	public member_list: {};
 	public url_list: string[];
@@ -30,6 +31,7 @@ export class GuildPrtl {
 	public premium: boolean;
 
 	constructor(
+		id: string,
 		portal_list: {},
 		member_list: {},
 		url_list: string[],
@@ -46,6 +48,7 @@ export class GuildPrtl {
 		level_speed: string,
 		premium: boolean
 	) {
+		this.id = id;
 		this.portal_list = portal_list;
 		this.member_list = member_list;
 		this.url_list = url_list;

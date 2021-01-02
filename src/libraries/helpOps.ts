@@ -1,9 +1,10 @@
-import { Client, Message, Guild, DMChannel, GuildMember, User, MessageEmbed, Channel, TextChannel } from "discord.js";
-import { writeFileSync, writeFile } from "file-system";
+import { Client, Message, Guild, DMChannel, GuildMember, User, MessageEmbed, Channel, TextChannel, GuildChannel, VoiceConnection } from "discord.js";
+const { writeFileSync, writeFile } = require("file-system");
 import { cloneDeep } from "lodash";
 
-import { client_talk, client_write } from "./localization_manager";
-import { RolePortal } from "../types/classes/RolePrtl";
+import { client_talk, client_write } from "./localizationOps";
+import { RolePrtl } from "../types/classes/RolePrtl";
+import { field, ReturnPormise, ReturnPormiseVoice } from "../types/classes/ReturnPormise";
 
 export function create_role_message(channel: DMChannel, role_list: any, title: string, desc: string,
 	colour: string, role_emb: any, role_map: any) {
@@ -15,13 +16,13 @@ export function create_role_message(channel: DMChannel, role_list: any, title: s
 				sent_message.react(role_map[i].give);
 				sent_message.react(role_map[i].strip);
 			}
-			role_list[sent_message.id] = new RolePortal(role_map);
+			role_list[sent_message.id] = new RolePrtl(role_map);
 		})
 		.catch(error => console.log(error));
 };
 
 export function create_music_message(channel: TextChannel, thumbnail: string, guild_object: any) {
-	const music_message_emb = this.create_rich_embed(
+	const music_message_emb = create_rich_embed(
 		'Music Player',
 		'just type and I\'ll play',
 		'#0000FF',
@@ -30,10 +31,10 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
 		],
-		false,
-		false,
+		null,
+		null,
 		true,
-		false,
+		null,
 		thumbnail,
 	);
 
@@ -51,8 +52,8 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 		});
 };
 
-export function update_message(guild: any, guild_object: any, yts: any) {
-	const music_message_emb = this.create_rich_embed(
+export function update_message(guild: Guild, guild_object: any, yts: any) {
+	const music_message_emb = create_rich_embed(
 		yts.title,
 		yts.url,
 		'#0000FF',
@@ -61,36 +62,62 @@ export function update_message(guild: any, guild_object: any, yts: any) {
 			{ emote: 'Views', role: yts.views, inline: true },
 			{ emote: 'Uploaded', role: yts.ago, inline: true },
 		],
-		false,
-		false,
+		null,
+		null,
 		true,
-		false,
+		null,
 		yts.thumbnail,
 	);
-	const channel = guild_object.channels.cache.get(guild.music_data.channel_id);
+	const guild_channel: GuildChannel | undefined = guild.channels.cache.get(guild_object.music_data.channel_id);
+	const channel: TextChannel = <TextChannel>guild_channel;
 
 	if (channel) {
-		channel.messages.channel.messages
-			.fetch(guild.music_data.message_id)
-			.then(message => {
+		channel.messages
+			.fetch(guild_object.music_data.message_id)
+			.then((message: Message) => {
 				message.edit(music_message_emb)
-					.then(msg => console.log(`Updated the content of a message to ${msg.content}`))
+					.then((msg: Message) => console.log(`Updated the content of a message to ${msg.content}`))
 					.catch(console.error);
 			})
 			.catch(console.error);
 	}
 };
 
-export async function join_user_voice(client: Client, message: Message, portal_guilds: any, join: boolean): Promise<{ result: boolean, value: string }> { // localize
+export async function join_user_voice(client: Client, message: Message, portal_guilds: any,
+	join: boolean): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
+		if (message.member === null) {
+			return resolve({
+				result: false,
+				value: 'message has no member.',
+				voice_connection: undefined
+			});
+		}
+
+		if (message.guild === null) {
+			return resolve({
+				result: false,
+				value: 'message has no guild.',
+				voice_connection: undefined
+			});
+		}
+
 		const current_voice = message.member.voice.channel;
 
 		if (current_voice === null) {
-			return resolve({ result: false, value: 'you are not connected to any channel.' });
+			return resolve({
+				result: false,
+				value: 'you are not connected to any channel.',
+				voice_connection: undefined
+			});
 		}
 
 		if (current_voice.guild.id !== message.guild.id) {
-			return resolve({ result: false, value: 'your current channel is on another guild.' });
+			return resolve({
+				result: false,
+				value: 'your current channel is on another guild.',
+				voice_connection: undefined
+			});
 		}
 
 		const portal_list = portal_guilds[message.guild.id].portal_list;
@@ -102,11 +129,25 @@ export async function join_user_voice(client: Client, message: Message, portal_g
 
 		if (!included_in_voice_list) {
 			console.log('I can only connect to my channels.');
-			return resolve({ result: false, value: 'I can only connect to my channels.' });
+			return resolve({
+				result: false,
+				value: 'I can only connect to my channels.',
+				voice_connection: undefined
+			});
 		}
 
-		const existing_voice_connection = client.voice.connections.find(connection =>
-			connection.channel.id === message.member.voice.channel.id
+		if (client.voice === null) {
+			return resolve({
+				result: false,
+				value: 'Portal is not connected to any voice channel.',
+				voice_connection: undefined
+			});
+		}
+
+		const existing_voice_connection: VoiceConnection | undefined = client.voice.connections.find(connection =>
+			(message && message.member && message.member.voice && message.member.voice.channel)
+				? (connection.channel.id === message.member.voice.channel.id)
+				: false
 		);
 
 		if (existing_voice_connection) {
@@ -164,7 +205,7 @@ export function getJSON(str: string): any | null {
 	return data;
 };
 
-export function create_rich_embed(title: string | null, description: string | null, colour: string | null, field_array: any,
+export function create_rich_embed(title: string | null, description: string | null, colour: string | null, field_array: field[],
 	thumbnail: string | null, member: GuildMember | null, from_bot: boolean | null, url: string | null, image: string | null): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
@@ -195,8 +236,11 @@ export function create_rich_embed(title: string | null, description: string | nu
 			.setFooter('Portal bot by Keybraker', portal_icon_url);
 	}
 	if (member) {
+		const url = member.user.avatarURL() !== null
+			? member.user.avatarURL()
+			: undefined;
 		rich_message
-			.setAuthor(member.displayName, member.user.avatarURL());
+			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
 	}
 	if (thumbnail) {
 		rich_message
@@ -228,7 +272,7 @@ export function create_rich_embed(title: string | null, description: string | nu
 	return rich_message;
 };
 
-export function empty_channel_remover(current_guild: Guild, portal_guilds: any, portal_managed_guilds_path: string) {
+export function empty_channel_remover(current_guild: Guild, portal_guilds: any, portal_managed_guilds_path: string): void {
 	current_guild.channels.cache.forEach(channel => {
 		if (portal_guilds[current_guild.id]) {
 			for (const portal_channel in portal_guilds[current_guild.id].portal_list) {
@@ -255,10 +299,10 @@ export function empty_channel_remover(current_guild: Guild, portal_guilds: any, 
 		}
 	});
 
-	this.update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
+	update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
 };
 
-export async function update_portal_managed_guilds(force: boolean, portal_managed_guilds_path: string, portal_guilds: any) {
+export async function update_portal_managed_guilds(force: boolean, portal_managed_guilds_path: string, portal_guilds: any): Promise<ReturnPormise> {
 	return new Promise((resolve) => { // , reject) => {
 		setTimeout(() => {
 			const portal_guilds_no_voice = cloneDeep(portal_guilds);
@@ -285,12 +329,12 @@ export async function update_portal_managed_guilds(force: boolean, portal_manage
 	});
 };
 
-export function is_authorized(auth_role: any, member: GuildMember) {
+export function is_authorized(auth_role: any, member: GuildMember): boolean {
 	return !member.hasPermission('ADMINISTRATOR')
 		? member.roles.cache !== undefined && member.roles.cache !== null
 			? member.roles.cache.some(role =>
 				auth_role
-					? auth_role.some(auth => auth === role.id)
+					? auth_role.some((auth: string) => auth === role.id)
 					: false)
 			: false
 		: true;
@@ -298,7 +342,7 @@ export function is_authorized(auth_role: any, member: GuildMember) {
 
 // channel should be removed !
 export function message_reply(status: boolean, channel: Channel, message: Message, user: User, str: string, portal_guilds: any,
-	client: Client, to_delete: boolean = false, emote_pass: string = '✔️', emote_fail: string = '❌') {
+	client: Client, to_delete: boolean = false, emote_pass: string = '✔️', emote_fail: string = '❌'): void {
 	if (!message.channel.deleted && str !== null) {
 		message.channel
 			.send(`${user}, ${str}`)
@@ -325,7 +369,7 @@ export function message_reply(status: boolean, channel: Channel, message: Messag
 	}
 };
 
-export function is_url(potential_url: string) {
+export function is_url(potential_url: string): boolean {
 	const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -336,16 +380,16 @@ export function is_url(potential_url: string) {
 	return pattern.test(potential_url);
 };
 
-export function pad(num: number) {
+export function pad(num: number): string {
 	if (num.toString().length >= 2) {
-		return num;
+		return '' + num;
 	}
 	else {
 		return '0' + num;
 	}
 };
 
-export function time_elapsed(timestamp: number, timeout: number) {
+export function time_elapsed(timestamp: number, timeout: number): any {
 	const time_elapsed = Date.now() - timestamp;
 	const timeout_time = timeout * 60 * 1000;
 
@@ -370,7 +414,7 @@ export function time_elapsed(timestamp: number, timeout: number) {
 	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
 };
 
-export function time_remaining(timestamp: number, timeout: number) {
+export function time_remaining(timestamp: number, timeout: number): any {
 	const time_elapsed = Date.now() - timestamp;
 	const timeout_time = timeout * 60 * 1000;
 	const time_remaining = timeout_time - time_elapsed;

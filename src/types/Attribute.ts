@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
-import { create_rich_embed } from '../libraries/help_manager';
+import { create_rich_embed } from '../libraries/helpOps';
 import { ObjectFunction } from './TypePortal';
 
 const locales = ['gr', 'en', 'de'];

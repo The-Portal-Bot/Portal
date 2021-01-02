@@ -1,5 +1,5 @@
-const lclz_mngr = require('../libraries/localization_manager');
-const help_mngr = require('../libraries/help_manager');
+const lclz_mngr = require('../libraries/localizationOps');
+const help_mngr = require('../libraries/helpOps');
 
 module.exports = async (args) => {
 	// Changing Portal bots status

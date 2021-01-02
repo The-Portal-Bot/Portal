@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
-import { create_rich_embed } from '../libraries/help_manager';
+import { create_rich_embed } from '../libraries/helpOps';
 import { ObjectFunction } from "./TypePortal";
 
 export const pipe_prefix: string = '|';

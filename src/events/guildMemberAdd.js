@@ -1,4 +1,4 @@
-const help_mngr = require('../libraries/help_manager');
+const help_mngr = require('../libraries/helpOps');
 const member_class = require('../types/classes/MemberPrtl');
 
 module.exports = async (args) => {

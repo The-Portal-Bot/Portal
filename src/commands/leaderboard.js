@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const help_mngr = require('../libraries/help_manager');
+const help_mngr = require('../libraries/helpOps');
 
 let member_list = null;
 
