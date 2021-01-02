@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@types/node": "^10.17.50",
+    "@types/voca": "^1.4.0",
+    "@types/ws": "^7.4.0",
     "eslint": "^7.16.0",
     "nodemon": "^2.0.6"
   }

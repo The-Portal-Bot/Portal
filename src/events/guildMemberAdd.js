@@ -1,5 +1,5 @@
 const help_mngr = require('../functions/help_manager');
-const member_class = require('../../assets/classes/member_class');
+const member_class = require('../assets/classes/member_class');
 
 module.exports = async (args) => {
 	const join_message = `member: ${args.member.presence.user}\n` +

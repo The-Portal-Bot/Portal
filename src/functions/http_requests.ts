@@ -1,8 +1,6 @@
-/* eslint-disable no-cond-assign */
-/* eslint-disable no-unused-vars */
 const https = require('https');
 
-module.exports = async (options) => {
+async (options) => {
 	return new Promise((resolve, reject) => {
 		const req = https.request(options, function (res) {
 			const chunks = [];
@@ -14,4 +12,4 @@ module.exports = async (options) => {
 
 		req.end();
 	});
-};
+}

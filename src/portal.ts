@@ -5,36 +5,35 @@
 // 		console.log('Could not connect to PortalDB (mongo) with error:\n', error);
 // 		return -1;
 // 	});
-
 // const PortalDB = mongoose.connection;
 // PortalDB.once('open', function() { console.log('we\'re connected!'); });
-  
+
 // list of all managed channels in servers
 const portal_managed_guilds_path = './database/guild_list.json';
-const guild_list = require('../database/guild_list.json');
+import guild_list from './database/guild_list.json';
 
 if (guild_list === null) {
 	console.log('guild json is corrupt');
 	process.exit(1);
 }
 
-const config = require('../config.json');
-const cooldown_list = require('../assets/jsons/cooldown_list.json');
+import config from './config.json';
+import cooldown_list from './assets/jsons/cooldown_list.json';
 
-const profanity = require('./moderation/profanity.js')
-const guld_mngr = require('./functions/guild_manager');
-const help_mngr = require('./functions/help_manager');
-const lclz_mngr = require('./functions/localization_manager');
-const user_mngr = require('./functions/user_manager');
-const play_mngr = require('./functions/music_manager');
+import { isProfane } from './moderation/profanity.js';
+import { included_in_url_list } from './functions/guild_manager';
+import { is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './functions/help_manager';
+import { client_talk } from './functions/localization_manager';
+import { add_points_message } from './functions/user_manager';
+import { start } from './functions/music_manager';
 
 // load up the discord.js library
-const Discord = require('discord.js');
-// const { Discord, Client, Message, Guild, DMChannel, GuildChannel, GuildMember, Presence } = require('discord.js');
+import { Client, Message, Guild, DMChannel, GuildChannel, GuildMember, Presence, User, MessageReaction, VoiceState } from "discord.js";
+import { ReturnPormise } from './assets/classes/ReturnPormise';
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 const active_cooldown = { guild: [], member: [] };
 
@@ -48,100 +47,100 @@ client.on('ready', () =>
 );
 
 // When bot connects to shard again ?
-client.on('shardReconnecting', id =>
+client.on('shardReconnecting', (id: number) =>
 	event_loader('shardReconnecting', {
-		'id': id,
+		'id': id
 	})
 );
 
 // this event triggers when the bot is removed from a guild.
-client.on('guildDelete', guild =>
+client.on('guildDelete', (guild: Guild) =>
 	event_loader('guildDelete', {
 		'guild': guild,
 		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'portal_managed_guilds_path': portal_managed_guilds_path
 	})
 );
 
 // This event triggers when the bot joins a guild.
-client.on('guildCreate', guild =>
+client.on('guildCreate', (guild: Guild) =>
 	event_loader('guildCreate', {
 		'client': client,
 		'guild': guild,
 		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'portal_managed_guilds_path': portal_managed_guilds_path
 	})
 );
 
 // This event triggers when the bot joins a guild.
-client.on('channelDelete', channel =>
+client.on('channelDelete', (channel: DMChannel | GuildChannel) =>
 	event_loader('channelDelete', {
 		'channel': channel,
 		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'portal_managed_guilds_path': portal_managed_guilds_path
 	})
 );
 
 // This event triggers when a new member joins a guild.
-client.on('guildMemberAdd', member =>
+client.on('guildMemberAdd', (member: GuildMember) =>
 	event_loader('guildMemberAdd', {
 		'member': member,
 		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'portal_managed_guilds_path': portal_managed_guilds_path
 	})
 );
 
 // This event triggers when a new member leaves a guild.
-client.on('guildMemberRemove', member =>
+client.on('guildMemberRemove', (member: GuildMember) =>
 	event_loader('guildMemberRemove', {
 		'member': member,
 		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'portal_managed_guilds_path': portal_managed_guilds_path
 	})
 );
 
 // This event triggers when the status of a guild member has changed
-client.on('presenceUpdate', (oldPresence, newPresence) =>
+client.on('presenceUpdate', (oldPresence: Presence, newPresence: Presence) =>
 	event_loader('presenceUpdate', {
 		'client': client,
 		'guild_list': guild_list,
-		'newPresence': newPresence,
+		'newPresence': newPresence
 	})
 );
 
 // This event triggers when a member reacts to a message
-client.on('messageReactionAdd', (messageReaction, user) =>
+client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User) =>
 	event_loader('messageReactionAdd', {
 		'client': client,
 		'guild_list': guild_list,
 		'messageReaction': messageReaction,
-		'user': user,
+		'user': user
 	})
 );
 
 // This event triggers when a message is deleted
-client.on('messageDelete', (message) =>
+client.on('messageDelete', (message: Message) =>
 	event_loader('messageDelete', {
 		'client': client,
 		'guild_list': guild_list,
 		'portal_managed_guilds_path': portal_managed_guilds_path,
-		'message': message,
+		'message': message
 	})
 );
 
 // This event triggers when a member joins or leaves a voice channel
-client.on('voiceStateUpdate', (oldState, newState) =>
+client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 	event_loader('voiceStateUpdate', {
 		'client': client,
 		'guild_list': guild_list,
 		'portal_managed_guilds_path': portal_managed_guilds_path,
 		'oldState': oldState,
-		'newState': newState,
+		'newState': newState
 	})
 );
 
 // runs on every single message received, from any channel or DM
-client.on('message', async (message: @Discord.message) => {
+client.on('message', async (message: Message) => {
 	// Ignore other bots and also itself ('botception')
 	if (message.author.bot) return;
 
@@ -155,22 +154,22 @@ client.on('message', async (message: @Discord.message) => {
 	ranking_system(message);
 
 	// word check
-	if (profanity(message.content)) {
+	if (isProfane(message.content)) {
 		message.react('🚩');
 		message.author
 			.send("try not to use profanities")
 			.catch(console.error);
 	}
 
-	help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+	update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
 
 	// Separate function name, and arguments of function
-	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+	const args: string[] = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const cmd = args.shift().toLowerCase();
-	let type = null;
+	let type: string = '';
 
 	if (cooldown_list.guild[cmd]) {
 		type = 'guild';
@@ -186,18 +185,18 @@ client.on('message', async (message: @Discord.message) => {
 	}
 
 	if (cooldown_list[type][cmd].auth) {
-		const is_user_authorized = help_mngr.is_authorized(
+		const is_user_authorized = is_authorized(
 			guild_list[message.guild.id].auth_role, message.member);
 
 		if (!is_user_authorized) {
-			help_mngr.message_reply(false, message.channel, message, message.author,
+			message_reply(false, message.channel, message, message.author,
 				'you are not authorized to access this command', guild_list, client);
 			return;
 		}
 	}
 
 	if (cooldown_list[type][cmd].premium && !guild_list[message.guild.id].premium) {
-		help_mngr.message_reply(
+		message_reply(
 			false, message.channel, message,
 			message.author, 'this server is not premium', guild_list, client);
 		return;
@@ -206,9 +205,9 @@ client.on('message', async (message: @Discord.message) => {
 	if (type === 'none' && cooldown_list.none[cmd].time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then(rspns => {
-				help_mngr.message_reply(rspns.result, message.channel, message,
+				message_reply(rspns.result, message.channel, message,
 					message.author, rspns.value, guild_list, client, cooldown_list[type][cmd].auto_delete);
-				help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+				update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 			});
 		return;
 	}
@@ -226,20 +225,20 @@ client.on('message', async (message: @Discord.message) => {
 	});
 
 	if (active) {
-		const time = help_mngr.time_elapsed(active.timestamp, cooldown_list[type][cmd].time);
+		const time = time_elapsed(active.timestamp, cooldown_list[type][cmd].time);
 		const type_for_msg = type === 'member' ? '.*' : `, as it was used again in* **${message.guild.name}**.`;
 
-		help_mngr.message_reply(false, message.channel, message, message.author,
-			`*you need to wait* **${help_mngr.pad(time.remaining_min)}:` +
-			`${help_mngr.pad(time.remaining_sec)}/${help_mngr.pad(time.timeout_min)}:` +
-			`${help_mngr.pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`,
+		message_reply(false, message.channel, message, message.author,
+			`*you need to wait* **${pad(time.remaining_min)}:` +
+			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
+			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`,
 			guild_list, client);
 
 		return;
 	}
 
 	require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
-		.then(rspns => {
+		.then((rspns: ReturnPormise) => {
 			if (rspns.result === true) {
 				active_cooldown[type].push({ member: message.author.id, command: cmd, timestamp: Date.now() });
 
@@ -249,18 +248,18 @@ client.on('message', async (message: @Discord.message) => {
 				}, cooldown_list[type][cmd].time * 60 * 1000);
 			}
 			console.log('cooldown_list[type][cmd].auto_delete :>> ', cooldown_list[type][cmd].auto_delete);
-			help_mngr.message_reply(rspns, message.channel, message, message.author,
+			message_reply(rspns, message.channel, message, message.author,
 				rspns ? 'executed correctly' : 'executed falsely', guild_list, client,
 				cooldown_list[type][cmd].auto_delete);
 
-			help_mngr.update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+			update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 		});
 });
 
-function event_loader(event, args) {
+function event_loader(event: string, args: any): void {
 	console.log(`event emitted: ${event}`);
 	require(`./events/${event}.js`)(args)
-		.then(rspns => {
+		.then((rspns: ReturnPormise) => {
 			if (rspns !== null && rspns !== undefined) {
 				if (event === 'messageReactionAdd') {
 					const music_channel_id = args.guild_list[args.messageReaction.message.guild.id]
@@ -280,12 +279,12 @@ function event_loader(event, args) {
 		});
 };
 
-function portal_channel_handler(message) {
+function portal_channel_handler(message: Message): void {
 	let channel_type = null, channel_support = null, channel_talk = null;
 
-	if (guld_mngr.included_in_url_list(message.channel.id, guild_list[message.guild.id])) {
-		if (help_mngr.is_url(message.content)) {
-			lclz_mngr.client_talk(client, guild_list, 'url');
+	if (included_in_url_list(message.channel.id, guild_list[message.guild.id])) {
+		if (is_url(message.content)) {
+			client_talk(client, guild_list, 'url');
 			return;
 		}
 		else {
@@ -295,9 +294,9 @@ function portal_channel_handler(message) {
 		}
 	}
 	else if (guild_list[message.guild.id].music_data.channel_id === message.channel.id) {
-		play_mngr.start(client, message, message.content, guild_list)
+		start(client, message, message.content, guild_list)
 			.then(joined => {
-				help_mngr.message_reply(joined.result, message.channel, message,
+				message_reply(joined.result, message.channel, message,
 					message.author, joined.value, guild_list, client, true);
 			})
 			.catch(error => {
@@ -308,8 +307,8 @@ function portal_channel_handler(message) {
 	}
 
 	if (channel_type !== null && channel_support !== null && channel_talk !== null) {
-		lclz_mngr.client_talk(client, guild_list, channel_talk);
-		help_mngr.message_reply(
+		client_talk(client, guild_list, channel_talk);
+		message_reply(
 			null, message.channel, message,
 			message.author, `${channel_type} channel is ${channel_support}-only.`,
 			guild_list, client);
@@ -318,10 +317,10 @@ function portal_channel_handler(message) {
 	}
 }
 
-function ranking_system(message) {
-	const level = user_mngr.add_points_message(message, guild_list);
+function ranking_system(message: Message): void {
+	const level = add_points_message(message, guild_list);
 	if (level) {
-		help_mngr.message_reply(
+		message_reply(
 			null, message.channel, message,
 			message.author, `You reached level ${level}!`,
 			guild_list, client);
@@ -329,7 +328,7 @@ function ranking_system(message) {
 }
 
 function log_portal() {
-	client.login(config.token);
+	client.login(config.token_dev);
 }
 
 log_portal();

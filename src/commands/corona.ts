@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const country_codes = require('../../assets/jsons/country_codes.json');
+const country_codes: { name: string, code: string }[] = require('../../assets/jsons/country_codes.json');
 
 const http_mngr = require('../functions/http_requests');
 const help_mngr = require('../functions/help_manager');
@@ -7,7 +7,7 @@ const help_mngr = require('../functions/help_manager');
 const moment = require('moment');
 const voca = require('voca');
 
-const get_country_code = function(country) {
+const get_country_code = function(country: string) {
 	for (let i = 0; i < country_codes.length; i++) {
 		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country)) {
 			return country_codes[i].name;

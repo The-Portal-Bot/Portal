@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const profane_word_list = require('../../assets/jsons/profane_word_list.json');
+import profane_word_list from '../assets/jsons/profane_word_list.json';
 
 /**
    * Determine if a string contains profane language.
@@ -7,7 +7,7 @@ const profane_word_list = require('../../assets/jsons/profane_word_list.json');
    * 
    * https://github.com/web-mech/badwords
    */
-module.exports = function isProfane(string) {
+export function isProfane(string: string): boolean {
 	const str_array = [string];
 	for (let i = 0; i < string.length; i++) {
 		str_array.push(string.substr(0, i));
@@ -15,7 +15,7 @@ module.exports = function isProfane(string) {
 	}
 
 	return Object.getOwnPropertyNames(profane_word_list).some(lang => {
-		return profane_word_list[lang].filter((word) => {
+		return profane_word_list[lang].filter((word: string) => {
 			if (lang === 'en') {
 				const regex_word = word.replace(/(\W)/g, '\\$1');
 				const word_exp = new RegExp(`\\b(\\w*${word}\\w*)\\b`, 'gi');
@@ -26,4 +26,4 @@ module.exports = function isProfane(string) {
 
 		}).length > 0 || false;
 	});
-}
+};

@@ -11,26 +11,26 @@
 
 // list of all managed channels in servers
 const portal_managed_guilds_path = './database/guild_list.json';
-const guild_list = require('../database/guild_list.json');
+const guild_list = require('./database/guild_list.json');
 
 if (guild_list === null) {
     console.log('guild json is corrupt');
     process.exit(1);
 }
 
-const config = require('../config.json');
-const cooldown_list = require('../assets/jsons/cooldown_list.json');
+const config = require('./config.json');
+const cooldown_list = require('./assets/jsons/cooldown_list.json');
 
-const profanity = require('./moderation/profanity.js')
-const guld_mngr = require('./functions/guild_manager');
-const help_mngr = require('./functions/help_manager');
-const lclz_mngr = require('./functions/localization_manager');
-const user_mngr = require('./functions/user_manager');
-const play_mngr = require('./functions/music_manager');
+const profanity = require('./src/moderation/profanity.js')
+const guld_mngr = require('./src/functions/guild_manager');
+const help_mngr = require('./src/functions/help_manager');
+const lclz_mngr = require('./src/functions/localization_manager');
+const user_mngr = require('./src/functions/user_manager');
+const play_mngr = require('./src/functions/music_manager');
 
 // load up the discord.js library
-const Discord = require('discord.js');
-// const { Discord, Client, Message, Guild, DMChannel, GuildChannel, GuildMember, Presence } = require('discord.js');
+// const Discord = require('discord.js');
+const { Discord, Client, Message, Guild, DMChannel, GuildChannel, GuildMember, Presence } = require('discord.js');
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server

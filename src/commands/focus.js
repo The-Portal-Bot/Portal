@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable no-cond-assign */
+const { Client, Message } = require('discord.js');
 const guld_mngr = require('../functions/guild_manager');
 
 const ask_for_focus = async function(message, requester, focus_time) {
@@ -42,7 +43,7 @@ const ask_for_focus = async function(message, requester, focus_time) {
 	});
 };
 
-module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
+module.exports = async (client: Client, message: Message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {
 		const current_portal_list = portal_guilds[message.guild.id].portal_list;
 

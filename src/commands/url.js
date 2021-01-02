@@ -45,14 +45,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			const url_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
 			if (url_channel !== '') {
-				guld_mngr.create_url_channel(
-					message.guild, url_channel, url_category, portal_guilds[message.guild.id].url_list);
+				guld_mngr.create_url_channel(message.guild, url_channel, url_category, portal_guilds[message.guild.id].url_list);
 
 				resolve ({ result: true, value: '*url channel and category have been created*' });
 			}
 			else if (url_channel === '' && url_category !== '') {
-				guld_mngr.create_url_channel(
-					message.guild, url_category, null, portal_guilds[message.guild.id].url_list);
+				guld_mngr.create_url_channel(message.guild, url_category, null, portal_guilds[message.guild.id].url_list);
 
 				resolve ({ result: true, value: '*url channel has been created*' });
 			}
