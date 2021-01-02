@@ -20,16 +20,16 @@ if (guild_list === null) {
 import config from './config.json';
 import cooldown_list from './assets/jsons/cooldown_list.json';
 
-import { isProfane } from './moderation/profanity.js';
-import { included_in_url_list } from './functions/guild_manager';
-import { is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './functions/help_manager';
-import { client_talk } from './functions/localization_manager';
-import { add_points_message } from './functions/user_manager';
-import { start } from './functions/music_manager';
+import { isProfane } from './libraries/moderation_manager.js';
+import { included_in_url_list } from './libraries/guild_manager';
+import { is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/help_manager';
+import { client_talk } from './libraries/localization_manager';
+import { add_points_message } from './libraries/user_manager';
+import { start } from './libraries/music_manager';
 
 // load up the discord.js library
 import { Client, Message, Guild, DMChannel, GuildChannel, GuildMember, Presence, User, MessageReaction, VoiceState } from "discord.js";
-import { ReturnPormise } from './assets/classes/ReturnPormise';
+import { ReturnPormise } from './types/classes/ReturnPormise';
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server

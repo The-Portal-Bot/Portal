@@ -1,8 +1,8 @@
-const guld_mngr = require('./../functions/guild_manager');
-const lclz_mngr = require('./../functions/localization_manager');
-const help_mngr = require('./../functions/help_manager');
-const user_mngr = require('./../functions/user_manager');
-const musc_mngr = require('./../functions/music_manager');
+const guld_mngr = require('../libraries/guild_manager');
+const lclz_mngr = require('../libraries/localization_manager');
+const help_mngr = require('../libraries/help_manager');
+const user_mngr = require('../libraries/user_manager');
+const musc_mngr = require('../libraries/music_manager');
 
 module.exports = async (args) => {
 	if (args.newState === undefined || args.oldState == undefined) {

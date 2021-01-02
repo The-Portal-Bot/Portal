@@ -1,4 +1,18 @@
-export class GuildPortal {
+export class MusicData {
+	public channel_id: number | undefined;
+	public message_id: number | undefined;
+	public votes: string[] | undefined;
+
+	constructor(channel_id: number,
+		message_id: number,
+		votes: string[]) {
+		this.channel_id = channel_id;
+		this.message_id = message_id;
+		this.votes = votes;
+	}
+}
+
+export class GuildPrtl {
 	public portal_list: {};
 	public member_list: {};
 	public url_list: string[];
@@ -6,14 +20,10 @@ export class GuildPortal {
 	public ranks: string[];
 	public auth_role: string[];
 	public spotify: string;
-	public music_data: {
-		channel_id: number | null,
-		message_id: number | null,
-		votes: string[]
-	};
+	public music_data: MusicData;
 	public music_queue: string[];
 	public dispatcher: any;
-	public announcement: string;
+	public announcement: string | null;
 	public locale: string;
 	public announce: number;
 	public level_speed: string;
@@ -27,11 +37,7 @@ export class GuildPortal {
 		ranks: string[],
 		auth_role: string[],
 		spotify: string,
-		music_data: {
-			channel_id: number | null,
-			message_id: number | null,
-			votes: string[]
-		},
+		music_data: MusicData,
 		music_queue: string[],
 		dispatcher: any,
 		announcement: string | null,

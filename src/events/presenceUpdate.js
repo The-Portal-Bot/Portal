@@ -1,6 +1,6 @@
-const guld_mngr = require('./../functions/guild_manager');
-const lclz_mngr = require('./../functions/localization_manager');
-const help_mngr = require('./../functions/help_manager');
+const guld_mngr = require('../libraries/guild_manager');
+const lclz_mngr = require('../libraries/localization_manager');
+const help_mngr = require('../libraries/help_manager');
 
 const update_channel_name = function(current_voice_channel, current_guild, current_channel, current_portal_list, args) {
 	switch (guld_mngr.generate_channel_name(current_channel, current_portal_list,

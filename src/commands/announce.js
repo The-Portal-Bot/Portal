@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-const lclz_mngr = require('./../functions/localization_manager');
-const help_mngr = require('./../functions/help_manager');
+const lclz_mngr = require('../libraries/localization_manager');
+const help_mngr = require('../libraries/help_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {

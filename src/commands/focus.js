@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-cond-assign */
 const { Client, Message } = require('discord.js');
-const guld_mngr = require('../functions/guild_manager');
+const guld_mngr = require('../libraries/guild_manager');
 
 const ask_for_focus = async function(message, requester, focus_time) {
 	return new Promise((resolve) => {

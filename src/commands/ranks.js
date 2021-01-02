@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
-const help_mngr = require('../functions/help_manager');
+const help_mngr = require('../libraries/help_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {

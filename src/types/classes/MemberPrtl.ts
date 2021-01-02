@@ -1,4 +1,4 @@
-export class MemberPortal {
+export class MemberPrtl {
 	public level: number;
 	public rank: number;
 	public tier: number;

@@ -1,4 +1,4 @@
-export class Portal {
+export class PortalChannelPrtl {
 	public creator_id: number;
 	public regex_portal: string;
 	public regex_voice: string;
@@ -24,7 +24,6 @@ export class Portal {
 		ann_announce: boolean,
 		ann_user: boolean
 	) {
-
 		this.creator_id = creator_id;
 		this.regex_portal = regex_portal;
 		this.regex_voice = regex_voice;

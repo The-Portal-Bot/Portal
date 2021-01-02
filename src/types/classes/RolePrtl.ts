@@ -1,4 +1,4 @@
-export class RolePortal {
+export class RolePrtl {
 	public role_emote_map: any;
 
 	constructor(

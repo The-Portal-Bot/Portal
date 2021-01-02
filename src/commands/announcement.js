@@ -1,4 +1,4 @@
-const guld_mngr = require('./../functions/guild_manager');
+const guld_mngr = require('../libraries/guild_manager');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {

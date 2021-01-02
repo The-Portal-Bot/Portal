@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const guld_mngr = require('./../functions/guild_manager');
+const guld_mngr = require('../libraries/guild_manager');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	// if (message.guild.id !== '228667314252283904') {

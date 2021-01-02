@@ -1,6 +1,6 @@
 import { Client, Message, VoiceConnection } from "discord.js";
 import { join_user_voice, update_message } from './help_manager';
-import { ReturnPormise} from "../assets/classes/ReturnPormise";
+import { ReturnPormise} from "../types/classes/ReturnPormise";
 
 import yts from 'yt-search';
 import ytdl from 'discord-ytdl-core';

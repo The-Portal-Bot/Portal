@@ -1,4 +1,4 @@
-export class VoicePortal {
+export class VoiceChannelPrtl {
 	public creator_id: number;
 	public regex: string;
 	public no_bots: boolean;

@@ -1,5 +1,5 @@
 import { Message, Guild, GuildMember, VoiceState } from "discord.js";
-import { time_elapsed } from './../functions/help_manager';
+import { time_elapsed } from './help_manager';
 
 const level_speed = { 'slow': 0.01, 'normal': 0.05, 'fast': 0.1 };
 

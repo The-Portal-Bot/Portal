@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 const country_codes = require('../assets/jsons/country_codes.json');
 
-const http_mngr = require('../functions/http_requests');
-const help_mngr = require('../functions/help_manager');
+const http_mngr = require('../libraries/http_requests');
+const help_mngr = require('../libraries/help_manager');
 
 const moment = require('moment');
 const voca = require('voca');

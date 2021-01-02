@@ -1,4 +1,4 @@
-const help_mngr = require('../functions/help_manager');
+const help_mngr = require('../libraries/help_manager');
 
 module.exports = async (args) => {
 	const current_channel = args.guild_list[args.message.guild.id];

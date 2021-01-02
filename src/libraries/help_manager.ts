@@ -3,7 +3,7 @@ import { writeFileSync, writeFile } from "file-system";
 import { cloneDeep } from "lodash";
 
 import { client_talk, client_write } from "./localization_manager";
-import { RolePortal } from "../assets/classes/role_class";
+import { RolePortal } from "../types/classes/RolePrtl";
 
 export function create_role_message(channel: DMChannel, role_list: any, title: string, desc: string,
 	colour: string, role_emb: any, role_map: any) {
@@ -164,8 +164,8 @@ export function getJSON(str: string): any | null {
 	return data;
 };
 
-export function create_rich_embed(title: string, description: string, colour: string, field_array: any,
-	thumbnail: string, member: GuildMember, from_bot: boolean, url: string, image: string): MessageEmbed {
+export function create_rich_embed(title: string | null, description: string | null, colour: string | null, field_array: any,
+	thumbnail: string | null, member: GuildMember | null, from_bot: boolean | null, url: string | null, image: string | null): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 	const keybraker_url: string = 'https://github.com/keybraker';
