@@ -232,8 +232,9 @@ export function getJSON(str: string): any | null {
 	return data;
 };
 
-export function create_rich_embed(title: string | null, description: string | null, colour: string | null, field_array: Field[],
-	thumbnail: string | null, member: GuildMember | null, from_bot: boolean | null, url: string | null, image: string | null): MessageEmbed {
+export function create_rich_embed(title: string | null, description: string | null, colour: string | null,
+	field_array: Field[], thumbnail: string | null, member: GuildMember | null, from_bot: boolean | null,
+	url: string | null, image: string | null): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 	const keybraker_url: string = 'https://github.com/keybraker';

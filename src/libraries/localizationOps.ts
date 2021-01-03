@@ -5,7 +5,7 @@ import { LocalizationOption } from "../types/interfaces/InterfacesPrtl";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
 const type_of_action = ['user_connected', 'user_disconnected'];
-const portal: LocalizationOption[] = [
+export const portal: LocalizationOption[] = [
 	{
 		name: 'join',
 		lang: {
@@ -79,21 +79,21 @@ const portal: LocalizationOption[] = [
 		}
 	}
 ]
-const console: LocalizationOption[] = [
+export const console_text: LocalizationOption[] = [
 	{
 		name: 'ready',
 		lang: {
 			gr: (args: any) => {
-				return `Το μποτ ξεκίνησε, με ${args.client.users.cache.size} χρήστες, μέσα σε ` +
-					`${args.client.channels.cache.size} κανάλια σε ${args.client.guilds.cache.size} συντεχνίες.`;
+				return `Το μποτ ξεκίνησε, με ${args.a} χρήστες, μέσα σε ` +
+					`${args.b} κανάλια σε ${args.c} συντεχνίες.`;
 			},
 			en: (args: any) => {
-				return `Bot has started, with ${args.client.users.cache.size} users, ` +
-					`in ${args.client.channels.cache.size} channels from ${args.client.guilds.cache.size} guilds.`;
+				return `Bot has started, with ${args.a} users, ` +
+					`in ${args.b} channels from ${args.c} guilds.`;
 			},
 			de: (args: any) => {
-				return `Bot hat ${args.client.users.cache.size} Mitglieder in ${args.client.channels.cache.size} ` +
-					`Kanälen von ${args.client.guilds.cache.size} Gilden gestartet.`;
+				return `Bot hat ${args.a} Mitglieder in ${args.b} ` +
+					`Kanälen von ${args.c} Gilden gestartet.`;
 			}
 		}
 
@@ -129,16 +129,16 @@ const console: LocalizationOption[] = [
 		name: 'presence_controlled',
 		lang: {
 			gr: (args: any) => {
-				return `Ο χρήστης ${args.newPresence.member.displayName} έχει αλλάξει κατάσταση, ` +
-					`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.newPresence.guild.name})`;
+				return `Ο χρήστης ${args.a} έχει αλλάξει κατάσταση, ` +
+					`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.b})`;
 			},
 			en: (args: any) => {
-				return `${args.newPresence.member.displayName} has changed presence, ` +
-					`in controlled server (${args.newPresence.guild.name})`;
+				return `${args.a} has changed presence, ` +
+					`in controlled server (${args.b})`;
 			},
 			de: (args: any) => {
-				return `${args.newPresence.member.displayName} has changed presence, ` +
-					`in controlled server (${args.newPresence.guild.name})`;
+				return `${args.a} has changed presence, ` +
+					`in controlled server (${args.b})`;
 			}
 		}
 	}
@@ -201,7 +201,8 @@ export function client_write(message: Message, guild_list: GuildPrtl[], context:
 	return 'there was an error';
 };
 
-export function client_log(guild_id: number, message: Message, guild_list: GuildPrtl[], context: string, args: any): string {
+export function client_log(
+	message: Message | null, guild_list: GuildPrtl[], context: string, args: any): string {
 	if (message === null || message.member === null) {
 		return 'there was an error';
 	}
@@ -215,9 +216,9 @@ export function client_log(guild_id: number, message: Message, guild_list: Guild
 				if (message.member && message.member.voice.channel) {
 					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 						switch (v.locale) {
-							case 'gr': return console.find(c => c.name === context)?.lang.gr(args);
-							case 'en': return console.find(c => c.name === context)?.lang.en(args);
-							case 'de': return console.find(c => c.name === context)?.lang.de(args);
+							case 'gr': return console_text.find(c => c.name === context)?.lang.gr(args);
+							case 'en': return console_text.find(c => c.name === context)?.lang.en(args);
+							case 'de': return console_text.find(c => c.name === context)?.lang.de(args);
 						}
 					}
 				}

@@ -463,8 +463,8 @@ export function delete_guild(guild_id: string, guild_list: GuildPrtl[]): void {
 	});
 };
 
-export function delete_channel(channel_to_delete: VoiceChannel, message: Message, isPortal: boolean = false): void {
-	if (!isPortal) {
+export function delete_channel(channel_to_delete: VoiceChannel, message: Message | null, isPortal: boolean = false): void {
+	if (!isPortal && message !== null) {
 		const author = message.author;
 		const channel_to_delete_name = channel_to_delete.name;
 		let channel_deleted = false;
