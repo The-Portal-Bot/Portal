@@ -21,14 +21,14 @@ export async function start(client: Client, message: Message, search_term: strin
 		}
 
 		const guild_id = message.member.voice.channel.guild.id;
-		const guild = guild_list.find(guild => guild.id === guild_id);
+		const guild_object = guild_list.find(guild => guild.id === guild_id);
 
-		if (guild === undefined) {
-			return resolve({ result: false, value: 'could not find your guild.' });
+		if (guild_object === undefined) {
+			return resolve({ result: false, value: 'could not find your guild_object.' });
 		}
 
-		const current_dispatcher = guild.dispatcher;
-		const current_music_queue = guild.music_queue;
+		const current_dispatcher = guild_object.dispatcher;
+		const current_music_queue = guild_object.music_queue;
 
 		if (current_dispatcher !== null && current_dispatcher !== undefined) {
 			yts(search_term)
@@ -56,16 +56,16 @@ export async function start(client: Client, message: Message, search_term: strin
 									fmt: 'mp3',
 									highWaterMark: 2048,
 								});
-								// guild.dispatcher = join_attempt.voice_connection.play(stream);
+								// guild_object.dispatcher = join_attempt.voice_connection.play(stream);
 								if (message.member && message.member.voice && message.member.voice.channel) {
-									const curr_guild = client.guilds.cache.find(guild => guild.id === message.guild?.id);
-									if (curr_guild !== undefined)
-										update_message(curr_guild, message.member.voice.channel.guild, yts_attempt.videos[0]);
+									const guild = client.guilds.cache.find(g => g.id === message.guild?.id);
+									if (guild !== undefined)
+										update_message(guild, guild_object, yts_attempt.videos[0]);
 
-									guild.dispatcher.on('finish', () => {
+									guild_object.dispatcher.on('finish', () => {
 										if (message.guild) {
 											skip(guild_id, guild_list, client, message.guild);
-											guild.music_data.votes = [];
+											guild_object.music_data.votes = [];
 										}
 									});
 
@@ -185,12 +185,25 @@ export async function stop(guild_id: string, guild_list: GuildPrtl[], guild: Gui
 			guild,
 			current_guild,
 			{
-				title: 'Music Player',
+				type: 'video',
+				videoId: '-',
 				url: 'just type and I\'ll play',
-				timestamp: '-',
-				views: '-',
-				ago: '-',
+				title: 'Music Player',
+				description: '-',
+				image: '-',
 				thumbnail: portal_icon_url,
+				seconds: 0,
+				timestamp: '-',
+				duration: {
+					seconds: 0,
+					timestamp: '0'
+				},
+				ago: '-',
+				views: '-',
+				author: {
+					name: '-',
+					url: '-'
+				}
 			});
 
 		if (current_dispatcher !== null && current_dispatcher !== undefined) {
@@ -220,7 +233,7 @@ export async function skip(guild_id: string, guild_list: GuildPrtl[], client: Cl
 
 		if (current_dispatcher !== null && current_dispatcher !== undefined) {
 			if (current_music_queue.length > 0) {
-				const next_yts_video = current_guild.music_queue.shift();
+				const next_yts_video: yts.VideoSearchResult | undefined = current_guild.music_queue.shift();
 				if (next_yts_video) {
 					if (client.voice) {
 						const voice_connection = client.voice.connections.find((connection: VoiceConnection) => !!connection.channel.id);
@@ -253,12 +266,25 @@ export async function skip(guild_id: string, guild_list: GuildPrtl[], client: Cl
 					guild,
 					current_guild,
 					{
-						title: 'Music Player',
+						type: 'video',
+						videoId: '-',
 						url: 'just type and I\'ll play',
-						timestamp: '-',
-						views: '-',
-						ago: '-',
+						title: 'Music Player',
+						description: '-',
+						image: '-',
 						thumbnail: portal_icon_url,
+						seconds: 0,
+						timestamp: '-',
+						duration: {
+							seconds: 0,
+							timestamp: '0'
+						},
+						ago: '-',
+						views: '-',
+						author: {
+							name: '-',
+							url: '-'
+						}
 					});
 				if (!current_dispatcher.paused) {
 					current_dispatcher.pause();
