@@ -1,10 +1,10 @@
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
-import { create_rich_embed } from '../libraries/helpOps';
-import { ObjectFunction } from "./TypePortal";
+import { create_rich_embed } from '../../libraries/helpOps';
+import { InterfaceBlueprint } from './InterfacesPrtl';
 
 export const pipe_prefix: string = '|';
-const pipes: ObjectFunction[] = [
+const pipes: InterfaceBlueprint[] = [
 	{
 		name: 'camelCase',
 		description: 'returns an camelCase of the input',

@@ -5,9 +5,9 @@ import {
 } from "discord.js";
 import voca from 'voca';
 
-import { is_variable, get_variable, variable_prefix } from '../types/Variable';
-import { get_pipe, is_pipe, pipe_prefix } from '../types/Pipe';
-import { attribute_prefix, get_attribute, is_attribute } from '../types/Attribute';
+import { is_variable, get_variable, variable_prefix } from '../types/interfaces/Variable';
+import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
+import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute';
 
 import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
@@ -16,7 +16,7 @@ import { MemberPrtl } from '../types/classes/MemberPrtl';
 
 import { create_music_message, getJSON, inline_operator } from './helpOps';
 import { stop } from './musicOps';
-import { ReturnPormise } from "../types/classes/ReturnPormise";
+import { ReturnPormise } from "../types/interfaces/ReturnPormise";
 
 function getOptions(guild: Guild, topic: string): GuildCreateChannelOptions {
 	return {

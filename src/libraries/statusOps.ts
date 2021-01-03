@@ -2,6 +2,7 @@ import { GuildMember, VoiceChannel, Activity } from "discord.js";
 
 import games from '../assets/jsons/game_list.json';
 import programs from '../assets/jsons/program_list.json';
+import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 
 function status_aliases(activities: Activity[], locale: string): string[] {
 	const new_status: string[] = [];
@@ -44,7 +45,7 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 	return new_status;
 };
 
-export function get_status_list(voice_channel: VoiceChannel, voice_object: any): string[] {
+export function get_status_list(voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl): string[] {
 	const array_of_statuses: string[] = [];
 
 	voice_channel.members.forEach((member: GuildMember) => {

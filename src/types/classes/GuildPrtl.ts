@@ -1,3 +1,4 @@
+import { VideoSearchResult } from "yt-search";
 import { GiveRolePrtl } from "./GiveRolePrtl";
 import { MemberPrtl } from "./MemberPrtl";
 import { PortalChannelPrtl } from "./PortalChannelPrtl";
@@ -26,7 +27,7 @@ export class GuildPrtl {
 	public auth_role: string[];
 	public spotify: string;
 	public music_data: MusicData;
-	public music_queue: string[];
+	public music_queue: VideoSearchResult[];
 	public dispatcher: any;
 	public announcement: string | null;
 	public locale: string;

@@ -1,9 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { create_rich_embed } from '../libraries/helpOps';
-import { ObjectFunction } from './TypePortal';
+import { create_rich_embed } from '../../libraries/helpOps';
+import { InterfaceBlueprint } from './InterfacesPrtl';
 
 export const command_prefix: string = './';
-const commands: ObjectFunction[] = [
+const commands: InterfaceBlueprint[] = [
 	{
 		name: 'about',
 		description: 'returns a message with information about Portal Bot.',

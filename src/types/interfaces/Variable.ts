@@ -1,12 +1,14 @@
 import moment from 'moment';
 
-import { get_status_list } from '../libraries/statusOps';
-import { create_rich_embed } from '../libraries/helpOps';
-import { ObjectFunction } from './TypePortal';
+import { get_status_list } from '../../libraries/statusOps';
+import { create_rich_embed } from '../../libraries/helpOps';
+import { InterfaceBlueprint } from './InterfacesPrtl';
 import { Guild, GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
+import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl';
+import { PortalChannelPrtl } from '../classes/PortalChannelPrtl';
 
 export const variable_prefix: string = '$';
-const variables: ObjectFunction[] = [
+const variables: InterfaceBlueprint[] = [
 	{
 		name: '#',
 		description: 'returns the channel number in list.',
@@ -14,18 +16,19 @@ const variables: ObjectFunction[] = [
 			'it will display 1, if third 3, etc.',
 		example: '$#',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any, portal_list_object: any) => {
-			let i = 0;
-			for (const portal_key in portal_list_object) {
-				if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
-					for (const voice_key in portal_list_object[portal_key].voice_list) {
-						console.log('voice_key :>> ', voice_key);
-						i++;
-						if (voice_key === voice_channel.id) return i.toString();
-					}
-				}
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl[]) => {
+			const portal_of_voice = portal_object.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id));
+			if (portal_of_voice !== undefined) {
+				let i = 0;
+				portal_of_voice.voice_list.some(voice => {
+					i++;
+					voice.id === voice_object.id
+				});
+				return '' + i;
 			}
-			return '0';
+			return '-';
 		},
 		set: null,
 		auth: 'none'
@@ -38,17 +41,19 @@ const variables: ObjectFunction[] = [
 			'it will display #1, if third #3, etc.',
 		example: '$##',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any, portal_list_object: any) => {
-			let i = 0;
-			for (const portal_key in portal_list_object) {
-				if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
-					for (const voice_key in portal_list_object[portal_key].voice_list) {
-						i++;
-						if (voice_key === voice_channel.id) return '#' + i.toString();
-					}
-				}
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl[]) => {
+			const portal_of_voice = portal_object.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id));
+			if (portal_of_voice !== undefined) {
+				let i = 0;
+				portal_of_voice.voice_list.some(voice => {
+					i++;
+					voice.id === voice_object.id
+				});
+				return '#' + i;
 			}
-			return '#0';
+			return '#-';
 		},
 		set: null,
 		auth: 'none'
@@ -59,17 +64,14 @@ const variables: ObjectFunction[] = [
 		super_description: '**creator_portal**, returns the creator of current voice channel\'s portal.',
 		example: '$creator_portal',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any, portal_list_object: any, guild_object: any, guild: Guild) => {
-			if (!portal_list_object) {
-				return;
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl[], guild_object: any, guild: Guild) => {
+			const portal_of_voice = portal_object.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id));
+			if (portal_of_voice !== undefined) {
+				return '' + portal_of_voice.creator_id;
 			}
-			for (const portal_key in portal_list_object) {
-				if (portal_list_object[portal_key].voice_list[voice_channel.id]) {
-					const member: GuildMember | undefined = guild.members.cache.find(member_current =>
-						member_current.id === portal_list_object[portal_key].creator_id);
-					return member !== undefined ? member.displayName : 'portal creator left';
-				}
-			}
+			return '?';
 		},
 		set: null,
 		auth: 'none'
@@ -80,10 +82,8 @@ const variables: ObjectFunction[] = [
 		super_description: '**creator_voice**, returns the creator of current voice channel.',
 		example: '$creator_voice',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any, portal_list_object: any, guild_object: any, guild: Guild) => {
-			const member: GuildMember | undefined = guild.members.cache.find(member_current =>
-				member_current.id === voice_object.creator_id);
-			return member !== undefined ? member.displayName : 'voice creator left';
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl[], guild_object: any, guild: Guild) => {
+			return voice_object.creator_id;
 		},
 		set: null,
 		auth: 'none'
@@ -94,7 +94,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**date**, full date: dd/mm/yyyy.',
 		example: '$date',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).subtract(10, 'days').calendar();
 		},
 		set: null,
@@ -106,7 +106,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**day_number**, returns the day number.',
 		example: '$day_number',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).date();
 		},
 		set: null,
@@ -118,7 +118,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**day_name**, returns the day name.',
 		example: '$day_name',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).format('dddd');
 		},
 		set: null,
@@ -130,7 +130,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**month_number**, returns the month by number.',
 		example: '$month_number',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).format('M');
 		},
 		set: null,
@@ -142,7 +142,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**month_name**, returns the month by name.',
 		example: '$month_name',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale)
 				.startOf('month').format('MMMM');
 		},
@@ -155,7 +155,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**year**, returns the year.',
 		example: '$year',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).format('yyyy');
 		},
 		set: null,
@@ -167,7 +167,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**time**, full time: hh/mm/ss.',
 		example: '$time',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).format('h:mm:ss');
 		},
 		set: null,
@@ -179,7 +179,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**hour**, returns the hour.',
 		example: '$hour',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).format('h');
 		},
 		set: null,
@@ -191,7 +191,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**minute**, returns the minute.',
 		example: '$minute',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).format('mm');
 		},
 		set: null,
@@ -203,7 +203,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**second**, returns the second.',
 		example: '$second',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return moment().locale(voice_object.locale).format('ss');
 		},
 		set: null,
@@ -289,7 +289,7 @@ const variables: ObjectFunction[] = [
 		super_description: '**status_count**, returns the count of current member statuses.',
 		example: '$status_count',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			const status_list: string[] = get_status_list(voice_channel, voice_object);
 			return status_list.length;
 		},
@@ -314,25 +314,25 @@ const variables: ObjectFunction[] = [
 		super_description: '**status_list**, returns the list of all current members statuses.',
 		example: '$status_list',
 		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
+		get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
 			return get_status_list(voice_channel, voice_object);
 		},
 		set: null,
 		auth: 'none'
 	},
-	{
-		name: 'last_update',
-		description: 'is the last time the channel name was updated',
-		super_description: '**last_update**, is the last time the channel name was updated',
-		example: '$last_update',
-		args: 'none',
-		get: (voice_channel: VoiceChannel, voice_object: any) => {
-			return `${Math.round(((Date.now() - voice_object.last_update) / 1000 / 60))}m` +
-				`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`;
-		},
-		set: null,
-		auth: 'none'
-	}
+	// {
+	// 	name: 'last_update',
+	// 	description: 'is the last time the channel name was updated',
+	// 	super_description: '**last_update**, is the last time the channel name was updated',
+	// 	example: '$last_update',
+	// 	args: 'none',
+	// 	get: (voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl) => {
+	// 		return `${Math.round(((Date.now() - voice_object.last_update) / 1000 / 60))}m` +
+	// 			`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`;
+	// 	},
+	// 	set: null,
+	// 	auth: 'none'
+	// }
 ];
 
 export function is_variable(candidate: string): string {
@@ -390,11 +390,11 @@ export function get_variable_help_super(candidate: string): MessageEmbed | boole
 	return false;
 };
 
-export function get_variable(voice_channel: VoiceChannel, voice_object: any,
-	portal_list_object: any, guild_object: any, guild: Guild, vrbl: string): any {
+export function get_variable(voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+	portal_object: PortalChannelPrtl[], guild_object: any, guild: Guild, vrbl: string): any {
 	for (let l = 0; l < variables.length; l++) {
 		if (vrbl === variables[l].name) {
-			return variables[l].get(voice_channel, voice_object, portal_list_object, guild_object, guild);
+			return variables[l].get(voice_channel, voice_object, portal_object, guild_object, guild);
 		}
 	}
 	return -1;

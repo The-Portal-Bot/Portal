@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-cond-assign */
 /* eslint-disable no-undef */
-const cmmd_objct = require('../types/Command');
-const vrbl_objct = require('../types/Variable');
-const pipe_objct = require('../types/Pipe');
-const attr_objct = require('../types/Attribute');
-const strc_objct = require('../types/Structure');
+const cmmd_objct = require('../types/interfaces/Command');
+const vrbl_objct = require('../types/interfaces/Variable');
+const pipe_objct = require('../types/interfaces/Pipe');
+const attr_objct = require('../types/interfaces/Attribute');
+const strc_objct = require('../types/interfaces/Structure');
 
 module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
 	return new Promise((resolve) => {

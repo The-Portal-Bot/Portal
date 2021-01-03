@@ -20,7 +20,7 @@ import { isProfane } from './libraries/modOps.js';
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import { ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise } from './types/classes/ReturnPormise';
+import { ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise } from './types/interfaces/ReturnPormise';
 
 const cooldown_guild: Cooldown[] = cooldown_list.guild;
 const cooldown_member: Cooldown[] = cooldown_list.member;

@@ -1,9 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { create_rich_embed } from '../libraries/helpOps';
-import { ObjectFunction } from './TypePortal';
+import { create_rich_embed } from '../../libraries/helpOps';
+import { InterfaceBlueprint } from './InterfacesPrtl';
 
 export const structure_prefix: string = '{{';
-const structures: ObjectFunction[] = [
+const structures: InterfaceBlueprint[] = [
 	{
 		name: 'if',
 		description: 'if statement with two outcomes: ```json\n{{\n\t"if": "John", "is": "===", "with": "John",\n\t' +

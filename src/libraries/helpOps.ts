@@ -4,7 +4,7 @@ import { cloneDeep } from "lodash";
 
 import { client_talk, client_write } from "./localizationOps";
 import { RolePrtl } from "../types/classes/RolePrtl";
-import { field, ReturnPormise, ReturnPormiseVoice } from "../types/classes/ReturnPormise";
+import { field, ReturnPormise, ReturnPormiseVoice } from "../types/interfaces/ReturnPormise";
 
 export function create_role_message(channel: DMChannel, role_list: any, title: string, desc: string,
 	colour: string, role_emb: any, role_map: any) {
@@ -389,8 +389,8 @@ export function pad(num: number): string {
 	}
 };
 
-export function time_elapsed(timestamp: number, timeout: number): any {
-	const time_elapsed = Date.now() - timestamp;
+export function time_elapsed(timestamp: Date, timeout: number): any {
+	const time_elapsed = Date.now() - timestamp.getTime();
 	const timeout_time = timeout * 60 * 1000;
 
 	const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0

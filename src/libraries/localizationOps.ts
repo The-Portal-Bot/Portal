@@ -1,5 +1,7 @@
 import { Client, Message, User } from "discord.js";
-import { LocalizationOption } from "../types/classes/ReturnPormise";
+import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
+import { LocalizationOption } from "../types/interfaces/InterfacesPrtl";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
 const type_of_action = ['user_connected', 'user_disconnected'];
@@ -142,90 +144,86 @@ const console: LocalizationOption[] = [
 	}
 ]
 
-export function client_talk(client: Client, guild_list: any, context: string): boolean {
-	let check = null;
-	if (type_of_announcement.includes(context)) { check = 'ann_announce'; }
-	else if (type_of_action.includes(context)) { check = 'ann_user'; }
-
-	if (client.voice !== undefined) {
-		if (client.voice) {
-			const voiceConnection = client.voice.connections.find(connection => !!connection.channel.id);
-			if (voiceConnection) {
-				for (const guild_id in guild_list) {
-					for (const portal_id in guild_list[guild_id].portal_list) {
-						for (const voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
-							if (voice_id === voiceConnection.channel.id) {
-								if (!guild_list[guild_id].dispatcher) {
-									if (!check || guild_list[guild_id].portal_list[portal_id].voice_list[voice_id][check]) {
-										const locale = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
-										const random = Math.floor(Math.random() * Math.floor(3));
-										voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-										return true;
-									}
-								}
+export function client_talk(client: Client, guild_list: GuildPrtl[], context: string): boolean {
+	if (client.voice && client.voice !== undefined) {
+		const voiceConnection = client.voice.connections.find(connection => !!connection.channel.id);
+		if (voiceConnection) {
+			return guild_list.some(g =>
+				g.portal_list.some(p =>
+					p.voice_list.some(v => {
+						if (!g.dispatcher) {
+							if (type_of_announcement.includes(context) && v.ann_announce) {
+								const locale = v.locale;
+								const random = Math.floor(Math.random() * Math.floor(3));
+								voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+								return true;
+							}
+							else if (type_of_action.includes(context) && v.ann_user) {
+								const locale = v.locale;
+								const random = Math.floor(Math.random() * Math.floor(3));
+								voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+								return true;
 							}
 						}
-					}
-				}
-			}
+						return v.id === voiceConnection.channel.id;
+					})
+				)
+			);
 		}
 	}
-
 	return false;
 };
 
-export function client_write(message: Message, guild_list: any, context: string): string {
-	let locale = null;
-	if (message !== null) {
-		if (message.member) {
-			if (message.member.voice !== undefined && message.member.voice !== null) {
-				for (const guild_id in guild_list) {
-					for (const portal_id in guild_list[guild_id].portal_list) {
-						for (const voice_id in guild_list[guild_id].portal_list[portal_id].voice_list) {
-							if (message.member.voice.channel) {
-								if (voice_id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
-									const locale: string = guild_list[guild_id].portal_list[portal_id].voice_list[voice_id].locale;
-									switch (locale) {
-										case 'gr': return portal.find(p => p.name === context)?.lang.gr();
-										case 'en': return portal.find(p => p.name === context)?.lang.en();
-										case 'de': return portal.find(p => p.name === context)?.lang.de();
-									}
-								}
-							}
+export function client_write(message: Message, guild_list: GuildPrtl[], context: string): string {
+	if (message === null || message.member === null) {
+		return 'there was an error';
+	}
+	if (message.member.voice === undefined || message.member.voice === null) {
+		return 'there was an error';
+	}
+
+	guild_list.some(g =>
+		g.portal_list.some(p =>
+			p.voice_list.some(v => {
+				if (message.member && message.member.voice.channel) {
+					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
+						switch (v.locale) {
+							case 'gr': return portal.find(p => p.name === context)?.lang.gr();
+							case 'en': return portal.find(p => p.name === context)?.lang.en();
+							case 'de': return portal.find(p => p.name === context)?.lang.de();
 						}
 					}
 				}
-			}
-		}
-	}
+			})
+		)
+	);
 
 	return 'there was an error';
 };
 
-export function client_log(guild_id: number, message: Message, guild_list: any, context: string, args: any): string {
-	let locale = null;
-	if (message !== null) {
-		if (message.member) {
-			if (message.member.voice !== undefined && message.member.voice !== null) {
-				for (const guild_list_id in guild_list) {
-					for (const portal_id in guild_list[guild_list_id].portal_list) {
-						for (const voice_id in guild_list[guild_list_id].portal_list[portal_id].voice_list) {
-							if (message.member.voice.channel) {
-								if (voice_id === message.member.voice.channel.id) {
-									const locale: string = guild_list[guild_list_id].portal_list[portal_id].voice_list[voice_id].locale;
-									switch (locale) {
-										case 'gr': return console.find(c => c.name === context)?.lang.gr(args);
-										case 'en': return console.find(c => c.name === context)?.lang.en(args);
-										case 'de': return console.find(c => c.name === context)?.lang.de(args);
-									}
-								}
-							}
+export function client_log(guild_id: number, message: Message, guild_list: GuildPrtl[], context: string, args: any): string {
+	if (message === null || message.member === null) {
+		return 'there was an error';
+	}
+	if (message.member.voice === undefined || message.member.voice === null) {
+		return 'there was an error';
+	}
+
+	guild_list.some(g =>
+		g.portal_list.some(p =>
+			p.voice_list.some(v => {
+				if (message.member && message.member.voice.channel) {
+					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
+						switch (v.locale) {
+							case 'gr': return console.find(c => c.name === context)?.lang.gr(args);
+							case 'en': return console.find(c => c.name === context)?.lang.en(args);
+							case 'de': return console.find(c => c.name === context)?.lang.de(args);
 						}
 					}
 				}
-			}
-		}
-	}
+			})
+		)
+	);
 
 	return 'there was an error';
 };

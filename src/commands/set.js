@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const guld_mngr = require('../libraries/guildOps');
-const attr_objct = require('../types/Attribute');
+const attr_objct = require('../types/interfaces/Attribute');
 
 const locales = ['gr', 'en', 'de'];
 
