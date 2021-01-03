@@ -1,18 +1,18 @@
 export interface GiveRole {
+	role_id: string,
 	give: string,
-	strip: string,
-	role: string
+	strip: string
 }
 
 export class GiveRolePrtl {
-	public id: string;
+	public message_id: string;
 	public role_emote_map: GiveRole[];
 
 	constructor(
-		id: string,
+		message_id: string,
 		role_emote_map: GiveRole[]
 	) {
-		this.id = id;
+		this.message_id = message_id;
 		this.role_emote_map = role_emote_map;
 	}
 };
