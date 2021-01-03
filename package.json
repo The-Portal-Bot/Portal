@@ -5,8 +5,9 @@
   "private": true,
   "main": "src/portal.ts",
   "scripts": {
-    "start": "node src/portal.js",
-    "start_ts": "tsc src/portal.ts",
+    "compile": "npx tsc",
+    "start": "node build/portal.js",
+    "clean": "rm -rf build/",
     "test": "jest",
     "dev": "nodemon src/portal.ts"
   },

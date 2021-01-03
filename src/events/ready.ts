@@ -4,9 +4,7 @@ import { console_text } from "../libraries/localizationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
 module.exports = async (client: Client, guild_list: GuildPrtl[], portal_managed_guilds_path: string) => {
-	if (!client.user) {
-		return;
-	}
+	if (!client.user) return { result: false, value: 'could not fetch user from client' }
 	// Changing Portal bots status
 	client.user.setActivity('./help', { url: 'https://github.com/keybraker', type: 'LISTENING' });
 	console.log('Portal guilds: ');
@@ -16,7 +14,8 @@ module.exports = async (client: Client, guild_list: GuildPrtl[], portal_managed_
 	});
 
 	return {
-		result: true, value: console_text.some(ct => {
+		result: true,
+		value: console_text.some(ct => {
 			if (ct.name === 'ready') {
 				ct.lang.en({
 					'a': client.users.cache.size,

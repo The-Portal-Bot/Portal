@@ -1,10 +1,8 @@
 // load up the discord.js library
 import {
-	Channel, Client, DMChannel, Guild, GuildChannel, GuildMember, Message,
-	MessageReaction, PartialDMChannel,
-	PartialGuildMember, PartialMessage, PartialUser, Presence,
-	TextChannel, User,
-	VoiceState
+	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction,
+	PartialGuildMember, PartialMessage, PartialUser, Presence, TextChannel,
+	User, VoiceState
 } from "discord.js";
 import cooldown_list from './assets/jsons/cooldown_list.json';
 import config from './config.json';
@@ -298,7 +296,7 @@ client.on('message', async (message: Message) => {
 
 function event_loader(event: string, args: any): void {
 	console.log(`event emitted: ${event}`);
-	require(`./events/${event}.js`)(args)
+	require(`./events/${event}.ts`)(args)
 		.then((rspns: ReturnPormise) => {
 			if (rspns !== null && rspns !== undefined) {
 				if (event === 'messageReactionAdd') {
