@@ -311,12 +311,13 @@ export function create_announcement_channel(guild: Guild, announcement_channel: 
 };
 
 export function create_portal_channel(guild: Guild, portal_channel: string,
-	portal_category: string | CategoryChannel, portal_objct: any, guild_object: any, creator_id: number): void {
+	portal_category: string | CategoryChannel, portal_objct: any, guild_object: any, creator_id: string): void {
 	if (portal_category && typeof portal_category === 'string') { // with category
 		guild.channels
 			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 			.then(channel => {
-				portal_objct[channel.id] = new PortalChannelPrtl(
+				portal_objct.push(new PortalChannelPrtl(
+					channel.id,
 					creator_id,
 					portal_channel,
 					guild_object[guild.id].premium
@@ -329,8 +330,9 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 					0,
 					guild_object[guild.id].locale,
 					true,
-					true
-				);
+					true,
+					0
+				));
 				guild.channels
 					.create(portal_category, { type: 'category' })
 					.then(cat_channel => channel.setParent(cat_channel))
@@ -343,7 +345,8 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1, parent: portal_category })
 			.then(channel => {
 				channel.setParent(portal_category);
-				portal_objct[channel.id] = new PortalChannelPrtl(
+				portal_objct.push(new PortalChannelPrtl(
+					channel.id,
 					creator_id,
 					portal_channel,
 					guild_object[guild.id].premium
@@ -356,8 +359,9 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 					0,
 					guild_object[guild.id].locale,
 					true,
-					true
-				);
+					true,
+					0
+				));
 			})
 			.catch(console.error);
 	}
@@ -365,7 +369,8 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 		guild.channels
 			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 			.then(channel => {
-				portal_objct[channel.id] = new PortalChannelPrtl(
+				portal_objct.push(new PortalChannelPrtl(
+					channel.id,
 					creator_id,
 					portal_channel,
 					guild_object[guild.id].premium
@@ -378,15 +383,16 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 					0,
 					guild_object[guild.id].locale,
 					true,
-					true
-				);
+					true,
+					0
+				));
 			})
 			.catch(console.error);
 	}
 };
 
-export function create_voice_channel(state: VoiceState, portal_objct: any,
-	portal_channel: GuildChannel, creator_id: number): boolean {
+export function create_voice_channel(state: VoiceState, portal_objct: PortalChannelPrtl,
+	portal_channel: GuildChannel, creator_id: string): boolean {
 	if (state && state.channel) {
 		state.channel.guild.channels
 			.create('loading...', {
@@ -398,10 +404,17 @@ export function create_voice_channel(state: VoiceState, portal_objct: any,
 			})
 			.then(channel => {
 				if (state.member) {
-					portal_objct['voice_list'][channel.id] = new VoiceChannelPrtl(
-						creator_id, portal_objct.regex_voice, false, 0, 0,
-						portal_objct.locale, portal_objct.ann_announce, portal_objct.ann_user,
-					);
+					portal_objct.voice_list.push(new VoiceChannelPrtl(
+						channel.id,
+						creator_id,
+						portal_objct.regex_voice,
+						false,
+						0,
+						0,
+						portal_objct.locale,
+						portal_objct.ann_announce,
+						portal_objct.ann_user
+					));
 					state.member.voice.setChannel(channel);
 				}
 			})

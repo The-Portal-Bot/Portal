@@ -1,8 +1,9 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es2020",
         "module": "commonjs",
-        "lib": ["es6"],
+        "jsx": "preserve",
+        "lib": ["es2020"],
         "allowJs": true,
         "outDir": "build",
         "rootDir": "src",

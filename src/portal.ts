@@ -1,40 +1,37 @@
-// const mongoose = require('mongoose');
-// mongoose.connect('mongodb://localhost/PortalDB', { useNewUrlParser: true })
-// 	.catch(error => {
-// 		console.error.bind(console, 'PortallDB connection error:');
-// 		console.log('Could not connect to PortalDB (mongo) with error:\n', error);
-// 		return -1;
-// 	});
-// const PortalDB = mongoose.connection;
-// PortalDB.once('open', function() { console.log('we\'re connected!'); });
-
+// load up the discord.js library
+import {
+	Channel, Client, Guild, GuildMember, Message,
+	MessageReaction, PartialDMChannel,
+	PartialGuildMember, PartialMessage, PartialUser, Presence,
+	TextChannel, User,
+	VoiceState
+} from "discord.js";
+import cooldown_list from './assets/jsons/cooldown_list.json';
+import config from './config.json';
 // list of all managed channels in servers
+import guild_list_json from './database/guild_list.json';
+import { included_in_url_list } from './libraries/guildOps';
+import {
+	is_authorized, is_url, message_reply, pad,
+	time_elapsed, update_portal_managed_guilds
+} from './libraries/helpOps';
+import { client_talk } from './libraries/localizationOps';
+import { isProfane } from './libraries/modOps.js';
+import { start } from './libraries/musicOps';
+import { add_points_message } from './libraries/userOps';
+import { GuildPrtl } from './types/classes/GuildPrtl';
+import { ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise } from './types/classes/ReturnPormise';
+
+const cooldown_guild: Cooldown[] = cooldown_list.guild;
+const cooldown_member: Cooldown[] = cooldown_list.member;
+const cooldown_none: Cooldown[] = cooldown_list.none;
 const portal_managed_guilds_path = './database/guild_list.json';
-const guild_list: GuildPrtl[] = <GuildPrtl[]>getJSON('./database/guild_list.json');
+const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
 
 if (guild_list === null) {
 	console.log('guild json is corrupt');
 	process.exit(1);
 }
-
-import config from './config.json';
-import cooldown_list from './assets/jsons/cooldown_list.json';
-
-const cooldown_guild: Cooldown[] = cooldown_list.guild;
-const cooldown_member: Cooldown[] = cooldown_list.member;
-const cooldown_none: Cooldown[] = cooldown_list.none;
-
-import { isProfane } from './libraries/modOps.js';
-import { included_in_url_list } from './libraries/guildOps';
-import { getJSON, is_authorized, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
-import { client_talk } from './libraries/localizationOps';
-import { add_points_message } from './libraries/userOps';
-import { start } from './libraries/musicOps';
-
-// load up the discord.js library
-import { Client, Message, Guild, DMChannel, GuildChannel, GuildMember, Presence, User, MessageReaction, VoiceState, TextChannel, Channel, PartialDMChannel, PartialGuildMember, PartialUser, PartialMessage } from "discord.js";
-import { ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise } from './types/classes/ReturnPormise';
-import { GuildPrtl } from './types/classes/GuildPrtl';
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server

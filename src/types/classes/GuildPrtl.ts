@@ -1,3 +1,7 @@
+import { GiveRolePrtl } from "./GiveRolePrtl";
+import { MemberPrtl } from "./MemberPrtl";
+import { PortalChannelPrtl } from "./PortalChannelPrtl";
+
 export class MusicData {
 	public channel_id: string | undefined;
 	public message_id: string | undefined;
@@ -14,10 +18,10 @@ export class MusicData {
 
 export class GuildPrtl {
 	public id: string;
-	public portal_list: {};
-	public member_list: {};
+	public portal_list: PortalChannelPrtl[];
+	public member_list: MemberPrtl[];
 	public url_list: string[];
-	public role_list: string[];
+	public role_list: GiveRolePrtl[];
 	public ranks: string[];
 	public auth_role: string[];
 	public spotify: string;
@@ -32,10 +36,10 @@ export class GuildPrtl {
 
 	constructor(
 		id: string,
-		portal_list: {},
-		member_list: {},
+		portal_list: PortalChannelPrtl[],
+		member_list: MemberPrtl[],
 		url_list: string[],
-		role_list: string[],
+		role_list: GiveRolePrtl[],
 		ranks: string[],
 		auth_role: string[],
 		spotify: string,
