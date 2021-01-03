@@ -4,19 +4,17 @@ import {
 	VoiceChannel, VoiceState
 } from "discord.js";
 import voca from 'voca';
-
-import { is_variable, get_variable, variable_prefix } from '../types/interfaces/Variable';
-import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
-import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute';
-
+import { VideoSearchResult } from "yt-search";
 import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl';
+import { MemberPrtl } from '../types/classes/MemberPrtl';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
-import { MemberPrtl } from '../types/classes/MemberPrtl';
-
+import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute';
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
+import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON, inline_operator } from './helpOps';
 import { stop } from './musicOps';
-import { ReturnPormise } from "../types/interfaces/ReturnPormise";
 
 function getOptions(guild: Guild, topic: string): GuildCreateChannelOptions {
 	return {
@@ -31,41 +29,31 @@ function getOptions(guild: Guild, topic: string): GuildCreateChannelOptions {
 	};
 };
 
-export function included_in_portal_guilds(guild_id: string, portal_guilds: any): boolean {
-	return portal_guilds[guild_id] !== undefined;
+export function included_in_portal_guilds(guild_id: string, guild_list: GuildPrtl[]): boolean {
+	return guild_list.some(g => g.id === guild_id);
 };
 
-export function included_in_portal_list(channel_id: string, portal_list: any): boolean {
-	return portal_list[channel_id];
+export function included_in_portal_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
+	return portal_list.some(p => p.id === channel_id);
 };
 
-export function included_in_voice_list(channel_id: string, portal_list: any): boolean {
-	for (const key in portal_list) {
-		if (portal_list[key].voice_list[channel_id]) {
-			return true;
-		}
-	}
-	return false;
+export function included_in_voice_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
+	return portal_list.some(p => p.voice_list.some(v => v.id === channel_id));
 };
 
-export function included_in_url_list(channel_id: string, guild_object: any): boolean {
-	for (let i = 0; i < guild_object.url_list.length; i++) {
-		if (guild_object.url_list[i] === channel_id) {
-			return true;
-		}
-	}
-	return false;
+export function included_in_url_list(channel_id: string, guild_object: GuildPrtl): boolean {
+	return guild_object.url_list.some(u => u === channel_id);
 };
 
-export function is_spotify_channel(channel_id: string, guild_object: any): boolean {
+export function is_spotify_channel(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object.spotify === channel_id;
 };
 
-export function is_music_channel(channel_id: string, guild_object: any): boolean {
+export function is_music_channel(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object.music_data.channel_id === channel_id;
 };
 
-export function is_announcement_channel(channel_id: string, guild_object: any): boolean {
+export function is_announcement_channel(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object.announcement === channel_id;
 };
 
@@ -164,7 +152,7 @@ export function create_url_channel(guild: Guild, url_name: string,
 };
 
 export function create_spotify_channel(guild: Guild, spotify_channel: TextChannel,
-	spotify_category: string | CategoryChannel, guild_object: any): void {
+	spotify_category: string | CategoryChannel, guild_object: GuildPrtl): void {
 	if (spotify_category && typeof spotify_category === 'string') { // with category
 		guild.channels
 			.create(
@@ -209,7 +197,7 @@ export function create_spotify_channel(guild: Guild, spotify_channel: TextChanne
 };
 
 export async function create_music_channel(guild: Guild, music_channel: string,
-	music_category: string | CategoryChannel, guild_object: any): Promise<void> {
+	music_category: string | CategoryChannel, guild_object: GuildPrtl): Promise<void> {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 	return new Promise((resolve) => {
@@ -268,7 +256,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 };
 
 export function create_announcement_channel(guild: Guild, announcement_channel: string,
-	announcement_category: string | CategoryChannel, guild_object: any): void {
+	announcement_category: string | CategoryChannel, guild_object: GuildPrtl): void {
 	if (announcement_category && typeof announcement_category === 'string') { // with category
 		guild.channels
 			.create(
@@ -311,24 +299,27 @@ export function create_announcement_channel(guild: Guild, announcement_channel: 
 };
 
 export function create_portal_channel(guild: Guild, portal_channel: string,
-	portal_category: string | CategoryChannel, portal_objct: any, guild_object: any, creator_id: string): void {
+	portal_category: string | CategoryChannel, portal_object: any, guild_object: GuildPrtl, creator_id: string): void {
+
+	const voice_name = guild_object.premium
+		? 'G$#-P$member_count | $status_list'
+		: 'Channel $#'
+
 	if (portal_category && typeof portal_category === 'string') { // with category
 		guild.channels
 			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 			.then(channel => {
-				portal_objct.push(new PortalChannelPrtl(
+				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
 					portal_channel,
-					guild_object[guild.id].premium
-						? 'G$#-P$member_count | $status_list'
-						: 'Channel $#',
+					voice_name,
 					[],
 					false,
 					2,
 					0,
 					0,
-					guild_object[guild.id].locale,
+					guild_object.locale,
 					true,
 					true,
 					0
@@ -345,19 +336,17 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1, parent: portal_category })
 			.then(channel => {
 				channel.setParent(portal_category);
-				portal_objct.push(new PortalChannelPrtl(
+				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
 					portal_channel,
-					guild_object[guild.id].premium
-						? 'G$#-P$member_count | $status_list'
-						: 'Channel $#',
+					voice_name,
 					[],
 					false,
 					2,
 					0,
 					0,
-					guild_object[guild.id].locale,
+					guild_object.locale,
 					true,
 					true,
 					0
@@ -369,19 +358,17 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 		guild.channels
 			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
 			.then(channel => {
-				portal_objct.push(new PortalChannelPrtl(
+				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
 					portal_channel,
-					guild_object[guild.id].premium
-						? 'G$#-P$member_count | $status_list'
-						: 'Channel $#',
+					voice_name,
 					[],
 					false,
 					2,
 					0,
 					0,
-					guild_object[guild.id].locale,
+					guild_object.locale,
 					true,
 					true,
 					0
@@ -391,7 +378,7 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 	}
 };
 
-export function create_voice_channel(state: VoiceState, portal_objct: PortalChannelPrtl,
+export function create_voice_channel(state: VoiceState, portal_object: PortalChannelPrtl,
 	portal_channel: GuildChannel, creator_id: string): boolean {
 	if (state && state.channel) {
 		state.channel.guild.channels
@@ -399,21 +386,21 @@ export function create_voice_channel(state: VoiceState, portal_objct: PortalChan
 				type: 'voice',
 				bitrate: 96000,
 				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
-				userLimit: portal_objct.user_limit_portal,
+				userLimit: portal_object.user_limit_portal,
 				parent: state.channel ? state.channel : undefined,
 			})
 			.then(channel => {
 				if (state.member) {
-					portal_objct.voice_list.push(new VoiceChannelPrtl(
+					portal_object.voice_list.push(new VoiceChannelPrtl(
 						channel.id,
 						creator_id,
-						portal_objct.regex_voice,
+						portal_object.regex_voice,
 						false,
 						0,
 						0,
-						portal_objct.locale,
-						portal_objct.ann_announce,
-						portal_objct.ann_user
+						portal_object.locale,
+						portal_object.ann_announce,
+						portal_object.ann_user
 					));
 					state.member.voice.setChannel(channel);
 				}
@@ -426,7 +413,7 @@ export function create_voice_channel(state: VoiceState, portal_objct: PortalChan
 };
 
 export function create_member_list(guild_id: string, client: Client): any {
-	const member_list: any = {};
+	const member_list: MemberPrtl[] = [];
 	const guild: Guild | undefined = client.guilds.cache.find((cached_guild: Guild) => cached_guild.id === guild_id);
 	if (guild === undefined) {
 		return undefined;
@@ -437,7 +424,7 @@ export function create_member_list(guild_id: string, client: Client): any {
 	guild.members.cache.forEach(member => {
 		if (client.user && !member.user.bot) {
 			if (member.id !== client.user.id) {
-				member_list[member.id] = new MemberPrtl(1, 0, 0, 0, 0);
+				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null));
 			}
 		}
 	});
@@ -445,8 +432,8 @@ export function create_member_list(guild_id: string, client: Client): any {
 	return member_list;
 };
 
-export function insert_guild(guild_id: string, portal_guilds: any, client: Client): void {
-	const portal_list: any = {};
+export function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: Client): void {
+	const portal_list: PortalChannelPrtl[] = [];
 	const member_list = create_member_list(guild_id, client);
 	const url_list: string[] = [];
 	const role_list: any = {};
@@ -454,7 +441,7 @@ export function insert_guild(guild_id: string, portal_guilds: any, client: Clien
 	const auth_role: string[] = [];
 	const spotify: string = '';
 	const music_data: MusicData = { channel_id: undefined, message_id: undefined, votes: [] };
-	const music_queue: string[] = [];
+	const music_queue: VideoSearchResult[] = [];
 	const dispatcher: any = null;
 	const announcement: string = '';
 	const locale: string = 'en';
@@ -462,14 +449,18 @@ export function insert_guild(guild_id: string, portal_guilds: any, client: Clien
 	const level_speed: string = 'normal';
 	const premium: boolean = false;
 
-	portal_guilds.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
+	guild_list.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
 		spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium));
 };
 
 //
 
-export function delete_guild(guild_id: string, portal_guilds: any): void {
-	delete portal_guilds[guild_id];
+export function delete_guild(guild_id: string, guild_list: GuildPrtl[]): void {
+	guild_list.some((g, index) => {
+		if (g.id === guild_id)
+			guild_list.splice(index, 1)
+
+	});
 };
 
 export function delete_channel(channel_to_delete: VoiceChannel, message: Message, isPortal: boolean = false): void {
@@ -537,28 +528,30 @@ export function delete_channel(channel_to_delete: VoiceChannel, message: Message
 	}
 };
 
-export function channel_deleted_update_state(channel_to_remove: GuildChannel, guild_list: any): number {
+export function channel_deleted_update_state(channel_to_remove: GuildChannel, guild_list: GuildPrtl[]): number {
 	const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
-	const current_guild = guild_list[channel_to_remove.guild.id];
+	const current_guild = guild_list.find(g => g.id === channel_to_remove.guild.id);
+
+	if (!current_guild) {
+		return -1;
+	}
+
 	let type_of_channel = TypesOfChannel.Unknown;
 
-	for (const portal_id in current_guild.portal_list) {
-		if (portal_id === channel_to_remove.id) {
-			delete current_guild.portal_list[portal_id];
+	current_guild.portal_list.some((p, index) => {
+		if (p.id === channel_to_remove.id) {
+			current_guild.portal_list.splice(index, 1);
 			type_of_channel = TypesOfChannel.Portal;
-			break;
+			return true;
 		}
-		else {
-			const current_voice_list = current_guild.portal_list[portal_id].voice_list;
-			for (const voice_id in current_voice_list) {
-				if (voice_id === channel_to_remove.id) {
-					delete current_voice_list[voice_id];
-					type_of_channel = TypesOfChannel.Voice;
-					break;
-				}
+		return p.voice_list.some((v, index_v) => {
+			if (v.id === channel_to_remove.id) {
+				p.voice_list.splice(index_v, 1);
+				type_of_channel = TypesOfChannel.Voice;
+				return true;
 			}
-		}
-	}
+		});
+	});
 
 	for (let i = 0; i < current_guild.url_list.length; i++) {
 		console.log(`${current_guild.url_list[i]} === ${channel_to_remove.id}`);
@@ -578,8 +571,8 @@ export function channel_deleted_update_state(channel_to_remove: GuildChannel, gu
 	}
 	if (current_guild.music_data.channel_id === channel_to_remove.id) {
 		stop(channel_to_remove.guild.id, guild_list, channel_to_remove.guild);
-		current_guild.music_data.channel_id = null;
-		current_guild.music_data.message_id = null;
+		current_guild.music_data.channel_id = undefined;
+		current_guild.music_data.message_id = undefined;
 		current_guild.music_data.votes = [];
 		current_guild.dispatcher = null;
 		type_of_channel = TypesOfChannel.Music;
@@ -590,41 +583,44 @@ export function channel_deleted_update_state(channel_to_remove: GuildChannel, gu
 
 //
 
-export function generate_channel_name(voice_channel: VoiceChannel, portal_object: any, guild_object: any, guild: Guild): number | boolean {
-	for (const portal_id in portal_object) {
-		if (portal_object[portal_id].voice_list[voice_channel.id]) {
-			const voice_object = portal_object[portal_id].voice_list[voice_channel.id];
+export function generate_channel_name(voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
+	guild_object: GuildPrtl, guild: Guild): number {
+	let return_value: number = 0;
+	portal_list.some(p => {
+		p.voice_list.some(v => {
+			if (v.id === voice_channel.id) {
+				const new_name = regex_interpreter(
+					v.regex,
+					voice_channel,
+					v,
+					portal_list,
+					guild_object,
+					guild,
+				);
 
-			const new_name = regex_interpreter(
-				voice_object.regex,
-				voice_channel,
-				voice_object,
-				portal_object,
-				guild_object,
-				guild,
-			);
-
-			if (new_name.length >= 1) { // check if it works correctly tsiakkas
-				if (voice_channel.name !== new_name.substring(0, 99)) {
-					voice_channel.edit({ name: new_name.substring(0, 99) })
-						.then(newChannel => console.log(`Voice's new name from promise is ${newChannel.name}`))
-						.catch(console.log);
-					return 1;
+				if (new_name.length >= 1) {
+					if (voice_channel.name !== new_name.substring(0, 99)) {
+						voice_channel.edit({ name: new_name.substring(0, 99) })
+							.then(newChannel => console.log(`Voice's new name from promise is ${newChannel.name}`))
+							.catch(console.log);
+						return_value = 1;
+					}
+					else {
+						return_value = 2;
+					}
 				}
 				else {
-					return 2;
+					return_value = 3;
 				}
 			}
-			else {
-				return 3;
-			}
-		}
-	}
-	return false;
+		});
+	});
+
+	return return_value;
 };
 
 export function regex_interpreter(regex: string, voice_channel: VoiceChannel, voice_object: any,
-	portal_object: any, guild_object: any, guild: Guild): string {
+	portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild): string {
 
 	let last_space_index = 0;
 	let last_vatiable_end_index = 0;
@@ -642,7 +638,7 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 			const vrbl = is_variable(regex.substring(i));
 
 			if (vrbl.length !== 0) {
-				const return_value = get_variable(voice_channel, voice_object, portal_object, guild_object, guild, vrbl);
+				const return_value = get_variable(voice_channel, voice_object, portal_list, guild_object, guild, vrbl);
 
 				if (return_value) {
 					last_variable = return_value;
@@ -664,16 +660,19 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 			const attr = is_attribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				const return_value = get_attribute(voice_channel, voice_object, portal_object, guild_object, attr);
+				const portal_object = portal_list.find(p => p.voice_list.some(v => v.id === voice_channel.id) );
+				if (portal_object) { // tsiakkas elegxos oti paizei kala an den to brei
+					const return_value = get_attribute(voice_channel, voice_object, portal_object, guild_object, attr);
 
-				if (return_value) {
-					last_attribute = return_value;
-					new_channel_name += return_value;
-					i += voca.chars(attr).length;
-					last_attribute_end_index = i;
-				}
-				else {
-					new_channel_name += regex[i];
+					if (return_value) {
+						last_attribute = return_value;
+						new_channel_name += return_value;
+						i += voca.chars(attr).length;
+						last_attribute_end_index = i;
+					}
+					else {
+						new_channel_name += regex[i];
+					}
 				}
 			}
 			else {
@@ -764,16 +763,16 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 					if (statement.is === "==" || statement.is === "===" || statement.is === "!=" || statement.is === "!==" ||
 						statement.is === ">" || statement.is === "<" || statement.is === ">=" || statement.is === "<=") {
 						if (inline_operator(statement.is)(
-							regex_interpreter(statement.if, voice_channel, voice_object, portal_object, guild_object, guild),
-							regex_interpreter(statement.with, voice_channel, voice_object, portal_object, guild_object, guild))
+							regex_interpreter(statement.if, voice_channel, voice_object, portal_list, guild_object, guild),
+							regex_interpreter(statement.with, voice_channel, voice_object, portal_list, guild_object, guild))
 						) {
-							const value = regex_interpreter(statement.yes, voice_channel, voice_object, portal_object, guild_object, guild);
+							const value = regex_interpreter(statement.yes, voice_channel, voice_object, portal_list, guild_object, guild);
 							if (value !== '--') {
 								new_channel_name += value;
 							}
 						}
 						else {
-							const value = regex_interpreter(statement.no, voice_channel, voice_object, portal_object, guild_object, guild);
+							const value = regex_interpreter(statement.no, voice_channel, voice_object, portal_list, guild_object, guild);
 							if (value !== '--') {
 								new_channel_name += value;
 							}

@@ -11,9 +11,9 @@ export interface ReturnPormiseVoice {
 	voice_connection: VoiceConnection | undefined;
 };
 
-export interface field {
+export interface Field {
 	emote: string | null | undefined | boolean,
-	role: string | null | undefined | boolean,
+	role: string | number | null | undefined | boolean,
 	inline: boolean
 }
 
@@ -45,6 +45,21 @@ export interface ActiveCooldown {
 export interface ActiveCooldowns {
 	guild: ActiveCooldown[];
 	member: ActiveCooldown[];
+}
+
+export interface TimeElapsed {
+	timeout_min: number; 
+	timeout_sec: number; 
+	remaining_hrs: number; 
+	remaining_min: number; 
+	remaining_sec: number;
+}
+
+export interface TimeRemaining {
+	timeout_min: number; 
+	timeout_sec: number; 
+	remaining_min: number; 
+	remaining_sec: number;
 }
 
 export class InterfaceBlueprint {

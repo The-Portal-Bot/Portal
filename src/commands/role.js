@@ -32,8 +32,8 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				);
 			}
 
-			const role_emb_value = [];
-			const role_emb_display = [];
+			const role_emb_value= []; // : GiveRole[]
+			const role_emb_display = []; // : Field[]
 
 			role_emb_display.push({
 				emote: '',

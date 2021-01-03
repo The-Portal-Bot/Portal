@@ -1,8 +1,7 @@
 export interface GiveRole {
 	give: string,
 	strip: string,
-	role: string,
-	id: string
+	role: string
 }
 
 export class GiveRolePrtl {

@@ -3,11 +3,13 @@ const { writeFileSync, writeFile } = require("file-system");
 import { cloneDeep } from "lodash";
 
 import { client_talk, client_write } from "./localizationOps";
-import { RolePrtl } from "../types/classes/RolePrtl";
-import { field, ReturnPormise, ReturnPormiseVoice } from "../types/interfaces/ReturnPormise";
+import { GiveRole, GiveRolePrtl } from "../types/classes/GiveRolePrtl";
+import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
+import { VideoSearchResult } from "yt-search";
 
-export function create_role_message(channel: DMChannel, role_list: any, title: string, desc: string,
-	colour: string, role_emb: any, role_map: any) {
+export function create_role_message(channel: DMChannel, role_list: GiveRolePrtl[], title: string, desc: string,
+	colour: string, role_emb: Field[], role_map: GiveRole[]): void {
 	const role_message_emb: MessageEmbed = create_rich_embed(title, desc, colour, role_emb, null, null, null, null, null);
 	channel
 		.send(role_message_emb)
@@ -16,12 +18,12 @@ export function create_role_message(channel: DMChannel, role_list: any, title: s
 				sent_message.react(role_map[i].give);
 				sent_message.react(role_map[i].strip);
 			}
-			role_list[sent_message.id] = new RolePrtl(role_map);
+			role_list.push(new GiveRolePrtl(sent_message.id, role_map));
 		})
 		.catch(error => console.log(error));
 };
 
-export function create_music_message(channel: TextChannel, thumbnail: string, guild_object: any) {
+export function create_music_message(channel: TextChannel, thumbnail: string, guild_object: GuildPrtl): void {
 	const music_message_emb = create_rich_embed(
 		'Music Player',
 		'just type and I\'ll play',
@@ -35,7 +37,7 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 		null,
 		true,
 		null,
-		thumbnail,
+		thumbnail
 	);
 
 	channel
@@ -52,7 +54,7 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 		});
 };
 
-export function update_message(guild: Guild, guild_object: any, yts: any) {
+export function update_message(guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult): void {
 	const music_message_emb = create_rich_embed(
 		yts.title,
 		yts.url,
@@ -68,22 +70,26 @@ export function update_message(guild: Guild, guild_object: any, yts: any) {
 		null,
 		yts.thumbnail,
 	);
-	const guild_channel: GuildChannel | undefined = guild.channels.cache.get(guild_object.music_data.channel_id);
+
+	const guild_channel: GuildChannel | undefined = guild.channels.cache
+		.find(c => c.id === guild_object.music_data.channel_id);
 	const channel: TextChannel = <TextChannel>guild_channel;
 
-	if (channel) {
-		channel.messages
-			.fetch(guild_object.music_data.message_id)
-			.then((message: Message) => {
-				message.edit(music_message_emb)
-					.then((msg: Message) => console.log(`Updated the content of a message to ${msg.content}`))
-					.catch(console.error);
-			})
-			.catch(console.error);
+	if (guild_object.music_data.message_id) {
+		if (channel) {
+			channel.messages
+				.fetch(guild_object.music_data.message_id)
+				.then((message: Message) => {
+					message.edit(music_message_emb)
+						.then((msg: Message) => console.log(`Updated the content of a message to ${msg.content}`))
+						.catch(console.error);
+				})
+				.catch(console.error);
+		}
 	}
 };
 
-export async function join_user_voice(client: Client, message: Message, portal_guilds: any,
+export async function join_user_voice(client: Client, message: Message, guild_list: GuildPrtl[],
 	join: boolean): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
 		if (message.member === null) {
@@ -120,15 +126,36 @@ export async function join_user_voice(client: Client, message: Message, portal_g
 			});
 		}
 
-		const portal_list = portal_guilds[message.guild.id].portal_list;
-		let included_in_voice_list = false;
-
-		for (const key in portal_list) {
-			if (portal_list[key].voice_list[current_voice.id]) { included_in_voice_list = true; }
+		if (!message || !message.guild) {
+			return resolve({
+				result: false,
+				value: 'could not find guild of message.',
+				voice_connection: undefined
+			});
 		}
 
-		if (!included_in_voice_list) {
-			console.log('I can only connect to my channels.');
+		const current_guild = guild_list.find(g => {
+			if (message && message.guild)
+				return g.id === message.guild.id;
+		});
+
+		if (current_guild === undefined) {
+			return resolve({
+				result: false,
+				value: 'could not find guild of message.',
+				voice_connection: undefined
+			});
+		}
+
+		const portal_list = current_guild.portal_list;
+
+		const controlled_by_portal = portal_list.some(p =>
+			p.voice_list.some(v =>
+				v.id === current_voice.id
+			)
+		);
+
+		if (!controlled_by_portal) {
 			return resolve({
 				result: false,
 				value: 'I can only connect to my channels.',
@@ -160,11 +187,11 @@ export async function join_user_voice(client: Client, message: Message, portal_g
 			// let new_voice_connection = null;
 			current_voice.join()
 				.then(conn => {
-					if (join) client_talk(client, portal_guilds, 'join');
+					if (join) client_talk(client, guild_list, 'join');
 
 					return resolve({
 						result: true,
-						value: client_write(message, portal_guilds, 'join'),
+						value: client_write(message, guild_list, 'join'),
 						voice_connection: conn,
 					});
 				})
@@ -205,7 +232,7 @@ export function getJSON(str: string): any | null {
 	return data;
 };
 
-export function create_rich_embed(title: string | null, description: string | null, colour: string | null, field_array: field[],
+export function create_rich_embed(title: string | null, description: string | null, colour: string | null, field_array: Field[],
 	thumbnail: string | null, member: GuildMember | null, from_bot: boolean | null, url: string | null, image: string | null): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
@@ -272,55 +299,55 @@ export function create_rich_embed(title: string | null, description: string | nu
 	return rich_message;
 };
 
-export function empty_channel_remover(current_guild: Guild, portal_guilds: any, portal_managed_guilds_path: string): void {
-	current_guild.channels.cache.forEach(channel => {
-		if (portal_guilds[current_guild.id]) {
-			for (const portal_channel in portal_guilds[current_guild.id].portal_list) {
-				if (portal_guilds[current_guild.id].portal_list[portal_channel].voice_list[channel.id]) {
-					if (!channel.members.size) {
-						console.log('Deleting channel: ', channel.name, 'from ', channel.guild.name);
-						// guld_mngr.delete_channel(channel);
-						if (channel.deletable) {
-							channel
-								.delete()
-								.then(g => console.log(`Deleted channel with id: ${g}`))
-								.catch(console.error);
-						}
-						return true;
-					}
-				}
-				return false;
-			}
-		}
-		else {
-			current_guild.leave()
+export function empty_channel_remover(guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string): void {
+	guild.channels.cache.forEach(channel => {
+		if (!guild_list.some(g => g.id === guild.id)) {
+			guild.leave()
 				.then(guild => console.log(`Left guild ${guild}`))
 				.catch(console.error);
+		} else if (!channel.members.size) {
+			const current_guild = guild_list.some(g =>
+				g.portal_list.some(p =>
+					p.voice_list.some((v, index) => {
+						if (v.id === channel.id) {
+							console.log('Deleting channel: ', channel.name, 'from ', channel.guild.name);
+							// guld_mngr.delete_channel(channel);
+							if (channel.deletable) {
+								channel
+									.delete()
+									.then(g => console.log(`Deleted channel with id: ${g}`))
+									.catch(console.error);
+								p.voice_list.splice(index, 1)
+							}
+							return true;
+						}
+					})
+				)
+			);
 		}
 	});
 
-	update_portal_managed_guilds(true, portal_managed_guilds_path, portal_guilds);
+	update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 };
 
-export async function update_portal_managed_guilds(force: boolean, portal_managed_guilds_path: string, portal_guilds: any): Promise<ReturnPormise> {
+export async function update_portal_managed_guilds(force: boolean, portal_managed_guilds_path: string,
+	guild_list: GuildPrtl[]): Promise<ReturnPormise> {
 	return new Promise((resolve) => { // , reject) => {
 		setTimeout(() => {
-			const portal_guilds_no_voice = cloneDeep(portal_guilds);
-			for (const guild_id in portal_guilds_no_voice) {
-				portal_guilds_no_voice[guild_id].dispatcher = null;
-			}
+			const guild_list_no_voice = cloneDeep(guild_list);
+			guild_list_no_voice.forEach(g => g.dispatcher = null);
 
 			if (force) {
 				writeFileSync(
 					portal_managed_guilds_path,
-					JSON.stringify(portal_guilds_no_voice),
+					JSON.stringify(guild_list_no_voice),
 					'utf8',
 				);
 			}
 			else {
 				writeFile(
 					portal_managed_guilds_path,
-					JSON.stringify(portal_guilds_no_voice),
+					JSON.stringify(guild_list_no_voice),
 					'utf8',
 				);
 			}
@@ -329,7 +356,7 @@ export async function update_portal_managed_guilds(force: boolean, portal_manage
 	});
 };
 
-export function is_authorized(auth_role: any, member: GuildMember): boolean {
+export function is_authorized(auth_role: string[], member: GuildMember): boolean {
 	return !member.hasPermission('ADMINISTRATOR')
 		? member.roles.cache !== undefined && member.roles.cache !== null
 			? member.roles.cache.some(role =>
@@ -341,7 +368,7 @@ export function is_authorized(auth_role: any, member: GuildMember): boolean {
 };
 
 // channel should be removed !
-export function message_reply(status: boolean, channel: Channel, message: Message, user: User, str: string, portal_guilds: any,
+export function message_reply(status: boolean, channel: Channel, message: Message, user: User, str: string, guild_list: GuildPrtl[],
 	client: Client, to_delete: boolean = false, emote_pass: string = '✔️', emote_fail: string = '❌'): void {
 	if (!message.channel.deleted && str !== null) {
 		message.channel
@@ -356,7 +383,7 @@ export function message_reply(status: boolean, channel: Channel, message: Messag
 				.catch(error => console.log(error));
 		}
 		else if (status === false) {
-			client_talk(client, portal_guilds, 'fail');
+			client_talk(client, guild_list, 'fail');
 			message
 				.react(emote_fail)
 				.catch(error => console.log(error));
@@ -389,8 +416,8 @@ export function pad(num: number): string {
 	}
 };
 
-export function time_elapsed(timestamp: Date, timeout: number): any {
-	const time_elapsed = Date.now() - timestamp.getTime();
+export function time_elapsed(timestamp: Date | number, timeout: number): TimeElapsed {
+	const time_elapsed = Date.now() - (typeof timestamp === 'number' ? timestamp : timestamp.getTime());
 	const timeout_time = timeout * 60 * 1000;
 
 	const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0
@@ -414,7 +441,7 @@ export function time_elapsed(timestamp: Date, timeout: number): any {
 	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
 };
 
-export function time_remaining(timestamp: number, timeout: number): any {
+export function time_remaining(timestamp: number, timeout: number): TimeRemaining {
 	const time_elapsed = Date.now() - timestamp;
 	const timeout_time = timeout * 60 * 1000;
 	const time_remaining = timeout_time - time_elapsed;

@@ -46,7 +46,7 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 				message.guild.channels.cache.find(channel =>
 					channel.id === current_channel.music_data.channel_id),
 				portal_icon_url,
-				portal_guilds[message.guild.id],
+				portal_guilds[message.guild.id]
 			);
 
 			return resolve ({
