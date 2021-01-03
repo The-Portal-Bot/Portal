@@ -8,6 +8,10 @@ import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
 import { VideoSearchResult } from "yt-search";
 
+export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): GuildPrtl | undefined {
+	return guild_list.find(g =>  g.id === guild_id);
+};
+
 export function create_role_message(channel: DMChannel, role_list: GiveRolePrtl[], title: string, desc: string,
 	colour: string, role_emb: Field[], role_map: GiveRole[]): void {
 	const role_message_emb: MessageEmbed = create_rich_embed(title, desc, colour, role_emb, null, null, null, null, null);
@@ -331,8 +335,8 @@ export function empty_channel_remover(guild: Guild, guild_list: GuildPrtl[], por
 	update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 };
 
-export async function update_portal_managed_guilds(force: boolean, portal_managed_guilds_path: string,
-	guild_list: GuildPrtl[]): Promise<ReturnPormise> {
+export async function update_portal_managed_guilds(
+	force: boolean, portal_managed_guilds_path: string, guild_list: GuildPrtl[]): Promise<ReturnPormise> {
 	return new Promise((resolve) => { // , reject) => {
 		setTimeout(() => {
 			const guild_list_no_voice = cloneDeep(guild_list);

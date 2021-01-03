@@ -1,6 +1,6 @@
 // load up the discord.js library
 import {
-	Channel, Client, Guild, GuildMember, Message,
+	Channel, Client, DMChannel, Guild, GuildChannel, GuildMember, Message,
 	MessageReaction, PartialDMChannel,
 	PartialGuildMember, PartialMessage, PartialUser, Presence,
 	TextChannel, User,
@@ -75,7 +75,7 @@ client.on('guildCreate', (guild: Guild) =>
 );
 
 // This event triggers when the bot joins a guild.
-client.on('channelDelete', (channel: Channel | PartialDMChannel) =>
+client.on('channelDeleted', (channel:  GuildChannel) =>
 	event_loader('channelDelete', {
 		'channel': channel,
 		'guild_list': guild_list,
@@ -87,8 +87,7 @@ client.on('channelDelete', (channel: Channel | PartialDMChannel) =>
 client.on('guildMemberAdd', (member: GuildMember) =>
 	event_loader('guildMemberAdd', {
 		'member': member,
-		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path
+		'guild_list': guild_list
 	})
 );
 
@@ -96,8 +95,7 @@ client.on('guildMemberAdd', (member: GuildMember) =>
 client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) =>
 	event_loader('guildMemberRemove', {
 		'member': member,
-		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path
+		'guild_list': guild_list
 	})
 );
 

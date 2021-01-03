@@ -1,6 +1,6 @@
 import {
-	CategoryChannel, Client, Collection, CollectorFilter, Guild, GuildChannel,
-	GuildCreateChannelOptions, GuildMember, Message, MessageCollector, TextChannel,
+	CategoryChannel, Channel, Client, Collection, CollectorFilter, DMChannel, Guild, GuildChannel,
+	GuildCreateChannelOptions, GuildMember, Message, MessageCollector, PartialDMChannel, TextChannel,
 	VoiceChannel, VoiceState
 } from "discord.js";
 import voca from 'voca';
