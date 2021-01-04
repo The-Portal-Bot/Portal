@@ -8,17 +8,17 @@ import config from './config.json';
 // list of all managed channels in servers
 import guild_list_json from './database/guild_list.json';
 import { included_in_url_list } from './libraries/guildOps';
-import { is_authorized, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
+import { is_authorized, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds, guildPrtl_to_object } from './libraries/helpOps';
 import { client_talk } from './libraries/localizationOps';
 import { isProfane } from './libraries/modOps.js';
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import { ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 
-const cooldown_guild: Cooldown[] = cooldown_list.guild;
-const cooldown_member: Cooldown[] = cooldown_list.member;
-const cooldown_none: Cooldown[] = cooldown_list.none;
+const command_options_guild: CommandOptions[] = cooldown_list.guild;
+const command_options_member: CommandOptions[] = cooldown_list.member;
+const command_options_none: CommandOptions[] = cooldown_list.none;
 const portal_managed_guilds_path = './database/guild_list.json';
 const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
 
@@ -135,7 +135,10 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
-	if (!message || !message.guild) return;
+	// message has errors
+	if (message === null) return;
+	if (message.member === null) return;
+	if (message.guild === null) return;
 
 	// Ignore other bots and also itself ('botception')
 	if (message.author.bot) return;
@@ -170,89 +173,84 @@ client.on('message', async (message: Message) => {
 
 	const cmd = cmd_only.toLowerCase();
 
-	let cooldown: Cooldown | undefined;
+	let command_options: CommandOptions | undefined;
 	let type: string;
 	let active_cooldown: ActiveCooldown[];
 
-	if (cooldown_guild.some(cmd_curr => cmd_curr.name === cmd)) {
-		cooldown = cooldown_guild.find(cmd_curr => cmd_curr.name === cmd);
+	if (command_options_guild.some(cmd_curr => cmd_curr.name === cmd)) {
+		command_options = command_options_guild.find(cmd_curr => cmd_curr.name === cmd);
 		active_cooldown = active_cooldowns.guild;
 		type = 'guild';
 	}
-	else if (cooldown_member.some(cmd_curr => cmd_curr.name === cmd)) {
-		cooldown = cooldown_member.find(cmd_curr => cmd_curr.name === cmd);
-		active_cooldown = active_cooldowns.guild;
+	else if (command_options_member.some(cmd_curr => cmd_curr.name === cmd)) {
+		command_options = command_options_member.find(cmd_curr => cmd_curr.name === cmd);
+		active_cooldown = active_cooldowns.member;
 		type = 'member';
 	}
-	else if (cooldown_none.some(cmd_curr => cmd_curr.name === cmd)) {
-		cooldown = cooldown_none.find(cmd_curr => cmd_curr.name === cmd);
-		active_cooldown = active_cooldowns.guild;
+	else if (command_options_none.some(cmd_curr => cmd_curr.name === cmd)) {
+		command_options = command_options_none.find(cmd_curr => cmd_curr.name === cmd);
+		active_cooldown = [];
 		type = 'none';
 	}
 	else {
 		return;
 	}
 
-	if (cooldown === undefined) return;
+	// not a portal command
+	if (command_options === undefined) return;
 
-	let current_guild = guild_list.find((g: GuildPrtl) => {
-		if (message && message.guild)
-			return g.id === message.guild.id;
-	});
+	const current_guild = guildPrtl_to_object(guild_list, message.guild.id);
 	if (!current_guild) {
 		message_reply(false, message.channel, message, message.author,
 			'this guild is not in database, please contact portal support', guild_list, client);
 		return;
 	}
 
-	if (cooldown.auth) {
-		if (message !== null && message.member !== null && message.guild !== null) {
-			const is_user_authorized = is_authorized(current_guild.auth_role, message.member);
-
-			if (!is_user_authorized) {
-				message_reply(false, message.channel, message, message.author,
-					'you are not authorized to access this command', guild_list, client);
-				return;
-			}
-		} else {
+	if (command_options.auth) {
+		if (!is_authorized(current_guild.auth_role, message.member)) {
+			message_reply(false, message.channel, message, message.author,
+				'you are not authorized to use this command', guild_list, client);
 			return;
 		}
 	}
 
-	if (cooldown.premium && !current_guild.premium) {
-		message_reply(
-			false, message.channel, message,
-			message.author, 'this server is not premium', guild_list, client);
+	if (command_options.premium && !current_guild.premium) {
+		message_reply(false, message.channel, message, message.author,
+			'this server is not premium', guild_list, client);
 		return;
 	}
 
-	if (type === 'none' && cooldown.time === 0) {
+	command_loader(message, cmd, args, type, command_options, active_cooldown);
+});
+
+function command_loader(message: Message, cmd: string, args: string[], type: string,
+	command_options: CommandOptions, active_cooldown: ActiveCooldown[]): boolean {
+	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then((rspns: ReturnPormise) => {
 				message_reply(rspns.result, message.channel, message,
-					message.author, rspns.value, guild_list, client, cooldown ? cooldown.auto_delete : true);
+					message.author, rspns.value, guild_list, client, command_options ? command_options.auto_delete : true);
 				update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 			});
-		return;
+		return true;
 	}
 
 	const active = active_cooldown.find(active_current => {
 		if (active_current.command === cmd) {
-			if (type === 'member' && active_current.member === message.author.id) {
+			if (type === 'member')
+				if (active_current.member === message.author.id)
+					return true;
+			if (type === 'guild')
 				return true;
-			}
-			if (type === 'guild') {
-				return true;
-			}
 		}
 		return false;
 	});
 
 	if (active) {
-		const time = time_elapsed(active.timestamp, cooldown.time);
+		const time = time_elapsed(active.timestamp, command_options.time);
 		const type_for_msg = type === 'member'
 			? '.*'
-			: `, as it was used again in* **${message.guild.name}**.`;
+			: `, as it was used again in* **${message.guild?.name}**.`;
 
 		message_reply(false, message.channel, message, message.author,
 			`*you need to wait* **${pad(time.remaining_min)}:` +
@@ -260,7 +258,7 @@ client.on('message', async (message: Message) => {
 			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`,
 			guild_list, client);
 
-		return;
+		return false;
 	}
 
 	require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
@@ -272,21 +270,23 @@ client.on('message', async (message: Message) => {
 					timestamp: Date.now()
 				});
 
-				if (cooldown !== undefined) {
+				if (command_options !== undefined) {
 					setTimeout(() => {
 						active_cooldown = active_cooldown.filter(active => active.command !== cmd);
-					}, cooldown.time * 60 * 1000);
+					}, command_options.time * 60 * 1000);
 				}
 			}
-			if (cooldown !== undefined) {
+			if (command_options !== undefined) {
 				message_reply(rspns.result, message.channel, message, message.author,
 					rspns ? 'executed correctly' : 'executed falsely', guild_list, client,
-					cooldown.auto_delete);
+					command_options.auto_delete);
 			}
 
 			update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 		});
-});
+
+	return false;
+}
 
 function event_loader(event: string, args: any): void {
 	console.log(`event emitted: ${event}`);

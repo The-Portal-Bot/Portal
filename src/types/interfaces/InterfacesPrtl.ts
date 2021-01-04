@@ -28,7 +28,7 @@ export interface LocalizationOption {
 	lang: Language;
 }
 
-export interface Cooldown {
+export interface CommandOptions {
 	name: string;
 	time: number;
 	auth: boolean;

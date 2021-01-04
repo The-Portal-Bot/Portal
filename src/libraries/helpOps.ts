@@ -9,7 +9,7 @@ import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } 
 import { VideoSearchResult } from "yt-search";
 
 export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): GuildPrtl | undefined {
-	return guild_list.find(g =>  g.id === guild_id);
+	return guild_list.find(g => g.id === guild_id);
 };
 
 export function create_role_message(channel: DMChannel, role_list: GiveRolePrtl[], title: string, desc: string,
