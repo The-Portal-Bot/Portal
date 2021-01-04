@@ -216,12 +216,14 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 	return return_value;
 };
 
-module.exports = async (client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User) => {
-	if (user.bot) return null;
+module.exports = async (
+	args: { client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User }
+) => {
+	if (args.user.bot) return null;
 
-	if (messageReaction.partial) {
+	if (args.messageReaction.partial) {
 		try {
-			await messageReaction.fetch();
+			await args.messageReaction.fetch();
 		} catch (error) {
 			return {
 				result: false,
@@ -230,12 +232,12 @@ module.exports = async (client: Client, guild_list: GuildPrtl[], messageReaction
 		}
 	}
 
-	const return_value_role = reaction_role_manager(client, guild_list, messageReaction, user);
+	const return_value_role = reaction_role_manager(args.client, args.guild_list, args.messageReaction, args.user);
 	if (return_value_role.result !== null) {
 		return return_value_role;
 	}
 
-	const return_value_music = reaction_music_manager(client, guild_list, messageReaction, user);
+	const return_value_music = reaction_music_manager(args.client, args.guild_list, args.messageReaction, args.user);
 	if (return_value_music.result !== null) {
 		return return_value_music;
 	}

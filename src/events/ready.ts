@@ -3,14 +3,24 @@ import { empty_channel_remover } from "../libraries/helpOps";
 import { console_text } from "../libraries/localizationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
-module.exports = async (client: Client, guild_list: GuildPrtl[], portal_managed_guilds_path: string) => {
-	if (!client.user) return { result: false, value: 'could not fetch user from client' }
+module.exports = async (
+	args: { client: Client, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
+) => {
+	if (args.client.user === null || args.client.user === undefined) return {
+		result: false,
+		value: 'could not fetch user from client'
+	}
+
 	// Changing Portal bots status
-	client.user.setActivity('./help', { url: 'https://github.com/keybraker', type: 'LISTENING' });
+	args.client.user.setActivity('./help', {
+		url: 'https://github.com/keybraker',
+		type: 'LISTENING'
+	});
+
 	console.log('Portal guilds: ');
-	client.guilds.cache.forEach(guild => {
+	args.client.guilds.cache.forEach(guild => {
 		console.log(`${guild} (${guild.id})`);
-		empty_channel_remover(guild, guild_list, portal_managed_guilds_path);
+		empty_channel_remover(guild, args.guild_list, args.portal_managed_guilds_path);
 	});
 
 	return {
@@ -18,9 +28,9 @@ module.exports = async (client: Client, guild_list: GuildPrtl[], portal_managed_
 		value: console_text.some(ct => {
 			if (ct.name === 'ready') {
 				ct.lang.en({
-					'a': client.users.cache.size,
-					'b': client.channels.cache.size,
-					'c': client.guilds.cache.size
+					'a': args.client.users.cache.size,
+					'b': args.client.channels.cache.size,
+					'c': args.client.guilds.cache.size
 				});
 			}
 		})

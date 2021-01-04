@@ -18,7 +18,9 @@ import { isProfane } from './libraries/modOps.js';
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import { ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+import {
+	ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise
+} from "./types/interfaces/InterfacesPrtl";
 
 const cooldown_guild: Cooldown[] = cooldown_list.guild;
 const cooldown_member: Cooldown[] = cooldown_list.member;
@@ -73,7 +75,7 @@ client.on('guildCreate', (guild: Guild) =>
 );
 
 // This event triggers when the bot joins a guild.
-client.on('channelDeleted', (channel:  GuildChannel) =>
+client.on('channelDeleted', (channel: GuildChannel) =>
 	event_loader('channelDelete', {
 		'channel': channel,
 		'guild_list': guild_list,
@@ -139,9 +141,7 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
-	if (!message) return;
-
-	if (!message.guild) return;
+	if (!message || !message.guild) return;
 
 	// Ignore other bots and also itself ('botception')
 	if (message.author.bot) return;
@@ -172,9 +172,8 @@ client.on('message', async (message: Message) => {
 	const args: string[] = message.content.slice(config.prefix.length).trim().split(/ +/g);
 
 	const cmd_only = args.shift();
-	if (cmd_only === undefined) {
-		return;
-	}
+	if (cmd_only === undefined) return;
+	
 	const cmd = cmd_only.toLowerCase();
 
 	let cooldown: Cooldown | undefined;
@@ -200,16 +199,18 @@ client.on('message', async (message: Message) => {
 		return;
 	}
 
-	if (cooldown === undefined) {
-		return;
-	}
+	if (cooldown === undefined) return;
 
-	let current_guild: GuildPrtl | undefined = guild_list.find((g: GuildPrtl) => {
+	let current_guild = guild_list.find((g: GuildPrtl) => {
 		if (message && message.guild) {
-			g.id === message.guild.id
+			return g.id === message.guild.id;
 		}
 	});
-	if (!current_guild) return;
+	if (!current_guild) {
+		message_reply(false, message.channel, message, message.author,
+			'this guild is not in database, please contact portal support', guild_list, client);
+		return;
+	}
 
 	if (cooldown.auth) {
 		if (message !== null && message.member !== null && message.guild !== null) {
@@ -296,7 +297,7 @@ client.on('message', async (message: Message) => {
 
 function event_loader(event: string, args: any): void {
 	console.log(`event emitted: ${event}`);
-	require(`./events/${event}.ts`)(args)
+	require(`./events/${event}.js`)(args)
 		.then((rspns: ReturnPormise) => {
 			if (rspns !== null && rspns !== undefined) {
 				if (event === 'messageReactionAdd') {

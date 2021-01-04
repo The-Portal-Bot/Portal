@@ -77,35 +77,37 @@ function display_spotify_song(current_guild: Guild, current_channel: VoiceChanne
 	});
 };
 
-module.exports = async (client: Client, guild_list: GuildPrtl[], newPresence: Presence | undefined) => {
-	if (newPresence === null) { return { result: true, value: 'could not fetch presence' }; }
-	if (newPresence === undefined) { return { result: true, value: 'could not fetch presence' }; }
-	if (newPresence.user === null) { return { result: true, value: 'could not fetch presence user' }; }
-	if (newPresence.member === null) { return { result: true, value: 'could not fetch presence member' }; }
-	if (newPresence.guild === null) { return { result: true, value: 'could not fetch presence guild' }; }
-	if (newPresence.user.bot) { return { result: true, value: 'not handling bot presence update' }; }
+module.exports = async (
+	args: { client: Client, guild_list: GuildPrtl[], newPresence: Presence | undefined }
+) => {
+	if (args.newPresence === null) { return { result: true, value: 'could not fetch presence' }; }
+	if (args.newPresence === undefined) { return { result: true, value: 'could not fetch presence' }; }
+	if (args.newPresence.user === null) { return { result: true, value: 'could not fetch presence user' }; }
+	if (args.newPresence.member === null) { return { result: true, value: 'could not fetch presence member' }; }
+	if (args.newPresence.guild === null) { return { result: true, value: 'could not fetch presence guild' }; }
+	if (args.newPresence.user.bot) { return { result: true, value: 'not handling bot presence update' }; }
 
-	const current_guild = newPresence.guild;
-	const current_channel = newPresence.member.voice.channel;
+	const current_guild = args.newPresence.guild;
+	const current_channel = args.newPresence.member.voice.channel;
 
-	if (!included_in_portal_guilds(newPresence.guild.id, guild_list)) {
+	if (!included_in_portal_guilds(args.newPresence.guild.id, args.guild_list)) {
 		return {
 			result: false,
-			value: client_log(null, guild_list, 'presence_controlled_away', guild_list),
+			value: client_log(null, args.guild_list, 'presence_controlled_away', args.guild_list),
 		};
 	}
 
 	if (current_channel) { // if member is in a channel
-		const guild_object = guild_list.find(g => g.id === current_guild.id);
+		const guild_object = args.guild_list.find(g => g.id === current_guild.id);
 		if (!guild_object) return;
 		guild_object.portal_list.some(p => {
 			p.voice_list.some(v => {
 				if (v.id === current_channel.id) {
-					if (guild_object.spotify !== null) {
-						display_spotify_song(current_guild, current_channel, guild_list, newPresence, client);
+					if (guild_object.spotify !== null && args.newPresence) {
+						display_spotify_song(current_guild, current_channel, args.guild_list, args.newPresence, args.client);
 					}
 
-					time_out_repeat(v, current_guild, current_channel, guild_object.portal_list, guild_list, 5);
+					time_out_repeat(v, current_guild, current_channel, guild_object.portal_list, args.guild_list, 5);
 				}
 			});
 		});
@@ -113,9 +115,9 @@ module.exports = async (client: Client, guild_list: GuildPrtl[], newPresence: Pr
 
 	return {
 		result: true,
-		value: client_log(null, guild_list, 'presence_controlled', {
-			'a': newPresence.member.displayName,
-			'b': newPresence.guild.name
+		value: client_log(null, args.guild_list, 'presence_controlled', {
+			'a': args.newPresence.member.displayName,
+			'b': args.newPresence.guild.name
 		}),
 	};
 };

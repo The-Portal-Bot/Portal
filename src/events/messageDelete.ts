@@ -2,12 +2,14 @@ import { Message, TextChannel } from "discord.js";
 import { create_music_message } from "../libraries/helpOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
-module.exports = async (guild_list: GuildPrtl[], message: Message) => {
-	if (!message.guild) return { result: true, value: 'message guild could not be found' };
+module.exports = async (
+	args: { guild_list: GuildPrtl[], message: Message }
+) => {
+	if (!args.message.guild) return { result: true, value: 'message guild could not be found' };
 
-	const guild_object = guild_list.find(g => {
-		if (message.guild)
-			return g.id === message.guild.id;
+	const guild_object = args.guild_list.find(g => {
+		if (args.message.guild)
+			return g.id === args.message.guild.id;
 	});
 	if (!guild_object) return { result: true, value: 'message could not be found' };
 
@@ -17,7 +19,7 @@ module.exports = async (guild_list: GuildPrtl[], message: Message) => {
 		'.github.io/master/assets/img/logo.png';
 
 	const role_list_object = role_list.find((r, index) => {
-		if (message.guild && r.message_id === message.id) {
+		if (args.message.guild && r.message_id === args.message.id) {
 			role_list.splice(index, 1);
 			return true;
 		}
@@ -28,8 +30,8 @@ module.exports = async (guild_list: GuildPrtl[], message: Message) => {
 		value: 'role message was deleted and successfully removed from json'
 	};
 
-	if (music_data.message_id === message.id) {
-		const current_channel = message.guild.channels.cache.find(channel =>
+	if (music_data.message_id === args.message.id) {
+		const current_channel = args.message.guild.channels.cache.find(channel =>
 			channel.id === guild_object.music_data.channel_id);
 		if (current_channel) {
 			create_music_message(<TextChannel>current_channel, portal_icon_url, guild_object);
