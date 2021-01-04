@@ -199,7 +199,7 @@ export async function stop(guild_id: string, guild_list: GuildPrtl[], guild: Gui
 					timestamp: '0'
 				},
 				ago: '-',
-				views: '-',
+				views: 0,
 				author: {
 					name: '-',
 					url: '-'
@@ -280,7 +280,7 @@ export async function skip(guild_id: string, guild_list: GuildPrtl[], client: Cl
 							timestamp: '0'
 						},
 						ago: '-',
-						views: '-',
+						views: 0,
 						author: {
 							name: '-',
 							url: '-'

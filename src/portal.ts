@@ -1,26 +1,20 @@
 // load up the discord.js library
 import {
 	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction,
-	PartialGuildMember, PartialMessage, PartialUser, Presence, TextChannel,
-	User, VoiceState
+	PartialGuildMember, PartialMessage, PartialUser, Presence, TextChannel, User, VoiceState
 } from "discord.js";
 import cooldown_list from './assets/jsons/cooldown_list.json';
 import config from './config.json';
 // list of all managed channels in servers
 import guild_list_json from './database/guild_list.json';
 import { included_in_url_list } from './libraries/guildOps';
-import {
-	is_authorized, is_url, message_reply, pad,
-	time_elapsed, update_portal_managed_guilds
-} from './libraries/helpOps';
+import { is_authorized, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
 import { client_talk } from './libraries/localizationOps';
 import { isProfane } from './libraries/modOps.js';
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import {
-	ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise
-} from "./types/interfaces/InterfacesPrtl";
+import { ActiveCooldown, ActiveCooldowns, Cooldown, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 
 const cooldown_guild: Cooldown[] = cooldown_list.guild;
 const cooldown_member: Cooldown[] = cooldown_list.member;
@@ -173,7 +167,7 @@ client.on('message', async (message: Message) => {
 
 	const cmd_only = args.shift();
 	if (cmd_only === undefined) return;
-	
+
 	const cmd = cmd_only.toLowerCase();
 
 	let cooldown: Cooldown | undefined;
@@ -202,9 +196,8 @@ client.on('message', async (message: Message) => {
 	if (cooldown === undefined) return;
 
 	let current_guild = guild_list.find((g: GuildPrtl) => {
-		if (message && message.guild) {
+		if (message && message.guild)
 			return g.id === message.guild.id;
-		}
 	});
 	if (!current_guild) {
 		message_reply(false, message.channel, message, message.author,
