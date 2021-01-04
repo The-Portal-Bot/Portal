@@ -1,6 +1,6 @@
 import {
-	CategoryChannel, Channel, Client, Collection, CollectorFilter, DMChannel, Guild, GuildChannel,
-	GuildCreateChannelOptions, GuildMember, Message, MessageCollector, PartialDMChannel, TextChannel,
+	CategoryChannel, Client, Collection, CollectorFilter, Guild, GuildChannel,
+	GuildCreateChannelOptions, GuildMember, Message, MessageCollector, TextChannel,
 	VoiceChannel, VoiceState
 } from "discord.js";
 import voca from 'voca';
@@ -197,7 +197,7 @@ export function create_spotify_channel(guild: Guild, spotify_channel: TextChanne
 };
 
 export async function create_music_channel(guild: Guild, music_channel: string,
-	music_category: string | CategoryChannel, guild_object: GuildPrtl): Promise<void> {
+	music_category: string | CategoryChannel | null, guild_object: GuildPrtl): Promise<void> {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 	return new Promise((resolve) => {
@@ -299,7 +299,8 @@ export function create_announcement_channel(guild: Guild, announcement_channel: 
 };
 
 export function create_portal_channel(guild: Guild, portal_channel: string,
-	portal_category: string | CategoryChannel, portal_object: any, guild_object: GuildPrtl, creator_id: string): void {
+	portal_category: string | CategoryChannel | null, portal_object: any,
+	guild_object: GuildPrtl, creator_id: string): void {
 
 	const voice_name = guild_object.premium
 		? 'G$#-P$member_count | $status_list'
@@ -463,7 +464,8 @@ export function delete_guild(guild_id: string, guild_list: GuildPrtl[]): void {
 	});
 };
 
-export function delete_channel(channel_to_delete: VoiceChannel, message: Message | null, isPortal: boolean = false): void {
+export function delete_channel(channel_to_delete: VoiceChannel | TextChannel,
+	message: Message | null, isPortal: boolean = false): void {
 	if (!isPortal && message !== null) {
 		const author = message.author;
 		const channel_to_delete_name = channel_to_delete.name;
@@ -660,7 +662,7 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 			const attr = is_attribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				const portal_object = portal_list.find(p => p.voice_list.some(v => v.id === voice_channel.id) );
+				const portal_object = portal_list.find(p => p.voice_list.some(v => v.id === voice_channel.id));
 				if (portal_object) { // tsiakkas elegxos oti paizei kala an den to brei
 					const return_value = get_attribute(voice_channel, voice_object, portal_object, guild_object, attr);
 
