@@ -188,38 +188,36 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 };
 
 export function create_voice_channel(state: VoiceState, portal_object: PortalChannelPrtl,
-	portal_channel: GuildChannel, creator_id: string): boolean {
-	if (state && state.channel) {
-		state.channel.guild.channels
-			.create('loading...', {
+	portal_channel: GuildChannel, creator_id: string): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		if (state && state.channel) {
+			const voice_options: GuildCreateChannelOptions = {
 				type: 'voice',
 				bitrate: 96000,
-				position: portal_channel.position ? portal_channel.position : portal_channel.position + 1,
 				userLimit: portal_object.user_limit_portal,
-				parent: state.channel ? state.channel : undefined,
-			})
-			.then(channel => {
-				if (state.member) {
-					portal_object.voice_list.push(new VoiceChannelPrtl(
-						channel.id,
-						creator_id,
-						portal_object.regex_voice,
-						false,
-						0,
-						0,
-						portal_object.locale,
-						portal_object.ann_announce,
-						portal_object.ann_user
-					));
-					state.member.voice.setChannel(channel);
-				}
-			})
-			.catch(console.error);
-
-		return true;
-	}
-	return false;
-};
+				parent: state.channel.parent ? state.channel.parent : undefined
+			};
+			
+			state.channel.guild.channels
+				.create('loading...', voice_options)
+				.then(channel => {
+					if (state.member) {
+						portal_object.voice_list.push(new VoiceChannelPrtl(
+							channel.id, creator_id, portal_object.regex_voice, false, 0, 0,
+							portal_object.locale, portal_object.ann_announce, portal_object.ann_user
+						));
+						state.member.voice.setChannel(channel);
+						return resolve({ result: true, value: `created channel and moved member to new voice` });
+					} else {
+						return resolve({ result: false, value: `VC/CR/000: could not fetch member` });
+					}
+				})
+				.catch(error => {
+					return resolve({ result: false, value: `VC/CR/001: ${error}` });
+				});
+		}
+	});
+}
 
 export async function create_music_channel(guild: Guild, music_channel: string,
 	music_category: string | CategoryChannel | null, guild_object: GuildPrtl): Promise<void> {

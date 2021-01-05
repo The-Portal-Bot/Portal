@@ -1,11 +1,7 @@
-import { Client, Message, TextChannel } from "discord.js";
-import {
-	create_music_channel, create_portal_channel,
-	delete_channel,
-	create_channel,
-	getOptions
-} from "../libraries/guildOps";
+import { Client, GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
+import { create_channel, create_music_channel, delete_channel, getOptions } from "../libraries/guildOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 
 module.exports = async (
 	client: Client, message: Message, args: string[],
@@ -33,10 +29,42 @@ module.exports = async (
 					});
 
 					if (message.member) {
-						create_portal_channel(
-							message.guild, 'portal-to-voice', cat_channel,
-							guild_object.portal_list, guild_object, message.member.id
-						);
+						const portal_options: GuildCreateChannelOptions = {
+							topic: `by Portal, channels on demand`,
+							type: 'voice',
+							bitrate: 64000,
+							userLimit: 1
+						};
+						const voice_regex = guild_object.premium
+							? 'G$#-P$member_count | $status_list'
+							: 'Channel $#'
+							
+						create_channel(message.guild, 'portal-to-voice', portal_options, cat_channel)
+							.then(response => {
+								if (response.result) {
+									if (message.member) {
+										guild_object.portal_list.push(new PortalChannelPrtl(
+											response.value, message.member.id, 'portal-to-voice', voice_regex,
+											[], false, 2, 0, 0, guild_object.locale, true, true, 0
+										));
+									} else {
+										return resolve({
+											result: false,
+											value: 'could not fetch member from message'
+										});
+									}
+
+									return resolve({
+										result: true,
+										value: '*portal channel has been created.\n' +
+											'Keep in mind that due to Discord\'s limitations,*\n' +
+											'**channel names will be updated on a five minute interval.**',
+									});
+								} else {
+									return resolve(response);
+								}
+							})
+							.catch(error => { return resolve(error); });
 					}
 
 					const spotify_options = getOptions(message.guild, 'displays music users in portal channels are listening too', false);
