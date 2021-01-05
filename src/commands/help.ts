@@ -91,10 +91,10 @@ module.exports = async (
 						.catch(console.error);
 				}
 
-				if (!func_detailed || !vrbl_detailed || !pipe_detailed || !attr_detailed || !strc_detailed) {
+				if (!func_detailed && !vrbl_detailed && !pipe_detailed && !attr_detailed && !strc_detailed) {
 					return resolve({
 						result: false,
-						value: `**${args[0]}**, *does not exist in Portal™, you can run "./help help" for help.*`,
+						value: `**${args[0]}**, does not exist in Portal™, you can run "./help help" for help.`,
 					});
 				}
 			}

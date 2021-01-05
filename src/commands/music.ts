@@ -50,12 +50,6 @@ module.exports = async (
 			'.github.io/master/assets/img/logo.png';
 		const music = message.guild.channels.cache.find(channel =>
 			channel.id == guild_object.music_data.channel_id);
-		if (!music) {
-			return resolve({
-				result: false,
-				value: 'there is no music channel',
-			});
-		}
 
 		if (music) delete_channel(<TextChannel>music, message);
 

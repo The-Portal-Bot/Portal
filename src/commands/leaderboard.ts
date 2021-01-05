@@ -17,17 +17,20 @@ module.exports = async (
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
+			return resolve({ result: false, value: 'portal guild could not be fetched' });
 		}
 		const member_list = guild_object.member_list;
 		if (!member_list) {
-			return resolve({ result: true, value: 'server has no members please contact portal support' });
-
+			return resolve({ result: false, value: 'server has no members please contact portal support' });
 		}
 
 		let length = (+args.length > 0 && Object.keys(member_list).length >= args.length)
 			? +args[0]
 			: 9;
+
+		if (length <= 0) {
+			return resolve({ result: false, value: 'user number must be at least 1 (one)' });
+		}
 
 		if (!isNaN(length)) {
 			if (guild_object.member_list) {
@@ -37,13 +40,13 @@ module.exports = async (
 						const this_member = message.guild.members.cache
 							.find(member => member.id === member_object.id);
 
-						if (this_member !== null && this_member !== undefined && length > 0) {
+						if (this_member !== null && this_member !== undefined) {
 							member_levels.push(
 								{
 									emote: `${i + 1}. ${this_member.displayName}`,
 									role: `points: ${Math.round(member_object.points)}`,
 									inline: false
-								},
+								}
 							);
 							length--;
 						}

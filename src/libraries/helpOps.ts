@@ -37,7 +37,7 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
 		],
-		null,
+		thumbnail,
 		null,
 		true,
 		null,

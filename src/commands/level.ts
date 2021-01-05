@@ -25,7 +25,7 @@ module.exports = async (
 				{ emote: 'Level', role: `***${member_info.level}***`, inline: true },
 				{ emote: 'Rank', role: `***${member_info.rank}***`, inline: true },
 				{ emote: 'Tier', role: `***${member_info.tier}***`, inline: true },
-				{ emote: 'Points', role: `***${member_info.points}***`, inline: true },
+				{ emote: 'Points', role: `***${Math.round(member_info.points)}***`, inline: true },
 			],
 			null,
 			message.member,

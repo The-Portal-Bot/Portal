@@ -66,7 +66,7 @@ module.exports = async (
 
 		let return_value: string = '';
 		const executed_force = guild_object.portal_list.some(p => {
-			p.voice_list.some(v => {
+			return p.voice_list.some(v => {
 				if (v.id === message?.member?.voice?.channel?.id) {
 					if (v.creator_id === message.member.id) {
 						if (message.guild) {
@@ -118,7 +118,7 @@ module.exports = async (
 		} else {
 			return resolve({
 				result: false,
-				value: `failed to force update channel because ${return_value}*`,
+				value: `failed to force update channel because ${return_value}`,
 			});
 		}
 	});
