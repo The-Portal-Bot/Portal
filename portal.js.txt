@@ -263,9 +263,9 @@ function event_loader(event, args) {
         .then(rspns => {
             if (rspns !== null && rspns !== undefined) {
                 if (event === 'messageReactionAdd') {
-                    const music_channel_id = args.guild_list[args.messageReaction.message.guild.id]
+                    const music_channel_id = guild_list[messageReaction.message.guild.id]
                         .music_data.channel_id;
-                    const music_channel = args.messageReaction.message.guild.channels.cache
+                    const music_channel = messageReaction.message.guild.channels.cache
                         .find(channel => channel.id === music_channel_id);
 
                     music_channel

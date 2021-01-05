@@ -1,28 +1,40 @@
-/* eslint-disable no-unused-vars */
-const guld_mngr = require('../libraries/guildOps');
+import { Client, Message } from "discord.js";
+import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { included_in_url_list, is_announcement_channel, is_spotify_channel, is_music_channel, create_url_channel } from "../libraries/guildOps";
 
-module.exports = async (client, message, args, portal_guilds, portal_managed_guilds_path) => {
+module.exports = async (
+	client: Client, message: Message, args: string[],
+	guild_list: GuildPrtl[], portal_managed_guilds_path: string
+) => {
 	return new Promise((resolve) => {
+		const guild_object = guild_list.find(g => g.id === message.guild?.id);
+		if (!guild_object) {
+			return resolve({ result: true, value: 'portal guild could not be fetched' });
+		}
+		if (!message.guild) {
+			return resolve({ result: true, value: 'guild could not be fetched' });
+		}
+
 		if (args.length === 0) {
-			if (guld_mngr.included_in_url_list(message.channel.id, portal_guilds[message.guild.id])) {
+			if (included_in_url_list(message.channel.id, guild_object)) {
 				resolve ({
 					result: true,
 					value: '*this already is a URL channel.*',
 				});
 			}
-			if (guld_mngr.is_announcement_channel(message.channel.id, portal_guilds[message.guild.id])) {
+			if (is_announcement_channel(message.channel.id, guild_object)) {
 				resolve ({
 					result: true,
 					value: '*this can\'t be set as a URL channel for it is the Announcement channel.*',
 				});
 			}
-			if (guld_mngr.is_spotify_channel(message.channel.id, portal_guilds[message.guild.id])) {
+			if (is_spotify_channel(message.channel.id, guild_object)) {
 				resolve ({
 					result: true,
 					value: '*this can\'t be set as a URL channel for it is the Spotify channel.*',
 				});
 			}
-			if (guld_mngr.is_music_channel(message.channel.id, portal_guilds[message.guild.id])) {
+			if (is_music_channel(message.channel.id, guild_object)) {
 				resolve ({
 					result: true,
 					value: '*this can\'t be set as a URL channel for it is the Music channel.*',
@@ -31,12 +43,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 		}
 
 		// if (url = message.guild.channels.cache.find(channel =>
-		// channel.id == portal_guilds[message.guild.id].url_list[message.channel.id])) {
-		//     guld_mngr.delete_channel(url, message);
+		// channel.id == guild_object.url_list[message.channel.id])) {
+		//     delete_channel(url, message);
 		// }
 
 		if (args.length === 0) {
-			portal_guilds[message.guild.id].url_list.push(message.channel.id);
+			guild_object.url_list.push(message.channel.id);
 
 			resolve ({ result: true, value: '*this is now the url channel.*' });
 		}
@@ -45,12 +57,12 @@ module.exports = async (client, message, args, portal_guilds, portal_managed_gui
 			const url_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
 			if (url_channel !== '') {
-				guld_mngr.create_url_channel(message.guild, url_channel, url_category, portal_guilds[message.guild.id].url_list);
+				create_url_channel(message.guild, url_channel, url_category, guild_object.url_list);
 
 				resolve ({ result: true, value: '*url channel and category have been created*' });
 			}
 			else if (url_channel === '' && url_category !== '') {
-				guld_mngr.create_url_channel(message.guild, url_category, null, portal_guilds[message.guild.id].url_list);
+				create_url_channel(message.guild, url_category, '', guild_object.url_list);
 
 				resolve ({ result: true, value: '*url channel has been created*' });
 			}

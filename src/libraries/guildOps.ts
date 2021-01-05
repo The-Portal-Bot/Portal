@@ -1,7 +1,7 @@
 import {
 	CategoryChannel, Client, Collection, CollectorFilter, Guild, GuildChannel,
 	GuildCreateChannelOptions, GuildMember, Message, MessageCollector, TextChannel,
-	VoiceChannel, VoiceState
+	VoiceChannel, VoiceState, Role
 } from "discord.js";
 import voca from 'voca';
 import { VideoSearchResult } from "yt-search";
@@ -59,8 +59,8 @@ export function is_announcement_channel(channel_id: string, guild_object: GuildP
 
 //
 
-export function is_role(guild: Guild, role_name: string): boolean {
-	return guild.roles.cache.some(cached_role =>
+export function is_role(guild: Guild, role_name: string): Role | undefined {
+	return guild.roles.cache.find(cached_role =>
 		cached_role.name === role_name);
 };
 
@@ -151,7 +151,7 @@ export function create_url_channel(guild: Guild, url_name: string,
 	}
 };
 
-export function create_spotify_channel(guild: Guild, spotify_channel: TextChannel,
+export function create_spotify_channel(guild: Guild, spotify_channel: string,
 	spotify_category: string | CategoryChannel, guild_object: GuildPrtl): void {
 	if (spotify_category && typeof spotify_category === 'string') { // with category
 		guild.channels

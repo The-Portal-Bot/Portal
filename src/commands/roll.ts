@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
+import Roll from 'roll';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { client_talk, client_write } from "../libraries/localizationOps";
 
 module.exports = async (
 	client: Client, message: Message, args: string[],
@@ -11,12 +11,23 @@ module.exports = async (
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
-		const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id)
-		if (voiceConnection) {
-			client_talk(client, guild_list, 'leave');
-			setTimeout(function() { voiceConnection.disconnect(); }, 3000);
-		}
 
-		return resolve ({ result: true, value: client_write(message, guild_list, 'leave') });
+		if (args.length === 1) {
+			const roll_lib = new Roll();
+			const roll = roll_lib.roll(args[0]);
+			message.channel.send(
+				`${message.author}, ${roll.result} (${roll.rolled} from ${args[0]})`
+			);
+
+			return resolve({
+				result: true,
+				value: null
+			});
+		} else {
+			return resolve({
+				result: false,
+				value: '*you can run "./help roll" for help.*'
+			});
+		}
 	});
 };

@@ -1,6 +1,6 @@
 import { Client, Message } from "discord.js";
+import { update_portal_managed_guilds } from "../libraries/helpOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { client_talk, client_write } from "../libraries/localizationOps";
 
 module.exports = async (
 	client: Client, message: Message, args: string[],
@@ -11,12 +11,12 @@ module.exports = async (
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
-		const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id)
-		if (voiceConnection) {
-			client_talk(client, guild_list, 'leave');
-			setTimeout(function() { voiceConnection.disconnect(); }, 3000);
+		if (!message.guild) {
+			return resolve({ result: true, value: 'guild could not be fetched' });
 		}
 
-		return resolve ({ result: true, value: client_write(message, guild_list, 'leave') });
+		update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list)
+			.then((response) => resolve(response))
+			.catch((error) => resolve(error));
 	});
 };

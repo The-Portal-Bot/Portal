@@ -22,27 +22,28 @@ const get_country_code = function (country: string): string | null {
 	return null;
 };
 
-module.exports = async (args: {
+module.exports = async (
 	client: Client, message: Message, args: string[],
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-}) => {
+) => {
 	return new Promise((resolve) => {
-		const guild_object = args.guild_list.find(g => g.id === args.message.guild?.id);
+		console.log('args :>> ', args);
+		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
 		let code: string | null = null;
 
-		if (args.args.length === 1) {
-			code = get_country_code(args.args[0]);
+		if (args.length === 1) {
+			code = get_country_code(args[0]);
 			if (code === null) {
 				return resolve({
 					result: false,
-					value: `*${args.args[0]} is neither a country name nor a country code.*`,
+					value: `*${args[0]} is neither a country name nor a country code.*`,
 				});
 			}
 		}
-		else if (args.args.length > 1) {
+		else if (args.length > 1) {
 			return resolve({
 				result: false,
 				value: '*you can run "./help corona" for help.*',
@@ -80,7 +81,7 @@ module.exports = async (args: {
 				if (json.errors.length === 0) {
 					const country_data = json.response.find((data: any) => data.country === code);
 
-					args.message.channel.send(
+					message.channel.send(
 						create_rich_embed(
 							`COVID19 ${country_data.country} stats ${moment().format('DD/MM/YY')}`,
 							'covid-19 be api-sports',
@@ -136,7 +137,7 @@ module.exports = async (args: {
 				else {
 					return resolve({
 						result: false,
-						value: `*${args.args[0]} is neither a country name nor a country code.*`,
+						value: `*${args[0]} is neither a country name nor a country code.*`,
 					});
 				}
 			})

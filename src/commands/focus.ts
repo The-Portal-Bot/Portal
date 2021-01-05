@@ -41,35 +41,35 @@ const ask_for_focus = async function (message: Message, requester: GuildMember, 
 	});
 };
 
-module.exports = async (args: {
+module.exports = async (
 	client: Client, message: Message, args: string[],
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-}) => {
+) => {
 	return new Promise((resolve) => {
-		const guild_object = args.guild_list.find(g => g.id === args.message.guild?.id);
+		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
-		if (!args.message.member) {
+		if (!message.member) {
 			return resolve({ result: true, value: 'message author could not be fetched' });
 		}
 		const current_portal_list = guild_object.portal_list;
 
-		if (args.message.member.voice.channel === undefined || args.message.member.voice.channel === null) {
+		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
 			return resolve({
 				result: false,
 				value: '*you must be in a channel handled by* **Portal™***.*',
 			});
 		}
-		else if (!included_in_voice_list(args.message.member.voice.channel.id, current_portal_list)) {
+		else if (!included_in_voice_list(message.member.voice.channel.id, current_portal_list)) {
 			return resolve({
 				result: false,
 				value: '*the channel you are in is not handled by* **Portal™***.*',
 			});
 		}
 
-		const arg_a = args.args.join(' ').substr(0, args.args.join(' ').indexOf('|')).replace(/\s/g, '');
-		const arg_b = args.args.join(' ').substr(args.args.join(' ').indexOf('|') + 1).replace(/\s/g, '');
+		const arg_a = args.join(' ').substr(0, args.join(' ').indexOf('|')).replace(/\s/g, '');
+		const arg_b = args.join(' ').substr(args.join(' ').indexOf('|') + 1).replace(/\s/g, '');
 
 		const focus_name = arg_a === '' ? arg_b : arg_a;
 		const focus_time = arg_a === '' ? 5 : parseInt(arg_b);
@@ -81,23 +81,23 @@ module.exports = async (args: {
 			return resolve({ result: false, value: '*focus time must be a number.*' });
 		}
 
-		const member_object = args.message.member.voice.channel.members.find(member => {
+		const member_object = message.member.voice.channel.members.find(member => {
 			if (member.displayName === focus_name) return true;
 			if (member.id === focus_name) return true;
 			return false;
 		});
 
 		if (member_object) {
-			ask_for_focus(args.message, member_object, focus_time)
+			ask_for_focus(message, member_object, focus_time)
 				.then(result => {
 					if (result) {
-						if (!args.message.guild) {
+						if (!message.guild) {
 							return resolve({ result: false, value: 'could not fetch message\'s guild' });
 						}
-						if (!args.message.member) {
+						if (!message.member) {
 							return resolve({ result: false, value: 'could not fetch message\'s member' });
 						}
-						create_focus_channel(args.message.guild, args.message.member, member_object, focus_time)
+						create_focus_channel(message.guild, message.member, member_object, focus_time)
 							.then(return_value => { return resolve(return_value); });
 					}
 				});

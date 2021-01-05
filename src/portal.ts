@@ -294,14 +294,18 @@ function event_loader(event: string, args: any): void {
 		.then((rspns: ReturnPormise) => {
 			if (rspns !== null && rspns !== undefined) {
 				if (event === 'messageReactionAdd') {
-					const music_channel_id: string = args.guild_list[args.messageReaction.message.guild.id].music_data.channel_id;
-					const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-						.find((channel: TextChannel) => channel.id === music_channel_id);
+					const guild_object = (<GuildPrtl[]>args.guild_list).find(g =>
+						g.id === args.messageReaction.message.guild.id);
+					if (guild_object) {
+						const music_channel_id = guild_object.music_data.channel_id;
+						const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+							.find((channel: TextChannel) => channel.id === music_channel_id);
 
-					music_channel
-						.send(`${args.user}, ${rspns.value.toString()}`)
-						.then(msg => { msg.delete({ timeout: 5000 }); })
-						.catch(error => console.log(error));
+						music_channel
+							.send(`${args.user}, ${rspns.value.toString()}`)
+							.then(msg => { msg.delete({ timeout: 5000 }); })
+							.catch(error => console.log(error));
+					}
 				}
 				else {
 					console.log(rspns.result, rspns.value);

@@ -11,10 +11,25 @@ export interface ReturnPormiseVoice {
 	voice_connection: VoiceConnection | undefined;
 };
 
-export interface Field {
-	emote: string | null | undefined | boolean,
-	role: string | number | null | undefined | boolean,
-	inline: boolean
+export class Field {
+	emote: string | null | undefined | boolean;
+	role: string | number | null | undefined | boolean;
+	inline: boolean;
+
+	constructor(
+		emote: string | null | undefined | boolean,
+		role: string | number | null | undefined | boolean,
+		inline: boolean
+	) {
+		this.emote = emote;
+		this.role = role;
+		this.inline = inline;
+	}
+}
+
+export interface Rank {
+	level: number,
+	role: string
 }
 
 export interface Language {

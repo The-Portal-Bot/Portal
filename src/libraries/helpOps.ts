@@ -1,18 +1,18 @@
-import { Client, Message, Guild, DMChannel, GuildMember, User, MessageEmbed, Channel, TextChannel, GuildChannel, VoiceConnection } from "discord.js";
-const { writeFileSync, writeFile } = require("file-system");
+import { Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, TextChannel, User, VoiceConnection } from "discord.js";
 import { cloneDeep } from "lodash";
-
-import { client_talk, client_write } from "./localizationOps";
+import { VideoSearchResult } from "yt-search";
 import { GiveRole, GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
-import { VideoSearchResult } from "yt-search";
+import { client_talk, client_write } from "./localizationOps";
+
+const { writeFileSync, writeFile } = require("file-system");
 
 export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): GuildPrtl | undefined {
 	return guild_list.find(g => g.id === guild_id);
 };
 
-export function create_role_message(channel: DMChannel, role_list: GiveRolePrtl[], title: string, desc: string,
+export function create_role_message(channel: TextChannel, role_list: GiveRolePrtl[], title: string, desc: string,
 	colour: string, role_emb: Field[], role_map: GiveRole[]): void {
 	const role_message_emb: MessageEmbed = create_rich_embed(title, desc, colour, role_emb, null, null, null, null, null);
 	channel

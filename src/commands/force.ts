@@ -38,26 +38,26 @@ const copyKey = (portal_object: PortalChannelPrtl, oldKey: string, cpyKey: strin
 	return portal_object;
 };
 
-module.exports = async (args: {
+module.exports = async (
 	client: Client, message: Message, args: string[],
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-}) => {
+) => {
 	return new Promise((resolve) => {
-		const guild_object = args.guild_list.find(g => g.id === args.message.guild?.id);
+		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
-		if (!args.message.member) {
+		if (!message.member) {
 			return resolve({ result: true, value: 'member could not be fetched' });
 		}
 
-		if (args.message.member.voice.channel === undefined || args.message.member.voice.channel === null) {
+		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
 			return resolve({
 				result: false,
 				value: '*you must be in a channel handled by* **Portal™***.*',
 			});
 		}
-		else if (!included_in_voice_list(args.message.member.voice.channel.id, guild_object.portal_list)) {
+		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
 				value: '*the channel you are in is not handled by* **Portal™***.*',
@@ -67,24 +67,24 @@ module.exports = async (args: {
 		let return_value: string = '';
 		const executed_force = guild_object.portal_list.some(p => {
 			p.voice_list.some(v => {
-				if (v.id === args.message?.member?.voice?.channel?.id) {
-					if (v.creator_id === args.message.member.id) {
-						if (args.message.guild) {
+				if (v.id === message?.member?.voice?.channel?.id) {
+					if (v.creator_id === message.member.id) {
+						if (message.guild) {
 							const updated_name = regex_interpreter(
 								v.regex,
-								args.message.member.voice.channel,
+								message.member.voice.channel,
 								v,
 								guild_object.portal_list,
 								guild_object,
-								args.message.guild
+								message.guild
 							);
 
-							args.message.member.voice.channel.clone({ name: updated_name })
+							message.member.voice.channel.clone({ name: updated_name })
 								.then(clone => {
-									if (args.message.member && args.message.member.voice.channel) {
-										p = copyKey(p, args.message.member.voice.channel.id, 'intermidiary');
+									if (message.member && message.member.voice.channel) {
+										p = copyKey(p, message.member.voice.channel.id, 'intermidiary');
 
-										args.message.member?.voice.channel?.members.forEach(member => {
+										message.member?.voice.channel?.members.forEach(member => {
 											member.voice.setChannel(clone);
 										});
 

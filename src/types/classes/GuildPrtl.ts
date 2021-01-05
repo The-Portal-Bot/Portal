@@ -1,4 +1,5 @@
 import { VideoSearchResult } from "yt-search";
+import { Rank } from "../interfaces/InterfacesPrtl";
 import { GiveRolePrtl } from "./GiveRolePrtl";
 import { MemberPrtl } from "./MemberPrtl";
 import { PortalChannelPrtl } from "./PortalChannelPrtl";
@@ -23,7 +24,7 @@ export class GuildPrtl {
 	public member_list: MemberPrtl[];
 	public url_list: string[];
 	public role_list: GiveRolePrtl[];
-	public ranks: string[];
+	public ranks: Rank[];
 	public auth_role: string[];
 	public spotify: string | null;
 	public music_data: MusicData;
@@ -41,7 +42,7 @@ export class GuildPrtl {
 		member_list: MemberPrtl[],
 		url_list: string[],
 		role_list: GiveRolePrtl[],
-		ranks: string[],
+		ranks: Rank[],
 		auth_role: string[],
 		spotify: string,
 		music_data: MusicData,

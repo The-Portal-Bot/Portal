@@ -1,7 +1,17 @@
-export interface GiveRole {
-	role_id: string,
-	give: string,
-	strip: string
+export class GiveRole {
+	role_id: string;
+	give: string;
+	strip: string;
+
+	constructor(
+		role_id: string,
+		give: string,
+		strip: string
+	) {
+		this.role_id = role_id;
+		this.give = give;
+		this.strip = strip;
+	}
 }
 
 export class GiveRolePrtl {

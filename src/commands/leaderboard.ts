@@ -10,12 +10,12 @@ const compare = function (member_a: MemberPrtl, member_b: MemberPrtl) {
 	return 0;
 };
 
-module.exports = async (args: {
+module.exports = async (
 	client: Client, message: Message, args: string[],
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-}) => {
+) => {
 	return new Promise((resolve) => {
-		const guild_object = args.guild_list.find(g => g.id === args.message.guild?.id);
+		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
@@ -25,16 +25,16 @@ module.exports = async (args: {
 
 		}
 
-		let length = (+args.args.length > 0 && Object.keys(member_list).length >= args.args.length)
-			? +args.args[0]
+		let length = (+args.length > 0 && Object.keys(member_list).length >= args.length)
+			? +args[0]
 			: 9;
 
 		if (!isNaN(length)) {
 			if (guild_object.member_list) {
 				const member_levels: Field[] = [];
 				member_list.sort(compare).forEach((member_object, i) => {
-					if (args.message.guild) {
-						const this_member = args.message.guild.members.cache
+					if (message.guild) {
+						const this_member = message.guild.members.cache
 							.find(member => member.id === member_object.id);
 
 						if (this_member !== null && this_member !== undefined && length > 0) {
@@ -56,7 +56,7 @@ module.exports = async (args: {
 					}
 				});
 
-				args.message.channel.send(create_rich_embed(
+				message.channel.send(create_rich_embed(
 					'Leaderboard',
 					null,
 					'#00FFFF',

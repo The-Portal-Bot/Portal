@@ -1,19 +1,19 @@
 import { Client, Message } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
-module.exports = async (args: {
+module.exports = async (
 	client: Client, message: Message, args: string[],
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-}) => {
+) => {
 	return new Promise((resolve) => {
-		const guild_object = args.guild_list.find(g => g.id === args.message.guild?.id);
+		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
 
 		const roles = guild_object.auth_role;
 		const get_role_name = (role_id: string, i: number) => {
-			const role = args.message?.guild?.roles.cache.find(r => r.id === role_id);
+			const role = message?.guild?.roles.cache.find(r => r.id === role_id);
 			return role ? `${i}. ${role.name}` : `${i}. undefined`;
 		};
 
