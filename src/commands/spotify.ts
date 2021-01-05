@@ -1,7 +1,7 @@
 import { Client, Message, TextChannel } from "discord.js";
 import {
-	create_spotify_channel, delete_channel, included_in_url_list,
-	is_announcement_channel, is_music_channel, is_spotify_channel
+	delete_channel, included_in_url_list, is_announcement_channel,
+	is_music_channel, is_spotify_channel, getOptions, create_channel
 } from "../libraries/guildOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
@@ -61,24 +61,37 @@ module.exports = async (
 		else if (args.length > 0) {
 			const spotify_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
 			const spotify_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+			const spotify_options = getOptions(message.guild, 'displays music users in portal channels are listening too', false);
 
 			if (spotify_channel !== '') {
-				create_spotify_channel(
-					message.guild, spotify_channel, spotify_category, guild_object);
-
-				return resolve({
-					result: true,
-					value: '*spotify channel and category have been created*'
-				});
+				create_channel(
+					message.guild, spotify_channel,
+					spotify_options, spotify_category
+				)
+					.then(response => {
+						if (response.result) {
+							guild_object.spotify = response.value;
+							return resolve({ result: true, value: 'spotify channel and category created' });
+						} else {
+							return resolve(response);
+						}
+					})
+					.catch(error => { return resolve(error); });
 			}
 			else if (spotify_channel === '' && spotify_category !== '') {
-				// maybe make category nullable
-				create_spotify_channel(message.guild, spotify_category, '', guild_object);
-
-				return resolve({
-					result: true,
-					value: '*spotify channel has been created*'
-				});
+				create_channel(
+					message.guild, spotify_category,
+					spotify_options, null
+				)
+					.then(response => {
+						if (response.result) {
+							guild_object.spotify = response.value;
+							return resolve({ result: true, value: 'spotify channel created' });
+						} else {
+							return resolve(response);
+						}
+					})
+					.catch(error => { return resolve(error); });
 			}
 			else {
 				return resolve({

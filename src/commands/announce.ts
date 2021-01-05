@@ -13,7 +13,7 @@ module.exports = async (
             return resolve({ result: false, value: 'could not find guild.' });
         }
         if (!guild_object.announcement) {
-            return resolve({ result: false, value: 'announcements channel has not been set.' });
+            return resolve({ result: false, value: 'announcements channel has not been set yet.' });
         }
 
         let body = args.join(' ').substr(0, args.join(' ').indexOf('|'));

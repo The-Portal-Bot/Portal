@@ -278,8 +278,7 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 			}
 			if (command_options !== undefined) {
 				message_reply(rspns.result, message.channel, message, message.author,
-					rspns ? 'executed correctly' : 'executed falsely', guild_list, client,
-					command_options.auto_delete);
+					rspns.value, guild_list, client, command_options.auto_delete);
 			}
 
 			update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);

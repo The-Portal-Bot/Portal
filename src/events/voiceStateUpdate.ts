@@ -11,8 +11,10 @@ import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	args: {client: Client, newState: VoiceState, oldState: VoiceState,
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string}): Promise<ReturnPormise> => {
+	args: {
+		client: Client, newState: VoiceState, oldState: VoiceState,
+		guild_list: GuildPrtl[], portal_managed_guilds_path: string
+	}): Promise<ReturnPormise> => {
 	if (args.client.voice == undefined || !args.newState.member) {
 		return {
 			result: false,
@@ -52,44 +54,39 @@ module.exports = async (
 		if (newChannel !== null) { // joined from null
 			report_message += 'null->existing\n';
 			const guild_object = args.guild_list.find(g => g.id === args.newState.guild.id);
-			if (!guild_object) return {
-				result: false,
-				value: 'error with data'
-			};
+			if (!guild_object) return { result: false, value: 'error with data' };
 
 			// joined portal channel
 			if (included_in_portal_list(newChannel.id, guild_object.portal_list)) {
+				console.log('mesa\n\n');
 				const portal_object = guild_object.portal_list.find(p => p.id === newChannel.id);
-				if (!portal_object) return {
-					result: false,
-					value: 'error with data'
-				};
+				if (!portal_object) return { result: false, value: 'error with data' };
+				console.log('mesa2\n\n');
 
 				create_voice_channel(
 					args.newState, portal_object,
 					newChannel, args.newState.id);
+				console.log('mesa3\n\n');
+
 				generate_channel_name(
 					newChannel,
 					guild_object.portal_list,
 					guild_object,
 					args.newState.guild);
+				console.log('mesa4\n\n');
 
 			}
-			else if (included_in_voice_list(
-				newChannel.id, guild_object.portal_list)) { // joined voice channel
-
+			// joined voice channel
+			else if (included_in_voice_list(newChannel.id, guild_object.portal_list)) {
 				generate_channel_name(
 					newChannel,
 					guild_object.portal_list,
 					guild_object,
 					args.newState.guild);
 				update_timestamp(args.newState, args.guild_list); // points for voice
-
 			}
 			else { // joined other channel
-
 				update_timestamp(args.newState, args.guild_list); // points for other
-
 			}
 		}
 	}
@@ -97,10 +94,7 @@ module.exports = async (
 		if (newChannel === null) {
 			report_message += 'existing->null\n';
 			const guild_object = args.guild_list.find(g => g.id === args.newState.guild.id);
-			if (!guild_object) return {
-				result: false,
-				value: 'error with data'
-			};
+			if (!guild_object) return { result: false, value: 'error with data' };
 
 			// user left voice channel
 			if (included_in_voice_list(oldChannel.id, guild_object.portal_list)) {
@@ -124,10 +118,7 @@ module.exports = async (
 		else if (newChannel !== null) { // Moved from channel to channel
 			report_message += 'existing->existing\n';
 			const guild_object = args.guild_list.find(g => g.id === args.newState.guild.id);
-			if (!guild_object) return {
-				result: false,
-				value: 'error with data'
-			};
+			if (!guild_object) return { result: false, value: 'error with data' };
 
 			if (included_in_portal_list(oldChannel.id, guild_object.portal_list)) {
 
@@ -174,10 +165,7 @@ module.exports = async (
 					}
 
 					const portal_object = guild_object.portal_list.find(p => p.id === newChannel.id);
-					if (!portal_object) return {
-						result: false,
-						value: 'error with data'
-					};
+					if (!portal_object) return { result: false, value: 'error with data' };
 
 					create_voice_channel(
 						args.newState, portal_object,
@@ -249,10 +237,7 @@ module.exports = async (
 					newChannel.id, guild_object.portal_list)) { // Joined portal channel
 					report_message += '->dest: portal_list\n';
 					const portal_object = guild_object.portal_list.find(p => p.id === newChannel.id);
-					if (!portal_object) return {
-						result: false,
-						value: 'error with data'
-					};
+					if (!portal_object) return { result: false, value: 'error with data' };
 
 					create_voice_channel(
 						args.newState, portal_object,

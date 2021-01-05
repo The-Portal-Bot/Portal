@@ -27,7 +27,6 @@ module.exports = async (
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
 ) => {
 	return new Promise((resolve) => {
-		console.log('args :>> ', args);
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
@@ -132,7 +131,10 @@ module.exports = async (
 							null,
 							null
 						));
-					return resolve({ result: true, value: `*${country_data.country} corona stats.*` });
+					return resolve({
+						result: true,
+						value: `*${country_data.country} corona stats.*`
+					});
 				}
 				else {
 					return resolve({
