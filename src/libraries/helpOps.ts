@@ -37,7 +37,7 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
 		],
-		thumbnail,
+		null,
 		null,
 		true,
 		null,
@@ -85,7 +85,9 @@ export function update_message(guild: Guild, guild_object: GuildPrtl, yts: Video
 				.fetch(guild_object.music_data.message_id)
 				.then((message: Message) => {
 					message.edit(music_message_emb)
-						.then((msg: Message) => console.log(`Updated the content of a message to ${msg.content}`))
+						.then((msg: Message) =>
+							console.log(`Updated the content of a message to ${msg.content}`)
+						)
 						.catch(console.error);
 				})
 				.catch(console.error);
@@ -154,9 +156,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		const portal_list = current_guild.portal_list;
 
 		const controlled_by_portal = portal_list.some(p =>
-			p.voice_list.some(v =>
-				v.id === current_voice.id
-			)
+			p.voice_list.some(v => v.id === current_voice.id)
 		);
 
 		if (!controlled_by_portal) {

@@ -199,22 +199,22 @@ client.on('message', async (message: Message) => {
 	// not a portal command
 	if (command_options === undefined) return;
 
-	const current_guild = guildPrtl_to_object(guild_list, message.guild.id);
-	if (!current_guild) {
+	const guild_obejct = guildPrtl_to_object(guild_list, message.guild.id);
+	if (!guild_obejct) {
 		message_reply(false, message.channel, message, message.author,
 			'this guild is not in database, please contact portal support', guild_list, client);
 		return;
 	}
 
 	if (command_options.auth) {
-		if (!is_authorized(current_guild.auth_role, message.member)) {
+		if (!is_authorized(guild_obejct.auth_role, message.member)) {
 			message_reply(false, message.channel, message, message.author,
 				'you are not authorized to use this command', guild_list, client);
 			return;
 		}
 	}
 
-	if (command_options.premium && !current_guild.premium) {
+	if (command_options.premium && !guild_obejct.premium) {
 		message_reply(false, message.channel, message, message.author,
 			'this server is not premium', guild_list, client);
 		return;
@@ -227,9 +227,9 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 	command_options: CommandOptions, active_cooldown: ActiveCooldown[]): boolean {
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
-			.then((rspns: ReturnPormise) => {
-				message_reply(rspns.result, message.channel, message,
-					message.author, rspns.value, guild_list, client, command_options ? command_options.auto_delete : true);
+			.then((response: ReturnPormise) => {
+				message_reply(response.result, message.channel, message,
+					message.author, response.value, guild_list, client, command_options ? command_options.auto_delete : true);
 				update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 			});
 		return true;
@@ -262,8 +262,8 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 	}
 
 	require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
-		.then((rspns: ReturnPormise) => {
-			if (rspns.result === true) {
+		.then((response: ReturnPormise) => {
+			if (response.result === true) {
 				active_cooldown.push({
 					member: message.author.id,
 					command: cmd,
@@ -277,8 +277,8 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 				}
 			}
 			if (command_options !== undefined) {
-				message_reply(rspns.result, message.channel, message, message.author,
-					rspns.value, guild_list, client, command_options.auto_delete);
+				message_reply(response.result, message.channel, message, message.author,
+					response.value, guild_list, client, command_options.auto_delete);
 			}
 
 			update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
@@ -288,55 +288,59 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 }
 
 function event_loader(event: string, args: any): void {
+	// Ignore other bots and also itself ('botception')
 	console.log(`event emitted: ${event}`);
 	require(`./events/${event}.js`)(args)
-		.then((rspns: ReturnPormise) => {
-			if (rspns !== null && rspns !== undefined) {
+		.then((response: ReturnPormise) => {
+			if (response !== null && response !== undefined) {
 				if (event === 'messageReactionAdd') {
+					const messageReaction = <MessageReaction>args.messageReaction;
 					const guild_object = (<GuildPrtl[]>args.guild_list).find(g =>
 						g.id === args.messageReaction.message.guild.id);
-					if (guild_object) {
-						const music_channel_id = guild_object.music_data.channel_id;
-						const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-							.find((channel: TextChannel) => channel.id === music_channel_id);
 
-						music_channel
-							.send(`${args.user}, ${rspns.value.toString()}`)
-							.then(msg => { msg.delete({ timeout: 5000 }); })
-							.catch(error => console.log(error));
+					if (guild_object) {
+						if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
+							const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+								.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
+							// auto na trexei mono otan einai music reaction
+
+							music_channel
+								.send(`${args.user}, ${response.value.toString()}`)
+								.then(msg => { msg.delete({ timeout: 5000 }); })
+								.catch(error => console.log(error));
+						}
 					}
 				}
 				else {
-					console.log(rspns.result, rspns.value);
+					console.log(response.result, response.value);
 				}
 			}
 		});
 };
 
 function portal_channel_handler(message: Message): void {
-	let channel_type = null, channel_support = null, channel_talk = null;
+	let guild_obejct = guild_list.find((g: GuildPrtl) => g.id === message.guild?.id);
+	if (!guild_obejct) return;
 
-	let current_guild: GuildPrtl | undefined = guild_list.find((g: GuildPrtl) => {
-		if (message && message.guild) {
-			g.id === message.guild.id
-		}
-	});
-	if (!current_guild) return;
-
-	if (included_in_url_list(message.channel.id, current_guild)) {
+	if (included_in_url_list(message.channel.id, guild_obejct)) {
+		console.log('it is url channel');
 		if (is_url(message.content)) {
 			client_talk(client, guild_list, 'url');
 			return;
 		}
 		else {
-			channel_type = 'URL';
-			channel_support = 'url';
-			channel_talk = 'read_only';
+			client_talk(client, guild_list, 'read_only');
+			message_reply(false, message.channel, message, message.author,
+				'url-only channel', guild_list, client);
+			message.delete();
 		}
 	}
-	else if (current_guild.music_data.channel_id === message.channel.id) {
+	else if (guild_obejct.music_data.channel_id === message.channel.id) {
+		console.log('it is music channel');
 		start(client, message, message.content, guild_list)
 			.then(joined => {
+				console.log('joined :>> ', joined);
+
 				message_reply(joined.result, message.channel, message,
 					message.author, joined.value, guild_list, client, true);
 			})
@@ -347,14 +351,6 @@ function portal_channel_handler(message: Message): void {
 		return;
 	}
 
-	if (channel_type !== null && channel_support !== null && channel_talk !== null) {
-		client_talk(client, guild_list, channel_talk);
-		message_reply(false, message.channel, message,
-			message.author, `${channel_type} channel is ${channel_support}-only.`,
-			guild_list, client);
-		message.delete();
-		return;
-	}
 }
 
 function ranking_system(message: Message): void {

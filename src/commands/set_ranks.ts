@@ -13,8 +13,8 @@ function is_role(rank: Rank, roles: Role[]) {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
+    client: Client, message: Message, args: string[],
+    guild_list: GuildPrtl[], portal_managed_guilds_path: string
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);

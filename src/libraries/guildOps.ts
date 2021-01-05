@@ -67,9 +67,10 @@ export function is_announcement_channel(channel_id: string, guild_object: GuildP
 
 //
 
-export function is_role(guild: Guild, role_name: string): Role | undefined {
+export function get_role(guild: Guild, role_name_or_name: string): Role | undefined {
 	return guild.roles.cache.find(cached_role =>
-		cached_role.name === role_name);
+		cached_role.id === role_name_or_name || cached_role.name === role_name_or_name
+	);
 };
 
 //
@@ -197,7 +198,7 @@ export function create_voice_channel(state: VoiceState, portal_object: PortalCha
 				userLimit: portal_object.user_limit_portal,
 				parent: state.channel.parent ? state.channel.parent : undefined
 			};
-			
+
 			state.channel.guild.channels
 				.create('loading...', voice_options)
 				.then(channel => {

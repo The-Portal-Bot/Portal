@@ -23,25 +23,25 @@ module.exports = async (
 			if (is_music_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: '*this already is, the Music channel.*',
+					value: 'this already is, the Music channel',
 				});
 			}
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: '*this can\'t be set as the Music channel for it is the Spotify channel.*',
+					value: 'this can\'t be set as the Music channel for it is the Spotify channel',
 				});
 			}
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: '*this can\'t be set as the Music channel for it is the Announcement channel.*',
+					value: 'this can\'t be set as the Music channel for it is the Announcement channel',
 				});
 			}
 			if (included_in_url_list(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: '*this can\'t be set as the Music channel for it is an url channel.*',
+					value: 'this can\'t be set as the Music channel for it is an url channel',
 				});
 			}
 		}
@@ -55,13 +55,15 @@ module.exports = async (
 
 		if (args.length === 0) {
 			guild_object.music_data.channel_id = message.channel.id;
+			const new_music = message.guild.channels.cache.find(channel =>
+				channel.id == guild_object.music_data.channel_id);
 
-			create_music_message(<TextChannel>music, portal_icon_url, guild_object);
+			if (!new_music)
+				return resolve({ result: false, value: 'channel could not be fetched' });
 
-			return resolve({
-				result: true,
-				value: '*this is now the Music channel.*',
-			});
+			create_music_message(<TextChannel>new_music, portal_icon_url, guild_object);
+
+			return resolve({ result: true, value: 'this is now the Music channel' });
 		}
 		else if (args.length > 0) {
 			const music_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
@@ -73,17 +75,17 @@ module.exports = async (
 			if (music_channel !== '') {
 				create_music_channel(message.guild, music_channel, music_category, guild_object);
 				result = true;
-				value = '*music channel and category have been created*';
+				value = 'music channel and category have been created';
 			}
 			else if (music_channel === '' && music_category !== '') {
 				create_music_channel(message.guild, music_category, null, guild_object);
 				result = true;
-				value = '*music channel has been created*';
+				value = 'music channel has been created';
 			}
 			else {
 				return resolve({
 					result: false,
-					value: '*you can run "./help music" for help.*',
+					value: 'you can run "./help music" for help',
 				});
 			}
 

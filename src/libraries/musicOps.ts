@@ -9,14 +9,18 @@ import { join_user_voice, update_message } from './helpOps';
 // const ytdl = require('ytdl-core');
 
 export async function start(client: Client, message: Message, search_term: string, guild_list: GuildPrtl[]): Promise<ReturnPormise> {
+	console.log('starting :>> ');
 	return new Promise((resolve) => {
 		if (!search_term || search_term === '') {
+			console.log('cannot search for nothing.');
 			return resolve({ result: false, value: 'cannot search for nothing.' });
 		}
 		if (!message.member) {
+			console.log('member has left the guild.');
 			return resolve({ result: false, value: 'member has left the guild.' });
 		}
 		if (!message.member.voice.channel) {
+			console.log('you are not connected to any channel.');
 			return resolve({ result: false, value: 'you are not connected to any channel.' });
 		}
 
@@ -24,6 +28,7 @@ export async function start(client: Client, message: Message, search_term: strin
 		const guild_object = guild_list.find(guild => guild.id === guild_id);
 
 		if (guild_object === undefined) {
+			console.log('could not find your guild_object.');
 			return resolve({ result: false, value: 'could not find your guild_object.' });
 		}
 
@@ -46,7 +51,7 @@ export async function start(client: Client, message: Message, search_term: strin
 
 		join_user_voice(client, message, guild_list, false)
 			.then(join_attempt => {
-				if (join_attempt.result === true) {
+				if (join_attempt.result) {
 					yts(search_term)
 						.then(yts_attempt => {
 							if (yts_attempt && yts_attempt.videos.length > 0) {
@@ -82,11 +87,12 @@ export async function start(client: Client, message: Message, search_term: strin
 						.catch(error => console.log(error));
 				}
 				else {
-					console.log(join_attempt.value);
 					return resolve({ result: false, value: join_attempt.value });
 				}
 			})
-			.catch(error => console.log(error));
+			.catch(error => {
+				return resolve({ result: false, value: error });
+			});
 	});
 };
 

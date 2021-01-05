@@ -81,7 +81,6 @@ function reaction_role_manager(client: Client, guild_list: GuildPrtl[], messageR
 function reaction_music_manager(client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User) {
 	if (!messageReaction.message.guild) return { result: false, value: 'message has no guild' };
 	if (!client.voice) return { result: false, value: 'message has no client' };
-	if (!messageReaction.message.guild) return { result: false, value: 'message has no guild' };
 
 	const guild_object = guild_list.find(g => {
 		if (messageReaction && messageReaction.message && messageReaction.message.guild)
@@ -90,6 +89,9 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 	if (!guild_object) return { result: false, value: 'message is not role giving' };
 	if (!guild_object.music_data) return { result: false, value: 'message has no music_data' };
 	if (!guild_object.music_data.votes) return { result: false, value: 'message has no music votes' };
+	if (guild_object.music_data.message_id !== messageReaction.message.id) {
+		return { result: false, value: 'message is not music player' };
+	}
 
 	let voice_connection_in_reaction_guild: VoiceConnection | undefined = undefined;
 
