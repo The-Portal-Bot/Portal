@@ -45,11 +45,6 @@ module.exports = async (
 			}
 		}
 
-		// if (url = message.guild.channels.cache.find(channel =>
-		// channel.id == guild_object.url_list[message.channel.id])) {
-		//     delete_channel(url, message);
-		// }
-
 		if (args.length === 0) {
 			guild_object.url_list.push(message.channel.id);
 

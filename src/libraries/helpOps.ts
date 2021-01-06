@@ -303,37 +303,6 @@ export function create_rich_embed(title: string | null, description: string | nu
 	return rich_message;
 };
 
-export function remove_empty_voice_channels(guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string): void {
-	guild.channels.cache.forEach(channel => {
-		if (!guild_list.some(g => g.id === guild.id)) {
-			guild.leave()
-				.then(guild => console.log(`Left guild ${guild}`))
-				.catch(console.error);
-		} else if (!channel.members.size) {
-			const current_guild = guild_list.some(g =>
-				g.portal_list.some(p =>
-					p.voice_list.some((v, index) => {
-						if (v.id === channel.id) {
-							console.log('Deleting channel: ', channel.name, 'from ', channel.guild.name);
-							// guld_mngr.delete_channel(channel);
-							if (channel.deletable) {
-								channel
-									.delete()
-									.then(g => console.log(`Deleted channel with id: ${g}`))
-									.catch(console.error);
-								p.voice_list.splice(index, 1)
-							}
-							return true;
-						}
-					})
-				)
-			);
-		}
-	});
-
-	update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
-};
-
 export async function update_portal_managed_guilds(
 	force: boolean, portal_managed_guilds_path: string, guild_list: GuildPrtl[]
 ): Promise<ReturnPormise> {

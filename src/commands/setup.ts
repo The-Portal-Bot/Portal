@@ -107,7 +107,7 @@ module.exports = async (
 			.catch(console.error);
 
 		return resolve({
-			result: true, value: 'setup has ran succesfull',
+			result: true, value: 'setup has ran succesfully',
 		});
 	});
 };
