@@ -64,13 +64,16 @@ client.on('ready', () =>
 	event_loader('ready', {
 		'client': client,
 		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'portal_managed_guilds_path': portal_managed_guilds_path
 	})
 );
 
 // When bot connects to shard again ?
 client.on('shardReconnecting', (id: number) =>
 	event_loader('shardReconnecting', {
+		'client': client,
+		'guild_list': guild_list,
+		'portal_managed_guilds_path': portal_managed_guilds_path,
 		'id': id
 	})
 );

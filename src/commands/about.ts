@@ -38,6 +38,6 @@ module.exports = async (
             null)
         );
 
-        return resolve({ result: true, value: 'about message.' });
+        return resolve({ result: true, value: '' });
     });
 };
