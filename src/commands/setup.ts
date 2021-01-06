@@ -74,7 +74,7 @@ module.exports = async (
 					create_channel(message.guild, 'spotify', spotify_options, cat_channel)
 					.then(response => {
 							if (response.result) {
-								guild_object.url_list.push(response.value);
+								guild_object.spotify = response.value;
 								return resolve({ result: true, value: 'spotify channel and category created' });
 							} else {
 								return resolve(response);
@@ -84,7 +84,7 @@ module.exports = async (
 					create_channel(message.guild, 'announcement', announcement_options, cat_channel)
 					.then(response => {
 							if (response.result) {
-								guild_object.url_list.push(response.value);
+								guild_object.announcement = response.value;
 								return resolve({ result: true, value: 'announcement channel and category created' });
 							} else {
 								return resolve(response);
