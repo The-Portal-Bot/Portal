@@ -7,7 +7,7 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		if (args.length <= 0) {
-			resolve({ result: false, value: 'you should give one role.\nyou can run "./help auth_role_rem" for help.*' });
+			resolve({ result: false, value: 'you should give one role.\nyou can run "./help deauthorise" for help.*' });
 		}
 
 		const role_name = args.join(' ');
@@ -22,9 +22,11 @@ module.exports = async (
 			if(guild_object.auth_role.some((ar, index) => {
 				if (ar === role.id) {
 					guild_object.auth_role.splice(index, 1);
+					return true;
 				}
+				return false;
 			})) {
-				return resolve({ result: true, value: `role ${role_name} has been removed from authorized roles.` });
+				return resolve({ result: true, value: `role ${role_name} has been removed from authorised roles.` });
 			}
 			
 			return resolve({ result: false, value: `role ${role_name} is not in role list.` });

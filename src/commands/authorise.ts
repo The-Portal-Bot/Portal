@@ -7,7 +7,7 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		if (args.length <= 0) {
-			resolve({ result: false, value: 'you should give one role.\nyou can run "./help auth_role_rem" for help.*' });
+			resolve({ result: false, value: 'you should give one role.\nyou can run "./help authorise" for help.*' });
 		}
 
 		const role_name = args.join(' ');
@@ -21,7 +21,7 @@ module.exports = async (
 
 			for (const i in guild_object.auth_role) {
 				if (guild_object.auth_role[i] === role.id) {
-					return resolve({ result: false, value: `role "${role_name}" is already an authorized role.` });
+					return resolve({ result: false, value: `role "${role_name}" is already an authorised role.` });
 				}
 			}
 			guild_object.auth_role.push(role.id);

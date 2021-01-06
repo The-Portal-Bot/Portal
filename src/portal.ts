@@ -69,8 +69,18 @@ client.on('ready', () =>
 );
 
 // When bot connects to shard again ?
-client.on('shardReconnecting', (id: number) =>
-	event_loader('shardReconnecting', {
+client.on('shardResume', (id: number) =>
+	event_loader('shardResume', {
+		'client': client,
+		'guild_list': guild_list,
+		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'id': id
+	})
+);
+
+// When bot connects to shard again ?
+client.on('shardStart', (id: number) =>
+	event_loader('shardStart', {
 		'client': client,
 		'guild_list': guild_list,
 		'portal_managed_guilds_path': portal_managed_guilds_path,

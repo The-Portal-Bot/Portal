@@ -34,10 +34,15 @@ function time_out_repeat(current_voice_channel: VoiceChannelPrtl, current_guild:
 	}, minutes * 60 * 1000);
 };
 
-function display_spotify_song(current_guild: Guild, current_channel: VoiceChannel,
-	guild_list: GuildPrtl[], newPresence: Presence, client: Client) {
+function display_spotify_song(
+	current_guild: Guild, current_channel: VoiceChannel,
+	guild_list: GuildPrtl[], newPresence: Presence, client: Client
+) {
+	console.log('eimai edo\n\n');
 	current_channel.members.forEach(member => {
+		console.log('member :>> ', member);
 		member.presence.activities.some(activity => {
+			console.log('activity.name :>> ', activity.name);
 			if (activity.name === 'Spotify' && newPresence.guild) {
 				const spotify = <TextChannel | undefined>newPresence.guild.channels.cache.find(c => {
 					const guild_object = guild_list.find(g => g.id === current_guild.id);
@@ -80,6 +85,8 @@ function display_spotify_song(current_guild: Guild, current_channel: VoiceChanne
 module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], newPresence: Presence | undefined }
 ) => {
+	console.log('WHAT I LOVE\n\n');
+
 	if (args.newPresence === null) { return { result: true, value: 'could not fetch presence' }; }
 	if (args.newPresence === undefined) { return { result: true, value: 'could not fetch presence' }; }
 	if (args.newPresence.user === null) { return { result: true, value: 'could not fetch presence user' }; }
@@ -89,6 +96,7 @@ module.exports = async (
 
 	const current_guild = args.newPresence.guild;
 	const current_channel = args.newPresence.member.voice.channel;
+	console.log('MPIKA OK PALIK ALA1\n\n');
 
 	if (!included_in_portal_guilds(args.newPresence.guild.id, args.guild_list)) {
 		return {
@@ -96,6 +104,7 @@ module.exports = async (
 			value: client_log(null, args.guild_list, 'presence_controlled_away', args.guild_list),
 		};
 	}
+	console.log('MPIKA OK PALIK ALA2\n\n');
 
 	if (current_channel) { // if member is in a channel
 		const guild_object = args.guild_list.find(g => g.id === current_guild.id);
@@ -104,10 +113,12 @@ module.exports = async (
 			p.voice_list.some(v => {
 				if (v.id === current_channel.id) {
 					if (guild_object.spotify !== null && args.newPresence) {
-						display_spotify_song(current_guild, current_channel, args.guild_list, args.newPresence, args.client);
+						display_spotify_song(current_guild, current_channel, args.guild_list,
+							args.newPresence, args.client);
 					}
 
-					time_out_repeat(v, current_guild, current_channel, guild_object.portal_list, args.guild_list, 5);
+					time_out_repeat(v, current_guild, current_channel, guild_object.portal_list,
+						args.guild_list, 5);
 				}
 			});
 		});

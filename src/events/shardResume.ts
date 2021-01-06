@@ -9,10 +9,8 @@ import { GuildPrtl } from "../types/classes/GuildPrtl";
 module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], portal_managed_guilds_path: string, id: string }
 ) => {
-	if (args.client.user === null || args.client.user === undefined) return {
-		result: false,
-		value: 'could not fetch user from client'
-	}
+	if (args.client.user === null || args.client.user === undefined)
+		return { result: false, value: 'could not fetch user from client' };
 
 	// Changing Portal bots status
 	args.client.user.setActivity('./help', {
@@ -21,16 +19,18 @@ module.exports = async (
 	});
 
 	let index = 0;
-	console.log(`> loading portal\'s guilds from ${args.portal_managed_guilds_path}`);
-	args.client.guilds.cache.forEach((guild) => {
-		console.log(`> ${index++}. ${guild} (${guild.id})`);
+	const guild = args.client.guilds.cache.find(g => g.id === args.id);
+	if (!guild)
+		return { result: false, value: 'could not fetch user from client' };
 
-		remove_deleted_guild(guild, args.guild_list);
-		remove_deleted_channels(guild, args.guild_list);
-		remove_empty_voice_channels(guild, args.guild_list);
+	console.log(`> loading portal\'s guilds: ${args.id}`);
+	console.log(`> ${guild} (${guild.id})`);
 
-		update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
-	});
+	remove_deleted_guild(guild, args.guild_list);
+	remove_deleted_channels(guild, args.guild_list);
+	remove_empty_voice_channels(guild, args.guild_list);
+
+	update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
 	console.log('');
 
 	return {

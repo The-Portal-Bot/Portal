@@ -14,19 +14,19 @@ module.exports = async (
 		const roles = guild_object.auth_role;
 		const get_role_name = (role_id: string, i: number) => {
 			const role = message?.guild?.roles.cache.find(r => r.id === role_id);
-			return role ? `${i}. ${role.name}` : `${i}. undefined`;
+			return role ? `${i + 1}. ${role.name}` : `${i + 1}. undefined`;
 		};
 
 		if (guild_object.auth_role.length > 0) {
 			resolve({
 				result: true,
-				value: `*Authorized Roles:*\n${roles.map((r, i) => get_role_name(r, i)).join('\n')}`,
+				value: `*authorised roles:*\n${roles.map((r, i) => get_role_name(r, i)).join('\n')}`,
 			});
 		}
 		else {
 			resolve({
 				result: false,
-				value: 'There are no authorization roles.',
+				value: 'there are no authorisation roles.',
 			});
 		}
 	});

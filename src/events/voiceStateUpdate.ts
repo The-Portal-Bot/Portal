@@ -15,13 +15,12 @@ async function delete_channel(
 			g.portal_list.some(p =>
 				p.voice_list.some((v, index) => {
 					if (v.id === channel.id) {
-						console.log(`Deleting channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
 						if (channel.deletable) {
 							channel
 								.delete()
 								.then(g => {
 									p.voice_list.splice(index, 1);
-									console.log('...done');
+									console.log(`Deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
 								})
 								.catch(console.error);
 						}
@@ -136,7 +135,7 @@ function from_existing(
 
 				if (old_channel.members.size === 0) {
 					delete_channel(old_channel, guild_list)
-					.then(response => { return response; });
+						.then(response => { return response; });
 				}
 
 				if (client.voice) {

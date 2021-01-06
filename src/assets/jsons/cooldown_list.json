@@ -173,25 +173,25 @@
             "name": "run",
             "time": 0,
             "auth": false,
+            "premium": false,
+            "auto_delete": true
+        },
+        {
+            "name": "authorised_roles",
+            "time": 0,
+            "auth": false,
             "premium": true,
             "auto_delete": true
         },
         {
-            "name": "auth_roles",
+            "name": "authorise",
             "time": 0,
             "auth": true,
             "premium": true,
             "auto_delete": true
         },
         {
-            "name": "auth_role_add",
-            "time": 0,
-            "auth": true,
-            "premium": true,
-            "auto_delete": true
-        },
-        {
-            "name": "auth_role_rem",
+            "name": "deauthorise",
             "time": 0,
             "auth": true,
             "premium": true,
