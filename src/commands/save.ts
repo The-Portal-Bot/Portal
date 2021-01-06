@@ -8,12 +8,8 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
-			return resolve({ result: true, value: 'guild could not be fetched' });
-		}
+		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
+		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
 
 		update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list)
 			.then((response) => resolve(response))

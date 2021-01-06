@@ -364,7 +364,7 @@ export function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: 
 	const dispatcher: any = null;
 	const announcement: string = '';
 	const locale: string = 'en';
-	const announce: number = 0;
+	const announce: boolean = true;
 	const level_speed: string = 'normal';
 	const premium: boolean = false;
 

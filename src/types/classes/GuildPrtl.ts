@@ -32,7 +32,7 @@ export class GuildPrtl {
 	public dispatcher: any;
 	public announcement: string | null;
 	public locale: string;
-	public announce: number;
+	public announce: boolean;
 	public level_speed: string;
 	public premium: boolean;
 
@@ -50,7 +50,7 @@ export class GuildPrtl {
 		dispatcher: any,
 		announcement: string | null,
 		locale: string,
-		announce: number,
+		announce: boolean,
 		level_speed: string,
 		premium: boolean
 	) {

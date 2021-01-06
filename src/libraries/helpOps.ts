@@ -5,8 +5,7 @@ import { GiveRole, GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localizationOps";
-
-const { writeFileSync, writeFile } = require("file-system");
+import { writeFileSync } from "jsonfile";
 
 export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): GuildPrtl | undefined {
 	return guild_list.find(g => g.id === guild_id);
@@ -35,7 +34,7 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 		[
 			{ emote: 'Duration', role: '-', inline: true },
 			{ emote: 'Views', role: '-', inline: true },
-			{ emote: 'Uploaded', role: '-', inline: true },
+			{ emote: 'Uploaded', role: '-', inline: true }
 		],
 		null,
 		null,
@@ -72,7 +71,7 @@ export function update_message(guild: Guild, guild_object: GuildPrtl, yts: Video
 		null,
 		true,
 		null,
-		yts.thumbnail,
+		yts.thumbnail
 	);
 
 	const guild_channel: GuildChannel | undefined = guild.channels.cache
@@ -304,7 +303,7 @@ export function create_rich_embed(title: string | null, description: string | nu
 	return rich_message;
 };
 
-export function empty_channel_remover(guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string): void {
+export function remove_empty_voice_channels(guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string): void {
 	guild.channels.cache.forEach(channel => {
 		if (!guild_list.some(g => g.id === guild.id)) {
 			guild.leave()
@@ -336,28 +335,28 @@ export function empty_channel_remover(guild: Guild, guild_list: GuildPrtl[], por
 };
 
 export async function update_portal_managed_guilds(
-	force: boolean, portal_managed_guilds_path: string, guild_list: GuildPrtl[]): Promise<ReturnPormise> {
+	force: boolean, portal_managed_guilds_path: string, guild_list: GuildPrtl[]
+): Promise<ReturnPormise> {
 	return new Promise((resolve) => { // , reject) => {
 		setTimeout(() => {
 			const guild_list_no_voice = cloneDeep(guild_list);
 			guild_list_no_voice.forEach(g => g.dispatcher = null);
+			console.log('JSON.stringify(guild_list_no_voice) :\n', JSON.stringify(guild_list_no_voice), '\n');
 
-			if (force) {
-				writeFileSync(
-					portal_managed_guilds_path,
-					JSON.stringify(guild_list_no_voice),
-					'utf8',
-				);
-			}
-			else {
-				writeFile(
-					portal_managed_guilds_path,
-					JSON.stringify(guild_list_no_voice),
-					'utf8',
-				);
-			}
+			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);
+
+			// const write_options: WriteFileOptions = {
+			// 	encoding: 'utf8'
+			// };
+
+			// writeFileSync(
+			// 	portal_managed_guilds_path,
+			// 	JSON.stringify(guild_list_no_voice),
+			// 	write_options
+			// );
+
 		}, 1000);
-		return resolve({ result: true, value: '*updated portal guild json.*' });
+		return resolve({ result: true, value: 'updated portal guild json' });
 	});
 };
 

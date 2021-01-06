@@ -23,19 +23,19 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' })
-		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' })
+		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
+		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
 		if (args.length <= 0) return resolve({ result: false, value: 'you can run "./help role" for help.' });
 
 		const role_map_json = getJSON(args.join(' '));
-		if (!role_map_json) return resolve({ result: false, value: 'roles must be in JSON format for more info ./help role' })
+		if (!role_map_json) return resolve({ result: false, value: 'roles must be in JSON format for more info ./help role' });
 		const role_map = <GiveRole[]>role_map_json;
 		if (!Array.isArray(role_map)) return resolve({ result: false, value: 'must be array even for one role' });
 		if (multiple_same_emote(role_map)) return resolve({ result: false, value: 'emotes should differ ./help role' });
 
 		role_map.forEach(r => { r.give = r.give.trim(); r.strip = r.strip.trim(); });
-		console.log('role_map :>> ', role_map);
 		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
+
 		const role_emb_value: GiveRole[] = [];
 		const role_emb_display: Field[] = [];
 

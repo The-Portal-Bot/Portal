@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import { empty_channel_remover } from "../libraries/helpOps";
+import { remove_empty_voice_channels } from "../libraries/helpOps";
 import { console_text } from "../libraries/localizationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
@@ -17,12 +17,14 @@ module.exports = async (
 		type: 'LISTENING'
 	});
 
-	console.log('Portal guilds: ');
-	args.client.guilds.cache.forEach(guild => {
-		console.log(`${guild} (${guild.id})`);
-		empty_channel_remover(guild, args.guild_list, args.portal_managed_guilds_path);
+	let index = 0;
+	console.log(`> loading portal\'s guilds from ${args.portal_managed_guilds_path}`);
+	args.client.guilds.cache.forEach((guild) => {
+		console.log(`> ${index++}. ${guild} (${guild.id})`);
+		remove_empty_voice_channels(guild, args.guild_list, args.portal_managed_guilds_path);
 	});
-
+	console.log('');
+	
 	return {
 		result: true,
 		value: console_text.some(ct => {

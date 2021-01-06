@@ -1,31 +1,57 @@
 // load up the discord.js library
 import {
 	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction,
-	PartialGuildMember, PartialMessage, PartialUser, Presence, TextChannel, User, VoiceState
+	PartialGuildMember, PartialMessage, PartialUser, Presence, TextChannel,
+	User, VoiceState
 } from "discord.js";
 import cooldown_list from './assets/jsons/cooldown_list.json';
 import config from './config.json';
-// list of all managed channels in servers
-import guild_list_json from './database/guild_list.json';
 import { included_in_url_list } from './libraries/guildOps';
-import { is_authorized, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds, guildPrtl_to_object } from './libraries/helpOps';
+import {
+	guildPrtl_to_object, is_authorized, is_url, message_reply, pad,
+	time_elapsed, update_portal_managed_guilds, getJSON
+} from './libraries/helpOps';
 import { client_talk } from './libraries/localizationOps';
 import { isProfane } from './libraries/modOps.js';
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+import {
+	ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise
+} from "./types/interfaces/InterfacesPrtl";
+import { readFileSync } from "jsonfile";
 
 const command_options_guild: CommandOptions[] = cooldown_list.guild;
 const command_options_member: CommandOptions[] = cooldown_list.member;
 const command_options_none: CommandOptions[] = cooldown_list.none;
-const portal_managed_guilds_path = './database/guild_list.json';
-const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
 
+const portal_managed_guilds_path = config.database_json;
+
+const guild_list_json = readFileSync(config.database_json);
+if (!guild_list_json) {
+	console.log('could not read guild list');
+	process.exit(1);
+}
+// list of all managed guilds
+const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
+console.log('guild_list :>> ', guild_list);
 if (guild_list === null) {
 	console.log('guild json is corrupt');
 	process.exit(1);
 }
+
+if (!Array.isArray(guild_list)) {
+	console.log('guild_list must be an array');
+	process.exit(1);
+}
+
+// guild_list.forEach(g => {
+// 	console.log('g :>> ', g);
+// 	if (!(g instanceof GuildPrtl)) {
+// 		console.log('guild json is not GuildPrtl type');
+// 		process.exit(1);
+// 	}
+// });
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
