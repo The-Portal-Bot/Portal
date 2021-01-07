@@ -548,10 +548,11 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 
 	let last_variable = '';
 	let last_attribute = '';
-
 	let new_channel_name = '';
-
+	console.log('regex :>> ', regex);
+	console.log('regex.length :>> ', regex.length);
 	for (let i = 0; i < regex.length; i++) {
+		console.log('regex[', i, '] :>> ', regex[i]);
 
 		if (regex[i] === variable_prefix) {
 
@@ -560,7 +561,7 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 			if (vrbl.length !== 0) {
 				const return_value = get_variable(voice_channel, voice_object, portal_list, guild_object, guild, vrbl);
 
-				if (return_value) {
+				if (return_value !== null) {
 					last_variable = return_value;
 					new_channel_name += return_value;
 					i += voca.chars(vrbl).length;
@@ -576,7 +577,6 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 
 		}
 		else if (regex[i] === attribute_prefix) {
-
 			const attr = is_attribute(regex.substring(i));
 
 			if (attr.length !== 0) {
@@ -584,7 +584,7 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 				if (portal_object) { // tsiakkas elegxos oti paizei kala an den to brei
 					const return_value = get_attribute(voice_channel, voice_object, portal_object, guild_object, attr);
 
-					if (return_value) {
+					if (return_value !== null) {
 						last_attribute = return_value;
 						new_channel_name += return_value;
 						i += voca.chars(attr).length;
@@ -608,7 +608,7 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 
 					const return_value = get_pipe(last_variable, pipe);
 
-					if (return_value) {
+					if (return_value !== null) {
 						new_channel_name = new_channel_name.substring(0,
 							voca.chars(new_channel_name).length - voca.chars(last_variable).length);
 						new_channel_name += return_value;
@@ -623,7 +623,7 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 
 					const return_value = get_pipe(last_attribute, pipe);
 
-					if (return_value) {
+					if (return_value !== null) {
 						new_channel_name = new_channel_name.substring(0,
 							voca.chars(new_channel_name).length - voca.chars(last_attribute).length);
 						new_channel_name += return_value;
@@ -638,7 +638,7 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 
 					const return_value = get_pipe(new_channel_name.substring(last_space_index, new_channel_name.length), pipe);
 
-					if (return_value) {
+					if (return_value !== null) {
 						const str_for_pipe = return_value;
 						new_channel_name = new_channel_name.substring(0, last_space_index);
 						new_channel_name += str_for_pipe;

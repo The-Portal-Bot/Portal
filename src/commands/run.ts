@@ -8,15 +8,12 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
+		if (!guild_object)
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
+		if (!message.guild)
 			return resolve({ result: true, value: 'guild could not be fetched' });
-		}
-		if (!message.member) {
+		if (!message.member)
 			return resolve({ result: true, value: 'member could not be fetched' });
-		}
 
 		const current_voice = message.member.voice;
 		const current_voice_channel = current_voice.channel;
@@ -24,24 +21,24 @@ module.exports = async (
 		if (current_voice === null) {
 			return resolve({
 				result: false,
-				value: '*you must be in a channel handled by* **Portal™** *to run commands.*',
+				value: 'you must be in a channel handled by Portal to run commands',
 			});
 		}
 		else if (current_voice_channel === null) {
 			return resolve({
 				result: false,
-				value: '*you must be in a channel handled by* **Portal™** *to run commands.*',
+				value: 'you must be in a channel handled by Portal to run commands',
 			});
 		}
 		else if (!included_in_voice_list(current_voice_channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
-				value: '*the channel you are in is not handled by* **Portal™**',
+				value: 'the channel you are in is not handled by Portal',
 			});
 		}
 
 		const voice_found = guild_object.portal_list.some(p => {
-			p.voice_list.some(v => {
+			return p.voice_list.some(v => {
 				if (v.id === current_voice_channel.id) {
 					message.channel.send('executing: ' + args.join(' '))
 						.then(sent_message => {
@@ -59,13 +56,16 @@ module.exports = async (
 							else
 								sent_message.edit('could not fetch guild of message');
 						});
+					return true;
 				}
+				return false;
 			})
 		});
 
-		return resolve({
-			result: true,
-			value: '*command ran successfully.*',
-		});
+		if (voice_found)
+			return resolve({ result: true, value: 'instruction ran successfully', });
+		else
+			return resolve({ result: false, value: 'could not find your voice channel', });
+
 	});
 };
