@@ -22,31 +22,22 @@ module.exports = async (
 		}
 
 		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
-			return resolve({
-				result: false,
-				value: 'you must be in a channel handled by Portal™.',
-			});
+			return resolve({ result: false, value: 'you must be in a channel handled by Portal' });
 		}
 		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
-			return resolve({
-				result: false,
-				value: 'the channel you are in is not handled by Portal™.',
-			});
+			return resolve({ result: false, value: 'the channel you are in is not handled by Portal' });
 		}
 
-		if (args.length > 1) {
-			for (const portal_key in guild_object.portal_list) {
-				for (const voice_key in guild_object.portal_list[portal_key].voice_list) {
-					if (voice_key === message.member.voice.channel.id) {
-						const current_voice_channel = guild_object.portal_list[portal_key].voice_list[voice_key];
-						const current_portal_channel = guild_object.portal_list[portal_key];
-
+		if (args.length === 2) {
+			guild_object.portal_list.some(p => {
+				p.voice_list.some(v => {
+					if (v.id === message.member?.voice.channel?.id) {
 						let value_array = [...args];
 						value_array.shift();
 						const value = value_array.filter(val => val !== '\n').join(' ');
 
 						const return_value = set_attribute(
-							message.member.voice.channel, current_voice_channel, current_portal_channel,
+							message.member.voice.channel, v, p,
 							guild_object, args[0], value, message.member,
 						);
 
@@ -54,53 +45,54 @@ module.exports = async (
 							case 1:
 								return resolve({
 									result: true,
-									value: `attribute ${args[0]} set to ${value} successfully.`
+									value: `attribute ${args[0]} set to ${value} successfully`
 								});
 							case -1:
 								return resolve({
 									result: false,
-									value: `${args[0]} is not an attribute.`
+									value: `${args[0]} is not an attribute`
 								});
 							case -2:
 								return resolve({
 									result: false,
-									value: `${args[0]} can only be set by an administrator.`
+									value: `${args[0]} can only be set by an administrator`
 								});
 							case -3:
 								return resolve({
 									result: false,
-									value: `${args[0]} can only be set by the portal creator.`
+									value: `${args[0]} can only be set by the portal creator`
 								});
 							case -4:
 								return resolve({
 									result: false,
-									value: `${args[0]} can only be set by the voice creator.`
+									value: `${args[0]} can only be set by the voice creator`
 								});
 							case -5:
 								return resolve({
 									result: false,
-									value: `locale can only be ${locales.join(', ')}.`
+									value: `locale can only be ${locales.join(', ')}`
 								});
 							case -6:
 								return resolve({
 									result: false,
-									value: `${args[0]} can be a number from 0-n (0 means unlimited).`
+									value: `${args[0]} can be a number from 0-n (0 means unlimited)`
 								});
 							case -7:
 								return resolve({
 									result: false,
-									value: `${args[0]} can only be true or false.`
+									value: `${args[0]} can only be true or false`
 								});
 							default:
 								return resolve({
 									result: false,
-									value: `${args[0]} cannot be set.`
+									value: `${args[0]} cannot be set`
 								});
 						}
 					}
-				}
-			}
+				});
+			});
 		}
-		return resolve({ result: true, value: `${args[0]} was not set.` });
+
+		return resolve({ result: false, value: `arguments are set by name and value, run ./help set for help` });
 	});
 };
