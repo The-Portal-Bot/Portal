@@ -78,6 +78,16 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'delete',
+		description: 'delete will remove number of messages given.',
+		super_description: '**delete**, elete will remove number of messages given',
+		example: './delete 5',
+		args: '<!number of messages>',
+		auth: 'voice',
+		get: null,
+		set: null
+	},
+	{
 		name: 'corona',
 		description: 'corona replys with todays latest figures on the novel corona virus.',
 		super_description: '**corona**, replys with todays latest figures on the novel corona virus. ' +
@@ -226,16 +236,16 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'role',
-		description: 'creates a role message.',
-		super_description: '**role**, creates a message that distributes roles.' +
+		name: 'role_assigner',
+		description: 'creates a role giving message.',
+		super_description: '**role_assigner**, creates a message that distributes roles.' +
 			'Roles can be given or striped by reacting to the message.\n' +
 			'(Please make sure you have no space infront or behind *role name* or *emotes*)',
-		example: 'json\n./role ' +
-			'[\n\t{ "give": ":heart:", "strip": ":poop:", "role": "moba" },\n' +
+		example: 'json\n./role_assigner ' +
+			'[\n\t{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role": "moba" },\n' +
 			'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]\n' +
-			'\n>will create a message giving/striping moba role with :heart:/:poop: and fps role with :rofl:/:dog:.',
-		args: '```json\nJSON array of objects:\n{ "give": ":heart:", "strip": ":poop:", "role": "moba" }```',
+			'\n>will create a message giving/striping moba role with :thumbsup:/:thumbsdown: and fps role with :rofl:/:dog:.',
+		args: '```json\nJSON array of objects:\n{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role": "moba" }```',
 		auth: 'voice',
 		get: null,
 		set: null

@@ -51,6 +51,13 @@
         }
     ],
     "none": [{
+            "name": "delete",
+            "time": 0,
+            "auth": true,
+            "premium": true,
+            "auto_delete": true
+        },
+        {
             "name": "leaderboard",
             "time": 0,
             "auth": false,
@@ -107,9 +114,9 @@
             "auto_delete": true
         },
         {
-            "name": "role",
+            "name": "role_assigner",
             "time": 0,
-            "auth": false,
+            "auth": true,
             "premium": true,
             "auto_delete": true
         },

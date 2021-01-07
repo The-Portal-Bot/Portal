@@ -191,21 +191,13 @@ client.on('message', async (message: Message) => {
 	// ranking system
 	ranking_system(message);
 
-	// word check
-	if (isProfane(message.content)) {
-		message.react('🚩');
-		message.author
-			.send("try not to use profanities")
-			.catch(console.error);
-	}
-
 	update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
 
 	// Separate function name, and arguments of function
-	const args: string[] = message.content.slice(config.prefix.length).trim().split(/ +/g);
+	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 
 	const cmd_only = args.shift();
 	if (cmd_only === undefined) return;
@@ -232,6 +224,13 @@ client.on('message', async (message: Message) => {
 		type = 'none';
 	}
 	else {
+		// word check
+		if (isProfane(message.content)) {
+			message.react('🚩');
+			message.author
+				.send("try not to use profanities")
+				.catch(console.error);
+		}
 		return;
 	}
 

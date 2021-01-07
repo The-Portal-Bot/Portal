@@ -31,10 +31,10 @@ Features:
 | `about`            | _returns an about Portal message_                                | _none_                               | everyone                                       | -               |
 | `announce`         | _@title \| @body_                                                | everyone                             | 1 user                                         | -               |
 | `announcement`     | _creates a new or sets the current channel as announcement_      | _@channel\_name \| @category\_name_  | admin,                                         | admin-role/s    |
-| `authorize`        | _add role to admin roles_                                        | _!role_                              | admin, admin-role/s                            | -               |
-| `authorized_roles` | _displayes all authorized roles_                                 | none                                 | everyone                                       | -               |
+| `authorise`        | _add role to admin roles_                                        | _!role_                              | admin, admin-role/s                            | -               |
+| `authorised_roles` | _displayes all authorised roles_                                 | none                                 | everyone                                       | -               |
 | `corona`           | _replies with the daily state of corona virus cases_             | _@country code (gr, de, us, etc)_    | everyone                                       | -               |
-| `deauthorize`      | _removes role from admin roles_                                  | _!role_                              | admin, admin-role/s                            | -               |
+| `deauthorise`      | _removes role from admin roles_                                  | _!role_                              | admin, admin-role/s                            | -               |
 | `focus`            | _creates focus channel for you and your requested user_          | _!username @time (default 5minutes)_ | everyone                                       | -               |
 | `force`            | _clones current channel in order to force-update name_           | _none_                               | admin, admin-role/s                            | 2 user          |
 | `help`             | _returns a help-list if specified returns specific description_  | _@command/@vrbl/@func/@pipe/@attr_   | everyone                                       | -               |
@@ -45,7 +45,7 @@ Features:
 | `ping`             | _returns round trip latency_                                     | _none_                               | everyone                                       | -               |
 | `portal`           | _creates a portal voice channel_                                 | _!channel\_name \| @category\_name_  | admin, admin-role/s                            | -               |
 | `ranks`            | _returns ranks of ranking system_                                | _none_                               | everyone                                       | -               |
-| `role`             | _replies with a message that gives roles when an emote is added_ | _role json_                          | admin, admin-role/s                            | -               |
+| `role_assigner`    | _replies with a message that gives roles when an emote is added_ | _role json_                          | admin, admin-role/s                            | -               |
 | `run`              | _runs the given command string and returns its output_           | _!exec\_command_                     | everyone                                       | -               |
 | `save`             | _saves current state of server_                                  | _none_                               | admin, admin-role/s                            | 5 server        |
 | `set`              | _sets the value of an attribute_                                 | _!attribute !value_                  | voice owner/ portal owner, admin, admin-role/s | -               |
