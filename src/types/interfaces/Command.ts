@@ -125,8 +125,8 @@ const commands: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'help',
-		description: 'returns a help-list of all commands and regex manipulation.',
-		super_description: '**help**, sends personal messages to the one who requests them.\n You can run' +
+		description: 'returns a help-list of everything Portal can do.',
+		super_description: '**help**, a help-list of everything Portal can do.\n You can run' +
 			'./help commands, ./help variables, ./help pipes, ./help attributes, ./help structures, to ' +
 			'get only the category you choose.\n You can run ./help specific_property, like portal or set, etc.' +
 			'In order to get a more descriptive definition of the property chosen',

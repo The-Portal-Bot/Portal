@@ -39,8 +39,13 @@ module.exports = async (
 					inline: false
 				},
 				{
-					emote: './help <anything>',
-					role: 'If you want to specify the action of a anything just type ./help <and the name of its>',
+					emote: './help structures',
+					role: 'Structures are a way to manipulate the outcome of a text to greater extend',
+					inline: false
+				},
+				{
+					emote: './help <specific_property_name>',
+					role: 'If you want to specify the action of a anything just type ./help <specific_property_name>',
 					inline: false
 				},
 			];
