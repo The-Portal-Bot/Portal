@@ -16,42 +16,49 @@ module.exports = async (
         if (!portal_object)
             return resolve({ result: false, value: 'could not find guild please contact portal support' });
 
-        let portal_tree = portal_object.portal_list.map(p => {
+        let portal_tree = [<Field>{ emote: '', role: 'PORTAL CHANNELS', inline: false }];
+
+        const portals = portal_object.portal_list.map(p => {
             const voices = p.voice_list.map(v => {
                 const channel = guild.channels.cache.find(c => c.id === v.id);
                 return `> voice: ${channel ? channel.name : 'undefined'}`;
             }).join('\n');
             const channel = guild.channels.cache.find(c => c.id === p.id);
 
-            return <Field>{ emote: `portal: ${channel ? channel.name : 'undefined'}`, role: voices, inline: true }
+            return <Field>{ emote: `${channel ? channel.name : 'undefined'}`, role: voices, inline: true }
         });
+        if (portals)
+            portal_tree = portal_tree.concat(portals);
+
+        portal_tree.push(<Field>{ emote: '', role: 'SPOTIFY/ANNOUNCEMENT CHANNELS', inline: false });
 
         const spotify = guild.channels.cache.find(c => c.id === portal_object.spotify);
         if (spotify)
             portal_tree.push(<Field>{
-                emote: `spotify: ${spotify ? spotify.name : 'undefined'}`,
+                emote: `${spotify ? spotify.name : 'undefined'} _(spotify)_`,
                 role: 'displays Music people in Portal\'s voice channels listen too',
-                inline: false
+                inline: true
             });
 
         const announcement = guild.channels.cache.find(c => c.id === portal_object.announcement);
         if (announcement)
             portal_tree.push(<Field>{
-                emote: `announcement: ${announcement ? announcement.name : 'undefined'}`,
+                emote: `${announcement ? announcement.name : 'undefined'} _(announcement)_`,
                 role: 'the announcement channel used by admins and portal',
-                inline: false
+                inline: true
             });
+
+        portal_tree.push(<Field>{ emote: '', role: 'URL-ONLY CHANNELS', inline: false });
 
         const urls = portal_object.url_list.map(u_id => {
             const channel = guild.channels.cache.find(c => c.id === u_id);
             return <Field>{
-                emote: `url: ${channel ? channel.name : 'undefined'}`,
+                emote: `${channel ? channel.name : 'undefined'}`,
                 role: 'these channels are url only',
                 inline: true
             }
         });
-        console.log('urls :>> ', urls);
-        if(urls)
+        if (urls)
             portal_tree = portal_tree.concat(urls);
 
         message.channel.send(create_rich_embed(
@@ -63,8 +70,8 @@ module.exports = async (
             null,
             true,
             null,
-            null)
-        );
+            null
+        ));
 
         return resolve({ result: true, value: '' });
     });
