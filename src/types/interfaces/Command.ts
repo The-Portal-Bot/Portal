@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { create_rich_embed } from '../../libraries/helpOps';
-import { InterfaceBlueprint } from './InterfacesPrtl';
+import { InterfaceBlueprint, Field } from './InterfacesPrtl';
 
 export const command_prefix: string = './';
 const commands: InterfaceBlueprint[] = [
@@ -354,7 +354,7 @@ export function is_command(candidate: string): string {
 }
 
 export function get_command_help(): MessageEmbed {
-	const func_array = [];
+	const func_array: Field[] = [];
 	for (let i = 0; i < commands.length; i++) {
 		func_array.push({
 			emote: commands[i].name,
@@ -363,15 +363,10 @@ export function get_command_help(): MessageEmbed {
 			inline: true,
 		});
 	}
-	return create_rich_embed('Commands',
-		'Prefix: ' + command_prefix + '\nCommands to access portal bot.' +
-		'\n**!**: *mandatory*, **@**: *optional*',
-		'#9775A9', func_array,
-		null,
-		null,
-		null,
-		null,
-		null);
+	return create_rich_embed(
+		'Commands', 'Prefix: ' + command_prefix + '\nCommands to access portal bot.\n**!**: *mandatory*, **@**: *optional*', 
+		'#9775A9', func_array, null, null, null, null, null
+	);
 };
 
 export function get_command_help_super(candidate: string): MessageEmbed | boolean {

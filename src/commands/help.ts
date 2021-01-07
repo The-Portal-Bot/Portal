@@ -1,7 +1,9 @@
 import { Client, Message } from "discord.js";
+import { create_rich_embed } from "../libraries/helpOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { get_attribute_help, get_attribute_help_super } from "../types/interfaces/Attribute";
-import { get_command_help, get_command_help_super } from "../types/interfaces/Command";
+import { command_prefix, get_command_help, get_command_help_super } from "../types/interfaces/Command";
+import { Field } from "../types/interfaces/InterfacesPrtl";
 import { get_pipe_help, get_pipe_help_super } from "../types/interfaces/Pipe";
 import { get_structure_help, get_structure_help_super } from "../types/interfaces/Structure";
 import { get_variable_help, get_variable_help_super } from "../types/interfaces/Variable";
@@ -12,29 +14,62 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
+		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 
 		if (args.length === 0) {
-			message.author
-				.send(get_command_help())
-				.catch(console.error);
-			message.author
-				.send(get_variable_help())
-				.catch(console.error);
-			message.author
-				.send(get_pipe_help())
-				.catch(console.error);
-			message.author
-				.send(get_attribute_help())
-				.catch(console.error);
-			message.author
-				.send(get_structure_help())
+			const func_array: Field[] = [
+				{
+					emote: './help commands',
+					role: 'Commands are mini programs you can use to get a response',
+					inline: false
+				},
+				{
+					emote: './help variables',
+					role: 'Variables are live data you can use to make voice channel names or run with ./run',
+					inline: false
+				},
+				{
+					emote: './help pipes',
+					role: 'Pipes are mini-programs that manipulate text or even variables',
+					inline: false
+				},
+				{
+					emote: './help arguments',
+					role: 'Arguments are options the options of your current portal, which you can change with ./set',
+					inline: false
+				},
+				{
+					emote: './help <anything>',
+					role: 'If you want to specify the action of a anything just type ./help <and the name of its>',
+					inline: false
+				},
+			];
+			message.reply(
+				create_rich_embed(
+					'Portal Documentation', 'Bellow you can see Portal\'s commands and variables and how you can access them',
+					'#9775A9', func_array, null, null, true, null, null
+				))
 				.catch(console.error);
 		}
 		else if (args.length === 1) {
-			if (args[0] === 'commands') {
+			if (args[0] === 'all') {
+				message.author
+					.send(get_command_help())
+					.catch(console.error);
+				message.author
+					.send(get_variable_help())
+					.catch(console.error);
+				message.author
+					.send(get_pipe_help())
+					.catch(console.error);
+				message.author
+					.send(get_attribute_help())
+					.catch(console.error);
+				message.author
+					.send(get_structure_help())
+					.catch(console.error);
+			}
+			else if (args[0] === 'commands') {
 				message.author
 					.send(get_command_help())
 					.catch(console.error);
@@ -99,9 +134,6 @@ module.exports = async (
 				}
 			}
 		}
-		return resolve({
-			result: true,
-			value: 'I sent you a private message',
-		});
+		return resolve({ result: true, value: 'I sent you a private message' });
 	});
 };
