@@ -549,11 +549,8 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 	let last_variable = '';
 	let last_attribute = '';
 	let new_channel_name = '';
-	console.log('regex :>> ', regex);
-	console.log('regex.length :>> ', regex.length);
-	for (let i = 0; i < regex.length; i++) {
-		console.log('regex[', i, '] :>> ', regex[i]);
 
+	for (let i = 0; i < regex.length; i++) {
 		if (regex[i] === variable_prefix) {
 
 			const vrbl = is_variable(regex.substring(i));

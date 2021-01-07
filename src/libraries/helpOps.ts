@@ -181,16 +181,18 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		);
 
 		if (existing_voice_connection) {
+			existing_voice_connection?.voice?.setSelfDeaf(true);
 			return resolve({
 				result: true,
 				value: 'already in voice channel',
-				voice_connection: existing_voice_connection,
+				voice_connection: existing_voice_connection
 			});
 		} else {
 			// let new_voice_connection = null;
 			current_voice.join()
 				.then(conn => {
 					if (join) client_talk(client, guild_list, 'join');
+					conn?.voice?.setSelfDeaf(true);
 
 					return resolve({
 						result: true,

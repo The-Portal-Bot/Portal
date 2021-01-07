@@ -145,60 +145,67 @@ export const console_text: LocalizationOption[] = [
 ]
 
 export function client_talk(client: Client, guild_list: GuildPrtl[], context: string): boolean {
-	if (client.voice && client.voice !== undefined) {
-		const voiceConnection = client.voice.connections.find(connection => !!connection.channel.id);
-		if (voiceConnection) {
-			return guild_list.some(g =>
-				g.portal_list.some(p =>
-					p.voice_list.some(v => {
-						if (!g.dispatcher) {
-							if (type_of_announcement.includes(context) && v.ann_announce) {
-								const locale = v.locale;
-								const random = Math.floor(Math.random() * Math.floor(3));
-								voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-								return true;
-							}
-							else if (type_of_action.includes(context) && v.ann_user) {
-								const locale = v.locale;
-								const random = Math.floor(Math.random() * Math.floor(3));
-								voiceConnection.play(`./assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-								return true;
-							}
+	const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id);
+	
+	if (voiceConnection) {
+		return guild_list.some(g =>
+			g.portal_list.some(p =>
+				p.voice_list.some(v => {
+					if (!g.dispatcher) {
+						if (type_of_announcement.includes(context) && v.ann_announce) {
+							const locale = v.locale;
+							const random = Math.floor(Math.random() * Math.floor(3));
+							console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+							voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+							return true;
 						}
-						return v.id === voiceConnection.channel.id;
-					})
-				)
-			);
-		}
+						else if (type_of_action.includes(context) && v.ann_user) {
+							const locale = v.locale;
+							const random = Math.floor(Math.random() * Math.floor(3));
+							console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+							voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+							return true;
+						}
+					}
+					return v.id === voiceConnection.channel.id;
+				})
+			)
+		);
 	}
+
 	return false;
 };
 
 export function client_write(message: Message, guild_list: GuildPrtl[], context: string): string {
-	if (message === null || message.member === null) {
-		return 'there was an error';
-	}
-	if (message.member.voice === undefined || message.member.voice === null) {
-		return 'there was an error';
-	}
+	if (message === null) return 'could not fetch message';
+	if (message.member === null) return 'could not fetch member';
+	if (message.member.voice === undefined) return 'coud not fetch voice';
+	if (message.member.voice === null) return 'coud not fetch voice';
 
-	guild_list.some(g =>
+	let return_value = 'could not find data';
+
+	const found = guild_list.some(g =>
 		g.portal_list.some(p =>
 			p.voice_list.some(v => {
 				if (message.member && message.member.voice.channel) {
 					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 						switch (v.locale) {
-							case 'gr': return portal.find(p => p.name === context)?.lang.gr();
-							case 'en': return portal.find(p => p.name === context)?.lang.en();
-							case 'de': return portal.find(p => p.name === context)?.lang.de();
+							case 'gr': return_value = portal.find(p => p.name === context)?.lang.gr(); break;
+							case 'en': return_value = portal.find(p => p.name === context)?.lang.en(); break;
+							case 'de': return_value = portal.find(p => p.name === context)?.lang.de(); break;
 						}
+						return true;
 					}
 				}
+				return false;
 			})
 		)
 	);
 
-	return 'there was an error';
+	if (found)
+		return return_value
+	else
+		return 'there was an error';
 };
 
 export function client_log(
