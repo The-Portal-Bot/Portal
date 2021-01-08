@@ -356,27 +356,6 @@ export function create_member_list(guild_id: string, client: Client): any {
 	return member_list;
 };
 
-export function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: Client): void {
-	const portal_list: PortalChannelPrtl[] = [];
-	const member_list = create_member_list(guild_id, client);
-	const url_list: string[] = [];
-	const role_list: any = {};
-	const ranks: any = {};
-	const auth_role: string[] = [];
-	const spotify: string = '';
-	const music_data: MusicData = { channel_id: undefined, message_id: undefined, votes: [] };
-	const music_queue: VideoSearchResult[] = [];
-	const dispatcher: any = null;
-	const announcement: string = '';
-	const locale: string = 'en';
-	const announce: boolean = true;
-	const level_speed: string = 'normal';
-	const premium: boolean = false;
-
-	guild_list.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
-		spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium));
-};
-
 //
 
 export function delete_guild(guild_id: string, guild_list: GuildPrtl[]): void {

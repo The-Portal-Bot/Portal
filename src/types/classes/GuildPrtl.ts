@@ -45,7 +45,7 @@ export class GuildPrtl {
 		role_list: GiveRolePrtl[],
 		ranks: Rank[],
 		auth_role: string[],
-		spotify: string,
+		spotify: string | null,
 		music_data: MusicData,
 		music_queue: VideoSearchResult[],
 		dispatcher: StreamDispatcher | undefined,

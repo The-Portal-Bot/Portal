@@ -16,7 +16,7 @@ module.exports = async (
         if (!portal_object)
             return resolve({ result: false, value: 'could not find guild please contact portal support' });
 
-        let portal_state = [<Field>{ emote: '', role: 'PORTAL CHANNELS', inline: false }];
+        let portal_state = [<Field>{ emote: 'Portals', role: '', inline: false }];
 
         const portals = portal_object.portal_list.map(p => {
             const voices = p.voice_list.map(v => {
@@ -30,7 +30,15 @@ module.exports = async (
         if (portals)
             portal_state = portal_state.concat(portals);
 
-        portal_state.push(<Field>{ emote: '', role: 'SPOTIFY/ANNOUNCEMENT CHANNELS', inline: false });
+        portal_state.push(<Field>{ emote: 'Music / Spotify / Announcement', role: '', inline: false });
+
+        const music = guild.channels.cache.find(c => c.id === portal_object.music_data.channel_id);
+        if (music)
+            portal_state.push(<Field>{
+                emote: `${music ? music.name : 'undefined'} _(music)_`,
+                role: 'the music channel can be used to play music',
+                inline: true
+            });
 
         const spotify = guild.channels.cache.find(c => c.id === portal_object.spotify);
         if (spotify)
@@ -48,7 +56,7 @@ module.exports = async (
                 inline: true
             });
 
-        portal_state.push(<Field>{ emote: '', role: 'URL-ONLY CHANNELS', inline: false });
+        portal_state.push(<Field>{ emote: 'Url-only', role: '', inline: false });
 
         const urls = portal_object.url_list.map(u_id => {
             const channel = guild.channels.cache.find(c => c.id === u_id);
