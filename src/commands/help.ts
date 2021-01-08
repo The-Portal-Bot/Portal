@@ -47,7 +47,7 @@ module.exports = async (
 					emote: './help <specific_property_name>',
 					role: 'If you want to specify the action of a anything just type ./help <specific_property_name>',
 					inline: false
-				},
+				}
 			];
 			message.reply(
 				create_rich_embed(
@@ -55,6 +55,7 @@ module.exports = async (
 					'#9775A9', func_array, null, null, true, null, null
 				))
 				.catch(console.error);
+			return resolve({ result: true, value: '' });
 		}
 		else if (args.length === 1) {
 			if (args[0] === 'all') {
@@ -138,7 +139,7 @@ module.exports = async (
 					});
 				}
 			}
+			return resolve({ result: true, value: 'I sent you a private message' });
 		}
-		return resolve({ result: true, value: 'I sent you a private message' });
 	});
 };
