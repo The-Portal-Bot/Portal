@@ -71,7 +71,7 @@ module.exports = async (
 
         message.channel.send(create_rich_embed(
             'Portal State',
-            'A state of what portal controls in this server',
+            'current state of Portal',
             '#964B00',
             portal_state,
             null,

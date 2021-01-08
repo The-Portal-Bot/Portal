@@ -1,11 +1,29 @@
 import { Client, Guild, StreamDispatcher } from "discord.js";
-import { included_in_portal_guilds, create_member_list } from "../libraries/guildOps";
-import { update_portal_managed_guilds } from "../libraries/helpOps";
-import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
-import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VideoSearchResult } from "yt-search";
-import { Rank } from "../types/interfaces/InterfacesPrtl";
+import { included_in_portal_guilds } from "../libraries/guildOps";
+import { update_portal_managed_guilds } from "../libraries/helpOps";
 import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
+import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
+import { MemberPrtl } from "../types/classes/MemberPrtl";
+import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
+import { Rank } from "../types/interfaces/InterfacesPrtl";
+
+function create_member_list(guild_id: string, client: Client): any {
+	const guild = client.guilds.cache.find((cached_guild: Guild) => cached_guild.id === guild_id);
+	if (!guild) return undefined;
+
+	const member_list: MemberPrtl[] = [];
+
+	guild.members.cache.forEach(member => {
+		if (client.user && !member.user.bot) {
+			if (member.id !== client.user.id) {
+				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false));
+			}
+		}
+	});
+
+	return member_list;
+};
 
 function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: Client): void {
 	const portal_list: PortalChannelPrtl[] = [];

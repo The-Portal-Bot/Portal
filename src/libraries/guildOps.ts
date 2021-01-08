@@ -1,12 +1,9 @@
 import {
-	CategoryChannel, Client, Collection, CollectorFilter, Guild, GuildChannel,
-	GuildCreateChannelOptions, GuildMember, Message, MessageCollector, TextChannel,
-	VoiceChannel, VoiceState, Role
+	CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions,
+	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState
 } from "discord.js";
 import voca from 'voca';
-import { VideoSearchResult } from "yt-search";
-import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl';
-import { MemberPrtl } from '../types/classes/MemberPrtl';
+import { GuildPrtl } from '../types/classes/GuildPrtl';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute';
@@ -334,26 +331,6 @@ export async function create_focus_channel(guild: Guild, member: GuildMember,
 			}
 		}, focus_time * 60 * 1000);
 	});
-};
-
-export function create_member_list(guild_id: string, client: Client): any {
-	const member_list: MemberPrtl[] = [];
-	const guild: Guild | undefined = client.guilds.cache.find((cached_guild: Guild) => cached_guild.id === guild_id);
-	if (guild === undefined) {
-		return undefined;
-	}
-	console.log('new guild :>> ', guild);
-	console.log('new guild.members.cache :>> ', guild.members.cache);
-
-	guild.members.cache.forEach(member => {
-		if (client.user && !member.user.bot) {
-			if (member.id !== client.user.id) {
-				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false));
-			}
-		}
-	});
-
-	return member_list;
 };
 
 //
