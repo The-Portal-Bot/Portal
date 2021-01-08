@@ -12,70 +12,64 @@ function reaction_role_manager(client: Client, guild_list: GuildPrtl[], messageR
 	const guild_object = guild_list.find(g => {
 		if (messageReaction && messageReaction.message && messageReaction.message.guild)
 			return g.id === messageReaction.message.guild.id;
+		return false;
 	});
 	if (!guild_object) return { result: false, value: 'message is not role giving' };
 
-	const role_list_object = guild_object.role_list.find(r => r.message_id === messageReaction.message.id);
-	if (!role_list_object) return { result: false, value: 'you have no set any roles' };
-	const role_map_object = role_list_object.role_emote_map;
+	const role_list_object = guild_object.role_list.find(r => {
+		return r.message_id === messageReaction.message.id;
+	});
+	console.log('messageReactionAdd role_list :>> ', guild_object.role_list);
+	console.log('messageReactionAdd role_list :>> ', guild_object.role_list[0].role_emote_map);
+
+	if (!role_list_object) return { result: false, value: 'is not a role giving message' };
 
 	const current_member = messageReaction.message.guild.members.cache.find(member => member.id === user.id);
 	if (!current_member) return { result: false, value: 'could not find member' };
 
-	for (let i = 0; role_map_object.length; i++) {
-		if (role_map_object[i].give === messageReaction.emoji.name) { // give role
-			if (!messageReaction.message.guild.roles.cache.has(role_map_object[i].role_id)) { // guild has role
-				clear_user_reactions(client, guild_list, messageReaction, user);
-				return { result: false, value: `role ${role_map_object[i].give} does not exist` };
-			}
-			if (current_member.roles.cache.has(role_map_object[i].role_id)) { // member has role
-				clear_user_reactions(client, guild_list, messageReaction, user);
-				return { result: false, value: `you already have role ${role_map_object[i].give}` };
-			}
+	let result = false;
+	let value = 'failed to give role';
 
-			const role = messageReaction.message.guild.roles.cache
-				.find(cached_role => cached_role.id === role_map_object[i].role_id);
-			if (!role) return { result: false, value: `could not fetch role` };
-
-			try {
-				current_member.roles.add(role);
+	const found_role = role_list_object.role_emote_map.some(role_map => {
+		if (role_map.give === messageReaction.emoji.name) { // give role
+			const role_to_give = messageReaction.message?.guild?.roles.cache.find(r => r.id === role_map.role_id);
+			if (role_to_give) {
+				try {
+					current_member.roles.add(role_to_give);
+					result = true;
+					value = `you have been assigned to ${role_map.role_id}`;
+				}
+				catch (error) {
+					clear_user_reactions(client, guild_list, messageReaction, user);
+					result = false;
+					value = `failed to assign you, to role ${role_map.role_id}`;
+				}
+				return true;
 			}
-			catch (error) {
-				clear_user_reactions(client, guild_list, messageReaction, user);
-				return { result: false, value: `failed to add role ${role_map_object[i].give}` };
+		} else if (role_map.strip === messageReaction.emoji.name) {
+			const role_to_strip = messageReaction.message?.guild?.roles.cache.find(r => r.id === role_map.role_id);
+			if (role_to_strip) {
+				try {
+					current_member.roles.remove(role_to_strip);
+					result = true;
+					value = `you have been stripped off ${role_map.role_id}`;
+				}
+				catch (error) {
+					clear_user_reactions(client, guild_list, messageReaction, user);
+					result = false;
+					value = `failed to strip role ${role_map.role_id}`;
+				}
+				return true;
 			}
+		} // gave other emote
+		return false;
+	});
 
-			clear_user_reactions(client, guild_list, messageReaction, user);
-			return { result: true, value: `you have been added to role ${role_map_object[i].give}` };
-		}
-		else if (role_map_object[i].strip === messageReaction.emoji.name) {
+	if (found_role)
+		return { result: result, value: value };
+	else
+		return { result: false, value: 'could not find role' };
 
-			if (!messageReaction.message.guild.roles.cache.has(role_map_object[i].role_id)) { // guild has role
-				clear_user_reactions(client, guild_list, messageReaction, user);
-				return { result: false, value: `role ${role_map_object[i].strip} does not exist` };
-			}
-			if (!current_member.roles.cache.has(role_map_object[i].role_id)) { // member does not has role
-				clear_user_reactions(client, guild_list, messageReaction, user);
-				return { result: false, value: `you do not have role ${role_map_object[i].strip}` };
-			}
-
-			const role = messageReaction.message.guild.roles.cache
-				.find(cached_role => cached_role.id === role_map_object[i].role_id);
-			if (!role) return { result: false, value: `could not fetch role` };
-
-			try {
-				current_member.roles.remove(role);
-			}
-			catch (error) {
-				clear_user_reactions(client, guild_list, messageReaction, user);
-				return { result: false, value: `failed to remove role ${role_map_object[i].strip}` };
-			}
-
-			clear_user_reactions(client, guild_list, messageReaction, user);
-			return { result: true, value: `you have been striped from role ${role_map_object[i].strip}` };
-		}
-	}
-	return { result: false, value: 'could complete action' };
 };
 
 function reaction_music_manager(client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User) {
@@ -235,12 +229,10 @@ module.exports = async (
 	}
 
 	const return_value_role = reaction_role_manager(args.client, args.guild_list, args.messageReaction, args.user);
-	if (return_value_role.result !== null) {
-		return return_value_role;
-	}
+	console.log('return_value_role :>> ', return_value_role);
+	if (return_value_role.result !== null) return return_value_role;
 
 	const return_value_music = reaction_music_manager(args.client, args.guild_list, args.messageReaction, args.user);
-	if (return_value_music.result !== null) {
-		return return_value_music;
-	}
+	console.log('return_value_music :>> ', return_value_music);
+	if (return_value_music.result !== null) return return_value_music;
 };

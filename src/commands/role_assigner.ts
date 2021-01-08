@@ -1,11 +1,28 @@
-import { Client, Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel, MessageEmbed } from "discord.js";
 import { get_role } from "../libraries/guildOps";
-import { create_role_message, getJSON } from "../libraries/helpOps";
-import { GiveRole } from "../types/classes/GiveRolePrtl";
+import { getJSON, create_rich_embed } from "../libraries/helpOps";
+import { GiveRole, GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { Field } from "../types/interfaces/InterfacesPrtl";
 
-const multiple_same_emote = function (emote_map: GiveRole[]) {
+function create_role_message(
+	channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
+	colour: string, role_emb: Field[], role_map: GiveRole[]
+): void {
+	const role_message_emb: MessageEmbed = create_rich_embed(title, desc, colour, role_emb, null, null, null, null, null);
+	channel
+		.send(role_message_emb)
+		.then(sent_message => {
+			for (let i = 0; i < role_map.length; i++) {
+				sent_message.react(role_map[i].give);
+				sent_message.react(role_map[i].strip);
+			}
+			guild_object.role_list.push(new GiveRolePrtl(sent_message.id, role_map));
+		})
+		.catch(error => console.log(error));
+};
+
+function multiple_same_emote (emote_map: GiveRole[]) {
 	for (let i = 0; i < emote_map.length; i++) {
 		for (let j = i + 1; j < emote_map.length; j++) {
 			if (emote_map[i].give === emote_map[j].give) { return true; }
@@ -51,7 +68,7 @@ module.exports = async (
 					return true;
 				}
 				role_emb_display.push(new Field(r.give, role_fetched.name, true));
-				role_emb_value.push(new GiveRole(r.give, r.role_id, ''));
+				role_emb_value.push(new GiveRole(r.give, role_fetched.id, ''));
 			} else {
 				return_value = `could not fetch guild of message`;
 				return true;
@@ -72,7 +89,7 @@ module.exports = async (
 					return true;
 				}
 				role_emb_display.push(new Field(r.strip, role_fetched.name, true));
-				role_emb_value.push(new GiveRole(r.strip, r.role_id, ''));
+				role_emb_value.push(new GiveRole(r.strip, role_fetched.id, ''));
 			} else {
 				return_value = `could not fetch guild of message`;
 				return true;
@@ -80,16 +97,17 @@ module.exports = async (
 		});
 
 		if (strip_failed) return resolve({ result: false, value: return_value });
-
+		console.log('role_emb_display :>> ', role_emb_display);
+		console.log('role_map :>> ', role_map);
 		create_role_message(
 			<TextChannel>message.channel,
-			guild_object.role_list,
+			guild_object,
 			'Portal Role Assigner',
 			'',
 			'#FF7F00',
 			role_emb_display,
 			role_map
-		);
+		)
 
 		return resolve({ result: true, value: 'role message has been created.' });
 	});

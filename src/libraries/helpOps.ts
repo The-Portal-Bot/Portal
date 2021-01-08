@@ -11,21 +11,6 @@ export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): 
 	return guild_list.find(g => g.id === guild_id);
 };
 
-export function create_role_message(channel: TextChannel, role_list: GiveRolePrtl[], title: string, desc: string,
-	colour: string, role_emb: Field[], role_map: GiveRole[]): void {
-	const role_message_emb: MessageEmbed = create_rich_embed(title, desc, colour, role_emb, null, null, null, null, null);
-	channel
-		.send(role_message_emb)
-		.then(sent_message => {
-			for (let i = 0; i < role_map.length; i++) {
-				sent_message.react(role_map[i].give);
-				sent_message.react(role_map[i].strip);
-			}
-			role_list.push(new GiveRolePrtl(sent_message.id, role_map));
-		})
-		.catch(error => console.log(error));
-};
-
 export function create_music_message(channel: TextChannel, thumbnail: string, guild_object: GuildPrtl): void {
 	const music_message_emb = create_rich_embed(
 		'Music Player',

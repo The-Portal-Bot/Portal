@@ -242,10 +242,10 @@ const commands: InterfaceBlueprint[] = [
 			'Roles can be given or striped by reacting to the message.\n' +
 			'(Please make sure you have no space infront or behind *role name* or *emotes*)',
 		example: 'json\n./role_assigner ' +
-			'[\n\t{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role": "moba" },\n' +
-			'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]\n' +
+			'[\n\t{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role_id": "moba" },\n' +
+			'\t{ "give": ":rofl:", "strip": ":dog:", "role_id": "fps" }\n]\n' +
 			'\n>will create a message giving/striping moba role with :thumbsup:/:thumbsdown: and fps role with :rofl:/:dog:.',
-		args: '```json\nJSON array of objects:\n{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role": "moba" }```',
+		args: '```json\nJSON array of objects:\n{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role_id": "moba" }```',
 		auth: 'admin',
 		get: null,
 		set: null
