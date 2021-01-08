@@ -85,8 +85,6 @@ function display_spotify_song(
 module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], newPresence: Presence | undefined }
 ) => {
-	console.log('WHAT I LOVE\n\n');
-
 	if (args.newPresence === null) { return { result: true, value: 'could not fetch presence' }; }
 	if (args.newPresence === undefined) { return { result: true, value: 'could not fetch presence' }; }
 	if (args.newPresence.user === null) { return { result: true, value: 'could not fetch presence user' }; }
@@ -96,7 +94,6 @@ module.exports = async (
 
 	const current_guild = args.newPresence.guild;
 	const current_channel = args.newPresence.member.voice.channel;
-	console.log('MPIKA OK PALIK ALA1\n\n');
 
 	if (!included_in_portal_guilds(args.newPresence.guild.id, args.guild_list)) {
 		return {
@@ -104,7 +101,6 @@ module.exports = async (
 			value: client_log(null, args.guild_list, 'presence_controlled_away', args.guild_list),
 		};
 	}
-	console.log('MPIKA OK PALIK ALA2\n\n');
 
 	if (current_channel) { // if member is in a channel
 		const guild_object = args.guild_list.find(g => g.id === current_guild.id);

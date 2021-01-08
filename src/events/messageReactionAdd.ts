@@ -215,7 +215,7 @@ module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User }
 ) => {
 	return new Promise((resolve) => {
-		if (args.user.bot) return resolve({ result: false, value: 'not handling bot reactions' });
+		if (args.user.bot) return resolve({ result: false, value: '' });
 
 		if (args.messageReaction.partial) {
 			try {

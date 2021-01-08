@@ -427,12 +427,14 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 					{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },
 					{ emote: 'Arguments', role: '*' + cmmd.args + '*', inline: false },
 					{ emote: 'Example', role: '```' + cmmd.example + '```', inline: false },
+					{ emote: 'Clearance', role: '' + cmmd.auth + '', inline: false }
 				],
 				null,
 				null,
+				true,
 				null,
-				null,
-				null);
+				null
+			);
 		}
 	}
 	return false;

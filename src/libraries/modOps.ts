@@ -11,6 +11,8 @@ const profane_words: Language = <Language>profane_word_list;
    * https://github.com/web-mech/badwords
    */
 export function isProfane(string: string): boolean {
+	if(string === 'role_assigner') return false;
+	
 	const str_array = [string];
 
 	for (let i = 0; i < string.length; i++) {
@@ -19,7 +21,7 @@ export function isProfane(string: string): boolean {
 	}
 
 	return Object.getOwnPropertyNames(profane_word_list).some((lang: string) => {
-		const gr = profane_words.en.filter((word: string) => {
+		const gr = profane_words.gr.filter((word: string) => {
 			return str_array.some(str => str === word);
 		}).length > 0 || false;
 		const en = profane_words.en.filter((word: string) => {

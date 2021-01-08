@@ -1,12 +1,5 @@
 {
     "guild": [{
-            "name": "purge",
-            "time": 10,
-            "auth": true,
-            "premium": true,
-            "auto_delete": true
-        },
-        {
             "name": "save",
             "time": 5,
             "auth": true,

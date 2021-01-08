@@ -1,6 +1,6 @@
 {
-    "token": "NzA0NDAwODc2ODYwNzM1NTY5.Xqdexg.BkhxqAkXpNZfcIzalW68jFw5DTI",
-    "token_dev": "NzU1ODI1ODcwMTAyNTkzNjI2.X2I7sQ.nDesKkpHU-m5wdxZOdXmChlgnXU",
+    "token": "NzU1ODI1ODcwMTAyNTkzNjI2.X2I7sQ.nDesKkpHU-m5wdxZOdXmChlgnXU",
+    "token_dev": "NzA0NDAwODc2ODYwNzM1NTY5.Xqdexg.BkhxqAkXpNZfcIzalW68jFw5DTI",
     "prefix": "./",
     "database_json": "src/database/guild_list.json",
     "owner_id": 228666893068795905,

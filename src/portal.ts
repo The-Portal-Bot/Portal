@@ -1,25 +1,22 @@
 // load up the discord.js library
 import {
-	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction,
-	PartialGuildMember, PartialMessage, PartialUser, Presence, TextChannel,
-	User, VoiceState
+	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember,
+	PartialMessage, PartialUser, Presence, TextChannel, User, VoiceState
 } from "discord.js";
+import { readFileSync } from "jsonfile";
 import cooldown_list from './assets/jsons/cooldown_list.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
 import {
-	guildPrtl_to_object, is_authorised, is_url, message_reply, pad,
-	time_elapsed, update_portal_managed_guilds, getJSON
+	guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed,
+	update_portal_managed_guilds
 } from './libraries/helpOps';
 import { client_talk } from './libraries/localizationOps';
-import { isProfane } from './libraries/modOps.js';
+import { isProfane } from "./libraries/modOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import {
-	ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise
-} from "./types/interfaces/InterfacesPrtl";
-import { readFileSync } from "jsonfile";
+import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 
 const command_options_guild: CommandOptions[] = cooldown_list.guild;
 const command_options_member: CommandOptions[] = cooldown_list.member;
@@ -191,6 +188,14 @@ client.on('message', async (message: Message) => {
 	// ranking system
 	ranking_system(message);
 
+	// word check
+	if (isProfane(message.content)) {
+		message.react('🚩');
+		message.author
+			.send("try not to use profanities")
+			.catch(console.error);
+	}
+
 	update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 	// Ignore any message that does not start with prefix
@@ -224,13 +229,6 @@ client.on('message', async (message: Message) => {
 		type = 'none';
 	}
 	else {
-		// word check
-		if (isProfane(message.content)) {
-			message.react('🚩');
-			message.author
-				.send("try not to use profanities")
-				.catch(console.error);
-		}
 		return;
 	}
 
