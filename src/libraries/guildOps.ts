@@ -80,7 +80,6 @@ export function get_role_name(role_id: string, i: number, message: Message) {
 export async function create_channel(guild: Guild, channel_name: string, channel_options: GuildCreateChannelOptions,
 	channel_category: string | CategoryChannel | null): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		console.log('channel_name :>> ', channel_name);
 		guild.channels
 			.create(channel_name, channel_options)
 			.then(new_channel => {

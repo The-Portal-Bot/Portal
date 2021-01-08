@@ -4,6 +4,7 @@
 > 1. Portal will never record conversations or store anything you type<br>
 > 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit 
 > for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)
+> 3. Runs on nodejs 14.x
 
 ***
 

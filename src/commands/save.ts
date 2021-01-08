@@ -13,6 +13,6 @@ module.exports = async (
 
 		update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list)
 			.then((response) => resolve(response))
-			.catch((error) => resolve(error));
+			.catch((error) => resolve({ result: false, value: error }));
 	});
 };

@@ -275,20 +275,8 @@ export async function update_portal_managed_guilds(
 		setTimeout(() => {
 			const guild_list_no_voice = cloneDeep(guild_list);
 			guild_list_no_voice.forEach(g => g.dispatcher = undefined);
-			console.log('JSON.stringify(guild_list_no_voice) :\n', JSON.stringify(guild_list_no_voice), '\n');
-
+			console.log('> saved guild_list.json\n');
 			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);
-
-			// const write_options: WriteFileOptions = {
-			// 	encoding: 'utf8'
-			// };
-
-			// writeFileSync(
-			// 	portal_managed_guilds_path,
-			// 	JSON.stringify(guild_list_no_voice),
-			// 	write_options
-			// );
-
 		}, 1000);
 		return resolve({ result: true, value: 'updated portal guild json' });
 	});

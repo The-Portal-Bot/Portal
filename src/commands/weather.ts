@@ -7,11 +7,11 @@ import { https_fetch } from '../libraries/httpOps';
 import { GuildPrtl } from '../types/classes/GuildPrtl';
 
 function kelvin_to_celsius(kelvin: number): number {
-	return Math.round(kelvin - 272.15);
+	return Math.round(kelvin - 273.15);
 }
 
 function kelvin_to_fahrenheit(kelvin: number): number {
-	return Math.round(kelvin - 457.87);
+	return Math.round(((kelvin - 273.15) * (9 / 5)) + 32);
 }
 
 function ms_to_ks(ms: number): number {
