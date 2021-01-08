@@ -5,6 +5,10 @@
     "database_json": "src/database/guild_list.json",
     "owner_id": 228666893068795905,
     "portal_id": 755825870102593626,
+    "api_keys": {
+        "OpenWeatherMap": "7692e8876197f1532fe027f43c6f3227",
+        "covid-193": "b883903090msh7eef2b50e6cbe9cp1ff439jsnee4d6c48061f"
+    },
     "delete_msg": false,
     "delete_msg_after": 5,
     "always_reply": true

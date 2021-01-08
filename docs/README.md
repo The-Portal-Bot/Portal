@@ -1,9 +1,13 @@
 ![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg)
 
 **Disclaimer[0]:**
-> Portal will never record conversations or store anything you type
+> This is a pation project, still in its infancy
+> There is a lot yet to be done
 
 **Disclaimer[1]:**
+> Portal will never record conversations or store anything you type
+
+**Disclaimer[2]:**
 > Discord update their server rate limit to twice per 10 minutes
 > [The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel.](https://github.com/discordjs/discord.js/issues/4327)
 

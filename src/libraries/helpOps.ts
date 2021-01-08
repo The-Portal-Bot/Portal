@@ -248,26 +248,13 @@ export function create_rich_embed(title: string | null, description: string | nu
 		.setTimestamp();
 	// .setAuthor('Portal', portal_icon_url, keybraker_url)
 
-	if (title) {
-		rich_message
-			.setTitle(title);
-	}
-	if (url) {
-		rich_message
-			.setURL(url);
-	}
-	if (colour) {
-		rich_message
-			.setColor(colour);
-	}
-	if (description) {
-		rich_message
-			.setDescription(description);
-	}
-	if (from_bot) {
-		rich_message
-			.setFooter('Portal bot by Keybraker', portal_icon_url);
-	}
+	if (title) rich_message.setTitle(title);
+	if (url) rich_message.setURL(url);
+	if (colour) rich_message.setColor(colour);
+	if (description) rich_message.setDescription(description);
+	if (from_bot) rich_message.setFooter('Portal bot by Keybraker', portal_icon_url);
+	if (thumbnail) rich_message.setThumbnail(thumbnail);
+	if (image) rich_message.setImage(image);
 	if (member) {
 		const url = member.user.avatarURL() !== null
 			? member.user.avatarURL()
@@ -275,25 +262,16 @@ export function create_rich_embed(title: string | null, description: string | nu
 		rich_message
 			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
 	}
-	if (thumbnail) {
-		rich_message
-			.setThumbnail(thumbnail);
-	}
-	if (image) {
-		rich_message
-			.setImage(image);
-	}
-
 	if (field_array) {
 		field_array.forEach(row => {
 			rich_message
 				.addField(
 					(row.emote === '' || row.emote === null || row.emote === false)
 						? '\u200b'
-						: '`' + row.emote + '`',
+						: '__' + row.emote + '__',
 					(row.role === '' || row.role === null || row.role === false)
 						? '\u200b'
-						: row.role,
+						: '' + row.role + '',
 					row.inline,
 				);
 		});

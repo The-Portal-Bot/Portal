@@ -4,6 +4,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
 import country_codes_json from '../assets/jsons/country_codes.json';
+import config from '../config.json';
 import { create_rich_embed, getJSON } from '../libraries/helpOps';
 import { https_fetch } from '../libraries/httpOps';
 import { GuildPrtl } from '../types/classes/GuildPrtl';
@@ -62,7 +63,7 @@ module.exports = async (
 			'path': '/statistics',
 			'headers': {
 				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
-				'x-rapidapi-key': 'b883903090msh7eef2b50e6cbe9cp1ff439jsnee4d6c48061f',
+				'x-rapidapi-key': config.api_keys.OpenWeatherMap,
 				'useQueryString': 1,
 			},
 		};
@@ -70,12 +71,8 @@ module.exports = async (
 		https_fetch(options)
 			.then((rspns: Buffer) => {
 				const json = getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
-				if (json === null) {
-					return resolve({
-						result: false,
-						value: 'data from source was corrupted',
-					});
-				}
+				if (json === null)
+					return resolve({ result: false, value: 'data from source was corrupted' });
 
 				if (json.errors.length === 0) {
 					const country_data = json.response.find((data: any) => data.country === code);
@@ -83,7 +80,7 @@ module.exports = async (
 					message.channel.send(
 						create_rich_embed(
 							`COVID19 ${country_data.country} stats ${moment().format('DD/MM/YY')}`,
-							'covid-19 be api-sports',
+							'powered by api-sports',
 							'#FF0000',
 							[
 								{

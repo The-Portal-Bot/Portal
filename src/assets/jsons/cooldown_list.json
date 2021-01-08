@@ -217,6 +217,13 @@
             "auth": false,
             "premium": false,
             "auto_delete": false
+        },
+        {
+            "name": "weather",
+            "time": 0,
+            "auth": false,
+            "premium": false,
+            "auto_delete": false
         }
     ]
 }
