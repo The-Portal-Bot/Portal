@@ -18,4 +18,3 @@
 `bitrate_portal` | number | 64000 | _bitrate of current portal channel_
 `bitrate_voice` | number | 64000 | _bitrate of current voice channel_
 `position` | number | beneath portal | _position of channel_
-`last_update` | timestamp | timestamp | _returns the last update timestamp_
