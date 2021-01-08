@@ -60,12 +60,12 @@ function display_spotify_song(
 							[
 								{
 									emote: 'Artist',
-									role: `***${activity.state}***`,
+									role: `${activity.state}`,
 									inline: false,
 								},
 								{
 									emote: 'Album',
-									role: `***${activity.assets?.largeText}***`,
+									role: `${activity.assets?.largeText}`,
 									inline: false,
 								},
 							],

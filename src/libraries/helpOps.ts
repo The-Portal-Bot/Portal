@@ -237,9 +237,9 @@ export function getJSON(str: string): any | null {
 	return data;
 };
 
-export function create_rich_embed(title: string | null, description: string | null, colour: string | null,
-	field_array: Field[], thumbnail: string | null, member: GuildMember | null, from_bot: boolean | null,
-	url: string | null, image: string | null): MessageEmbed {
+export function create_rich_embed(title: string | null | undefined, description: string | null | undefined, colour: string | null | undefined,
+	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
+	url: string | null | undefined, image: string | null | undefined): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 	const keybraker_url: string = 'https://github.com/keybraker';
@@ -309,15 +309,27 @@ export async function update_portal_managed_guilds(
 	});
 };
 
-export function is_authorized(auth_role: string[], member: GuildMember): boolean {
-	return !member.hasPermission('ADMINISTRATOR')
-		? member.roles.cache !== undefined && member.roles.cache !== null
-			? member.roles.cache.some(role =>
-				auth_role
-					? auth_role.some((auth: string) => auth === role.id)
-					: false)
-			: false
-		: true;
+export function is_authorised(guild_object: GuildPrtl, member: GuildMember): boolean {
+	if (member.hasPermission('ADMINISTRATOR')) return true;
+	if (member.roles.cache !== undefined && member.roles.cache !== null) {
+		const has_authorised_role = member.roles.cache.some(role =>
+			guild_object.auth_role
+				? guild_object.auth_role.some((auth: string) => auth === role.id)
+				: false
+		);
+		if (has_authorised_role) return true;
+	}
+	if (member.roles.cache !== undefined && member.roles.cache !== null) {
+		const is_authorised_member = guild_object.member_list.some(m => {
+			if (m.id === member.id)
+				if (m.admin)
+					return true;
+			return false;
+		});
+		if (is_authorised_member) return true;
+	}
+
+	return false;
 };
 
 // channel should be removed !

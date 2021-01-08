@@ -8,7 +8,7 @@ import cooldown_list from './assets/jsons/cooldown_list.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
 import {
-	guildPrtl_to_object, is_authorized, is_url, message_reply, pad,
+	guildPrtl_to_object, is_authorised, is_url, message_reply, pad,
 	time_elapsed, update_portal_managed_guilds, getJSON
 } from './libraries/helpOps';
 import { client_talk } from './libraries/localizationOps';
@@ -245,7 +245,7 @@ client.on('message', async (message: Message) => {
 	}
 
 	if (command_options.auth) {
-		if (!is_authorized(guild_obejct.auth_role, message.member)) {
+		if (!is_authorised(guild_obejct, message.member)) {
 			message_reply(false, message.channel, message, message.author,
 				'you are not authorized to use this command', guild_list, client);
 			return;

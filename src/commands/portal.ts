@@ -9,15 +9,9 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
-			return resolve({ result: true, value: 'guild could not be fetched' });
-		}
-		if (!message.member) {
-			return resolve({ result: true, value: 'member could not be fetched' });
-		}
+		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
+		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
+		if (!message.member) return resolve({ result: true, value: 'member could not be fetched' });
 
 		const portal_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
 		const portal_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);

@@ -13,12 +13,10 @@ const country_codes: { name: string; code: string; }[] = country_codes_json;
 
 const get_country_code = function (country: string): string | null {
 	for (let i = 0; i < country_codes.length; i++) {
-		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country)) {
+		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country))
 			return country_codes[i].name;
-		}
-		else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country)) {
+		else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country))
 			return country_codes[i].name;
-		}
 	}
 	return null;
 };
@@ -29,9 +27,9 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
+		if (!guild_object)
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
+
 		let code: string | null = null;
 
 		if (args.length === 1) {
@@ -63,7 +61,7 @@ module.exports = async (
 			'path': '/statistics',
 			'headers': {
 				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
-				'x-rapidapi-key': config.api_keys.OpenWeatherMap,
+				'x-rapidapi-key': config.api_keys.covid_193,
 				'useQueryString': 1,
 			},
 		};
@@ -85,41 +83,41 @@ module.exports = async (
 							[
 								{
 									emote: 'NEW cases',
-									role: `***${country_data.cases.new}***`, inline: true
+									role: `${country_data.cases.new}`, inline: true
 								},
 								{
 									emote: 'NEW deaths',
-									role: `***${country_data.deaths.new}***`, inline: true
+									role: `${country_data.deaths.new}`, inline: true
 								},
 								{
 									emote: 'Tests P1M',
-									role: `***${country_data.tests['1M_pop']}***`, inline: true
+									role: `${country_data.tests['1M_pop']}`, inline: true
 								},
 								{
 									emote: 'Cases',
-									role: `***${country_data.cases.total}***`, inline: true
+									role: `${country_data.cases.total}`, inline: true
 								},
 								{
 									emote: 'Deaths',
-									role: `***${country_data.deaths.total}***`, inline: true
+									role: `${country_data.deaths.total}`, inline: true
 								},
 								{
 									emote: 'Recovered',
-									role: `***${country_data.cases.recovered}***`, inline: true
+									role: `${country_data.cases.recovered}`, inline: true
 								},
 								{
 									emote: '%Recovered',
-									role: `***${((country_data.cases.recovered / country_data.cases.total) * 100)
-										.toFixed(2)}%***`, inline: true
+									role: `${((country_data.cases.recovered / country_data.cases.total) * 100)
+										.toFixed(2)}%`, inline: true
 								},
 								{
 									emote: '%Diseased',
-									role: `***${((country_data.deaths.total / country_data.cases.total) * 100)
-										.toFixed(2)}%***`, inline: true
+									role: `${((country_data.deaths.total / country_data.cases.total) * 100)
+										.toFixed(2)}%`, inline: true
 								},
 								{
 									emote: 'Critical',
-									role: `***${country_data.cases.critical}***`, inline: true
+									role: `${country_data.cases.critical}`, inline: true
 								},
 							],
 							null,

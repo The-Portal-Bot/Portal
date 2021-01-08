@@ -16,7 +16,7 @@ module.exports = async (
         if (!portal_object)
             return resolve({ result: false, value: 'could not find guild please contact portal support' });
 
-        let portal_tree = [<Field>{ emote: '', role: 'PORTAL CHANNELS', inline: false }];
+        let portal_state = [<Field>{ emote: '', role: 'PORTAL CHANNELS', inline: false }];
 
         const portals = portal_object.portal_list.map(p => {
             const voices = p.voice_list.map(v => {
@@ -28,13 +28,13 @@ module.exports = async (
             return <Field>{ emote: `${channel ? channel.name : 'undefined'}`, role: voices, inline: true }
         });
         if (portals)
-            portal_tree = portal_tree.concat(portals);
+            portal_state = portal_state.concat(portals);
 
-        portal_tree.push(<Field>{ emote: '', role: 'SPOTIFY/ANNOUNCEMENT CHANNELS', inline: false });
+        portal_state.push(<Field>{ emote: '', role: 'SPOTIFY/ANNOUNCEMENT CHANNELS', inline: false });
 
         const spotify = guild.channels.cache.find(c => c.id === portal_object.spotify);
         if (spotify)
-            portal_tree.push(<Field>{
+            portal_state.push(<Field>{
                 emote: `${spotify ? spotify.name : 'undefined'} _(spotify)_`,
                 role: 'displays Music people in Portal\'s voice channels listen too',
                 inline: true
@@ -42,13 +42,13 @@ module.exports = async (
 
         const announcement = guild.channels.cache.find(c => c.id === portal_object.announcement);
         if (announcement)
-            portal_tree.push(<Field>{
+            portal_state.push(<Field>{
                 emote: `${announcement ? announcement.name : 'undefined'} _(announcement)_`,
                 role: 'the announcement channel used by admins and portal',
                 inline: true
             });
 
-        portal_tree.push(<Field>{ emote: '', role: 'URL-ONLY CHANNELS', inline: false });
+        portal_state.push(<Field>{ emote: '', role: 'URL-ONLY CHANNELS', inline: false });
 
         const urls = portal_object.url_list.map(u_id => {
             const channel = guild.channels.cache.find(c => c.id === u_id);
@@ -59,13 +59,13 @@ module.exports = async (
             }
         });
         if (urls)
-            portal_tree = portal_tree.concat(urls);
+            portal_state = portal_state.concat(urls);
 
         message.channel.send(create_rich_embed(
-            'Portal Tree',
-            'A tree of what portal controls in this server',
+            'Portal State',
+            'A state of what portal controls in this server',
             '#964B00',
-            portal_tree,
+            portal_state,
             null,
             null,
             true,

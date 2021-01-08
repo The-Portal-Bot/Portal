@@ -343,7 +343,7 @@ export function create_member_list(guild_id: string, client: Client): any {
 	guild.members.cache.forEach(member => {
 		if (client.user && !member.user.bot) {
 			if (member.id !== client.user.id) {
-				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null));
+				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false));
 			}
 		}
 	});

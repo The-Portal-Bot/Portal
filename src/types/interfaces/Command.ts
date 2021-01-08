@@ -11,7 +11,7 @@ const commands: InterfaceBlueprint[] = [
 			'Links for features and premium upgrade path is also given.',
 		example: './about',
 		args: 'none',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -24,7 +24,7 @@ const commands: InterfaceBlueprint[] = [
 			' title and the the rest it the body your message.',
 		example: './announce body | title',
 		args: '<@title> | <@description>',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -37,7 +37,7 @@ const commands: InterfaceBlueprint[] = [
 			' given as argument, a new channel is created and set as announcements channel.',
 		example: './announcement announcement_name | announcement_category, ./announcement announcement_name, ./announcement',
 		args: '<@channel_name> | <@category_name>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -49,7 +49,7 @@ const commands: InterfaceBlueprint[] = [
 			' commands that can manipulate the flow of the server.',
 		example: './deauthorize one_role',
 		args: '<@role_name>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -61,7 +61,7 @@ const commands: InterfaceBlueprint[] = [
 			' commands that can manipulate the flow of the server.',
 		example: './authorized_roles one_role',
 		args: '<@role_name>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -73,7 +73,7 @@ const commands: InterfaceBlueprint[] = [
 			' commands that can manipulate the flow of the server.',
 		example: './deauthorize one_role',
 		args: '<@role_name>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -83,7 +83,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**delete**, elete will remove number of messages given',
 		example: './delete 5',
 		args: '<!number of messages>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -94,7 +94,7 @@ const commands: InterfaceBlueprint[] = [
 			'You can give input lower or upper case ex: gr or GR if none is given global stats are displayed.',
 		example: './corona code, ./corona country, ./corona',
 		args: '<@country code>, <@country country>',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -108,7 +108,7 @@ const commands: InterfaceBlueprint[] = [
 			'time elapses they will be moved back to the channel they where before focus (2min default time).',
 		example: './focus user_name',
 		args: '<!username> | <@time_to_focus>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -119,7 +119,7 @@ const commands: InterfaceBlueprint[] = [
 			' in order to get a new channel name if cooldown is still in effect.',
 		example: './force',
 		args: 'none',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -132,7 +132,7 @@ const commands: InterfaceBlueprint[] = [
 			'In order to get a more descriptive definition of the property chosen',
 		example: './help, ./help attr, ./help portal',
 		args: '@specific_command OR @vrbl/@cmmd/@pipe/@attr',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -155,7 +155,7 @@ const commands: InterfaceBlueprint[] = [
 			' By default it is about you.',
 		example: './joke',
 		args: '<@category>',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -165,7 +165,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**leave**, leaves the voice channel portal is currently in.',
 		example: './leave',
 		args: 'none',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -175,7 +175,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**leaderboard**, returns the leaderboard.',
 		example: './leaderboard 5',
 		args: '<@number_of_ranks>',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -185,7 +185,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**level**, returns your level card with all member stats.',
 		example: './level',
 		args: 'none',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -208,7 +208,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**ping**, returns the latency of portal bot.',
 		example: './ping',
 		args: 'none',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -221,7 +221,7 @@ const commands: InterfaceBlueprint[] = [
 			'the owner of. When everyone leaves the channel will be destroyed.\n',
 		example: './portal portal_name | portal_category, ./portal portal_name',
 		args: '<!channel_name> | <@category_name>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -231,7 +231,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**ranks**, returns your Ranking system of current server (if one is set).',
 		example: './ranks',
 		args: 'none',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -246,7 +246,7 @@ const commands: InterfaceBlueprint[] = [
 			'\t{ "give": ":rofl:", "strip": ":dog:", "role": "fps" }\n]\n' +
 			'\n>will create a message giving/striping moba role with :thumbsup:/:thumbsdown: and fps role with :rofl:/:dog:.',
 		args: '```json\nJSON array of objects:\n{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role": "moba" }```',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -257,7 +257,7 @@ const commands: InterfaceBlueprint[] = [
 			'Rolls are following the same philosophy as roll20 does.',
 		example: './roll 3d12+5',
 		args: '<!roll configuration>',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -269,7 +269,7 @@ const commands: InterfaceBlueprint[] = [
 			'If regex is empty string it will return a dot (.)',
 		example: './run $member_count &locale\nwill return 4 and gr if member count and locale are that',
 		args: '<!exec_command>',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -279,7 +279,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**save**, saves the current state of portal', // should not be spammed
 		example: './save',
 		args: 'none',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -290,7 +290,7 @@ const commands: InterfaceBlueprint[] = [
 			'or the portal channel if you are the owner of that.\n',
 		example: './set locale gr',
 		args: '<!attribute> <!value>',
-		auth: 'voice',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -303,7 +303,7 @@ const commands: InterfaceBlueprint[] = [
 			'[\n\t{ "level": "2", "role": "Alpha" },\n' +
 			'\t{ "level": "5", "role": "Beta" }\n]\n',
 		args: '```json\nJSON array of objects:\n[{ "level": "2", "role": "Alpha" }]```',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -314,7 +314,7 @@ const commands: InterfaceBlueprint[] = [
 			'at once, removing the hustle of setting up the server.\n',
 		example: './setup',
 		args: 'none',
-		auth: 'voice',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -327,7 +327,30 @@ const commands: InterfaceBlueprint[] = [
 			'argument, a new channel is created and set as Spotify channel.',
 		example: './spotify spotify_name | spotify_category, ./spotify spotify_name, ./spotify',
 		args: '<@channel_name> | <@category_name>',
-		auth: 'voice',
+		auth: 'admin',
+		get: null,
+		set: null
+	},
+	{
+		name: 'state',
+		description: 'returns a visualisation of Portal\'s current state',
+		super_description: '**state**, returns a visualisation of Portal\'s current state, ' +
+			'which means all portal channels with their controlled voice channels spotify, ' +
+			'announcement and url channels.',
+		example: './state',
+		args: 'none',
+		auth: 'none',
+		get: null,
+		set: null
+	},
+	{
+		name: 'translate',
+		description: 'returns given text in translated language',
+		super_description: '**translate**, returns given text in translated language, ' +
+			'will always attempt to translate even if language given does not match from argument.',
+		example: './translate en,gr | What is the weather like, ./translate gr | What is the weather like',
+		args: '<!from>,<!to> | <!text>, <!to> | <!text>',
+		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -344,6 +367,27 @@ const commands: InterfaceBlueprint[] = [
 		get: null,
 		set: null
 	},
+	{
+		name: 'weather',
+		description: 'returns current live weather stats for given location',
+		super_description: '**weather**, returns current live weather stats for given location, ' +
+			'location can be specified in detail, but most always be a location.',
+		example: './weather Athens, Greece, ./weather athens',
+		args: '<!location_name>',
+		auth: 'none',
+		get: null,
+		set: null
+	},
+	{
+		name: 'whoami',
+		description: 'returns information about you',
+		super_description: '**whoami**, returns information about you.',
+		example: './whoami',
+		args: 'none',
+		auth: 'none',
+		get: null,
+		set: null
+	}
 ];
 
 export function is_command(candidate: string): string {
@@ -364,7 +408,7 @@ export function get_command_help(): MessageEmbed {
 		});
 	}
 	return create_rich_embed(
-		'Commands', 'Prefix: ' + command_prefix + '\nCommands to access portal bot.\n**!**: *mandatory*, **@**: *optional*', 
+		'Commands', 'Prefix: ' + command_prefix + '\nCommands to access portal bot.\n**!**: *mandatory*, **@**: *optional*',
 		'#9775A9', func_array, null, null, null, null, null
 	);
 };

@@ -205,10 +205,17 @@
             "auto_delete": true
         },
         {
-            "name": "tree",
+            "name": "translate",
+            "time": 0,
+            "auth": true,
+            "premium": true,
+            "auto_delete": true
+        },
+        {
+            "name": "state",
             "time": 0,
             "auth": false,
-            "premium": false,
+            "premium": true,
             "auto_delete": true
         },
         {
@@ -220,6 +227,13 @@
         },
         {
             "name": "weather",
+            "time": 0,
+            "auth": false,
+            "premium": false,
+            "auto_delete": false
+        },
+        {
+            "name": "whoami",
             "time": 0,
             "auth": false,
             "premium": false,

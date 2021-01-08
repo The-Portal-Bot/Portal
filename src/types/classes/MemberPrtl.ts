@@ -5,6 +5,7 @@ export class MemberPrtl {
 	public tier: number;
 	public points: number;
 	public timestamp: Date | null;
+	public admin: boolean;
 
 	constructor(
 		id: string,
@@ -12,7 +13,8 @@ export class MemberPrtl {
 		rank: number,
 		tier: number,
 		points: number,
-		timestamp: Date | null
+		timestamp: Date | null,
+		admin: boolean
 	) {
 		this.id = id;
 		this.level = level;
@@ -20,5 +22,6 @@ export class MemberPrtl {
 		this.tier = tier;
 		this.points = points;
 		this.timestamp = timestamp;
+		this.admin = admin;
 	}
 };

@@ -13,17 +13,17 @@ module.exports = async (
             '#1DB954',
             [{
                 emote: 'Creator',
-                role: '***Keybraker***',
+                role: 'Keybraker',
                 inline: true
             },
             {
                 emote: 'Created',
-                role: '***2020***',
+                role: '2020',
                 inline: true
             },
             {
                 emote: 'Version',
-                role: '***1.0.2***',
+                role: '1.0.2',
                 inline: true
             },
             {

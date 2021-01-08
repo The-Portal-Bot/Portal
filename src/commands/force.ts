@@ -54,13 +54,13 @@ module.exports = async (
 		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
 			return resolve({
 				result: false,
-				value: '*you must be in a channel handled by* **Portal™***.*',
+				value: 'you must be in a channel handled by Portal',
 			});
 		}
 		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
-				value: '*the channel you are in is not handled by* **Portal™***.*',
+				value: 'the channel you are in is not handled by Portal',
 			});
 		}
 

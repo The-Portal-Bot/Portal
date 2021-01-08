@@ -18,7 +18,7 @@ module.exports = async (
 			ranks.forEach(rank => {
 				ranks_msg.push({
 					emote: `At level ${rank.level}, you get role`,
-					role: `***${rank.role}***`,
+					role: `${rank.role}`,
 					inline: false,
 				});
 			});
