@@ -7,23 +7,22 @@ function is_rank(rank: Rank) {
 	return !!rank.level && !!rank.role;
 };
 
-// is_role already exists in guild manager, keep the best
 function is_role(rank: Rank, roles: Role[]) {
-	return roles.some(role => role.hoist ? role.name === rank.role : false);
+	return roles.some(role => {
+		if (role.id === rank.role) return true;
+		if (role.name === rank.role) return true;
+		return false;
+	});
 };
 
 module.exports = async (
-    client: Client, message: Message, args: string[],
-    guild_list: GuildPrtl[], portal_managed_guilds_path: string
+	client: Client, message: Message, args: string[],
+	guild_list: GuildPrtl[], portal_managed_guilds_path: string
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
-			return resolve({ result: true, value: 'guild could not be fetched' });
-		}
+		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
+		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
 		const roles = message.guild.roles.cache.map(cr => cr);
 
 		if (args.length > 0) {

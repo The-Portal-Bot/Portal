@@ -299,7 +299,7 @@ const commands: InterfaceBlueprint[] = [
 		description: 'creates your ranking system.',
 		super_description: '**ranks**, creates your ranking system by which roles are distributed by reachig.' +
 			'certain levels that have been defined.',
-		example: 'json\n./role ' +
+		example: 'json\n./set_ranks ' +
 			'[\n\t{ "level": "2", "role": "Alpha" },\n' +
 			'\t{ "level": "5", "role": "Beta" }\n]\n',
 		args: '```json\nJSON array of objects:\n[{ "level": "2", "role": "Alpha" }]```',

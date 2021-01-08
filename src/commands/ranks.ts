@@ -9,16 +9,16 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
+		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
+
 		const ranks = guild_object.ranks;
 		if (ranks && ranks.length > 0) {
 			const ranks_msg: Field[] = [];
 			ranks.forEach(rank => {
+				const role = message.guild?.roles.cache.find(r => r.id === rank.role);
 				ranks_msg.push({
 					emote: `At level ${rank.level}, you get role`,
-					role: `${rank.role}`,
+					role: `${role ? role : rank.role}`,
 					inline: false,
 				});
 			});
@@ -35,9 +35,7 @@ module.exports = async (
 					null,
 					null
 				),
-			).then(msg => {
-				msg.delete({ timeout: 10000 });
-			});
+			);
 
 			resolve({ result: true, value: '' });
 		}
