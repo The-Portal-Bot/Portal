@@ -9,7 +9,6 @@ import { join_user_voice, update_message } from './helpOps';
 // const ytdl = require('ytdl-core');
 
 export async function start(client: Client, message: Message, search_term: string, guild_list: GuildPrtl[]): Promise<ReturnPormise> {
-	console.log('starting :>> ');
 	return new Promise((resolve) => {
 		if (!search_term || search_term === '') {
 			console.log('cannot search for nothing.');
@@ -46,7 +45,7 @@ export async function start(client: Client, message: Message, search_term: strin
 					}
 				})
 				.catch(error => console.log(error));
-			return resolve({ result: false, value: 'already playing song, your song has been added in list.' });
+			return resolve({ result: true, value: 'already playing song, your song has been added in list.' });
 		}
 
 		join_user_voice(client, message, guild_list, false)
@@ -61,27 +60,30 @@ export async function start(client: Client, message: Message, search_term: strin
 									fmt: 'mp3',
 									highWaterMark: 2048,
 								});
-								// guild_object.dispatcher = join_attempt.voice_connection.play(stream);
-								if (message.member && message.member.voice && message.member.voice.channel) {
-									const guild = client.guilds.cache.find(g => g.id === message.guild?.id);
-									if (guild !== undefined)
-										update_message(guild, guild_object, yts_attempt.videos[0]);
+								guild_object.dispatcher = join_attempt.voice_connection?.play(stream);
+								if (guild_object.dispatcher) {
+									if (message.member && message.member.voice && message.member.voice.channel) {
+										const guild = client.guilds.cache.find(g => g.id === message.guild?.id);
+										if (guild !== undefined)
+											update_message(guild, guild_object, yts_attempt.videos[0]);
 
-									guild_object.dispatcher.on('finish', () => {
-										if (message.guild) {
-											skip(guild_id, guild_list, client, message.guild);
-											guild_object.music_data.votes = [];
-										}
-									});
+										guild_object.dispatcher.on('finish', () => {
+											if (message.guild) {
+												skip(guild_id, guild_list, client, message.guild);
+												guild_object.music_data.votes = [];
+											}
+										});
 
-									return resolve({ result: false, value: 'playing video' });
+										return resolve({ result: false, value: 'playing video' });
+									} else {
+										return resolve({ result: false, value: 'could not find user' });
+									}
 								} else {
 									return resolve({ result: false, value: 'could not find user' });
 								}
-
 							}
 							else {
-								return resolve({ result: false, value: 'could not find youtube video' });
+								return resolve({ result: false, value: 'could not fetch StreamDispatcher' });
 							}
 						})
 						.catch(error => console.log(error));
@@ -216,11 +218,11 @@ export async function stop(guild_id: string, guild_list: GuildPrtl[], guild: Gui
 			if (!current_dispatcher.paused) {
 				current_dispatcher.pause();
 			}
-			current_guild.dispatcher = null;
+			current_guild.dispatcher = undefined;
 			return resolve({ result: false, value: 'song has been stopped.' });
 		}
 		else {
-			current_guild.dispatcher = null;
+			current_guild.dispatcher = undefined;
 			return resolve({ result: false, value: 'nothing playing write now.' });
 		}
 	});
@@ -295,7 +297,7 @@ export async function skip(guild_id: string, guild_list: GuildPrtl[], client: Cl
 				if (!current_dispatcher.paused) {
 					current_dispatcher.pause();
 				}
-				current_guild.dispatcher = null;
+				current_guild.dispatcher = undefined;
 				return resolve({ result: false, value: 'music list is empty' });
 			}
 

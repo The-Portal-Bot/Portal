@@ -1,6 +1,6 @@
-import { Client, Message, TextChannel, MessageEmbed } from "discord.js";
+import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../libraries/guildOps";
-import { getJSON, create_rich_embed } from "../libraries/helpOps";
+import { create_rich_embed, getJSON } from "../libraries/helpOps";
 import { GiveRole, GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { Field } from "../types/interfaces/InterfacesPrtl";
@@ -22,7 +22,7 @@ function create_role_message(
 		.catch(error => console.log(error));
 };
 
-function multiple_same_emote (emote_map: GiveRole[]) {
+function multiple_same_emote(emote_map: GiveRole[]) {
 	for (let i = 0; i < emote_map.length; i++) {
 		for (let j = i + 1; j < emote_map.length; j++) {
 			if (emote_map[i].give === emote_map[j].give) { return true; }
@@ -54,58 +54,39 @@ module.exports = async (
 		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
 
 		const role_emb_value: GiveRole[] = [];
-		const role_emb_display: Field[] = [];
+		const role_emb_display_give: Field[] = [];
+		const role_emb_display_strip: Field[] = [];
 
-		role_emb_display.push({ emote: '', role: 'React with emote to get correlating role', inline: false, });
+		role_emb_display_give.push({ emote: '', role: 'React with emote to get correlating role', inline: false, });
+		role_emb_display_strip.push({ emote: '', role: 'React with emote to strip correlating role', inline: false, });
 
 		let return_value: string = '';
 		// give roles
-		const give_failed = role_map.some((r, index) => {
+		const failed = role_map.some((r, index) => {
 			if (message.guild) {
 				const role_fetched = get_role(message.guild, r.role_id);
 				if (!role_fetched) {
-					return_value = `${index}. ${r.role_id} is not a role in ${message.guild}`;
+					return_value = `${index + 1}. ${r.role_id} is not a role in ${message.guild}`;
 					return true;
 				}
-				role_emb_display.push(new Field(r.give, role_fetched.name, true));
-				role_emb_value.push(new GiveRole(r.give, role_fetched.id, ''));
+				role_emb_display_give.push(new Field(r.give, role_fetched.name, true));
+				role_emb_display_strip.push(new Field(r.strip, role_fetched.name, true));
+				role_emb_value.push(new GiveRole(role_fetched.id, r.give, r.strip));
 			} else {
 				return_value = `could not fetch guild of message`;
 				return true;
 			}
 		});
 
-		if (give_failed) return resolve({ result: false, value: return_value });
+		if (failed) return resolve({ result: false, value: return_value });
 
-		role_emb_display.push({ emote: '', role: 'React with emote to strip correlating role', inline: false, });
-
-		return_value = '';
-		// strip role
-		const strip_failed = role_map.some((r, index) => {
-			if (message.guild) {
-				const role_fetched = get_role(message.guild, r.role_id);
-				if (!role_fetched) {
-					return_value = `${index}.. ${r.role_id} is not a role in ${message.guild}`;
-					return true;
-				}
-				role_emb_display.push(new Field(r.strip, role_fetched.name, true));
-				role_emb_value.push(new GiveRole(r.strip, role_fetched.id, ''));
-			} else {
-				return_value = `could not fetch guild of message`;
-				return true;
-			}
-		});
-
-		if (strip_failed) return resolve({ result: false, value: return_value });
-		console.log('role_emb_display :>> ', role_emb_display);
-		console.log('role_map :>> ', role_map);
 		create_role_message(
 			<TextChannel>message.channel,
 			guild_object,
 			'Portal Role Assigner',
 			'',
 			'#FF7F00',
-			role_emb_display,
+			role_emb_display_give.concat(role_emb_display_strip),
 			role_map
 		)
 

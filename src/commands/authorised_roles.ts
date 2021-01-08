@@ -1,5 +1,6 @@
 import { Client, Message } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { get_role_name } from "../libraries/guildOps";
 
 module.exports = async (
 	client: Client, message: Message, args: string[],
@@ -12,15 +13,12 @@ module.exports = async (
 		}
 
 		const roles = guild_object.auth_role;
-		const get_role_name = (role_id: string, i: number) => {
-			const role = message?.guild?.roles.cache.find(r => r.id === role_id);
-			return role ? `${i + 1}. ${role.name}` : `${i + 1}. undefined`;
-		};
+		
 
 		if (guild_object.auth_role.length > 0) {
 			resolve({
 				result: true,
-				value: `*authorised roles:*\n${roles.map((r, i) => get_role_name(r, i)).join('\n')}`,
+				value: `*authorised roles:*\n${roles.map((r, i) => get_role_name(r, i, message)).join('\n')}`,
 			});
 		}
 		else {

@@ -274,7 +274,7 @@ export async function update_portal_managed_guilds(
 	return new Promise((resolve) => { // , reject) => {
 		setTimeout(() => {
 			const guild_list_no_voice = cloneDeep(guild_list);
-			guild_list_no_voice.forEach(g => g.dispatcher = null);
+			guild_list_no_voice.forEach(g => g.dispatcher = undefined);
 			console.log('JSON.stringify(guild_list_no_voice) :\n', JSON.stringify(guild_list_no_voice), '\n');
 
 			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);

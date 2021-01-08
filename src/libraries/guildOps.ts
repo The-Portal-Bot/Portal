@@ -73,6 +73,11 @@ export function get_role(guild: Guild, role_name_or_name: string): Role | undefi
 	);
 };
 
+export function get_role_name(role_id: string, i: number, message: Message) {
+	const role = message?.guild?.roles.cache.find(r => r.id === role_id);
+	return role ? `${i + 1}. ${role.name}` : `${i + 1}. undefined`;
+};
+
 //
 
 export async function create_channel(guild: Guild, channel_name: string, channel_options: GuildCreateChannelOptions,
@@ -494,7 +499,7 @@ export function channel_deleted_update_state(channel_to_remove: GuildChannel, gu
 		current_guild.music_data.channel_id = undefined;
 		current_guild.music_data.message_id = undefined;
 		current_guild.music_data.votes = [];
-		current_guild.dispatcher = null;
+		current_guild.dispatcher = undefined;
 		type_of_channel = TypesOfChannel.Music;
 	}
 

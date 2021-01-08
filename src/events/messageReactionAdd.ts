@@ -2,6 +2,7 @@ import { Client, MessageReaction, User, VoiceConnection } from "discord.js";
 import { pause, play, skip, stop } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { get_role } from "../libraries/guildOps";
 
 function clear_user_reactions(client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User) {
 	messageReaction.message.reactions.cache.forEach(reaction => reaction.users.remove(user.id));
@@ -19,8 +20,6 @@ function reaction_role_manager(client: Client, guild_list: GuildPrtl[], messageR
 	const role_list_object = guild_object.role_list.find(r => {
 		return r.message_id === messageReaction.message.id;
 	});
-	console.log('messageReactionAdd role_list :>> ', guild_object.role_list);
-	console.log('messageReactionAdd role_list :>> ', guild_object.role_list[0].role_emote_map);
 
 	if (!role_list_object) return { result: false, value: 'is not a role giving message' };
 
@@ -31,37 +30,39 @@ function reaction_role_manager(client: Client, guild_list: GuildPrtl[], messageR
 	let value = 'failed to give role';
 
 	const found_role = role_list_object.role_emote_map.some(role_map => {
-		if (role_map.give === messageReaction.emoji.name) { // give role
-			const role_to_give = messageReaction.message?.guild?.roles.cache.find(r => r.id === role_map.role_id);
-			if (role_to_give) {
-				try {
-					current_member.roles.add(role_to_give);
-					result = true;
-					value = `you have been assigned to ${role_map.role_id}`;
+		if (messageReaction.message.guild) {
+			if (role_map.give === messageReaction.emoji.name) { // give role
+				const role_to_give = get_role(messageReaction?.message?.guild, role_map.role_id);
+				if (role_to_give) {
+					try {
+						current_member.roles.add(role_to_give);
+						result = true;
+						value = `you have been assigned to ${role_map.role_id}`;
+					}
+					catch (error) {
+						clear_user_reactions(client, guild_list, messageReaction, user);
+						result = false;
+						value = `failed to assign you, to role ${role_map.role_id}`;
+					}
+					return true;
 				}
-				catch (error) {
-					clear_user_reactions(client, guild_list, messageReaction, user);
-					result = false;
-					value = `failed to assign you, to role ${role_map.role_id}`;
+			} else if (role_map.strip === messageReaction.emoji.name) {
+				const role_to_strip = get_role(messageReaction?.message?.guild, role_map.role_id);
+				if (role_to_strip) {
+					try {
+						current_member.roles.remove(role_to_strip);
+						result = true;
+						value = `you have been stripped off ${role_map.role_id}`;
+					}
+					catch (error) {
+						clear_user_reactions(client, guild_list, messageReaction, user);
+						result = false;
+						value = `failed to strip role ${role_map.role_id}`;
+					}
+					return true;
 				}
-				return true;
-			}
-		} else if (role_map.strip === messageReaction.emoji.name) {
-			const role_to_strip = messageReaction.message?.guild?.roles.cache.find(r => r.id === role_map.role_id);
-			if (role_to_strip) {
-				try {
-					current_member.roles.remove(role_to_strip);
-					result = true;
-					value = `you have been stripped off ${role_map.role_id}`;
-				}
-				catch (error) {
-					clear_user_reactions(client, guild_list, messageReaction, user);
-					result = false;
-					value = `failed to strip role ${role_map.role_id}`;
-				}
-				return true;
-			}
-		} // gave other emote
+			} // gave other emote
+		}
 		return false;
 	});
 
@@ -69,7 +70,6 @@ function reaction_role_manager(client: Client, guild_list: GuildPrtl[], messageR
 		return { result: result, value: value };
 	else
 		return { result: false, value: 'could not find role' };
-
 };
 
 function reaction_music_manager(client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User) {
@@ -82,7 +82,7 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 	});
 	if (!guild_object) return { result: false, value: 'message is not role giving' };
 	if (!guild_object.music_data) return { result: false, value: 'message has no music_data' };
-	if (!guild_object.music_data.votes) return { result: false, value: 'message has no music votes' };
+	if (!guild_object.music_data.votes) guild_object.music_data.votes = [];
 	if (guild_object.music_data.message_id !== messageReaction.message.id) {
 		return { result: false, value: 'message is not music player' };
 	}
@@ -103,7 +103,6 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 		}
 		const is_member_in_same_channel_as_portal = voice_connection_in_reaction_guild.channel.members
 			.some(member => {
-				console.log(member.id, ' === ', user.id);
 				return member.id === user.id;
 			});
 		if (!is_member_in_same_channel_as_portal) {
@@ -164,7 +163,7 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 				return_value.value = 'could not find voice connection';
 				break;
 			}
-			if (guild_object.dispatcher !== null && guild_object.dispatcher !== undefined) {
+			if (!guild_object.dispatcher) {
 				return_value.value = 'player is not connected';
 				break;
 			}
@@ -215,24 +214,24 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User }
 ) => {
-	if (args.user.bot) return null;
+	return new Promise((resolve) => {
+		if (args.user.bot) return resolve({ result: false, value: 'not handling bot reactions' });
 
-	if (args.messageReaction.partial) {
-		try {
-			await args.messageReaction.fetch();
-		} catch (error) {
-			return {
-				result: false,
-				value: 'Something went wrong when fetching the message: ' + error,
-			};
+		if (args.messageReaction.partial) {
+			try {
+				args.messageReaction.fetch();
+			} catch (error) {
+				return resolve({
+					result: false,
+					value: 'Something went wrong when fetching the message: ' + error,
+				});
+			}
 		}
-	}
 
-	const return_value_role = reaction_role_manager(args.client, args.guild_list, args.messageReaction, args.user);
-	console.log('return_value_role :>> ', return_value_role);
-	if (return_value_role.result !== null) return return_value_role;
+		const return_value_role = reaction_role_manager(args.client, args.guild_list, args.messageReaction, args.user);
+		if (return_value_role.result) return resolve(return_value_role);
 
-	const return_value_music = reaction_music_manager(args.client, args.guild_list, args.messageReaction, args.user);
-	console.log('return_value_music :>> ', return_value_music);
-	if (return_value_music.result !== null) return return_value_music;
+		const return_value_music = reaction_music_manager(args.client, args.guild_list, args.messageReaction, args.user);
+		return resolve(return_value_music);
+	});
 };

@@ -3,6 +3,7 @@ import { Rank } from "../interfaces/InterfacesPrtl";
 import { GiveRolePrtl } from "./GiveRolePrtl";
 import { MemberPrtl } from "./MemberPrtl";
 import { PortalChannelPrtl } from "./PortalChannelPrtl";
+import { StreamDispatcher } from "discord.js";
 
 export class MusicData {
 	public channel_id: string | undefined;
@@ -29,7 +30,7 @@ export class GuildPrtl {
 	public spotify: string | null;
 	public music_data: MusicData;
 	public music_queue: VideoSearchResult[];
-	public dispatcher: any;
+	public dispatcher: StreamDispatcher | undefined;
 	public announcement: string | null;
 	public locale: string;
 	public announce: boolean;
@@ -47,7 +48,7 @@ export class GuildPrtl {
 		spotify: string,
 		music_data: MusicData,
 		music_queue: VideoSearchResult[],
-		dispatcher: any,
+		dispatcher: StreamDispatcher | undefined,
 		announcement: string | null,
 		locale: string,
 		announce: boolean,
