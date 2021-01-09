@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
 import { create_rich_embed } from '../../libraries/helpOps';
-import { InterfaceBlueprint } from './InterfacesPrtl';
+import { InterfaceBlueprint, Field } from './InterfacesPrtl';
 
 export const pipe_prefix: string = '|';
 const pipes: InterfaceBlueprint[] = [
@@ -124,25 +124,38 @@ export function is_pipe(candidate: string): string {
 	return '';
 };
 
-export function get_pipe_help(): MessageEmbed {
-	const pipe_array = [];
-	for (let i = 0; i < pipes.length; i++) {
-		pipe_array.push({
-			emote: pipes[i].name,
-			role: '**desc**: *' + pipes[i].description + '*' +
-				'\n**args**: *' + pipes[i].args + '*',
-			inline: true,
-		});
+export function get_pipe_help(): MessageEmbed[] {
+	const pipe_array: Field[][] = [];
+
+	for (let l = 0; l <= pipes.length / 24; l++) {
+		pipe_array[l] = []
+		for (let i = (24 * l); i < pipes.length && i < 24 * (l + 1); i++) {
+			pipe_array[l].push({
+				emote: `${i + 1}. ${pipes[i].name}`,
+				role: '**desc**: *' + pipes[i].description + '*' +
+					'\n**args**: *' + pipes[i].args + '*',
+				inline: true
+			});
+		}
 	}
-	return create_rich_embed('Pipes',
-		'Prefix: ' + pipe_prefix + '\nData manipulating pipes.' +
-		'\n**!**: *mandatory*, **@**: *optional*',
-		'#6EEB83', pipe_array,
-		null,
-		null,
-		null,
-		null,
-		null);
+
+	return pipe_array.map((cmmd, index) => {
+		if (index === 0) {
+			return create_rich_embed(
+				'Pipes',
+				'Prefix: ' + pipe_prefix + '\n' +
+				'Mini functions that get an input in regex and ' +
+				'return it manipulated.\n' +
+				'argument preceded by **!** it is *mandatory*\n' +
+				'argument preceded by **@** it is *optional*\n',
+				'#6EEB83', pipe_array[0], null, null, null, null, null
+			)
+		} else {
+			return create_rich_embed(
+				null, null, '#6EEB83', pipe_array[index], null, null, null, null, null
+			)
+		}
+	});
 };
 
 export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
@@ -152,8 +165,9 @@ export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 			return create_rich_embed(
 				pipe.name,
 				'Type: Pipe' +
-				'\nPrefix: ' + pipe_prefix +
-				'\n**!**: *mandatory*, **@**: *optional*',
+				'\nPrefix: ' + pipe_prefix + '\n' +
+				'argument preceded by **!** it is *mandatory*\n' +
+				'argument preceded by **@** it is *optional*\n',
 				'#6EEB83',
 				[
 					{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },

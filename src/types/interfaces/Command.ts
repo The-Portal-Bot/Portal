@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { create_rich_embed } from '../../libraries/helpOps';
-import { InterfaceBlueprint, Field } from './InterfacesPrtl';
+import { Field, InterfaceBlueprint } from './InterfacesPrtl';
 
 export const command_prefix: string = './';
 const commands: InterfaceBlueprint[] = [
@@ -42,36 +42,47 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'authorize',
-		description: 'authorize will add a role to the autorized list of roles that can access certain commands.',
-		super_description: '**authorize**, authorize will add a role to the autorized list of roles that ' +
+		name: 'authorise',
+		description: 'authorise will add a role to the autorized list of roles that can access certain commands.',
+		super_description: '**authorise**, authorise will add a role to the autorized list of roles that ' +
 			' can access certain commands. Selected roles will be granted higher access to more powerful Portal ' +
 			' commands that can manipulate the flow of the server.',
-		example: './deauthorize one_role',
+		example: './deauthorise one_role',
 		args: '<@role_name>',
 		auth: 'admin',
 		get: null,
 		set: null
 	},
 	{
-		name: 'authorized_roles',
-		description: 'authorized_roles will display all the authorization roles that allow user to use portal .',
-		super_description: '**authorized_roles**, authorized_roles will add a role to the autorized list of roles that ' +
+		name: 'authorised_roles',
+		description: 'authorised_roles will display all the authorization roles that allow user to use portal .',
+		super_description: '**authorised_roles**, authorised_roles will add a role to the autorized list of roles that ' +
 			' can access certain commands. Selected roles will be granted higher access to more powerful Portal ' +
 			' commands that can manipulate the flow of the server.',
-		example: './authorized_roles one_role',
+		example: './authorised_roles one_role',
 		args: '<@role_name>',
 		auth: 'admin',
 		get: null,
 		set: null
 	},
 	{
-		name: 'deauthorize',
-		description: 'deauthorize will remove a role to the autorized list of roles that can access certain commands.',
-		super_description: '**deauthorize**, deauthorize will remove a role to the autorized list of roles that ' +
+		name: 'corona',
+		description: 'corona replys with todays latest figures on the novel corona virus.',
+		super_description: '**corona**, replys with todays latest figures on the novel corona virus. ' +
+			'You can give input lower or upper case ex: gr or GR if none is given global stats are displayed.',
+		example: './corona code, ./corona country, ./corona',
+		args: '<@country code>, <@country country>',
+		auth: 'none',
+		get: null,
+		set: null
+	},
+	{
+		name: 'deauthorise',
+		description: 'deauthorise will remove a role to the autorized list of roles that can access certain commands.',
+		super_description: '**deauthorise**, deauthorise will remove a role to the autorized list of roles that ' +
 			' can access certain commands. Selected roles will be stripped of the higher access to more powerful Portal ' +
 			' commands that can manipulate the flow of the server.',
-		example: './deauthorize one_role',
+		example: './deauthorise one_role',
 		args: '<@role_name>',
 		auth: 'admin',
 		get: null,
@@ -85,17 +96,6 @@ const commands: InterfaceBlueprint[] = [
 		example: './delete 5',
 		args: '<!number of messages>',
 		auth: 'admin',
-		get: null,
-		set: null
-	},
-	{
-		name: 'corona',
-		description: 'corona replys with todays latest figures on the novel corona virus.',
-		super_description: '**corona**, replys with todays latest figures on the novel corona virus. ' +
-			'You can give input lower or upper case ex: gr or GR if none is given global stats are displayed.',
-		example: './corona code, ./corona country, ./corona',
-		args: '<@country code>, <@country country>',
-		auth: 'none',
 		get: null,
 		set: null
 	},
@@ -161,21 +161,21 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'leave',
-		description: 'leaves the voice channel portal is currently in.',
-		super_description: '**leave**, leaves the voice channel portal is currently in.',
-		example: './leave',
-		args: 'none',
-		auth: 'none',
-		get: null,
-		set: null
-	},
-	{
 		name: 'leaderboard',
 		description: 'returns the leaderboard.',
 		super_description: '**leaderboard**, returns the leaderboard.',
 		example: './leaderboard 5',
 		args: '<@number_of_ranks>',
+		auth: 'none',
+		get: null,
+		set: null
+	},
+	{
+		name: 'leave',
+		description: 'leaves the voice channel portal is currently in.',
+		super_description: '**leave**, leaves the voice channel portal is currently in.',
+		example: './leave',
+		args: 'none',
 		auth: 'none',
 		get: null,
 		set: null
@@ -239,14 +239,13 @@ const commands: InterfaceBlueprint[] = [
 	{
 		name: 'role_assigner',
 		description: 'creates a role giving message.',
-		super_description: '**role_assigner**, creates a message that distributes roles.' +
-			'Roles can be given or striped by reacting to the message.\n' +
-			'(Please make sure you have no space infront or behind *role name* or *emotes*)',
+		super_description: '**role_assigner**, creates a message that distributes roles.\n' +
+			'Roles can be given or striped by reacting to the message.',
 		example: 'json\n./role_assigner ' +
-			'[\n\t{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role_id": "moba" },\n' +
-			'\t{ "give": ":rofl:", "strip": ":dog:", "role_id": "fps" }\n]\n' +
-			'\n>will create a message giving/striping moba role with :thumbsup:/:thumbsdown: and fps role with :rofl:/:dog:.',
-		args: '```json\nJSON array of objects:\n{ "give": ":thumbsup:", "strip": ":thumbsdown:", "role_id": "moba" }```',
+			'[\n\t{\n\t\t"give": ":thumbsup:",\n\t\t"strip": ":thumbsdown:",\n\t\t"role_id": "moba"\n\t},' +
+			'\n\t{\n\t\t"give": ":rofl:",\n\t\t"strip": ":dog:",\n\t\t"role_id": "fps"\n\t}\n]\n' +
+			'\n// will create a message giving/stripping\n// moba role with :thumbsup:/:thumbsdown:\n// fps role with :rofl:/:dog:',
+		args: '[JSON type]```json\n[\n\t{\n\t\t"give": ":thumbsup:",\n\t\t"strip": ":thumbsdown:",\n\t\t"role_id": "moba"\n\t}\n]```',
 		auth: 'admin',
 		get: null,
 		set: null
@@ -285,6 +284,20 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'set_ranks',
+		description: 'creates your ranking system.',
+		super_description: '**ranks**, creates your ranking system, by which roles are given when ' +
+			'they reach a certain level. It is a one time process and every time it is updated it ' +
+			'it replaces the previous ranking system',
+		example: 'json\n./set_ranks ' +
+			'[\n\t{\n\t\t"level": "2",\n\t\t"role": "Alpha"\n\t},' +
+			'\n\t{\n\t\t"level": "5",\n\t\t"role": "Beta"\n\t}\n]\n',
+		args: '[JSON type]```json\n[\n\t{\n\t\t"level": "2", \n\t\t"role": "Alpha"\n\t}\n]```',
+		auth: 'admin',
+		get: null,
+		set: null
+	},
+	{
 		name: 'set',
 		description: 'sets the value of attribute.',
 		super_description: '**set**, sets attributes of the current voice channel if you are the owner ' +
@@ -292,19 +305,6 @@ const commands: InterfaceBlueprint[] = [
 		example: './set locale gr',
 		args: '<!attribute> <!value>',
 		auth: 'none',
-		get: null,
-		set: null
-	},
-	{
-		name: 'set_ranks',
-		description: 'creates your ranking system.',
-		super_description: '**ranks**, creates your ranking system by which roles are distributed by reachig.' +
-			'certain levels that have been defined.',
-		example: 'json\n./set_ranks ' +
-			'[\n\t{ "level": "2", "role": "Alpha" },\n' +
-			'\t{ "level": "5", "role": "Beta" }\n]\n',
-		args: '```json\nJSON array of objects:\n[{ "level": "2", "role": "Alpha" }]```',
-		auth: 'admin',
 		get: null,
 		set: null
 	},
@@ -344,17 +344,17 @@ const commands: InterfaceBlueprint[] = [
 		get: null,
 		set: null
 	},
-	{
-		name: 'translate',
-		description: 'returns given text in translated language',
-		super_description: '**translate**, returns given text in translated language, ' +
-			'will always attempt to translate even if language given does not match from argument.',
-		example: './translate en,gr | What is the weather like, ./translate gr | What is the weather like',
-		args: '<!from>,<!to> | <!text>, <!to> | <!text>',
-		auth: 'none',
-		get: null,
-		set: null
-	},
+	// {
+	// 	name: 'translate',
+	// 	description: 'returns given text in translated language',
+	// 	super_description: '**translate**, returns given text in translated language, ' +
+	// 		'will always attempt to translate even if language given does not match from argument.',
+	// 	example: './translate en,gr | What is the weather like, ./translate gr | What is the weather like',
+	// 	args: '<!from>,<!to> | <!text>, <!to> | <!text>',
+	// 	auth: 'none',
+	// 	get: null,
+	// 	set: null
+	// },
 	{
 		name: 'url',
 		description: 'sets the text channel you wrote the command in as the url channel or creates a new channel' +
@@ -398,20 +398,37 @@ export function is_command(candidate: string): string {
 	return '';
 }
 
-export function get_command_help(): MessageEmbed {
-	const func_array: Field[] = [];
-	for (let i = 0; i < commands.length; i++) {
-		func_array.push({
-			emote: commands[i].name,
-			role: '**desc**: *' + commands[i].description + '*' +
-				'\n**args**: *' + commands[i].args + '*',
-			inline: true,
-		});
+export function get_command_help(): MessageEmbed[] {
+	const cmmd_array: Field[][] = [];
+
+	for (let l = 0; l <= commands.length / 24; l++) {
+		cmmd_array[l] = []
+		for (let i = (24 * l); i < commands.length && i < 24 * (l + 1); i++) {
+			cmmd_array[l].push({
+				emote: `${i + 1}. ${commands[i].name}`,
+				role: '**desc**: *' + commands[i].description + '*' +
+					'\n**args**: *' + commands[i].args + '*',
+				inline: true
+			});
+		}
 	}
-	return create_rich_embed(
-		'Commands', 'Prefix: ' + command_prefix + '\nCommands to access portal bot.\n**!**: *mandatory*, **@**: *optional*',
-		'#9775A9', func_array, null, null, null, null, null
-	);
+
+	return cmmd_array.map((cmmd, index) => {
+		if (index === 0) {
+			return create_rich_embed(
+				'Commands',
+				'Prefix: *' + command_prefix + '*\n' +
+				'**The way to communicate with Portal.**\n' +
+				'argument preceded by **!** it is *mandatory*\n' +
+				'argument preceded by **@** it is *optional*\n',
+				'#9775A9', cmmd_array[0], null, null, null, null, null
+			)
+		} else {
+			return create_rich_embed(
+				null, null, '#9775A9', cmmd_array[index], null, null, null, null, null
+			)
+		}
+	});
 };
 
 export function get_command_help_super(candidate: string): MessageEmbed | boolean {
@@ -421,8 +438,9 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 			return create_rich_embed(
 				cmmd.name,
 				'Type: Command' +
-				'\nPrefix: ' + command_prefix +
-				'\n**!**: *mandatory*, **@**: *optional*',
+				'\nPrefix: ' + command_prefix + '\n' +
+				'argument preceded by **!** it is *mandatory*\n' +
+				'argument preceded by **@** it is *optional*\n',
 				'#9775A9',
 				[
 					{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },
@@ -432,7 +450,7 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 				],
 				null,
 				null,
-				true,
+				null,
 				null,
 				null
 			);

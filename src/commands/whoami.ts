@@ -28,7 +28,7 @@ module.exports = async (
             },
             {
                 emote: 'admin',
-                role: member_object.admin,
+                role: member_object.admin ? 'true' : 'false',
                 inline: false
             }],
             message.member?.user.avatarURL(),

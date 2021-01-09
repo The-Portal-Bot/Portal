@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { create_rich_embed } from '../../libraries/helpOps';
-import { InterfaceBlueprint } from './InterfacesPrtl';
+import { command_prefix } from './Command';
+import { Field, InterfaceBlueprint } from './InterfacesPrtl';
 
 export const structure_prefix: string = '{{';
 const structures: InterfaceBlueprint[] = [
@@ -33,25 +34,38 @@ export function is_structure(candidate: string): string {
 	return '';
 };
 
-export function get_structure_help(): MessageEmbed {
-	const strc_array = [];
-	for (let i = 0; i < structures.length; i++) {
-		strc_array.push({
-			emote: structures[i].name,
-			role: '**desc**: *' + structures[i].description + '*' +
-				'\n**args**: *' + structures[i].args + '*',
-			inline: true,
-		});
+export function get_structure_help(): MessageEmbed[] {
+	const strc_array: Field[][] = [];
+
+	for (let l = 0; l <= structures.length / 24; l++) {
+		strc_array[l] = []
+		for (let i = (24 * l); i < structures.length && i < 24 * (l + 1); i++) {
+			strc_array[l].push({
+				emote: `${i + 1}. ${structures[i].name}`,
+				role: '**desc**: *' + structures[i].description + '*' +
+					'\n**args**: *' + structures[i].args + '*',
+				inline: true
+			});
+		}
 	}
-	return create_rich_embed('Structures',
-		'Prefix: ' + structure_prefix + '\nStructural functionality.' +
-		'\n**!**: *mandatory*, **@**: *optional*',
-		'#EEB902', strc_array,
-		null,
-		null,
-		null,
-		null,
-		null);
+
+	return strc_array.map((cmmd, index) => {
+		if (index === 0) {
+			return create_rich_embed(
+				'Structures',
+				'Prefix: ' + structure_prefix + '\n' +
+				'Optional display with language like syntax\n' +
+				'(if this do that, or if that do this).\n' +
+				'argument preceded by **!** it is *mandatory*\n' +
+				'argument preceded by **@** it is *optional*\n',
+				'#EEB902', strc_array[0], null, null, null, null, null
+			)
+		} else {
+			return create_rich_embed(
+				null, null, '#EEB902', strc_array[index], null, null, null, null, null
+			)
+		}
+	});
 };
 
 export function get_structure_help_super(candidate: string): MessageEmbed | boolean {
@@ -61,8 +75,9 @@ export function get_structure_help_super(candidate: string): MessageEmbed | bool
 			return create_rich_embed(
 				strc.name,
 				'Type: Structure' +
-				'\nPrefix: ' + structure_prefix +
-				'\n**!**: *mandatory*, **@**: *optional*',
+				'\nPrefix: ' + structure_prefix + '\n' +
+				'argument preceded by **!** it is *mandatory*\n' +
+				'argument preceded by **@** it is *optional*\n',
 				'#EEB902',
 				[
 					{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
