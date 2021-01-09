@@ -1,9 +1,9 @@
-[< back to README](https://github.com/keybraker/portal-discord-bot)
+[< back to README](https://github.com/keybraker/portal-discord-bot#regex-interpreter)
 
 ## Variables
 
 * _prefix:_ __$__
-* _(Variables are defacto data sources that can be accessed though calling them they are read-only)_
+* _Variables are immutable and live data that return information_
 
 | Variable | Description |
 | :--------- | :--------- |

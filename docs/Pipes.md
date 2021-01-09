@@ -1,9 +1,9 @@
-[< back to README](https://github.com/keybraker/portal-discord-bot)
+[< back to README](https://github.com/keybraker/portal-discord-bot#regex-interpreter)
 
 ## Pipes
 
 * _prefix:_ __|__
-* _(Pipes are applied to variables or strings in order to change their outcome)_
+* _Pipes are mini functions you can pass text or Variables to manipulate their outcome_
 
 | Pipe | Type | Description |
 | :--------- | :--------- | :--------- |
