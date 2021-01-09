@@ -1,9 +1,9 @@
-[< back to README](https://github.com/keybraker/portal-discord-bot)
+[< back to README](https://github.com/keybraker/portal-discord-bot#regex-interpreter)
 
 ## Attributes
 
 * _prefix:_ __@__
-* _(Attributes are values that a channel has from its inception and are subject to change)_
+* _Attributes are Portal Bot's, Portal Voice or Voice Channel options that can be manipulated by whomever has clearance_
 
 | Attributes | Type | Default | Description |
 | :--------- | :--------- | :--------- | :---------  |
