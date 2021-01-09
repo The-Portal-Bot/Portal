@@ -275,20 +275,8 @@ export async function update_portal_managed_guilds(
 		setTimeout(() => {
 			const guild_list_no_voice = cloneDeep(guild_list);
 			guild_list_no_voice.forEach(g => g.dispatcher = undefined);
-			console.log('JSON.stringify(guild_list_no_voice) :\n', JSON.stringify(guild_list_no_voice), '\n');
-
+			console.log('> saved guild_list.json\n');
 			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);
-
-			// const write_options: WriteFileOptions = {
-			// 	encoding: 'utf8'
-			// };
-
-			// writeFileSync(
-			// 	portal_managed_guilds_path,
-			// 	JSON.stringify(guild_list_no_voice),
-			// 	write_options
-			// );
-
 		}, 1000);
 		return resolve({ result: true, value: 'updated portal guild json' });
 	});
@@ -412,7 +400,8 @@ export function time_remaining(timestamp: number, timeout: number): TimeRemainin
 };
 
 export function remove_deleted_guild(guild: Guild, guild_list: GuildPrtl[]): boolean {
-	if (!guild_list.some(g => g.id === guild.id)) {
+	const guild_in_db = guild_list.some(g => g.id === guild.id);
+	if (!guild_in_db) {
 		guild.leave()
 			.then(guild => console.log(`left guild ${guild}`))
 			.catch(console.error);
@@ -421,21 +410,24 @@ export function remove_deleted_guild(guild: Guild, guild_list: GuildPrtl[]): boo
 	return false;
 }
 
-export function remove_deleted_channels(guild: Guild, guild_list: GuildPrtl[]): void {
+export function remove_deleted_channels(guild: Guild, guild_list: GuildPrtl[]): boolean {
+	let removed_channel = false;
 	const guild_object = guild_list.find(g => g.id === guild.id);
 	if (guild_object) {
 		guild_object.portal_list.forEach((p, index_p) => {
 			if (!guild.channels.cache.some(c => c.id === p.id)) {
 				guild_object.portal_list.splice(index_p, 1);
+				removed_channel = true;
 			}
 			p.voice_list.forEach((v, index_v) => {
 				if (!guild.channels.cache.some(c => c.id === v.id)) {
 					p.voice_list.splice(index_v, 1);
+					removed_channel = true;
 				}
 			});
 		});
 
-		guild_object.url_list.some((u_id, index_u) => {
+		removed_channel = guild_object.url_list.some((u_id, index_u) => {
 			if (!guild.channels.cache.some(c => c.id === u_id)) {
 				guild_object.url_list.splice(index_u, 1);
 				return true;
@@ -456,62 +448,65 @@ export function remove_deleted_channels(guild: Guild, guild_list: GuildPrtl[]): 
 						.catch(() => {
 							guild_object.role_list.splice(index_r, 1);
 						});
+					removed_channel = found;
 					return found;
 				}
 				return false;
 			});
 		});
 
-		guild_object.member_list.some((m, index_m) => {
+		guild_object.member_list.forEach((m, index_m) => {
 			if (!guild.members.cache.some(m => m.id === m.id)) {
 				guild_object.url_list.splice(index_m, 1);
-				return true;
+				removed_channel = true;
 			}
-			return false;
 		});
 
 		if (!guild.channels.cache.some(c => c.id === guild_object.spotify)) {
+			removed_channel = true;
 			guild_object.spotify = null;
 		}
 
 		if (!guild.channels.cache.some(c => c.id === guild_object.music_data.channel_id)) {
+			removed_channel = true;
 			guild_object.music_data.channel_id = undefined;
 			guild_object.music_data.message_id = undefined;
 			guild_object.music_data.votes = undefined;
 		}
 
 		if (!guild.channels.cache.some(c => c.id === guild_object.announcement)) {
+			removed_channel = true;
 			guild_object.announcement = null;
 		}
-	}
+	} 
+	
+	return removed_channel;
 }
 
-export function remove_empty_voice_channels(guild: Guild, guild_list: GuildPrtl[]): void {
+export function remove_empty_voice_channels(guild: Guild, guild_list: GuildPrtl[]): boolean {
 	guild.channels.cache.forEach(channel => {
-		if (!channel.members.size) {
-			const deleted = guild_list.some(g =>
-				g.portal_list.some(p =>
-					p.voice_list.some((v, index) => {
-						if (v.id === channel.id) {
-							console.log(`Deleting channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
-							if (channel.deletable) {
-								channel
-									.delete()
-									.then(g => {
-										p.voice_list.splice(index, 1);
-										console.log('...done');
-									})
-									.catch(console.error);
-							}
-							return true;
+		guild_list.some(g =>
+			g.portal_list.some(p =>
+				p.voice_list.some((v, index) => {
+					if (v.id === channel.id && channel.members.size === 0) {
+						if (channel.deletable) {
+							channel
+								.delete()
+								.then(g => {
+									p.voice_list.splice(index, 1);
+									console.log(`deleted empty channel: ${channel.name} ` +
+										`(${channel.id}) from ${channel.guild.name}`);
+								})
+								.catch(console.log);
 						}
-						return false
-					})
-				)
-			);
-
-			if (!deleted)
-				console.log('failed to delete channel');
-		}
+						return true;
+					}
+					return false
+				})
+			)
+		);
 	});
+
+	console.log('> synchronised');
+	return true;
 };

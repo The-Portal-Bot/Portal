@@ -11,8 +11,8 @@ const profane_words: Language = <Language>profane_word_list;
    * https://github.com/web-mech/badwords
    */
 export function isProfane(string: string): boolean {
-	if(string === 'role_assigner') return false;
-	
+	if (string.includes('role_assigner')) return false;
+
 	const str_array = [string];
 
 	for (let i = 0; i < string.length; i++) {

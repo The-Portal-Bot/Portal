@@ -6,19 +6,26 @@ module.exports = async (
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
 ) => {
 	return new Promise((resolve) => {
-		if (args.length <= 0) {
+		if (args.length <= 0)
 			resolve({ result: false, value: 'you should give one role.\nyou can run "./help deauthorise" for help.*' });
-		}
+
+		const guild_object = guild_list.find(g => g.id === message.guild?.id);
+		if (!guild_object)
+			return resolve({ result: true, value: 'portal guild could not be fetched' });
 
 		const role_name = args.join(' ');
 		const role = message?.guild?.roles.cache.find(current_role => role_name === current_role.name);
 
-		if (role) {
-			const guild_object = guild_list.find(g => g.id === message.guild?.id);
-			if (!guild_object) {
-				return resolve({ result: true, value: 'portal guild could not be fetched' });
+		guild_object.member_list.some(m => {
+			if (m.id === role_name) {
+				m.admin = false;
+				const member = message.guild?.members.cache.find(mb => mb.id === m.id);
+				resolve({ result: true, value: `member ${member ? member : m.id} is no longer admin` });
 			}
+			return false;
+		});
 
+		if (role) {
 			if(guild_object.auth_role.some((ar, index) => {
 				if (ar === role.id) {
 					guild_object.auth_role.splice(index, 1);

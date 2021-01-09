@@ -80,7 +80,6 @@ export function get_role_name(role_id: string, i: number, message: Message) {
 export async function create_channel(guild: Guild, channel_name: string, channel_options: GuildCreateChannelOptions,
 	channel_category: string | CategoryChannel | null): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		console.log('channel_name :>> ', channel_name);
 		guild.channels
 			.create(channel_name, channel_options)
 			.then(new_channel => {
@@ -500,9 +499,10 @@ export function generate_channel_name(voice_channel: VoiceChannel, portal_list: 
 	return return_value;
 };
 
-export function regex_interpreter(regex: string, voice_channel: VoiceChannel, voice_object: any,
-	portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild): string {
-
+export function regex_interpreter(
+	regex: string, voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+	portal_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+): string {
 	let last_space_index = 0;
 	let last_vatiable_end_index = 0;
 	let last_attribute_end_index = 0;
@@ -517,7 +517,9 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 			const vrbl = is_variable(regex.substring(i));
 
 			if (vrbl.length !== 0) {
-				const return_value = get_variable(voice_channel, voice_object, portal_list, guild_object, guild, vrbl);
+				const return_value = get_variable(
+					voice_channel, voice_object, portal_list, guild_object, guild, vrbl
+				);
 
 				if (return_value !== null) {
 					last_variable = return_value;
@@ -538,18 +540,22 @@ export function regex_interpreter(regex: string, voice_channel: VoiceChannel, vo
 			const attr = is_attribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				const portal_object = portal_list.find(p => p.voice_list.some(v => v.id === voice_channel.id));
-				if (portal_object) { // tsiakkas elegxos oti paizei kala an den to brei
-					const return_value = get_attribute(voice_channel, voice_object, portal_object, guild_object, attr);
+				if (portal_list && voice_channel && voice_channel && voice_object) {
+					const portal_object = portal_list.find(p => p.voice_list.some(v => v.id === voice_channel.id));
+					if (portal_object) { // tsiakkas elegxos oti paizei kala an den to brei
+						const return_value = get_attribute(
+							voice_channel, voice_object, portal_object, guild_object, attr
+						);
 
-					if (return_value !== null) {
-						last_attribute = return_value;
-						new_channel_name += return_value;
-						i += voca.chars(attr).length;
-						last_attribute_end_index = i;
-					}
-					else {
-						new_channel_name += regex[i];
+						if (return_value !== null) {
+							last_attribute = `${return_value}`;
+							new_channel_name += return_value;
+							i += voca.chars(attr).length;
+							last_attribute_end_index = i;
+						}
+						else {
+							new_channel_name += regex[i];
+						}
 					}
 				}
 			}

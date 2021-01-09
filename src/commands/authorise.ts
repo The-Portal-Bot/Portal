@@ -16,8 +16,7 @@ module.exports = async (
 		const role_name = args.join(' ');
 		const role = message?.guild?.roles.cache.find(current_role => role_name === current_role.name);
 
-		const member_found = guild_object.member_list.some(m => {
-			console.log(`${m.id} === ${role_name}`);
+		guild_object.member_list.some(m => {
 			if (m.id === role_name) {
 				m.admin = true;
 				const member = message.guild?.members.cache.find(mb => mb.id === m.id);

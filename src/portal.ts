@@ -31,7 +31,7 @@ if (!guild_list_json) {
 }
 // list of all managed guilds
 const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
-console.log('guild_list :>> ', guild_list);
+
 if (guild_list === null) {
 	console.log('guild json is corrupt');
 	process.exit(1);
@@ -183,7 +183,7 @@ client.on('message', async (message: Message) => {
 	if (message.channel.type === 'dm') return;
 
 	// check if something written in portal channels
-	portal_channel_handler(message);
+	if(portal_channel_handler(message)) return;
 
 	// ranking system
 	ranking_system(message);
@@ -195,8 +195,6 @@ client.on('message', async (message: Message) => {
 			.send("try not to use profanities")
 			.catch(console.error);
 	}
-
-	update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
 
 	// Ignore any message that does not start with prefix
 	if (message.content.indexOf(config.prefix) !== 0) return;
@@ -284,7 +282,7 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 
 	if (active) {
 		const time = time_elapsed(active.timestamp, command_options.time);
-		const type_for_msg = type === 'member'
+		const type_for_msg = (type === 'member')
 			? '.*'
 			: `, as it was used again in* **${message.guild?.name}**.`;
 
@@ -329,7 +327,7 @@ function event_loader(event: string, args: any): void {
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
 			if (response !== null && response !== undefined) {
-				if (event === 'messageReactionAdd') {
+				if (event === 'messageReactionAdd' && response) {
 					const messageReaction = <MessageReaction>args.messageReaction;
 					const guild_object = (<GuildPrtl[]>args.guild_list).find(g =>
 						g.id === args.messageReaction.message.guild.id);
@@ -341,7 +339,7 @@ function event_loader(event: string, args: any): void {
 							// auto na trexei mono otan einai music reaction
 
 							music_channel
-								.send(`${args.user}, ${response.value.toString()}`)
+								.send(`${args.user}, ${response.value}`)
 								.then(msg => { msg.delete({ timeout: 5000 }); })
 								.catch(error => console.log(error));
 						}
@@ -354,15 +352,13 @@ function event_loader(event: string, args: any): void {
 		});
 };
 
-function portal_channel_handler(message: Message): void {
+function portal_channel_handler(message: Message): boolean {
 	let guild_obejct = guild_list.find((g: GuildPrtl) => g.id === message.guild?.id);
-	if (!guild_obejct) return;
+	if (!guild_obejct) return true;
 
 	if (included_in_url_list(message.channel.id, guild_obejct)) {
-		console.log('it is url channel');
 		if (is_url(message.content)) {
 			client_talk(client, guild_list, 'url');
-			return;
 		}
 		else {
 			client_talk(client, guild_list, 'read_only');
@@ -370,13 +366,11 @@ function portal_channel_handler(message: Message): void {
 				'url-only channel', guild_list, client);
 			message.delete();
 		}
+		return true;
 	}
 	else if (guild_obejct.music_data.channel_id === message.channel.id) {
-		console.log('it is music channel');
 		start(client, message, message.content, guild_list)
 			.then(joined => {
-				console.log('joined :>> ', joined);
-
 				message_reply(joined.result, message.channel, message,
 					message.author, joined.value, guild_list, client, true);
 			})
@@ -384,9 +378,9 @@ function portal_channel_handler(message: Message): void {
 				console.log(error);
 				message.delete();
 			});
-		return;
+		return true;
 	}
-
+	return false;
 }
 
 function ranking_system(message: Message): void {

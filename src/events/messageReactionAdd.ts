@@ -40,10 +40,10 @@ function reaction_role_manager(client: Client, guild_list: GuildPrtl[], messageR
 						value = `you have been assigned to ${role_map.role_id}`;
 					}
 					catch (error) {
-						clear_user_reactions(client, guild_list, messageReaction, user);
 						result = false;
 						value = `failed to assign you, to role ${role_map.role_id}`;
 					}
+					clear_user_reactions(client, guild_list, messageReaction, user);
 					return true;
 				}
 			} else if (role_map.strip === messageReaction.emoji.name) {
@@ -52,13 +52,13 @@ function reaction_role_manager(client: Client, guild_list: GuildPrtl[], messageR
 					try {
 						current_member.roles.remove(role_to_strip);
 						result = true;
-						value = `you have been stripped off ${role_map.role_id}`;
+						value = `you no longer have role ${role_map.role_id}`;
 					}
 					catch (error) {
-						clear_user_reactions(client, guild_list, messageReaction, user);
 						result = false;
 						value = `failed to strip role ${role_map.role_id}`;
 					}
+					clear_user_reactions(client, guild_list, messageReaction, user);
 					return true;
 				}
 			} // gave other emote
@@ -81,11 +81,11 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 			return g.id === messageReaction.message.guild.id;
 	});
 	if (!guild_object) return { result: false, value: 'message is not role giving' };
+
 	if (!guild_object.music_data) return { result: false, value: 'message has no music_data' };
 	if (!guild_object.music_data.votes) guild_object.music_data.votes = [];
-	if (guild_object.music_data.message_id !== messageReaction.message.id) {
+	if (guild_object.music_data.message_id !== messageReaction.message.id)
 		return { result: false, value: 'message is not music player' };
-	}
 
 	let voice_connection_in_reaction_guild: VoiceConnection | undefined = undefined;
 
@@ -99,7 +99,7 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 		});
 		if (!voice_connection_in_reaction_guild) {
 			clear_user_reactions(client, guild_list, messageReaction, user);
-			return { result: false, value: 'portal is not playing music write now' };
+			return { result: false, value: 'portal is not playing music' };
 		}
 		const is_member_in_same_channel_as_portal = voice_connection_in_reaction_guild.channel.members
 			.some(member => {
@@ -195,7 +195,7 @@ function reaction_music_manager(client: Client, guild_list: GuildPrtl[], message
 		case '📜': {
 			const current_music_queue = guild_object.music_queue;
 			const music_queue = current_music_queue.length > 0
-				? '\n' + current_music_queue.map((video, i) => `${i + 1}. **${video.title}`).join('**\n').toString() + '**'
+				? '\n' + current_music_queue.map((video, i) => `${i + 1}. **${video.title}`).join('**\n') + '**'
 				: ' empty';
 			return_value.value = `Music queue:${music_queue}`;
 			break;
@@ -215,7 +215,7 @@ module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User }
 ) => {
 	return new Promise((resolve) => {
-		if (args.user.bot) return resolve({ result: false, value: '' });
+		if (args.user.bot) return resolve(false);
 
 		if (args.messageReaction.partial) {
 			try {

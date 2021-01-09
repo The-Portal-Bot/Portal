@@ -47,59 +47,80 @@ module.exports = async (
 					emote: './help <specific_property_name>',
 					role: 'If you want to specify the action of a anything just type ./help <specific_property_name>',
 					inline: false
-				},
+				}
 			];
 			message.reply(
 				create_rich_embed(
-					'Portal Documentation', 'Bellow you can see Portal\'s commands and variables and how you can access them',
+					'Portal Documentation',
+					'Bellow you can see Portal\'s commands and variables and how you can access them',
 					'#9775A9', func_array, null, null, true, null, null
 				))
 				.catch(console.error);
+			return resolve({ result: true, value: '' });
 		}
 		else if (args.length === 1) {
 			if (args[0] === 'all') {
-				message.author
-					.send(get_command_help())
-					.catch(console.error);
-				message.author
-					.send(get_variable_help())
-					.catch(console.error);
-				message.author
-					.send(get_pipe_help())
-					.catch(console.error);
-				message.author
-					.send(get_attribute_help())
-					.catch(console.error);
-				message.author
-					.send(get_structure_help())
-					.catch(console.error);
+				get_command_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
+				get_variable_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
+				get_pipe_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
+				get_attribute_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
+				get_structure_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
 			}
 			else if (args[0] === 'commands') {
-				message.author
-					.send(get_command_help())
-					.catch(console.error);
+				get_command_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
 			}
 			else if (args[0] === 'variables') {
-				message.author
-					.send(get_variable_help())
-					.catch(console.error);
+				get_variable_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
 			}
 			else if (args[0] === 'pipes') {
-				message.author
-					.send(get_pipe_help())
-					.catch(console.error);
+				get_pipe_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
 			}
 			else if (args[0] === 'attributes') {
-				message.author
-					.send(get_attribute_help())
-					.catch(console.error);
+				get_attribute_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
 			}
 			else if (args[0] === 'structures') {
-				message.author
-					.send(get_structure_help())
-					.catch(console.error);
+				get_structure_help().forEach(embed =>
+					message.author
+						.send(embed)
+						.catch(console.error)
+				);
 			} else {
-
 				const func_detailed = get_command_help_super(args[0]);
 				if (func_detailed) {
 					message.author
@@ -138,7 +159,7 @@ module.exports = async (
 					});
 				}
 			}
+			return resolve({ result: true, value: 'I sent you a private message' });
 		}
-		return resolve({ result: true, value: 'I sent you a private message' });
 	});
 };

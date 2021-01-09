@@ -17,25 +17,39 @@ module.exports = async (
 
 		const current_voice = message.member.voice;
 		const current_voice_channel = current_voice.channel;
-
-		if (current_voice === null) {
-			return resolve({
-				result: false,
-				value: 'you must be in a channel handled by Portal to run commands',
-			});
+		if (!current_voice_channel) {
+			// return resolve({ result: false, value: 'could not fetch channel of member' });
+			message.channel.send('executing: ' + args.join(' '))
+				.then(sent_message => {
+					if (message.guild)
+						sent_message.edit(
+							regex_interpreter(
+								args.join(' '),
+								null,
+								null,
+								guild_object.portal_list,
+								guild_object,
+								message.guild
+							)
+						);
+					else
+						sent_message.edit('could not fetch guild of message');
+				});
+			return resolve({ result: true, value: 'instruction ran successfully', });
 		}
-		else if (current_voice_channel === null) {
-			return resolve({
-				result: false,
-				value: 'you must be in a channel handled by Portal to run commands',
-			});
-		}
-		else if (!included_in_voice_list(current_voice_channel.id, guild_object.portal_list)) {
-			return resolve({
-				result: false,
-				value: 'the channel you are in is not handled by Portal',
-			});
-		}
+		
+		// if (!current_voice) {
+		// 	return resolve({
+		// 		result: false,
+		// 		value: 'you must be in a channel handled by Portal to run commands'
+		// 	});
+		// }
+		// else if (!included_in_voice_list(current_voice_channel.id, guild_object.portal_list)) {
+		// 	return resolve({
+		// 		result: false,
+		// 		value: 'the channel you are in is not handled by Portal'
+		// 	});
+		// }
 
 		const voice_found = guild_object.portal_list.some(p => {
 			return p.voice_list.some(v => {

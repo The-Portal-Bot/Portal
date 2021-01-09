@@ -17,7 +17,7 @@ module.exports = async (
         if (bulk_delete_length <= 0)
             return resolve({ result: false, value: 'number of messages you whish to delete' });
         
-        (<TextChannel>message.channel).bulkDelete(bulk_delete_length)
+        (<TextChannel>message.channel).bulkDelete(bulk_delete_length + 1)
             .then(messages => {
                 return resolve({ result: true, value: `deleted ${messages.size} messages` });
             })

@@ -1,9 +1,9 @@
-import { Message, Guild, GuildMember, VoiceState, User } from "discord.js";
+import { Guild, GuildMember, Message, VoiceState } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { time_elapsed } from './helpOps';
 
-const level_speed = { slow: 0.01, normal: 0.05, fast: 0.1 };
+const level_speed = { slow: 0.001, normal: 0.01, fast: 0.1 };
 
 export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild): boolean {
 	if (ranks) return false;
@@ -38,18 +38,16 @@ export function calculate_rank(member: MemberPrtl): number | null {
 };
 
 export function add_points_time(member_prtl: MemberPrtl, speed: string): boolean {
-	if (!member_prtl.timestamp) {
-		return false;
-	}
+	if (!member_prtl.timestamp) return false;
+	
 	const voice_time = time_elapsed(member_prtl.timestamp, 0);
 
-	const speed_num: number = (speed === 'slow')
-		? level_speed.slow
-		: (speed === 'normal')
-			? level_speed.normal
-			: (speed === 'fast')
-				? level_speed.fast
-				: level_speed.normal;
+	let speed_num: number = level_speed.normal;
+	switch (speed) {
+		case 'slow': speed_num = level_speed.slow;
+		case 'normal': speed_num = level_speed.normal;
+		case 'fast': speed_num = level_speed.fast;
+	}
 
 	member_prtl.points += Math.round(voice_time.remaining_sec * speed_num);
 	member_prtl.points += Math.round(voice_time.remaining_min * speed_num * 60 * 1.15);
@@ -102,44 +100,25 @@ export function update_timestamp(voiceState: VoiceState, guild_list: GuildPrtl[]
 };
 
 export function add_points_message(message: Message, guild_list: GuildPrtl[]): number | boolean {
-	if (message && message.guild) {
-		const guild = guild_list.find(guild => {
-			if (message && message.guild)
-				return guild.id === message.guild.id;
-		});
+	if (!message || !message.guild) return false;
+	const guild = guild_list.find(guild => guild.id === message?.guild?.id);
+	if (!guild) return false;
+	const member = guild.member_list.find(m => m.id === message?.author?.id);
+	if (!member) return false;
 
-		if (guild === undefined) {
-			return false;
-		}
-
-		const member = guild.member_list.find(m => {
-			if (message && message.author)
-				return m.id === message.author.id;
-		});
-
-		if (member === undefined) {
-			return false;
-		}
-
-		const speed: string = guild.level_speed;
-		const speed_num: number = (speed === 'slow')
-			? level_speed.slow
-			: (speed === 'normal')
-				? level_speed.normal
-				: (speed === 'fast')
-					? level_speed.fast
-					: level_speed.normal;
-		const points = message.content.length * speed_num;
-
-		member.points += points > 5 ? 5 : Math.round(points);
-		const level = calculate_rank(member);
-
-		if (level) {
-			return level;
-		}
+	let speed_num: number = level_speed.normal;
+	switch (guild.level_speed) {
+		case 'slow': speed_num = level_speed.slow;
+		case 'normal': speed_num = level_speed.normal;
+		case 'fast': speed_num = level_speed.fast;
 	}
+	const points = message.content.length * speed_num;
 
-	return false;
+	member.points += points > 5 ? 5 : Math.round(points);
+	const level = calculate_rank(member);
+
+	if (level) return level;
+	else return false;
 };
 
 export function kick(message: Message, args: any): void {
