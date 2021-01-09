@@ -1,6 +1,3 @@
-![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg) ![npm](https://img.shields.io/badge/npm-6.14.10-blue)
-![node](https://img.shields.io/badge/node-14.15.4-blue) ![node](https://img.shields.io/badge/discord.js-12.5.1-blue)
-
 # [Portal](https://github.com/keybraker/portal-discord-bot) 
 
 A fully fledged and feature rich bot for Discord <img src="https://github.com/keybraker/portal-discord-bot/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
@@ -76,6 +73,9 @@ There are four types of data _(used by run command and regex attributes)_:
 | 1.2.1   | 16-06-2020 | _Javascript_ |
 | 0.5.0   | 18-05-2020 | _Beta_       |
 | 0.0.1   | 05-05-2020 | _Alpha_      |
+
+![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg) ![npm](https://img.shields.io/badge/npm-6.14.10-blue)
+![node](https://img.shields.io/badge/node-14.15.4-blue) ![node](https://img.shields.io/badge/discord.js-12.5.1-blue)
 
 ## Acknowledgements
 
