@@ -1,4 +1,4 @@
-[back to readme](https://github.com/keybraker/portal-discord-bot)
+[< back to README](https://github.com/keybraker/portal-discord-bot)
 
 ## Structures
 

@@ -6,8 +6,7 @@
     "main": "src/portal.ts",
     "scripts": {
         "start": "npx tsc && node build/portal.js",
-        "clean": "rm -rf build/",
-        "test": "jest",
+        "test": "npx tsc && jest",
         "dev": "nodemon src/portal.ts"
     },
     "dependencies": {

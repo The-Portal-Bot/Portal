@@ -8,7 +8,7 @@
 
 ***
 
-# [Portal™](https://github.com/keybraker/portal-discord-bot) <img src="https://github.com/keybraker/portal-discord-bot/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
+# [Portal](https://github.com/keybraker/portal-discord-bot) <img src="https://github.com/keybraker/portal-discord-bot/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
 A feature-rich channel manager for discord.
 
 Features:
@@ -24,7 +24,7 @@ Features:
 
 ## Commands
 
-**Portal™ prefix: ./**
+**Portal prefix: ./**
 
 | Name               | Description                                                      | Arguments                            | Eligible for use                                      | Cooldown (mins) |
 | :----------------- | :--------------------------------------------------------------- | :----------------------------------- | :---------------------------------------------------- | :-------------- |
@@ -61,21 +61,20 @@ Features:
 | `weather`          | _replies with the current wheather for the requested city_       | _!city_name_                         | everyone                                              | -               |
 | `whoami`           | _replies with the your portal stats_                             | _none_                               | everyone                                              | -               |
 
-* _(Pipes are applied to variables or strings in order to change their outcome)_
-* _(default regex: G$#-P$member_count | $status_list)_
-
-* symbol: ! _indicates beginning of mandatory argument **(should not be included)**_
-* symbol: @ _indicates beginning of mandatory argument **(should not be included)**_
+* _pipes are applied to variables or text in order to change their outcome_
+* _default regex: G$#-P$member_count | $status_list_
+* _argument preceded by **!** is *mandatory* **(should not be included)**_
+* _argument preceded by **@** is *optional* **(should not be included)**_
 
 ***
 
 ## Regex Interpreter
 
 There are four types of data:
-1. [Variables](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Variables.md), are data used to fetch information for the current state of the channel you are in.
-2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Attributes.md), are configuration data for Portal's use. 
-3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Pipes.md), are functions that you can pass the strings or Variables to manipulate their outcome. 
-4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Structures.md), are conditional flow manipulators.
+1. [Variables](https://github.com/keybraker/portal-discord-bot/blob/master/docs/VARIABLES.md), are immutable and live data that return information.
+2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/ATTRIBUTES.md), are Portal Bot's, Portal Voice or Voice Channel options that can be manipulated by whomever has clearance. 
+3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/PIPES.md), are mini functions you can pass text or Variables to manipulate their outcome. 
+4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/STRUCTURES.md), are conditional flow manipulators.
 
 ## Release History
 
@@ -88,8 +87,8 @@ There are four types of data:
 
 ## Acknowledgements
 
-> Acknowledgments - _[Discord.js](https://discord.js.org/#/)_
-> Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_
+> Acknowledgments - _[Discord.js](https://discord.js.org/#/)_<br>
+> Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
 > License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
 
 Copyrights © Keybraker 2020 [Portal](https://github.com/keybraker/portal-discord-bot), All rights reserved

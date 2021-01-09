@@ -144,10 +144,9 @@ export function get_pipe_help(): MessageEmbed[] {
 			return create_rich_embed(
 				'Pipes',
 				'Prefix: ' + pipe_prefix + '\n' +
-				'Mini functions that get an input in regex and ' +
-				'return it manipulated.\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'Mini functions you can pass text or Variables to manipulate their outcome\n' +
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#6EEB83', pipe_array[0], null, null, null, null, null
 			)
 		} else {
@@ -166,8 +165,8 @@ export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 				pipe.name,
 				'Type: Pipe' +
 				'\nPrefix: ' + pipe_prefix + '\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#6EEB83',
 				[
 					{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },

@@ -385,10 +385,10 @@ export function get_attribute_help(): MessageEmbed[] {
 			return create_rich_embed(
 				'Attributes',
 				'Prefix: ' + attribute_prefix + '\n' +
-				'Portal Bots, Portal Voice or Voice Channel options ' +
+				'Portal Bot\'s, Portal Voice or Voice Channel options ' +
 				'that can be manipulated by whomever has clearance.\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#FF5714', attr_array[0], null, null, null, null, null
 			)
 		} else {
@@ -407,8 +407,8 @@ export function get_attribute_help_super(candidate: string): MessageEmbed | bool
 				attr.name,
 				'Type: Attribute' +
 				'\nPrefix: ' + attribute_prefix + '\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#FF5714',
 				[
 					{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },

@@ -390,10 +390,10 @@ export function get_variable_help(): MessageEmbed[] {
 			return create_rich_embed(
 				'Variables',
 				'Prefix: ' + variable_prefix + '\n' +
-				'Immutable live variables that return information\n' +
+				'Immutable and live data that return information\n' +
 				'about your current voice channel' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#1BE7FF', vrbl_array[0], null, null, null, null, null
 			)
 		} else {
@@ -412,8 +412,8 @@ export function get_variable_help_super(candidate: string): MessageEmbed | boole
 				vrbl.name,
 				'Type: Variable' +
 				'\nPrefix: ' + variable_prefix + '\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#1BE7FF',
 				[
 					{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },

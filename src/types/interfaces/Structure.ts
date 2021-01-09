@@ -54,10 +54,10 @@ export function get_structure_help(): MessageEmbed[] {
 			return create_rich_embed(
 				'Structures',
 				'Prefix: ' + structure_prefix + '\n' +
-				'Optional display with language like syntax\n' +
+				'Conditional flow manipulators\n' +
 				'(if this do that, or if that do this).\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#EEB902', strc_array[0], null, null, null, null, null
 			)
 		} else {
@@ -76,8 +76,8 @@ export function get_structure_help_super(candidate: string): MessageEmbed | bool
 				strc.name,
 				'Type: Structure' +
 				'\nPrefix: ' + structure_prefix + '\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#EEB902',
 				[
 					{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },

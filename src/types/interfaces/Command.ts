@@ -419,8 +419,8 @@ export function get_command_help(): MessageEmbed[] {
 				'Commands',
 				'Prefix: *' + command_prefix + '*\n' +
 				'**The way to communicate with Portal.**\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#9775A9', cmmd_array[0], null, null, null, null, null
 			)
 		} else {
@@ -439,8 +439,8 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 				cmmd.name,
 				'Type: Command' +
 				'\nPrefix: ' + command_prefix + '\n' +
-				'argument preceded by **!** it is *mandatory*\n' +
-				'argument preceded by **@** it is *optional*\n',
+				'argument preceded by **!** is *mandatory*\n' +
+				'argument preceded by **@** is *optional*\n',
 				'#9775A9',
 				[
 					{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },
