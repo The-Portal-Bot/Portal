@@ -80,7 +80,8 @@ const commands: InterfaceBlueprint[] = [
 	{
 		name: 'delete',
 		description: 'delete will remove number of messages given.',
-		super_description: '**delete**, elete will remove number of messages given',
+		super_description: '**delete**, elete will remove number of messages given, keep in mind that you basically delete\n' +
+			'n+1 messages because portal deletes the command delete you send and n more messages.',
 		example: './delete 5',
 		args: '<!number of messages>',
 		auth: 'admin',

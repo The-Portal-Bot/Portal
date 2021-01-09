@@ -475,31 +475,31 @@ export function remove_deleted_channels(guild: Guild, guild_list: GuildPrtl[]): 
 }
 
 export function remove_empty_voice_channels(guild: Guild, guild_list: GuildPrtl[]): void {
+	let sync_nedded = false;
 	guild.channels.cache.forEach(channel => {
-		if (!channel.members.size) {
-			const deleted = guild_list.some(g =>
-				g.portal_list.some(p =>
-					p.voice_list.some((v, index) => {
-						if (v.id === channel.id) {
-							console.log(`Deleting channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
-							if (channel.deletable) {
-								channel
-									.delete()
-									.then(g => {
-										p.voice_list.splice(index, 1);
-										console.log('...done');
-									})
-									.catch(console.error);
-							}
-							return true;
+		const deleted = guild_list.some(g =>
+			g.portal_list.some(p =>
+				p.voice_list.some((v, index) => {
+					if (v.id === channel.id) {
+						if (channel.deletable) {
+							channel
+								.delete()
+								.then(g => {
+									p.voice_list.splice(index, 1);
+									sync_nedded = true;
+									console.log(`deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
+								})
+								.catch(console.log);
 						}
-						return false
-					})
-				)
-			);
-
-			if (!deleted)
-				console.log('failed to delete channel');
-		}
+						return true;
+					}
+					return false
+				})
+			)
+		);
 	});
+
+	if (!sync_nedded)
+		console.log('> synchronisation was not needed');
+	console.log('> synchronisation was needed');
 };

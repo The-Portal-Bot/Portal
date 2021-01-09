@@ -20,9 +20,9 @@ async function delete_channel(
 								.delete()
 								.then(g => {
 									p.voice_list.splice(index, 1);
-									console.log(`Deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
+									console.log(`deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
 								})
-								.catch(console.error);
+								.catch(console.log);
 						}
 						return true;
 					}
@@ -32,8 +32,7 @@ async function delete_channel(
 		);
 
 		if (!deleted)
-			return resolve({ result: true, value: 'failed to delete channel' });
-		return resolve({ result: true, value: 'updated portal guild json' });
+			return resolve({ result: true, value: `could not delete channel ${channel}` });
 	});
 }
 

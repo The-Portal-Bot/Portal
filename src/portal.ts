@@ -31,7 +31,7 @@ if (!guild_list_json) {
 }
 // list of all managed guilds
 const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
-console.log('guild_list :>> ', guild_list);
+
 if (guild_list === null) {
 	console.log('guild json is corrupt');
 	process.exit(1);
