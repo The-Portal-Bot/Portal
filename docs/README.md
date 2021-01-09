@@ -61,20 +61,20 @@ Features:
 | `weather`          | _replies with the current wheather for the requested city_       | _!city_name_                         | everyone                                              | -               |
 | `whoami`           | _replies with the your portal stats_                             | _none_                               | everyone                                              | -               |
 
-* _pipes are applied to variables or text in order to change their outcome_
-* _default regex: G$#-P$member_count | $status_list_
-* _argument preceded by **!** is *mandatory* **(should not be included)**_
-* _argument preceded by **@** is *optional* **(should not be included)**_
+> pipes are applied to variables or text in order to change their outcome<br>
+> default regex: `G$#-P$member_count | $status_list`<br>
+> argument preceded by **!** is **mandatory** (not included)<br>
+> argument preceded by **@** is **optional** (not included)<br>
 
 ***
 
 ## Regex Interpreter
 
 There are four types of data:
-1. [Variables](https://github.com/keybraker/portal-discord-bot/blob/master/docs/VARIABLES.md), are immutable and live data that return information.
-2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/ATTRIBUTES.md), are Portal Bot's, Portal Voice or Voice Channel options that can be manipulated by whomever has clearance. 
-3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/PIPES.md), are mini functions you can pass text or Variables to manipulate their outcome. 
-4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/STRUCTURES.md), are conditional flow manipulators.
+1. [Variables](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Variables.md), are immutable and live data that return information.
+2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Attributes.md), are Portal Bot's, Portal Voice or Voice Channel options that can be manipulated by whomever has clearance. 
+3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome. 
+4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Structures.md), are conditional flow manipulators.
 
 ## Release History
 
