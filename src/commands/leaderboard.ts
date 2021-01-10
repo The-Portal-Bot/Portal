@@ -53,7 +53,7 @@ module.exports = async (
 						else {
 							resolve({
 								result: false,
-								value: '*a member has been stored incorrectly please contact Portal maintainter.*',
+								value: 'a member has been stored incorrectly please contact Portal maintainter',
 							});
 						}
 					}
@@ -83,7 +83,7 @@ module.exports = async (
 		else {
 			resolve({
 				result: false,
-				value: '*you can run `./help leaderboard` for help.*',
+				value: 'you can run `./help leaderboard` for help',
 			});
 		}
 

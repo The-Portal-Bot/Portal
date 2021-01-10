@@ -33,12 +33,12 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
         } else if (args.length > 1) {
             return resolve({
                 result: false,
-                value: '*you can run `./help corona` for help.*',
+                value: 'you can run `./help corona` for help',
             });
         } else {
             return resolve({
                 result: false,
-                value: '*Global stats are temporarily unavailable.*',
+                value: 'Global stats are temporarily unavailable',
             });
         }
 
@@ -129,7 +129,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
             .catch(rspns => {
                 return resolve({
                     result: false,
-                    value: '*Could not access the server*',
+                    value: 'Could not access the server*',
                 });
             });
     });

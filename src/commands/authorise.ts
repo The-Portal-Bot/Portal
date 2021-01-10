@@ -10,7 +10,7 @@ module.exports = async (
 			resolve({
 				result: false,
 				value: 'you should give one argument (role name, role id ' +
-				'or member id).\nyou can run `./help authorise` for help.*'
+				'or member id).\nyou can run `./help authorise` for help'
 			});
 
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);

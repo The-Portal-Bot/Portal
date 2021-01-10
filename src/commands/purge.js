@@ -22,11 +22,11 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
 
         return {
             result: true,
-            value: 'purge done.'
+            value: 'purge done'
         };
     }
     return {
         result: false,
-        value: 'purge failed.'
+        value: 'purge failed'
     };
 };

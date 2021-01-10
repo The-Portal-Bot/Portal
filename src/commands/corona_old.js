@@ -36,7 +36,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
         } else {
             return resolve({
                 result: false,
-                value: '*you can run "./help corona" for help.*',
+                value: 'you can run "./help corona" for help',
             });
         }
 
@@ -164,7 +164,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
                             ], null, null, true));
                     return resolve({
                         result: true,
-                        value: '*Global corona stats.*',
+                        value: 'Global corona stats',
                     });
                 } else {
                     return resolve({
@@ -176,7 +176,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
             .catch(rspns => {
                 return resolve({
                     result: false,
-                    value: '*Could not access the server*',
+                    value: 'Could not access the server*',
                 });
             });
     });

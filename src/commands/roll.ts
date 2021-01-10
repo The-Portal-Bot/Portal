@@ -21,7 +21,7 @@ module.exports = async (
 
 			return resolve({ result: true, value: null });
 		} else {
-			return resolve({ result: false, value: '*you can run `./help roll` for help.*' });
+			return resolve({ result: false, value: 'you can run `./help roll` for help' });
 		}
 	});
 };

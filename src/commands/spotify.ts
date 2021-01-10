@@ -22,25 +22,25 @@ module.exports = async (
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: '*this already is, the Spotify channel.*'
+					value: 'this already is, the Spotify channel'
 				});
 			}
 			if (is_music_channel(message.channel.id, guild_object)) {
 				resolve({
 					result: true,
-					value: '*this can\'t be set as a Spotify channel for it is the Music channel.*'
+					value: 'this can\'t be set as a Spotify channel for it is the Music channel'
 				});
 			}
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: '*this can\'t be set as the Spotify channel for it is the Announcement channel.*'
+					value: 'this can\'t be set as the Spotify channel for it is the Announcement channel'
 				});
 			}
 			if (included_in_url_list(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: '*this can\'t be set as the Spotify channel for it is an url channel.*'
+					value: 'this can\'t be set as the Spotify channel for it is an url channel'
 				});
 			}
 		}
@@ -55,7 +55,7 @@ module.exports = async (
 
 			return resolve({
 				result: true,
-				value: '*this is now the Spotify channel.*'
+				value: 'this is now the Spotify channel'
 			});
 		}
 		else if (args.length > 0) {
@@ -96,7 +96,7 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: '*you can run `./help spotify` for help.*'
+					value: 'you can run `./help spotify` for help'
 				});
 			}
 		}

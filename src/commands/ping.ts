@@ -10,7 +10,7 @@ module.exports = async (
 		if (!guild_object) {
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
-		message.channel.send('*initial*')
+		message.channel.send('initial')
 			.then(message_sent => {
 				message_sent.edit(
 					`RTT    latency:\t**${message_sent.createdTimestamp - message.createdTimestamp}** *ms*.\n` +
@@ -21,6 +21,6 @@ module.exports = async (
 			})
 			.catch(console.error);
 
-		resolve({ result: true, value: '*pong*' });
+		resolve({ result: true, value: 'pong' });
 	});
 };
