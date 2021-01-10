@@ -27,7 +27,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
             if (code === null) {
                 return resolve({
                     result: false,
-                    value: `*${args[0]} is neither a country name nor a country code.*`,
+                    value: `${args[0]} is neither a country name nor a country code`,
                 });
             }
         } else if (args.length > 1) {
@@ -118,11 +118,11 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
                                     inline: true
                                 },
                             ], null, null, true));
-                    return resolve({ result: true, value: `*${country_data.country} corona stats.*` });
+                    return resolve({ result: true, value: `${country_data.country} corona stats` });
                 } else {
                     return resolve({
                         result: false,
-                        value: `*${args[0]} is neither a country name nor a country code.*`,
+                        value: `${args[0]} is neither a country name nor a country code`,
                     });
                 }
             })

@@ -35,23 +35,12 @@ module.exports = async (
 		if (args.length === 1) {
 			code = get_country_code(args[0]);
 			if (code === null) {
-				return resolve({
-					result: false,
-					value: `*${args[0]} is neither a country name nor a country code.*`,
-				});
+				return resolve({ result: false, value: `${args[0]} is neither a country name nor a country code` });
 			}
-		}
-		else if (args.length > 1) {
-			return resolve({
-				result: false,
-				value: 'you can run `./help corona` for help',
-			});
-		}
-		else {
-			return resolve({
-				result: false,
-				value: 'Global stats are temporarily unavailable',
-			});
+		} else if (args.length > 1) {
+			return resolve({ result: false, value: 'you can run `./help corona` for help' });
+		} else {
+			return resolve({ result: false, value: 'global stats are not unavailable' });
 		}
 
 		const options: RequestOptions = {
@@ -62,13 +51,14 @@ module.exports = async (
 			'headers': {
 				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
 				'x-rapidapi-key': config.api_keys.covid_193,
-				'useQueryString': 1,
+				'useQueryString': 1
 			},
 		};
 
 		https_fetch(options)
-			.then((rspns: Buffer) => {
-				const json = getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
+			.then((response: Buffer) => {
+				console.log('response.toString() :>> ```json\n', response.toString(), '\n```');
+				const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
 				if (json === null)
 					return resolve({ result: false, value: 'data from source was corrupted' });
 
@@ -128,20 +118,20 @@ module.exports = async (
 						));
 					return resolve({
 						result: true,
-						value: `*${country_data.country} corona stats.*`
+						value: `${country_data.country} corona stats`
 					});
 				}
 				else {
 					return resolve({
 						result: false,
-						value: `*${args[0]} is neither a country name nor a country code.*`,
+						value: `${args[0]} is neither a country name nor a country code`,
 					});
 				}
 			})
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `*Could not access the server*\nerror: ${error}`,
+					value: `ould not access the server*\nerror: ${error}`,
 				});
 			});
 	});

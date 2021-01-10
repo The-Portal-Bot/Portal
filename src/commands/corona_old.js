@@ -30,7 +30,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
             } else {
                 return resolve({
                     result: false,
-                    value: `*${args[0]} is neither a country name nor a country code.*`,
+                    value: `${args[0]} is neither a country name nor a country code`,
                 });
             }
         } else {
@@ -110,7 +110,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
                                     inline: true
                                 },
                             ], null, null, true));
-                    return resolve({ result: true, value: `*${country_stats.title} corona stats.*` });
+                    return resolve({ result: true, value: `${country_stats.title} corona stats` });
                 } else if (json.results !== undefined && json.results[0].data !== 'none') {
                     const daily_stats = json.results[0];
 
@@ -169,7 +169,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
                 } else {
                     return resolve({
                         result: false,
-                        value: `*${args[0]} is neither a country name nor a country code.*`,
+                        value: `${args[0]} is neither a country name nor a country code`,
                     });
                 }
             })

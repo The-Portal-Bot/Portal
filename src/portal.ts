@@ -292,7 +292,7 @@ function command_loader(
 			: `, as it was used again in* **${message.guild?.name}**`;
 
 		message_reply(false, message.channel, message, message.author,
-			`*you need to wait* **${pad(time.remaining_min)}:` +
+			`you need to wait* **${pad(time.remaining_min)}:` +
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
 			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`,
 			guild_list, client);

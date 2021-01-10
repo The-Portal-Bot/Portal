@@ -18,7 +18,7 @@ module.exports = async (
 		if (guild_object.auth_role.length > 0) {
 			resolve({
 				result: true,
-				value: `*authorised roles:*\n${roles.map((r, i) => get_role_name(r, i, message)).join('\n')}`,
+				value: `authorised roles:*\n${roles.map((r, i) => get_role_name(r, i, message)).join('\n')}`,
 			});
 		}
 		else {
