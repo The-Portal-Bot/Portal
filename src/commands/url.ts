@@ -22,25 +22,25 @@ module.exports = async (
 			if (included_in_url_list(message.channel.id, guild_object)) {
 				resolve({
 					result: true,
-					value: 'this already is a URL channel.',
+					value: 'this already is a URL channel',
 				});
 			}
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				resolve({
 					result: true,
-					value: 'this can\'t be set as a URL channel for it is the Announcement channel.',
+					value: 'this can\'t be set as a URL channel for it is the Announcement channel',
 				});
 			}
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				resolve({
 					result: true,
-					value: 'this can\'t be set as a URL channel for it is the Spotify channel.',
+					value: 'this can\'t be set as a URL channel for it is the Spotify channel',
 				});
 			}
 			if (is_music_channel(message.channel.id, guild_object)) {
 				resolve({
 					result: true,
-					value: 'this can\'t be set as a URL channel for it is the Music channel.',
+					value: 'this can\'t be set as a URL channel for it is the Music channel',
 				});
 			}
 		}
@@ -48,7 +48,7 @@ module.exports = async (
 		if (args.length === 0) {
 			guild_object.url_list.push(message.channel.id);
 
-			resolve({ result: true, value: 'this is now the url channel.' });
+			resolve({ result: true, value: 'this is now the url channel' });
 		}
 		else if (args.length > 0) {
 			const url_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
@@ -86,7 +86,7 @@ module.exports = async (
 					.catch(error => { return resolve(error); });
 			}
 			else {
-				resolve({ result: false, value: 'you can run "./help url" for help.' });
+				resolve({ result: false, value: 'you can run "./help url" for help' });
 			}
 		}
 	});

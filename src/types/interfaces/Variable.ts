@@ -11,10 +11,10 @@ export const variable_prefix: string = '$';
 const variables: InterfaceBlueprint[] = [
 	{
 		name: '##',
-		description: 'returns the channel number in list with # in the front.',
+		description: 'returns the channel number in list with # in the front',
 		super_description: '**##**, returns the channel number in list with # ' +
 			'in the front, if it was created first ' +
-			'it will display #1, if third #3, etc.',
+			'it will display #1, if third #3, etc',
 		example: '$##',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null, portal_object: PortalChannelPrtl[] | undefined | null) => {
@@ -38,9 +38,9 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: '#',
-		description: 'returns the channel number in list.',
-		super_description: '**#**, returns the channel number in list, if it was created first .' +
-			'it will display 1, if third 3, etc.',
+		description: 'returns the channel number in list',
+		super_description: '**#**, returns the channel number in list, if it was created first ' +
+			'it will display 1, if third 3, etc',
 		example: '#',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null, portal_object: PortalChannelPrtl[] | undefined | null) => {
@@ -64,8 +64,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'creator_portal',
-		description: 'returns the creator of current voice channel\'s portal.',
-		super_description: '**creator_portal**, returns the creator of current voice channel\'s portal.',
+		description: 'returns the creator of current voice channel\'s portal',
+		super_description: '**creator_portal**, returns the creator of current voice channel\'s portal',
 		example: '$creator_portal',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null, portal_object: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild) => {
@@ -84,8 +84,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'creator_voice',
-		description: 'returns the creator of current voice channel.',
-		super_description: '**creator_voice**, returns the creator of current voice channel.',
+		description: 'returns the creator of current voice channel',
+		super_description: '**creator_voice**, returns the creator of current voice channel',
 		example: '$creator_voice',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null, portal_object: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild) => {
@@ -97,8 +97,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'date',
-		description: 'returns the full date: dd/mm/yyyy.',
-		super_description: '**date**, full date: dd/mm/yyyy.',
+		description: 'returns the full date: dd/mm/yyyy',
+		super_description: '**date**, full date: dd/mm/yyyy',
 		example: '$date',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -110,8 +110,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'day_number',
-		description: 'returns the day number.',
-		super_description: '**day_number**, returns the day number.',
+		description: 'returns the day number',
+		super_description: '**day_number**, returns the day number',
 		example: '$day_number',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -123,8 +123,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'day_name',
-		description: 'returns the day name.',
-		super_description: '**day_name**, returns the day name.',
+		description: 'returns the day name',
+		super_description: '**day_name**, returns the day name',
 		example: '$day_name',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -136,8 +136,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'month_number',
-		description: 'returns the month by number.',
-		super_description: '**month_number**, returns the month by number.',
+		description: 'returns the month by number',
+		super_description: '**month_number**, returns the month by number',
 		example: '$month_number',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -149,8 +149,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'month_name',
-		description: 'returns the month by name.',
-		super_description: '**month_name**, returns the month by name.',
+		description: 'returns the month by name',
+		super_description: '**month_name**, returns the month by name',
 		example: '$month_name',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -163,8 +163,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'year',
-		description: 'returns the year.',
-		super_description: '**year**, returns the year.',
+		description: 'returns the year',
+		super_description: '**year**, returns the year',
 		example: '$year',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -176,8 +176,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'time',
-		description: 'full time: hh/mm/ss.',
-		super_description: '**time**, full time: hh/mm/ss.',
+		description: 'full time: hh/mm/ss',
+		super_description: '**time**, full time: hh/mm/ss',
 		example: '$time',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -189,8 +189,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'hour',
-		description: 'returns the hour in current time.',
-		super_description: '**hour**, returns the hour.',
+		description: 'returns the hour in current time',
+		super_description: '**hour**, returns the hour',
 		example: '$hour',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -202,8 +202,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'minute',
-		description: 'returns the minute in current time.',
-		super_description: '**minute**, returns the minute.',
+		description: 'returns the minute in current time',
+		super_description: '**minute**, returns the minute',
 		example: '$minute',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -215,8 +215,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'second',
-		description: 'returns the second in current time.',
-		super_description: '**second**, returns the second.',
+		description: 'returns the second in current time',
+		super_description: '**second**, returns the second',
 		example: '$second',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -228,8 +228,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_active_count',
-		description: 'returns number of members with a status.',
-		super_description: '**member_with_status**, returns the number of members with a status.',
+		description: 'returns number of members with a status',
+		super_description: '**member_with_status**, returns the number of members with a status',
 		example: '$member_active_count',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null) => {
@@ -245,8 +245,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_count',
-		description: 'returns number of members in channel.',
-		super_description: '**member_count**, returns the number of members in channel.',
+		description: 'returns number of members in channel',
+		super_description: '**member_count**, returns the number of members in channel',
 		example: '$member_count',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null) => {
@@ -262,8 +262,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_history',
-		description: 'returns a list of all members that have connected to the channel.',
-		super_description: '**member_history**, returns a list of all members that have connected to the channel.',
+		description: 'returns a list of all members that have connected to the channel',
+		super_description: '**member_history**, returns a list of all members that have connected to the channel',
 		example: '$member_history',
 		args: 'none',
 		get: () => {
@@ -274,8 +274,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_list',
-		description: 'returns the currently played games.',
-		super_description: '**member_list**, returns the currentstatuses.',
+		description: 'returns the currently played games',
+		super_description: '**member_list**, returns the currentstatuses',
 		example: '$member_list',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null) => {
@@ -289,8 +289,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_with_status',
-		description: 'returns number of members with a status.',
-		super_description: '**member_with_status**, returns the number of members with a status.',
+		description: 'returns number of members with a status',
+		super_description: '**member_with_status**, returns the number of members with a status',
 		example: '$member_with_status',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null) => {
@@ -306,8 +306,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'status_count',
-		description: 'returns the count of current member statuses.',
-		super_description: '**status_count**, returns the count of current member statuses.',
+		description: 'returns the count of current member statuses',
+		super_description: '**status_count**, returns the count of current member statuses',
 		example: '$status_count',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
@@ -321,8 +321,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'status_history',
-		description: 'returns the history of all the statuses.',
-		super_description: '**status_history**, returns the history of all the statuses.',
+		description: 'returns the history of all the statuses',
+		super_description: '**status_history**, returns the history of all the statuses',
 		example: '$status_history',
 		args: 'none',
 		get: () => {
@@ -333,8 +333,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'status_list',
-		description: 'returns the list of current member statuses.',
-		super_description: '**status_list**, returns the list of all current members statuses.',
+		description: 'returns the list of current member statuses',
+		super_description: '**status_list**, returns the list of all current members statuses',
 		example: '$status_list',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {

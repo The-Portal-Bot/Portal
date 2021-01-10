@@ -284,7 +284,7 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 		const time = time_elapsed(active.timestamp, command_options.time);
 		const type_for_msg = (type === 'member')
 			? '.*'
-			: `, as it was used again in* **${message.guild?.name}**.`;
+			: `, as it was used again in* **${message.guild?.name}**`;
 
 		message_reply(false, message.channel, message, message.author,
 			`*you need to wait* **${pad(time.remaining_min)}:` +

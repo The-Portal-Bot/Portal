@@ -201,7 +201,7 @@ export function create_voice_channel(state: VoiceState, portal_object: PortalCha
 			};
 
 			state.channel.guild.channels
-				.create('loading...', voice_options)
+				.create('loading..', voice_options)
 				.then(channel => {
 					if (state.member) {
 						portal_object.voice_list.push(new VoiceChannelPrtl(
@@ -303,7 +303,7 @@ export async function create_focus_channel(guild: Guild, member: GuildMember,
 				member_found.voice.setChannel(channel);
 
 				return_value.result = true;
-				return_value.value = 'users have been moved.';
+				return_value.value = 'users have been moved';
 			})
 			.catch(console.error);
 
@@ -316,7 +316,7 @@ export async function create_focus_channel(guild: Guild, member: GuildMember,
 								if (newChannel && newChannel.deletable) {
 									newChannel.delete().catch(console.error);
 									return_value.result = true;
-									return_value.value = 'focus ended properly.';
+									return_value.value = 'focus ended properly';
 									return resolve(return_value);
 								}
 							}).catch(console.error);
@@ -325,7 +325,7 @@ export async function create_focus_channel(guild: Guild, member: GuildMember,
 			}
 			else {
 				return_value.result = false;
-				return_value.value = 'could not move to original channel because it was deleted.';
+				return_value.value = 'could not move to original channel because it was deleted';
 				return resolve(return_value);
 			}
 		}, focus_time * 60 * 1000);
@@ -363,14 +363,14 @@ export function delete_channel(channel_to_delete: VoiceChannel | TextChannel,
 								.then(g => console.log(`Deleted channel with id: ${g}`))
 								.catch(console.error);
 
-							m.channel.send(`Deleted channel **"${channel_to_delete_name}"**.`)
+							m.channel.send(`Deleted channel **"${channel_to_delete_name}"**`)
 								.then(msg => { msg.delete({ timeout: 5000 }); })
 								.catch(error => console.log(error));
 
 							channel_deleted = true;
 						}
 						else {
-							message.channel.send(`Channel **"${channel_to_delete}"** is not deletable.`)
+							message.channel.send(`Channel **"${channel_to_delete}"** is not deletable`)
 								.then(msg => { msg.delete({ timeout: 5000 }); })
 								.catch(error => console.log(error));
 						}
@@ -391,7 +391,7 @@ export function delete_channel(channel_to_delete: VoiceChannel | TextChannel,
 					});
 
 					if (!channel_deleted) {
-						message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted.`)
+						message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted`)
 							.then(msg => { msg.delete({ timeout: 5000 }); })
 							.catch(error => console.log(error));
 					}
@@ -679,6 +679,6 @@ export function regex_interpreter(
 		}
 	}
 
-	if (new_channel_name === '') { return '.'; }
+	if (new_channel_name === '') { return ''; }
 	return new_channel_name;
 };

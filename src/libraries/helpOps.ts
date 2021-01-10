@@ -92,7 +92,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (message.member === null) {
 			return resolve({
 				result: false,
-				value: 'message has no member.',
+				value: 'message has no member',
 				voice_connection: undefined
 			});
 		}
@@ -100,7 +100,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (message.guild === null) {
 			return resolve({
 				result: false,
-				value: 'message has no guild.',
+				value: 'message has no guild',
 				voice_connection: undefined
 			});
 		}
@@ -110,7 +110,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (current_voice === null) {
 			return resolve({
 				result: false,
-				value: 'you are not connected to any channel.',
+				value: 'you are not connected to any channel',
 				voice_connection: undefined
 			});
 		}
@@ -118,7 +118,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (current_voice.guild.id !== message.guild.id) {
 			return resolve({
 				result: false,
-				value: 'your current channel is on another guild.',
+				value: 'your current channel is on another guild',
 				voice_connection: undefined
 			});
 		}
@@ -126,7 +126,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (!message || !message.guild) {
 			return resolve({
 				result: false,
-				value: 'could not find guild of message.',
+				value: 'could not find guild of message',
 				voice_connection: undefined
 			});
 		}
@@ -139,7 +139,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (current_guild === undefined) {
 			return resolve({
 				result: false,
-				value: 'could not find guild of message.',
+				value: 'could not find guild of message',
 				voice_connection: undefined
 			});
 		}
@@ -153,7 +153,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (!controlled_by_portal) {
 			return resolve({
 				result: false,
-				value: 'I can only connect to my channels.',
+				value: 'I can only connect to my channels',
 				voice_connection: undefined
 			});
 		}
@@ -161,7 +161,7 @@ export async function join_user_voice(client: Client, message: Message, guild_li
 		if (client.voice === null) {
 			return resolve({
 				result: false,
-				value: 'Portal is not connected to any voice channel.',
+				value: 'Portal is not connected to any voice channel',
 				voice_connection: undefined
 			});
 		}

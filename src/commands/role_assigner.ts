@@ -42,7 +42,7 @@ module.exports = async (
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
-		if (args.length <= 0) return resolve({ result: false, value: 'you can run "./help role_assigner" for help.' });
+		if (args.length <= 0) return resolve({ result: false, value: 'you can run "./help role_assigner" for help' });
 
 		const role_map_json = getJSON(args.join(' '));
 		if (!role_map_json) return resolve({ result: false, value: 'roles must be in JSON format for more info ./help role_assigner' });
@@ -90,6 +90,6 @@ module.exports = async (
 			role_map
 		)
 
-		return resolve({ result: true, value: 'role message has been created.' });
+		return resolve({ result: true, value: 'role message has been created' });
 	});
 };

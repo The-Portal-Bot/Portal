@@ -40,9 +40,9 @@ module.exports = async (
 			resolve({ result: true, value: '' });
 		}
 		else {
-			resolve({ result: true, value: 'There is no ranking yet.' });
+			resolve({ result: true, value: 'There is no ranking yet' });
 		}
 
-		resolve({ result: true, value: 'There is no ranking yet.' });
+		resolve({ result: true, value: 'There is no ranking yet' });
 	});
 };

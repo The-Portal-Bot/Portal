@@ -33,13 +33,13 @@ module.exports = async (
 				}
 				return false;
 			})) {
-				return resolve({ result: true, value: `role ${role_name} has been removed from authorised roles.` });
+				return resolve({ result: true, value: `role ${role_name} has been removed from authorised roles` });
 			}
 			
-			return resolve({ result: false, value: `role ${role_name} is not in role list.` });
+			return resolve({ result: false, value: `role ${role_name} is not in role list` });
 		}
 		else {
-			resolve({ result: false, value: `role ${role_name} does not exist in guild ${message.guild}.` });
+			resolve({ result: false, value: `role ${role_name} does not exist in guild ${message.guild}` });
 		}
 	});
 };
