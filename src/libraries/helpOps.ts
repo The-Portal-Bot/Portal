@@ -276,16 +276,15 @@ export function create_rich_embed(title: string | null | undefined, description:
 };
 
 export async function update_portal_managed_guilds(
-	force: boolean, portal_managed_guilds_path: string, guild_list: GuildPrtl[]
+	portal_managed_guilds_path: string, guild_list: GuildPrtl[]
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => { // , reject) => {
 		setTimeout(() => {
 			const guild_list_no_voice = cloneDeep(guild_list);
 			guild_list_no_voice.forEach(g => g.dispatcher = undefined);
-			console.log('> saved guild_list.json\n');
 			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);
 		}, 1000);
-		return resolve({ result: true, value: 'updated portal guild json' });
+		return resolve({ result: true, value: '> saved guild_list.json\n' });
 	});
 };
 

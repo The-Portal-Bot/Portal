@@ -8,7 +8,7 @@ module.exports = async (
 	args: { guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
 ) => {
 	delete_guild(args.guild.id, args.guild_list);
-	update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
+	update_portal_managed_guilds( args.portal_managed_guilds_path, args.guild_list);
 
 	return {
 		result: true,

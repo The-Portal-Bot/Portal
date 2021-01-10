@@ -11,6 +11,14 @@ A fully fledged and feature rich bot for Discord <img src="https://github.com/ke
 
 ***
 
+1. [Portal](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#portal)
+2. [Commands](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#commands)
+3. [Regex Interpreter](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#regex-interpreter)
+4. [Add to Discord](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#add-to-discord)
+5. [Self Hosting](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#self-hosting)
+6. [Release Hisrtory](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#release-history)
+7. [Acknowledgements](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#acknowledgements)
+  
 ## Commands
 
 **Portal prefix: ./**
@@ -64,6 +72,64 @@ There are four types of data _(used by run command and regex attributes)_:
 2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance. 
 3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome. 
 4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Structures.md), are conditional flow manipulators.
+
+## Add to Discord
+
+## Self Hosting
+
+### Prerequisites
+
+1. Install npm 14
+```bash
+sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
+```
+
+2. Install nodejs
+```bash
+sudo apt -y install nodejs
+```
+
+### Build
+
+1. Open a terminal windows and clone Portal
+```bash
+git clone https://github.com/keybraker/portal.git && cd portal
+```
+
+2. Install node packages
+```bash
+npm install
+```
+> make sure you have version 14.x.x or higher with `node  -v`
+
+### Setup and Run
+
+1. Create a bot on Discord Portal and add the toke in config.json
+```json
+{
+    "token": "add-your-token-here",
+    "prefix": "./",
+    "database_json": "src/database/guild_list.json",
+    "owner_id": "add-your-id-(optional)",
+    "portal_id": "add-bots-id-(optional)"
+    "api_keys": {
+        "OpenWeatherMap": "add-open-weather-map-api-key",
+        "covid_193": "add-covid-193-api-key",
+        "translate": {
+            "engine": "yandex",
+            "key": "add-yeandex-api-key"
+        }
+    },
+    "delete_msg": false,
+    "delete_msg_after": 5,
+    "always_reply": true
+}
+```
+
+2. Run Portal
+```bash
+npm start
+```
 
 ## Release History
 

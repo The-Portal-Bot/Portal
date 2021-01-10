@@ -96,7 +96,7 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: '*you can run "./help spotify" for help.*'
+					value: '*you can run `./help spotify` for help.*'
 				});
 			}
 		}

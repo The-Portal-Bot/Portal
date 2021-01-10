@@ -93,6 +93,6 @@ module.exports = async (
 			});
 		}
 
-		return resolve({ result: false, value: `arguments are set by name and value, run ./help set for help` });
+		return resolve({ result: false, value: `arguments are set by name and value, run \`./help set\` for help` });
 	});
 };

@@ -82,7 +82,7 @@ module.exports = async (
 				.catch(error => { return resolve(error); });
 		}
 		else {
-			return resolve({ result: false, value: '*you can run "./help portal" for help.*' });
+			return resolve({ result: false, value: '*you can run `./help portal` for help.*' });
 		}
 	});
 };

@@ -21,7 +21,7 @@ module.exports = async (
 		};
 	}
 	else {
-		update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
+		update_portal_managed_guilds( args.portal_managed_guilds_path, args.guild_list);
 		return {
 			result: true,
 			value: `${type_of_channel[return_value].toString()} channel, has been removed from database ` +

@@ -32,7 +32,7 @@ module.exports = async (
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 
 		if (args.length < 1)
-			return resolve({ result: false, value: 'you can run "./help weather" for help', });
+			return resolve({ result: false, value: 'you can run `./help weather` for help', });
 
 		const location = args.join('%2C%20');
 		const options: RequestOptions = {

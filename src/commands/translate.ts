@@ -16,13 +16,13 @@ module.exports = async (
 		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 
 		if (args.length <= 1)
-			return resolve({ result: false, value: '1 you can run "./help translate" for help' });
+			return resolve({ result: false, value: '1 you can run `./help translate` for help' });
 
 		const language_options = args.join(' ').substr(0, args.join(' ').indexOf('|'));
 		const string_to_tranlate = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
 		if (!language_options || !string_to_tranlate)
-			return resolve({ result: false, value: '2 you can run "./help translate" for help' });
+			return resolve({ result: false, value: '2 you can run `./help translate` for help' });
 
 		const language_duplet = language_options.split(',');
 		if (language_duplet.length === 2) {
@@ -42,7 +42,7 @@ module.exports = async (
 					return resolve({ result: false, value: `server responded with error: ${error}` });
 				});
 		} else {
-			return resolve({ result: false, value: '3 you can run "./help translate" for help' });
+			return resolve({ result: false, value: '3 you can run `./help translate` for help' });
 		}
 	});
 };

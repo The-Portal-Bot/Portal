@@ -23,7 +23,7 @@ module.exports = async (
 			} else {
 				return resolve({
 					result: false,
-					value: '*you can run "./help joke" for help.*'
+					value: '*you can run `./help joke` for help.*'
 				});
 			}
 		} else {

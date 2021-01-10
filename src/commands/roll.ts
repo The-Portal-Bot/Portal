@@ -19,15 +19,9 @@ module.exports = async (
 				`rolled ${roll.result} (${roll.rolled} from ${args[0]})`
 			);
 
-			return resolve({
-				result: true,
-				value: undefined
-			});
+			return resolve({ result: true, value: null });
 		} else {
-			return resolve({
-				result: false,
-				value: '*you can run "./help roll" for help.*'
-			});
+			return resolve({ result: false, value: '*you can run `./help roll` for help.*' });
 		}
 	});
 };

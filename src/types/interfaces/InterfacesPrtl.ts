@@ -49,6 +49,7 @@ export interface CommandOptions {
 	auth: boolean;
 	premium: boolean;
 	auto_delete: boolean;
+	save_after: boolean;
 }
 
 export interface ActiveCooldown {

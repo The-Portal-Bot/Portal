@@ -83,7 +83,7 @@ module.exports = async (
 		else {
 			resolve({
 				result: false,
-				value: '*you can run "./help leaderboard" for help.*',
+				value: '*you can run `./help leaderboard` for help.*',
 			});
 		}
 

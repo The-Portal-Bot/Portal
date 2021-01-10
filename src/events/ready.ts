@@ -29,7 +29,7 @@ module.exports = async (
 		remove_deleted_channels(guild, args.guild_list);
 		remove_empty_voice_channels(guild, args.guild_list);
 
-		update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
+		update_portal_managed_guilds( args.portal_managed_guilds_path, args.guild_list);
 	});
 	console.log('');
 

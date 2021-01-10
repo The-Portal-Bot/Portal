@@ -27,29 +27,34 @@ module.exports = async (
 
 		if (args.length > 0) {
 			const new_ranks_json = getJSON(args.join(' '));
-			if (new_ranks_json === null) {
+			if (!new_ranks_json) {
 				return resolve({
 					result: false,
-					value: 'ranking must be in Array JSON format, for more info ./help ranks'
+					value: 'ranking must be in Array JSON format, for more info `./help set_ranks`'
 				});
 			}
 			if (!Array.isArray(new_ranks_json)) {
 				return resolve({
 					result: false,
-					value: 'ranking must be in Array JSON format, for more info ./help ranks'
+					value: 'ranking must be in Array JSON format, for more info `./help set_ranks`'
 				});
 			}
+
 			const new_ranks: Rank[] = new_ranks_json;
+
+			if (!new_ranks.every(r => r.level && r.role)) {
+				return resolve({ result: false, value: 'json misspelled `./help set_ranks`' });
+			}
 			if (!new_ranks.every(is_rank)) {
 				return resolve({
 					result: false,
-					value: 'rankings must be an object of level and role, for more info ./help ranks'
+					value: 'rankings must be an object of level and role, for more info `./help set_ranks`'
 				});
 			}
 			if (!new_ranks.every(r => is_role(r, roles))) {
 				return resolve({
 					result: false,
-					value: 'a role given does not exist in server, for more info ./help ranks'
+					value: 'a role given does not exist in server, for more info `./help set_ranks`'
 				});
 			}
 
@@ -64,7 +69,7 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: 'you can run "./help ranks" for help',
+				value: 'you can run `./help set_ranks` for help',
 			});
 		}
 

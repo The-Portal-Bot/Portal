@@ -1,11 +1,9 @@
 import { Client, MessageReaction, User, VoiceConnection } from "discord.js";
+import { get_role } from "../libraries/guildOps";
+import { guildPrtl_to_object, is_authorised, update_music_message } from "../libraries/helpOps";
 import { pause, play, skip, stop } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { get_role } from "../libraries/guildOps";
-import { guildPrtl_to_object, is_authorised, update_music_message } from "../libraries/helpOps";
-import { client_talk } from "../libraries/localizationOps";
-import { Resolver } from "dns";
 
 function clear_user_reactions(client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User) {
 	messageReaction.message.reactions.cache.forEach(reaction => reaction.users.remove(user.id));

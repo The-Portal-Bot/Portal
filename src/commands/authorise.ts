@@ -7,7 +7,11 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		if (args.length <= 0)
-			resolve({ result: false, value: 'you should give one argument (role name, role id or member id).\nyou can run "./help authorise" for help.*' });
+			resolve({
+				result: false,
+				value: 'you should give one argument (role name, role id ' +
+				'or member id).\nyou can run `./help authorise` for help.*'
+			});
 
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
 		if (!guild_object)

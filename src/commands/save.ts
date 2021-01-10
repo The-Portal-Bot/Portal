@@ -11,7 +11,7 @@ module.exports = async (
 		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
 
-		update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list)
+		update_portal_managed_guilds( portal_managed_guilds_path, guild_list)
 			.then((response) => resolve(response))
 			.catch((error) => resolve({ result: false, value: error }));
 	});

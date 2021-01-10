@@ -23,7 +23,7 @@ module.exports = async (
             body = title;
             title = '';
         } else if (body === '' && title === '') {
-            return resolve({ result: false, value: 'you can run "./help announce" for help' });
+            return resolve({ result: false, value: 'you can run `./help announce for help' });
         }
 
         const announcement_channel = <TextChannel>message?.guild?.channels.cache.find(c =>

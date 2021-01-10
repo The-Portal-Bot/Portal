@@ -44,7 +44,7 @@ module.exports = async (
 		else if (args.length > 1) {
 			return resolve({
 				result: false,
-				value: '*you can run "./help corona" for help.*',
+				value: '*you can run `./help corona` for help.*',
 			});
 		}
 		else {

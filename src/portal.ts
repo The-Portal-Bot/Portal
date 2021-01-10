@@ -16,7 +16,9 @@ import { isProfane } from "./libraries/modOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+import {
+	ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise
+} from "./types/interfaces/InterfacesPrtl";
 
 const command_options_guild: CommandOptions[] = cooldown_list.guild;
 const command_options_member: CommandOptions[] = cooldown_list.member;
@@ -257,14 +259,17 @@ client.on('message', async (message: Message) => {
 	command_loader(message, cmd, args, type, command_options, active_cooldown);
 });
 
-function command_loader(message: Message, cmd: string, args: string[], type: string,
-	command_options: CommandOptions, active_cooldown: ActiveCooldown[]): boolean {
+function command_loader(
+	message: Message, cmd: string, args: string[], type: string,
+	command_options: CommandOptions, active_cooldown: ActiveCooldown[]
+): boolean {
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then((response: ReturnPormise) => {
 				message_reply(response.result, message.channel, message,
 					message.author, response.value, guild_list, client, command_options ? command_options.auto_delete : true);
-				update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+				if (command_options.save_after)
+					update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 			});
 		return true;
 	}
@@ -314,8 +319,8 @@ function command_loader(message: Message, cmd: string, args: string[], type: str
 				message_reply(response.result, message.channel, message, message.author,
 					response.value, guild_list, client, command_options.auto_delete);
 			}
-
-			update_portal_managed_guilds(true, portal_managed_guilds_path, guild_list);
+			if (command_options.save_after)
+				update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 		});
 
 	return false;
@@ -390,7 +395,7 @@ function ranking_system(message: Message): void {
 	const level = add_points_message(message, guild_list);
 	if (level) {
 		message_reply(false, message.channel, message,
-			message.author, `You reached level ${level}!`,
+			message.author, `you reached level ${level}!`,
 			guild_list, client);
 	}
 }
@@ -403,6 +408,3 @@ log_portal();
 
 exports.client = client;
 exports.log_portal = log_portal;
-
-// console.log('Object.getOwnPropertyNames(message) = ', Object.getOwnPropertyNames(message))
-// console.log('Object.getOwnPropertyNames(message.author) = ', Object.getOwnPropertyNames(message.author))

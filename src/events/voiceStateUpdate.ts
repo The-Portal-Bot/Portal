@@ -287,7 +287,7 @@ module.exports = async (
 		if (!execution.result) return resolve(execution);
 		report_message += `${execution.value}\n`;
 
-		update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
+		update_portal_managed_guilds( args.portal_managed_guilds_path, args.guild_list);
 
 		return resolve({ result: true, value: report_message });
 	});
