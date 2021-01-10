@@ -69,9 +69,9 @@ There are four types of data _(used by run command and regex attributes)_:
 
 | Version | Date       | Argument     |
 | :------ | :--------- | :----------- |
-| 1.5.0   | 08-01-2021 | _Typescript_ |
-| 1.2.1   | 16-06-2020 | _Javascript_ |
-| 0.5.0   | 18-05-2020 | _Beta_       |
+| 0.5.0   | 08-01-2021 | _Typescript_ |
+| 0.2.1   | 16-06-2020 | _Javascript_ |
+| 0.1.0   | 18-05-2020 | _Beta_       |
 | 0.0.1   | 05-05-2020 | _Alpha_      |
 
 ![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg) ![npm](https://img.shields.io/badge/npm-6.14.10-blue)
