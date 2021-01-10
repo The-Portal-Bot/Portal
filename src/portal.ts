@@ -183,7 +183,7 @@ client.on('message', async (message: Message) => {
 	if (message.channel.type === 'dm') return;
 
 	// check if something written in portal channels
-	if(portal_channel_handler(message)) return;
+	if (portal_channel_handler(message)) return;
 
 	// ranking system
 	ranking_system(message);
@@ -328,22 +328,20 @@ function event_loader(event: string, args: any): void {
 		.then((response: ReturnPormise) => {
 			if (response !== null && response !== undefined) {
 				if (event === 'messageReactionAdd' && response) {
-					const messageReaction = <MessageReaction>args.messageReaction;
-					const guild_object = (<GuildPrtl[]>args.guild_list).find(g =>
-						g.id === args.messageReaction.message.guild.id);
+					// const messageReaction = <MessageReaction>args.messageReaction;
+					// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
 
-					if (guild_object) {
-						if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
-							const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-								.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
-							// auto na trexei mono otan einai music reaction
-
-							music_channel
-								.send(`${args.user}, ${response.value}`)
-								.then(msg => { msg.delete({ timeout: 5000 }); })
-								.catch(error => console.log(error));
-						}
-					}
+					// if (guild_object) {
+					// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
+					// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+					// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
+					// 		// auto na trexei mono otan einai music reaction
+					// 		music_channel
+					// 			.send(`${args.user}, ${response.value}`)
+					// 			.then(msg => { msg.delete({ timeout: 5000 }); })
+					// 			.catch(error => console.log(error));
+					// 	}
+					// }
 				}
 				else {
 					console.log(response.result, response.value);
@@ -371,12 +369,17 @@ function portal_channel_handler(message: Message): boolean {
 	else if (guild_obejct.music_data.channel_id === message.channel.id) {
 		start(client, message, message.content, guild_list)
 			.then(joined => {
-				message_reply(joined.result, message.channel, message,
-					message.author, joined.value, guild_list, client, true);
+				// message_reply(
+				// 	joined.result, message.channel, message,
+				// 	message.author, joined.value, guild_list, client, true
+				// );
+				message.delete();
 			})
 			.catch(error => {
-				console.log(error);
-				message.delete();
+				message_reply(
+					false, message.channel, message,
+					message.author, error, guild_list, client, true
+				);
 			});
 		return true;
 	}

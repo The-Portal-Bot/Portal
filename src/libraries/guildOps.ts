@@ -232,7 +232,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -251,7 +251,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
 						parent: music_category
 					},
 				)
@@ -268,7 +268,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
 					},
 				)
 				.then(channel => {
