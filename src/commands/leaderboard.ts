@@ -76,7 +76,7 @@ module.exports = async (
 			else {
 				resolve({
 					result: false,
-					value: 'there are no members for this server, please contact Portal Bot maintainer.',
+					value: 'there are no members for this server, please contact Portal Bot maintainer',
 				});
 			}
 		}

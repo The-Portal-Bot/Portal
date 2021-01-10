@@ -38,11 +38,8 @@ function display_spotify_song(
 	current_guild: Guild, current_channel: VoiceChannel,
 	guild_list: GuildPrtl[], newPresence: Presence, client: Client
 ) {
-	console.log('eimai edo\n\n');
 	current_channel.members.forEach(member => {
-		console.log('member :>> ', member);
 		member.presence.activities.some(activity => {
-			console.log('activity.name :>> ', activity.name);
 			if (activity.name === 'Spotify' && newPresence.guild) {
 				const spotify = <TextChannel | undefined>newPresence.guild.channels.cache.find(c => {
 					const guild_object = guild_list.find(g => g.id === current_guild.id);

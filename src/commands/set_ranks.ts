@@ -64,13 +64,13 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: 'you can run "./help ranks" for help.',
+				value: 'you can run "./help ranks" for help',
 			});
 		}
 
 		return resolve({
 			result: true,
-			value: 'new rankings have been set.',
+			value: 'new rankings have been set',
 		});
 	});
 };

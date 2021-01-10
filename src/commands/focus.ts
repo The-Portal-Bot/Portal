@@ -58,13 +58,13 @@ module.exports = async (
 		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
 			return resolve({
 				result: false,
-				value: 'you must be in a channel handled by Portal™.',
+				value: 'you must be in a channel handled by Portal™',
 			});
 		}
 		else if (!included_in_voice_list(message.member.voice.channel.id, current_portal_list)) {
 			return resolve({
 				result: false,
-				value: 'the channel you are in is not handled by Portal™.',
+				value: 'the channel you are in is not handled by Portal™',
 			});
 		}
 
@@ -75,10 +75,10 @@ module.exports = async (
 		const focus_time = arg_a === '' ? 5 : parseInt(arg_b);
 
 		if (focus_name === '') {
-			return resolve({ result: false, value: 'you must give a member name.' });
+			return resolve({ result: false, value: 'you must give a member name' });
 		}
 		if (isNaN(focus_time)) {
-			return resolve({ result: false, value: 'focus time must be a number.' });
+			return resolve({ result: false, value: 'focus time must be a number' });
 		}
 
 		const member_object = message.member.voice.channel.members.find(member => {
@@ -105,7 +105,7 @@ module.exports = async (
 				});
 		}
 		else {
-			return resolve({ result: false, value: `could not find "**${focus_name}**" in current voice channel.` });
+			return resolve({ result: false, value: `could not find "**${focus_name}**" in current voice channel` });
 		}
 	});
 };

@@ -22,25 +22,25 @@ module.exports = async (
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this already is, the Announcement channel.',
+					value: 'this already is, the Announcement channel',
 				});
 			}
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this can\'t be set as the Announcemennt channel for it is the Spotify channel.',
+					value: 'this can\'t be set as the Announcemennt channel for it is the Spotify channel',
 				});
 			}
 			if (is_music_channel(message.channel.id, guild_object)) {
 				resolve({
 					result: true,
-					value: 'this can\'t be set as a Announcemennt channel for it is the Music channel.',
+					value: 'this can\'t be set as a Announcemennt channel for it is the Music channel',
 				});
 			}
 			if (included_in_url_list(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this can\'t be set as the Announcemennt channel for it is an url channel.',
+					value: 'this can\'t be set as the Announcemennt channel for it is an url channel',
 				});
 			}
 		}
@@ -54,7 +54,7 @@ module.exports = async (
 			guild_object.announcement = message.channel.id;
 			return resolve({
 				result: true,
-				value: 'this is now the Announcement channel.',
+				value: 'this is now the Announcement channel',
 			});
 		}
 		else if (args.length > 0) {
@@ -95,7 +95,7 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: 'you can run "./help announcement" for help.',
+					value: 'you can run "./help announcement" for help',
 				});
 			}
 		}

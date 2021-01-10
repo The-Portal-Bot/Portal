@@ -385,7 +385,7 @@ export function get_attribute_help(): MessageEmbed[] {
 			return create_rich_embed(
 				'Attributes',
 				'Prefix: ' + attribute_prefix + '\n' +
-				'Portal Bot\'s, Portal Voice or Voice Channel options ' +
+				'are Portal\'s, portal or voice channel options ' +
 				'that can be manipulated by whomever has clearance.\n' +
 				'argument preceded by **!** is *mandatory*\n' +
 				'argument preceded by **@** is *optional*\n',

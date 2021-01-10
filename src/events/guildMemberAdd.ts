@@ -6,16 +6,15 @@ import { MemberPrtl } from "../types/classes/MemberPrtl";
 module.exports = async (
 	args: { member: GuildMember, guild_list: GuildPrtl[] }
 ) => {
-	const join_message = `member: ${args.member.presence.user}\n` +
-		`id: ${args.member.guild.id}\n` +
-		`joined: ${args.member.guild}.`;
+	const join_message = `member ${args.member.presence.user} ` +
+		`[${args.member.guild.id}]\n\thas joined ${args.member.guild}`;
 
 	const guild_object = guildPrtl_to_object(args.guild_list, args.member.guild.id);
 	if (guild_object && guild_object.announcement) {
 		const announcement_channel = args.member.guild.channels.cache
 			.find(channel => channel.id === guild_object.announcement)
 
-		if (announcement_channel)
+		if (announcement_channel && announcement_channel.isText)
 			(<TextChannel>announcement_channel).send(
 				create_rich_embed(
 					'member joined', join_message, '#00C70D', [],

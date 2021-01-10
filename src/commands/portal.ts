@@ -43,9 +43,9 @@ module.exports = async (
 
 						return resolve({
 							result: true,
-							value: '*portal channel has been created.\n' +
-								'Keep in mind that due to Discord\'s limitations,*\n' +
-								'**channel names will be updated on a five minute interval.**',
+							value: 'portal channel has been created.\n' +
+								'Keep in mind that due to Discord\'s limitations,\n' +
+								'channel names will be updated on a five minute interval',
 						});
 					} else {
 						return resolve(response);
@@ -71,9 +71,9 @@ module.exports = async (
 
 						return resolve({
 							result: true,
-							value: '*portal channel has been created.\n' +
-								'Keep in mind that due to Discord\'s limitations,*\n' +
-								'**channel names will be updated on a five minute interval.**',
+							value: 'portal channel has been created.\n' +
+								'Keep in mind that due to Discord\'s limitations,\n' +
+								'channel names will be updated on a five minute interval',
 						});
 					} else {
 						return resolve(response);

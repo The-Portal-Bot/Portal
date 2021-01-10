@@ -12,6 +12,6 @@ module.exports = async (
 
 	return {
 		result: true,
-		value: `Portal has been removed from: ${args.guild.name} (id: ${args.guild.id})`,
+		value: `Portal has been removed from: ${args.guild.name} [id: ${args.guild.id}]`,
 	};
 };

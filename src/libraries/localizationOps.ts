@@ -9,73 +9,73 @@ export const portal: LocalizationOption[] = [
 	{
 		name: 'join',
 		lang: {
-			gr: () => { return 'Γειά σας, το Πόρταλ είναι εδώ.'; },
-			en: () => { return 'Cheers love, Portal\'s here.'; },
-			de: () => { return 'Hallo, Portal ist da.'; }
+			gr: () => { return 'Γειά σας, το Πόρταλ είναι εδώ'; },
+			en: () => { return 'Cheers love, Portal\'s here'; },
+			de: () => { return 'Hallo, Portal ist da'; }
 		}
 	},
 	{
 		name: 'leave',
 		lang: {
-			gr: () => { return 'Αποχαιρετώ, καλή συνέχεια σε όλους.'; },
-			en: () => { return 'Goodbye everyone.'; },
-			de: () => { return 'Auf Wiedersehen alle.'; }
+			gr: () => { return 'Αποχαιρετώ, καλή συνέχεια σε όλους'; },
+			en: () => { return 'Goodbye everyone'; },
+			de: () => { return 'Auf Wiedersehen alle'; }
 		}
 	},
 	{
 		name: 'announce',
 		lang: {
-			gr: (user: User) => { return `O ${user} έκανε μια ανακοίνωση.`; },
-			en: (user: User) => { return `${user} made an announcement.`; },
-			de: (user: User) => { return `${user} hat eine Ankündigung gemacht.`; }
+			gr: (user: User) => { return `O ${user} έκανε μια ανακοίνωση`; },
+			en: (user: User) => { return `${user} made an announcement`; },
+			de: (user: User) => { return `${user} hat eine Ankündigung gemacht`; }
 		}
 	},
 	{
 		name: 'spotify',
 		lang: {
-			gr: (user: User) => { return `O ${user} έβαλε νέο κομμάτι.`; },
-			en: (user: User) => { return `${user} listens to a new song.`; },
-			de: (user: User) => { return `${user} hört sich ein neues Lied an.`; }
+			gr: (user: User) => { return `O ${user} έβαλε νέο κομμάτι`; },
+			en: (user: User) => { return `${user} listens to a new song`; },
+			de: (user: User) => { return `${user} hört sich ein neues Lied an`; }
 		}
 	},
 	{
 		name: 'url',
 		lang: {
-			gr: (user: User) => { return `O ${user} ανέβασε έναν νέο σύνδεσμο.`; },
-			en: (user: User) => { return `${user} sent a new link.`; },
-			de: (user: User) => { return `${user} hat einen neuen Link geschickt.`; }
+			gr: (user: User) => { return `O ${user} ανέβασε έναν νέο σύνδεσμο`; },
+			en: (user: User) => { return `${user} sent a new link`; },
+			de: (user: User) => { return `${user} hat einen neuen Link geschickt`; }
 		}
 	},
 	{
 		name: 'read_only',
 		lang: {
-			gr: (user: User) => { return `${user}, το κανάλι είναι μόνο για ανάγνωση.`; },
-			en: (user: User) => { return `${user}, the channel is read-only.`; },
-			de: (user: User) => { return `${user}, der Kanal ist schreibgeschütz.`; }
+			gr: (user: User) => { return `${user}, το κανάλι είναι μόνο για ανάγνωση`; },
+			en: (user: User) => { return `${user}, the channel is read-only`; },
+			de: (user: User) => { return `${user}, der Kanal ist schreibgeschütz`; }
 		}
 	},
 	{
 		name: 'fail',
 		lang: {
-			gr: (user: User) => { return `${user}, κάτι δεν πήγε καλά.`; },
-			en: (user: User) => { return `${user}, something went wrong.`; },
-			de: (user: User) => { return `${user}, etwas ist schief gelaufen.`; }
+			gr: (user: User) => { return `${user}, κάτι δεν πήγε καλά`; },
+			en: (user: User) => { return `${user}, something went wrong`; },
+			de: (user: User) => { return `${user}, etwas ist schief gelaufen`; }
 		}
 	},
 	{
 		name: 'user_connected',
 		lang: {
-			gr: (user: User) => { return `Ο χρήστης ${user} συνδέθηκε στο κανάλι.`; },
-			en: (user: User) => { return `User ${user} connected to the channel.`; },
-			de: (user: User) => { return `Mitglied ${user} hat sich zum Kanal verbunden.`; }
+			gr: (user: User) => { return `Ο χρήστης ${user} συνδέθηκε στο κανάλι`; },
+			en: (user: User) => { return `User ${user} connected to the channel`; },
+			de: (user: User) => { return `Mitglied ${user} hat sich zum Kanal verbunden`; }
 		}
 	},
 	{
 		name: 'user_disconnected',
 		lang: {
-			gr: (user: User) => { return `Ο χρήστης ${user} αποχώρησε από το κανάλι.`; },
-			en: (user: User) => { return `User ${user} disconnected from the channel.`; },
-			de: (user: User) => { return `Mitglied ${user} hat sich vom Kanal unverbunden.`; }
+			gr: (user: User) => { return `Ο χρήστης ${user} αποχώρησε από το κανάλι`; },
+			en: (user: User) => { return `User ${user} disconnected from the channel`; },
+			de: (user: User) => { return `Mitglied ${user} hat sich vom Kanal unverbunden`; }
 		}
 	}
 ]
@@ -85,15 +85,15 @@ export const console_text: LocalizationOption[] = [
 		lang: {
 			gr: (args: any) => {
 				return `Το μποτ ξεκίνησε, με ${args.a} χρήστες, μέσα σε ` +
-					`${args.b} κανάλια σε ${args.c} συντεχνίες.`;
+					`${args.b} κανάλια σε ${args.c} συντεχνίες`;
 			},
 			en: (args: any) => {
 				return `Bot has started, with ${args.a} users, ` +
-					`in ${args.b} channels from ${args.c} guilds.`;
+					`in ${args.b} channels from ${args.c} guilds`;
 			},
 			de: (args: any) => {
 				return `Bot hat ${args.a} Mitglieder in ${args.b} ` +
-					`Kanälen von ${args.c} Gilden gestartet.`;
+					`Kanälen von ${args.c} Gilden gestartet`;
 			}
 		}
 
@@ -102,9 +102,9 @@ export const console_text: LocalizationOption[] = [
 		name: 'updating_guild',
 		lang: {
 
-			gr: (args: any) => { return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε.'; },
-			en: (args: any) => { return '> Guild JSON file has been updated.'; },
-			de: (args: any) => { return '> Die JSON Datei der Gilde wurde aktualisiert.'; },
+			gr: (args: any) => { return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε'; },
+			en: (args: any) => { return '> Guild JSON file has been updated'; },
+			de: (args: any) => { return '> Die JSON Datei der Gilde wurde aktualisiert'; },
 		}
 	},
 	{

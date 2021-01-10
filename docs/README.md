@@ -1,17 +1,6 @@
-![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg)
+# [Portal](https://github.com/keybraker/portal-discord-bot) 
 
-**Disclaimers**    
-> 1. Portal will never record conversations or store anything you type<br>
-> 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit 
-> for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)
-> 3. Runs on nodejs 14.x
-
-***
-
-# [Portal](https://github.com/keybraker/portal-discord-bot) <img src="https://github.com/keybraker/portal-discord-bot/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
-A feature-rich channel manager for discord.
-
-Features:
+A fully fledged and feature rich bot for Discord <img src="https://github.com/keybraker/portal-discord-bot/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
 * Voice channels on demand (with auto-name update)
 * Assignes and strips roles from users with a single reaction press
 * Creates temporary "focus" channels for private conversations
@@ -29,7 +18,7 @@ Features:
 | Name               | Description                                                      | Arguments                            | Eligible for use                                      | Cooldown (mins) |
 | :----------------- | :--------------------------------------------------------------- | :----------------------------------- | :---------------------------------------------------- | :-------------- |
 | `about`            | _returns an about Portal message_                                | _none_                               | everyone                                              | -               |
-| `announce`         | _@title \| @body_                                                | everyone                             | 1 user                                                | -               |
+| `announce`         | _announceces whatever is given by the writter to online members_ | _@title \| @body_                    | everyone                                              | 1 user          |
 | `announcement`     | _creates a new or sets the current channel as announcement_      | _@channel\_name \| @category\_name_  | admin, portal-admins                                  | admin-roles     |
 | `authorise`        | _add role to admin roles_                                        | _!role_                              | admin, portal-admins, admin-roles                     | -               |
 | `authorised_roles` | _displayes all authorised roles_                                 | none                                 | everyone                                              | -               |
@@ -64,15 +53,15 @@ Features:
 > pipes are applied to variables or text in order to change their outcome<br>
 > default regex: `G$#-P$member_count | $status_list`<br>
 > argument preceded by **!** is **mandatory** (not included)<br>
-> argument preceded by **@** is **optional** (not included)<br>
+> argument preceded by **@** is **optional** (not included)
 
 ***
 
 ## Regex Interpreter
 
-There are four types of data:
+There are four types of data _(used by run command and regex attributes)_:
 1. [Variables](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Variables.md), are immutable and live data that return information.
-2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Attributes.md), are Portal Bot's, Portal Voice or Voice Channel options that can be manipulated by whomever has clearance. 
+2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance. 
 3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome. 
 4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Structures.md), are conditional flow manipulators.
 
@@ -80,15 +69,25 @@ There are four types of data:
 
 | Version | Date       | Argument     |
 | :------ | :--------- | :----------- |
-| 1.5.0   | 08-01-2021 | _Typescript_ |
-| 1.2.1   | 16-06-2020 | _Javascript_ |
-| 0.5.0   | 18-05-2020 | _Beta_       |
+| 0.5.0   | 08-01-2021 | _Typescript_ |
+| 0.2.1   | 16-06-2020 | _Javascript_ |
+| 0.1.0   | 18-05-2020 | _Beta_       |
 | 0.0.1   | 05-05-2020 | _Alpha_      |
+
+![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg) ![npm](https://img.shields.io/badge/npm-6.14.10-blue)
+![node](https://img.shields.io/badge/node-14.15.4-blue) ![node](https://img.shields.io/badge/discord.js-12.5.1-blue)
 
 ## Acknowledgements
 
 > Acknowledgments - _[Discord.js](https://discord.js.org/#/)_<br>
 > Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
 > License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
+
+***
+
+> **Disclaimers**    
+> 1. Portal will never record conversations or store anything you type<br>
+> 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
+> 3. Runs on nodejs 14.x
 
 Copyrights © Keybraker 2020 [Portal](https://github.com/keybraker/portal-discord-bot), All rights reserved

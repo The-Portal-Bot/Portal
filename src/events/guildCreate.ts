@@ -8,18 +8,16 @@ import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { Rank } from "../types/interfaces/InterfacesPrtl";
 
-function create_member_list(guild_id: string, client: Client): any {
+function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
 	const guild = client.guilds.cache.find((cached_guild: Guild) => cached_guild.id === guild_id);
-	if (!guild) return undefined;
+	if (!guild) return [];
 
 	const member_list: MemberPrtl[] = [];
 
 	guild.members.cache.forEach(member => {
-		if (client.user && !member.user.bot) {
-			if (member.id !== client.user.id) {
+		if (client.user && !member.user.bot)
+			if (member.id !== client.user.id)
 				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false));
-			}
-		}
 	});
 
 	return member_list;
@@ -50,15 +48,14 @@ module.exports = async (
 	args: { client: Client, guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
 ) => {
 	// Inserting guild to portal's guild list if it does not exist
-	if (!included_in_portal_guilds(args.guild.id, args.guild_list)) {
+	if (!included_in_portal_guilds(args.guild.id, args.guild_list))
 		insert_guild(args.guild.id, args.guild_list, args.client);
-	}
 
 	update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
 
 	return {
 		result: true,
 		value: `Portal joined guild ${args.guild.name} [${args.guild.id}] ` +
-			`which has ${args.guild.memberCount} members.`,
+			`which has ${args.guild.memberCount} members`,
 	};
 };

@@ -16,7 +16,7 @@ module.exports = async (
 	if (return_value === 0) {
 		return {
 			result: false,
-			value: 'removed channel is not controlled by Portal' +
+			value: `the channel removed is not controlled by Portal ` +
 				`(guild: ${args.channel.guild.name} - id: ${args.channel.guild.id})`,
 		};
 	}
@@ -24,7 +24,7 @@ module.exports = async (
 		update_portal_managed_guilds(true, args.portal_managed_guilds_path, args.guild_list);
 		return {
 			result: true,
-			value: `${type_of_channel[return_value].toString()} channel, has been removed from ` +
+			value: `${type_of_channel[return_value].toString()} channel, has been removed from database ` +
 				`guild: ${args.channel.guild.name} - id: ${args.channel.guild.id}`,
 		};
 	}
