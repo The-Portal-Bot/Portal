@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import { client_talk, client_write } from "../libraries/localizationOps";
+import { client_talk, client_write } from "../libraries/localisationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
 module.exports = async (

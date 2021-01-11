@@ -1,7 +1,7 @@
 import { Client, Guild, Presence, TextChannel, VoiceChannel } from "discord.js";
 import { generate_channel_name, included_in_portal_guilds } from "../libraries/guildOps";
 import { create_rich_embed } from "../libraries/helpOps";
-import { client_log, client_talk } from "../libraries/localizationOps";
+import { client_log, client_talk } from "../libraries/localisationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";

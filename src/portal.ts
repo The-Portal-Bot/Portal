@@ -11,7 +11,7 @@ import {
 	guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed,
 	update_portal_managed_guilds
 } from './libraries/helpOps';
-import { client_talk } from './libraries/localizationOps';
+import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
@@ -191,10 +191,11 @@ client.on('message', async (message: Message) => {
 	ranking_system(message);
 
 	// word check
-	if (isProfane(message.content)) {
+	const profanities = isProfane(message.content);
+	if (profanities.length > 0) {
 		message.react('🚩');
 		message.author
-			.send("try not to use profanities")
+			.send(`try not to use profanities (${profanities.join(',')})`)
 			.catch(console.error);
 	}
 
@@ -238,7 +239,7 @@ client.on('message', async (message: Message) => {
 	const guild_obejct = guildPrtl_to_object(guild_list, message.guild.id);
 	if (!guild_obejct) {
 		message_reply(false, message.channel, message, message.author,
-			'this guild is not in database, please contact portal support', guild_list, client);
+			'σερωερ is not in database, please contact portal support', guild_list, client);
 		return;
 	}
 
@@ -252,7 +253,7 @@ client.on('message', async (message: Message) => {
 
 	if (command_options.premium && !guild_obejct.premium) {
 		message_reply(false, message.channel, message, message.author,
-			'this server is not premium', guild_list, client);
+			'server is not premium', guild_list, client);
 		return;
 	}
 

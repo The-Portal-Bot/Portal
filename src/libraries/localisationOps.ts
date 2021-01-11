@@ -1,11 +1,10 @@
 import { Client, Message, User } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
-import { LocalizationOption } from "../types/interfaces/InterfacesPrtl";
+import { LocalisationOption } from "../types/interfaces/InterfacesPrtl";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
 const type_of_action = ['user_connected', 'user_disconnected'];
-export const portal: LocalizationOption[] = [
+export const portal: LocalisationOption[] = [
 	{
 		name: 'join',
 		lang: {
@@ -79,22 +78,13 @@ export const portal: LocalizationOption[] = [
 		}
 	}
 ]
-export const console_text: LocalizationOption[] = [
+export const console_text: LocalisationOption[] = [
 	{
 		name: 'ready',
 		lang: {
-			gr: (args: any) => {
-				return `Το μποτ ξεκίνησε, με ${args.a} χρήστες, μέσα σε ` +
-					`${args.b} κανάλια σε ${args.c} συντεχνίες`;
-			},
-			en: (args: any) => {
-				return `Bot has started, with ${args.a} users, ` +
-					`in ${args.b} channels from ${args.c} guilds`;
-			},
-			de: (args: any) => {
-				return `Bot hat ${args.a} Mitglieder in ${args.b} ` +
-					`Kanälen von ${args.c} Gilden gestartet`;
-			}
+			gr: (args: any) => { return `Το μποτ ξεκίνησε, με ${args.a} χρήστες, μέσα σε ${args.b} κανάλια σε ${args.c} συντεχνίες`; },
+			en: (args: any) => { return `Bot has started, with ${args.a} users, in ${args.b} channels from ${args.c} guilds`; },
+			de: (args: any) => { return `Bot hat ${args.a} Mitglieder in ${args.b} Kanälen von ${args.c} Gilden gestartet`; }
 		}
 
 	},
@@ -104,7 +94,7 @@ export const console_text: LocalizationOption[] = [
 
 			gr: (args: any) => { return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε'; },
 			en: (args: any) => { return '> Guild JSON file has been updated'; },
-			de: (args: any) => { return '> Die JSON Datei der Gilde wurde aktualisiert'; },
+			de: (args: any) => { return '> Die JSON Datei der Gilde wurde aktualisiert'; }
 		}
 	},
 	{
@@ -128,25 +118,24 @@ export const console_text: LocalizationOption[] = [
 	{
 		name: 'presence_controlled',
 		lang: {
-			gr: (args: any) => {
-				return `Ο χρήστης ${args.a} έχει αλλάξει κατάσταση, ` +
-					`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.b})`;
-			},
-			en: (args: any) => {
-				return `${args.a} has changed presence, ` +
-					`in controlled server (${args.b})`;
-			},
-			de: (args: any) => {
-				return `${args.a} has changed presence, ` +
-					`in controlled server (${args.b})`;
-			}
+			gr: (args: any) => { return `Ο χρήστης ${args.a} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${args.b})`; },
+			en: (args: any) => { return `${args.a} has changed presence, in controlled server (${args.b})`; },
+			de: (args: any) => { return `${args.a} has changed presence, in controlled server (${args.b})`; }
+		}
+	},
+	{
+		name: 'could_not_fetch_data',
+		lang: {
+			gr: (data: string, source: string) => { return `Δεν κατάφερα να πάρω το ${data} από το ${source}`; },
+			en: (data: string, source: string) => { return `Could not fetch ${data} from ${source}`; },
+			de: (data: string, source: string) => { return `Ich konnte ${data} nicht vom ${source} holen`; }
 		}
 	}
 ]
 
 export function client_talk(client: Client, guild_list: GuildPrtl[], context: string): boolean {
 	const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id);
-	
+
 	if (voiceConnection) {
 		return guild_list.some(g =>
 			g.portal_list.some(p =>
@@ -210,12 +199,8 @@ export function client_write(message: Message, guild_list: GuildPrtl[], context:
 
 export function client_log(
 	message: Message | null, guild_list: GuildPrtl[], context: string, args: any): string {
-	if (message === null || message.member === null) {
-		return 'there was an error';
-	}
-	if (message.member.voice === undefined || message.member.voice === null) {
-		return 'there was an error';
-	}
+	if (message === null || message.member === null) return 'there was an error';
+	if (message.member.voice === undefined || message.member.voice === null) return 'there was an error';
 
 	guild_list.some(g =>
 		g.portal_list.some(p =>

@@ -1,7 +1,7 @@
 import { Client, VoiceChannel, VoiceConnection, VoiceState, TextChannel, Message } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guildOps";
 import { update_portal_managed_guilds } from "../libraries/helpOps";
-import { client_talk } from "../libraries/localizationOps";
+import { client_talk } from "../libraries/localisationOps";
 import { stop } from "../libraries/musicOps";
 import { update_timestamp } from "../libraries/userOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";

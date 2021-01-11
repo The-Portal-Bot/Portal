@@ -3,7 +3,7 @@ import {
 	update_portal_managed_guilds, remove_deleted_guild,
 	remove_deleted_channels, remove_empty_voice_channels
 } from "../libraries/helpOps";
-import { console_text } from "../libraries/localizationOps";
+import { console_text } from "../libraries/localisationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
 module.exports = async (

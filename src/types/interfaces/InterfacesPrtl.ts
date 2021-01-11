@@ -38,7 +38,7 @@ export interface Language {
 	de: any;
 }
 
-export interface LocalizationOption {
+export interface LocalisationOption {
 	name: string;
 	lang: Language;
 }

@@ -1,6 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { create_rich_embed } from "../libraries/helpOps";
-import { client_talk } from "../libraries/localizationOps";
+import { client_talk } from "../libraries/localisationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 
 module.exports = async (
