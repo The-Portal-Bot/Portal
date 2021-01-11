@@ -78,6 +78,8 @@ There are four types of data _(used by run command and regex attributes)_:
 
 ## Add to Discord
 
+[Add to your Discord Server](https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot)
+
 ## Self Hosting
 
 ### Prerequisites
