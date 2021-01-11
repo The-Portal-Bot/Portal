@@ -14,7 +14,8 @@ export class PortalChannelPrtl {
 	public ann_announce: boolean;
 	public ann_user: boolean;
 	public user_limit_portal: number;
-
+	public regex_overwrite: boolean;
+	
 	constructor(
 		id: string,
 		creator_id: string,
@@ -28,7 +29,8 @@ export class PortalChannelPrtl {
 		locale: string,
 		ann_announce: boolean,
 		ann_user: boolean,
-		user_limit_portal: number
+		user_limit_portal: number,
+		regex_overwrite: boolean
 	) {
 		this.id = id;
 		this.creator_id = creator_id;
@@ -43,5 +45,6 @@ export class PortalChannelPrtl {
 		this.ann_announce = ann_announce;
 		this.ann_user = ann_user;
 		this.user_limit_portal = user_limit_portal;
+		this.regex_overwrite = regex_overwrite;
 	}
 };

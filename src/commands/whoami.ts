@@ -16,21 +16,33 @@ module.exports = async (
             message.member ? message.member?.displayName : 'could not fetch name',
             'member portal card',
             '#42f5d7',
-            [{
-                emote: 'id',
-                role: member_object.id,
-                inline: false
-            },
-            {
-                emote: 'level',
-                role: member_object.level,
-                inline: false
-            },
-            {
-                emote: 'admin',
-                role: member_object.admin ? 'true' : 'false',
-                inline: false
-            }],
+            [
+                {
+                    emote: 'id',
+                    role: member_object.id,
+                    inline: false
+                },
+                {
+                    emote: 'level',
+                    role: member_object.level,
+                    inline: false
+                },
+                {
+                    emote: 'regex',
+                    role: member_object.regex ? 'not set' : member_object.regex,
+                    inline: false
+                },
+                {
+                    emote: 'DJ',
+                    role: member_object.dj ? 'true' : 'false',
+                    inline: false
+                },
+                {
+                    emote: 'admin',
+                    role: member_object.admin ? 'true' : 'false',
+                    inline: false
+                }
+            ],
             message.member?.user.avatarURL(),
             null,
             true,

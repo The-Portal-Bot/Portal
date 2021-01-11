@@ -113,8 +113,7 @@ function from_existing(
 
 			report_message += '->source: portal_list\n';
 
-			if (included_in_voice_list(
-				new_channel.id, guild_object.portal_list)) { // has been handled before
+			if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // has been handled before
 
 				update_timestamp(newState, guild_list); // points from voice creation
 
@@ -127,8 +126,7 @@ function from_existing(
 
 			report_message += '->source: voice_list\n';
 
-			if (included_in_portal_list(
-				new_channel.id, guild_object.portal_list)) { // moved from voice to portal
+			if (included_in_portal_list(new_channel.id, guild_object.portal_list)) { // moved from voice to portal
 
 				report_message += '->dest: portal_list\n';
 
@@ -287,7 +285,7 @@ module.exports = async (
 		if (!execution.result) return resolve(execution);
 		report_message += `${execution.value}\n`;
 
-		update_portal_managed_guilds( args.portal_managed_guilds_path, args.guild_list);
+		update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
 
 		return resolve({ result: true, value: report_message });
 	});

@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
-import { create_rich_embed } from '../../libraries/helpOps';
+import { create_rich_embed, is_authorised } from '../../libraries/helpOps';
 import { GuildPrtl } from '../classes/GuildPrtl';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl';
+import { MemberPrtl } from '../classes/MemberPrtl';
 
-const locales = ['gr', 'en', 'de'];
 export const attribute_prefix: string = '&';
+const locales = ['gr', 'en', 'de'];
 const attributes: InterfaceBlueprint[] = [
 	{
 		name: 'ann_announce_portal',
@@ -18,13 +19,13 @@ const attributes: InterfaceBlueprint[] = [
 		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): boolean => {
 			return portal_object.ann_announce;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
 				portal_object.ann_announce = true;
@@ -36,7 +37,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'ann_announce',
@@ -46,13 +47,13 @@ const attributes: InterfaceBlueprint[] = [
 		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): boolean => {
 			return voice_object.ann_announce;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
 				voice_object.ann_announce = true;
@@ -64,7 +65,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'ann_user_portal',
@@ -75,13 +76,13 @@ const attributes: InterfaceBlueprint[] = [
 		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): boolean => {
 			return portal_object.ann_user;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
 				portal_object.ann_user = true;
@@ -93,7 +94,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'ann_user',
@@ -103,13 +104,13 @@ const attributes: InterfaceBlueprint[] = [
 		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): boolean => {
 			return voice_object.ann_user;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
 				voice_object.ann_user = true;
@@ -121,7 +122,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'bitrate',
@@ -135,17 +136,58 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_channel.bitrate;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			// voice_channel.setBitrate(Number(value));
 			voice_channel.edit({ bitrate: Number(value) })
-				.then(channel => console.log(
-					`Channel's new position is ${channel.bitrate} and should be ${value}`))
+				.then(channel => console.log(`Channel's new position is ${channel.bitrate} and should be ${value}`))
 				.catch(console.error);
 			return 1;
 		},
-		auth: 'voice',
+		auth: 'voice'
+	},
+	{
+		name: 'DJ',
+		description: 'returns/sets makes a user DJ and returns if you are a DJ',
+		super_description: '**DJ** makes a user DJ and returns if you are a DJ',
+		example: '&DJ',
+		args: 'member_id | true/false',
+		get: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+		): boolean | string => {
+			return member_object ? member_object.dj : 'couldn\'t fetch member';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
+		): number => {
+			const portal_channel = value.substr(0, value.indexOf('|')).trim();
+			const portal_category = value.substr(value.indexOf('|') + 1).trim();
+
+			console.log('portal_channel :>> ', portal_channel);
+			console.log('portal_category :>> ', portal_category);
+
+			if (portal_category && portal_category) {
+				const member_object_give = guild_object.member_list.find(m => m.id === portal_channel);
+
+				if (member_object_give) {
+					if (portal_category === 'true') {
+						member_object_give.dj = true;
+						return 1;
+					}
+					else if (portal_category === 'false') {
+						member_object_give.dj = false;
+						return 1;
+					}
+				} else {
+					return -10;
+				}
+			}
+			return -9;
+		},
+		auth: 'admin'
 	},
 	{
 		name: 'locale_guild',
@@ -156,13 +198,13 @@ const attributes: InterfaceBlueprint[] = [
 		args: 'en/gr/de',
 		get: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): string => {
 			return guild_object.locale;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (locales.includes(value)) {
 				guild_object.locale = String(value);
@@ -172,7 +214,7 @@ const attributes: InterfaceBlueprint[] = [
 				return -5;
 			}
 		},
-		auth: 'admin',
+		auth: 'admin'
 	},
 	{
 		name: 'locale_portal',
@@ -181,13 +223,14 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&locale_portal',
 		args: 'en/gr/de',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): string => {
 			return portal_object.locale;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (locales.includes(value)) {
 				portal_object.locale = String(value);
@@ -197,7 +240,7 @@ const attributes: InterfaceBlueprint[] = [
 				return -5;
 			}
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'locale',
@@ -206,13 +249,14 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&locale',
 		args: 'en/gr/de',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): string => {
 			return voice_object.locale;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (locales.includes(value)) {
 				voice_object.locale = String(value);
@@ -222,7 +266,7 @@ const attributes: InterfaceBlueprint[] = [
 				return -5;
 			}
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'position',
@@ -231,13 +275,14 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&position',
 		args: '!position of channel',
 		get: (
-			voice_channel: VoiceChannel
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): number => {
 			return voice_channel.position;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			voice_channel.edit({ position: Number(value) })
 				.then(channel => console.log(
@@ -245,7 +290,7 @@ const attributes: InterfaceBlueprint[] = [
 				.catch(console.error);
 			return 1;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'regex_portal',
@@ -254,18 +299,19 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&regex_portal',
 		args: '!regex',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): string => {
 			return portal_object.regex_portal;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			portal_object.regex_portal = value;
 			return 1;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'regex_voice',
@@ -274,18 +320,72 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&regex_voice',
 		args: '!regex',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): string => {
 			return portal_object.regex_voice;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			portal_object.regex_voice = value;
 			return 1;
 		},
-		auth: 'portal',
+		auth: 'portal'
+	},
+	{
+		name: 'regex_overwrite',
+		description: 'returns/sets your personal voice channel regex',
+		super_description: '**regex_overwrite**, returns/sets your personal voice channel regex',
+		example: '&regex_overwrite',
+		args: '!true/false',
+		get: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+		): boolean => {
+			return portal_object.regex_overwrite;
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
+		): number => {
+			if (value === 'true') {
+				portal_object.regex_overwrite = true;
+				return 1;
+			}
+			else if (value === 'false') {
+				portal_object.regex_overwrite = false;
+				return 1;
+			}
+			return -7;
+		},
+		auth: 'voice'
+	},
+	{
+		name: 'regex_personal',
+		description: 'returns/sets your personal voice channel regex',
+		super_description: '**regex_personal**, returns/sets your personal voice channel regex',
+		example: '&regex_personal',
+		args: '!regex_personal',
+		get: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+		): string => {
+			return member_object && member_object.regex ? member_object.regex : 'not set';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
+		): number => {
+			if (member_object) {
+				member_object.regex = value;
+				return 1;
+			} else {
+				return -8;
+			}
+		},
+		auth: 'admin'
 	},
 	{
 		name: 'regex',
@@ -294,18 +394,19 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&regex',
 		args: '!regex',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): string => {
 			return voice_object.regex;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: string
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			voice_object.regex = value;
 			return 1;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'user_limit_portal',
@@ -328,7 +429,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -6;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'user_limit',
@@ -337,7 +438,8 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&user_limit',
 		args: '!number of maximum members (0 is infinite)',
 		get: (
-			voice_channel: VoiceChannel
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): number => {
 			return voice_channel.userLimit;
 		},
@@ -399,7 +501,9 @@ export function get_attribute_help(): MessageEmbed[] {
 	});
 };
 
-export function get_attribute_help_super(candidate: string): MessageEmbed | boolean {
+export function get_attribute_help_super(
+	candidate: string
+): MessageEmbed | boolean {
 	for (let i = 0; i < attributes.length; i++) {
 		const attr = attributes[i];
 		if (attr.name === candidate) {
@@ -426,12 +530,12 @@ export function get_attribute_help_super(candidate: string): MessageEmbed | bool
 };
 
 export function get_attribute(
-	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-	portal_object: PortalChannelPrtl, guild_object: GuildPrtl, candidate: string
+	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+	guild_object: GuildPrtl, candidate: string, member_object: MemberPrtl | undefined | undefined
 ): string | number | boolean {
 	for (let l = 0; l < attributes.length; l++) {
 		if (candidate === attributes[l].name) {
-			return attributes[l].get(voice_channel, voice_object, portal_object, guild_object);
+			return attributes[l].get(voice_channel, voice_object, portal_object, guild_object, member_object);
 		}
 	}
 	return -1;
@@ -445,29 +549,23 @@ export function set_attribute(
 		if (candidate === attributes[l].name) {
 			switch (attributes[l].auth) {
 				case 'admin':
-					if (
-						!member.hasPermission('ADMINISTRATOR') &&
-						!guild_object?.member_list.find(m => m.id === member.id)?.admin &&
-						!guild_object?.auth_role.some(ar => member.roles.cache.some(rl => rl.id === ar))
-					) {
+					if (!is_authorised(guild_object, member))
 						return -2;
-					}
 					break;
 				case 'portal':
-					if (portal_object.creator_id !== member.id) {
+					if (portal_object.creator_id !== member.id)
 						return -3;
-					}
 					break;
 				case 'voice':
-					if (voice_object.creator_id !== member.id) {
+					if (voice_object.creator_id !== member.id)
 						return -4;
-					}
 					break;
 				default:
 					break;
 			}
 
-			return attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value);
+			const member_object = guild_object.member_list.find(m => m.id === member.id);
+			return attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value, member_object);
 		}
 	}
 	return -1;

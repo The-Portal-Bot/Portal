@@ -11,24 +11,19 @@ module.exports = async (
 ) => {
 	return new Promise((resolve) => {
 		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
+		if (!guild_object)
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
+		if (!message.guild)
 			return resolve({ result: true, value: 'guild could not be fetched' });
-		}
-		if (!message.member) {
+		if (!message.member)
 			return resolve({ result: true, value: 'member could not be fetched' });
-		}
 
-		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
+		if (message.member.voice.channel === undefined || message.member.voice.channel === null)
 			return resolve({ result: false, value: 'you must be in a channel handled by Portal' });
-		}
-		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
+		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list))
 			return resolve({ result: false, value: 'the channel you are in is not handled by Portal' });
-		}
 
-		if (args.length === 2) {
+		if (args.length >= 2) {
 			guild_object.portal_list.some(p => {
 				p.voice_list.some(v => {
 					if (v.id === message.member?.voice.channel?.id) {
@@ -38,7 +33,7 @@ module.exports = async (
 
 						const return_value = set_attribute(
 							message.member.voice.channel, v, p,
-							guild_object, args[0], value, message.member,
+							guild_object, args[0], value, message.member
 						);
 
 						switch (return_value) {
@@ -81,6 +76,21 @@ module.exports = async (
 								return resolve({
 									result: false,
 									value: `${args[0]} can only be true or false`
+								});
+							case -8:
+								return resolve({
+									result: false,
+									value: `could not find member`
+								});
+							case -9:
+								return resolve({
+									result: false,
+									value: `must be member_id | true/false`
+								});
+							case -10:
+								return resolve({
+									result: false,
+									value: `could not find member`
 								});
 							default:
 								return resolve({

@@ -1,6 +1,7 @@
 # [Portal](https://github.com/keybraker/portal-discord-bot) 
 
 A fully fledged and feature rich bot for Discord <img src="https://github.com/keybraker/portal-discord-bot/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
+<br>
 * Voice channels on demand (with auto-name update)
 * Assignes and strips roles from users with a single reaction press
 * Creates temporary "focus" channels for private conversations
@@ -8,6 +9,7 @@ A fully fledged and feature rich bot for Discord <img src="https://github.com/ke
 * Portal will keep you up to date, without the need to look
 * Get the latest on the corona virus and Weather
 * Music / Spotify / Announcement / URL-only channels
+<br>
 
 ***
 
@@ -17,7 +19,8 @@ A fully fledged and feature rich bot for Discord <img src="https://github.com/ke
 4. [Add to Discord](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#add-to-discord)
 5. [Self Hosting](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#self-hosting)
 6. [Release Hisrtory](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#release-history)
-7. [Acknowledgements](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#acknowledgements)
+7. [Contributing](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#contributing)
+8. [Acknowledgements](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#acknowledgements)
   
 ## Commands
 
@@ -79,28 +82,25 @@ There are four types of data _(used by run command and regex attributes)_:
 
 ### Prerequisites
 
-1. Install npm 14
-```bash
-sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
-```
+1. Install npm ^6.x ![npm](https://img.shields.io/badge/npm-6.14.10-blue)
+   
+        $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
 
-2. Install nodejs
-```bash
-sudo apt -y install nodejs
-```
+2. Install nodejs ^14.x ![node](https://img.shields.io/badge/node-14.15.4-blue)
+   
+        $ sudo apt -y install nodejs
+
+> make sure you have version 14.x or higher with `node  -v`
 
 ### Build
 
 1. Open a terminal windows and clone Portal
-```bash
-git clone https://github.com/keybraker/portal.git && cd portal
-```
+   
+        $ git clone https://github.com/keybraker/portal.git && cd portal
 
-2. Install node packages
-```bash
-npm install
-```
-> make sure you have version 14.x.x or higher with `node  -v`
+2. Install node packages ![discord.js](https://img.shields.io/badge/discord.js-12.5.1-blue)
+   
+        $ npm install
 
 ### Setup and Run
 
@@ -111,7 +111,7 @@ npm install
     "prefix": "./",
     "database_json": "src/database/guild_list.json",
     "owner_id": "add-your-id-(optional)",
-    "portal_id": "add-bots-id-(optional)"
+    "portal_id": "add-bots-id-(optional)",
     "api_keys": {
         "OpenWeatherMap": "add-open-weather-map-api-key",
         "covid_193": "add-covid-193-api-key",
@@ -127,21 +127,21 @@ npm install
 ```
 
 2. Run Portal
-```bash
-npm start
-```
+
+        $ npm start
+
+## Contributing
+
+Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal-discord-bot/Contributing.md)
 
 ## Release History
 
-| Version | Date       | Argument     |
-| :------ | :--------- | :----------- |
-| 0.5.0   | 08-01-2021 | _Typescript_ |
-| 0.2.1   | 16-06-2020 | _Javascript_ |
-| 0.1.0   | 18-05-2020 | _Beta_       |
-| 0.0.1   | 05-05-2020 | _Alpha_      |
-
-![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/Node.js%20CI/badge.svg) ![npm](https://img.shields.io/badge/npm-6.14.10-blue)
-![node](https://img.shields.io/badge/node-14.15.4-blue) ![node](https://img.shields.io/badge/discord.js-12.5.1-blue)
+| Version | Date       | Argument                                                                                                             |
+| :------ | :--------- | :------------------------------------------------------------------------------------------------------------------- |
+| 0.5.0   | 08-01-2021 | _Typescript_ ![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/compile%20test%20run/badge.svg) |
+| 0.2.1   | 16-06-2020 | _Javascript_                                                                                                         |
+| 0.1.0   | 18-05-2020 | _Beta_                                                                                                               |
+| 0.0.1   | 05-05-2020 | _Alpha_                                                                                                              |
 
 ## Acknowledgements
 
@@ -156,4 +156,4 @@ npm start
 > 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
 > 3. Runs on nodejs 14.x
 
-Copyrights © Keybraker 2020 [Portal](https://github.com/keybraker/portal-discord-bot), All rights reserved
+Copyrights © Keybraker 2020-2021 Portal, All rights reserved
