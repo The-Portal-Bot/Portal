@@ -1,6 +1,6 @@
-# [Portal](https://github.com/keybraker/portal-discord-bot) 
+# [Portal](https://github.com/keybraker/portal) 
 
-A fully fledged and feature rich bot for Discord <img src="https://github.com/keybraker/portal-discord-bot/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
+A fully fledged and feature rich bot for Discord <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
 <br>
 * Voice channels on demand (with auto-name update)
 * Assignes and strips roles from users with a single reaction press
@@ -13,14 +13,14 @@ A fully fledged and feature rich bot for Discord <img src="https://github.com/ke
 
 ***
 
-1. [Portal](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#portal)
-2. [Commands](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#commands)
-3. [Regex Interpreter](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#regex-interpreter)
-4. [Add to Discord](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#add-to-discord)
-5. [Self Hosting](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#self-hosting)
-6. [Release Hisrtory](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#release-history)
-7. [Contributing](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#contributing)
-8. [Acknowledgements](https://github.com/keybraker/portal-discord-bot/blob/master/docs/README.md#acknowledgements)
+1. [Portal](https://github.com/keybraker/portal/blob/master/docs/README.md#portal)
+2. [Commands](https://github.com/keybraker/portal/blob/master/docs/README.md#commands)
+3. [Regex Interpreter](https://github.com/keybraker/portal/blob/master/docs/README.md#regex-interpreter)
+4. [Add to Discord](https://github.com/keybraker/portal/blob/master/docs/README.md#add-to-discord)
+5. [Self Hosting](https://github.com/keybraker/portal/blob/master/docs/README.md#self-hosting)
+6. [Release Hisrtory](https://github.com/keybraker/portal/blob/master/docs/README.md#release-history)
+7. [Contributing](https://github.com/keybraker/portal/blob/master/docs/README.md#contributing)
+8. [Acknowledgements](https://github.com/keybraker/portal/blob/master/docs/README.md#acknowledgements)
   
 ## Commands
 
@@ -71,10 +71,10 @@ A fully fledged and feature rich bot for Discord <img src="https://github.com/ke
 ## Regex Interpreter
 
 There are four types of data _(used by run command and regex attributes)_:
-1. [Variables](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Variables.md), are immutable and live data that return information.
-2. [Attributes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance. 
-3. [Pipes](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome. 
-4. [Structures](https://github.com/keybraker/portal-discord-bot/blob/master/docs/Structures.md), are conditional flow manipulators.
+1. [Variables](https://github.com/keybraker/portal/blob/master/docs/Variables.md), are immutable and live data that return information.
+2. [Attributes](https://github.com/keybraker/portal/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance. 
+3. [Pipes](https://github.com/keybraker/portal/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome. 
+4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
 
 ## Add to Discord
 
@@ -82,11 +82,11 @@ There are four types of data _(used by run command and regex attributes)_:
 
 ### Prerequisites
 
-1. Install npm ^6.x ![npm](https://img.shields.io/badge/npm-6.14.10-blue)
+1. Install npm ^6.x
    
         $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
 
-2. Install nodejs ^14.x ![node](https://img.shields.io/badge/node-14.15.4-blue)
+2. Install nodejs ^14.x
    
         $ sudo apt -y install nodejs
 
@@ -98,7 +98,7 @@ There are four types of data _(used by run command and regex attributes)_:
    
         $ git clone https://github.com/keybraker/portal.git && cd portal
 
-2. Install node packages ![discord.js](https://img.shields.io/badge/discord.js-12.5.1-blue)
+2. Install node packages
    
         $ npm install
 
@@ -132,16 +132,16 @@ There are four types of data _(used by run command and regex attributes)_:
 
 ## Contributing
 
-Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal-discord-bot/Contributing.md)
+Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/Contributing.md)
 
 ## Release History
 
-| Version | Date       | Argument                                                                                                             |
-| :------ | :--------- | :------------------------------------------------------------------------------------------------------------------- |
-| 0.5.0   | 08-01-2021 | _Typescript_ ![Node.js CI](https://github.com/keybraker/portal-discord-bot/workflows/compile%20test%20run/badge.svg) |
-| 0.2.1   | 16-06-2020 | _Javascript_                                                                                                         |
-| 0.1.0   | 18-05-2020 | _Beta_                                                                                                               |
-| 0.0.1   | 05-05-2020 | _Alpha_                                                                                                              |
+| Version | Date       | Argument      |
+| :------ | :--------- | :------------ |
+| 0.5.0   | 08-01-2021 | _Typescript_  |
+| 0.2.1   | 16-06-2020 | _Javascript_  |
+| 0.1.0   | 18-05-2020 | _Beta_        |
+| 0.0.1   | 05-05-2020 | _Alpha_       |
 
 ## Acknowledgements
 
@@ -157,3 +157,5 @@ Portal is an open source project you can contribute too. There are guidelines fo
 > 3. Runs on nodejs 14.x
 
 Copyrights © Keybraker 2020-2021 Portal, All rights reserved
+
+![Node.js CI](https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg) ![discord.js](https://img.shields.io/badge/discord.js-12.5.1-blue) ![npm](https://img.shields.io/badge/npm-6.14.10-blue) ![node](https://img.shields.io/badge/node-14.15.4-blue)
