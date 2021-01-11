@@ -1,7 +1,7 @@
 import { GuildMember, VoiceChannel, Activity } from "discord.js";
 
-import games from '../assets/jsons/game_list.json';
-import programs from '../assets/jsons/program_list.json';
+import games from '../assets/jsons/GameNames.json';
+import programs from '../assets/jsons/ProgramNames.json';
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 
 function status_aliases(activities: Activity[], locale: string): string[] {

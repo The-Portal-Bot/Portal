@@ -6,7 +6,7 @@ import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
-import { Rank } from "../types/interfaces/InterfacesPrtl";
+import { Rank, ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
 	const guild = client.guilds.cache.find((cached_guild: Guild) => cached_guild.id === guild_id);
@@ -46,16 +46,17 @@ function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: Client)
 
 module.exports = async (
 	args: { client: Client, guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
-) => {
-	// Inserting guild to portal's guild list if it does not exist
-	if (!included_in_portal_guilds(args.guild.id, args.guild_list))
-		insert_guild(args.guild.id, args.guild_list, args.client);
+): Promise<ReturnPormise> => {
+	return new Promise((resolve) => {
+		// Inserting guild to portal's guild list if it does not exist
+		if (!included_in_portal_guilds(args.guild.id, args.guild_list))
+			insert_guild(args.guild.id, args.guild_list, args.client);
 
-	update_portal_managed_guilds( args.portal_managed_guilds_path, args.guild_list);
+		update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
 
-	return {
-		result: true,
-		value: `Portal joined guild ${args.guild.name} [${args.guild.id}] ` +
-			`which has ${args.guild.memberCount} members`,
-	};
+		return resolve({
+			result: true,
+			value: `portal joined guild ${args.guild.name} [${args.guild.id}]`
+		});
+	});
 };

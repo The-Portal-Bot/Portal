@@ -4,14 +4,14 @@ import {
 	PartialMessage, PartialUser, Presence, TextChannel, User, VoiceState
 } from "discord.js";
 import { readFileSync } from "jsonfile";
-import cooldown_list from './assets/jsons/cooldown_list.json';
+import CommandCooldowns from './assets/jsons/CommandCooldowns.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
 import {
 	guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed,
 	update_portal_managed_guilds
 } from './libraries/helpOps';
-import { client_talk } from './libraries/localizationOps';
+import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
@@ -20,9 +20,9 @@ import {
 	ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise
 } from "./types/interfaces/InterfacesPrtl";
 
-const command_options_guild: CommandOptions[] = cooldown_list.guild;
-const command_options_member: CommandOptions[] = cooldown_list.member;
-const command_options_none: CommandOptions[] = cooldown_list.none;
+const command_options_guild: CommandOptions[] = CommandCooldowns.guild;
+const command_options_member: CommandOptions[] = CommandCooldowns.member;
+const command_options_none: CommandOptions[] = CommandCooldowns.none;
 
 const portal_managed_guilds_path = config.database_json;
 
@@ -191,10 +191,11 @@ client.on('message', async (message: Message) => {
 	ranking_system(message);
 
 	// word check
-	if (isProfane(message.content)) {
+	const profanities = isProfane(message.content);
+	if (profanities.length > 0) {
 		message.react('🚩');
 		message.author
-			.send("try not to use profanities")
+			.send(`try not to use profanities (${profanities.join(',')})`)
 			.catch(console.error);
 	}
 
@@ -238,7 +239,7 @@ client.on('message', async (message: Message) => {
 	const guild_obejct = guildPrtl_to_object(guild_list, message.guild.id);
 	if (!guild_obejct) {
 		message_reply(false, message.channel, message, message.author,
-			'this guild is not in database, please contact portal support', guild_list, client);
+			'server is not in database, please contact portal support', guild_list, client);
 		return;
 	}
 
@@ -252,7 +253,7 @@ client.on('message', async (message: Message) => {
 
 	if (command_options.premium && !guild_obejct.premium) {
 		message_reply(false, message.channel, message, message.author,
-			'this server is not premium', guild_list, client);
+			'server is not premium', guild_list, client);
 		return;
 	}
 
@@ -328,30 +329,30 @@ function command_loader(
 
 function event_loader(event: string, args: any): void {
 	// Ignore other bots and also itself ('botception')
-	console.log(`event emitted: ${event}`);
+	console.log(`├── event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
-			if (response !== null && response !== undefined) {
-				if (event === 'messageReactionAdd' && response) {
-					// const messageReaction = <MessageReaction>args.messageReaction;
-					// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
+			if (event === 'messageReactionAdd' && response) {
+				// const messageReaction = <MessageReaction>args.messageReaction;
+				// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
 
-					// if (guild_object) {
-					// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
-					// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-					// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
-					// 		// auto na trexei mono otan einai music reaction
-					// 		music_channel
-					// 			.send(`${args.user}, ${response.value}`)
-					// 			.then(msg => { msg.delete({ timeout: 5000 }); })
-					// 			.catch(error => console.log(error));
-					// 	}
-					// }
-				}
-				else {
-					console.log(response.result, response.value);
-				}
+				// if (guild_object) {
+				// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
+				// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+				// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
+				// 		// auto na trexei mono otan einai music reaction
+				// 		music_channel
+				// 			.send(`${args.user}, ${response.value}`)
+				// 			.then(msg => { msg.delete({ timeout: 5000 }); })
+				// 			.catch(error => console.log(error));
+				// 	}
+				// }
 			}
+			const colour = response.result ? '\x1b[32m' : '\x1b[31m';
+			const reset = '\x1b[0m';
+			const value_arr = response.value.split('\n');
+			const length = value_arr.length;
+			console.log(value_arr.map((s, i) => (length - 1 === i) ? `${colour}└── ${s}${reset}` : `${colour}├── ${s}${reset}`).join('\n'));
 		});
 };
 

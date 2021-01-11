@@ -4,7 +4,7 @@ import { VideoSearchResult } from "yt-search";
 import { GiveRole, GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
-import { client_talk, client_write } from "./localizationOps";
+import { client_talk, client_write } from "./localisationOps";
 import { writeFileSync } from "jsonfile";
 
 export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): GuildPrtl | undefined {

@@ -1,31 +1,31 @@
 import { Client, Message, User } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
-import { LocalizationOption } from "../types/interfaces/InterfacesPrtl";
+import { LocalisationOption } from "../types/interfaces/InterfacesPrtl";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
 const type_of_action = ['user_connected', 'user_disconnected'];
-export const portal: LocalizationOption[] = [
+
+export const portal: LocalisationOption[] = [
 	{
 		name: 'join',
 		lang: {
-			gr: () => { return 'Γειά σας, το Πόρταλ είναι εδώ'; },
-			en: () => { return 'Cheers love, Portal\'s here'; },
-			de: () => { return 'Hallo, Portal ist da'; }
+			gr: () => { return '> Γειά σας, το Πόρταλ είναι εδώ'; },
+			en: () => { return '> Cheers love, Portal\'s here'; },
+			de: () => { return '> Hallo, Portal ist da'; }
 		}
 	},
 	{
 		name: 'leave',
 		lang: {
-			gr: () => { return 'Αποχαιρετώ, καλή συνέχεια σε όλους'; },
-			en: () => { return 'Goodbye everyone'; },
-			de: () => { return 'Auf Wiedersehen alle'; }
+			gr: () => { return '> Αποχαιρετώ, καλή συνέχεια σε όλους'; },
+			en: () => { return '> Goodbye everyone'; },
+			de: () => { return '> Auf Wiedersehen alle'; }
 		}
 	},
 	{
 		name: 'announce',
 		lang: {
-			gr: (user: User) => { return `O ${user} έκανε μια ανακοίνωση`; },
+			gr: (user: User) => { return `o ${user} έκανε μια ανακοίνωση`; },
 			en: (user: User) => { return `${user} made an announcement`; },
 			de: (user: User) => { return `${user} hat eine Ankündigung gemacht`; }
 		}
@@ -33,7 +33,7 @@ export const portal: LocalizationOption[] = [
 	{
 		name: 'spotify',
 		lang: {
-			gr: (user: User) => { return `O ${user} έβαλε νέο κομμάτι`; },
+			gr: (user: User) => { return `o ${user} έβαλε νέο κομμάτι`; },
 			en: (user: User) => { return `${user} listens to a new song`; },
 			de: (user: User) => { return `${user} hört sich ein neues Lied an`; }
 		}
@@ -41,7 +41,7 @@ export const portal: LocalizationOption[] = [
 	{
 		name: 'url',
 		lang: {
-			gr: (user: User) => { return `O ${user} ανέβασε έναν νέο σύνδεσμο`; },
+			gr: (user: User) => { return `o ${user} ανέβασε έναν νέο σύνδεσμο`; },
 			en: (user: User) => { return `${user} sent a new link`; },
 			de: (user: User) => { return `${user} hat einen neuen Link geschickt`; }
 		}
@@ -65,35 +65,33 @@ export const portal: LocalizationOption[] = [
 	{
 		name: 'user_connected',
 		lang: {
-			gr: (user: User) => { return `Ο χρήστης ${user} συνδέθηκε στο κανάλι`; },
-			en: (user: User) => { return `User ${user} connected to the channel`; },
-			de: (user: User) => { return `Mitglied ${user} hat sich zum Kanal verbunden`; }
+			gr: (user: User) => { return `ο χρήστης ${user} συνδέθηκε στο κανάλι`; },
+			en: (user: User) => { return `user ${user} connected to the channel`; },
+			de: (user: User) => { return `mitglied ${user} hat sich zum Kanal verbunden`; }
 		}
 	},
 	{
 		name: 'user_disconnected',
 		lang: {
-			gr: (user: User) => { return `Ο χρήστης ${user} αποχώρησε από το κανάλι`; },
-			en: (user: User) => { return `User ${user} disconnected from the channel`; },
-			de: (user: User) => { return `Mitglied ${user} hat sich vom Kanal unverbunden`; }
+			gr: (user: User) => { return `ο χρήστης ${user} αποχώρησε από το κανάλι`; },
+			en: (user: User) => { return `user ${user} disconnected from the channel`; },
+			de: (user: User) => { return `mitglied ${user} hat sich vom Kanal unverbunden`; }
 		}
 	}
 ]
-export const console_text: LocalizationOption[] = [
+
+export const console_text: LocalisationOption[] = [
 	{
 		name: 'ready',
 		lang: {
-			gr: (args: any) => {
-				return `Το μποτ ξεκίνησε, με ${args.a} χρήστες, μέσα σε ` +
-					`${args.b} κανάλια σε ${args.c} συντεχνίες`;
+			gr: (member_length: number, channel_length: number, guild_length: number) => {
+				return `το μποτ ξεκίνησε, με ${member_length} χρήστες, μέσα σε ${channel_length} κανάλια σε ${guild_length} συντεχνίες`;
 			},
-			en: (args: any) => {
-				return `Bot has started, with ${args.a} users, ` +
-					`in ${args.b} channels from ${args.c} guilds`;
+			en: (member_length: number, channel_length: number, guild_length: number) => {
+				return `bot has started, with ${member_length} users, in ${channel_length} channels from ${guild_length} guilds`;
 			},
-			de: (args: any) => {
-				return `Bot hat ${args.a} Mitglieder in ${args.b} ` +
-					`Kanälen von ${args.c} Gilden gestartet`;
+			de: (member_length: number, channel_length: number, guild_length: number) => {
+				return `bot hat ${member_length} Mitglieder in ${channel_length} Kanälen von ${guild_length} Gilden gestartet`;
 			}
 		}
 
@@ -104,14 +102,14 @@ export const console_text: LocalizationOption[] = [
 
 			gr: (args: any) => { return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε'; },
 			en: (args: any) => { return '> Guild JSON file has been updated'; },
-			de: (args: any) => { return '> Die JSON Datei der Gilde wurde aktualisiert'; },
+			de: (args: any) => { return '> Die JSON Datei der Gilde wurde aktualisiert'; }
 		}
 	},
 	{
 		name: 'presence_controlled_away',
 		lang: {
 			gr: (args: any) => {
-				return `Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος ` +
+				return `ο χρήστης ${args.newPresence.member.displayName} είναι μέλος ` +
 					`μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ` +
 					`(${args.newPresence.guild.name})`;
 			},
@@ -128,25 +126,24 @@ export const console_text: LocalizationOption[] = [
 	{
 		name: 'presence_controlled',
 		lang: {
-			gr: (args: any) => {
-				return `Ο χρήστης ${args.a} έχει αλλάξει κατάσταση, ` +
-					`και βρίσκεται στην ελεγχόμενη συντεχνία (${args.b})`;
-			},
-			en: (args: any) => {
-				return `${args.a} has changed presence, ` +
-					`in controlled server (${args.b})`;
-			},
-			de: (args: any) => {
-				return `${args.a} has changed presence, ` +
-					`in controlled server (${args.b})`;
-			}
+			gr: (displayName: string, name: string) => { return `ο χρήστης ${displayName} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${name})`; },
+			en: (displayName: string, name: string) => { return `${displayName} has changed presence, in controlled server (${name})`; },
+			de: (displayName: string, name: string) => { return `${displayName} has changed presence, in controlled server (${name})`; }
+		}
+	},
+	{
+		name: 'could_not_fetch_data',
+		lang: {
+			gr: (data: string, source: string) => { return `δεν κατάφερα να πάρω το ${data} από το ${source}`; },
+			en: (data: string, source: string) => { return `could not fetch ${data} from ${source}`; },
+			de: (data: string, source: string) => { return `ich konnte ${data} nicht vom ${source} holen`; }
 		}
 	}
 ]
 
 export function client_talk(client: Client, guild_list: GuildPrtl[], context: string): boolean {
 	const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id);
-	
+
 	if (voiceConnection) {
 		return guild_list.some(g =>
 			g.portal_list.some(p =>
@@ -174,6 +171,37 @@ export function client_talk(client: Client, guild_list: GuildPrtl[], context: st
 	}
 
 	return false;
+};
+
+export function get_function(output: string, language: string, context: string): any {
+	let func: any = null;
+	if (output === 'portal') {
+		portal.some(ct => {
+			if (ct.name === context) {
+				if (language === 'gr') {
+					func = ct.lang.gr;
+				} else if (language === 'en') {
+					func = ct.lang.en;
+				} else if (language === 'de') {
+					func = ct.lang.de;
+				}
+			}
+		});
+	} else if (output === 'console') {
+		console_text.some(ct => {
+			if (ct.name === context) {
+				if (language === 'gr') {
+					func = ct.lang.gr;
+				} else if (language === 'en') {
+					func = ct.lang.en;
+				} else if (language === 'de') {
+					func = ct.lang.de;
+				}
+			}
+		});
+	}
+
+	return func;
 };
 
 export function client_write(message: Message, guild_list: GuildPrtl[], context: string): string {
@@ -210,12 +238,8 @@ export function client_write(message: Message, guild_list: GuildPrtl[], context:
 
 export function client_log(
 	message: Message | null, guild_list: GuildPrtl[], context: string, args: any): string {
-	if (message === null || message.member === null) {
-		return 'there was an error';
-	}
-	if (message.member.voice === undefined || message.member.voice === null) {
-		return 'there was an error';
-	}
+	if (message === null || message.member === null) return 'there was an error';
+	if (message.member.voice === undefined || message.member.voice === null) return 'there was an error';
 
 	guild_list.some(g =>
 		g.portal_list.some(p =>

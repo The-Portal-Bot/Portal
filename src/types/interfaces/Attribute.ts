@@ -166,9 +166,6 @@ const attributes: InterfaceBlueprint[] = [
 			const portal_channel = value.substr(0, value.indexOf('|')).trim();
 			const portal_category = value.substr(value.indexOf('|') + 1).trim();
 
-			console.log('portal_channel :>> ', portal_channel);
-			console.log('portal_category :>> ', portal_category);
-
 			if (portal_category && portal_category) {
 				const member_object_give = guild_object.member_list.find(m => m.id === portal_channel);
 

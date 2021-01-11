@@ -1,7 +1,7 @@
 import { Client, VoiceChannel, VoiceConnection, VoiceState, TextChannel, Message } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guildOps";
 import { update_portal_managed_guilds } from "../libraries/helpOps";
-import { client_talk } from "../libraries/localizationOps";
+import { client_talk } from "../libraries/localisationOps";
 import { stop } from "../libraries/musicOps";
 import { update_timestamp } from "../libraries/userOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
@@ -80,7 +80,7 @@ function from_existing(
 	let report_message = '';
 
 	if (new_channel === null) {
-		report_message += 'existing->null\n';
+		report_message += 'existing->null';
 
 		// user left voice channel
 		if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
@@ -118,7 +118,7 @@ function from_existing(
 				update_timestamp(newState, guild_list); // points from voice creation
 
 				report_message += '->dest: voice_list\n';
-				report_message += 'has been handled before\n';
+				report_message += 'has been handled before';
 				generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 			}
 		}
@@ -128,7 +128,7 @@ function from_existing(
 
 			if (included_in_portal_list(new_channel.id, guild_object.portal_list)) { // moved from voice to portal
 
-				report_message += '->dest: portal_list\n';
+				report_message += '->dest: portal_list';
 
 				if (old_channel.members.size === 0) {
 					delete_channel(old_channel, guild_list)
@@ -215,7 +215,7 @@ function from_existing(
 
 			// Joined portal channel
 			if (included_in_portal_list(new_channel.id, guild_object.portal_list)) {
-				report_message += '->dest: portal_list\n';
+				report_message += '->dest: portal_list';
 				const portal_object = guild_object.portal_list.find(p => p.id === new_channel.id);
 				if (!portal_object) return { result: false, value: 'error with data' };
 
@@ -254,10 +254,10 @@ module.exports = async (
 		if (old_channel !== null && old_channel !== undefined) {
 			if (new_channel !== null && new_channel !== undefined) {
 				if (new_channel.id === old_channel.id) {
-					return {
+					return resolve({
 						result: true,
 						value: 'changed voice state but remains in the same channel'
-					};
+					});
 				}
 			}
 		}
@@ -283,7 +283,7 @@ module.exports = async (
 			: from_existing(old_channel, new_channel, args.client, args.guild_list, guild_object, args.newState);
 
 		if (!execution.result) return resolve(execution);
-		report_message += `${execution.value}\n`;
+		report_message += `${execution.value}`;
 
 		update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
 
