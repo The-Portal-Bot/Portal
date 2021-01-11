@@ -329,7 +329,7 @@ function command_loader(
 
 function event_loader(event: string, args: any): void {
 	// Ignore other bots and also itself ('botception')
-	console.log(`> event-${event}`);
+	console.log(`├── event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
 			if (event === 'messageReactionAdd' && response) {

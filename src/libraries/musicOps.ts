@@ -299,7 +299,7 @@ export async function skip(
 					return resolve({ result: false, value: 'music list is empty' });
 				}
 
-				return resolve({ result: false, value: 'song has been skipped' });
+				return resolve({ result: true, value: 'song has been skipped' });
 			}
 			else {
 				return resolve({ result: false, value: 'nothing playing write now' });
