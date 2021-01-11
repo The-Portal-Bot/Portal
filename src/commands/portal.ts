@@ -32,7 +32,7 @@ module.exports = async (
 						if (message.member) {
 							guild_object.portal_list.push(new PortalChannelPrtl(
 								response.value, message.member.id, portal_channel, voice_regex,
-								[], false, 2, 0, 0, guild_object.locale, true, true, 0
+								[], false, 2, 0, 0, guild_object.locale, true, true, 0, false
 							));
 						} else {
 							return resolve({
@@ -60,7 +60,7 @@ module.exports = async (
 						if (message.member) {
 							guild_object.portal_list.push(new PortalChannelPrtl(
 								response.value, message.member.id, portal_channel, voice_regex,
-								[], false, 2, 0, 0, guild_object.locale, true, true, 0
+								[], false, 2, 0, 0, guild_object.locale, true, true, 0, false
 							));
 						} else {
 							return resolve({

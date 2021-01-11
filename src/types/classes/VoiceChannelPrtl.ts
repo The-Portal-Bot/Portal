@@ -8,7 +8,6 @@ export class VoiceChannelPrtl {
 	public locale: string;
 	public ann_announce: boolean;
 	public ann_user: boolean;
-	public regex_overwrite: boolean;
 
 	constructor(
 		id: string,
@@ -19,8 +18,7 @@ export class VoiceChannelPrtl {
 		refresh_rate: number,
 		locale: string,
 		ann_announce: boolean,
-		ann_user: boolean,
-		regex_overwrite: boolean
+		ann_user: boolean
 	) {
 		this.id = id;
 		this.creator_id = creator_id;
@@ -31,6 +29,5 @@ export class VoiceChannelPrtl {
 		this.locale = locale;
 		this.ann_announce = ann_announce;
 		this.ann_user = ann_user;
-		this.regex_overwrite = regex_overwrite;
 	}
 };

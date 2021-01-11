@@ -37,7 +37,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'ann_announce',
@@ -65,7 +65,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'ann_user_portal',
@@ -94,7 +94,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'ann_user',
@@ -122,7 +122,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -7;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'bitrate',
@@ -145,7 +145,7 @@ const attributes: InterfaceBlueprint[] = [
 				.catch(console.error);
 			return 1;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'locale_guild',
@@ -172,7 +172,7 @@ const attributes: InterfaceBlueprint[] = [
 				return -5;
 			}
 		},
-		auth: 'admin',
+		auth: 'admin'
 	},
 	{
 		name: 'locale_portal',
@@ -198,7 +198,7 @@ const attributes: InterfaceBlueprint[] = [
 				return -5;
 			}
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'locale',
@@ -224,7 +224,7 @@ const attributes: InterfaceBlueprint[] = [
 				return -5;
 			}
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'position',
@@ -248,7 +248,7 @@ const attributes: InterfaceBlueprint[] = [
 				.catch(console.error);
 			return 1;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'regex_portal',
@@ -269,7 +269,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object.regex_portal = value;
 			return 1;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'regex_voice',
@@ -290,7 +290,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object.regex_voice = value;
 			return 1;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'regex_overwrite',
@@ -302,25 +302,23 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
 			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
 		): boolean => {
-			return voice_object.regex_overwrite;
+			return portal_object.regex_overwrite;
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
-				voice_object.regex_overwrite = true;
-				console.log('voice_object.regex_overwrite :>> ', voice_object.regex_overwrite);
+				portal_object.regex_overwrite = true;
 				return 1;
 			}
 			else if (value === 'false') {
-				voice_object.regex_overwrite = false;
-				console.log('voice_object.regex_overwrite :>> ', voice_object.regex_overwrite);
+				portal_object.regex_overwrite = false;
 				return 1;
 			}
 			return -7;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'regex_personal',
@@ -331,11 +329,8 @@ const attributes: InterfaceBlueprint[] = [
 		get: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
 			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): string | null => {
-			if (member_object)
-				return member_object.regex;
-			else
-				return 'not set';
+		): string => {
+			return member_object && member_object.regex ? member_object.regex : 'not set';
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
@@ -348,7 +343,7 @@ const attributes: InterfaceBlueprint[] = [
 				return -8;
 			}
 		},
-		auth: 'admin',
+		auth: 'admin'
 	},
 	{
 		name: 'regex',
@@ -369,7 +364,7 @@ const attributes: InterfaceBlueprint[] = [
 			voice_object.regex = value;
 			return 1;
 		},
-		auth: 'voice',
+		auth: 'voice'
 	},
 	{
 		name: 'user_limit_portal',
@@ -392,7 +387,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 			return -6;
 		},
-		auth: 'portal',
+		auth: 'portal'
 	},
 	{
 		name: 'user_limit',
@@ -527,7 +522,8 @@ export function set_attribute(
 					break;
 			}
 
-			return attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value, member);
+			const member_object = guild_object.member_list.find(m => m.id === member.id);
+			return attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value, member_object);
 		}
 	}
 	return -1;

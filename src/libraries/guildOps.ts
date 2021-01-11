@@ -133,7 +133,8 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 					guild_object.locale,
 					true,
 					true,
-					0
+					0,
+					false
 				));
 				guild.channels
 					.create(portal_category, { type: 'category' })
@@ -160,7 +161,8 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 					guild_object.locale,
 					true,
 					true,
-					0
+					0,
+					false
 				));
 			})
 			.catch(console.error);
@@ -182,7 +184,8 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 					guild_object.locale,
 					true,
 					true,
-					0
+					0,
+					false
 				));
 			})
 			.catch(console.error);
@@ -208,7 +211,7 @@ export function create_voice_channel(
 					if (state.member) {
 						portal_object.voice_list.push(new VoiceChannelPrtl(
 							channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
-							portal_object.ann_announce, portal_object.ann_user, false
+							portal_object.ann_announce, portal_object.ann_user
 						));
 						state.member.voice.setChannel(channel);
 						return resolve({ result: true, value: `created channel and moved member to new voice` });
@@ -474,7 +477,7 @@ export function generate_channel_name(
 		p.voice_list.some(v => {
 			if (v.id === voice_channel.id) {
 				let regex = v.regex;
-				if (v.regex_overwrite) {
+				if (p.regex_overwrite) {
 					const member = voice_channel.members.find(m => m.id === v.creator_id);
 					if (member) {
 						const member_object = guild_object.member_list.find(m => m.id === member.id);
@@ -486,14 +489,7 @@ export function generate_channel_name(
 					}
 				}
 
-				const new_name = regex_interpreter(
-					regex,
-					voice_channel,
-					v,
-					portal_list,
-					guild_object,
-					guild,
-				);
+				const new_name = regex_interpreter(regex, voice_channel, v, portal_list, guild_object, guild);
 
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
