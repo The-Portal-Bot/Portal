@@ -254,10 +254,10 @@ module.exports = async (
 		if (old_channel !== null && old_channel !== undefined) {
 			if (new_channel !== null && new_channel !== undefined) {
 				if (new_channel.id === old_channel.id) {
-					return {
+					return resolve({
 						result: true,
 						value: 'changed voice state but remains in the same channel'
-					};
+					});
 				}
 			}
 		}

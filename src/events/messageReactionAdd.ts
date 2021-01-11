@@ -207,9 +207,9 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 
 module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User }
-) => {
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (args.user.bot) return resolve(false);
+		if (args.user.bot) return resolve({ result: false, value: 'not handling bot reactions' });
 
 		if (args.messageReaction.partial) {
 			try {
