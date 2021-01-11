@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import profane_word_list from '../assets/jsons/profane_word_list.json';
+import ProfaneWords from '../assets/jsons/ProfaneWords.json';
 import { Language } from '../types/interfaces/InterfacesPrtl';
 
-const profane_words: Language = <Language>profane_word_list;
+const profane_words: Language = <Language>ProfaneWords;
 
 /**
    * Determine if a string contains profane language.

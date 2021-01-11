@@ -4,7 +4,7 @@ import {
 	PartialMessage, PartialUser, Presence, TextChannel, User, VoiceState
 } from "discord.js";
 import { readFileSync } from "jsonfile";
-import cooldown_list from './assets/jsons/cooldown_list.json';
+import CommandCooldowns from './assets/jsons/CommandCooldowns.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
 import {
@@ -20,9 +20,9 @@ import {
 	ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise
 } from "./types/interfaces/InterfacesPrtl";
 
-const command_options_guild: CommandOptions[] = cooldown_list.guild;
-const command_options_member: CommandOptions[] = cooldown_list.member;
-const command_options_none: CommandOptions[] = cooldown_list.none;
+const command_options_guild: CommandOptions[] = CommandCooldowns.guild;
+const command_options_member: CommandOptions[] = CommandCooldowns.member;
+const command_options_none: CommandOptions[] = CommandCooldowns.none;
 
 const portal_managed_guilds_path = config.database_json;
 
@@ -239,7 +239,7 @@ client.on('message', async (message: Message) => {
 	const guild_obejct = guildPrtl_to_object(guild_list, message.guild.id);
 	if (!guild_obejct) {
 		message_reply(false, message.channel, message, message.author,
-			'σερωερ is not in database, please contact portal support', guild_list, client);
+			'server is not in database, please contact portal support', guild_list, client);
 		return;
 	}
 
