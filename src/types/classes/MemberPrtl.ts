@@ -5,6 +5,7 @@ export class MemberPrtl {
 	public tier: number;
 	public points: number;
 	public timestamp: Date | null;
+	public dj: boolean;
 	public admin: boolean;
 	public regex: string | null;
 
@@ -15,6 +16,7 @@ export class MemberPrtl {
 		tier: number,
 		points: number,
 		timestamp: Date | null,
+		dj: boolean,
 		admin: boolean,
 		regex: string | null
 	) {
@@ -24,6 +26,7 @@ export class MemberPrtl {
 		this.tier = tier;
 		this.points = points;
 		this.timestamp = timestamp;
+		this.dj = dj;
 		this.admin = admin;
 		this.regex = regex;
 	}

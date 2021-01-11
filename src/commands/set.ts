@@ -82,6 +82,16 @@ module.exports = async (
 									result: false,
 									value: `could not find member`
 								});
+							case -9:
+								return resolve({
+									result: false,
+									value: `must be member_id | true/false`
+								});
+							case -10:
+								return resolve({
+									result: false,
+									value: `could not find member`
+								});
 							default:
 								return resolve({
 									result: false,

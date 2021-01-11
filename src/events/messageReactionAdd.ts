@@ -69,6 +69,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 		if (!messageReaction.message.guild) return resolve({ result: false, value: 'could not fetch message\'s guild' });
 		const guild_object = guildPrtl_to_object(guild_list, messageReaction.message.guild.id);
 		if (!guild_object) return resolve({ result: false, value: 'could not find guild in guild_list' });
+		const member_object = guild_object.member_list.find(m => m.id === user.id);
 		if (!guild_object.music_data) return resolve({ result: false, value: 'guild has no music channel' });
 		if (guild_object.music_data.message_id !== messageReaction.message.id) return resolve({ result: false, value: 'message is not music player' });
 
@@ -124,17 +125,17 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 				}
 
 				const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-				if (!guild) return resolve({ result: false, value: `${votes}/${users / 2} (majority/admin/owner needed to stop)` });
+				if (!guild) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)` });
 				const member = guild.members.cache.find(m => m.id === user.id);
-				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (majority/admin/owner needed to stop)` });
+				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)` });
 
-				if (is_authorised(guild_object, member)) {
+				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return stop(messageReaction.message.guild.id, guild_list, messageReaction.message.guild)
 						.then(response => { guild_object.music_data.votes = []; return resolve(response) })
 						.catch(error => { return resolve({ result: false, value: error }) });
 				}
 
-				return resolve({ result: false, value: `${votes}/${users / 2} (majority/admin/owner needed to stop)` });
+				return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)` });
 			}
 			case '⏭': {
 				clear_user_reactions(client, guild_list, messageReaction, user);
@@ -152,17 +153,17 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 				}
 
 				const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-				if (!guild) return resolve({ result: false, value: `${votes}/${users / 2} (majority/admin/owner needed to skip)` });
+				if (!guild) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)` });
 				const member = guild.members.cache.find(m => m.id === user.id);
-				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (majority/admin/owner needed to skip)` });
+				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)` });
 
-				if (is_authorised(guild_object, member)) {
+				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return skip(messageReaction.message.guild.id, guild_list, client, messageReaction.message, messageReaction.message.guild)
 						.then(response => { guild_object.music_data.votes = []; return resolve(response) })
 						.catch(error => { return resolve({ result: false, value: error }) });
 				}
 
-				return resolve({ result: false, value: `${votes}/${users / 2} (majority/admin/owner needed to skip)` });
+				return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)` });
 			}
 			case '📜': {
 				clear_user_reactions(client, guild_list, messageReaction, user);

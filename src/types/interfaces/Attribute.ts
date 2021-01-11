@@ -148,6 +148,48 @@ const attributes: InterfaceBlueprint[] = [
 		auth: 'voice'
 	},
 	{
+		name: 'DJ',
+		description: 'returns/sets makes a user DJ and returns if you are a DJ',
+		super_description: '**DJ** makes a user DJ and returns if you are a DJ',
+		example: '&DJ',
+		args: 'member_id | true/false',
+		get: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+		): boolean | string => {
+			return member_object ? member_object.dj : 'couldn\'t fetch member';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
+		): number => {
+			const portal_channel = value.substr(0, value.indexOf('|')).trim();
+			const portal_category = value.substr(value.indexOf('|') + 1).trim();
+
+			console.log('portal_channel :>> ', portal_channel);
+			console.log('portal_category :>> ', portal_category);
+
+			if (portal_category && portal_category) {
+				const member_object_give = guild_object.member_list.find(m => m.id === portal_channel);
+
+				if (member_object_give) {
+					if (portal_category === 'true') {
+						member_object_give.dj = true;
+						return 1;
+					}
+					else if (portal_category === 'false') {
+						member_object_give.dj = false;
+						return 1;
+					}
+				} else {
+					return -10;
+				}
+			}
+			return -9;
+		},
+		auth: 'admin'
+	},
+	{
 		name: 'locale_guild',
 		description: 'returns/sets locale_guild of the guild',
 		super_description: '**locale_guild**, returns/sets guild locale makes the bot talk your language and all communication is done' +
@@ -297,7 +339,7 @@ const attributes: InterfaceBlueprint[] = [
 		description: 'returns/sets your personal voice channel regex',
 		super_description: '**regex_overwrite**, returns/sets your personal voice channel regex',
 		example: '&regex_overwrite',
-		args: '!regex_overwrite',
+		args: '!true/false',
 		get: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
 			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined

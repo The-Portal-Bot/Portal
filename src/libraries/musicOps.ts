@@ -259,7 +259,6 @@ export async function skip(
 						guild_object.dispatcher = portal_voice_vonnection.play(stream);
 						update_music_message(guild, guild_object, next_yts_video);
 						guild_object.dispatcher.on('finish', () => {
-							console.log('\nPAME NEXT\n');
 							skip(guild_id, guild_list, client, message, guild);
 							guild_object.music_data.votes = [];
 						});

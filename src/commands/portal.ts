@@ -15,6 +15,7 @@ module.exports = async (
 
 		const portal_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
 		const portal_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+
 		const portal_options: GuildCreateChannelOptions = {
 			topic: `by Portal, channels on demand`,
 			type: 'voice',

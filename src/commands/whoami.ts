@@ -33,6 +33,11 @@ module.exports = async (
                     inline: false
                 },
                 {
+                    emote: 'DJ',
+                    role: member_object.dj ? 'true' : 'false',
+                    inline: false
+                },
+                {
                     emote: 'admin',
                     role: member_object.admin ? 'true' : 'false',
                     inline: false
