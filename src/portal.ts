@@ -402,7 +402,7 @@ function ranking_system(message: Message): void {
 }
 
 function log_portal() {
-	client.login(config.token_dev);
+	client.login(config.token);
 }
 
 log_portal();
