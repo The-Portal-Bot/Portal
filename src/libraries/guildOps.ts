@@ -189,8 +189,10 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 	}
 };
 
-export function create_voice_channel(state: VoiceState, portal_object: PortalChannelPrtl,
-	portal_channel: GuildChannel, creator_id: string): Promise<ReturnPormise> {
+export function create_voice_channel(
+	state: VoiceState, portal_object: PortalChannelPrtl,
+	portal_channel: GuildChannel, creator_id: string
+): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (state && state.channel) {
 			const voice_options: GuildCreateChannelOptions = {
@@ -205,8 +207,8 @@ export function create_voice_channel(state: VoiceState, portal_object: PortalCha
 				.then(channel => {
 					if (state.member) {
 						portal_object.voice_list.push(new VoiceChannelPrtl(
-							channel.id, creator_id, portal_object.regex_voice, false, 0, 0,
-							portal_object.locale, portal_object.ann_announce, portal_object.ann_user
+							channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
+							portal_object.ann_announce, portal_object.ann_user, false
 						));
 						state.member.voice.setChannel(channel);
 						return resolve({ result: true, value: `created channel and moved member to new voice` });
@@ -463,14 +465,29 @@ export function channel_deleted_update_state(channel_to_remove: GuildChannel, gu
 
 //
 
-export function generate_channel_name(voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
-	guild_object: GuildPrtl, guild: Guild): number {
+export function generate_channel_name(
+	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
+	guild_object: GuildPrtl, guild: Guild
+): number {
 	let return_value: number = 0;
 	portal_list.some(p => {
 		p.voice_list.some(v => {
 			if (v.id === voice_channel.id) {
+				let regex = v.regex;
+				if (v.regex_overwrite) {
+					const member = voice_channel.members.find(m => m.id === v.creator_id);
+					if (member) {
+						const member_object = guild_object.member_list.find(m => m.id === member.id);
+						if (member_object) {
+							if (member_object.regex) {
+								regex = member_object.regex;
+							}
+						}
+					}
+				}
+
 				const new_name = regex_interpreter(
-					v.regex,
+					regex,
 					voice_channel,
 					v,
 					portal_list,
@@ -481,7 +498,7 @@ export function generate_channel_name(voice_channel: VoiceChannel, portal_list: 
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
 						voice_channel.edit({ name: new_name.substring(0, 99) })
-							.then(newChannel => console.log(`Voice's new name from promise is ${newChannel.name}`))
+							.then(newChannel => console.log(`voice's new name from promise is ${newChannel.name}`))
 							.catch(console.log);
 						return_value = 1;
 					}
@@ -540,23 +557,27 @@ export function regex_interpreter(
 			const attr = is_attribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				if (portal_list && voice_channel && voice_channel && voice_object) {
-					const portal_object = portal_list.find(p => p.voice_list.some(v => v.id === voice_channel.id));
-					if (portal_object) { // tsiakkas elegxos oti paizei kala an den to brei
-						const return_value = get_attribute(
-							voice_channel, voice_object, portal_object, guild_object, attr
-						);
+				if (portal_list && voice_channel && voice_object) {
+					portal_list.find(p =>
+						p.voice_list.some(v => {
+							if (v.id === voice_channel.id) {
+								const member_object = guild_object.member_list.find(m => m.id === v.creator_id);
+								const return_value = get_attribute(
+									voice_channel, voice_object, p, guild_object, attr, member_object
+								);
 
-						if (return_value !== null) {
-							last_attribute = `${return_value}`;
-							new_channel_name += return_value;
-							i += voca.chars(attr).length;
-							last_attribute_end_index = i;
-						}
-						else {
-							new_channel_name += regex[i];
-						}
-					}
+								if (return_value !== null) {
+									last_attribute = `${return_value}`;
+									new_channel_name += return_value;
+									i += voca.chars(attr).length;
+									last_attribute_end_index = i;
+								}
+								else {
+									new_channel_name += regex[i];
+								}
+							}
+						})
+					);
 				}
 			}
 			else {
