@@ -25,57 +25,57 @@ export const portal: LocalisationOption[] = [
 	{
 		name: 'announce',
 		lang: {
-			gr: (user: User) => { return `> O ${user} έκανε μια ανακοίνωση`; },
-			en: (user: User) => { return `> ${user} made an announcement`; },
-			de: (user: User) => { return `> ${user} hat eine Ankündigung gemacht`; }
+			gr: (user: User) => { return `o ${user} έκανε μια ανακοίνωση`; },
+			en: (user: User) => { return `${user} made an announcement`; },
+			de: (user: User) => { return `${user} hat eine Ankündigung gemacht`; }
 		}
 	},
 	{
 		name: 'spotify',
 		lang: {
-			gr: (user: User) => { return `> O ${user} έβαλε νέο κομμάτι`; },
-			en: (user: User) => { return `> ${user} listens to a new song`; },
-			de: (user: User) => { return `> ${user} hört sich ein neues Lied an`; }
+			gr: (user: User) => { return `o ${user} έβαλε νέο κομμάτι`; },
+			en: (user: User) => { return `${user} listens to a new song`; },
+			de: (user: User) => { return `${user} hört sich ein neues Lied an`; }
 		}
 	},
 	{
 		name: 'url',
 		lang: {
-			gr: (user: User) => { return `> O ${user} ανέβασε έναν νέο σύνδεσμο`; },
-			en: (user: User) => { return `> ${user} sent a new link`; },
-			de: (user: User) => { return `> ${user} hat einen neuen Link geschickt`; }
+			gr: (user: User) => { return `o ${user} ανέβασε έναν νέο σύνδεσμο`; },
+			en: (user: User) => { return `${user} sent a new link`; },
+			de: (user: User) => { return `${user} hat einen neuen Link geschickt`; }
 		}
 	},
 	{
 		name: 'read_only',
 		lang: {
-			gr: (user: User) => { return `> ${user}, το κανάλι είναι μόνο για ανάγνωση`; },
-			en: (user: User) => { return `> ${user}, the channel is read-only`; },
-			de: (user: User) => { return `> ${user}, der Kanal ist schreibgeschütz`; }
+			gr: (user: User) => { return `${user}, το κανάλι είναι μόνο για ανάγνωση`; },
+			en: (user: User) => { return `${user}, the channel is read-only`; },
+			de: (user: User) => { return `${user}, der Kanal ist schreibgeschütz`; }
 		}
 	},
 	{
 		name: 'fail',
 		lang: {
-			gr: (user: User) => { return `> ${user}, κάτι δεν πήγε καλά`; },
-			en: (user: User) => { return `> ${user}, something went wrong`; },
-			de: (user: User) => { return `> ${user}, etwas ist schief gelaufen`; }
+			gr: (user: User) => { return `${user}, κάτι δεν πήγε καλά`; },
+			en: (user: User) => { return `${user}, something went wrong`; },
+			de: (user: User) => { return `${user}, etwas ist schief gelaufen`; }
 		}
 	},
 	{
 		name: 'user_connected',
 		lang: {
-			gr: (user: User) => { return `> Ο χρήστης ${user} συνδέθηκε στο κανάλι`; },
-			en: (user: User) => { return `> User ${user} connected to the channel`; },
-			de: (user: User) => { return `> Mitglied ${user} hat sich zum Kanal verbunden`; }
+			gr: (user: User) => { return `ο χρήστης ${user} συνδέθηκε στο κανάλι`; },
+			en: (user: User) => { return `user ${user} connected to the channel`; },
+			de: (user: User) => { return `mitglied ${user} hat sich zum Kanal verbunden`; }
 		}
 	},
 	{
 		name: 'user_disconnected',
 		lang: {
-			gr: (user: User) => { return `> Ο χρήστης ${user} αποχώρησε από το κανάλι`; },
-			en: (user: User) => { return `> User ${user} disconnected from the channel`; },
-			de: (user: User) => { return `> Mitglied ${user} hat sich vom Kanal unverbunden`; }
+			gr: (user: User) => { return `ο χρήστης ${user} αποχώρησε από το κανάλι`; },
+			en: (user: User) => { return `user ${user} disconnected from the channel`; },
+			de: (user: User) => { return `mitglied ${user} hat sich vom Kanal unverbunden`; }
 		}
 	}
 ]
@@ -85,13 +85,13 @@ export const console_text: LocalisationOption[] = [
 		name: 'ready',
 		lang: {
 			gr: (member_length: number, channel_length: number, guild_length: number) => {
-				return `> Το μποτ ξεκίνησε, με ${member_length} χρήστες, μέσα σε ${channel_length} κανάλια σε ${guild_length} συντεχνίες`;
+				return `το μποτ ξεκίνησε, με ${member_length} χρήστες, μέσα σε ${channel_length} κανάλια σε ${guild_length} συντεχνίες`;
 			},
 			en: (member_length: number, channel_length: number, guild_length: number) => {
-				return `> Bot has started, with ${member_length} users, in ${channel_length} channels from ${guild_length} guilds`;
+				return `bot has started, with ${member_length} users, in ${channel_length} channels from ${guild_length} guilds`;
 			},
 			de: (member_length: number, channel_length: number, guild_length: number) => {
-				return `> Bot hat ${member_length} Mitglieder in ${channel_length} Kanälen von ${guild_length} Gilden gestartet`;
+				return `bot hat ${member_length} Mitglieder in ${channel_length} Kanälen von ${guild_length} Gilden gestartet`;
 			}
 		}
 
@@ -109,16 +109,16 @@ export const console_text: LocalisationOption[] = [
 		name: 'presence_controlled_away',
 		lang: {
 			gr: (args: any) => {
-				return `> Ο χρήστης ${args.newPresence.member.displayName} είναι μέλος ` +
+				return `ο χρήστης ${args.newPresence.member.displayName} είναι μέλος ` +
 					`μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ` +
 					`(${args.newPresence.guild.name})`;
 			},
 			en: (args: any) => {
-				return `> ${args.newPresence.member.displayName} who is a member of a handled server, ` +
+				return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
 					`has changed presence, but is in another server (${args.newPresence.guild.name})`;
 			},
 			de: (args: any) => {
-				return `> ${args.newPresence.member.displayName} who is a member of a handled server, ` +
+				return `${args.newPresence.member.displayName} who is a member of a handled server, ` +
 					`has changed presence, but is in another server (${args.newPresence.guild.name})`;
 			}
 		}
@@ -126,17 +126,17 @@ export const console_text: LocalisationOption[] = [
 	{
 		name: 'presence_controlled',
 		lang: {
-			gr: (displayName: string, name: string) => { return `> Ο χρήστης ${displayName} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${name})`; },
-			en: (displayName: string, name: string) => { return `> ${displayName} has changed presence, in controlled server (${name})`; },
-			de: (displayName: string, name: string) => { return `> ${displayName} has changed presence, in controlled server (${name})`; }
+			gr: (displayName: string, name: string) => { return `ο χρήστης ${displayName} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${name})`; },
+			en: (displayName: string, name: string) => { return `${displayName} has changed presence, in controlled server (${name})`; },
+			de: (displayName: string, name: string) => { return `${displayName} has changed presence, in controlled server (${name})`; }
 		}
 	},
 	{
 		name: 'could_not_fetch_data',
 		lang: {
-			gr: (data: string, source: string) => { return `> Δεν κατάφερα να πάρω το ${data} από το ${source}`; },
-			en: (data: string, source: string) => { return `> Could not fetch ${data} from ${source}`; },
-			de: (data: string, source: string) => { return `> Ich konnte ${data} nicht vom ${source} holen`; }
+			gr: (data: string, source: string) => { return `δεν κατάφερα να πάρω το ${data} από το ${source}`; },
+			en: (data: string, source: string) => { return `could not fetch ${data} from ${source}`; },
+			de: (data: string, source: string) => { return `ich konnte ${data} nicht vom ${source} holen`; }
 		}
 	}
 ]

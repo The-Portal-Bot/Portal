@@ -34,7 +34,6 @@ module.exports = async (
 
 			update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
 		});
-		console.log('');
 
 		const func = get_function('console', 'en', 'ready');
 		return resolve({

@@ -332,27 +332,27 @@ function event_loader(event: string, args: any): void {
 	console.log(`> event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
-			if (response !== null && response !== undefined) {
-				if (event === 'messageReactionAdd' && response) {
-					// const messageReaction = <MessageReaction>args.messageReaction;
-					// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
+			if (event === 'messageReactionAdd' && response) {
+				// const messageReaction = <MessageReaction>args.messageReaction;
+				// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
 
-					// if (guild_object) {
-					// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
-					// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-					// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
-					// 		// auto na trexei mono otan einai music reaction
-					// 		music_channel
-					// 			.send(`${args.user}, ${response.value}`)
-					// 			.then(msg => { msg.delete({ timeout: 5000 }); })
-					// 			.catch(error => console.log(error));
-					// 	}
-					// }
-				}
-				else {
-					console.log(response.result, response.value);
-				}
+				// if (guild_object) {
+				// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
+				// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+				// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
+				// 		// auto na trexei mono otan einai music reaction
+				// 		music_channel
+				// 			.send(`${args.user}, ${response.value}`)
+				// 			.then(msg => { msg.delete({ timeout: 5000 }); })
+				// 			.catch(error => console.log(error));
+				// 	}
+				// }
 			}
+			const colour = response.result ? '\x1b[32m' : '\x1b[31m';
+			const reset = '\x1b[0m';
+			const value_arr = response.value.split('\n');
+			const length = value_arr.length;
+			console.log(value_arr.map((s, i) => (length - 1 === i) ? `${colour}└── ${s}${reset}` : `${colour}├── ${s}${reset}`).join('\n'));
 		});
 };
 
