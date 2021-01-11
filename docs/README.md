@@ -88,9 +88,8 @@ There are four types of data _(used by run command and regex attributes)_:
 
 2. Install nodejs ^14.x
    
-        $ sudo apt -y install nodejs
-
-> make sure you have version 14.x or higher with `node  -v`
+        $ sudo apt -y install nodejs  
+      > make sure you have version 14.x or higher with `node  -v`
 
 ### Build
 
@@ -105,26 +104,26 @@ There are four types of data _(used by run command and regex attributes)_:
 ### Setup and Run
 
 1. Create a bot on Discord Portal and add the toke in config.json
-```json
-{
-    "token": "add-your-token-here",
-    "prefix": "./",
-    "database_json": "src/database/guild_list.json",
-    "owner_id": "add-your-id-(optional)",
-    "portal_id": "add-bots-id-(optional)",
-    "api_keys": {
-        "OpenWeatherMap": "add-open-weather-map-api-key",
-        "covid_193": "add-covid-193-api-key",
-        "translate": {
-            "engine": "yandex",
-            "key": "add-yeandex-api-key"
-        }
-    },
-    "delete_msg": false,
-    "delete_msg_after": 5,
-    "always_reply": true
-}
-```
+      ```json
+      {
+          "token": "add-your-token-here",
+          "prefix": "./",
+          "database_json": "src/database/guild_list.json",
+          "owner_id": "add-your-id-(optional)",
+          "portal_id": "add-bots-id-(optional)",
+          "api_keys": {
+              "OpenWeatherMap": "add-open-weather-map-api-key",
+              "covid_193": "add-covid-193-api-key",
+              "translate": {
+                  "engine": "yandex",
+                  "key": "add-yeandex-api-key"
+              }
+          },
+          "delete_msg": false,
+          "delete_msg_after": 5,
+          "always_reply": true
+      }
+      ```
 
 2. Run Portal
 
