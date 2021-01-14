@@ -88,8 +88,9 @@ export function update_music_message(guild: Guild, guild_object: GuildPrtl, yts:
 	}
 };
 
-export async function join_user_voice(client: Client, message: Message, guild_list: GuildPrtl[],
-	join: boolean): Promise<ReturnPormiseVoice> { // localize
+export async function join_user_voice(
+	client: Client, message: Message, guild_list: GuildPrtl[], join: boolean
+): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
 		if (message.member === null) {
 			return resolve({
@@ -403,40 +404,49 @@ export function time_remaining(timestamp: number, timeout: number): TimeRemainin
 	return { timeout_min, timeout_sec, remaining_min, remaining_sec };
 };
 
-export function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
-	const guild = client.guilds.cache.find((cached_guild: Guild) => cached_guild.id === guild_id);
-	if (!guild) return [];
-
-	const member_list: MemberPrtl[] = [];
-
-	guild.members.cache.forEach(member => {
-		if (client.user && !member.user.bot)
-			if (member.id !== client.user.id)
-				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false, false, null));
+export async function create_member_list(
+	guild_id: string, client: Client
+): Promise<MemberPrtl[]> { // localize
+	return new Promise((resolve) => {
+		const guild = client.guilds.cache.find(guild => guild.id === guild_id);
+		if (!guild) return resolve([]);
+		
+		guild.members.fetch().then(fetchedMembers => {
+			const member_list: MemberPrtl[] = [];
+			fetchedMembers.forEach(member => {
+				if (!member.user.bot)
+					// if (client.user && member.id !== client.user.id)
+						member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false, false, null));
+			});
+			return resolve(member_list);
+		});
+		return false;
 	});
-
-	return member_list;
 };
 
 export function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: Client): void {
-	const portal_list: PortalChannelPrtl[] = [];
-	const member_list = create_member_list(guild_id, client);
-	const url_list: string[] = [];
-	const role_list: GiveRolePrtl[] = [];
-	const ranks: Rank[] = [];
-	const auth_role: string[] = [];
-	const spotify: string | null = null;
-	const music_data: MusicData = { channel_id: undefined, message_id: undefined, votes: [] };
-	const music_queue: VideoSearchResult[] = [];
-	const dispatcher: StreamDispatcher | undefined = undefined;
-	const announcement: string | null = null;
-	const locale: string = 'en';
-	const announce: boolean = true;
-	const level_speed: string = 'normal';
-	const premium: boolean = false;
+	create_member_list(guild_id, client)
+		.then(member_list_fetched => {
+			const portal_list: PortalChannelPrtl[] = [];
+			const member_list = member_list_fetched;
+			const url_list: string[] = [];
+			const role_list: GiveRolePrtl[] = [];
+			const ranks: Rank[] = [];
+			const auth_role: string[] = [];
+			const spotify: string | null = null;
+			const music_data: MusicData = { channel_id: undefined, message_id: undefined, votes: [] };
+			const music_queue: VideoSearchResult[] = [];
+			const dispatcher: StreamDispatcher | undefined = undefined;
+			const announcement: string | null = null;
+			const locale: string = 'en';
+			const announce: boolean = true;
+			const level_speed: string = 'normal';
+			const premium: boolean = false;
 
-	guild_list.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
-		spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium));
+			guild_list.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
+				spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium));
+		})
+		.catch(error => console.log(error));
 };
 
 export function remove_deleted_channels(guild: Guild, guild_list: GuildPrtl[]): boolean {

@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { ActivityOptions, Client } from "discord.js";
 import { insert_guild, remove_deleted_channels, remove_empty_voice_channels, update_portal_managed_guilds } from "../libraries/helpOps";
 import { get_function } from "../libraries/localisationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
@@ -19,8 +19,12 @@ module.exports = async (
 	return new Promise((resolve) => {
 		if (!args.client.user) return { result: false, value: 'could not fetch user from client' };
 
-		args.client.user.setActivity('./help', { url: 'https://github.com/keybraker', type: 'LISTENING' });
-
+		const options: ActivityOptions = {
+			url: 'https://github.com/keybraker',
+			type: 'LISTENING'
+		};
+		args.client.user.setActivity('./help', options);
+		
 		const guild = args.client.guilds.cache.find(g => g.id === args.id);
 		if (!guild) return { result: false, value: 'could not fetch user from client' };
 
