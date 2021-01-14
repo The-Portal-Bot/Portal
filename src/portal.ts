@@ -1,24 +1,16 @@
 // load up the discord.js library
-import {
-	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember,
-	PartialMessage, PartialUser, Presence, TextChannel, User, VoiceState
-} from "discord.js";
+import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import { readFileSync } from "jsonfile";
 import CommandCooldowns from './assets/jsons/CommandCooldowns.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
-import {
-	guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed,
-	update_portal_managed_guilds
-} from './libraries/helpOps';
+import { guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import {
-	ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise
-} from "./types/interfaces/InterfacesPrtl";
+import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 
 const command_options_guild: CommandOptions[] = CommandCooldowns.guild;
 const command_options_member: CommandOptions[] = CommandCooldowns.member;
@@ -54,7 +46,7 @@ if (!Array.isArray(guild_list)) {
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
-const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = new Client({ partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'] });
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
@@ -329,7 +321,7 @@ function command_loader(
 
 function event_loader(event: string, args: any): void {
 	// Ignore other bots and also itself ('botception')
-	console.log(`├── event-${event}`);
+	console.log(`├─ event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
 			if (event === 'messageReactionAdd' && response) {
@@ -351,8 +343,7 @@ function event_loader(event: string, args: any): void {
 			const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 			const reset = '\x1b[0m';
 			const value_arr = response.value.split('\n');
-			const length = value_arr.length;
-			console.log(value_arr.map((s, i) => (length - 1 === i) ? `${colour}└── ${s}${reset}` : `${colour}├── ${s}${reset}`).join('\n'));
+			console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
 		});
 };
 

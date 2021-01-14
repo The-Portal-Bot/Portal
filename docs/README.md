@@ -1,26 +1,33 @@
-# [Portal](https://github.com/keybraker/portal) 
+<h1 align="center">Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" width="25" height="25"></p>
+</h1>
 
-A fully fledged and feature rich bot for Discord <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
-<br>
-* Voice channels on demand (with auto-name update)
-* Assignes and strips roles from users with a single reaction press
-* Creates temporary "focus" channels for private conversations
-* Music player that is clean and clutter free
-* Portal will keep you up to date, without the need to look
-* Get the latest on the corona virus and Weather
-* Music / Spotify / Announcement / URL-only channels
-<br>
+<p align="center">A fully fledged and feature rich bot for Discord</p>
+
+<p align="center">
+    Voice channels on demand (with auto-name update)<br>
+    Assignes and strips roles from users with a single reaction press<br>
+    Creates temporary "focus" channels for private conversations<br>
+    Music player that is clean and clutter free<br>
+    Portal will keep you up to date, without the need to look<br>
+    Get the latest on the corona virus and Weather<br>
+    Music / Spotify / Announcement / URL-only channels<br>
+</p>
+
+<p align="center">
+    <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" />
+    <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" />
+    <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" />
+    <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
+    <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/Add%20to%20Discord-📥-blue" alt="Add to Discord" /></a>
+</p>
 
 ***
 
-1. [Portal](https://github.com/keybraker/portal/blob/master/docs/README.md#portal)
-2. [Commands](https://github.com/keybraker/portal/blob/master/docs/README.md#commands)
-3. [Regex Interpreter](https://github.com/keybraker/portal/blob/master/docs/README.md#regex-interpreter)
-4. [Add to Discord](https://github.com/keybraker/portal/blob/master/docs/README.md#add-to-discord)
-5. [Self Hosting](https://github.com/keybraker/portal/blob/master/docs/README.md#self-hosting)
-6. [Release Hisrtory](https://github.com/keybraker/portal/blob/master/docs/README.md#release-history)
-7. [Contributing](https://github.com/keybraker/portal/blob/master/docs/README.md#contributing)
-8. [Acknowledgements](https://github.com/keybraker/portal/blob/master/docs/README.md#acknowledgements)
+1. [Commands](https://github.com/keybraker/portal/blob/master/docs/README.md#commands)
+2. [Regex Interpreter](https://github.com/keybraker/portal/blob/master/docs/README.md#regex-interpreter)
+3. [Self Hosting](https://github.com/keybraker/portal/blob/master/docs/README.md#self-hosting)
+4. [Release Hisrtory](https://github.com/keybraker/portal/blob/master/docs/README.md#release-history)
+5. [Acknowledgements](https://github.com/keybraker/portal/blob/master/docs/README.md#acknowledgements)
   
 ## Commands
 
@@ -76,10 +83,6 @@ There are four types of data _(used by run command and regex attributes)_:
 3. [Pipes](https://github.com/keybraker/portal/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome. 
 4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
 
-## Add to Discord
-
-[Add to your Discord Server](https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot)
-
 ## Self Hosting
 
 ### Prerequisites
@@ -131,10 +134,6 @@ There are four types of data _(used by run command and regex attributes)_:
 
         $ npm start
 
-## Contributing
-
-Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/Contributing.md)
-
 ## Release History
 
 | Version | Date       | Argument      |
@@ -151,6 +150,8 @@ Portal is an open source project you can contribute too. There are guidelines fo
 > License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
 
 ***
+
+Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)
 
 > **Disclaimers**    
 > 1. Portal will never record conversations or store anything you type<br>
