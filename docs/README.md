@@ -159,5 +159,3 @@ Portal is an open source project you can contribute too. There are guidelines fo
 > 3. Runs on nodejs 14.x
 
 Copyrights © Keybraker 2020-2021 Portal, All rights reserved
-
-![Node.js CI](https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg) ![discord.js](https://img.shields.io/badge/discord.js-12.5.1-blue) ![npm](https://img.shields.io/badge/npm-6.14.10-blue) ![node](https://img.shields.io/badge/node-14.15.4-blue)
