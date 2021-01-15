@@ -28,7 +28,7 @@ module.exports = async (
 		if (!args.member.user.bot && guild_object) {
 			if (guild_object.member_list.some((m, index) => {
 				if (m.id === args.member.id) {
-					guild_object.member_list.push(new MemberPrtl(args.member.id, 1, 0, 0, 0, null, false, false, null));
+					guild_object.member_list.push(new MemberPrtl(args.member.id, 1, 0, 1, 0, null, false, false, null));
 					return true;
 				}
 			})) {

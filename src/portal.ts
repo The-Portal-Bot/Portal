@@ -1,7 +1,7 @@
 // load up the discord.js library
 import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import { readFileSync } from "jsonfile";
-import CommandCooldowns from './assets/jsons/CommandCooldowns.json';
+import command_config_json from './command_config.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
 import { guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
@@ -11,10 +11,6 @@ import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
 import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
-
-const command_options_guild: CommandOptions[] = CommandCooldowns.guild;
-const command_options_member: CommandOptions[] = CommandCooldowns.member;
-const command_options_none: CommandOptions[] = CommandCooldowns.none;
 
 const portal_managed_guilds_path = config.database_json;
 
@@ -198,35 +194,37 @@ client.on('message', async (message: Message) => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 
 	const cmd_only = args.shift();
-	if (cmd_only === undefined) return;
+	if (!cmd_only) return;
 
 	const cmd = cmd_only.toLowerCase();
 
-	let type: string;
+	let type: string = '';
+	let path_to_command: string = '';
 	let command_options: CommandOptions | undefined;
-	let active_cooldown: ActiveCooldown[];
+	let active_cooldown: ActiveCooldown[] = [];
 
-	if (command_options_guild.some(cmd_curr => cmd_curr.name === cmd)) {
-		command_options = command_options_guild.find(cmd_curr => cmd_curr.name === cmd);
-		active_cooldown = active_cooldowns.guild;
-		type = 'guild';
-	}
-	else if (command_options_member.some(cmd_curr => cmd_curr.name === cmd)) {
-		command_options = command_options_member.find(cmd_curr => cmd_curr.name === cmd);
-		active_cooldown = active_cooldowns.member;
-		type = 'member';
-	}
-	else if (command_options_none.some(cmd_curr => cmd_curr.name === cmd)) {
-		command_options = command_options_none.find(cmd_curr => cmd_curr.name === cmd);
-		active_cooldown = [];
-		type = 'none';
-	}
-	else {
+	const is_portal_command = command_config_json.some(category => {
+		command_options = category.commands.find(command => command.name === cmd);
+		if (command_options) {
+			if (command_options.range === "guild")
+				active_cooldown = active_cooldowns.guild;
+			else if (command_options.range === "member")
+				active_cooldown = active_cooldowns.member;
+			else
+				active_cooldown = [];
+
+			type = command_options.range;
+			path_to_command = category.path;
+			return true;
+		}
+		return false;
+	});
+
+	if (!is_portal_command) {
 		// is not a portal command
 		return false;
 	}
 
-	// not a portal command
 	if (!command_options) {
 		message_reply(false, message.channel, message, message.author,
 			'could not get command option', guild_list, client);
@@ -254,18 +252,19 @@ client.on('message', async (message: Message) => {
 		}
 	}
 
-	command_loader(message, cmd, args, type, command_options, active_cooldown);
+	command_loader(message, cmd, args, type, command_options, path_to_command, active_cooldown);
 });
 
 function command_loader(
-	message: Message, cmd: string, args: string[], type: string,
-	command_options: CommandOptions, active_cooldown: ActiveCooldown[]
+	message: Message, cmd: string, args: string[], type: string, command_options: CommandOptions,
+	path_to_command: string, active_cooldown: ActiveCooldown[]
 ): boolean {
 	if (type === 'none' && command_options.time === 0) {
-		require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
+		require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then((response: ReturnPormise) => {
-				message_reply(response.result, message.channel, message,
-					message.author, response.value, guild_list, client, command_options ? command_options.auto_delete : true);
+				if (response.result && response.value)
+					message_reply(response.result, message.channel, message, message.author, response.value,
+						guild_list, client, command_options ? command_options.auto_delete : true);
 				if (command_options.save_after)
 					update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 			});
@@ -297,7 +296,7 @@ function command_loader(
 		return false;
 	}
 
-	require(`./commands/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
+	require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 		.then((response: ReturnPormise) => {
 			if (response.result === true) {
 				active_cooldown.push({
@@ -316,7 +315,7 @@ function command_loader(
 			if (command_options.save_after)
 				update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 
-			if (command_options)
+			if (command_options && response.value)
 				message_reply(response.result, message.channel, message, message.author,
 					response.value, guild_list, client, command_options.auto_delete);
 		});
@@ -391,7 +390,7 @@ function portal_channel_handler(message: Message): boolean {
 function ranking_system(message: Message): void {
 	const level = add_points_message(message, guild_list);
 	if (level) {
-		message_reply(false, message.channel, message,
+		message_reply(true, message.channel, message,
 			message.author, `you reached level ${level}!`,
 			guild_list, client);
 	}

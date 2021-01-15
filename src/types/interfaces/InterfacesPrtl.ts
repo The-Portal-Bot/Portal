@@ -45,6 +45,7 @@ export interface LocalisationOption {
 
 export interface CommandOptions {
 	name: string;
+	range: string;
 	time: number;
 	auth: boolean;
 	premium: boolean;
