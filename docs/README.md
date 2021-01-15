@@ -23,9 +23,13 @@
 
 ---
 
+<br>
+
 <p align="center"><a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, a list of all Portal commands with description, arguments and how to use them.</p>
 
-Regex Interpreter, there are four types of data _(used by run command and naming portal channels)_:
+<br>
+
+Regex Interpreter: there are four types of data _(used by run command and naming portal channels)_:
 
 1. [Variables](https://github.com/keybraker/portal/blob/master/docs/Variables.md), are immutable and live data that return information.
 2. [Attributes](https://github.com/keybraker/portal/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
