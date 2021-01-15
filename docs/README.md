@@ -24,8 +24,6 @@
 <p align="center"> <a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, an entire list of all commands Portal has
 with a description, arguments and how to use them.</p>
 
----
-
 ## Regex Interpreter
 
 There are four types of data _(used by run command and regex attributes)_:
