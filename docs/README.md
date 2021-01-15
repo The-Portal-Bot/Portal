@@ -21,6 +21,8 @@
     <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/Add%20to%20Discord-📥-blue" alt="Add to Discord" /></a>
 </p>
 
+---
+
 ##### [Commands](https://github.com/keybraker/portal/blob/master/docs/Commands.md), a list of all Portal commands with description, arguments and how to use them.
 
 ##### Regex Interpreter, there are four types of data _(used by run command and naming portal channels)_:
@@ -102,8 +104,6 @@ _argument preceded by **@** is **optional** (not included)_
 > Acknowledgments - _[Discord.js](https://discord.js.org/#/)_<br>
 > Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
 > License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
-
----
 
 Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)
 
