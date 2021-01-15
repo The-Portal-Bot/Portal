@@ -1,11 +1,15 @@
-import { PermissionString, Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, TextChannel, User, VoiceConnection } from "discord.js";
+import { Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, StreamDispatcher, TextChannel, User, VoiceConnection } from "discord.js";
+import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
-import { GiveRole, GiveRolePrtl } from "../types/classes/GiveRolePrtl";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
+import config from '../config.json';
+import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
+import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
+import { MemberPrtl } from "../types/classes/MemberPrtl";
+import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
+import { Field, Rank, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localisationOps";
-import { writeFileSync } from "jsonfile";
+
 
 export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): GuildPrtl | undefined {
 	return guild_list.find(g => g.id === guild_id);
@@ -86,8 +90,9 @@ export function update_music_message(guild: Guild, guild_object: GuildPrtl, yts:
 	}
 };
 
-export async function join_user_voice(client: Client, message: Message, guild_list: GuildPrtl[],
-	join: boolean): Promise<ReturnPormiseVoice> { // localize
+export async function join_user_voice(
+	client: Client, message: Message, guild_list: GuildPrtl[], join: boolean
+): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
 		if (message.member === null) {
 			return resolve({
@@ -308,12 +313,14 @@ export function is_authorised(guild_object: GuildPrtl, member: GuildMember): boo
 };
 
 // channel should be removed !
-export function message_reply(status: boolean, channel: Channel, message: Message, user: User, str: string, guild_list: GuildPrtl[],
-	client: Client, to_delete: boolean = false, emote_pass: string = '✔️', emote_fail: string = '❌'): void {
+export function message_reply(
+	status: boolean, channel: Channel, message: Message, user: User, str: string, guild_list: GuildPrtl[],
+	client: Client, to_delete: boolean = config.delete_msg, emote_pass: string = '✔️', emote_fail: string = '❌'
+): void {
 	if (!message.channel.deleted && str !== null) {
 		message.channel
 			.send(`${user}, ${str}`)
-			.then(msg => { msg.delete({ timeout: 5000 }); })
+			.then(msg => { msg.delete({ timeout: config.delete_msg_after * 1000 }); })
 			.catch(error => console.log(error));
 	}
 	if (!message.deleted) {
@@ -401,16 +408,42 @@ export function time_remaining(timestamp: number, timeout: number): TimeRemainin
 	return { timeout_min, timeout_sec, remaining_min, remaining_sec };
 };
 
-export function remove_deleted_guild(guild: Guild, guild_list: GuildPrtl[]): boolean {
-	const guild_in_db = guild_list.some(g => g.id === guild.id);
-	if (!guild_in_db) {
-		guild.leave()
-			.then(guild => console.log(`left guild ${guild}`))
-			.catch(console.error);
-		return true;
-	}
-	return false;
-}
+export function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
+	const member_list: MemberPrtl[] = [];
+
+	const guild = client.guilds.cache.find(guild => guild.id === guild_id);
+	if (!guild) return member_list;
+
+	guild.members.cache.forEach(member => {
+		console.log('member.id: ', member.id);
+		if (!member.user.bot)
+			if (client.user && member.id !== client.user.id)
+				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false, false, null));
+	});
+
+	return member_list;
+};
+
+export function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: Client): void {
+	const portal_list: PortalChannelPrtl[] = [];
+	const member_list = create_member_list(guild_id, client);
+	const url_list: string[] = [];
+	const role_list: GiveRolePrtl[] = [];
+	const ranks: Rank[] = [];
+	const auth_role: string[] = [];
+	const spotify: string | null = null;
+	const music_data: MusicData = { channel_id: undefined, message_id: undefined, votes: [] };
+	const music_queue: VideoSearchResult[] = [];
+	const dispatcher: StreamDispatcher | undefined = undefined;
+	const announcement: string | null = null;
+	const locale: string = 'en';
+	const announce: boolean = true;
+	const level_speed: string = 'normal';
+	const premium: boolean = false;
+
+	guild_list.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
+		spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium));
+};
 
 export function remove_deleted_channels(guild: Guild, guild_list: GuildPrtl[]): boolean {
 	let removed_channel = false;

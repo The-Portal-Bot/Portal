@@ -114,8 +114,11 @@ dist
 .yarn/build-state.yml
 .pnp.*
 
+#build
+build/*
+
 #guild status
 .server_storage/guild_list.json
 
-#build
-build/*
+#config
+src/config.json

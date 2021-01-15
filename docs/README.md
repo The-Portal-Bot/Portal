@@ -1,148 +1,104 @@
-# [Portal](https://github.com/keybraker/portal) 
+<h1 align="center">Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" width="25" height="25"></p>
+</h1>
 
-A fully fledged and feature rich bot for Discord <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" align="right" width="250" height="250">
-<br>
-* Voice channels on demand (with auto-name update)
-* Assignes and strips roles from users with a single reaction press
-* Creates temporary "focus" channels for private conversations
-* Music player that is clean and clutter free
-* Portal will keep you up to date, without the need to look
-* Get the latest on the corona virus and Weather
-* Music / Spotify / Announcement / URL-only channels
-<br>
+<p align="center">A fully fledged and feature rich bot for Discord</p>
 
-***
+<p align="center">
+    Voice channels on demand (with auto-name update)<br>
+    Assignes and strips roles from users with a single reaction press<br>
+    Creates temporary "focus" channels for private conversations<br>
+    Music player that is clean and clutter free<br>
+    Portal will keep you up to date, without the need to look<br>
+    Get the latest on the corona virus and Weather<br>
+    Music / Spotify / Announcement / URL-only channels<br>
+</p>
 
-1. [Portal](https://github.com/keybraker/portal/blob/master/docs/README.md#portal)
-2. [Commands](https://github.com/keybraker/portal/blob/master/docs/README.md#commands)
-3. [Regex Interpreter](https://github.com/keybraker/portal/blob/master/docs/README.md#regex-interpreter)
-4. [Add to Discord](https://github.com/keybraker/portal/blob/master/docs/README.md#add-to-discord)
-5. [Self Hosting](https://github.com/keybraker/portal/blob/master/docs/README.md#self-hosting)
-6. [Release Hisrtory](https://github.com/keybraker/portal/blob/master/docs/README.md#release-history)
-7. [Contributing](https://github.com/keybraker/portal/blob/master/docs/README.md#contributing)
-8. [Acknowledgements](https://github.com/keybraker/portal/blob/master/docs/README.md#acknowledgements)
-  
-## Commands
+<p align="center">
+    <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" />
+    <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" />
+    <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" />
+    <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
+    <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/Add%20to%20Discord-📥-blue" alt="Add to Discord" /></a>
+</p>
 
-**Portal prefix: ./**
+<p align="center"> <a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, an entire list of all commands Portal has
+with a description, arguments and how to use them.</p>
 
-| Name               | Description                                                      | Arguments                            | Eligible for use                                      | Cooldown (mins) |
-| :----------------- | :--------------------------------------------------------------- | :----------------------------------- | :---------------------------------------------------- | :-------------- |
-| `about`            | _returns an about Portal message_                                | _none_                               | everyone                                              | -               |
-| `announce`         | _announceces whatever is given by the writter to online members_ | _@title \| @body_                    | everyone                                              | 1 user          |
-| `announcement`     | _creates a new or sets the current channel as announcement_      | _@channel\_name \| @category\_name_  | admin, portal-admins                                  | admin-roles     |
-| `authorise`        | _add role to admin roles_                                        | _!role_                              | admin, portal-admins, admin-roles                     | -               |
-| `authorised_roles` | _displayes all authorised roles_                                 | none                                 | everyone                                              | -               |
-| `corona`           | _replies with the daily state of corona virus cases_             | _@country code (gr, de, us, etc)_    | everyone                                              | -               |
-| `deauthorise`      | _removes role from admin roles_                                  | _!role_                              | admin, portal-admins, admin-roles                     | -               |
-| `delete`           | _deletes x number of messsages on the text channel_              | _!number of messages to delete_      | admin, portal-admins, admin-roles                     | -               |
-| `focus`            | _creates focus channel for you and your requested user_          | _!username @time (default 5minutes)_ | everyone                                              | -               |
-| `force`            | _clones current channel in order to force-update name_           | _none_                               | admin, portal-admins, admin-roles                     | 02 user         |
-| `help`             | _returns a help-list if specified returns specific description_  | _@command/@vrbl/@func/@pipe/@attr_   | everyone                                              | -               |
-| `join`             | _joins current voice channel and announces events_               | _none_                               | everyone                                              | 01 user         |
-| `joke`             | _replies with a joke_                                            | _@category_                          | everyone                                              | 01 user         |
-| `leaderboard`      | _replies with the top 10 leaderboard_                            | _@number of members                  | everyone                                              | -               |
-| `leave`            | _removes Portal from voice channel_                              | _none_                               | everyone                                              | -               |
-| `level`            | _returns your level_                                             | _none_                               | everyone                                              | -               |
-| `music`            | _creates a new or sets the current channel as music channel_     | _@channel\_name \| @category\_name_  | admin, portal-admins, admin-roles                     | -               |
-| `ping`             | _returns round trip latency_                                     | _none_                               | everyone                                              | -               |
-| `portal`           | _creates a portal voice channel_                                 | _!channel\_name \| @category\_name_  | admin, portal-admins, admin-roles                     | -               |
-| `ranks`            | _returns ranks of ranking system_                                | _none_                               | everyone                                              | -               |
-| `role_assigner`    | _replies with a message that gives roles when an emote is added_ | _role json_                          | admin, portal-admins, admin-roles                     | -               |
-| `roll`             | _roll follows the same philosophy as in roll20_                  | _<!roll sequence>_                   | everyone                                              | -               |
-| `run`              | _runs the given command string and returns its output_           | _!exec\_command_                     | everyone                                              | -               |
-| `save`             | _saves current state of server_                                  | _none_                               | admin, portal-admins, admin-roles                     | 05 server       |
-| `set_ranks`        | _sets roles that will be given when said level reached_          | _rank json_                          | voice-portal owner, admin, portal-admins, admin-role  | 10 servers      |
-| `set`              | _sets the value of an attribute_                                 | _!attribute !value_                  | voice-portal owner, admin, portal-admins, admin-roles | -               |
-| `setup`            | _creates an announcement, spotify, url-only and music channel_   | _none_                               | admin, portal-admins, admin-roles                     | 10 servers      |
-| `spotify`          | _creates a new or sets the current channel as spotify channel_   | _none_                               | none                                                  | -               |
-| `state`            | _returns the current state of portal_                            | _@channel\_name \| @category\_name_  | admin, portal-admins                                  | admin-roles     |
-| `url`              | _creates a new or sets the current channel as url-only_          | _@channel\_name \| @category\_name_  | admin, portal-admins, admin-roles                     | -               |
-| `weather`          | _replies with the current wheather for the requested city_       | _!city_name_                         | everyone                                              | -               |
-| `whoami`           | _replies with the your portal stats_                             | _none_                               | everyone                                              | -               |
+## Regex Interpreter
+
+There are four types of data _(used by run command and regex attributes)_:
+
+1. [Variables](https://github.com/keybraker/portal/blob/master/docs/Variables.md), are immutable and live data that return information.
+2. [Attributes](https://github.com/keybraker/portal/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
+3. [Pipes](https://github.com/keybraker/portal/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome.
+4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
 
 > pipes are applied to variables or text in order to change their outcome<br>
 > default regex: `G$#-P$member_count | $status_list`<br>
 > argument preceded by **!** is **mandatory** (not included)<br>
 > argument preceded by **@** is **optional** (not included)
 
-***
-
-## Regex Interpreter
-
-There are four types of data _(used by run command and regex attributes)_:
-1. [Variables](https://github.com/keybraker/portal/blob/master/docs/Variables.md), are immutable and live data that return information.
-2. [Attributes](https://github.com/keybraker/portal/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance. 
-3. [Pipes](https://github.com/keybraker/portal/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome. 
-4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
-
-## Add to Discord
-
-[Add to your Discord Server](https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot)
-
 ## Self Hosting
 
 ### Prerequisites
 
-1. Install npm ^6.x
-   
+1.  Install npm ^6.x
+
         $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
 
-2. Install nodejs ^14.x
-   
-        $ sudo apt -y install nodejs  
-      > make sure you have version 14.x or higher with `node  -v`
+2.  Install nodejs ^14.x
+
+        $ sudo apt -y install nodejs
+
+    > make sure you have version 14.x or higher with `node -v`
 
 ### Build
 
-1. Open a terminal windows and clone Portal
-   
+1.  Open a terminal windows and clone Portal
+
         $ git clone https://github.com/keybraker/portal.git && cd portal
 
-2. Install node packages
-   
+2.  Install node packages
+
         $ npm install
 
 ### Setup and Run
 
-1. Create a bot on Discord Portal and add the toke in config.json
-      ```json
-      {
-          "token": "add-your-token-here",
-          "prefix": "./",
-          "database_json": "src/database/guild_list.json",
-          "owner_id": "add-your-id-(optional)",
-          "portal_id": "add-bots-id-(optional)",
-          "api_keys": {
-              "OpenWeatherMap": "add-open-weather-map-api-key",
-              "covid_193": "add-covid-193-api-key",
-              "translate": {
-                  "engine": "yandex",
-                  "key": "add-yeandex-api-key"
-              }
-          },
-          "delete_msg": false,
-          "delete_msg_after": 5,
-          "always_reply": true
-      }
-      ```
+1.  Create a bot on Discord Portal and add the toke in config.json
 
-2. Run Portal
+    ```json
+    {
+      "token": "add-your-token-here",
+      "prefix": "./",
+      "database_json": "src/database/guild_list.json",
+      "owner_id": "add-your-id-(optional)",
+      "portal_id": "add-bots-id-(optional)",
+      "api_keys": {
+        "OpenWeatherMap": "add-open-weather-map-api-key",
+        "covid_193": "add-covid-193-api-key",
+        "translate": {
+          "engine": "yandex",
+          "key": "add-yeandex-api-key"
+        }
+      },
+      "delete_msg": false,
+      "delete_msg_after": 5,
+      "always_reply": true
+    }
+    ```
+
+2.  Run Portal
 
         $ npm start
 
-## Contributing
-
-Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/Contributing.md)
-
 ## Release History
 
-| Version | Date       | Argument      |
-| :------ | :--------- | :------------ |
-| 0.5.0   | 08-01-2021 | _Typescript_  |
-| 0.2.1   | 16-06-2020 | _Javascript_  |
-| 0.1.0   | 18-05-2020 | _Beta_        |
-| 0.0.1   | 05-05-2020 | _Alpha_       |
+| Version | Date       | Argument     |
+| :------ | :--------- | :----------- |
+| 0.5.0   | 08-01-2021 | _Typescript_ |
+| 0.2.1   | 16-06-2020 | _Javascript_ |
+| 0.1.0   | 18-05-2020 | _Beta_       |
+| 0.0.1   | 05-05-2020 | _Alpha_      |
 
 ## Acknowledgements
 
@@ -150,13 +106,14 @@ Portal is an open source project you can contribute too. There are guidelines fo
 > Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
 > License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
 
-***
+---
 
-> **Disclaimers**    
+Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)
+
+> **Disclaimers**
+>
 > 1. Portal will never record conversations or store anything you type<br>
 > 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
 > 3. Runs on nodejs 14.x
 
-Copyrights © Keybraker 2020-2021 Portal, All rights reserved
-
-![Node.js CI](https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg) ![discord.js](https://img.shields.io/badge/discord.js-12.5.1-blue) ![npm](https://img.shields.io/badge/npm-6.14.10-blue) ![node](https://img.shields.io/badge/node-14.15.4-blue)
+<p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>

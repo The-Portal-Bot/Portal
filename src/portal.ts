@@ -1,24 +1,16 @@
 // load up the discord.js library
-import {
-	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember,
-	PartialMessage, PartialUser, Presence, TextChannel, User, VoiceState
-} from "discord.js";
+import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import { readFileSync } from "jsonfile";
 import CommandCooldowns from './assets/jsons/CommandCooldowns.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
-import {
-	guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed,
-	update_portal_managed_guilds
-} from './libraries/helpOps';
+import { guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import {
-	ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise
-} from "./types/interfaces/InterfacesPrtl";
+import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 
 const command_options_guild: CommandOptions[] = CommandCooldowns.guild;
 const command_options_member: CommandOptions[] = CommandCooldowns.member;
@@ -34,7 +26,7 @@ if (!guild_list_json) {
 // list of all managed guilds
 const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
 
-if (guild_list === null) {
+if (!guild_list) {
 	console.log('guild json is corrupt');
 	process.exit(1);
 }
@@ -54,7 +46,7 @@ if (!Array.isArray(guild_list)) {
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
-const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = new Client({ partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'] });
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
@@ -174,9 +166,9 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
 	// message has errors
-	if (message === null) return;
-	if (message.member === null) return;
-	if (message.guild === null) return;
+	if (!message) return;
+	if (!message.member) return;
+	if (!message.guild) return;
 
 	// Ignore other bots and also itself ('botception')
 	if (message.author.bot) return;
@@ -210,8 +202,8 @@ client.on('message', async (message: Message) => {
 
 	const cmd = cmd_only.toLowerCase();
 
-	let command_options: CommandOptions | undefined;
 	let type: string;
+	let command_options: CommandOptions | undefined;
 	let active_cooldown: ActiveCooldown[];
 
 	if (command_options_guild.some(cmd_curr => cmd_curr.name === cmd)) {
@@ -230,31 +222,36 @@ client.on('message', async (message: Message) => {
 		type = 'none';
 	}
 	else {
-		return;
+		// is not a portal command
+		return false;
 	}
 
 	// not a portal command
-	if (command_options === undefined) return;
+	if (!command_options) {
+		message_reply(false, message.channel, message, message.author,
+			'could not get command option', guild_list, client);
+		return false;
+	}
 
 	const guild_obejct = guildPrtl_to_object(guild_list, message.guild.id);
 	if (!guild_obejct) {
 		message_reply(false, message.channel, message, message.author,
 			'server is not in database, please contact portal support', guild_list, client);
-		return;
-	}
-
-	if (command_options.auth) {
-		if (!is_authorised(guild_obejct, message.member)) {
-			message_reply(false, message.channel, message, message.author,
-				'you are not authorized to use this command', guild_list, client);
-			return;
-		}
+		return false;
 	}
 
 	if (command_options.premium && !guild_obejct.premium) {
 		message_reply(false, message.channel, message, message.author,
 			'server is not premium', guild_list, client);
-		return;
+		return false;
+	}
+
+	if (command_options.auth) {
+		if (!is_authorised(guild_obejct, message.member)) {
+			message_reply(false, message.channel, message, message.author,
+				'you are not authorised to use this command', guild_list, client);
+			return false;
+		}
 	}
 
 	command_loader(message, cmd, args, type, command_options, active_cooldown);
@@ -277,9 +274,8 @@ function command_loader(
 
 	const active = active_cooldown.find(active_current => {
 		if (active_current.command === cmd) {
-			if (type === 'member')
-				if (active_current.member === message.author.id)
-					return true;
+			if (type === 'member' && active_current.member === message.author.id)
+				return true;
 			if (type === 'guild')
 				return true;
 		}
@@ -310,18 +306,19 @@ function command_loader(
 					timestamp: Date.now()
 				});
 
-				if (command_options !== undefined) {
+				if (command_options) {
 					setTimeout(() => {
 						active_cooldown = active_cooldown.filter(active => active.command !== cmd);
 					}, command_options.time * 60 * 1000);
 				}
 			}
-			if (command_options !== undefined) {
-				message_reply(response.result, message.channel, message, message.author,
-					response.value, guild_list, client, command_options.auto_delete);
-			}
+
 			if (command_options.save_after)
 				update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
+
+			if (command_options)
+				message_reply(response.result, message.channel, message, message.author,
+					response.value, guild_list, client, command_options.auto_delete);
 		});
 
 	return false;
@@ -329,7 +326,7 @@ function command_loader(
 
 function event_loader(event: string, args: any): void {
 	// Ignore other bots and also itself ('botception')
-	console.log(`├── event-${event}`);
+	console.log(`├─ event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
 			if (event === 'messageReactionAdd' && response) {
@@ -351,8 +348,7 @@ function event_loader(event: string, args: any): void {
 			const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 			const reset = '\x1b[0m';
 			const value_arr = response.value.split('\n');
-			const length = value_arr.length;
-			console.log(value_arr.map((s, i) => (length - 1 === i) ? `${colour}└── ${s}${reset}` : `${colour}├── ${s}${reset}`).join('\n'));
+			console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
 		});
 };
 
