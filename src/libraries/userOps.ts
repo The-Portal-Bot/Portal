@@ -3,7 +3,7 @@ import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { time_elapsed } from './helpOps';
 
-const level_speed = { slow: 0.001, normal: 0.01, fast: 0.1 };
+const level_speed = { slow: 0.05, normal: 0.1, fast: 0.15 };
 
 export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild): boolean {
 	if (ranks) return false;
@@ -23,13 +23,12 @@ export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMemb
 };
 
 export function calculate_rank(member: MemberPrtl): number | null {
+	if (member.tier === 0) member.tier = 1; // must be removed
 	if (member.points >= member.tier * 1000) {
 		member.points -= member.tier * 1000;
+		
 		member.level++;
-
-		if (member.level % 5 === 0) {
-			member.tier++;
-		}
+		if (member.level % 5 === 0) member.tier++;
 
 		return member.level;
 	}
@@ -113,12 +112,10 @@ export function add_points_message(message: Message, guild_list: GuildPrtl[]): n
 		case 'fast': speed_num = level_speed.fast;
 	}
 	const points = message.content.length * speed_num;
-
-	member.points += points > 5 ? 5 : Math.round(points);
+	member.points += points > 5 ? 5 : points;
 	const level = calculate_rank(member);
 
-	if (level) return level;
-	else return false;
+	return level ? level : false;
 };
 
 export function kick(message: Message, args: any): void {

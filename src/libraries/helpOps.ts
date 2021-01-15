@@ -415,10 +415,9 @@ export function create_member_list(guild_id: string, client: Client): MemberPrtl
 	if (!guild) return member_list;
 
 	guild.members.cache.forEach(member => {
-		console.log('member.id: ', member.id);
 		if (!member.user.bot)
 			if (client.user && member.id !== client.user.id)
-				member_list.push(new MemberPrtl(member.id, 1, 0, 0, 0, null, false, false, null));
+				member_list.push(new MemberPrtl(member.id, 1, 0, 1, 0, null, false, false, null));
 	});
 
 	return member_list;

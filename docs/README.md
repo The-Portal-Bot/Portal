@@ -23,9 +23,13 @@
 
 ---
 
-##### [Commands](https://github.com/keybraker/portal/blob/master/docs/Commands.md), a list of all Portal commands with description, arguments and how to use them.
+<br>
 
-##### Regex Interpreter, there are four types of data _(used by run command and naming portal channels)_:
+<p align="center"><a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, a list of all Portal commands with description, arguments and how to use them.</p>
+
+<br>
+
+Regex Interpreter: there are four types of data _(used by run command and naming portal channels)_:
 
 1. [Variables](https://github.com/keybraker/portal/blob/master/docs/Variables.md), are immutable and live data that return information.
 2. [Attributes](https://github.com/keybraker/portal/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
@@ -33,9 +37,8 @@
 4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
 
 _pipes are applied to variables or text in order to change their outcome_<br>
-_default regex: `G$#-P$member_count | $status_list`_<br>
-_argument preceded by **!** is **mandatory** (not included)_<br>
-_argument preceded by **@** is **optional** (not included)_
+_default premium regex: `G$#-P$member_count | $status_list`_<br>
+_argument preceded by **!** is **mandatory**, **@** is **optional** (not included)_
 
 ## Self Hosting
 
