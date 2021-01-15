@@ -21,22 +21,19 @@
     <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/Add%20to%20Discord-📥-blue" alt="Add to Discord" /></a>
 </p>
 
-<p align="center"> <a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, an entire list of all commands Portal has
-with a description, arguments and how to use them.</p>
+##### [Commands](https://github.com/keybraker/portal/blob/master/docs/Commands.md), a list of all Portal commands with description, arguments and how to use them.
 
-## Regex Interpreter
-
-There are four types of data _(used by run command and regex attributes)_:
+##### Regex Interpreter, there are four types of data _(used by run command and naming portal channels)_:
 
 1. [Variables](https://github.com/keybraker/portal/blob/master/docs/Variables.md), are immutable and live data that return information.
 2. [Attributes](https://github.com/keybraker/portal/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
 3. [Pipes](https://github.com/keybraker/portal/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome.
 4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
 
-> pipes are applied to variables or text in order to change their outcome<br>
-> default regex: `G$#-P$member_count | $status_list`<br>
-> argument preceded by **!** is **mandatory** (not included)<br>
-> argument preceded by **@** is **optional** (not included)
+_pipes are applied to variables or text in order to change their outcome_<br>
+_default regex: `G$#-P$member_count | $status_list`_<br>
+_argument preceded by **!** is **mandatory** (not included)_<br>
+_argument preceded by **@** is **optional** (not included)_
 
 ## Self Hosting
 
