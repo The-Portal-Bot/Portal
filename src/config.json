@@ -1,0 +1,18 @@
+{
+    "token": "add-your-token-here",
+    "prefix": "./",
+    "database_json": "src/database/guild_list.json",
+    "owner_id": "add-your-id-(optional)",
+    "portal_id": "add-bots-id-(optional)",
+    "api_keys": {
+        "OpenWeatherMap": "add-open-weather-map-api-key",
+        "covid_193": "add-covid-193-api-key",
+        "translate": {
+            "engine": "yandex",
+            "key": "add-yeandex-api-key"
+        }
+    },
+    "delete_msg": false,
+    "delete_msg_after": 5,
+    "always_reply": true
+}
