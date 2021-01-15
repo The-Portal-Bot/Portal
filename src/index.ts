@@ -1,7 +1,7 @@
 // load up the discord.js library
 import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import { readFileSync } from "jsonfile";
-import command_config_json from './command_config.json';
+import command_config_json from './config.command.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
 import { guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
@@ -18,9 +18,9 @@ const anti_spam = new AntiSpam({
 	kickThreshold: 50, // Amount of messages sent in a row that will cause a ban.
 	banThreshold: 70, // Amount of messages sent in a row that will cause a ban.
 	maxInterval: 2000, // Amount of time (in milliseconds) in which messages are considered spam.
-	warnMessage: '{@user}, please stop spamming.', // Message that will be sent in chat upon warning a user.
-	kickMessage: '**{user_tag}** has been kicked for spamming.', // Message that will be sent in chat upon kicking a user.
-	banMessage: '**{user_tag}** has been banned for spamming.', // Message that will be sent in chat upon banning a user.
+	warnMessage: '{@user}, please stop spamming', // Message that will be sent in chat upon warning a user.
+	kickMessage: '**{user_tag}** has been kicked for spamming', // Message that will be sent in chat upon kicking a user.
+	banMessage: '**{user_tag}** has been banned for spamming', // Message that will be sent in chat upon banning a user.
 	maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
 	maxDuplicatesKick: 50, // Amount of duplicate messages that trigger a warning.
 	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.

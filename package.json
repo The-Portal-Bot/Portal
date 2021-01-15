@@ -1,13 +1,12 @@
 {
-    "name": "portal",
+    "name": "Portal",
     "author": "Ioannis Tsiakkas",
-    "version": "0.5.2",
+    "version": "0.5.7",
     "private": true,
-    "main": "src/portal.ts",
+    "main": "src/index.ts",
     "scripts": {
-        "start": "npx tsc && node build/portal.js",
-        "test": "npx tsc && jest",
-        "dev": "nodemon src/portal.ts"
+        "start": "npx tsc && node build/index.js",
+        "test": "npx tsc && jest"
     },
     "dependencies": {
         "@discordjs/opus": "^0.3.3",
