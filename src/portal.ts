@@ -26,7 +26,7 @@ if (!guild_list_json) {
 // list of all managed guilds
 const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
 
-if (guild_list === null) {
+if (!guild_list) {
 	console.log('guild json is corrupt');
 	process.exit(1);
 }
@@ -166,9 +166,9 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
 	// message has errors
-	if (message === null) return;
-	if (message.member === null) return;
-	if (message.guild === null) return;
+	if (!message) return;
+	if (!message.member) return;
+	if (!message.guild) return;
 
 	// Ignore other bots and also itself ('botception')
 	if (message.author.bot) return;
@@ -202,8 +202,8 @@ client.on('message', async (message: Message) => {
 
 	const cmd = cmd_only.toLowerCase();
 
-	let command_options: CommandOptions | undefined;
 	let type: string;
+	let command_options: CommandOptions | undefined;
 	let active_cooldown: ActiveCooldown[];
 
 	if (command_options_guild.some(cmd_curr => cmd_curr.name === cmd)) {
@@ -222,31 +222,36 @@ client.on('message', async (message: Message) => {
 		type = 'none';
 	}
 	else {
-		return;
+		// is not a portal command
+		return false;
 	}
 
 	// not a portal command
-	if (command_options === undefined) return;
+	if (!command_options) {
+		message_reply(false, message.channel, message, message.author,
+			'could not get command option', guild_list, client);
+		return false;
+	}
 
 	const guild_obejct = guildPrtl_to_object(guild_list, message.guild.id);
 	if (!guild_obejct) {
 		message_reply(false, message.channel, message, message.author,
 			'server is not in database, please contact portal support', guild_list, client);
-		return;
-	}
-
-	if (command_options.auth) {
-		if (!is_authorised(guild_obejct, message.member)) {
-			message_reply(false, message.channel, message, message.author,
-				'you are not authorized to use this command', guild_list, client);
-			return;
-		}
+		return false;
 	}
 
 	if (command_options.premium && !guild_obejct.premium) {
 		message_reply(false, message.channel, message, message.author,
 			'server is not premium', guild_list, client);
-		return;
+		return false;
+	}
+
+	if (command_options.auth) {
+		if (!is_authorised(guild_obejct, message.member)) {
+			message_reply(false, message.channel, message, message.author,
+				'you are not authorised to use this command', guild_list, client);
+			return false;
+		}
 	}
 
 	command_loader(message, cmd, args, type, command_options, active_cooldown);
@@ -269,9 +274,8 @@ function command_loader(
 
 	const active = active_cooldown.find(active_current => {
 		if (active_current.command === cmd) {
-			if (type === 'member')
-				if (active_current.member === message.author.id)
-					return true;
+			if (type === 'member' && active_current.member === message.author.id)
+				return true;
 			if (type === 'guild')
 				return true;
 		}
@@ -302,18 +306,19 @@ function command_loader(
 					timestamp: Date.now()
 				});
 
-				if (command_options !== undefined) {
+				if (command_options) {
 					setTimeout(() => {
 						active_cooldown = active_cooldown.filter(active => active.command !== cmd);
 					}, command_options.time * 60 * 1000);
 				}
 			}
-			if (command_options !== undefined) {
-				message_reply(response.result, message.channel, message, message.author,
-					response.value, guild_list, client, command_options.auto_delete);
-			}
+
 			if (command_options.save_after)
 				update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
+
+			if (command_options)
+				message_reply(response.result, message.channel, message, message.author,
+					response.value, guild_list, client, command_options.auto_delete);
 		});
 
 	return false;

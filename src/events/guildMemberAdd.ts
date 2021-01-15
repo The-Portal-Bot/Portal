@@ -8,7 +8,6 @@ module.exports = async (
 	args: { member: GuildMember, guild_list: GuildPrtl[] }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-
 		const join_message = `member ${args.member.presence.user} ` +
 			`[${args.member.guild.id}]\n\thas joined ${args.member.guild}`;
 
@@ -26,16 +25,16 @@ module.exports = async (
 				);
 		}
 
-		if (!args.member.user.bot) {
-			if (guild_object?.member_list.some((m, index) => {
+		if (!args.member.user.bot && guild_object) {
+			if (guild_object.member_list.some((m, index) => {
 				if (m.id === args.member.id) {
 					guild_object.member_list.push(new MemberPrtl(args.member.id, 1, 0, 0, 0, null, false, false, null));
 					return true;
 				}
 			})) {
-				return resolve({ result: true, value: 'member removed from guild' });
+				return resolve({ result: true, value: 'member added to guild' });
 			} else {
-				return resolve({ result: false, value: 'member could not be removed' });
+				return resolve({ result: false, value: 'member could not be added' });
 			}
 		}
 

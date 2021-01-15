@@ -4,7 +4,9 @@ import { get_function } from "../libraries/localisationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
-function add_guild_again(guild_id: string, guild_list: GuildPrtl[], client: Client): boolean {
+function add_guild_again(
+	guild_id: string, guild_list: GuildPrtl[], client: Client
+): boolean {
 	const guild_in_db = guild_list.some(g => g.id === guild_id);
 	if (!guild_in_db) {
 		insert_guild(guild_id, guild_list, client);
@@ -17,16 +19,13 @@ module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (args.client.user === null || args.client.user === undefined)
+		if (!args.client.user)
 			return resolve({
 				result: false,
 				value: 'could not fetch user from client'
 			});
 
-		const options: ActivityOptions = {
-			url: 'https://github.com/keybraker',
-			type: 'LISTENING'
-		};
+		const options: ActivityOptions = { url: 'https://github.com/keybraker', type: 'LISTENING' };
 		args.client.user.setActivity('./help', options);
 
 		let index = 0;
