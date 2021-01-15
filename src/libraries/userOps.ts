@@ -23,6 +23,7 @@ export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMemb
 };
 
 export function calculate_rank(member: MemberPrtl): number | null {
+	if (member.tier === 0) member.tier = 1; // must be removed
 	if (member.points >= member.tier * 1000) {
 		member.points -= member.tier * 1000;
 		
@@ -114,8 +115,7 @@ export function add_points_message(message: Message, guild_list: GuildPrtl[]): n
 	member.points += points > 5 ? 5 : points;
 	const level = calculate_rank(member);
 
-	if (level) return level;
-	else return false;
+	return level ? level : false;
 };
 
 export function kick(message: Message, args: any): void {

@@ -12,6 +12,7 @@
     "dependencies": {
         "@discordjs/opus": "^0.3.3",
         "@types/jsonfile": "^6.0.0",
+        "discord-anti-spam": "^2.4.1",
         "discord-ytdl-core": "^5.0.0",
         "discord.js": "^12.5.1",
         "ffmpeg-static": "^4.2.7",

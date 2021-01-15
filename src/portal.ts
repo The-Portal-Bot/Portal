@@ -11,9 +11,28 @@ import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
 import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+const AntiSpam = require('discord-anti-spam');
+
+const anti_spam = new AntiSpam({
+	warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
+	kickThreshold: 50, // Amount of messages sent in a row that will cause a ban.
+	banThreshold: 70, // Amount of messages sent in a row that will cause a ban.
+	maxInterval: 2000, // Amount of time (in milliseconds) in which messages are considered spam.
+	warnMessage: '{@user}, please stop spamming.', // Message that will be sent in chat upon warning a user.
+	kickMessage: '**{user_tag}** has been kicked for spamming.', // Message that will be sent in chat upon kicking a user.
+	banMessage: '**{user_tag}** has been banned for spamming.', // Message that will be sent in chat upon banning a user.
+	maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
+	maxDuplicatesKick: 50, // Amount of duplicate messages that trigger a warning.
+	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.
+	exemptPermissions: [], // Bypass users with any of these permissions. ('ADMINISTRATOR')
+	ignoreBots: true, // Ignore bot messages.
+	debug: true,
+	verbose: true, // Extended Logs from module.
+	ignoredUsers: [], // Array of User IDs that get ignored.
+	// And many more options... See the documentation.
+});
 
 const portal_managed_guilds_path = config.database_json;
-
 const guild_list_json = readFileSync(config.database_json);
 if (!guild_list_json) {
 	console.log('could not read guild list');
@@ -31,14 +50,6 @@ if (!Array.isArray(guild_list)) {
 	console.log('guild_list must be an array');
 	process.exit(1);
 }
-
-// guild_list.forEach(g => {
-// 	console.log('g :>> ', g);
-// 	if (!(g instanceof GuildPrtl)) {
-// 		console.log('guild json is not GuildPrtl type');
-// 		process.exit(1);
-// 	}
-// });
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
@@ -178,7 +189,17 @@ client.on('message', async (message: Message) => {
 	// ranking system
 	ranking_system(message);
 
-	// word check
+	anti_spam.message(message);
+
+	// const spam = isSpam(message.content);
+	// if (spam.length > 0) {
+	// 	message.react('🚩');
+	// 	message.author
+	// 		.send(`try not to spam`)
+	// 		.catch(console.error);
+	// }
+
+	// profanity check
 	const profanities = isProfane(message.content);
 	if (profanities.length > 0) {
 		message.react('🚩');
@@ -220,10 +241,8 @@ client.on('message', async (message: Message) => {
 		return false;
 	});
 
-	if (!is_portal_command) {
-		// is not a portal command
-		return false;
-	}
+	// is not a portal command
+	if (!is_portal_command) return false;
 
 	if (!command_options) {
 		message_reply(false, message.channel, message, message.author,
@@ -389,11 +408,9 @@ function portal_channel_handler(message: Message): boolean {
 
 function ranking_system(message: Message): void {
 	const level = add_points_message(message, guild_list);
-	if (level) {
-		message_reply(true, message.channel, message,
-			message.author, `you reached level ${level}!`,
-			guild_list, client);
-	}
+	if (level)
+		message_reply(true, message.channel, message, message.author,
+			`you reached level ${level}!`, guild_list, client);
 }
 
 function log_portal() {
