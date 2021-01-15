@@ -13,9 +13,6 @@
     Music / Spotify / Announcement / URL-only channels<br>
 </p>
 
-<p align="center"> <a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, an entire list of all commands Portal has
-with a description, arguments and how to use them.</p>
-
 <p align="center">
     <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" />
     <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" />
@@ -23,6 +20,9 @@ with a description, arguments and how to use them.</p>
     <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
     <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/Add%20to%20Discord-📥-blue" alt="Add to Discord" /></a>
 </p>
+
+<p align="center"> <a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, an entire list of all commands Portal has
+with a description, arguments and how to use them.</p>
 
 ---
 
@@ -118,4 +118,4 @@ Portal is an open source project you can contribute too. There are guidelines fo
 > 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
 > 3. Runs on nodejs 14.x
 
-Copyrights © Keybraker 2020-2021 Portal, All rights reserved
+<p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>
