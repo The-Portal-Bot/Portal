@@ -202,27 +202,6 @@ export async function join_user_voice(
 	});
 };
 
-export function inline_operator(str: string): any {
-	switch (str) {
-		case '==':
-			(a: string, b: string) => a == b;
-		case '===':
-			(a: string, b: string) => a === b;
-		case '!=':
-			(a: string, b: string) => a != b;
-		case '!==':
-			(a: string, b: string) => a !== b;
-		case '>':
-			(a: string, b: string) => a > b;
-		case '<':
-			(a: string, b: string) => a < b;
-		case '>=':
-			(a: string, b: string) => a >= b;
-		case '<=':
-			(a: string, b: string) => a <= b;
-	};
-};
-
 export function getJSON(str: string): any | null {
 	let data = null;
 	try {

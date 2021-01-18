@@ -10,8 +10,29 @@ import { attribute_prefix, get_attribute, is_attribute } from '../types/interfac
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
-import { create_music_message, getJSON, inline_operator } from './helpOps';
+import { create_music_message, getJSON } from './helpOps';
 import { stop } from './musicOps';
+
+function inline_operator(str: string): any {
+	switch (str) {
+		case '==':
+			return (a: string, b: string) => a == b;
+		case '===':
+			return (a: string, b: string) => a === b;
+		case '!=':
+			return (a: string, b: string) => a != b;
+		case '!==':
+			return (a: string, b: string) => a !== b;
+		case '>':
+			return (a: string, b: string) => a > b;
+		case '<':
+			return (a: string, b: string) => a < b;
+		case '>=':
+			return (a: string, b: string) => a >= b;
+		case '<=':
+			return (a: string, b: string) => a <= b;
+	};
+};
 
 export function getOptions(guild: Guild, topic: string, can_write: boolean): GuildCreateChannelOptions {
 	if (can_write)
@@ -641,9 +662,9 @@ export function regex_interpreter(
 				// did not put into structure_list due to many unnecessary function calls
 				let is_valid = false;
 				const statement = getJSON(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
-				if (!statement) {
-					return 'error';
-				}
+
+				if (!statement) return 'error';
+
 				if (Object.prototype.hasOwnProperty.call(statement, 'if')) {
 					if (Object.prototype.hasOwnProperty.call(statement, 'is')) {
 						if (Object.prototype.hasOwnProperty.call(statement, 'with')) {
@@ -665,8 +686,8 @@ export function regex_interpreter(
 						statement.is === ">" || statement.is === "<" || statement.is === ">=" || statement.is === "<=") {
 						if (inline_operator(statement.is)(
 							regex_interpreter(statement.if, voice_channel, voice_object, portal_list, guild_object, guild),
-							regex_interpreter(statement.with, voice_channel, voice_object, portal_list, guild_object, guild))
-						) {
+							regex_interpreter(statement.with, voice_channel, voice_object, portal_list, guild_object, guild)
+						)) {
 							const value = regex_interpreter(statement.yes, voice_channel, voice_object, portal_list, guild_object, guild);
 							if (value !== '--') {
 								new_channel_name += value;
