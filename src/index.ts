@@ -1,4 +1,3 @@
-// load up the discord.js library
 import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import { readFileSync } from "jsonfile";
 import command_config_json from './config.command.json';
@@ -26,10 +25,9 @@ const anti_spam = new AntiSpam({
 	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.
 	exemptPermissions: [], // Bypass users with any of these permissions. ('ADMINISTRATOR')
 	ignoreBots: true, // Ignore bot messages.
-	debug: true,
+	debug: false,
 	verbose: true, // Extended Logs from module.
 	ignoredUsers: [], // Array of User IDs that get ignored.
-	// And many more options... See the documentation.
 });
 
 const portal_managed_guilds_path = config.database_json;
@@ -281,7 +279,7 @@ function command_loader(
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 			.then((response: ReturnPormise) => {
-				if (response.result && response.value)
+				if (response)
 					message_reply(response.result, message.channel, message, message.author, response.value,
 						guild_list, client, command_options ? command_options.auto_delete : true);
 				if (command_options.save_after)
@@ -317,7 +315,7 @@ function command_loader(
 
 	require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_list, portal_managed_guilds_path)
 		.then((response: ReturnPormise) => {
-			if (response.result === true) {
+			if (response) {
 				active_cooldown.push({
 					member: message.author.id,
 					command: cmd,

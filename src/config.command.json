@@ -19,25 +19,43 @@
                 "save_after": false
             },
             {
-                "name": "ping",
+                "name": "focus",
                 "range": "none",
                 "time": 0,
                 "auth": false,
-                "premium": false,
+                "premium": true,
+                "auto_delete": true,
+                "save_after": true
+            },
+            {
+                "name": "join",
+                "range": "none",
+                "time": 1,
+                "auth": false,
+                "premium": true,
                 "auto_delete": true,
                 "save_after": false
             },
             {
-                "name": "whoami",
+                "name": "leave",
                 "range": "none",
                 "time": 0,
                 "auth": false,
-                "premium": false,
+                "premium": true,
                 "auto_delete": true,
                 "save_after": false
             },
             {
                 "name": "level",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "auto_delete": true,
+                "save_after": false
+            },
+            {
+                "name": "ping",
                 "range": "none",
                 "time": 0,
                 "auth": false,
@@ -64,29 +82,11 @@
                 "save_after": false
             },
             {
-                "name": "focus",
+                "name": "whoami",
                 "range": "none",
                 "time": 0,
                 "auth": false,
-                "premium": true,
-                "auto_delete": true,
-                "save_after": true
-            },
-            {
-                "name": "join",
-                "range": "none",
-                "time": 1,
-                "auth": false,
-                "premium": true,
-                "auto_delete": true,
-                "save_after": false
-            },
-            {
-                "name": "leave",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
+                "premium": false,
                 "auto_delete": true,
                 "save_after": false
             }
@@ -95,6 +95,24 @@
     {
         "path": "no_auth/dynamic",
         "commands": [{
+                "name": "announce",
+                "range": "member",
+                "time": 2,
+                "auth": false,
+                "premium": true,
+                "auto_delete": true,
+                "save_after": false
+            },
+            {
+                "name": "corona",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "auto_delete": false,
+                "save_after": false
+            },
+            {
                 "name": "help",
                 "range": "none",
                 "time": 0,
@@ -122,24 +140,6 @@
                 "save_after": false
             },
             {
-                "name": "corona",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "auto_delete": false,
-                "save_after": false
-            },
-            {
-                "name": "weather",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "auto_delete": false,
-                "save_after": false
-            },
-            {
                 "name": "roll",
                 "range": "none",
                 "time": 0,
@@ -158,12 +158,12 @@
                 "save_after": false
             },
             {
-                "name": "announce",
-                "range": "member",
-                "time": 2,
+                "name": "weather",
+                "range": "none",
+                "time": 0,
                 "auth": false,
-                "premium": true,
-                "auto_delete": true,
+                "premium": false,
+                "auto_delete": false,
                 "save_after": false
             }
         ]
@@ -171,6 +171,15 @@
     {
         "path": "auth/static",
         "commands": [{
+                "name": "force",
+                "range": "member",
+                "time": 5,
+                "auth": true,
+                "premium": true,
+                "auto_delete": false,
+                "save_after": true
+            },
+            {
                 "name": "save",
                 "range": "guild",
                 "time": 5,
@@ -186,15 +195,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
-            },
-            {
-                "name": "force",
-                "range": "member",
-                "time": 5,
-                "auth": true,
-                "premium": true,
-                "auto_delete": false,
                 "save_after": true
             }
         ]
