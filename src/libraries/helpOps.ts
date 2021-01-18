@@ -438,7 +438,7 @@ export function insert_guild(guild_id: string, guild_list: GuildPrtl[], client: 
 	const locale: string = 'en';
 	const announce: boolean = true;
 	const level_speed: string = 'normal';
-	const premium: boolean = false;
+	const premium: boolean = true; // as it is not a paid service anymore
 
 	guild_list.push(new GuildPrtl(guild_id, portal_list, member_list, url_list, role_list, ranks, auth_role,
 		spotify, music_data, music_queue, dispatcher, announcement, locale, announce, level_speed, premium));

@@ -89,14 +89,40 @@ _argument preceded by **!** is **mandatory**, **@** is **optional** (not include
     }
     ```
 
+#### In case you want to run Portal with terminal (ex. tmux)
+1.  Compile Portal
+
+        $ npm run compile
+        
 2.  Run Portal
 
         $ npm start
+        
+#### In case you want to run Portal with docker
+1.  Create Portal docker image
+
+        $ docker build . -f docker/Dockerfile -t portal
+        
+2.  Check if everything went well
+
+        $ docker images
+        
+        REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+        portal       latest    4cfb856dc61d   15 minutes ago   1.27GB
+        
+3.  Run docker image
+
+        $ docker run portal
+        
+4.  Run docker image (4cfb856dc61d is id from `docker images`)
+
+        $ docker stop 4cfb856dc61d
 
 ## Release History
 
 | Version | Date       | Argument     |
 | :------ | :--------- | :----------- |
+| 0.5.7   | 18-01-2021 | polishing.   |
 | 0.5.0   | 08-01-2021 | _Typescript_ |
 | 0.2.1   | 16-06-2020 | _Javascript_ |
 | 0.1.0   | 18-05-2020 | _Beta_       |

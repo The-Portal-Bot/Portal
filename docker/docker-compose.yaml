@@ -1,0 +1,13 @@
+version: "3"
+networks:
+  api_server_default:
+    external: false
+services:
+  hackernewsapp:
+    networks:
+      - api_server_default
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ENV_NAME: dev

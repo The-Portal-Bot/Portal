@@ -1,11 +1,13 @@
 {
-    "name": "Portal",
+    "name": "portal",
     "author": "Ioannis Tsiakkas",
     "version": "0.5.7",
     "private": true,
     "main": "src/index.ts",
     "scripts": {
-        "start": "npx tsc && node build/index.js",
+        "compile": "npx tsc",
+        "start": "node build/index.js",
+        "compile-start": "npx tsc && node build/index.js",
         "test": "npx tsc && jest"
     },
     "dependencies": {
