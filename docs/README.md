@@ -5,12 +5,12 @@
 
 <p align="center">
     Voice channels on demand (with auto-name update)<br>
-    Assignes and strips roles from users with a single reaction press<br>
+    Assigns and strips roles from users with a single reaction<br>
     Creates temporary "focus" channels for private conversations<br>
     Music player that is clean and clutter free<br>
-    Portal will keep you up to date, without the need to look<br>
-    Get the latest on the corona virus and Weather<br>
-    Music / Spotify / Announcement / URL-only channels<br>
+    Portal will keep you up to speed, with voice announcements<br>
+    Get the latest on the corona virus and current weather<br>
+    Spotify / Announcement / URL-only channels<br>
 </p>
 
 <p align="center">
@@ -23,6 +23,7 @@
 <p align="center">
     <a href="https://top.gg/bot/704400876860735569"><img src="https://img.shields.io/badge/top.gg-Review Portal-blue" alt="top.gg/portal" /></a>
     <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/📥-Add%20to%20Discord-blue" alt="Add to Discord" /></a>
+    <a href="https://discord.gg/nuKXgFXr5y"><img src="https://img.shields.io/badge/Discord-Portal%20Support-green" alt="Add to Discord" /></a>
 </p>
 
 ---
@@ -43,6 +44,8 @@ Regex Interpreter: there are four types of data _(used by run command and naming
 _pipes are applied to variables or text in order to change their outcome_<br>
 _default premium regex: `G$#-P$member_count | $status_list`_<br>
 _argument preceded by **!** is **mandatory**, **@** is **optional** (not included)_
+
+For frequently asked questions (FAQ) with their answers click [here](https://github.com/keybraker/portal/blob/master/docs/faq.md).
 
 ## Self Hosting
 
