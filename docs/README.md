@@ -49,15 +49,30 @@ For frequently asked questions (FAQ) with their answers click [here](https://git
 
 ### Prerequisites
 
-1.  Install npm ^6.x
+1.  macOS
+    1. install [homebrew](https://brew.sh)
+    
+           $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-        $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
+    2. update homebrew
+        
+           $ brew update
+            
+    3. install npm and node ^14.x
+    
+           $ brew install node@14
 
-2.  Install nodejs ^14.x
+2.  ubuntu
 
-        $ sudo apt -y install nodejs
+    1. install npm ^6.x
+    
+           $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
 
-    > make sure you have version 14.x or higher with `node -v`
+    2. install nodejs ^14.x
+        
+           $ sudo apt install nodejs
+
+> make sure you have version ^14.x or higher with `node -v`
 
 ### Build
 
@@ -127,7 +142,7 @@ For frequently asked questions (FAQ) with their answers click [here](https://git
 
 | Version | Date       | Argument     |
 | :------ | :--------- | :----------- |
-| 0.5.7   | 18-01-2021 | polishing.   |
+| 0.5.7   | 18-01-2021 | polishing    |
 | 0.5.0   | 08-01-2021 | _Typescript_ |
 | 0.2.1   | 16-06-2020 | _Javascript_ |
 | 0.1.0   | 18-05-2020 | _Beta_       |
