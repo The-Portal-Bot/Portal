@@ -124,6 +124,50 @@ export function is_pipe(candidate: string): string {
 	return '';
 };
 
+export function get_pipe_guide(): MessageEmbed {
+	const pipe_array: Field[] = [
+		{
+			emote: 'Used in Regex Interpreter',
+			role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
+			inline: true
+		},
+		{
+			emote: 'Pipes are inextricably linked with text',
+			role: '*pipes can used on plain text or even variables and attributes*',
+			inline: true
+		},
+		{
+			emote: '1. Go to any channel',
+			role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
+			inline: false
+		},
+		{
+			emote: '2-1. `./run &locale | upperCase`',
+			role: '*run command, processes given text and returns processed text*',
+			inline: false
+		},
+		{
+			emote: '2-2. Wait for portal response which will be either GR OR EN OR DE',
+			role: '*it will reply with your string until it edits it with processed info*',
+			inline: false
+		},
+		{
+			emote: '3-1. `./set regex_voice &locale | upperCase` (note that when setting you do not need prefix &)',
+			role: '*set command, updates the data of an attribute in this case **regex_voice** to **&locale | upperCase***',
+			inline: false
+		},
+		{
+			emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
+			role: '*portal will either confirm update or inform you of the error it faced*',
+			inline: false
+		}
+	];
+
+	return create_rich_embed(
+		'Pipe Guide', 'how to use pipes with regex interpreter', '#6EEB83', pipe_array, null, null, null, null, null
+	);
+}
+
 export function get_pipe_help(): MessageEmbed[] {
 	const pipe_array: Field[][] = [];
 
@@ -145,8 +189,7 @@ export function get_pipe_help(): MessageEmbed[] {
 				'Pipes',
 				'Prefix: ' + pipe_prefix + '\n' +
 				'Mini functions you can pass text or Variables to manipulate their outcome\n' +
-				'argument preceded by **!** is *mandatory*\n' +
-				'argument preceded by **@** is *optional*\n',
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#6EEB83', pipe_array[0], null, null, null, null, null
 			)
 		} else {
@@ -165,8 +208,7 @@ export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 				pipe.name,
 				'Type: Pipe' +
 				'\nPrefix: ' + pipe_prefix + '\n' +
-				'argument preceded by **!** is *mandatory*\n' +
-				'argument preceded by **@** is *optional*\n',
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#6EEB83',
 				[
 					{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },

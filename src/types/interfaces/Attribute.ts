@@ -464,6 +464,50 @@ export function is_attribute(candidate: string): string {
 	return '';
 }
 
+export function get_attribute_guide(): MessageEmbed {
+	const attr_array: Field[] = [
+		{
+			emote: 'Used in Regex Interpreter',
+			role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
+			inline: true
+		},
+		{
+			emote: 'attributes are mutable data options',
+			role: '*options corespond to server, portal or voice channels*',
+			inline: true
+		},
+		{
+			emote: '1. Go to any channel',
+			role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
+			inline: false
+		},
+		{
+			emote: '2-1.`./run &locale`',
+			role: '*run command, processes given text and returns processed text*',
+			inline: false
+		},
+		{
+			emote: '2-2. Wait for portal response which will be either gr OR en OR de',
+			role: '*it will reply with your string until it edits it with processed info*',
+			inline: false
+		},
+		{
+			emote: '3-1. `./set` locale de (note that when setting you do not need prefix &)',
+			role: '*set command, updates the data of an attribute in this case **locale** to **de***',
+			inline: false
+		},
+		{
+			emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
+			role: '*portal will either confirm update or inform you of the error it faced*',
+			inline: false
+		}
+	];
+
+	return create_rich_embed(
+		'Attribute Guide', 'how to use attributes with regex interpreter', '#FF5714', attr_array, null, null, null, null, null
+	);
+}
+
 export function get_attribute_help(): MessageEmbed[] {
 	const attr_array: Field[][] = [];
 
@@ -486,8 +530,7 @@ export function get_attribute_help(): MessageEmbed[] {
 				'Prefix: ' + attribute_prefix + '\n' +
 				'are Portal\'s, portal or voice channel options ' +
 				'that can be manipulated by whomever has clearance.\n' +
-				'argument preceded by **!** is *mandatory*\n' +
-				'argument preceded by **@** is *optional*\n',
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#FF5714', attr_array[0], null, null, null, null, null
 			)
 		} else {
@@ -508,8 +551,7 @@ export function get_attribute_help_super(
 				attr.name,
 				'Type: Attribute' +
 				'\nPrefix: ' + attribute_prefix + '\n' +
-				'argument preceded by **!** is *mandatory*\n' +
-				'argument preceded by **@** is *optional*\n',
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#FF5714',
 				[
 					{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },
