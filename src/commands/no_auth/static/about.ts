@@ -23,18 +23,23 @@ module.exports = async (
             },
             {
                 emote: 'Version',
-                role: '1.0.2',
+                role: '0.5.7',
                 inline: true
             },
             {
-                emote: 'For help just type',
-                role: './help',
+                emote: 'Show your support',
+                role: 'https://top.gg/bot/704400876860735569',
+                inline: false
+            },
+            {
+                emote: 'Github',
+                role: 'https://www.github.com/keybraker/portal',
                 inline: false
             }],
             null,
             null,
             true,
-            'https://portal-bot.xyz/',
+            'https://top.gg/bot/704400876860735569',
             null)
         );
 

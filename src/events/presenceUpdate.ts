@@ -85,12 +85,12 @@ module.exports = async (
 	args: { client: Client, guild_list: GuildPrtl[], newPresence: Presence | undefined }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (args.newPresence === null) { return resolve({ result: true, value: 'could not fetch presence' }); }
-		if (args.newPresence === undefined) { return resolve({ result: true, value: 'could not fetch presence' }); }
-		if (args.newPresence.user === null) { return resolve({ result: true, value: 'could not fetch presence user' }); }
-		if (args.newPresence.member === null) { return resolve({ result: true, value: 'could not fetch presence member' }); }
-		if (args.newPresence.guild === null) { return resolve({ result: true, value: 'could not fetch presence guild' }); }
-		if (args.newPresence.user.bot) { return resolve({ result: true, value: 'not handling bot presence update' }); }
+		if (args.newPresence === null) return resolve({ result: true, value: 'could not fetch presence' });
+		if (args.newPresence === undefined) return resolve({ result: true, value: 'could not fetch presence' });
+		if (args.newPresence.user === null) return resolve({ result: true, value: 'could not fetch presence user' });
+		if (args.newPresence.member === null) return resolve({ result: true, value: 'could not fetch presence member' });
+		if (args.newPresence.guild === null) return resolve({ result: true, value: 'could not fetch presence guild' });
+		if (args.newPresence.user.bot) return null; // resolve({ result: true, value: 'not handling bot presence update' });
 
 		const current_guild = args.newPresence.guild;
 		const current_channel = args.newPresence.member.voice.channel;
