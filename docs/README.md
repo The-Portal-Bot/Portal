@@ -1,24 +1,27 @@
-<h1 align="center">Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" width="25" height="25"></p>
+<h1 align="center">Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" width="25" height="25">
 </h1>
 
 <p align="center">A fully fledged and feature rich bot for Discord</p>
 
 <p align="center">
     Voice channels on demand (with auto-name update)<br>
-    Assignes and strips roles from users with a single reaction press<br>
+    Assigns and strips roles from users with a single reaction<br>
     Creates temporary "focus" channels for private conversations<br>
     Music player that is clean and clutter free<br>
-    Portal will keep you up to date, without the need to look<br>
-    Get the latest on the corona virus and Weather<br>
-    Music / Spotify / Announcement / URL-only channels<br>
+    Portal will keep you up to speed, with voice announcements<br>
+    Get the latest on the corona virus and current weather<br>
+    Spotify / Announcement / URL-only channels<br>
 </p>
 
 <p align="center">
-    <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" />
-    <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" />
-    <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" />
-    <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
-    <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/Add%20to%20Discord-📥-blue" alt="Add to Discord" /></a>
+    <a href="https://top.gg/bot/704400876860735569">
+        <img src="https://top.gg/api/widget/status/704400876860735569.svg?noavatar=true" alt="Portal" />
+    </a>
+    <a href="https://top.gg/bot/704400876860735569">
+        <img src="https://top.gg/api/widget/upvotes/704400876860735569.svg?noavatar=true" alt="Portal" />
+    </a>
+    <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/📥-Add%20to%20Discord-blue" alt="Add to Discord" /></a>
+    <a href="https://discord.gg/nuKXgFXr5y"><img src="https://img.shields.io/badge/Discord-Portal%20Official-green" alt="Add to Discord" /></a>
 </p>
 
 ---
@@ -40,33 +43,51 @@ _pipes are applied to variables or text in order to change their outcome_<br>
 _default premium regex: `G$#-P$member_count | $status_list`_<br>
 _argument preceded by **!** is **mandatory**, **@** is **optional** (not included)_
 
+For frequently asked questions (FAQ) with their answers click [here](https://github.com/keybraker/portal/blob/master/docs/faq.md).
+
 ## Self Hosting
 
 ### Prerequisites
 
-1.  Install npm ^6.x
+#### macOS
 
-        $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
+1. install [homebrew](https://brew.sh)
 
-2.  Install nodejs ^14.x
+       $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-        $ sudo apt -y install nodejs
+2. update homebrew
 
-    > make sure you have version 14.x or higher with `node -v`
+       $ brew update
+
+3. install npm and node ^14.x
+
+       $ brew install node@14
+
+#### ubuntu
+
+1. install npm ^6.x
+
+       $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
+
+2. install nodejs ^14.x
+
+       $ sudo apt install nodejs
+
+> make sure you have version ^14.x or higher with `node -v`
 
 ### Build
 
-1.  Open a terminal windows and clone Portal
+1. Open a terminal windows and clone Portal
 
-        $ git clone https://github.com/keybraker/portal.git && cd portal
+       $ git clone https://github.com/keybraker/portal.git && cd portal
 
-2.  Install node packages
+2. Install node packages
 
-        $ npm install
+       $ npm install
 
-### Setup and Run
+### Configure
 
-1.  Create a bot on Discord Portal and add the toke in config.json
+1. Create a bot on Discord Portal and add the toke in config.json
 
     ```json
     {
@@ -89,40 +110,44 @@ _argument preceded by **!** is **mandatory**, **@** is **optional** (not include
     }
     ```
 
+### Run
+
 #### In case you want to run Portal with terminal (ex. tmux)
-1.  Compile Portal
 
-        $ npm run compile
+1. Compile Portal
+
+       $ npm run compile
         
-2.  Run Portal
+2. Run Portal
 
-        $ npm start
+       $ npm start
         
 #### In case you want to run Portal with docker
-1.  Create Portal docker image
 
-        $ docker build . -f docker/Dockerfile -t portal
-        
-2.  Check if everything went well
+1. Create Portal docker image
 
-        $ docker images
+       $ docker build . -f docker/Dockerfile -t portal
         
-        REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
-        portal       latest    4cfb856dc61d   15 minutes ago   1.27GB
-        
-3.  Run docker image
+2. Check if everything went well
 
-        $ docker run portal
-        
-4.  Run docker image (4cfb856dc61d is id from `docker images`)
+       $ docker images
 
-        $ docker stop 4cfb856dc61d
+       REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+       portal       latest    4cfb856dc61d   15 minutes ago   1.27GB
+        
+3. Run docker image
+
+       $ docker run portal
+        
+4. Run docker image (4cfb856dc61d is id from `docker images`)
+
+       $ docker stop 4cfb856dc61d
 
 ## Release History
 
 | Version | Date       | Argument     |
 | :------ | :--------- | :----------- |
-| 0.5.7   | 18-01-2021 | polishing.   |
+| 0.5.7   | 18-01-2021 | _polishing_  |
 | 0.5.0   | 08-01-2021 | _Typescript_ |
 | 0.2.1   | 16-06-2020 | _Javascript_ |
 | 0.1.0   | 18-05-2020 | _Beta_       |
@@ -141,5 +166,7 @@ Portal is an open source project you can contribute too. There are guidelines fo
 > 1. Portal will never record conversations or store anything you type<br>
 > 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
 > 3. Runs on nodejs 14.x
+
+<img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
 
 <p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>

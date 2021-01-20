@@ -398,6 +398,30 @@ export function is_command(candidate: string): string {
 	return '';
 }
 
+export function get_command_guide(): MessageEmbed {
+	const cmmd_array: Field[] = [
+		{
+			emote: '1. Go to any channel',
+			role: '*you can write commands in any channel and Portal will see them*',
+			inline: false
+		},
+		{
+			emote: '2. `./help`',
+			role: '*write your command, for example help*',
+			inline: false
+		},
+		{
+			emote: '3. Wait for portal response',
+			role: '*portal will reply to almost all commands with an action or/and message*',
+			inline: false
+		}
+	];
+
+	return create_rich_embed(
+		'Command Guide', 'how to use commands', '#9775A9', cmmd_array, null, null, null, null, null
+	);
+}
+
 export function get_command_help(): MessageEmbed[] {
 	const cmmd_array: Field[][] = [];
 
@@ -419,14 +443,13 @@ export function get_command_help(): MessageEmbed[] {
 				'Commands',
 				'Prefix: *' + command_prefix + '*\n' +
 				'**The way to communicate with Portal.**\n' +
-				'argument preceded by **!** is *mandatory*\n' +
-				'argument preceded by **@** is *optional*\n',
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#9775A9', cmmd_array[0], null, null, null, null, null
-			)
+			);
 		} else {
 			return create_rich_embed(
 				null, null, '#9775A9', cmmd_array[index], null, null, null, null, null
-			)
+			);
 		}
 	});
 };
@@ -439,8 +462,7 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 				cmmd.name,
 				'Type: Command' +
 				'\nPrefix: ' + command_prefix + '\n' +
-				'argument preceded by **!** is *mandatory*\n' +
-				'argument preceded by **@** is *optional*\n',
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#9775A9',
 				[
 					{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },

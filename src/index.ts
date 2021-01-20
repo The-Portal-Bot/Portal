@@ -361,10 +361,12 @@ function event_loader(event: string, args: any): void {
 				// 	}
 				// }
 			}
-			const colour = response.result ? '\x1b[32m' : '\x1b[31m';
-			const reset = '\x1b[0m';
-			const value_arr = response.value.split('\n');
-			console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
+			if (response) {
+				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
+				const reset = '\x1b[0m';
+				const value_arr = response.value.split('\n');
+				console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
+			}
 		});
 };
 

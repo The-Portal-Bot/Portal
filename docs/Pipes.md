@@ -5,18 +5,18 @@
 - _prefix:_ **|**
 - _Pipes are mini functions you can pass text or Variables to manipulate their outcome_
 
-| Pipe             | Type   | Description                                           |
-| :--------------- | :----- | :---------------------------------------------------- |
-| `upperCase`      | string | _returns an upperCase of the input_                   |
-| `lowerCase`      | string | _returns an lowerCase of the input_                   |
-| `capitalize`     | string | _returns an capitalize of the input_                  |
-| `decapitalize`   | string | _returns an decapitalize of the input_                |
-| `souvlakiCase`   | string | _returns an souvlakiCase of the input_                |
-| `snakeCase`      | string | _returns an snakeCase of the input_                   |
-| `titleCase`      | string | _returns an titleCase of the input_                   |
-| `camelCase`      | string | _returns an camelCase of the input_                   |
-| `acronym`        | string | _returns an acronym of the input_                     |
-| `word#`          | string | _returns \# words of the input_                       |
-| `populous_count` | number | _returns the count of most common element in list_    |
-| `populous`       | list   | _returns the name of the most common element in list_ |
-| `summary_count`  | number | _returns the count of members having a status_        |
+| Pipe             | Description                                           | Type   |
+| :--------------- | :---------------------------------------------------- | :----- |
+| `upperCase`      | _returns an upperCase of the input_                   | string |
+| `lowerCase`      | _returns an lowerCase of the input_                   | string |
+| `capitalize`     | _returns an capitalize of the input_                  | string |
+| `decapitalize`   | _returns an decapitalize of the input_                | string |
+| `souvlakiCase`   | _returns an souvlakiCase of the input_                | string |
+| `snakeCase`      | _returns an snakeCase of the input_                   | string |
+| `titleCase`      | _returns an titleCase of the input_                   | string |
+| `camelCase`      | _returns an camelCase of the input_                   | string |
+| `acronym`        | _returns an acronym of the input_                     | string |
+| `word#`          | _returns \# words of the input_                       | string |
+| `populous_count` | _returns the count of most common element in list_    | number |
+| `populous`       | _returns the name of the most common element in list_ | list   |
+| `summary_count`  | _returns the count of members having a status_        | number |

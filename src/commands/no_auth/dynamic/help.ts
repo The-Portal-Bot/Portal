@@ -1,46 +1,56 @@
 import { Client, Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { get_attribute_help, get_attribute_help_super } from "../../../types/interfaces/Attribute";
-import { command_prefix, get_command_help, get_command_help_super } from "../../../types/interfaces/Command";
+import { get_attribute_help, get_attribute_help_super, get_attribute_guide } from "../../../types/interfaces/Attribute";
+import { get_command_help, get_command_help_super, get_command_guide } from "../../../types/interfaces/Command";
 import { Field } from "../../../types/interfaces/InterfacesPrtl";
-import { get_pipe_help, get_pipe_help_super } from "../../../types/interfaces/Pipe";
-import { get_structure_help, get_structure_help_super } from "../../../types/interfaces/Structure";
-import { get_variable_help, get_variable_help_super } from "../../../types/interfaces/Variable";
+import { get_pipe_help, get_pipe_help_super, get_pipe_guide } from "../../../types/interfaces/Pipe";
+import { get_structure_help, get_structure_help_super, get_structure_guide } from "../../../types/interfaces/Structure";
+import { get_variable_help, get_variable_help_super, get_variable_guide } from "../../../types/interfaces/Variable";
 
 module.exports = async (
 	client: Client, message: Message, args: string[],
 	guild_list: GuildPrtl[], portal_managed_guilds_path: string
 ) => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
+		const guild_object = guild_list.find(g => message.guild ? g.id === message.guild.id : false);
 		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 
 		if (args.length === 0) {
 			const func_array: Field[] = [
 				{
-					emote: './help commands',
+					emote: './help commands OR ./help commands guide',
 					role: 'Commands are mini programs you can use to get a response',
 					inline: false
 				},
 				{
-					emote: './help variables',
+					emote: null,
+					role: 'Regex Interpreter',
+					inline: false
+				},
+				{
+					emote: './help variables OR ./help variables guide',
 					role: 'Variables are live data you can use to make voice channel names or run with ./run',
 					inline: false
 				},
 				{
-					emote: './help pipes',
+					emote: './help pipes OR ./help pipes guide',
 					role: 'Pipes are mini-programs that manipulate text or even variables',
 					inline: false
 				},
 				{
-					emote: './help arguments',
+					emote: './help arguments OR ./help arguments guide',
 					role: 'Arguments are options the options of your current portal, which you can change with ./set',
 					inline: false
 				},
 				{
-					emote: './help structures',
+					emote: './help structures OR ./help structures guide',
 					role: 'Structures are a way to manipulate the outcome of a text to greater extend',
+					inline: false
+				},
+				{
+					emote: null,
+					role: 'Specific help',
 					inline: false
 				},
 				{
@@ -57,6 +67,44 @@ module.exports = async (
 				))
 				.catch(console.error);
 			return resolve({ result: true, value: '' });
+		}
+		else if (args.length === 2) {
+			if (args[0] === 'commands' && args[1] === 'guide') {
+
+				message.author
+					.send(get_command_guide())
+					.catch(console.error);
+			}
+			else if (args[0] === 'variables' && args[1] === 'guide') {
+
+				message.author
+					.send(get_variable_guide())
+					.catch(console.error);
+			}
+			else if (args[0] === 'pipes' && args[1] === 'guide') {
+
+				message.author
+					.send(get_pipe_guide())
+					.catch(console.error);
+			}
+			else if (args[0] === 'attributes' && args[1] === 'guide') {
+
+				message.author
+					.send(get_attribute_guide())
+					.catch(console.error);
+			}
+			else if (args[0] === 'structures' && args[1] === 'guide') {
+
+				message.author
+					.send(get_structure_guide())
+					.catch(console.error);
+			}
+			else {
+				return resolve({
+					result: false,
+					value: `*${args[0]} ${args[1]}**, does not exist in Portal™, you can run \`./help help\` for help`,
+				});
+			}
 		}
 		else if (args.length === 1) {
 			if (args[0] === 'all') {
