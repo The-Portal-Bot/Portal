@@ -345,7 +345,7 @@ function event_loader(event: string, args: any): void {
 	console.log(`├─ event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
-			if (event === 'messageReactionAdd' && response) {
+			// if (event === 'messageReactionAdd' && response) {
 				// const messageReaction = <MessageReaction>args.messageReaction;
 				// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
 
@@ -360,8 +360,13 @@ function event_loader(event: string, args: any): void {
 				// 			.catch(error => console.log(error));
 				// 	}
 				// }
-			}
-			if (response) {
+			// }
+			if (config.debug && response) {
+				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
+				const reset = '\x1b[0m';
+				const value_arr = response.value.split('\n');
+				console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
+			} else if (response && !response.result) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
 				const value_arr = response.value.split('\n');
