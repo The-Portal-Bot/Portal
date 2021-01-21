@@ -14,5 +14,6 @@
     },
     "delete_msg": false,
     "delete_msg_after": 5,
-    "always_reply": true
+    "always_reply": true,
+    "debug": false
 }
