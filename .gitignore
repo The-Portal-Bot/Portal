@@ -118,7 +118,7 @@ dist
 build/*
 
 #guild status
-.server_storage/guild_list.json
+src/database/guild_list.json
 
 #config
 src/config.json
