@@ -1,5 +1,6 @@
 import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import { readFileSync } from "jsonfile";
+import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
@@ -10,7 +11,64 @@ import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
 import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+import GuildPrtlMdl from "./types/models/GuildPrtlMdl";
 const AntiSpam = require('discord-anti-spam');
+
+//Connect to mongoose database
+mongoose.connect(config.mongo_url, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true
+})
+	.then(() => {
+		console.log('> connected to the Portal\'s mongodb');
+	}).catch((err) => {
+		console.log('> unable to connect to the Mongodb database: ' + err);
+		process.exit();
+	});
+
+GuildPrtlMdl.create({
+	id: "identifier",
+	portal_list: [],
+	member_list: [],
+	url_list: [],
+	role_list: [],
+	ranks: [],
+	auth_role: [],
+	spotify: "spotify",
+	music_data: {
+		channel_id: "string",
+		message_id: "string",
+		votes: []
+	},
+	music_queue: [],
+	dispatcher: null,
+	announcement: "announcement",
+	locale: "locale",
+	announce: true,
+	level_speed: "level_speed",
+	premium: true
+})
+	.then(doc => {
+		console.log('doc :>> ', doc);
+		process.exit();
+	})
+	.catch(err => {
+		console.log('err: ' + err);
+		process.exit();
+	});
+
+GuildPrtlMdl.find({ id: "identifier" })
+	.then(found => {
+		console.log('found :>> ', found);
+		process.exit();
+	})
+	.catch(err => {
+		console.log('err: ' + err);
+		process.exit();
+	});
+
+// process.exit();
 
 const anti_spam = new AntiSpam({
 	warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
@@ -346,20 +404,20 @@ function event_loader(event: string, args: any): void {
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
 			// if (event === 'messageReactionAdd' && response) {
-				// const messageReaction = <MessageReaction>args.messageReaction;
-				// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
+			// const messageReaction = <MessageReaction>args.messageReaction;
+			// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
 
-				// if (guild_object) {
-				// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
-				// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-				// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
-				// 		// auto na trexei mono otan einai music reaction
-				// 		music_channel
-				// 			.send(`${args.user}, ${response.value}`)
-				// 			.then(msg => { msg.delete({ timeout: 5000 }); })
-				// 			.catch(error => console.log(error));
-				// 	}
-				// }
+			// if (guild_object) {
+			// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
+			// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+			// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
+			// 		// auto na trexei mono otan einai music reaction
+			// 		music_channel
+			// 			.send(`${args.user}, ${response.value}`)
+			// 			.then(msg => { msg.delete({ timeout: 5000 }); })
+			// 			.catch(error => console.log(error));
+			// 	}
+			// }
 			// }
 			if (config.debug && response) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';

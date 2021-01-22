@@ -10,9 +10,11 @@ export class MusicData {
 	public message_id: string | undefined;
 	public votes: string[] | undefined;
 
-	constructor(channel_id: string,
+	constructor(
+		channel_id: string,
 		message_id: string,
-		votes: string[]) {
+		votes: string[]
+	) {
 		this.channel_id = channel_id;
 		this.message_id = message_id;
 		this.votes = votes;
