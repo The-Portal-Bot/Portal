@@ -1,21 +1,19 @@
 {
-    "token": "NzU1ODI1ODcwMTAyNTkzNjI2.X2I7sQ.sXCZRR-U5uKodG0CC2_tdKK26SQ",
-    "token_dev": "NzA0NDAwODc2ODYwNzM1NTY5.XqcmcA.647vVkuyuCDXVPm0smkiBUmxZyY",
+    "token": "add-your-token-here",
     "prefix": "./",
     "database_json": "src/database/guild_list.json",
-    "mongo_url": "mongodb://localhost:27017/portal?compressors=zlib&gssapiServiceName=portal",
-    "owner_id": 228666893068795905,
-    "portal_id": 755825870102593626,
+    "owner_id": "add-your-id-(optional)",
+    "portal_id": "add-bots-id-(optional)",
     "api_keys": {
-        "OpenWeatherMap": "7692e8876197f1532fe027f43c6f3227",
-        "covid_193": "b883903090msh7eef2b50e6cbe9cp1ff439jsnee4d6c48061f",
+        "OpenWeatherMap": "add-open-weather-map-api-key",
+        "covid_193": "add-covid-193-api-key",
         "translate": {
             "engine": "yandex",
-            "key": "pdct.1.1.20210108T115346Z.8c752ef4694c06bb.efe449cd7367ac260b85058afac0ae307995599b"
+            "key": "add-yeandex-api-key"
         }
     },
     "delete_msg": false,
     "delete_msg_after": 5,
     "always_reply": true,
-    "debug": true
+    "debug": false
 }
