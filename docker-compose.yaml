@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  portal:
+    container_name: portal
+    image: keybraker/portal:latest
+    build: 
+      context: .
+      dockerfile: ./docker/Dockerfile 
+    depends_on:
+    - mongo
+  mongo:
+    image: mongo:4.4.3
