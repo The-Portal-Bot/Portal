@@ -3,13 +3,13 @@ import { Client, Guild, Message, VoiceConnection } from "discord.js";
 import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { guildPrtl_to_object, join_user_voice, update_music_message } from './helpOps';
+import { join_user_voice, update_music_message } from './helpOps';
 
 
 // const ytdl = require('ytdl-core');
 
 export async function start(
-	client: Client, message: Message, search_term: string, guild_list: GuildPrtl[]
+	client: Client, message: Message, search_term: string, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (!search_term || search_term === '')
@@ -20,8 +20,6 @@ export async function start(
 			return resolve({ result: false, value: 'you are not connected to any channel' });
 		const guild_id = message.member.voice.channel.guild.id;
 
-		const guild_object = guildPrtl_to_object(guild_list, guild_id);
-		if (!guild_object) return resolve({ result: false, value: 'could not find guild in guild_list' });
 		const guild = client.guilds.cache.find(g => g.id === guild_id);
 		if (!guild) return resolve({ result: false, value: 'could fetch guild from client' });
 
@@ -41,7 +39,7 @@ export async function start(
 							return resolve({ result: true, value: 'already playing song, your song has been added in list' });
 						} else {
 							if (message && message.guild) {
-								play(message.guild.id, guild_list, client, message, message.guild)
+								play(message.guild.id, guild_object, client, message, message.guild)
 									.then(response => { return resolve(response); })
 									.catch(error => { return resolve({ result: false, value: error }); });
 							} else {
@@ -55,7 +53,7 @@ export async function start(
 				})
 				.catch(error => { return resolve({ result: false, value: error }) });
 		} else {
-			join_user_voice(client, message, guild_list, false)
+			join_user_voice(client, message, guild_object, false)
 				.then(join_attempt => {
 					if (join_attempt.result) {
 						yts(search_term)
@@ -77,7 +75,7 @@ export async function start(
 
 											guild_object.dispatcher.on('finish', () => {
 												if (message.guild) {
-													skip(guild_id, guild_list, client, message, message.guild);
+													skip(guild_id, guild_object, client, message, message.guild);
 													guild_object.music_data.votes = [];
 												}
 											});
@@ -108,12 +106,9 @@ export async function start(
 };
 
 export async function play(
-	guild_id: string, guild_list: GuildPrtl[], client: Client, message: Message, guild: Guild
+	guild_id: string, guild_object: GuildPrtl, client: Client, message: Message, guild: Guild
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const guild_object = guildPrtl_to_object(guild_list, guild_id);
-		if (!guild_object) return { result: false, value: 'could not find guild in guild_list' };
-
 		const portal_voice_vonnection = client.voice?.connections
 			.find((connection: VoiceConnection) => {
 				if (!message.guild) return false;
@@ -126,7 +121,7 @@ export async function play(
 				guild_object.dispatcher.resume();
 
 				guild_object.dispatcher.on('finish', () => {
-					skip(guild_id, guild_list, client, message, guild);
+					skip(guild_id, guild_object, client, message, guild);
 					guild_object.music_data.votes = [];
 				});
 
@@ -154,7 +149,7 @@ export async function play(
 						guild_object.dispatcher = voice_connection.play(stream);
 						update_music_message(guild, guild_object, next_yts_video);
 						guild_object.dispatcher.on('finish', () => {
-							skip(guild_id, guild_list, client, message, guild);
+							skip(guild_id, guild_object, client, message, guild);
 							guild_object.music_data.votes = [];
 						});
 					}
@@ -169,12 +164,9 @@ export async function play(
 };
 
 export async function pause(
-	guild_id: string, guild_list: GuildPrtl[]
+	guild_id: string, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const guild_object = guildPrtl_to_object(guild_list, guild_id);
-		if (!guild_object) return resolve({ result: false, value: 'could not find guild in guild_list' });
-
 		if (guild_object.dispatcher) {
 			if (!guild_object.dispatcher.paused) {
 				guild_object.dispatcher.pause();
@@ -188,12 +180,9 @@ export async function pause(
 };
 
 export async function stop(
-	guild_id: string, guild_list: GuildPrtl[], guild: Guild
+	guild_id: string, guild_object: GuildPrtl, guild: Guild
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const guild_object = guildPrtl_to_object(guild_list, guild_id);
-		if (!guild_object) return resolve({ result: false, value: 'could not find guild in guild_list' });
-
 		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 			'.github.io/master/assets/img/logo.png';
 		update_music_message(
@@ -232,12 +221,9 @@ export async function stop(
 };
 
 export async function skip(
-	guild_id: string, guild_list: GuildPrtl[], client: Client, message: Message, guild: Guild
+	guild_id: string, guild_object: GuildPrtl, client: Client, message: Message, guild: Guild
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const guild_object = guildPrtl_to_object(guild_list, guild_id);
-		if (!guild_object) return resolve({ result: false, value: 'could not find guild in guild_list' });
-
 		const portal_voice_vonnection = client.voice?.connections
 			.find((connection: VoiceConnection) => {
 				if (!message.guild) return false;
@@ -259,7 +245,7 @@ export async function skip(
 						guild_object.dispatcher = portal_voice_vonnection.play(stream);
 						update_music_message(guild, guild_object, next_yts_video);
 						guild_object.dispatcher.on('finish', () => {
-							skip(guild_id, guild_list, client, message, guild);
+							skip(guild_id, guild_object, client, message, guild);
 							guild_object.music_data.votes = [];
 						});
 

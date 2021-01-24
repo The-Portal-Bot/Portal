@@ -434,19 +434,21 @@ export function delete_channel(channel_to_delete: VoiceChannel | TextChannel,
 	}
 };
 
-export function channel_deleted_update_state(channel_to_remove: GuildChannel, guild_list: GuildPrtl[]): number {
+export function channel_deleted_update_state(
+	channel_to_remove: GuildChannel, guild_list: GuildPrtl[]
+): number {
 	const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
-	const current_guild = guild_list.find(g => g.id === channel_to_remove.guild.id);
+	const guilf_object = guild_list.find(g => g.id === channel_to_remove.guild.id);
 
-	if (!current_guild) {
+	if (!guilf_object) {
 		return -1;
 	}
 
 	let type_of_channel = TypesOfChannel.Unknown;
 
-	current_guild.portal_list.some((p, index) => {
+	guilf_object.portal_list.some((p, index) => {
 		if (p.id === channel_to_remove.id) {
-			current_guild.portal_list.splice(index, 1);
+			guilf_object.portal_list.splice(index, 1);
 			type_of_channel = TypesOfChannel.Portal;
 			return true;
 		}
@@ -459,28 +461,28 @@ export function channel_deleted_update_state(channel_to_remove: GuildChannel, gu
 		});
 	});
 
-	for (let i = 0; i < current_guild.url_list.length; i++) {
-		console.log(`${current_guild.url_list[i]} === ${channel_to_remove.id}`);
-		if (current_guild.url_list[i] === channel_to_remove.id) {
-			current_guild.url_list.splice(i, 1);
+	for (let i = 0; i < guilf_object.url_list.length; i++) {
+		console.log(`${guilf_object.url_list[i]} === ${channel_to_remove.id}`);
+		if (guilf_object.url_list[i] === channel_to_remove.id) {
+			guilf_object.url_list.splice(i, 1);
 			type_of_channel = TypesOfChannel.Url;
 			break;
 		}
 	}
-	if (current_guild.spotify === channel_to_remove.id) {
-		current_guild.spotify = null;
+	if (guilf_object.spotify === channel_to_remove.id) {
+		guilf_object.spotify = null;
 		type_of_channel = TypesOfChannel.Spotify;
 	}
-	if (current_guild.announcement === channel_to_remove.id) {
-		current_guild.announcement = null;
+	if (guilf_object.announcement === channel_to_remove.id) {
+		guilf_object.announcement = null;
 		type_of_channel = TypesOfChannel.Announcement;
 	}
-	if (current_guild.music_data.channel_id === channel_to_remove.id) {
-		stop(channel_to_remove.guild.id, guild_list, channel_to_remove.guild);
-		current_guild.music_data.channel_id = undefined;
-		current_guild.music_data.message_id = undefined;
-		current_guild.music_data.votes = [];
-		current_guild.dispatcher = undefined;
+	if (guilf_object.music_data.channel_id === channel_to_remove.id) {
+		stop(channel_to_remove.guild.id, guilf_object, channel_to_remove.guild);
+		guilf_object.music_data.channel_id = undefined;
+		guilf_object.music_data.message_id = undefined;
+		guilf_object.music_data.votes = [];
+		guilf_object.dispatcher = undefined;
 		type_of_channel = TypesOfChannel.Music;
 	}
 

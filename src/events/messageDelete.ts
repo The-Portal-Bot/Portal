@@ -8,7 +8,7 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!args.message.guild) return resolve({ result: true, value: 'message guild could not be found' });
-		const guild_object = guildPrtl_to_object(args.guild_list, args.message.guild.id);
+		const guild_object = args.guild_list.find(g => g.id === args.message?.guild?.id);
 		if (!guild_object) return resolve({ result: true, value: 'message could not be found' });
 
 		const role_list = guild_object.role_list;

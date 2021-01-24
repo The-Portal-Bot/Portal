@@ -99,7 +99,7 @@ function from_existing(
 						voice_connection.disconnect();
 						delete_channel(old_channel, guild_list)
 							.then(response => { return response; });
-						stop(newState.guild.id, guild_list, old_channel.guild);
+						stop(newState.guild.id, guild_object, old_channel.guild);
 					}
 				}
 			}
@@ -144,7 +144,7 @@ function from_existing(
 							voice_connection.disconnect();
 							delete_channel(old_channel, guild_list)
 								.then(response => { return response; });
-							stop(newState.guild.id, guild_list, old_channel.guild);
+							stop(newState.guild.id, guild_object, old_channel.guild);
 						}
 					}
 				}
@@ -176,7 +176,7 @@ function from_existing(
 							voiceConnection.disconnect();
 							delete_channel(old_channel, guild_list)
 								.then(response => { return response; });
-							stop(newState.guild.id, guild_list, old_channel.guild);
+							stop(newState.guild.id, guild_object, old_channel.guild);
 						}
 					}
 				}
@@ -202,7 +202,7 @@ function from_existing(
 							voiceConnection.disconnect();
 							delete_channel(old_channel, guild_list)
 								.then(response => { return response; });
-							stop(newState.guild.id, guild_list, old_channel.guild);
+							stop(newState.guild.id, guild_object, old_channel.guild);
 						}
 					}
 				}
@@ -266,13 +266,13 @@ module.exports = async (
 			const new_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
 				new_channel !== null && connection.channel.id === new_channel.id);
 			if (new_voice_connection && !args.newState.member.user.bot) {
-				client_talk(args.client, args.guild_list, 'user_connected');
+				client_talk(args.client, guild_object, 'user_connected');
 			}
 
 			const old_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
 				old_channel !== null && connection.channel.id === old_channel.id);
 			if (old_voice_connection && !args.newState.member.user.bot) {
-				client_talk(args.client, args.guild_list, 'user_disconnected');
+				client_talk(args.client, guild_object, 'user_disconnected');
 			}
 		}
 

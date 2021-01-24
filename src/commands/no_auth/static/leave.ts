@@ -12,10 +12,10 @@ module.exports = async (
 
 		const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id)
 		if (voiceConnection) {
-			client_talk(client, guild_list, 'leave');
+			client_talk(client, guild_object, 'leave');
 			setTimeout(function () { voiceConnection.disconnect(); }, 4000);
 		}
 
-		return resolve({ result: true, value: client_write(message, guild_list, 'leave') });
+		return resolve({ result: true, value: client_write(message, guild_object, 'leave') });
 	});
 };

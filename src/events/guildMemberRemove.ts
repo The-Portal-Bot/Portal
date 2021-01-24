@@ -10,7 +10,7 @@ module.exports = async (
 		const leave_message = `member: ${args.member.presence.user} ` +
 			`[${args.member.guild.id}]\n\thas left ${args.member.guild}`;
 
-		const guild_object = guildPrtl_to_object(args.guild_list, args.member.guild.id);
+		const guild_object = args.guild_list.find(g => g.id === args.member.guild.id);
 		if (guild_object && guild_object.announcement) {
 			const announcement_channel = args.member.guild.channels.cache
 				.find(channel => channel.id === guild_object.announcement)

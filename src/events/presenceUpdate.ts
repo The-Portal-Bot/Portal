@@ -43,14 +43,15 @@ function display_spotify_song(
 	current_channel.members.forEach(member => {
 		member.presence.activities.some(activity => {
 			if (activity.name === 'Spotify' && newPresence.guild) {
+				const guild_object = guild_list.find(g => g.id === current_guild.id);
+				if (guild_object === undefined) return false;
+
 				const spotify = <TextChannel | undefined>newPresence.guild.channels.cache.find(c => {
-					const guild_object = guild_list.find(g => g.id === current_guild.id);
-					if (guild_object === undefined) return false;
 					return c.id === guild_object.spotify;
 				});
 
 				if (spotify) {
-					client_talk(client, guild_list, 'spotify');
+					client_talk(client, guild_object, 'spotify');
 					spotify.send(
 						create_rich_embed(
 							`**${activity.details}**`,

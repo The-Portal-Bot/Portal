@@ -8,11 +8,23 @@ import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { Field, Rank, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
+import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 import { client_talk, client_write } from "./localisationOps";
 
+export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
+	return new Promise((resolve) => {
+		GuildPrtlMdl.find({})
+			.then(guilds => { return guilds ? resolve(<GuildPrtl[]><unknown>guilds) : undefined })
+			.catch(err => { return resolve(undefined) });
+	});
+};
 
-export function guildPrtl_to_object(guild_list: GuildPrtl[], guild_id: string): GuildPrtl | undefined {
-	return guild_list.find(g => g.id === guild_id);
+export async function guildPrtl_to_object(guild_id: string): Promise<GuildPrtl | undefined> {
+	return new Promise((resolve) => {
+		GuildPrtlMdl.findOne({ id: guild_id })
+			.then(guild => { return guild ? resolve(<GuildPrtl><unknown>guild) : undefined })
+			.catch(err => { return resolve(undefined) });
+	});
 };
 
 export function create_music_message(channel: TextChannel, thumbnail: string, guild_object: GuildPrtl): void {
@@ -91,7 +103,7 @@ export function update_music_message(guild: Guild, guild_object: GuildPrtl, yts:
 };
 
 export async function join_user_voice(
-	client: Client, message: Message, guild_list: GuildPrtl[], join: boolean
+	client: Client, message: Message, guild_object: GuildPrtl, join: boolean
 ): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
 		if (message.member === null) {
@@ -135,11 +147,11 @@ export async function join_user_voice(
 				voice_connection: undefined
 			});
 		}
-
-		const current_guild = guild_list.find(g => {
-			if (message && message.guild)
-				return g.id === message.guild.id;
-		});
+		const current_guild = guild_object;
+		// const current_guild = guild_list.find(g => {
+		// 	if (message && message.guild)
+		// 		return g.id === message.guild.id;
+		// });
 
 		if (current_guild === undefined) {
 			return resolve({
@@ -188,12 +200,12 @@ export async function join_user_voice(
 			// let new_voice_connection = null;
 			current_voice.join()
 				.then(conn => {
-					if (join) client_talk(client, guild_list, 'join');
+					if (join) client_talk(client, guild_object, 'join');
 					conn?.voice?.setSelfDeaf(true);
 
 					return resolve({
 						result: true,
-						value: client_write(message, guild_list, 'join'),
+						value: client_write(message, guild_object, 'join'),
 						voice_connection: conn,
 					});
 				})
@@ -293,8 +305,9 @@ export function is_authorised(guild_object: GuildPrtl, member: GuildMember): boo
 
 // channel should be removed !
 export function message_reply(
-	status: boolean, channel: Channel, message: Message, user: User, str: string, guild_list: GuildPrtl[],
-	client: Client, to_delete: boolean = config.delete_msg, emote_pass: string = '✔️', emote_fail: string = '❌'
+	status: boolean, channel: Channel, message: Message, user: User, str: string,
+	guild_object: GuildPrtl | undefined, client: Client, to_delete: boolean = config.delete_msg,
+	emote_pass: string = '✔️', emote_fail: string = '❌'
 ): void {
 	if (!message.channel.deleted && str !== null) {
 		message.channel
@@ -308,8 +321,8 @@ export function message_reply(
 				.react(emote_pass)
 				.catch(error => console.log(error));
 		}
-		else if (status === false) {
-			client_talk(client, guild_list, 'fail');
+		else if (status === false && guild_object) {
+			client_talk(client, guild_object, 'fail');
 			message
 				.react(emote_fail)
 				.catch(error => console.log(error));

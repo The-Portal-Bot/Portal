@@ -13,7 +13,7 @@ module.exports = async (
 			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		}
 
-		join_user_voice(client, message, guild_list, true)
+		join_user_voice(client, message, guild_object, true)
 			.then(response => { return resolve(response); })
 			.catch(error => { return resolve({ result: false, value: error }) });
 	});

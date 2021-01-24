@@ -141,32 +141,30 @@ export const console_text: LocalisationOption[] = [
 	}
 ]
 
-export function client_talk(client: Client, guild_list: GuildPrtl[], context: string): boolean {
+export function client_talk(client: Client, guild_object: GuildPrtl, context: string): boolean {
 	const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id);
 
 	if (voiceConnection) {
-		return guild_list.some(g =>
-			g.portal_list.some(p =>
-				p.voice_list.some(v => {
-					if (!g.dispatcher) {
-						if (type_of_announcement.includes(context) && v.ann_announce) {
-							const locale = v.locale;
-							const random = Math.floor(Math.random() * Math.floor(3));
-							console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-							voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-							return true;
-						}
-						else if (type_of_action.includes(context) && v.ann_user) {
-							const locale = v.locale;
-							const random = Math.floor(Math.random() * Math.floor(3));
-							console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-							voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-							return true;
-						}
+		return guild_object.portal_list.some(p =>
+			p.voice_list.some(v => {
+				if (!guild_object.dispatcher) {
+					if (type_of_announcement.includes(context) && v.ann_announce) {
+						const locale = v.locale;
+						const random = Math.floor(Math.random() * Math.floor(3));
+						console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+						return true;
 					}
-					return v.id === voiceConnection.channel.id;
-				})
-			)
+					else if (type_of_action.includes(context) && v.ann_user) {
+						const locale = v.locale;
+						const random = Math.floor(Math.random() * Math.floor(3));
+						console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+						return true;
+					}
+				}
+				return v.id === voiceConnection.channel.id;
+			})
 		);
 	}
 
@@ -204,7 +202,7 @@ export function get_function(output: string, language: string, context: string):
 	return func;
 };
 
-export function client_write(message: Message, guild_list: GuildPrtl[], context: string): string {
+export function client_write(message: Message, guild_object: GuildPrtl, context: string): string {
 	if (message === null) return 'could not fetch message';
 	if (message.member === null) return 'could not fetch member';
 	if (message.member.voice === undefined) return 'coud not fetch voice';
@@ -212,22 +210,20 @@ export function client_write(message: Message, guild_list: GuildPrtl[], context:
 
 	let return_value = 'could not find data';
 
-	const found = guild_list.some(g =>
-		g.portal_list.some(p =>
-			p.voice_list.some(v => {
-				if (message.member && message.member.voice.channel) {
-					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
-						switch (v.locale) {
-							case 'gr': return_value = portal.find(p => p.name === context)?.lang.gr(); break;
-							case 'en': return_value = portal.find(p => p.name === context)?.lang.en(); break;
-							case 'de': return_value = portal.find(p => p.name === context)?.lang.de(); break;
-						}
-						return true;
+	const found = guild_object.portal_list.some(p =>
+		p.voice_list.some(v => {
+			if (message.member && message.member.voice.channel) {
+				if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
+					switch (v.locale) {
+						case 'gr': return_value = portal.find(p => p.name === context)?.lang.gr(); break;
+						case 'en': return_value = portal.find(p => p.name === context)?.lang.en(); break;
+						case 'de': return_value = portal.find(p => p.name === context)?.lang.de(); break;
 					}
+					return true;
 				}
-				return false;
-			})
-		)
+			}
+			return false;
+		})
 	);
 
 	if (found)

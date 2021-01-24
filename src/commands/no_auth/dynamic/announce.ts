@@ -35,7 +35,7 @@ module.exports = async (
         const rich_message = create_rich_embed(title, `@here ${body}`, '#022E4E', [], null, message.member, null, null, null)
         announcement_channel.send(rich_message);
 
-        client_talk(client, guild_list, 'announce');
+        client_talk(client, guild_object, 'announce');
 
         return resolve({ result: true, value: 'announcement was sent successfully' });
     });
