@@ -1,22 +1,26 @@
 import { Client, Guild } from "discord.js";
-import { included_in_portal_guilds, insert_guild } from "../libraries/guildOps";
-import { update_portal_managed_guilds } from "../libraries/helpOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { fetch_guild, insert_guild } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	args: { client: Client, guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
+	args: { client: Client, guild: Guild }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		// Inserting guild to portal's guild list if it does not exist
-		if (!included_in_portal_guilds(args.guild.id, args.guild_list))
-			insert_guild(args.guild.id, args.guild_list, args.client);
+		fetch_guild(args.guild.id)
+			.then(guild_object => {
+				if (guild_object) {
+					return resolve({
+						result: false,
+						value: `guild ${args.guild.name} [${args.guild.id}] already in portal`
+					});
+				} else {
+					insert_guild(args.guild.id, args.client);
 
-		update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
-
-		return resolve({
-			result: true,
-			value: `portal joined guild ${args.guild.name} [${args.guild.id}]`
-		});
+					return resolve({
+						result: true,
+						value: `portal joined guild ${args.guild.name} [${args.guild.id}]`
+					});
+				}
+			});
 	});
 };

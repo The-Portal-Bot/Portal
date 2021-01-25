@@ -2,20 +2,18 @@ import {
 	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember,
 	PartialMessage, PartialUser, Presence, User, VoiceState
 } from "discord.js";
-import { readFileSync } from "jsonfile";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
-import { is_authorised, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
+import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
+import { fetch_guild, fetch_guild_list } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
 import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
-import GuildPrtlMdl from "./types/models/GuildPrtlMdl";
-import { fetch_guild_list, fetch_guild } from "./libraries/mongoOps";
 const AntiSpam = require('discord-anti-spam');
 
 // Connect to mongoose database
@@ -50,25 +48,6 @@ const anti_spam = new AntiSpam({
 	ignoredUsers: [], // Array of User IDs that get ignored.
 });
 
-const portal_managed_guilds_path = config.database_json;
-const guild_list_json = readFileSync(config.database_json);
-if (!guild_list_json) {
-	console.log('could not read guild list');
-	process.exit(1);
-}
-// list of all managed guilds
-// const guild_list: GuildPrtl[] = <GuildPrtl[]>guild_list_json;
-
-// if (!guild_list) {
-// 	console.log('guild json is corrupt');
-// 	process.exit(1);
-// }
-
-// if (!Array.isArray(guild_list)) {
-// 	console.log('guild_list must be an array');
-// 	process.exit(1);
-// }
-
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
 // this is the client the Portal Bot. Some people call it bot, some people call
@@ -82,78 +61,33 @@ client.on('ready', () =>
 	})
 );
 
-// When bot connects to shard again ?
-client.on('shardResume', (id: number) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('shardResume', {
-				'client': client,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path,
-				'id': id
-			})
-		})
-);
-
-// When bot connects to shard again ?
-client.on('shardStart', (id: number) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('shardStart', {
-				'client': client,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path,
-				'id': id
-			})
-		})
-);
-
 // This event triggers when the bot joins a guild
 client.on('guildCreate', (guild: Guild) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('guildCreate', {
-				'client': client,
-				'guild': guild,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path
-			})
-		})
+	event_loader('guildCreate', {
+		'client': client,
+		'guild': guild
+	})
 );
 
 // this event triggers when the bot is removed from a guild
 client.on('guildDelete', (guild: Guild) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('guildDelete', {
-				'guild': guild,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path
-			})
-		})
+	event_loader('guildDelete', {
+		'guild': guild
+	})
 );
 
 // This event triggers when the bot joins a guild.
 client.on('channelDeleted', (channel: GuildChannel) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('channelDelete', {
-				'channel': channel,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path
-			})
-		})
+	event_loader('channelDelete', {
+		'channel': channel
+	})
 );
 
 // This event triggers when a new member joins a guild.
 client.on('guildMemberAdd', (member: GuildMember) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('guildMemberAdd', {
-				'member': member,
-				'guild_list': guild_list
-			})
-		})
+	event_loader('guildMemberAdd', {
+		'member': member
+	})
 );
 
 // This event triggers when a new member leaves a guild.
