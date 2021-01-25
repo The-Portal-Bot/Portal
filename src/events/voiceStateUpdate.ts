@@ -99,7 +99,7 @@ function from_existing(
 						voice_connection.disconnect();
 						delete_channel(old_channel, guild_list)
 							.then(response => { return response; });
-						stop(newState.guild.id, guild_object, old_channel.guild);
+						stop(guild_object, old_channel.guild);
 					}
 				}
 			}
@@ -144,7 +144,7 @@ function from_existing(
 							voice_connection.disconnect();
 							delete_channel(old_channel, guild_list)
 								.then(response => { return response; });
-							stop(newState.guild.id, guild_object, old_channel.guild);
+							stop(guild_object, old_channel.guild);
 						}
 					}
 				}
@@ -176,7 +176,7 @@ function from_existing(
 							voiceConnection.disconnect();
 							delete_channel(old_channel, guild_list)
 								.then(response => { return response; });
-							stop(newState.guild.id, guild_object, old_channel.guild);
+							stop(guild_object, old_channel.guild);
 						}
 					}
 				}
@@ -202,7 +202,7 @@ function from_existing(
 							voiceConnection.disconnect();
 							delete_channel(old_channel, guild_list)
 								.then(response => { return response; });
-							stop(newState.guild.id, guild_object, old_channel.guild);
+							stop(guild_object, old_channel.guild);
 						}
 					}
 				}

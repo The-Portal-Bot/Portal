@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel } from "discord.js";
-import { create_rich_embed, guildPrtl_to_object } from "../libraries/helpOps";
+import { create_rich_embed } from "../libraries/helpOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 

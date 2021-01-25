@@ -39,7 +39,7 @@ export async function start(
 							return resolve({ result: true, value: 'already playing song, your song has been added in list' });
 						} else {
 							if (message && message.guild) {
-								play(message.guild.id, guild_object, client, message, message.guild)
+								play(guild_object, client, message, message.guild)
 									.then(response => { return resolve(response); })
 									.catch(error => { return resolve({ result: false, value: error }); });
 							} else {
@@ -75,7 +75,7 @@ export async function start(
 
 											guild_object.dispatcher.on('finish', () => {
 												if (message.guild) {
-													skip(guild_id, guild_object, client, message, message.guild);
+													skip(guild_object, client, message, message.guild);
 													guild_object.music_data.votes = [];
 												}
 											});
@@ -106,7 +106,7 @@ export async function start(
 };
 
 export async function play(
-	guild_id: string, guild_object: GuildPrtl, client: Client, message: Message, guild: Guild
+	guild_object: GuildPrtl, client: Client, message: Message, guild: Guild
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const portal_voice_vonnection = client.voice?.connections
@@ -121,7 +121,7 @@ export async function play(
 				guild_object.dispatcher.resume();
 
 				guild_object.dispatcher.on('finish', () => {
-					skip(guild_id, guild_object, client, message, guild);
+					skip(guild_object, client, message, guild);
 					guild_object.music_data.votes = [];
 				});
 
@@ -149,7 +149,7 @@ export async function play(
 						guild_object.dispatcher = voice_connection.play(stream);
 						update_music_message(guild, guild_object, next_yts_video);
 						guild_object.dispatcher.on('finish', () => {
-							skip(guild_id, guild_object, client, message, guild);
+							skip(guild_object, client, message, guild);
 							guild_object.music_data.votes = [];
 						});
 					}
@@ -164,7 +164,7 @@ export async function play(
 };
 
 export async function pause(
-	guild_id: string, guild_object: GuildPrtl
+	guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (guild_object.dispatcher) {
@@ -180,7 +180,7 @@ export async function pause(
 };
 
 export async function stop(
-	guild_id: string, guild_object: GuildPrtl, guild: Guild
+	guild_object: GuildPrtl, guild: Guild
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
@@ -221,7 +221,7 @@ export async function stop(
 };
 
 export async function skip(
-	guild_id: string, guild_object: GuildPrtl, client: Client, message: Message, guild: Guild
+	guild_object: GuildPrtl, client: Client, message: Message, guild: Guild
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const portal_voice_vonnection = client.voice?.connections
@@ -245,7 +245,7 @@ export async function skip(
 						guild_object.dispatcher = portal_voice_vonnection.play(stream);
 						update_music_message(guild, guild_object, next_yts_video);
 						guild_object.dispatcher.on('finish', () => {
-							skip(guild_id, guild_object, client, message, guild);
+							skip(guild_object, client, message, guild);
 							guild_object.music_data.votes = [];
 						});
 

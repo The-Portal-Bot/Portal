@@ -1,10 +1,13 @@
-import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
+import {
+	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember,
+	PartialMessage, PartialUser, Presence, User, VoiceState
+} from "discord.js";
 import { readFileSync } from "jsonfile";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import config from './config.json';
 import { included_in_url_list } from './libraries/guildOps';
-import { guildPrtl_to_object, is_authorised, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds, fetch_guild_list } from './libraries/helpOps';
+import { is_authorised, is_url, message_reply, pad, time_elapsed, update_portal_managed_guilds } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
 import { start } from './libraries/musicOps';
@@ -12,61 +15,22 @@ import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
 import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "./types/models/GuildPrtlMdl";
+import { fetch_guild_list, fetch_guild } from "./libraries/mongoOps";
 const AntiSpam = require('discord-anti-spam');
 
-//Connect to mongoose database
-// mongoose.connect(config.mongo_url, {
-// 	useNewUrlParser: true,
-// 	useUnifiedTopology: true,
-// 	useCreateIndex: true
-// })
-// 	.then(() => {
-// 		console.log('> connected to the Portal\'s mongodb');
-// 	}).catch((err) => {
-// 		console.log('> unable to connect to the Mongodb database: ' + err);
-// 		process.exit(1);
-// 	});
+// Connect to mongoose database
+mongoose.connect(config.mongo_url, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true
+})
+	.then(() => {
+		console.log('> connected to the Portal\'s mongodb');
+	}).catch((err) => {
+		console.log('> unable to connect to the Mongodb database: ' + err);
+		process.exit(1);
+	});
 
-// GuildPrtlMdl.create({
-// 	id: "identifier",
-// 	portal_list: [],
-// 	member_list: [],
-// 	url_list: [],
-// 	role_list: [],
-// 	ranks: [],
-// 	auth_role: [],
-// 	spotify: "spotify",
-// 	music_data: {
-// 		channel_id: "string",
-// 		message_id: "string",
-// 		votes: []
-// 	},
-// 	music_queue: [],
-// 	dispatcher: null,
-// 	announcement: "announcement",
-// 	locale: "locale",
-// 	announce: true,
-// 	level_speed: "level_speed",
-// 	premium: true
-// })
-// 	.then(doc => {
-// 		console.log('doc :>> ', doc);
-// 		process.exit();
-// 	})
-// 	.catch(err => {
-// 		console.log('err: ' + err);
-// 		process.exit();
-// 	});
-
-// GuildPrtlMdl.find({ id: "identifier" })
-// 	.then(found => {
-// 		console.log('found :>> ', found);
-// 		process.exit();
-// 	})
-// 	.catch(err => {
-// 		console.log('err: ' + err);
-// 		process.exit();
-// 	});
 
 const anti_spam = new AntiSpam({
 	warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
@@ -105,22 +69,17 @@ if (!guild_list_json) {
 // 	process.exit(1);
 // }
 
+const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
+
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
 const client = new Client({ partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'] });
 
-const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
-
 // This event will run if the bot starts, and logs in, successfully.
 client.on('ready', () =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('ready', {
-				'client': client,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path
-			})
-		})
+	event_loader('ready', {
+		'client': client
+	})
 );
 
 // When bot connects to shard again ?
@@ -149,11 +108,12 @@ client.on('shardStart', (id: number) =>
 		})
 );
 
-// this event triggers when the bot is removed from a guild.
-client.on('guildDelete', (guild: Guild) =>
+// This event triggers when the bot joins a guild
+client.on('guildCreate', (guild: Guild) =>
 	fetch_guild_list()
 		.then(guild_list => {
-			event_loader('guildDelete', {
+			event_loader('guildCreate', {
+				'client': client,
 				'guild': guild,
 				'guild_list': guild_list,
 				'portal_managed_guilds_path': portal_managed_guilds_path
@@ -161,12 +121,11 @@ client.on('guildDelete', (guild: Guild) =>
 		})
 );
 
-// This event triggers when the bot joins a guild.
-client.on('guildCreate', (guild: Guild) =>
+// this event triggers when the bot is removed from a guild
+client.on('guildDelete', (guild: Guild) =>
 	fetch_guild_list()
 		.then(guild_list => {
-			event_loader('guildCreate', {
-				'client': client,
+			event_loader('guildDelete', {
 				'guild': guild,
 				'guild_list': guild_list,
 				'portal_managed_guilds_path': portal_managed_guilds_path
@@ -340,7 +299,7 @@ client.on('message', async (message: Message) => {
 		return false;
 	}
 
-	guildPrtl_to_object(message.guild.id)
+	fetch_guild(message.guild.id)
 		.then(guild_object => {
 			if (!guild_object) {
 				message_reply(false, message.channel, message, message.author,
@@ -369,6 +328,10 @@ client.on('message', async (message: Message) => {
 			}
 
 			command_loader(message, cmd, args, type, command_options, path_to_command, active_cooldown, guild_object);
+		})
+		.catch(error => {
+			console.log('could not fetch guild list' + error);
+			return false;
 		});
 });
 
@@ -477,7 +440,7 @@ function event_loader(event: string, args: any): void {
 
 function portal_channel_handler(message: Message): boolean {
 	if (!message.guild) return false;
-	guildPrtl_to_object(message.guild.id)
+	fetch_guild(message.guild.id)
 		.then(guild_object => {
 			if (!guild_object) return true;
 
@@ -518,7 +481,7 @@ function portal_channel_handler(message: Message): boolean {
 
 function ranking_system(message: Message): void {
 	if (!message.guild) return;
-	guildPrtl_to_object(message.guild.id)
+	fetch_guild(message.guild.id)
 		.then(guild_object => {
 			if (guild_object) {
 				const level = add_points_message(message, guild_object);

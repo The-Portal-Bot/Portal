@@ -1,8 +1,9 @@
 import { ActivityOptions, Client } from "discord.js";
-import { insert_guild, remove_deleted_channels, remove_empty_voice_channels, update_portal_managed_guilds } from "../libraries/helpOps";
+import { remove_deleted_channels, remove_empty_voice_channels, update_portal_managed_guilds } from "../libraries/helpOps";
 import { get_function } from "../libraries/localisationOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { insert_guild } from "../libraries/guildOps";
 
 function add_guild_again(guild_id: string, guild_list: GuildPrtl[], client: Client): boolean {
 	const guild_in_db = guild_list.some(g => g.id === guild_id);

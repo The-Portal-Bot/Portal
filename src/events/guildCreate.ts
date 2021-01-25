@@ -1,6 +1,6 @@
 import { Client, Guild } from "discord.js";
-import { included_in_portal_guilds } from "../libraries/guildOps";
-import { insert_guild, update_portal_managed_guilds } from "../libraries/helpOps";
+import { included_in_portal_guilds, insert_guild } from "../libraries/guildOps";
+import { update_portal_managed_guilds } from "../libraries/helpOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
