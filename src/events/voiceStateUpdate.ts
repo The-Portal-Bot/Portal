@@ -42,7 +42,7 @@ function from_null(
 	// joined from null
 	if (new_channel) {
 		report_message += 'null->existing\n';
-
+		console.log('included_in_portal_list(new_channel.id, guild_object.portal_list) :>> ', included_in_portal_list(new_channel.id, guild_object.portal_list));
 		// joined portal channel
 		if (included_in_portal_list(new_channel.id, guild_object.portal_list)) {
 			const portal_object = guild_object.portal_list.find(p => p.id === new_channel.id);
@@ -236,9 +236,7 @@ function from_existing(
 }
 
 module.exports = async (
-	args: {
-		client: Client, newState: VoiceState, oldState: VoiceState
-	}
+	args: { client: Client, newState: VoiceState, oldState: VoiceState }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.newState?.guild) {
@@ -248,26 +246,19 @@ module.exports = async (
 						const new_channel = args.newState.channel; // join channel
 						const old_channel = args.oldState.channel; // left channel
 
-						if (old_channel !== null && old_channel !== undefined) {
-							if (new_channel !== null && new_channel !== undefined) {
-								if (new_channel.id === old_channel.id) {
-									return resolve({
-										result: true,
-										value: 'changed voice state but remains in the same channel'
-									});
-								}
-							}
-						}
+						if (old_channel && new_channel)
+							if (new_channel.id === old_channel.id)
+								return resolve({ result: true, value: 'changed voice state but remains in the same channel' });
 
 						if (args.client.voice && args.newState.member) {
-							const new_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
-								new_channel !== null && connection.channel.id === new_channel.id);
+							const new_voice_connection = args.client.voice.connections
+								.find((connection: VoiceConnection) => !!new_channel && connection.channel.id === new_channel.id);
 							if (new_voice_connection && !args.newState.member.user.bot) {
 								client_talk(args.client, guild_object, 'user_connected');
 							}
 
-							const old_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
-								old_channel !== null && connection.channel.id === old_channel.id);
+							const old_voice_connection = args.client.voice.connections
+								.find((connection: VoiceConnection) => !!old_channel && connection.channel.id === old_channel.id);
 							if (old_voice_connection && !args.newState.member.user.bot) {
 								client_talk(args.client, guild_object, 'user_disconnected');
 							}

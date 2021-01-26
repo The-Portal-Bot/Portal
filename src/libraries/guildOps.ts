@@ -498,6 +498,9 @@ export function generate_channel_name(
 	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
 	guild_object: GuildPrtl, guild: Guild
 ): number {
+	
+
+
 	let return_value: number = 0;
 	portal_list.some(p => {
 		p.voice_list.some(v => {
