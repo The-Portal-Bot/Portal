@@ -6,29 +6,28 @@ import { stop } from "../libraries/musicOps";
 import { update_timestamp } from "../libraries/userOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { fetch_guild } from "../libraries/mongoOps";
 
 async function delete_channel(
-	channel: VoiceChannel | TextChannel, guild_list: GuildPrtl[]
+	channel: VoiceChannel | TextChannel, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const deleted = guild_list.some(g =>
-			g.portal_list.some(p =>
-				p.voice_list.some((v, index) => {
-					if (v.id === channel.id) {
-						if (channel.deletable) {
-							channel
-								.delete()
-								.then(g => {
-									p.voice_list.splice(index, 1);
-									console.log(`deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
-								})
-								.catch(console.log);
-						}
-						return true;
+		const deleted = guild_object.portal_list.some(p =>
+			p.voice_list.some((v, index) => {
+				if (v.id === channel.id) {
+					if (channel.deletable) {
+						channel
+							.delete()
+							.then(g => {
+								p.voice_list.splice(index, 1);
+								console.log(`deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
+							})
+							.catch(console.log);
 					}
-					return false
-				})
-			)
+					return true;
+				}
+				return false
+			})
 		);
 
 		if (!deleted)
@@ -37,8 +36,7 @@ async function delete_channel(
 }
 
 function from_null(
-	new_channel: VoiceChannel | null, guild_list: GuildPrtl[], guild_object: GuildPrtl,
-	newState: VoiceState
+	new_channel: VoiceChannel | null, guild_object: GuildPrtl, newState: VoiceState
 ): ReturnPormise {
 	let report_message = '';
 
@@ -61,10 +59,10 @@ function from_null(
 		// joined voice channel
 		else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) {
 			generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
-			update_timestamp(newState, guild_list); // points for voice
+			update_timestamp(newState, guild_object); // points for voice
 		}
 		else { // joined other channel
-			update_timestamp(newState, guild_list); // points for other
+			update_timestamp(newState, guild_object); // points for other
 		}
 	} else {
 		return { result: false, value: 'FN/VU/000: from null to null' };
@@ -75,7 +73,7 @@ function from_null(
 
 function from_existing(
 	old_channel: VoiceChannel, new_channel: VoiceChannel | null, client: Client,
-	guild_list: GuildPrtl[], guild_object: GuildPrtl, newState: VoiceState
+	guild_object: GuildPrtl, newState: VoiceState
 ): ReturnPormise {
 	let report_message = '';
 
@@ -86,7 +84,7 @@ function from_existing(
 		if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
 
 			if (old_channel.members.size === 0) {
-				delete_channel(old_channel, guild_list)
+				delete_channel(old_channel, guild_object)
 					.then(response => { return response; });
 			}
 
@@ -97,14 +95,14 @@ function from_existing(
 				if (voice_connection) {
 					if (old_channel.members.size === 1) {
 						voice_connection.disconnect();
-						delete_channel(old_channel, guild_list)
+						delete_channel(old_channel, guild_object)
 							.then(response => { return response; });
 						stop(guild_object, old_channel.guild);
 					}
 				}
 			}
 		}
-		update_timestamp(newState, guild_list); // points calculation from any channel
+		update_timestamp(newState, guild_object); // points calculation from any channel
 	}
 	else if (new_channel !== null) { // Moved from channel to channel
 		report_message += 'existing->existing\n';
@@ -115,7 +113,7 @@ function from_existing(
 
 			if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // has been handled before
 
-				update_timestamp(newState, guild_list); // points from voice creation
+				update_timestamp(newState, guild_object); // points from voice creation
 
 				report_message += '->dest: voice_list\n';
 				report_message += 'has been handled before';
@@ -131,7 +129,7 @@ function from_existing(
 				report_message += '->dest: portal_list';
 
 				if (old_channel.members.size === 0) {
-					delete_channel(old_channel, guild_list)
+					delete_channel(old_channel, guild_object)
 						.then(response => { return response; });
 				}
 
@@ -142,7 +140,7 @@ function from_existing(
 					if (voice_connection) {
 						if (old_channel.members.size === 1) {
 							voice_connection.disconnect();
-							delete_channel(old_channel, guild_list)
+							delete_channel(old_channel, guild_object)
 								.then(response => { return response; });
 							stop(guild_object, old_channel.guild);
 						}
@@ -164,7 +162,7 @@ function from_existing(
 				report_message += '->dest: voice_list\n';
 
 				if (old_channel.members.size === 0) {
-					delete_channel(old_channel, guild_list)
+					delete_channel(old_channel, guild_object)
 						.then(response => { return response; });
 				}
 				if (client.voice) {
@@ -174,7 +172,7 @@ function from_existing(
 					if (voiceConnection) {
 						if (old_channel.members.size === 1) {
 							voiceConnection.disconnect();
-							delete_channel(old_channel, guild_list)
+							delete_channel(old_channel, guild_object)
 								.then(response => { return response; });
 							stop(guild_object, old_channel.guild);
 						}
@@ -189,7 +187,7 @@ function from_existing(
 				report_message += '->dest: other\n';
 
 				if (old_channel.members.size === 0) {
-					delete_channel(old_channel, guild_list)
+					delete_channel(old_channel, guild_object)
 						.then(response => { return response; });
 				}
 
@@ -200,7 +198,7 @@ function from_existing(
 					if (voiceConnection) {
 						if (old_channel.members.size === 1) {
 							voiceConnection.disconnect();
-							delete_channel(old_channel, guild_list)
+							delete_channel(old_channel, guild_object)
 								.then(response => { return response; });
 							stop(guild_object, old_channel.guild);
 						}
@@ -240,53 +238,61 @@ function from_existing(
 
 module.exports = async (
 	args: {
-		client: Client, newState: VoiceState, oldState: VoiceState,
-		guild_list: GuildPrtl[], portal_managed_guilds_path: string
+		client: Client, newState: VoiceState, oldState: VoiceState
 	}
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = args.guild_list.find(g => g.id === args.newState.guild.id);
-		if (!guild_object) return resolve({ result: false, value: 'error with data' });
+		if (args.newState?.guild) {
+			fetch_guild(args.newState?.guild.id)
+				.then(guild_object => {
+					if (guild_object) {
+						const new_channel = args.newState.channel; // join channel
+						const old_channel = args.oldState.channel; // left channel
 
-		const new_channel = args.newState.channel; // join channel
-		const old_channel = args.oldState.channel; // left channel
+						if (old_channel !== null && old_channel !== undefined) {
+							if (new_channel !== null && new_channel !== undefined) {
+								if (new_channel.id === old_channel.id) {
+									return resolve({
+										result: true,
+										value: 'changed voice state but remains in the same channel'
+									});
+								}
+							}
+						}
 
-		if (old_channel !== null && old_channel !== undefined) {
-			if (new_channel !== null && new_channel !== undefined) {
-				if (new_channel.id === old_channel.id) {
-					return resolve({
-						result: true,
-						value: 'changed voice state but remains in the same channel'
-					});
-				}
-			}
+						if (args.client.voice && args.newState.member) {
+							const new_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
+								new_channel !== null && connection.channel.id === new_channel.id);
+							if (new_voice_connection && !args.newState.member.user.bot) {
+								client_talk(args.client, guild_object, 'user_connected');
+							}
+
+							const old_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
+								old_channel !== null && connection.channel.id === old_channel.id);
+							if (old_voice_connection && !args.newState.member.user.bot) {
+								client_talk(args.client, guild_object, 'user_disconnected');
+							}
+						}
+
+						let report_message = `from: ${old_channel} to ${new_channel}\n`;
+
+						const execution = (old_channel === null)
+							? from_null(new_channel, guild_object, args.newState)
+							: from_existing(old_channel, new_channel, args.client, guild_object, args.newState);
+
+						if (!execution.result) return resolve(execution);
+						report_message += `${execution.value}`;
+
+						return resolve({ result: true, value: report_message });
+					} else {
+						return resolve({ result: false, value: 'could not find guild in Portal' });
+					}
+				})
+				.catch(error => {
+					return resolve({ result: false, value: 'could not find guild in Portal' });
+				});
+		} else {
+			return resolve({ result: false, value: 'could fnot find guild in Portal' });
 		}
-
-		if (args.client.voice && args.newState.member) {
-			const new_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
-				new_channel !== null && connection.channel.id === new_channel.id);
-			if (new_voice_connection && !args.newState.member.user.bot) {
-				client_talk(args.client, guild_object, 'user_connected');
-			}
-
-			const old_voice_connection = args.client.voice.connections.find((connection: VoiceConnection) =>
-				old_channel !== null && connection.channel.id === old_channel.id);
-			if (old_voice_connection && !args.newState.member.user.bot) {
-				client_talk(args.client, guild_object, 'user_disconnected');
-			}
-		}
-
-		let report_message = `from: ${old_channel} to ${new_channel}\n`;
-
-		const execution = (old_channel === null)
-			? from_null(new_channel, args.guild_list, guild_object, args.newState)
-			: from_existing(old_channel, new_channel, args.client, args.guild_list, guild_object, args.newState);
-
-		if (!execution.result) return resolve(execution);
-		report_message += `${execution.value}`;
-
-		update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
-
-		return resolve({ result: true, value: report_message });
 	});
 };

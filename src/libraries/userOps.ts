@@ -57,18 +57,9 @@ export function add_points_time(member_prtl: MemberPrtl, speed: string): boolean
 	return true;
 };
 
-export function update_timestamp(voiceState: VoiceState, guild_list: GuildPrtl[]): number | boolean {
+export function update_timestamp(voiceState: VoiceState, guild_object: GuildPrtl): number | boolean {
 	if (voiceState.member && voiceState.member.user.bot) {
-		const guild = guild_list.find(guild => {
-			if (voiceState && voiceState.guild)
-				return guild.id === voiceState.guild.id;
-		});
-
-		if (guild === undefined) {
-			return false;
-		}
-
-		const member_prtl = guild.member_list.find(m => {
+		const member_prtl = guild_object.member_list.find(m => {
 			if (voiceState && voiceState.member)
 				return m.id === voiceState.member.id;
 		});
@@ -77,9 +68,9 @@ export function update_timestamp(voiceState: VoiceState, guild_list: GuildPrtl[]
 			return false;
 		}
 
-		const ranks = guild.ranks;
+		const ranks = guild_object.ranks;
 		const member = voiceState.member;
-		const speed = guild.level_speed;
+		const speed = guild_object.level_speed;
 		const cached_level = member_prtl.level;
 
 		if (member_prtl.timestamp === null) {

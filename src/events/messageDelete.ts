@@ -1,6 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { create_music_message } from "../libraries/helpOps";
-import { fetch_guild, insert_guild } from "../libraries/mongoOps";
+import { fetch_guild } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 
