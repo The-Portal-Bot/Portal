@@ -1,10 +1,10 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-    client: Client, message: Message, args: string[],
-    guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+    client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         if (args.length !== 1)
             return resolve({ result: false, value: 'you can only give one number as argument, for more help run `./help delete`' });

@@ -1,23 +1,15 @@
 import { Client, Message, TextChannel } from "discord.js";
-import {
-	create_music_channel, delete_channel, included_in_url_list,
-	is_announcement_channel, is_music_channel, is_spotify_channel
-} from "../../../libraries/guildOps";
+import { create_music_channel, delete_channel, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
 import { create_music_message } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
+		if (!message.guild)
 			return resolve({ result: true, value: 'message\'s guild could not be fetched' });
-		}
 
 		if (args.length === 0) {
 			if (is_music_channel(message.channel.id, guild_object)) {

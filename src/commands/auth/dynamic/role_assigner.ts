@@ -1,25 +1,47 @@
 import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../../libraries/guildOps";
 import { create_rich_embed, getJSON } from "../../../libraries/helpOps";
+import { insert_role_assigner } from "../../../libraries/mongoOps";
 import { GiveRole, GiveRolePrtl } from "../../../types/classes/GiveRolePrtl";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { Field } from "../../../types/interfaces/InterfacesPrtl";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 function create_role_message(
 	channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
 	colour: string, role_emb: Field[], role_map: GiveRole[]
-): void {
-	const role_message_emb: MessageEmbed = create_rich_embed(title, desc, colour, role_emb, null, null, null, null, null);
-	channel
-		.send(role_message_emb)
-		.then(sent_message => {
-			for (let i = 0; i < role_map.length; i++) {
-				sent_message.react(role_map[i].give);
-				sent_message.react(role_map[i].strip);
-			}
-			guild_object.role_list.push(new GiveRolePrtl(sent_message.id, role_map));
-		})
-		.catch(error => console.log(error));
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		const role_message_emb: MessageEmbed = create_rich_embed(
+			title, desc, colour, role_emb, null, null, null, null, null
+		);
+
+		channel
+			.send(role_message_emb)
+			.then(sent_message => {
+				for (let i = 0; i < role_map.length; i++) {
+					sent_message.react(role_map[i].give);
+					sent_message.react(role_map[i].strip);
+				}
+				insert_role_assigner(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
+					.then(response => {
+						return resolve({
+							result: response, value: response
+								? 'set new ranks successfully'
+								: 'failed to set new ranks'
+						});
+					})
+					.catch(error => {
+						return resolve({
+							result: false, value: 'failed to set new ranks'
+						});
+					});
+			})
+			.catch(error => {
+				return resolve({
+					result: false, value: 'failed to create role assigner message'
+				})
+			});
+	});
 };
 
 function multiple_same_emote(emote_map: GiveRole[]) {
@@ -35,12 +57,9 @@ function multiple_same_emote(emote_map: GiveRole[]) {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
 		if (args.length <= 0) return resolve({ result: false, value: 'you can run `./help role_assigner` for help' });
 

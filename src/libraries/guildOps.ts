@@ -251,7 +251,7 @@ export function create_voice_channel(
 		}
 	});
 }
-
+// must be fixed
 export async function create_music_channel(guild: Guild, music_channel: string,
 	music_category: string | CategoryChannel | null, guild_object: GuildPrtl): Promise<void> {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +

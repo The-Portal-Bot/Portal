@@ -2,6 +2,7 @@ import { Client, Message } from "discord.js";
 import { included_in_voice_list, regex_interpreter } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 const renameKey = (portal_object: PortalChannelPrtl, oldKey: string, newKey: string) => {
 	if (oldKey !== newKey) {
@@ -38,20 +39,16 @@ const copyKey = (portal_object: PortalChannelPrtl, oldKey: string, cpyKey: strin
 	return portal_object;
 };
 
+// NEEDS FIXING
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
 		if (!message.member) {
 			return resolve({ result: true, value: 'member could not be fetched' });
 		}
 
-		if (message.member.voice.channel === undefined || message.member.voice.channel === null) {
+		if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
 				value: 'you must be in a channel handled by Portal',
@@ -90,7 +87,7 @@ module.exports = async (
 
 										setTimeout(() => {
 											p = renameKey(p, 'intermidiary', clone.id);
-										}, 2000);
+										}, 3000);
 									}
 								})
 								.catch((error: any) => {

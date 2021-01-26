@@ -1,7 +1,8 @@
 import { Client, Message, Role } from "discord.js";
 import { getJSON } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { Rank } from "../../../types/interfaces/InterfacesPrtl";
+import { Rank, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { set_ranks } from "../../../libraries/mongoOps";
 
 function is_rank(rank: Rank) {
 	return !!rank.level && !!rank.role;
@@ -16,12 +17,9 @@ function is_role(rank: Rank, roles: Role[]) {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
 		const roles = message.guild.roles.cache.map(cr => cr);
 
@@ -64,7 +62,19 @@ module.exports = async (
 				if (role) rank.role = role.id;
 			});
 
-			guild_object.ranks = new_ranks;
+			set_ranks(guild_object.id, new_ranks)
+				.then(response => {
+					return resolve({
+						result: response, value: response
+							? 'set new ranks successfully'
+							: 'failed to set new ranks'
+					});
+				})
+				.catch(error => {
+					return resolve({
+						result: false, value: 'failed to set new ranks'
+					});
+				});
 		}
 		else {
 			return resolve({

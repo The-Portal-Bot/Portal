@@ -1,19 +1,17 @@
 import { Client, Message } from 'discord.js';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl';
 import config from '../../../config.json';
+import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
 
 const translate = require('translate')
 translate.engine = config.api_keys.translate.engine;
 translate.key = config.api_keys.translate.key;
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		return resolve({ result: true, value: 'work in progress' });
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
 
 		if (args.length <= 1)
 			return resolve({ result: false, value: '1 you can run `./help translate` for help' });

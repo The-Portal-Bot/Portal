@@ -180,15 +180,6 @@
                 "save_after": true
             },
             {
-                "name": "save",
-                "range": "guild",
-                "time": 5,
-                "auth": true,
-                "premium": true,
-                "auto_delete": true,
-                "save_after": false
-            },
-            {
                 "name": "setup",
                 "range": "guild",
                 "time": 10,

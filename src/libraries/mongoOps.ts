@@ -22,9 +22,29 @@ export async function fetch_guild(guild_id: string): Promise<GuildPrtl | undefin
     return new Promise((resolve) => {
         GuildPrtlMdl.findOne({ id: guild_id })
             .then(guild => {
-                return guild ? resolve(<GuildPrtl><unknown>guild) : undefined
+                console.log('\tto vrika: ', guild);
+                if (guild) {
+                    return resolve(<GuildPrtl><unknown>guild);
+                } else {
+                    return undefined;
+                }
             })
-            .catch(error => { console.log('error :>> ', error); return resolve(undefined) });
+            .catch(error => {
+                console.log('\tden to vrika, error :>> ', error);
+                return resolve(undefined);
+            });
+    });
+};
+
+export async function guild_exists(guild_id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.countDocuments({ id: guild_id })
+            .then(count => {
+                return resolve(count > 0);
+            })
+            .catch(error => {
+                return resolve(false);
+            });
     });
 };
 
@@ -53,11 +73,11 @@ export async function insert_guild(guild_id: string, client: Client): Promise<bo
     const role_list: GiveRolePrtl[] = [];
     const ranks: Rank[] = [];
     const auth_role: string[] = [];
-    const spotify: string | null = null;
-    const music_data: MusicData = { channel_id: undefined, message_id: undefined, votes: [] };
+    const spotify: string | null = 'null';
+    const music_data: MusicData = { channel_id: 'null', message_id: 'null', votes: [] };
     const music_queue: VideoSearchResult[] = [];
     const dispatcher: StreamDispatcher | undefined = undefined;
-    const announcement: string | null = null;
+    const announcement: string | null = 'null';
     const locale: string = 'en';
     const announce: boolean = true;
     const level_speed: string = 'normal';
@@ -80,17 +100,22 @@ export async function insert_guild(guild_id: string, client: Client): Promise<bo
             locale: locale,
             announce: announce,
             level_speed: level_speed,
-            premium: premium,
+            premium: premium
         })
-            .then(() => { return resolve(true); })
-            .catch(() => { return resolve(false); });
+            .then((response) => {
+                return resolve(!!response);
+            })
+            .catch((error) => {
+                console.log('error inserting guild: ', error);
+                return resolve(false);
+            });
     });
 };
 
 export async function remove_guild(guild_id: string): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.remove({ id: guild_id })
-            .then(response => resolve(!response))
+            .then(response => resolve(!!response))
             .catch(() => resolve(false));
     });
 };
@@ -117,6 +142,140 @@ export async function remove_member(member_to_remove: GuildMember): Promise<bool
 
 //
 
+export async function insert_portal(guild_id: string, new_portal: PortalChannelPrtl): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $push: { portal_list: new_portal }
+            }
+        )
+            .then(response => resolve(!!response))
+            .catch(() => resolve(false));
+    });
+};
+
+// export async function remove_portal(member_to_remove: GuildMember): Promise<boolean> {
+//     return new Promise((resolve) => {
+//         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
+//             .then(response => resolve(!!response))
+//             .catch(() => resolve(false));
+//     });
+// };
+
+//
+
+//
+
+export async function insert_spotify(guild_id: string, new_spotify: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                spotify: new_spotify
+            }
+        )
+            .then(response => resolve(response))
+            .catch(() => resolve(false));
+    });
+};
+
+// export async function remove_spotify(member_to_remove: GuildMember): Promise<boolean> {
+//     return new Promise((resolve) => {
+//         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
+//             .then(response => resolve(!!response))
+//             .catch(() => resolve(false));
+//     });
+// };
+
+//
+
+//
+
+export async function insert_announcement(guild_id: string, new_announcement: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                announcement: new_announcement
+            }
+        )
+            .then(response => resolve(response))
+            .catch(() => resolve(false));
+    });
+};
+
+// export async function remove_announcement(member_to_remove: GuildMember): Promise<boolean> {
+//     return new Promise((resolve) => {
+//         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
+//             .then(response => resolve(!!response))
+//             .catch(() => resolve(false));
+//     });
+// };
+
+//
+
+//
+
+export async function insert_url(guild_id: string, new_url: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $push: { url_list: new_url }
+            }
+        )
+            .then(response => resolve(response))
+            .catch(() => resolve(false));
+    });
+};
+
+// export async function remove_url(member_to_remove: GuildMember): Promise<boolean> {
+//     return new Promise((resolve) => {
+//         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
+//             .then(response => resolve(!!response))
+//             .catch(() => resolve(false));
+//     });
+// };
+
+//
+
+export async function set_ranks(guild_id: string, new_ranks: Rank[]): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                ranks: new_ranks
+            }
+        )
+            .then(response => resolve(response))
+            .catch(() => resolve(false));
+    });
+};
+
+//
+
+export async function insert_role_assigner(guild_id: string, new_role_assigner: GiveRolePrtl): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                role_list: new_role_assigner
+            }
+        )
+            .then(response => resolve(response))
+            .catch(() => resolve(false));
+    });
+};
+
+//
+
 export async function delete_channel(channel_to_remove: GuildChannel): Promise<number> {
     return new Promise((resolve) => {
         const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
@@ -135,9 +294,10 @@ export async function delete_channel(channel_to_remove: GuildChannel): Promise<n
                                     }
                                 }
                             )
-                                .then(response => { return response 
-                                    ? resolve(TypesOfChannel.Portal)
-                                    : resolve(type_of_channel)
+                                .then(response => {
+                                    return response
+                                        ? resolve(TypesOfChannel.Portal)
+                                        : resolve(type_of_channel)
                                 })
                                 .catch(() => resolve(type_of_channel));
                             return true;
@@ -153,9 +313,10 @@ export async function delete_channel(channel_to_remove: GuildChannel): Promise<n
                                         }
                                     }
                                 )
-                                    .then(response => { return response 
-                                        ? resolve(TypesOfChannel.Voice)
-                                        : resolve(type_of_channel)
+                                    .then(response => {
+                                        return response
+                                            ? resolve(TypesOfChannel.Voice)
+                                            : resolve(type_of_channel)
                                     })
                                     .catch(() => resolve(type_of_channel));
                                 return true;
@@ -174,9 +335,10 @@ export async function delete_channel(channel_to_remove: GuildChannel): Promise<n
                                         }
                                     }
                                 )
-                                    .then(response => { return response 
-                                        ? resolve(TypesOfChannel.Url)
-                                        : resolve(type_of_channel)
+                                    .then(response => {
+                                        return response
+                                            ? resolve(TypesOfChannel.Url)
+                                            : resolve(type_of_channel)
                                     })
                                     .catch(() => resolve(type_of_channel));
                                 break;
@@ -190,9 +352,10 @@ export async function delete_channel(channel_to_remove: GuildChannel): Promise<n
                                     spotify: null
                                 }
                             )
-                                .then(response => { return response 
-                                    ? resolve(TypesOfChannel.Spotify)
-                                    : resolve(type_of_channel)
+                                .then(response => {
+                                    return response
+                                        ? resolve(TypesOfChannel.Spotify)
+                                        : resolve(type_of_channel)
                                 })
                                 .catch(() => resolve(type_of_channel));
                         }
@@ -204,9 +367,10 @@ export async function delete_channel(channel_to_remove: GuildChannel): Promise<n
                                     announcement: null
                                 }
                             )
-                                .then(response => { return response 
-                                    ? resolve(TypesOfChannel.Announcement)
-                                    : resolve(type_of_channel)
+                                .then(response => {
+                                    return response
+                                        ? resolve(TypesOfChannel.Announcement)
+                                        : resolve(type_of_channel)
                                 })
                                 .catch(() => resolve(type_of_channel));
                         }
@@ -217,16 +381,17 @@ export async function delete_channel(channel_to_remove: GuildChannel): Promise<n
                                 { id: channel_to_remove.guild.id },
                                 {
                                     music_data: {
-                                        channel_id : undefined,
-                                        message_id : undefined,
-                                        votes : []
+                                        channel_id: undefined,
+                                        message_id: undefined,
+                                        votes: []
                                     },
                                     dispatcher: undefined
                                 }
                             )
-                                .then(response => { return response 
-                                    ? resolve(TypesOfChannel.Music)
-                                    : resolve(type_of_channel)
+                                .then(response => {
+                                    return response
+                                        ? resolve(TypesOfChannel.Music)
+                                        : resolve(type_of_channel)
                                 })
                                 .catch(() => resolve(type_of_channel));
                         }

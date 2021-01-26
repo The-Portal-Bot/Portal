@@ -382,7 +382,6 @@ export function time_remaining(timestamp: number, timeout: number): TimeRemainin
 
 export function remove_deleted_channels(guild: Guild): Promise<boolean> {
 	let removed_channel = false;
-
 	return new Promise((resolve) => {
 		fetch_guild(guild.id)
 			.then(guild_object => {

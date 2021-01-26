@@ -1,22 +1,15 @@
 import { Client, Message, VoiceChannel } from "discord.js";
+import { create_channel, delete_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
+import { insert_announcement } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import {
-	is_announcement_channel, is_spotify_channel, is_music_channel,
-	included_in_url_list, delete_channel, create_channel, getOptions
-} from "../../../libraries/guildOps";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (message.guild === null) {
+		if (message.guild === null)
 			return resolve({ result: true, value: 'message guild could not be fetched' });
-		}
 
 		if (args.length === 0) {
 			if (is_announcement_channel(message.channel.id, guild_object)) {
@@ -51,7 +44,20 @@ module.exports = async (
 		if (announcement) delete_channel(announcement, message);
 
 		if (args.length === 0) {
-			guild_object.announcement = message.channel.id;
+			insert_announcement(guild_object.id, message.channel.id)
+				.then(response => {
+					return resolve({
+						result: response, value: response
+							? 'set as the anouncement channel successfully'
+							: 'failed to set as the anouncement channel'
+					});
+				})
+				.catch(error => {
+					return resolve({
+						result: false, value: 'failed to set as the anouncement channel'
+					});
+				});
+
 			return resolve({
 				result: true,
 				value: 'this is now the Announcement channel',
@@ -69,8 +75,19 @@ module.exports = async (
 				)
 					.then(response => {
 						if (response.result) {
-							guild_object.announcement = response.value;
-							return resolve({ result: true, value: 'announcement channel and category created' });
+							insert_announcement(guild_object.id, response.value)
+								.then(response => {
+									return resolve({
+										result: response, value: response
+											? 'created announcement channel and category successfully'
+											: 'failed to create a announcement channel'
+									});
+								})
+								.catch(error => {
+									return resolve({
+										result: false, value: 'failed to create a announcement channel'
+									});
+								});
 						} else {
 							return resolve(response);
 						}
@@ -84,8 +101,19 @@ module.exports = async (
 				)
 					.then(response => {
 						if (response.result) {
-							guild_object.announcement = response.value;
-							return resolve({ result: true, value: 'announcement channel created' });
+							insert_announcement(guild_object.id, response.value)
+								.then(response => {
+									return resolve({
+										result: response, value: response
+											? 'created announcement channel successfully'
+											: 'failed to create a announcement channel'
+									});
+								})
+								.catch(error => {
+									return resolve({
+										result: false, value: 'failed to create a announcement channel'
+									});
+								});
 						} else {
 							return resolve(response);
 						}
