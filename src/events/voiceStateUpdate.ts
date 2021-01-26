@@ -25,7 +25,7 @@ async function delete_channel(
 					}
 					return true;
 				}
-				return false
+				return false;
 			})
 		);
 
@@ -37,12 +37,8 @@ async function delete_channel(
 function from_null(
 	new_channel: VoiceChannel | null, guild_object: GuildPrtl, newState: VoiceState
 ): ReturnPormise {
-	let report_message = '';
-
 	// joined from null
 	if (new_channel) {
-		report_message += 'null->existing\n';
-		console.log('included_in_portal_list(new_channel.id, guild_object.portal_list) :>> ', included_in_portal_list(new_channel.id, guild_object.portal_list));
 		// joined portal channel
 		if (included_in_portal_list(new_channel.id, guild_object.portal_list)) {
 			const portal_object = guild_object.portal_list.find(p => p.id === new_channel.id);
@@ -50,10 +46,11 @@ function from_null(
 
 			create_voice_channel(newState, portal_object, new_channel, newState.id)
 				.then(response => {
+					console.log('response :>> ', response);
 					if (!response.result) return response;
 					generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				})
-				.catch(error => { return { result: false, value: error }; });
+				.catch(error => { console.log('error :>> ', error); return { result: false, value: error }; });
 		}
 		// joined voice channel
 		else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) {
@@ -63,11 +60,11 @@ function from_null(
 		else { // joined other channel
 			update_timestamp(newState, guild_object); // points for other
 		}
+		
+		return { result: true, value: 'null->existing\n' };
 	} else {
-		return { result: false, value: 'FN/VU/000: from null to null' };
+		return { result: false, value: 'should not be possible to move from null to null' };
 	}
-
-	return { result: true, value: report_message };
 }
 
 function from_existing(

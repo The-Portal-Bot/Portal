@@ -51,7 +51,6 @@ module.exports = async (
 		args.client.user.setPresence(data);
 
 		let index = 0;
-		console.log(`> loading portal\'s guilds from ${config.database_json}`);
 		args.client.guilds.cache.forEach((guild: Guild) => {
 			console.log(`> ${index++}. ${guild} (${guild.id})`);
 

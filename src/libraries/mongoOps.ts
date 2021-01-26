@@ -7,6 +7,7 @@ import { Rank } from "../types/interfaces/InterfacesPrtl";
 import { VideoSearchResult } from "yt-search";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { stop } from "./musicOps";
+import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 
 // fetch guilds
 
@@ -173,11 +174,42 @@ export async function insert_portal(guild_id: string, new_portal: PortalChannelP
 
 //
 
+export async function insert_voice(guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                "$push": {
+                    "portal_list.$[b].voice_list": new_voice
+                }
+            },
+            {
+                "new": true,
+                "arrayFilters": [
+                    { "b.id": portal_id }
+                ]
+            }
+        )
+            .then(response => { console.log('response :>> ', response); resolve(!!response) })
+            .catch(error => { console.log('error :>> ', error); resolve(false) });
+    });
+};
+
+// export async function remove_voice(member_to_remove: GuildMember): Promise<boolean> {
+//     return new Promise((resolve) => {
+//         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
+//             .then(response => resolve(!!response))
+//             .catch(() => resolve(false));
+//     });
+// };
+
+
 //
+
+
 
 export async function insert_spotify(guild_id: string, new_spotify: string): Promise<boolean> {
     return new Promise((resolve) => {
-        // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
             { id: guild_id },
             {

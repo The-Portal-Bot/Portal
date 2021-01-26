@@ -17,6 +17,7 @@ import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { VideoSearchResult } from "yt-search";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 import { promises } from "dns";
+import { insert_voice } from "./mongoOps";
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -237,10 +238,15 @@ export function create_voice_channel(
 				.create('loading..', voice_options)
 				.then(channel => {
 					if (state.member) {
-						portal_object.voice_list.push(new VoiceChannelPrtl(
+						insert_voice(state.member.guild.id, portal_object.id, new VoiceChannelPrtl(
 							channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
 							portal_object.ann_announce, portal_object.ann_user
 						));
+						// portal_object.voice_list.push(new VoiceChannelPrtl(
+						// 	channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
+						// 	portal_object.ann_announce, portal_object.ann_user
+						// ));
+
 						state.member.voice.setChannel(channel);
 						return resolve({ result: true, value: `created channel and moved member to new voice` });
 					} else {
@@ -253,6 +259,7 @@ export function create_voice_channel(
 		}
 	});
 }
+
 // must be fixed
 export async function create_music_channel(guild: Guild, music_channel: string,
 	music_category: string | CategoryChannel | null, guild_object: GuildPrtl): Promise<void> {
@@ -495,10 +502,9 @@ export function channel_deleted_update_state(
 //
 
 export function generate_channel_name(
-	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
-	guild_object: GuildPrtl, guild: Guild
+	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild
 ): number {
-	
+
 
 
 	let return_value: number = 0;
@@ -507,13 +513,13 @@ export function generate_channel_name(
 			if (v.id === voice_channel.id) {
 				let regex = v.regex;
 				if (p.regex_overwrite) {
-					const member = voice_channel.members.find(m => m.id === v.creator_id);
+					const member = voice_channel.members
+						.find(m => m.id === v.creator_id);
 					if (member) {
-						const member_object = guild_object.member_list.find(m => m.id === member.id);
-						if (member_object) {
-							if (member_object.regex) {
-								regex = member_object.regex;
-							}
+						const member_object = guild_object.member_list
+							.find(m => m.id === member.id);
+						if (member_object?.regex && member_object.regex !== 'null') {
+							regex = member_object.regex;
 						}
 					}
 				}
@@ -552,7 +558,7 @@ export function regex_interpreter(
 	let last_variable = '';
 	let last_attribute = '';
 	let new_channel_name = '';
-
+	console.log('regex :>> ', regex);
 	for (let i = 0; i < regex.length; i++) {
 		if (regex[i] === variable_prefix) {
 
