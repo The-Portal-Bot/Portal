@@ -41,7 +41,7 @@ const copyKey = (portal_object: PortalChannelPrtl, oldKey: string, cpyKey: strin
 
 // NEEDS FIXING
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!message.member) {

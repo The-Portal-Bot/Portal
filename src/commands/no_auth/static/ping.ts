@@ -3,7 +3,7 @@ import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl, client: Client
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		message.channel.send('initial')

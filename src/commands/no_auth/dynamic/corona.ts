@@ -23,7 +23,7 @@ const get_country_code = function (country: string): string | null {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		let code: string | null = null;

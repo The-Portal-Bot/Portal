@@ -4,7 +4,7 @@ import { get_role_name } from "../../../libraries/guildOps";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		const roles = guild_object.auth_role;

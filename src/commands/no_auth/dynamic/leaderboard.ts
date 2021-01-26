@@ -11,7 +11,7 @@ const compare = function (member_a: MemberPrtl, member_b: MemberPrtl) {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		const member_list = guild_object.member_list;

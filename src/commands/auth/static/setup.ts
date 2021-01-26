@@ -6,7 +6,7 @@ import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });

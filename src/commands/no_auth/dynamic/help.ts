@@ -9,7 +9,7 @@ import { get_structure_help, get_structure_help_super, get_structure_guide } fro
 import { get_variable_help, get_variable_help_super, get_variable_guide } from "../../../types/interfaces/Variable";
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.length === 0) {

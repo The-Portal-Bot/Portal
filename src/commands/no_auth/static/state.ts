@@ -4,7 +4,7 @@ import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-    client: Client, message: Message, args: string[], guild_object: GuildPrtl
+    message: Message, args: string[], guild_object: GuildPrtl, client: Client
 ): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         const guild = client.guilds.cache.find(g => g.id === message?.guild?.id);

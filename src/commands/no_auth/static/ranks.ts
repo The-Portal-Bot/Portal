@@ -4,7 +4,7 @@ import { create_rich_embed } from "../../../libraries/helpOps";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		const ranks = guild_object.ranks;

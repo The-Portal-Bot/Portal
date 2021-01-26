@@ -1,7 +1,4 @@
-import {
-	Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember,
-	PartialMessage, PartialUser, Presence, User, VoiceState
-} from "discord.js";
+import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import config from './config.json';
@@ -9,7 +6,7 @@ import { included_in_url_list } from './libraries/guildOps';
 import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
-import { fetch_guild, fetch_guild_list } from "./libraries/mongoOps";
+import { fetch_guild } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
@@ -254,7 +251,7 @@ function command_loader(
 	path_to_command: string, active_cooldown: ActiveCooldown[], guild_object: GuildPrtl
 ): boolean {
 	if (type === 'none' && command_options.time === 0) {
-		require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_object)
+		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
 				if (response)
 					message_reply(response.result, message.channel, message, message.author, response.value,
@@ -290,7 +287,7 @@ function command_loader(
 		return false;
 	}
 
-	require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_object)
+	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 		.then((response: ReturnPormise) => {
 			if (response) {
 				active_cooldown.push({

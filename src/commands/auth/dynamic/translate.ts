@@ -8,7 +8,7 @@ translate.engine = config.api_keys.translate.engine;
 translate.key = config.api_keys.translate.key;
 
 module.exports = async (
-	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		return resolve({ result: true, value: 'work in progress' });
