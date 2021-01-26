@@ -54,10 +54,10 @@ const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 // it 'self', client.user is actually the presence of portal bot in the server
 const client = new Client({ partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'] });
 
-// This event will run if the bot starts, and logs in, successfully.
-client.on('ready', () =>
-	event_loader('ready', {
-		'client': client
+// This event triggers when the bot joins a guild.
+client.on('channelDeleted', (channel: GuildChannel) =>
+	event_loader('channelDelete', {
+		'channel': channel
 	})
 );
 
@@ -76,13 +76,6 @@ client.on('guildDelete', (guild: Guild) =>
 	})
 );
 
-// This event triggers when the bot joins a guild.
-client.on('channelDeleted', (channel: GuildChannel) =>
-	event_loader('channelDelete', {
-		'channel': channel
-	})
-);
-
 // This event triggers when a new member joins a guild.
 client.on('guildMemberAdd', (member: GuildMember) =>
 	event_loader('guildMemberAdd', {
@@ -92,65 +85,52 @@ client.on('guildMemberAdd', (member: GuildMember) =>
 
 // This event triggers when a new member leaves a guild.
 client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('guildMemberRemove', {
-				'member': member,
-				'guild_list': guild_list
-			})
-		})
-);
-
-// This event triggers when the status of a guild member has changed
-client.on('presenceUpdate', (oldPresence: Presence | undefined, newPresence: Presence | undefined) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('presenceUpdate', {
-				'client': client,
-				'guild_list': guild_list,
-				'newPresence': newPresence
-			})
-		})
-);
-
-// This event triggers when a member reacts to a message
-client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | PartialUser) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('messageReactionAdd', {
-				'client': client,
-				'guild_list': guild_list,
-				'messageReaction': messageReaction,
-				'user': user
-			})
-		})
+	event_loader('guildMemberRemove', {
+		'member': member
+	})
 );
 
 // This event triggers when a message is deleted
 client.on('messageDelete', (message: Message | PartialMessage) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('messageDelete', {
-				'client': client,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path,
-				'message': message
-			})
-		})
+	event_loader('messageDelete', {
+		'client': client,
+		'message': message
+	})
+);
+
+// This event triggers when a member reacts to a message
+client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | PartialUser) =>
+	event_loader('messageReactionAdd', {
+		'client': client,
+		'messageReaction': messageReaction,
+		'user': user
+	})
+);
+
+// This event triggers when the status of a guild member has changed
+client.on('presenceUpdate', (oldPresence: Presence | undefined, newPresence: Presence | undefined) =>
+	event_loader('presenceUpdate', {
+		'client': client,
+		'newPresence': newPresence
+	})
+);
+
+// This event will run if the bot starts, and logs in, successfully.
+client.on('ready', () =>
+	event_loader('ready', {
+		'client': client
+	})
 );
 
 // This event triggers when a member joins or leaves a voice channel
 client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
-	fetch_guild_list()
-		.then(guild_list => {
-			event_loader('voiceStateUpdate', {
-				'client': client,
-				'guild_list': guild_list,
-				'portal_managed_guilds_path': portal_managed_guilds_path,
-				'oldState': oldState,
-				'newState': newState
-			})
-		})
+	event_loader('voiceStateUpdate', {
+		'client': client,
+		'guild_list': guild_list,
+		'portal_managed_guilds_path': portal_managed_guilds_path,
+		'oldState': oldState,
+		'newState': newState
+	})
 );
 
 // runs on every single message received, from any channel or DM

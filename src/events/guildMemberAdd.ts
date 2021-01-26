@@ -1,7 +1,6 @@
 import { GuildMember, TextChannel } from "discord.js";
 import { create_rich_embed } from "../libraries/helpOps";
 import { fetch_guild, insert_member } from "../libraries/mongoOps";
-import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
@@ -28,7 +27,7 @@ module.exports = async (
 					}
 
 					if (!args.member.user.bot && guild_object) {
-						insert_member(new MemberPrtl(args.member.id, 1, 0, 1, 0, null, false, false, null))
+						insert_member(args.member)
 							.then(response => {
 								return resolve({
 									result: response, value: response

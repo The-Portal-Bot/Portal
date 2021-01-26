@@ -1,11 +1,12 @@
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
-import { Client, StreamDispatcher } from "discord.js";
+import { Channel, Client, GuildChannel, GuildMember, StreamDispatcher } from "discord.js";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { Rank } from "../types/interfaces/InterfacesPrtl";
 import { VideoSearchResult } from "yt-search";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
+import { stop } from "./musicOps";
 
 // fetch guilds
 
@@ -89,17 +90,151 @@ export async function insert_guild(guild_id: string, client: Client): Promise<bo
 export async function remove_guild(guild_id: string): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.remove({ id: guild_id })
-            .then(resposne => resolve(!resposne))
+            .then(response => resolve(!response))
             .catch(() => resolve(false));
     });
 };
 
 //
 
-export async function insert_member(new_member: MemberPrtl): Promise<boolean> {
+export async function insert_member(new_member: GuildMember): Promise<boolean> {
+    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, null);
     return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne({ id: new_member.id }, { $push: { member_list: new_member } })
-            .then(resposne => resolve(!resposne))
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne({ id: new_member.guild.id }, { $push: { member_list: new_member_portal } })
+            .then(response => resolve(!!response))
             .catch(() => resolve(false));
+    });
+};
+
+export async function remove_member(member_to_remove: GuildMember): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
+            .then(response => resolve(!!response))
+            .catch(() => resolve(false));
+    });
+};
+
+//
+
+export async function delete_channel(channel_to_remove: GuildChannel): Promise<number> {
+    return new Promise((resolve) => {
+        const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
+        let type_of_channel = TypesOfChannel.Unknown;
+
+        fetch_guild(channel_to_remove.guild.id)
+            .then(guild_object => {
+                if (guild_object) {
+                    const found = guild_object.portal_list.some(p => {
+                        if (p.id === channel_to_remove.id) {
+                            GuildPrtlMdl.updateOne(
+                                { id: channel_to_remove.guild.id },
+                                {
+                                    $pull: {
+                                        portal_list: { id: channel_to_remove.id }
+                                    }
+                                }
+                            )
+                                .then(response => { return response 
+                                    ? resolve(TypesOfChannel.Portal)
+                                    : resolve(type_of_channel)
+                                })
+                                .catch(() => resolve(type_of_channel));
+                            return true;
+                        }
+
+                        p.voice_list.some(v => {
+                            if (v.id === channel_to_remove.id) {
+                                GuildPrtlMdl.updateOne(
+                                    { id: channel_to_remove.guild.id },
+                                    {
+                                        $pull: {
+                                            voice_list: { id: channel_to_remove.id }
+                                        }
+                                    }
+                                )
+                                    .then(response => { return response 
+                                        ? resolve(TypesOfChannel.Voice)
+                                        : resolve(type_of_channel)
+                                    })
+                                    .catch(() => resolve(type_of_channel));
+                                return true;
+                            }
+                        });
+                    });
+
+                    if (!found) {
+                        for (let i = 0; i < guild_object.url_list.length; i++) {
+                            if (guild_object.url_list[i] === channel_to_remove.id) {
+                                GuildPrtlMdl.updateOne(
+                                    { id: channel_to_remove.guild.id },
+                                    {
+                                        $pull: {
+                                            url_list: channel_to_remove.id
+                                        }
+                                    }
+                                )
+                                    .then(response => { return response 
+                                        ? resolve(TypesOfChannel.Url)
+                                        : resolve(type_of_channel)
+                                    })
+                                    .catch(() => resolve(type_of_channel));
+                                break;
+                            }
+                        }
+
+                        if (guild_object.spotify === channel_to_remove.id) {
+                            GuildPrtlMdl.updateOne(
+                                { id: channel_to_remove.guild.id },
+                                {
+                                    spotify: null
+                                }
+                            )
+                                .then(response => { return response 
+                                    ? resolve(TypesOfChannel.Spotify)
+                                    : resolve(type_of_channel)
+                                })
+                                .catch(() => resolve(type_of_channel));
+                        }
+
+                        if (guild_object.announcement === channel_to_remove.id) {
+                            GuildPrtlMdl.updateOne(
+                                { id: channel_to_remove.guild.id },
+                                {
+                                    announcement: null
+                                }
+                            )
+                                .then(response => { return response 
+                                    ? resolve(TypesOfChannel.Announcement)
+                                    : resolve(type_of_channel)
+                                })
+                                .catch(() => resolve(type_of_channel));
+                        }
+
+                        if (guild_object.music_data.channel_id === channel_to_remove.id) {
+                            stop(guild_object, channel_to_remove.guild);
+                            GuildPrtlMdl.updateOne(
+                                { id: channel_to_remove.guild.id },
+                                {
+                                    music_data: {
+                                        channel_id : undefined,
+                                        message_id : undefined,
+                                        votes : []
+                                    },
+                                    dispatcher: undefined
+                                }
+                            )
+                                .then(response => { return response 
+                                    ? resolve(TypesOfChannel.Music)
+                                    : resolve(type_of_channel)
+                                })
+                                .catch(() => resolve(type_of_channel));
+                        }
+                    }
+
+                    return resolve(type_of_channel);
+                }
+            })
+            .catch(() => { return resolve(type_of_channel) });
     });
 };

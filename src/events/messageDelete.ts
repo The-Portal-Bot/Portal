@@ -1,51 +1,80 @@
-import { Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel } from "discord.js";
 import { create_music_message } from "../libraries/helpOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { fetch_guild, insert_guild } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 
 module.exports = async (
-	args: { guild_list: GuildPrtl[], message: Message }
+	args: { client: Client, message: Message }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!args.message.guild) return resolve({ result: true, value: 'message guild could not be found' });
-		const guild_object = args.guild_list.find(g => g.id === args.message?.guild?.id);
-		if (!guild_object) return resolve({ result: true, value: 'message could not be found' });
+		if (args.message.guild) {
+			fetch_guild(args.message.guild.id)
+				.then(guild_object => {
+					if (guild_object) {
+						const role_list = guild_object.role_list;
+						const music_data = guild_object.music_data;
+						const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+							'.github.io/master/assets/img/logo.png';
 
-		const role_list = guild_object.role_list;
-		const music_data = guild_object.music_data;
-		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-			'.github.io/master/assets/img/logo.png';
+						role_list.find((r, index) => {
+							if (r.message_id === args.message.id) {
+								GuildPrtlMdl.updateOne(
+									{ id: args.message?.guild?.id },
+									{
+										$pull: {
+											role_list: { message_id: r.message_id }
+										}
+									}
+								)
+									.then(response => {
+										return resolve({
+											result: response,
+											value: `role message ${response
+												? 'deleted successfully'
+												: 'failed to be deleted'}`
+										})
+									})
+									.catch(() => resolve({
+										result: false,
+										value: 'role message was failed to be deleted'
+									}));
+								return true;
+							}
+							return false;
+						});
 
-		const role_list_object = role_list.find((r, index) => {
-			if (args.message.guild && r.message_id === args.message.id) {
-				role_list.splice(index, 1);
-				return true;
-			}
-			return false;
-		});
-		if (role_list_object) return resolve({
-			result: true,
-			value: 'role message was deleted and successfully removed from json'
-		});
+						if (music_data.message_id === args.message.id) {
+							const current_channel = args.message?.guild?.channels.cache.find(channel =>
+								channel.id === guild_object.music_data.channel_id
+							);
 
-		if (music_data.message_id === args.message.id) {
-			const current_channel = args.message.guild.channels.cache.find(channel =>
-				channel.id === guild_object.music_data.channel_id
-			);
+							if (current_channel) {
+								create_music_message(<TextChannel>current_channel, portal_icon_url, guild_object);
 
-			if (current_channel) {
-				create_music_message(<TextChannel>current_channel, portal_icon_url, guild_object);
-
-				return resolve({
-					result: true,
-					value: 'music message has been created again',
+								return resolve({
+									result: true,
+									value: 'music message has been created again',
+								});
+							} else {
+								return resolve({
+									result: false,
+									value: 'could not find channel',
+								});
+							}
+						}
+					} else {
+						return resolve({
+							result: false,
+							value: `could not fetch guild`
+						});
+					}
 				});
-			} else {
-				return resolve({
-					result: false,
-					value: 'could not find channel',
-				});
-			}
+		} else {
+			return resolve({
+				result: false,
+				value: `message ${args.message} was deleted`
+			});
 		}
 	});
 };
