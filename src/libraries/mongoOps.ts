@@ -13,8 +13,16 @@ import { stop } from "./musicOps";
 export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
     return new Promise((resolve) => {
         GuildPrtlMdl.find({})
-            .then(guilds => { return guilds ? resolve(<GuildPrtl[]><unknown>guilds) : undefined })
-            .catch(err => { return resolve(undefined) });
+            .then(guilds => {
+                if (!!guilds) {
+                    return resolve(<GuildPrtl[]><unknown>guilds);
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(error => {
+                return resolve(undefined);
+            });
     });
 };
 
@@ -22,15 +30,13 @@ export async function fetch_guild(guild_id: string): Promise<GuildPrtl | undefin
     return new Promise((resolve) => {
         GuildPrtlMdl.findOne({ id: guild_id })
             .then(guild => {
-                console.log('\tto vrika: ', guild);
-                if (guild) {
+                if (!!guild) {
                     return resolve(<GuildPrtl><unknown>guild);
                 } else {
                     return undefined;
                 }
             })
             .catch(error => {
-                console.log('\tden to vrika, error :>> ', error);
                 return resolve(undefined);
             });
     });
@@ -59,9 +65,10 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
     guild.members.cache.forEach(member => {
         if (!member.user.bot)
             if (client.user && member.id !== client.user.id)
-                member_list.push(new MemberPrtl(member.id, 1, 0, 1, 0, null, false, false, null));
+                member_list.push(new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, 'null'));
     });
 
+    console.log('member_list :>> ', member_list);
     return member_list;
 };
 
@@ -114,7 +121,7 @@ export async function insert_guild(guild_id: string, client: Client): Promise<bo
 
 export async function remove_guild(guild_id: string): Promise<boolean> {
     return new Promise((resolve) => {
-        GuildPrtlMdl.remove({ id: guild_id })
+        GuildPrtlMdl.deleteOne({ id: guild_id })
             .then(response => resolve(!!response))
             .catch(() => resolve(false));
     });

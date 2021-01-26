@@ -26,7 +26,8 @@ module.exports = async (
 							);
 					}
 
-					if (!args.member.user.bot && guild_object) {
+					// if (!args.member.user.bot && guild_object) {
+					if (!guild_object) {
 						insert_member(args.member)
 							.then(response => {
 								return resolve({

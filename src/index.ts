@@ -77,18 +77,20 @@ client.on('guildDelete', (guild: Guild) =>
 );
 
 // This event triggers when a new member joins a guild.
-client.on('guildMemberAdd', (member: GuildMember) =>
+client.on('guildMemberAdd', (member: GuildMember) => {
+	console.log('GUILD MEMBER ADD WTF!');
 	event_loader('guildMemberAdd', {
 		'member': member
 	})
-);
+});
 
 // This event triggers when a new member leaves a guild.
-client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) =>
+client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
+	console.log('GUILD MEMBER REMOVE WTF!');
 	event_loader('guildMemberRemove', {
 		'member': member
 	})
-);
+});
 
 // This event triggers when a message is deleted
 client.on('messageDelete', (message: Message | PartialMessage) =>

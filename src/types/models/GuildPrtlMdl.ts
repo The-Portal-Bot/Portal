@@ -1,4 +1,3 @@
-import { StreamDispatcher } from "discord.js";
 import { model, Schema } from "mongoose";
 import GiveRolePrtlSchm from "./schemas/GiveRolePrtlSchm";
 import MemberPrtlSchm from "./schemas/MemberPrtlSchm";
