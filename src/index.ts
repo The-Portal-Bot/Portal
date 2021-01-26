@@ -126,8 +126,6 @@ client.on('ready', () =>
 client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 	event_loader('voiceStateUpdate', {
 		'client': client,
-		'guild_list': guild_list,
-		'portal_managed_guilds_path': portal_managed_guilds_path,
 		'oldState': oldState,
 		'newState': newState
 	})
@@ -254,7 +252,7 @@ function command_loader(
 	path_to_command: string, active_cooldown: ActiveCooldown[], guild_object: GuildPrtl
 ): boolean {
 	if (type === 'none' && command_options.time === 0) {
-		require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_object, portal_managed_guilds_path)
+		require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_object)
 			.then((response: ReturnPormise) => {
 				if (response)
 					message_reply(response.result, message.channel, message, message.author, response.value,
@@ -290,7 +288,7 @@ function command_loader(
 		return false;
 	}
 
-	require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_object, portal_managed_guilds_path)
+	require(`./commands/${path_to_command}/${cmd}.js`)(client, message, args, guild_object)
 		.then((response: ReturnPormise) => {
 			if (response) {
 				active_cooldown.push({

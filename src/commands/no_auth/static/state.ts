@@ -1,24 +1,19 @@
 import { Client, Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { Field } from "../../../types/interfaces/InterfacesPrtl";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-    client: Client, message: Message, args: string[],
-    guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+    client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         const guild = client.guilds.cache.find(g => g.id === message?.guild?.id);
         if (!guild)
             return resolve({ result: false, value: 'could not fetch guild' });
 
-        const portal_object = guild_list.find(g => g.id === message?.guild?.id);
-        if (!portal_object)
-            return resolve({ result: false, value: 'could not find guild please contact portal support' });
-
         let portal_state = [<Field>{ emote: 'Portals', role: '', inline: false }];
 
-        const portals = portal_object.portal_list.map(p => {
+        const portals = guild_object.portal_list.map(p => {
             const voices = p.voice_list.map(v => {
                 const channel = guild.channels.cache.find(c => c.id === v.id);
                 return `> voice: ${channel ? channel.name : 'undefined'}`;
@@ -32,7 +27,7 @@ module.exports = async (
 
         portal_state.push(<Field>{ emote: 'Music / Spotify / Announcement', role: '', inline: false });
 
-        const music = guild.channels.cache.find(c => c.id === portal_object.music_data.channel_id);
+        const music = guild.channels.cache.find(c => c.id === guild_object.music_data.channel_id);
         if (music)
             portal_state.push(<Field>{
                 emote: `${music ? music.name : 'undefined'} _(music)_`,
@@ -40,7 +35,7 @@ module.exports = async (
                 inline: true
             });
 
-        const spotify = guild.channels.cache.find(c => c.id === portal_object.spotify);
+        const spotify = guild.channels.cache.find(c => c.id === guild_object.spotify);
         if (spotify)
             portal_state.push(<Field>{
                 emote: `${spotify ? spotify.name : 'undefined'} _(spotify)_`,
@@ -48,7 +43,7 @@ module.exports = async (
                 inline: true
             });
 
-        const announcement = guild.channels.cache.find(c => c.id === portal_object.announcement);
+        const announcement = guild.channels.cache.find(c => c.id === guild_object.announcement);
         if (announcement)
             portal_state.push(<Field>{
                 emote: `${announcement ? announcement.name : 'undefined'} _(announcement)_`,
@@ -58,7 +53,7 @@ module.exports = async (
 
         portal_state.push(<Field>{ emote: 'Url-only', role: '', inline: false });
 
-        const urls = portal_object.url_list.map(u_id => {
+        const urls = guild_object.url_list.map(u_id => {
             const channel = guild.channels.cache.find(c => c.id === u_id);
             return <Field>{
                 emote: `${channel ? channel.name : 'undefined'}`,

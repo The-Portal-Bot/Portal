@@ -1,8 +1,9 @@
 import { Client, GuildMember, Message } from "discord.js";
 import { create_focus_channel, included_in_voice_list } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
-const ask_for_focus = async function (message: Message, requester: GuildMember, focus_time: number) {
+async function ask_for_focus(message: Message, requester: GuildMember, focus_time: number) {
 	return new Promise((resolve) => {
 
 		message.channel
@@ -42,14 +43,9 @@ const ask_for_focus = async function (message: Message, requester: GuildMember, 
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
 		if (!message.member) {
 			return resolve({ result: true, value: 'message author could not be fetched' });
 		}

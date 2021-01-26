@@ -2,16 +2,12 @@ import { Client, Message, TextChannel } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { client_talk } from "../../../libraries/localisationOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-    client: Client, message: Message, args: string[],
-    guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+    client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
-        const guild_object = guild_list.find(p => p.id === message.guild?.id);
-        if (!guild_object) {
-            return resolve({ result: false, value: 'could not find guild' });
-        }
         if (!guild_object.announcement) {
             return resolve({ result: false, value: 'announcements channel has not been set yet' });
         }

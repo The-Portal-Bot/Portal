@@ -8,6 +8,7 @@ import config from '../../../config.json';
 import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
 import { https_fetch } from '../../../libraries/httpOps';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl';
+import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
 
 const country_codes: { name: string; code: string; }[] = country_codes_json;
 
@@ -22,14 +23,9 @@ const get_country_code = function (country: string): string | null {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object)
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-
 		let code: string | null = null;
 
 		if (args.length === 1) {

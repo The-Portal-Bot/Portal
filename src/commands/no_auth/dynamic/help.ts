@@ -3,19 +3,15 @@ import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { get_attribute_help, get_attribute_help_super, get_attribute_guide } from "../../../types/interfaces/Attribute";
 import { get_command_help, get_command_help_super, get_command_guide } from "../../../types/interfaces/Command";
-import { Field } from "../../../types/interfaces/InterfacesPrtl";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 import { get_pipe_help, get_pipe_help_super, get_pipe_guide } from "../../../types/interfaces/Pipe";
 import { get_structure_help, get_structure_help_super, get_structure_guide } from "../../../types/interfaces/Structure";
 import { get_variable_help, get_variable_help_super, get_variable_guide } from "../../../types/interfaces/Variable";
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => message.guild ? g.id === message.guild.id : false);
-		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
-
 		if (args.length === 0) {
 			const func_array: Field[] = [
 				{

@@ -5,6 +5,7 @@ import config from '../../../config.json';
 import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
 import { https_fetch } from '../../../libraries/httpOps';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl';
+import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
 
 function kelvin_to_celsius(kelvin: number): number {
 	return Math.round(kelvin - 273.15);
@@ -23,14 +24,9 @@ function ms_to_mlh(ms: number): number {
 }
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object)
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-
 		if (args.length < 1)
 			return resolve({ result: false, value: 'you can run `./help weather` for help', });
 

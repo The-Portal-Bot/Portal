@@ -1,20 +1,15 @@
 import { Client, Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	client: Client, message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
 		const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
-		if (!member_object) {
+		if (!member_object)
 			return resolve({ result: true, value: 'portal member could not be fetched' });
-		}
 		const member_info = member_object;
 
 		message.channel.send(create_rich_embed(
@@ -34,6 +29,6 @@ module.exports = async (
 			null)
 		);
 
-		return resolve({ result: true, value: null });
+		return resolve({ result: true, value: '' });
 	});
 };
