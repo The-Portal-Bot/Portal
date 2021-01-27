@@ -367,6 +367,36 @@ export async function remove_role_assigner(guild_id: string, message_id: string)
 
 //
 
+export async function clear_music_vote(guild_id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $set: {
+                    'music_data.votes': []
+                }
+            }
+        )
+            .then(response => resolve(!!response))
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+export async function insert_music_vote(guild_id: string, user_id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $push: { 
+                    'music_data.votes': user_id
+                }
+            }
+        )
+            .then(response => resolve(!!response))
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
 export async function set_music_data(guild_id: string, new_music_data: MusicData): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
@@ -382,6 +412,7 @@ export async function set_music_data(guild_id: string, new_music_data: MusicData
             .catch(e => { return resolve(false); });
     });
 }
+
 //
 
 export enum ChannelTypePrtl {
