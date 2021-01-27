@@ -7,31 +7,49 @@ import { update_timestamp } from "../libraries/userOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
-async function delete_channel(
+// delete portal's voice channel
+async function delete_voice_channel(
 	channel: VoiceChannel | TextChannel, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const deleted = guild_object.portal_list.some(p =>
-			p.voice_list.some(v => {
-				if (v.id === channel.id) {
-					if (channel.deletable) {
+		if (!channel.deletable) {
+			return resolve({
+				result: false,
+				value: `channel ${channel.name} (${channel.id}) is not deletable`
+			});
+		} else {
+			guild_object.portal_list.some(p =>
+				p.voice_list.some(v => {
+					if (v.id === channel.id) {
 						channel
 							.delete()
 							.then(g => {
-								remove_voice(guild_object.id, p.id, v.id);
-								// console.log(`deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
-								return resolve({ result: true, value: `deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}` });
+								remove_voice(guild_object.id, p.id, v.id)
+									.then(r => {
+										return resolve({
+											result: r,
+											value: `channel ${channel.name} (${channel.id}) ${r ? '' : 'failed to be'} deleted`
+										});
+									})
+									.catch(e => {
+										return resolve({
+											result: false,
+											value: `channel ${channel.name} (${channel.id}) failed to be delete`
+										});
+									});
 							})
-							.catch(console.log);
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `channel ${channel.name} (${channel.id}) failed to be delete`
+								});
+							});
+						return true;
 					}
-					return true;
-				}
-				return false;
-			})
-		);
-
-		if (!deleted)
-			return resolve({ result: false, value: `could not delete channel ${channel}` });
+					return false;
+				})
+			);
+		}
 	});
 }
 
@@ -60,7 +78,7 @@ function from_null(
 		else { // joined other channel
 			update_timestamp(newState, guild_object); // points for other
 		}
-		
+
 		return { result: true, value: 'null->existing\n' };
 	} else {
 		return { result: false, value: 'should not be possible to move from null to null' };
@@ -79,7 +97,7 @@ function from_existing(
 		// user left voice channel
 		if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
 			if (old_channel.members.size === 0)
-				delete_channel(old_channel, guild_object)
+				delete_voice_channel(old_channel, guild_object)
 					.then(response => { return response; });
 
 			if (client.voice) {
@@ -89,7 +107,7 @@ function from_existing(
 				if (voice_connection) {
 					if (old_channel.members.size === 1) {
 						voice_connection.disconnect();
-						delete_channel(old_channel, guild_object)
+						delete_voice_channel(old_channel, guild_object)
 							.then(response => { return response; });
 						stop(guild_object, old_channel.guild);
 					}
@@ -123,7 +141,7 @@ function from_existing(
 				report_message += '->dest: portal_list';
 
 				if (old_channel.members.size === 0) {
-					delete_channel(old_channel, guild_object)
+					delete_voice_channel(old_channel, guild_object)
 						.then(response => { return response; });
 				}
 
@@ -134,7 +152,7 @@ function from_existing(
 					if (voice_connection) {
 						if (old_channel.members.size === 1) {
 							voice_connection.disconnect();
-							delete_channel(old_channel, guild_object)
+							delete_voice_channel(old_channel, guild_object)
 								.then(response => { return response; });
 							stop(guild_object, old_channel.guild);
 						}
@@ -156,7 +174,7 @@ function from_existing(
 				report_message += '->dest: voice_list\n';
 
 				if (old_channel.members.size === 0) {
-					delete_channel(old_channel, guild_object)
+					delete_voice_channel(old_channel, guild_object)
 						.then(response => { return response; });
 				}
 				if (client.voice) {
@@ -166,7 +184,7 @@ function from_existing(
 					if (voiceConnection) {
 						if (old_channel.members.size === 1) {
 							voiceConnection.disconnect();
-							delete_channel(old_channel, guild_object)
+							delete_voice_channel(old_channel, guild_object)
 								.then(response => { return response; });
 							stop(guild_object, old_channel.guild);
 						}
@@ -174,14 +192,13 @@ function from_existing(
 				}
 
 				generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
-
 			}
 			else { // moved from voice to other
 
 				report_message += '->dest: other\n';
 
 				if (old_channel.members.size === 0) {
-					delete_channel(old_channel, guild_object)
+					delete_voice_channel(old_channel, guild_object)
 						.then(response => { return response; });
 				}
 
@@ -192,7 +209,7 @@ function from_existing(
 					if (voiceConnection) {
 						if (old_channel.members.size === 1) {
 							voiceConnection.disconnect();
-							delete_channel(old_channel, guild_object)
+							delete_voice_channel(old_channel, guild_object)
 								.then(response => { return response; });
 							stop(guild_object, old_channel.guild);
 						}

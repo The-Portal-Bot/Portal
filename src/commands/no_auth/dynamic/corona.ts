@@ -53,7 +53,6 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
-				console.log('response.toString() :>> ```json\n', response.toString(), '\n```');
 				const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
 				if (json === null)
 					return resolve({ result: false, value: 'data from source was corrupted' });

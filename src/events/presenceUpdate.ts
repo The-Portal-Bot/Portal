@@ -1,12 +1,12 @@
 import { Client, Guild, Presence, TextChannel, VoiceChannel } from "discord.js";
-import { generate_channel_name, included_in_portal_guilds } from "../libraries/guildOps";
+import { generate_channel_name } from "../libraries/guildOps";
 import { create_rich_embed } from "../libraries/helpOps";
-import { client_log, client_talk, get_function } from "../libraries/localisationOps";
+import { client_talk, get_function } from "../libraries/localisationOps";
+import { fetch_guild } from "../libraries/mongoOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { fetch_guild } from "../libraries/mongoOps";
 
 function update_channel_name(
 	current_guild: Guild, current_channel: VoiceChannel, current_portal_list: PortalChannelPrtl[], guild_object: GuildPrtl
@@ -37,17 +37,16 @@ function time_out_repeat(
 };
 
 function display_spotify_song(
-	current_guild: Guild, current_channel: VoiceChannel,
-	guild_object: GuildPrtl, newPresence: Presence, client: Client
+	current_channel: VoiceChannel, guild_object: GuildPrtl, newPresence: Presence, client: Client
 ) {
 	current_channel.members.forEach(member => {
 		member.presence.activities.some(activity => {
+			console.log('activity :>> ', activity);
 			if (activity.name === 'Spotify' && newPresence.guild) {
 				if (guild_object === undefined) return false;
 
-				const spotify = <TextChannel | undefined>newPresence.guild.channels.cache.find(c => {
-					return c.id === guild_object.spotify;
-				});
+				const spotify = <TextChannel | undefined>newPresence.guild.channels.cache
+					.find(c => { return c.id === guild_object.spotify; });
 
 				if (spotify) {
 					client_talk(client, guild_object, 'spotify');
@@ -85,52 +84,49 @@ module.exports = async (
 	args: { client: Client, newPresence: Presence | undefined }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (args.newPresence?.guild) {
-			fetch_guild(args.newPresence?.guild.id)
-				.then(guild_object => {
-					if (guild_object) {
-						if (!args.newPresence) return resolve({ result: true, value: 'could not fetch presence' });
-						if (!args.newPresence.user) return resolve({ result: true, value: 'could not fetch presence user' });
-						if (!args.newPresence.member) return resolve({ result: true, value: 'could not fetch presence member' });
-						if (!args.newPresence.guild) return resolve({ result: true, value: 'could not fetch presence guild' });
-
-						const current_guild = args.newPresence.guild;
-						const current_channel = args.newPresence.member.voice.channel;
-
-						if (current_channel) { // if member is in a channel
-							if (guild_object) {
-								guild_object.portal_list.some(p => {
-									p.voice_list.some(v => {
-										if (v.id === current_channel.id) {
-											if (guild_object.spotify !== null && args.newPresence) {
-												display_spotify_song(current_guild, current_channel, guild_object,
-													args.newPresence, args.client);
-											}
-
-											time_out_repeat(v, current_guild, current_channel, guild_object.portal_list,
-												guild_object, 5);
-										}
-									});
-								});
-							}
-						}
-
-						const func = get_function('console', 'en', 'presence_controlled');
-						return resolve({
-							result: true,
-							value: func
-								? func(args.newPresence.member.displayName, args.newPresence.guild.name)
-								: 'error with localisation'
-						});
-					} else {
-						return resolve({ result: false, value: 'could not get guild from portal' });
-					}
-				})
-				.catch(error => {
-					return resolve({ result: false, value: 'could not get guild from portal' });
-				});
-		} else {
+		console.log('args.newPresence :>> ', args.newPresence);
+		if (!args.newPresence?.guild)
 			return resolve({ result: false, value: 'could not fetch guild from presence' });
-		}
+
+		fetch_guild(args.newPresence?.guild.id)
+			.then(guild_object => {
+				if (guild_object) {
+					if (!args.newPresence) return resolve({ result: false, value: 'could not fetch presence' });
+					if (!args.newPresence.member) return resolve({ result: false, value: 'could not fetch presence member' });
+					if (!args.newPresence.guild) return resolve({ result: false, value: 'could not fetch presence guild' });
+
+					const current_guild = args.newPresence.guild;
+					const current_channel = args.newPresence.member.voice.channel;
+
+					if (!current_channel) return resolve({ result: false, value: 'could not fetch voice channel' });
+
+					guild_object.portal_list.some(p => {
+						p.voice_list.some(v => {
+							if (v.id === current_channel.id) {
+								if (guild_object.spotify !== null && args.newPresence)
+									display_spotify_song(current_channel, guild_object,
+										args.newPresence, args.client);
+
+								time_out_repeat(v, current_guild, current_channel, guild_object.portal_list,
+									guild_object, 5);
+							}
+						});
+					});
+
+					const func = get_function('console', 'en', 'presence_controlled');
+					return resolve({
+						result: true,
+						value: func
+							? func(args.newPresence.member.displayName, args.newPresence.guild.name)
+							: 'error with localisation'
+					});
+				} else {
+					return resolve({ result: false, value: 'could not get guild from portal' });
+				}
+			})
+			.catch(error => {
+				return resolve({ result: false, value: 'could not get guild from portal' });
+			});
+
 	});
 };

@@ -3,6 +3,7 @@ import { create_music_channel, delete_channel, included_in_url_list, is_announce
 import { create_music_message } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { ChannelTypePrtl } from "../../../libraries/mongoOps";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -43,7 +44,7 @@ module.exports = async (
 		const music = message.guild.channels.cache.find(channel =>
 			channel.id == guild_object.music_data.channel_id);
 
-		if (music) delete_channel(<TextChannel>music, message);
+		if (music) delete_channel(ChannelTypePrtl.music, <TextChannel>music, message);
 
 		if (args.length === 0) {
 			guild_object.music_data.channel_id = message.channel.id;

@@ -17,7 +17,7 @@ import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
 import { VideoSearchResult } from "yt-search";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 import { promises } from "dns";
-import { insert_voice } from "./mongoOps";
+import { insert_voice, ChannelTypePrtl } from "./mongoOps";
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -371,8 +371,7 @@ export async function create_focus_channel(guild: Guild, member: GuildMember,
 //
 
 export function delete_channel(
-	channel_to_delete: VoiceChannel | TextChannel,
-	message: Message | null, isPortal: boolean = false
+	type: ChannelTypePrtl, channel_to_delete: VoiceChannel | TextChannel, message: Message | null, isPortal: boolean = false
 ): void {
 	if (!isPortal) {
 		if (message) {
@@ -381,7 +380,7 @@ export function delete_channel(
 			let channel_deleted = false;
 
 			message.channel
-				.send(`${message.author}, do you wish to delete old music channel **"${channel_to_delete}"** (yes / no) ?`)
+				.send(`${message.author}, do you wish to delete old ${ ChannelTypePrtl[type].toString() } channel **"${channel_to_delete}"** (yes / no) ?`)
 				.then((question_msg: Message) => {
 					const filter: CollectorFilter = m => m.author.id === author.id;
 					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });

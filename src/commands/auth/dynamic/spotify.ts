@@ -2,7 +2,7 @@ import { Client, Message, TextChannel } from "discord.js";
 import { create_channel, delete_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
-import { insert_spotify } from "../../../libraries/mongoOps";
+import { insert_spotify, ChannelTypePrtl } from "../../../libraries/mongoOps";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -41,7 +41,7 @@ module.exports = async (
 		const spotify = message.guild.channels.cache
 			.find(channel => channel.id == guild_object.spotify);
 
-		if (spotify) delete_channel(<TextChannel>spotify, message);
+		if (spotify) delete_channel(ChannelTypePrtl.spotify, <TextChannel>spotify, message);
 
 		if (args.length === 0) {
 			insert_spotify(guild_object.id, message.channel.id)

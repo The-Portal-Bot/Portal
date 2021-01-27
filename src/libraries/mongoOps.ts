@@ -1,16 +1,15 @@
-import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
-import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
-import { Channel, Client, GuildChannel, GuildMember, StreamDispatcher } from "discord.js";
-import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
-import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
-import { Rank } from "../types/interfaces/InterfacesPrtl";
+import { Client, GuildMember, StreamDispatcher, TextChannel, VoiceChannel } from "discord.js";
 import { VideoSearchResult } from "yt-search";
+import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
+import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
-import { stop } from "./musicOps";
+import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
+import { Rank } from "../types/interfaces/InterfacesPrtl";
+import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
+import { stop } from "./musicOps";
 
 // fetch guilds
-
 export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
     return new Promise((resolve) => {
         GuildPrtlMdl.find({})
@@ -66,10 +65,11 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
     guild.members.cache.forEach(member => {
         if (!member.user.bot)
             if (client.user && member.id !== client.user.id)
-                member_list.push(new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, 'null'));
+                member_list.push(
+                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, 'null')
+                );
     });
 
-    console.log('member_list :>> ', member_list);
     return member_list;
 };
 
@@ -158,7 +158,6 @@ export async function remove_member(member_to_remove: GuildMember): Promise<bool
 
 export async function insert_portal(guild_id: string, new_portal: PortalChannelPrtl): Promise<boolean> {
     return new Promise((resolve) => {
-        // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
             { id: guild_id },
             {
@@ -170,13 +169,22 @@ export async function insert_portal(guild_id: string, new_portal: PortalChannelP
     });
 };
 
-// export async function remove_portal(member_to_remove: GuildMember): Promise<boolean> {
-//     return new Promise((resolve) => {
-//         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
-//             .then(response => resolve(!!response))
-//             .catch(() => resolve(false));
-//     });
-// };
+export async function remove_portal(guild_id: string, portal_id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $pull: {
+                    portal_list: {
+                        id: portal_id
+                    }
+                }
+            }
+        )
+            .then(response => resolve(!!response))
+            .catch(() => resolve(false));
+    });
+};
 
 //
 
@@ -207,7 +215,7 @@ export async function remove_voice(guild_id: string, portal_id: string, voice_id
             { id: guild_id },
             {
                 "$pull": {
-                    "portal_list.$[p].voice_list" : { id: voice_id }
+                    "portal_list.$[p].voice_list": { id: voice_id }
                 }
             },
             {
@@ -334,130 +342,127 @@ export async function insert_role_assigner(guild_id: string, new_role_assigner: 
 
 //
 
-export async function delete_channel(channel_to_remove: GuildChannel): Promise<number> {
-    return new Promise((resolve) => {
-        const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
-        let type_of_channel = TypesOfChannel.Unknown;
+export enum ChannelTypePrtl {
+    unknown = 0,
+    portal = 1,
+    voice = 2,
+    url = 3,
+    spotify = 4,
+    announcement = 5,
+    music = 6
+}
 
+export async function deleted_channel_sync(
+    channel_to_remove: VoiceChannel | TextChannel
+): Promise<number> {
+    return new Promise((resolve) => {
         fetch_guild(channel_to_remove.guild.id)
             .then(guild_object => {
                 if (guild_object) {
-                    const found = guild_object.portal_list.some(p => {
-                        if (p.id === channel_to_remove.id) {
-                            GuildPrtlMdl.updateOne(
-                                { id: channel_to_remove.guild.id },
-                                {
-                                    $pull: {
-                                        portal_list: { id: channel_to_remove.id }
-                                    }
-                                }
-                            )
-                                .then(response => {
-                                    return response
-                                        ? resolve(TypesOfChannel.Portal)
-                                        : resolve(type_of_channel)
-                                })
-                                .catch(() => resolve(type_of_channel));
-                            return true;
-                        }
-
-                        p.voice_list.some(v => {
-                            if (v.id === channel_to_remove.id) {
-                                GuildPrtlMdl.updateOne(
-                                    { id: channel_to_remove.guild.id },
-                                    {
-                                        $pull: {
-                                            voice_list: { id: channel_to_remove.id }
-                                        }
-                                    }
-                                )
+                    // check if it is a Portal or a Voice channel
+                    if (typeof channel_to_remove === typeof VoiceChannel) {
+                        const current_voice = <VoiceChannel>channel_to_remove;
+                        guild_object.portal_list.some(p => {
+                            if (p.id === current_voice.id) {
+                                remove_portal(current_voice.guild.id, p.id)
                                     .then(response => {
                                         return response
-                                            ? resolve(TypesOfChannel.Voice)
-                                            : resolve(type_of_channel)
+                                            ? resolve(ChannelTypePrtl.portal)
+                                            : resolve(ChannelTypePrtl.unknown)
                                     })
-                                    .catch(() => resolve(type_of_channel));
+                                    .catch(() => resolve(ChannelTypePrtl.unknown));
                                 return true;
                             }
+
+                            p.voice_list.some(v => {
+                                if (v.id === current_voice.id) {
+                                    remove_voice(current_voice.guild.id, p.id, v.id)
+                                        .then(response => {
+                                            return response
+                                                ? resolve(ChannelTypePrtl.voice)
+                                                : resolve(ChannelTypePrtl.unknown)
+                                        })
+                                        .catch(() => resolve(ChannelTypePrtl.unknown));
+                                    return true;
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        const current_text = <TextChannel>channel_to_remove;
 
-                    if (!found) {
-                        for (let i = 0; i < guild_object.url_list.length; i++) {
-                            if (guild_object.url_list[i] === channel_to_remove.id) {
-                                GuildPrtlMdl.updateOne(
-                                    { id: channel_to_remove.guild.id },
-                                    {
-                                        $pull: {
-                                            url_list: channel_to_remove.id
+                        if (guild_object.spotify === current_text.id) {
+                            GuildPrtlMdl.updateOne(
+                                { id: current_text.guild.id },
+                                {
+                                    $set: { spotify: 'null' }
+                                }
+                            )
+                                .then(response => {
+                                    return response
+                                        ? resolve(ChannelTypePrtl.spotify)
+                                        : resolve(ChannelTypePrtl.unknown)
+                                })
+                                .catch(() => resolve(ChannelTypePrtl.unknown));
+                        } else if (guild_object.announcement === current_text.id) {
+                            GuildPrtlMdl.updateOne(
+                                { id: current_text.guild.id },
+                                {
+                                    $set: { announcement: 'null' }
+                                }
+                            )
+                                .then(response => {
+                                    return response
+                                        ? resolve(ChannelTypePrtl.announcement)
+                                        : resolve(ChannelTypePrtl.unknown)
+                                })
+                                .catch(() => resolve(ChannelTypePrtl.unknown));
+                        } else if (guild_object.music_data.channel_id === current_text.id) {
+                            stop(guild_object, current_text.guild);
+                            GuildPrtlMdl.updateOne(
+                                { id: current_text.guild.id },
+                                {
+                                    $set: {
+                                        music_data: {
+                                            channel_id: 'null',
+                                            message_id: 'null',
+                                            votes: []
                                         }
-                                    }
-                                )
-                                    .then(response => {
-                                        return response
-                                            ? resolve(TypesOfChannel.Url)
-                                            : resolve(type_of_channel)
-                                    })
-                                    .catch(() => resolve(type_of_channel));
-                                break;
-                            }
-                        }
-
-                        if (guild_object.spotify === channel_to_remove.id) {
-                            GuildPrtlMdl.updateOne(
-                                { id: channel_to_remove.guild.id },
-                                {
-                                    spotify: null
-                                }
-                            )
-                                .then(response => {
-                                    return response
-                                        ? resolve(TypesOfChannel.Spotify)
-                                        : resolve(type_of_channel)
-                                })
-                                .catch(() => resolve(type_of_channel));
-                        }
-
-                        if (guild_object.announcement === channel_to_remove.id) {
-                            GuildPrtlMdl.updateOne(
-                                { id: channel_to_remove.guild.id },
-                                {
-                                    announcement: null
-                                }
-                            )
-                                .then(response => {
-                                    return response
-                                        ? resolve(TypesOfChannel.Announcement)
-                                        : resolve(type_of_channel)
-                                })
-                                .catch(() => resolve(type_of_channel));
-                        }
-
-                        if (guild_object.music_data.channel_id === channel_to_remove.id) {
-                            stop(guild_object, channel_to_remove.guild);
-                            GuildPrtlMdl.updateOne(
-                                { id: channel_to_remove.guild.id },
-                                {
-                                    music_data: {
-                                        channel_id: undefined,
-                                        message_id: undefined,
-                                        votes: []
                                     },
                                     dispatcher: undefined
                                 }
                             )
                                 .then(response => {
                                     return response
-                                        ? resolve(TypesOfChannel.Music)
-                                        : resolve(type_of_channel)
+                                        ? resolve(ChannelTypePrtl.music)
+                                        : resolve(ChannelTypePrtl.unknown)
                                 })
-                                .catch(() => resolve(type_of_channel));
+                                .catch(() => resolve(ChannelTypePrtl.unknown));
+                        } else {
+                            for (let i = 0; i < guild_object.url_list.length; i++) {
+                                if (guild_object.url_list[i] === current_text.id) {
+                                    GuildPrtlMdl.updateOne(
+                                        { id: current_text.guild.id },
+                                        {
+                                            $pull: {
+                                                url_list: current_text.id
+                                            }
+                                        }
+                                    )
+                                        .then(response => {
+                                            return response
+                                                ? resolve(ChannelTypePrtl.url)
+                                                : resolve(ChannelTypePrtl.unknown)
+                                        })
+                                        .catch(() => resolve(ChannelTypePrtl.unknown));
+                                    break;
+                                }
+                            }
                         }
                     }
-
-                    return resolve(type_of_channel);
+                } else {
+                    return resolve(ChannelTypePrtl.unknown);
                 }
             })
-            .catch(() => { return resolve(type_of_channel) });
+            .catch(() => { return resolve(ChannelTypePrtl.unknown); });
     });
 };

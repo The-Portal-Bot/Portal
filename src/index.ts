@@ -1,4 +1,4 @@
-import { Client, Guild, GuildChannel, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
+import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import config from './config.json';
@@ -49,14 +49,39 @@ const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
-const client = new Client({ partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'] });
+const client = new Client(
+	{
+		partials: [
+			'USER',
+			'CHANNEL',
+			'GUILD_MEMBER',
+			'MESSAGE',
+			'REACTION'
+		],
+		ws: {
+			intents: Intents.ALL
+			// [
+			// 	'GUILDS',
+			// 	'GUILD_MEMBERS',
+			// 	'GUILD_BANS',
+			// 	'GUILD_INVITES',
+			// 	'GUILD_VOICE_STATES',
+			// 	'GUILD_PRESENCES',
+			// 	'GUILD_MESSAGES',
+			// 	'GUILD_MESSAGE_REACTIONS',
+			// 	'GUILD_MESSAGE_TYPING'
+			// ]
+		}
+	}
+);
 
 // This event triggers when the bot joins a guild.
-client.on('channelDeleted', (channel: GuildChannel) =>
+client.on('channelDelete', (channel: Channel | PartialDMChannel) =>{
+	console.log('channelDelete !!!');
 	event_loader('channelDelete', {
 		'channel': channel
 	})
-);
+});
 
 // This event triggers when the bot joins a guild
 client.on('guildCreate', (guild: Guild) =>
@@ -88,12 +113,13 @@ client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
 });
 
 // This event triggers when a message is deleted
-client.on('messageDelete', (message: Message | PartialMessage) =>
+client.on('messageDelete', (message: Message | PartialMessage) => {
+	console.log('messageDelete !!!');
 	event_loader('messageDelete', {
 		'client': client,
 		'message': message
 	})
-);
+});
 
 // This event triggers when a member reacts to a message
 client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | PartialUser) =>

@@ -1,6 +1,6 @@
 import { Client, GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
 import { create_channel, create_music_channel, delete_channel, getOptions } from "../../../libraries/guildOps";
-import { insert_announcement, insert_portal, insert_spotify, insert_url } from "../../../libraries/mongoOps";
+import { insert_announcement, insert_portal, insert_spotify, insert_url, ChannelTypePrtl } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
@@ -16,11 +16,12 @@ module.exports = async (
 			.create('portal-hub', { type: 'category' })
 			.then(cat_channel => {
 				current_guild.channels.cache.forEach(channel => {
-					if (channel.id === guild_object.spotify ||
-						channel.id === guild_object.announcement ||
-						channel.id === guild_object.music_data.channel_id) {
-						delete_channel(<TextChannel>channel, message);
-					}
+					if (channel.id === guild_object.spotify)
+						delete_channel(ChannelTypePrtl.spotify, <TextChannel>channel, message);
+					if (channel.id === guild_object.announcement)
+						delete_channel(ChannelTypePrtl.announcement, <TextChannel>channel, message);
+					if (channel.id === guild_object.music_data.channel_id)
+						delete_channel(ChannelTypePrtl.music, <TextChannel>channel, message);
 				});
 
 				if (message.member) {
