@@ -142,7 +142,13 @@ export async function insert_member(new_member: GuildMember): Promise<boolean> {
 
 export async function remove_member(member_to_remove: GuildMember): Promise<boolean> {
     return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
+        GuildPrtlMdl.updateOne(
+            { id: member_to_remove.guild.id },
+            {
+                $pull: {
+                    member_list: { id: member_to_remove.id }
+                }
+            })
             .then(response => resolve(!!response))
             .catch(() => resolve(false));
     });
@@ -180,28 +186,41 @@ export async function insert_voice(guild_id: string, portal_id: string, new_voic
             { id: guild_id },
             {
                 "$push": {
-                    "portal_list.$[b].voice_list": new_voice
+                    "portal_list.$[p].voice_list": new_voice
                 }
             },
             {
                 "new": true,
                 "arrayFilters": [
-                    { "b.id": portal_id }
+                    { "p.id": portal_id }
                 ]
             }
         )
-            .then(response => { console.log('response :>> ', response); resolve(!!response) })
-            .catch(error => { console.log('error :>> ', error); resolve(false) });
+            .then(response => { resolve(!!response) })
+            .catch(error => { resolve(false) });
     });
 };
 
-// export async function remove_voice(member_to_remove: GuildMember): Promise<boolean> {
-//     return new Promise((resolve) => {
-//         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
-//             .then(response => resolve(!!response))
-//             .catch(() => resolve(false));
-//     });
-// };
+export async function remove_voice(guild_id: string, portal_id: string, voice_id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                "$pull": {
+                    "portal_list.$[p].voice_list" : { id: voice_id }
+                }
+            },
+            {
+                "new": true,
+                "arrayFilters": [
+                    { "p.id": portal_id }
+                ]
+            }
+        )
+            .then(response => { resolve(!!response) })
+            .catch(error => { resolve(false) });
+    });
+};
 
 
 //

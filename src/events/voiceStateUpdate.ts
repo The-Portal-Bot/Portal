@@ -1,7 +1,7 @@
 import { Client, TextChannel, VoiceChannel, VoiceConnection, VoiceState } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guildOps";
 import { client_talk } from "../libraries/localisationOps";
-import { fetch_guild } from "../libraries/mongoOps";
+import { fetch_guild, remove_voice } from "../libraries/mongoOps";
 import { stop } from "../libraries/musicOps";
 import { update_timestamp } from "../libraries/userOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
@@ -12,14 +12,15 @@ async function delete_channel(
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const deleted = guild_object.portal_list.some(p =>
-			p.voice_list.some((v, index) => {
+			p.voice_list.some(v => {
 				if (v.id === channel.id) {
 					if (channel.deletable) {
 						channel
 							.delete()
 							.then(g => {
-								p.voice_list.splice(index, 1);
-								console.log(`deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
+								remove_voice(guild_object.id, p.id, v.id);
+								// console.log(`deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}`);
+								return resolve({ result: true, value: `deleted channel: ${channel.name} (${channel.id}) from ${channel.guild.name}` });
 							})
 							.catch(console.log);
 					}
@@ -30,7 +31,7 @@ async function delete_channel(
 		);
 
 		if (!deleted)
-			return resolve({ result: true, value: `could not delete channel ${channel}` });
+			return resolve({ result: false, value: `could not delete channel ${channel}` });
 	});
 }
 
@@ -46,7 +47,6 @@ function from_null(
 
 			create_voice_channel(newState, portal_object, new_channel, newState.id)
 				.then(response => {
-					console.log('response :>> ', response);
 					if (!response.result) return response;
 					generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				})
@@ -78,11 +78,9 @@ function from_existing(
 
 		// user left voice channel
 		if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
-
-			if (old_channel.members.size === 0) {
+			if (old_channel.members.size === 0)
 				delete_channel(old_channel, guild_object)
 					.then(response => { return response; });
-			}
 
 			if (client.voice) {
 				const voice_connection = client.voice.connections

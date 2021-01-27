@@ -242,10 +242,6 @@ export function create_voice_channel(
 							channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
 							portal_object.ann_announce, portal_object.ann_user
 						));
-						// portal_object.voice_list.push(new VoiceChannelPrtl(
-						// 	channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
-						// 	portal_object.ann_announce, portal_object.ann_user
-						// ));
 
 						state.member.voice.setChannel(channel);
 						return resolve({ result: true, value: `created channel and moved member to new voice` });

@@ -75,7 +75,6 @@ client.on('guildDelete', (guild: Guild) =>
 
 // This event triggers when a new member joins a guild.
 client.on('guildMemberAdd', (member: GuildMember) => {
-	console.log('GUILD MEMBER ADD WTF!');
 	event_loader('guildMemberAdd', {
 		'member': member
 	})
@@ -83,7 +82,6 @@ client.on('guildMemberAdd', (member: GuildMember) => {
 
 // This event triggers when a new member leaves a guild.
 client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
-	console.log('GUILD MEMBER REMOVE WTF!');
 	event_loader('guildMemberRemove', {
 		'member': member
 	})
@@ -404,7 +402,9 @@ function ranking_system(message: Message): void {
 }
 
 function log_portal() {
-	client.login(config.token);
+	client.login(config.token)
+		.then(r => console.log('r :>> ', r))
+		.catch(e => console.log('e :>> ', e))
 }
 
 log_portal();
