@@ -16,27 +16,18 @@ module.exports = async (
 			? <VoiceChannel>args.channel
 			: <TextChannel>args.channel;
 
-		// try {
-		// 	current_channel.fetch();
-		// } catch (error) {
-		// 	return resolve({
-		// 		result: false,
-		// 		value: 'error fetching the channel: ' + error,
-		// 	});
-		// }
-
 		deleted_channel_sync(current_channel)
-			.then(response => {
-				if (response > 0) {
+			.then(r => {
+				if (r > 0) {
 					return resolve({
 						result: true,
-						value: `${ ChannelTypePrtl[response].toString() } channel, has been removed from database ` +
+						value: `${ ChannelTypePrtl[r].toString() } channel, has been removed from database ` +
 							`guild: ${current_channel.guild.name} [${current_channel.guild.id}]`,
 					});
 				} else {
 					return resolve({
 						result: false,
-						value: `${ ChannelTypePrtl[response].toString() } channel is not controlled by Portal`
+						value: `${ ChannelTypePrtl[r].toString() } channel is not controlled by Portal`
 					});
 				}
 			})

@@ -7,14 +7,14 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		remove_guild(args.guild.id)
-			.then(response => {
+			.then(r => {
 				return resolve({
-					result: response,
-					value: `guild ${args.guild.name} [${args.guild.id}] ${response
-						? 'removed from portal' : 'failed to be removed from portal'}`
+					result: r,
+					value: `guild ${args.guild.name} [${args.guild.id}] ` +
+						`${r ? 'removed from portal' : 'failed to be removed from portal'}`
 				});
 			})
-			.catch(error => {
+			.catch(e => {
 				return resolve({
 					result: false,
 					value: `guild ${args.guild.name} [${args.guild.id}] failed to be removed from portal`

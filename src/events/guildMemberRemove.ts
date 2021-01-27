@@ -13,7 +13,7 @@ module.exports = async (
 					const leave_message = `member: ${args.member.presence.user} ` +
 						`[${args.member.guild.id}]\n\thas left ${args.member.guild}`;
 
-					if (guild_object && guild_object.announcement) {
+					if (guild_object.announcement) {
 						const announcement_channel = args.member.guild.channels.cache
 							.find(channel => channel.id === guild_object.announcement)
 
@@ -30,18 +30,28 @@ module.exports = async (
 						remove_member(args.member)
 							.then(r => {
 								return resolve({
-									result: r, value: r ? 'member removed to guild' : 'member could not be removed'
+									result: r,
+									value: r ? 'member removed to guild' : 'member could not be removed'
 								});
 							})
 							.catch(e => {
-								return resolve({ result: false, value: 'member could not be removed' });
+								return resolve({
+									result: false,
+									value: 'member could not be removed'
+								});
 							});
 					} else {
-						return resolve({ result: true, value: 'no action taken for fellow bot workers' });
+						return resolve({
+							result: true,
+							value: 'no action taken for fellow bot workers'
+						});
 					}
 
 				} else {
-					return resolve({ result: false, value: 'guild is not in portal please contact support' });
+					return resolve({
+						result: false,
+						value: 'guild is not in portal please contact support'
+					});
 				}
 			});
 	});

@@ -76,12 +76,11 @@ const client = new Client(
 );
 
 // This event triggers when the bot joins a guild.
-client.on('channelDelete', (channel: Channel | PartialDMChannel) =>{
-	console.log('channelDelete !!!');
+client.on('channelDelete', (channel: Channel | PartialDMChannel) =>
 	event_loader('channelDelete', {
 		'channel': channel
 	})
-});
+);
 
 // This event triggers when the bot joins a guild
 client.on('guildCreate', (guild: Guild) =>
@@ -113,13 +112,12 @@ client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
 });
 
 // This event triggers when a message is deleted
-client.on('messageDelete', (message: Message | PartialMessage) => {
-	console.log('messageDelete !!!');
+client.on('messageDelete', (message: Message | PartialMessage) =>
 	event_loader('messageDelete', {
 		'client': client,
 		'message': message
 	})
-});
+);
 
 // This event triggers when a member reacts to a message
 client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | PartialUser) =>

@@ -3,12 +3,14 @@ import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
-import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
 import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localisationOps";
-import { fetch_guild_list, fetch_guild } from "./mongoOps";
+import { fetch_guild_list, fetch_guild, set_music_data } from "./mongoOps";
 
-export function create_music_message(channel: TextChannel, thumbnail: string, guild_object: GuildPrtl): void {
+export function create_music_message(
+	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl
+): void {
 	const music_message_emb = create_rich_embed(
 		'Music Player',
 		'just type and I\'ll play',
@@ -37,7 +39,8 @@ export function create_music_message(channel: TextChannel, thumbnail: string, gu
 			sent_message.react('🧹');
 			sent_message.react('❌');
 
-			guild_object.music_data.message_id = sent_message.id;
+			const music_data = new MusicData(channel.id, sent_message.id, []);
+			set_music_data(guild_object.id, music_data);
 		});
 };
 
@@ -380,6 +383,7 @@ export function time_remaining(timestamp: number, timeout: number): TimeRemainin
 	return { timeout_min, timeout_sec, remaining_min, remaining_sec };
 };
 
+// needs update 
 export function remove_deleted_channels(guild: Guild): Promise<boolean> {
 	let removed_channel = false;
 	return new Promise((resolve) => {
@@ -450,7 +454,7 @@ export function remove_deleted_channels(guild: Guild): Promise<boolean> {
 						removed_channel = true;
 						guild_object.announcement = null;
 					}
-					
+
 					return resolve(true);
 				}
 				return resolve(false);

@@ -13,7 +13,7 @@ module.exports = async (
 					const join_message = `member ${args.member.presence.user} ` +
 						`[${args.member.guild.id}]\n\thas joined ${args.member.guild}`;
 
-					if (guild_object && guild_object.announcement) {
+					if (guild_object.announcement) {
 						const announcement_channel = args.member.guild.channels.cache
 							.find(channel => channel.id === guild_object.announcement);
 
@@ -30,18 +30,28 @@ module.exports = async (
 						insert_member(args.member)
 							.then(r => {
 								return resolve({
-									result: r, value: r ? 'member added to guild' : 'member could not be added'
+									result: r,
+									value: r ? 'member added to guild' : 'member could not be added'
 								});
 							})
 							.catch(e => {
-								return resolve({ result: false, value: 'member could not be added' });
+								return resolve({
+									result: false,
+									value: 'member could not be added'
+								});
 							});
 					} else {
-						return resolve({ result: true, value: 'no action taken for fellow bot workers' });
+						return resolve({
+							result: true,
+							value: 'no action taken for fellow bot workers'
+						});
 					}
 
 				} else {
-					return resolve({ result: false, value: 'guild is not in portal please contact support' });
+					return resolve({
+						result: false,
+						value: 'guild is not in portal please contact support'
+					});
 				}
 			});
 	});

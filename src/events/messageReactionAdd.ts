@@ -9,16 +9,14 @@ import { fetch_guild } from "../libraries/mongoOps";
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
 ) {
-	messageReaction.message.reactions.cache.forEach(reaction => reaction.users.remove(user.id));
+	messageReaction.message.reactions.cache
+		.forEach(reaction => reaction.users.remove(user.id));
 };
 
 function reaction_role_manager(
-	client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User
+	guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
 ): ReturnPormise {
 	if (!messageReaction.message.guild) return { result: false, value: 'message has no guild' };
-
-	const guild_object = guild_list.find(g => g.id === messageReaction?.message?.guild?.id);
-	if (!guild_object) return { result: false, value: 'guild could not be found in guild_list' };
 
 	const role_list_object = guild_object.role_list.find(r => r.message_id === messageReaction.message.id);
 	if (!role_list_object) return { result: false, value: 'message is not role assigner' };
@@ -69,11 +67,9 @@ function reaction_role_manager(
 	return { result: result, value: value };
 };
 
-async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User): Promise<ReturnPormise> {
+async function reaction_music_manager(client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (!messageReaction.message.guild) return resolve({ result: false, value: 'could not fetch message\'s guild' });
-		const guild_object = guild_list.find(g => g.id === messageReaction?.message?.guild?.id);
-		if (!guild_object) return resolve({ result: false, value: 'could not find guild in guild_list' });
 		const member_object = guild_object.member_list.find(m => m.id === user.id);
 		if (!guild_object.music_data) return resolve({ result: false, value: 'guild has no music channel' });
 		if (guild_object.music_data.message_id !== messageReaction.message.id) return resolve({ result: false, value: 'message is not music player' });
@@ -102,7 +98,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 				clear_user_reactions(messageReaction, user);
 
 				play(guild_object, client, messageReaction.message, messageReaction.message.guild)
-					.then(response => { return resolve(response); })
+					.then(r => { return resolve(r); })
 					.catch(error => { return resolve({ result: false, value: error }); });
 				break;
 			}
@@ -110,7 +106,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 				clear_user_reactions(messageReaction, user);
 
 				pause(guild_object)
-					.then(response => { return resolve(response); })
+					.then(r => { return resolve(r); })
 					.catch(error => { return resolve({ result: false, value: error }); });
 				break;
 			}
@@ -125,7 +121,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 
 				if (votes >= users / 2) {
 					return stop(guild_object, messageReaction.message.guild)
-						.then(response => { guild_object.music_data.votes = []; return resolve(response) })
+						.then(r => { guild_object.music_data.votes = []; return resolve(r) })
 						.catch(error => { return resolve({ result: false, value: error }) });
 				}
 
@@ -136,7 +132,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return stop(guild_object, messageReaction.message.guild)
-						.then(response => { guild_object.music_data.votes = []; return resolve(response) })
+						.then(r => { guild_object.music_data.votes = []; return resolve(r) })
 						.catch(error => { return resolve({ result: false, value: error }) });
 				}
 
@@ -153,7 +149,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 
 				if (votes >= users / 2) {
 					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild)
-						.then(response => { guild_object.music_data.votes = []; return resolve(response) })
+						.then(r => { guild_object.music_data.votes = []; return resolve(r) })
 						.catch(error => { return resolve({ result: false, value: error }) });
 				}
 
@@ -164,7 +160,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild)
-						.then(response => { guild_object.music_data.votes = []; return resolve(response) })
+						.then(r => { guild_object.music_data.votes = []; return resolve(r) })
 						.catch(error => { return resolve({ result: false, value: error }) });
 				}
 
@@ -197,7 +193,7 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 
 				// client_talk(client, guild_list, 'leave');
 				stop(guild_object, messageReaction.message.guild)
-					.then(response => {
+					.then(r => {
 						if (portal_voice_vonnection) {
 							portal_voice_vonnection.disconnect();
 							guild_object.music_queue = [];
@@ -211,41 +207,66 @@ async function reaction_music_manager(client: Client, guild_list: GuildPrtl[], m
 };
 
 module.exports = async (
-	args: { client: Client, guild_list: GuildPrtl[], messageReaction: MessageReaction, user: User }
+	args: { client: Client, messageReaction: MessageReaction, user: User }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		// must get fixed
-		if (args.user.bot) return resolve({ result: true, value: 'not handling bot reactions' });
-
-		if (args.messageReaction.partial) {
-			try {
-				args.messageReaction.fetch();
-			} catch (error) {
-				return resolve({
-					result: false,
-					value: 'Something went wrong when fetching the message: ' + error,
-				});
-			}
-		}
-
-		if (args.messageReaction.message.guild) {
+		if (args.messageReaction?.message?.guild) {
 			fetch_guild(args.messageReaction.message.guild.id)
 				.then(guild_object => {
 					if (guild_object) {
-						const return_value_role = reaction_role_manager(args.client, args.guild_list, args.messageReaction, args.user);
-						if (return_value_role.result) return resolve(return_value_role);
+						if (args.user.bot)
+							return resolve({ result: true, value: 'not handling bot reactions' });
 
-						const return_value_music = reaction_music_manager(args.client, args.guild_list, args.messageReaction, args.user);
-						return resolve(return_value_music);
-					} else {
-						return resolve({ result: false, value: 'could not find guild in portal' });
+						if (args.messageReaction.partial) {
+							try {
+								args.messageReaction.fetch();
+							} catch (e) {
+								return resolve({
+									result: false,
+									value: 'something went wrong when fetching the message: ',
+								});
+							}
+						}
+
+						if (args.messageReaction.message.guild) {
+							fetch_guild(args.messageReaction.message.guild.id)
+								.then(guild_object => {
+									if (guild_object) {
+										const return_value_role = reaction_role_manager(guild_object, args.messageReaction, args.user);
+										if (return_value_role.result) return resolve(return_value_role);
+
+										const return_value_music = reaction_music_manager(args.client, guild_object, args.messageReaction, args.user);
+										return resolve(return_value_music);
+									} else {
+										return resolve({
+											result: false,
+											value: 'could not find guild in portal'
+										});
+									}
+								})
+								.catch(e => {
+									return resolve({
+										result: false,
+										value: 'error when searching for guild'
+									});
+								});
+						} else {
+							return resolve({
+								result: false,
+								value: 'could not fetch guild of message'
+							});
+						}
+						return resolve({
+							result: false,
+							value: `could not fetch guild`
+						});
 					}
-				})
-				.catch(error => {
-					return resolve({ result: false, value: 'could not find guild in portal' });
 				});
 		} else {
-			return resolve({ result: false, value: 'could not fetch guild of message' });
+			return resolve({
+				result: false,
+				value: `could not fetch guild`
+			});
 		}
 	});
 };

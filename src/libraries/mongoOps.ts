@@ -344,11 +344,44 @@ export async function insert_role_assigner(guild_id: string, new_role_assigner: 
                 role_list: new_role_assigner
             }
         )
-            .then(response => resolve(response))
+            .then(response => resolve(!!response))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
+export async function remove_role_assigner(guild_id: string, message_id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $pull: {
+                    role_list: { message_id: message_id }
+                }
+            }
+        )
+            .then(response => resolve(!!response))
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+//
+
+export async function set_music_data(guild_id: string, new_music_data: MusicData): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $set: {
+                    music_data: new_music_data
+                },
+                dispatcher: undefined
+            }
+        )
+            .then(r => { return resolve(r); })
+            .catch(e => { return resolve(false); });
+    });
+}
 //
 
 export enum ChannelTypePrtl {
@@ -427,19 +460,8 @@ export async function deleted_channel_sync(
                                 .catch(() => resolve(ChannelTypePrtl.unknown));
                         } else if (guild_object.music_data.channel_id === current_text.id) {
                             stop(guild_object, current_text.guild);
-                            GuildPrtlMdl.updateOne(
-                                { id: current_text.guild.id },
-                                {
-                                    $set: {
-                                        music_data: {
-                                            channel_id: 'null',
-                                            message_id: 'null',
-                                            votes: []
-                                        }
-                                    },
-                                    dispatcher: undefined
-                                }
-                            )
+                            const music_data = new MusicData('null', 'null', []);
+                            set_music_data(guild_object.id, music_data)
                                 .then(response => {
                                     return response
                                         ? resolve(ChannelTypePrtl.music)

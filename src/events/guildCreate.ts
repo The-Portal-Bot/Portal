@@ -15,15 +15,15 @@ module.exports = async (
 					});
 				} else {
 					insert_guild(args.guild.id, args.client)
-						.then(resposne => {
+						.then(r => {
 							return resolve({
-								result: !!resposne,
-								value: `Portal ` + !!resposne 
+								result: !!r,
+								value: `Portal ` + !!r 
 									? `joined guild ${args.guild.name} [${args.guild.id}]`
 									: `failed to join ${args.guild.name} [${args.guild.id}]`
 							});
 						})
-						.catch(error => {
+						.catch(e => {
 							return resolve({
 								result: false,
 								value: `portal failed to joined guild ${args.guild.name} [${args.guild.id}]`

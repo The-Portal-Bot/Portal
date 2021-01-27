@@ -1,6 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { create_music_message } from "../libraries/helpOps";
-import { fetch_guild } from "../libraries/mongoOps";
+import { fetch_guild, remove_role_assigner } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 
@@ -16,33 +16,6 @@ module.exports = async (
 						const music_data = guild_object.music_data;
 						const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 							'.github.io/master/assets/img/logo.png';
-
-						role_list.find((r, index) => {
-							if (r.message_id === args.message.id) {
-								GuildPrtlMdl.updateOne(
-									{ id: args.message?.guild?.id },
-									{
-										$pull: {
-											role_list: { message_id: r.message_id }
-										}
-									}
-								)
-									.then(response => {
-										return resolve({
-											result: response,
-											value: `role message ${response
-												? 'deleted successfully'
-												: 'failed to be deleted'}`
-										})
-									})
-									.catch(() => resolve({
-										result: false,
-										value: 'role message was failed to be deleted'
-									}));
-								return true;
-							}
-							return false;
-						});
 
 						if (music_data.message_id === args.message.id) {
 							const current_channel = args.message?.guild?.channels.cache.find(channel =>
@@ -62,6 +35,26 @@ module.exports = async (
 									value: 'could not find channel',
 								});
 							}
+						} else {
+							role_list.find(role_giver => {
+								if (role_giver.message_id === args.message.id) {
+									remove_role_assigner(guild_object.id, role_giver.message_id)
+										.then(r => {
+											return resolve({
+												result: r,
+												value: `role message ${r
+													? 'deleted successfully'
+													: 'failed to be deleted'}`
+											})
+										})
+										.catch(e => resolve({
+											result: false,
+											value: 'role message was failed to be deleted'
+										}));
+									return true;
+								}
+								return false;
+							});
 						}
 					} else {
 						return resolve({

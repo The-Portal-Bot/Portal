@@ -96,12 +96,12 @@ module.exports = async (
 					const current_guild = args.newPresence.guild;
 					const current_channel = args.newPresence.member.voice.channel;
 
-					if (!current_channel) return resolve({ result: false, value: 'could not fetch voice channel' });
+					if (!current_channel) return resolve({ result: false, value: 'user not in Portal\'s voice channel' });
 
 					guild_object.portal_list.some(p => {
 						p.voice_list.some(v => {
 							if (v.id === current_channel.id) {
-								if (guild_object.spotify !== null && args.newPresence)
+								if (guild_object.spotify !== 'null' && args.newPresence)
 									display_spotify_song(current_channel, guild_object,
 										args.newPresence, args.client);
 
