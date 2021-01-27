@@ -20,7 +20,12 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
+		if (!message.guild)
+			return resolve({
+				result: true,
+				value: 'guild could not be fetched'
+			});
+
 		const roles = message.guild.roles.cache.map(cr => cr);
 
 		if (args.length > 0) {
@@ -41,7 +46,10 @@ module.exports = async (
 			const new_ranks: Rank[] = new_ranks_json;
 
 			if (!new_ranks.every(r => r.level && r.role)) {
-				return resolve({ result: false, value: 'json misspelled `./help set_ranks`' });
+				return resolve({
+					result: false,
+					value: 'json misspelled `./help set_ranks`'
+				});
 			}
 			if (!new_ranks.every(is_rank)) {
 				return resolve({
@@ -63,16 +71,18 @@ module.exports = async (
 			});
 
 			set_ranks(guild_object.id, new_ranks)
-				.then(response => {
+				.then(r => {
 					return resolve({
-						result: response, value: response
+						result: r,
+						value: r
 							? 'set new ranks successfully'
 							: 'failed to set new ranks'
 					});
 				})
-				.catch(error => {
+				.catch(e => {
 					return resolve({
-						result: false, value: 'failed to set new ranks'
+						result: false,
+						value: 'failed to set new ranks'
 					});
 				});
 		}

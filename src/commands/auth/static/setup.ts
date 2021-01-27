@@ -1,6 +1,6 @@
-import { Client, GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
+import { GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
 import { create_channel, create_music_channel, delete_channel, getOptions } from "../../../libraries/guildOps";
-import { insert_announcement, insert_portal, insert_spotify, insert_url, ChannelTypePrtl } from "../../../libraries/mongoOps";
+import { ChannelTypePrtl, insert_announcement, insert_portal, insert_spotify, insert_url } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";

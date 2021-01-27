@@ -130,6 +130,27 @@ export async function remove_guild(guild_id: string): Promise<boolean> {
 
 //
 
+export async function update_member_admin(guild_id: string, member_id: string, admin_status: boolean): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                "$push": {
+                    "member_list.$[m].admin": admin_status
+                }
+            },
+            {
+                "new": true,
+                "arrayFilters": [
+                    { "m.id": member_id }
+                ]
+            }
+        )
+            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
 export async function insert_member(new_member: GuildMember): Promise<boolean> {
     const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, null);
     return new Promise((resolve) => {

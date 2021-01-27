@@ -1,9 +1,12 @@
-import { Client, Message, TextChannel } from "discord.js";
-import { create_music_channel, delete_channel, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
+import { Message, TextChannel } from "discord.js";
+import {
+	create_music_channel, delete_channel, included_in_url_list,
+	is_announcement_channel, is_music_channel, is_spotify_channel
+} from "../../../libraries/guildOps";
 import { create_music_message } from "../../../libraries/helpOps";
+import { ChannelTypePrtl } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
-import { ChannelTypePrtl } from "../../../libraries/mongoOps";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -52,11 +55,17 @@ module.exports = async (
 				channel.id == guild_object.music_data.channel_id);
 
 			if (!new_music)
-				return resolve({ result: false, value: 'channel could not be fetched' });
+				return resolve({
+					result: false,
+					value: 'channel could not be fetched'
+				});
 
 			create_music_message(<TextChannel>new_music, portal_icon_url, guild_object);
 
-			return resolve({ result: true, value: 'this is now the Music channel' });
+			return resolve({
+				result: true,
+				value: 'this is now the Music channel'
+			});
 		}
 		else if (args.length > 0) {
 			const music_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));

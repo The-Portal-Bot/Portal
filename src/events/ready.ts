@@ -1,6 +1,4 @@
 import { ActivityOptions, Client, Guild, PresenceData } from "discord.js";
-import config from "../config.json";
-import { remove_deleted_channels, remove_empty_voice_channels } from "../libraries/helpOps";
 import { get_function } from "../libraries/localisationOps";
 import { guild_exists, insert_guild } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";

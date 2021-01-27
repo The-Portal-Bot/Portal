@@ -23,7 +23,7 @@ async function delete_voice_channel(
 					if (v.id === channel.id) {
 						channel
 							.delete()
-							.then(g => {
+							.then(r => {
 								remove_voice(guild_object.id, p.id, v.id)
 									.then(r => {
 										return resolve({

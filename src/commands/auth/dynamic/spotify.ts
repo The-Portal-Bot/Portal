@@ -9,7 +9,10 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!message.guild)
-			return resolve({ result: true, value: 'guild could not be fetched' });
+			return resolve({
+				result: true,
+				value: 'guild could not be fetched'
+			});
 
 		if (args.length === 0) {
 			if (is_spotify_channel(message.channel.id, guild_object)) {
@@ -45,14 +48,14 @@ module.exports = async (
 
 		if (args.length === 0) {
 			insert_spotify(guild_object.id, message.channel.id)
-				.then(response => {
+				.then(r => {
 					return resolve({
-						result: response, value: response
+						result: r, value: r
 							? 'set as the spotify channel successfully'
 							: 'failed to set as the spotify channel'
 					});
 				})
-				.catch(error => {
+				.catch(e => {
 					return resolve({
 						result: false, value: 'failed to set as the spotify channel'
 					});
@@ -62,70 +65,47 @@ module.exports = async (
 				result: true,
 				value: 'this is now the Spotify channel'
 			});
-		}
-		else if (args.length > 0) {
-			const spotify_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-			const spotify_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+		} else if (args.length > 0) {
+			let spotify_channel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+			let spotify_category: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+
+			if (spotify_channel === '' && spotify_category !== '') {
+				spotify_channel = spotify_category;
+				spotify_category = null;
+			}
+
 			const spotify_options = getOptions(message.guild, 'displays song from spotify users in portal channels are listening too', false);
 
-			if (spotify_channel !== '') {
-				create_channel(
-					message.guild, spotify_channel,
-					spotify_options, spotify_category
-				)
-					.then(response => {
-						if (response.result) {
-							insert_spotify(guild_object.id, response.value)
-								.then(response => {
-									return resolve({
-										result: response, value: response
-											? 'created spotify channel successfully'
-											: 'failed to create a spotify channel'
-									});
-								})
-								.catch(error => {
-									return resolve({
-										result: false, value: 'failed to create a spotify channel'
-									});
+			create_channel(
+				message.guild, spotify_channel,
+				spotify_options, spotify_category
+			)
+				.then(r_create => {
+					if (r_create.result) {
+						insert_spotify(guild_object.id, r_create.value)
+							.then(r_spotify => {
+								return resolve({
+									result: r_spotify, value: r_spotify
+										? 'created spotify channel successfully'
+										: 'failed to create a spotify channel'
 								});
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
-			}
-			else if (spotify_channel === '' && spotify_category !== '') {
-				create_channel(
-					message.guild, spotify_category,
-					spotify_options, null
-				)
-					.then(response => {
-						if (response.result) {
-							insert_spotify(guild_object.id, response.value)
-								.then(response => {
-									return resolve({
-										result: response, value: response
-											? 'created spotify channel successfully'
-											: 'failed to create a spotify channel'
-									});
-								})
-								.catch(error => {
-									return resolve({
-										result: false, value: 'failed to create a spotify channel'
-									});
+							})
+							.catch(e => {
+								return resolve({
+									result: false, value: 'failed to create a spotify channel'
 								});
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
-			}
-			else {
-				return resolve({
-					result: false,
-					value: 'you can run `./help spotify` for help'
-				});
-			}
+							});
+					} else {
+						return resolve(r_create);
+					}
+				})
+				.catch(e => { return resolve(e); });
+
+		} else {
+			return resolve({
+				result: false,
+				value: 'you can run `./help spotify` for help'
+			});
 		}
 	});
 };

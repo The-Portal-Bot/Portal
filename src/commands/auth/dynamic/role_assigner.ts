@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../../libraries/guildOps";
 import { create_rich_embed, getJSON } from "../../../libraries/helpOps";
 import { insert_role_assigner } from "../../../libraries/mongoOps";
@@ -23,22 +23,28 @@ function create_role_message(
 					sent_message.react(role_map[i].strip);
 				}
 				insert_role_assigner(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
-					.then(response => {
+					.then(r => {
 						return resolve({
-							result: response, value: response
+
+							result: r,
+							value: r
 								? 'set new ranks successfully'
 								: 'failed to set new ranks'
 						});
 					})
-					.catch(error => {
+					.catch(e => {
 						return resolve({
-							result: false, value: 'failed to set new ranks'
+
+							result: false,
+							value: 'failed to set new ranks'
 						});
 					});
 			})
-			.catch(error => {
+			.catch(e => {
 				return resolve({
-					result: false, value: 'failed to create role assigner message'
+
+					result: false,
+					value: 'failed to create role assigner message'
 				})
 			});
 	});
@@ -60,15 +66,39 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
-		if (args.length <= 0) return resolve({ result: false, value: 'you can run `./help role_assigner` for help' });
+		if (!message.guild)
+			return resolve({
+				result: true,
+				value: 'guild could not be fetched'
+			});
+		if (args.length <= 0)
+			return resolve({
+				result: false,
+				value: 'you can run `./help role_assigner` for help'
+			});
 
 		const role_map_json = getJSON(args.join(' '));
-		if (!role_map_json) return resolve({ result: false, value: 'roles must be in JSON format for more info `./help role_assigner`' });
+		if (!role_map_json)
+			return resolve({
+				result: false,
+				value: 'roles must be in JSON format for more info `./help role_assigner`'
+			});
 		const role_map = <GiveRole[]>role_map_json;
-		if (!Array.isArray(role_map)) return resolve({ result: false, value: 'must be array even for one role' });
-		if (multiple_same_emote(role_map)) return resolve({ result: false, value: 'emotes should differ `./help role_assigner`' });
-		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id)) return resolve({ result: false, value: 'json misspelled `./help role_assigner`' });
+		if (!Array.isArray(role_map))
+			return resolve({
+				result: false,
+				value: 'must be array even for one role'
+			});
+		if (multiple_same_emote(role_map))
+			return resolve({
+				result: false,
+				value: 'emotes should differ `./help role_assigner`'
+			});
+		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id))
+			return resolve({
+				result: false,
+				value: 'json misspelled `./help role_assigner`'
+			});
 
 		role_map.forEach(r => { r.give = r.give.trim(); r.strip = r.strip.trim(); });
 		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
@@ -98,7 +128,10 @@ module.exports = async (
 			}
 		});
 
-		if (failed) return resolve({ result: false, value: return_value });
+		if (failed) return resolve({
+			result: false,
+			value: return_value
+		});
 
 		create_role_message(
 			<TextChannel>message.channel,
@@ -110,6 +143,9 @@ module.exports = async (
 			role_map
 		)
 
-		return resolve({ result: true, value: 'role message has been created' });
+		return resolve({
+			result: true,
+			value: 'role message has been created'
+		});
 	});
 };

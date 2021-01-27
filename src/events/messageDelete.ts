@@ -2,7 +2,6 @@ import { Client, Message, TextChannel } from "discord.js";
 import { create_music_message } from "../libraries/helpOps";
 import { fetch_guild, remove_role_assigner } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 
 module.exports = async (
 	args: { client: Client, message: Message }

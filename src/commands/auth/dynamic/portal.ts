@@ -35,37 +35,37 @@ module.exports = async (
 			: 'Channel $#';
 
 		create_channel(current_guild, portal_channel, portal_options, portal_category)
-			.then(response => {
-				if (response.result) {
+			.then(r_channel => {
+				if (r_channel.result) {
 					insert_portal(guild_object.id, new PortalChannelPrtl(
-						response.value, current_member.id, portal_channel, voice_regex,
+						r_channel.value, current_member.id, portal_channel, voice_regex,
 						[], false, 2, 0, 0, guild_object.locale, true, true, 0, false
 					))
-						.then(response => {
-							if (response) {
+						.then(r_portal => {
+							if (r_portal) {
 								return resolve({
 									result: true,
 									value: 'portal channel has been created.\n' +
 										'Keep in mind that due to Discord\'s limitations,\n' +
-										'channel names will be updated on a five minute interval',
+										'channel names will be updated on a five minute interval'
 								});
 							} else {
 								return resolve({
 									result: false,
-									value: 'portal channel failed to be created',
+									value: 'portal channel failed to be created'
 								});
 							}
 						})
-						.catch(error => {
+						.catch(e => {
 							return resolve({
 								result: false,
-								value: 'portal channel failed to be created, ' + error
+								value: 'portal channel failed to be created, ' + e
 							});
 						});
 				} else {
-					return resolve(response);
+					return resolve(r_channel);
 				}
 			})
-			.catch(error => { return resolve(error); });
+			.catch(e => { return resolve(e); });
 	});
 };

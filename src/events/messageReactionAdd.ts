@@ -1,10 +1,10 @@
 import { Client, MessageReaction, User, VoiceConnection } from "discord.js";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
+import { clear_music_vote, fetch_guild, insert_music_vote } from "../libraries/mongoOps";
 import { pause, play, skip, stop } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { fetch_guild, insert_music_vote, clear_music_vote } from "../libraries/mongoOps";
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
@@ -136,7 +136,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return stop(guild_object, messageReaction.message.guild)
-						.then(r => {clear_music_vote(guild_object.id); return resolve(r) })
+						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
 						.catch(e => { return resolve({ result: false, value: e }) });
 				}
 
@@ -147,14 +147,14 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 
 				if (!guild_object.music_data.votes.includes(user.id))
 					insert_music_vote(guild_object.id, user.id);
-					// guild_object.music_data.votes.push(user.id);
+				// guild_object.music_data.votes.push(user.id);
 
 				const votes = guild_object.music_data.votes.length;
 				const users = portal_voice_vonnection?.channel?.members.filter(member => !member.user.bot).size;
 
 				if (votes >= users / 2) {
 					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild)
-						.then(r => {clear_music_vote(guild_object.id); return resolve(r) })
+						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
 						.catch(e => { return resolve({ result: false, value: e }) });
 				}
 
@@ -165,7 +165,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild)
-						.then(r => {clear_music_vote(guild_object.id); return resolve(r) })
+						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
 						.catch(e => { return resolve({ result: false, value: e }) });
 				}
 

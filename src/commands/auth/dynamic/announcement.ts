@@ -1,6 +1,6 @@
-import { Client, Message, VoiceChannel } from "discord.js";
+import { Message, VoiceChannel } from "discord.js";
 import { create_channel, delete_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
-import { insert_announcement, ChannelTypePrtl } from "../../../libraries/mongoOps";
+import { ChannelTypePrtl, insert_announcement } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
@@ -15,25 +15,25 @@ module.exports = async (
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this already is, the Announcement channel',
+					value: 'this already is, the announcement channel'
 				});
 			}
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this can\'t be set as the Announcemennt channel for it is the Spotify channel',
+					value: 'this can\'t be set as the announcemennt channel for it is the spotify channel'
 				});
 			}
 			if (is_music_channel(message.channel.id, guild_object)) {
 				resolve({
 					result: true,
-					value: 'this can\'t be set as a Announcemennt channel for it is the Music channel',
+					value: 'this can\'t be set as an announcemennt channel for it is the music channel'
 				});
 			}
 			if (included_in_url_list(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this can\'t be set as the Announcemennt channel for it is an url channel',
+					value: 'this can\'t be set as the announcemennt channel for it is an url channel'
 				});
 			}
 		}
@@ -45,14 +45,14 @@ module.exports = async (
 
 		if (args.length === 0) {
 			insert_announcement(guild_object.id, message.channel.id)
-				.then(response => {
+				.then(r => {
 					return resolve({
-						result: response, value: response
+						result: r, value: r
 							? 'set as the anouncement channel successfully'
 							: 'failed to set as the anouncement channel'
 					});
 				})
-				.catch(error => {
+				.catch(e => {
 					return resolve({
 						result: false, value: 'failed to set as the anouncement channel'
 					});
@@ -60,72 +60,49 @@ module.exports = async (
 
 			return resolve({
 				result: true,
-				value: 'this is now the Announcement channel',
+				value: 'this is now the Announcement channel'
 			});
 		}
 		else if (args.length > 0) {
-			const announcement_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-			const announcement_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+			let announcement_channel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+			let announcement_category: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+
+			if (announcement_channel === '' && announcement_category !== '') {
+				announcement_channel = announcement_category;
+				announcement_category = null;
+			}
+
 			const announcement_options = getOptions(message.guild, 'announcements channel (Portal/Users/Admins)', false);
 
-			if (announcement_channel !== '') {
-				create_channel(
-					message.guild, announcement_channel,
-					announcement_options, announcement_category
-				)
-					.then(response => {
-						if (response.result) {
-							insert_announcement(guild_object.id, response.value)
-								.then(response => {
-									return resolve({
-										result: response, value: response
-											? 'created announcement channel and category successfully'
-											: 'failed to create a announcement channel'
-									});
-								})
-								.catch(error => {
-									return resolve({
-										result: false, value: 'failed to create a announcement channel'
-									});
+			create_channel(
+				message.guild, announcement_channel,
+				announcement_options, announcement_category
+			)
+				.then(r_channel => {
+					if (r_channel.result) {
+						insert_announcement(guild_object.id, r_channel.value)
+							.then(r_announcement => {
+								return resolve({
+									result: r_announcement, value: r_announcement
+										? 'created announcement channel and category successfully'
+										: 'failed to create a announcement channel'
 								});
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
-			}
-			else if (announcement_channel === '' && announcement_category !== '') {
-				create_channel(
-					message.guild, announcement_category,
-					announcement_options, null
-				)
-					.then(response => {
-						if (response.result) {
-							insert_announcement(guild_object.id, response.value)
-								.then(response => {
-									return resolve({
-										result: response, value: response
-											? 'created announcement channel successfully'
-											: 'failed to create a announcement channel'
-									});
-								})
-								.catch(error => {
-									return resolve({
-										result: false, value: 'failed to create a announcement channel'
-									});
+							})
+							.catch(e => {
+								return resolve({
+									result: false, value: 'failed to create a announcement channel'
 								});
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
-			}
-			else {
-				return resolve({
-					result: false,
-					value: 'you can run `./help announcement` for help',
-				});
-			}
+							});
+					} else {
+						return resolve(r_channel);
+					}
+				})
+				.catch(e => { return resolve(e); });
+		} else {
+			return resolve({
+				result: false,
+				value: 'you can run `./help announcement` for help'
+			});
 		}
 	});
 };

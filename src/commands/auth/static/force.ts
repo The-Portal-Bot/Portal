@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { included_in_voice_list, regex_interpreter } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
@@ -45,7 +45,10 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!message.member) {
-			return resolve({ result: true, value: 'member could not be fetched' });
+			return resolve({
+				result: true,
+				value: 'member could not be fetched'
+			});
 		}
 
 		if (!message.member.voice.channel) {
@@ -81,9 +84,8 @@ module.exports = async (
 									if (message.member && message.member.voice.channel) {
 										p = copyKey(p, message.member.voice.channel.id, 'intermidiary');
 
-										message.member?.voice.channel?.members.forEach(member => {
-											member.voice.setChannel(clone);
-										});
+										message.member.voice.channel.members
+											.forEach(member => member.voice.setChannel(clone));
 
 										setTimeout(() => {
 											p = renameKey(p, 'intermidiary', clone.id);
