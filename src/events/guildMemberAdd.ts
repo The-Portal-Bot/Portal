@@ -26,20 +26,18 @@ module.exports = async (
 							);
 					}
 
-					// if (!args.member.user.bot && guild_object) {
-					if (!guild_object) {
+					if (!args.member.user.bot) {
 						insert_member(args.member)
-							.then(response => {
+							.then(r => {
 								return resolve({
-									result: response, value: response
-										? 'member added to guild' : 'member could not be added'
+									result: r, value: r ? 'member added to guild' : 'member could not be added'
 								});
 							})
-							.catch(error => {
+							.catch(e => {
 								return resolve({ result: false, value: 'member could not be added' });
 							});
 					} else {
-						return resolve({ result: true, value: 'member is a bot, no action taken for fellow workers' });
+						return resolve({ result: true, value: 'no action taken for fellow bot workers' });
 					}
 
 				} else {

@@ -56,7 +56,7 @@ module.exports = async (
 						.catch(error => { return resolve(error); });
 				}
 
-				const spotify_options = getOptions(current_guild, 'displays music users in portal channels are listening too', false);
+				const spotify_options = getOptions(current_guild, 'displays song from spotify users in portal channels are listening to', false);
 				const announcement_options = getOptions(current_guild, 'announcements channel (Portal/Users/Admins)', false);
 				const url_options = getOptions(current_guild, 'url only channel', true);
 

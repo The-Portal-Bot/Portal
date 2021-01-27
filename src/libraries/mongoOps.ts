@@ -123,8 +123,8 @@ export async function insert_guild(guild_id: string, client: Client): Promise<bo
 export async function remove_guild(guild_id: string): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.deleteOne({ id: guild_id })
-            .then(response => resolve(!!response))
-            .catch(() => resolve(false));
+            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
@@ -134,9 +134,16 @@ export async function insert_member(new_member: GuildMember): Promise<boolean> {
     const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, null);
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
-        GuildPrtlMdl.updateOne({ id: new_member.guild.id }, { $push: { member_list: new_member_portal } })
-            .then(response => resolve(!!response))
-            .catch(() => resolve(false));
+        GuildPrtlMdl.updateOne(
+            { id: new_member.guild.id },
+            {
+                $push: {
+                    member_list: new_member_portal
+                }
+            }
+        )
+            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
@@ -149,8 +156,8 @@ export async function remove_member(member_to_remove: GuildMember): Promise<bool
                     member_list: { id: member_to_remove.id }
                 }
             })
-            .then(response => resolve(!!response))
-            .catch(() => resolve(false));
+            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
@@ -164,8 +171,8 @@ export async function insert_portal(guild_id: string, new_portal: PortalChannelP
                 $push: { portal_list: new_portal }
             }
         )
-            .then(response => resolve(!!response))
-            .catch(() => resolve(false));
+            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
@@ -181,8 +188,8 @@ export async function remove_portal(guild_id: string, portal_id: string): Promis
                 }
             }
         )
-            .then(response => resolve(!!response))
-            .catch(() => resolve(false));
+            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
@@ -244,15 +251,15 @@ export async function insert_spotify(guild_id: string, new_spotify: string): Pro
             }
         )
             .then(response => resolve(response))
-            .catch(() => resolve(false));
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
 // export async function remove_spotify(member_to_remove: GuildMember): Promise<boolean> {
 //     return new Promise((resolve) => {
 //         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
-//             .then(response => resolve(!!response))
-//             .catch(() => resolve(false));
+//             .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+//             .catch(e => { console.log('e :>> ', e); return resolve(false) });
 //     });
 // };
 
@@ -270,15 +277,15 @@ export async function insert_announcement(guild_id: string, new_announcement: st
             }
         )
             .then(response => resolve(response))
-            .catch(() => resolve(false));
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
 // export async function remove_announcement(member_to_remove: GuildMember): Promise<boolean> {
 //     return new Promise((resolve) => {
 //         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
-//             .then(response => resolve(!!response))
-//             .catch(() => resolve(false));
+//             .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+//             .catch(e => { console.log('e :>> ', e); return resolve(false) });
 //     });
 // };
 
@@ -292,19 +299,21 @@ export async function insert_url(guild_id: string, new_url: string): Promise<boo
         GuildPrtlMdl.updateOne(
             { id: guild_id },
             {
-                $push: { url_list: new_url }
+                $push: {
+                    url_list: new_url
+                }
             }
         )
             .then(response => resolve(response))
-            .catch(() => resolve(false));
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
 // export async function remove_url(member_to_remove: GuildMember): Promise<boolean> {
 //     return new Promise((resolve) => {
 //         GuildPrtlMdl.updateOne({ id: member_to_remove.guild.id }, { $pull: { member_list: { id: member_to_remove.id } } })
-//             .then(response => resolve(!!response))
-//             .catch(() => resolve(false));
+//             .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+//             .catch(e => { console.log('e :>> ', e); return resolve(false) });
 //     });
 // };
 
@@ -320,7 +329,7 @@ export async function set_ranks(guild_id: string, new_ranks: Rank[]): Promise<bo
             }
         )
             .then(response => resolve(response))
-            .catch(() => resolve(false));
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 
@@ -336,7 +345,7 @@ export async function insert_role_assigner(guild_id: string, new_role_assigner: 
             }
         )
             .then(response => resolve(response))
-            .catch(() => resolve(false));
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
 

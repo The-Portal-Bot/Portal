@@ -26,20 +26,18 @@ module.exports = async (
 							);
 					}
 
-					// if (!args.member.user.bot && guild_object) {
-					if (guild_object) {
+					if (!args.member.user.bot) {
 						remove_member(args.member)
-							.then(response => {
+							.then(r => {
 								return resolve({
-									result: response, value: response
-										? 'member removed to guild' : 'member could not be removed'
+									result: r, value: r ? 'member removed to guild' : 'member could not be removed'
 								});
 							})
-							.catch(error => {
+							.catch(e => {
 								return resolve({ result: false, value: 'member could not be removed' });
 							});
 					} else {
-						return resolve({ result: true, value: 'member is a bot, no action taken for fellow workers' });
+						return resolve({ result: true, value: 'no action taken for fellow bot workers' });
 					}
 
 				} else {

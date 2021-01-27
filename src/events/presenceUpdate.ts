@@ -41,9 +41,8 @@ function display_spotify_song(
 ) {
 	current_channel.members.forEach(member => {
 		member.presence.activities.some(activity => {
-			console.log('activity :>> ', activity);
 			if (activity.name === 'Spotify' && newPresence.guild) {
-				if (guild_object === undefined) return false;
+				if (!guild_object) return false;
 
 				const spotify = <TextChannel | undefined>newPresence.guild.channels.cache
 					.find(c => { return c.id === guild_object.spotify; });
@@ -84,7 +83,6 @@ module.exports = async (
 	args: { client: Client, newPresence: Presence | undefined }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		console.log('args.newPresence :>> ', args.newPresence);
 		if (!args.newPresence?.guild)
 			return resolve({ result: false, value: 'could not fetch guild from presence' });
 

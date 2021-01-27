@@ -66,7 +66,7 @@ module.exports = async (
 		else if (args.length > 0) {
 			const spotify_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
 			const spotify_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
-			const spotify_options = getOptions(message.guild, 'displays music users in portal channels are listening too', false);
+			const spotify_options = getOptions(message.guild, 'displays song from spotify users in portal channels are listening too', false);
 
 			if (spotify_channel !== '') {
 				create_channel(
