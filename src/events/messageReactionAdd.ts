@@ -1,4 +1,4 @@
-import { Client, MessageReaction, User, VoiceConnection } from "discord.js";
+import { Client, MessageReaction, StreamDispatcher, User, VoiceConnection } from "discord.js";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
 import { clear_music_vote, fetch_guild, insert_music_vote } from "../libraries/mongoOps";
@@ -67,7 +67,9 @@ function reaction_role_manager(
 	return { result: result, value: value };
 };
 
-async function reaction_music_manager(client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User): Promise<ReturnPormise> {
+async function reaction_music_manager(
+	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User, dispatchers: { id: string, dispatcher: StreamDispatcher }[]
+	): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (!messageReaction.message.guild) return resolve({ result: false, value: 'could not fetch message\'s guild' });
 		const member_object = guild_object.member_list.find(m => m.id === user.id);
@@ -93,12 +95,15 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 			clear_user_reactions(messageReaction, user);
 			return resolve({ result: false, value: 'you must be in the same channel with portal to control music' });
 		}
+		
+		const dispatcher_object = dispatchers.find(d => d.id === guild_object.id) 
+		const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
 
 		switch (messageReaction.emoji.name) {
 			case '▶️': {
 				clear_user_reactions(messageReaction, user);
 
-				play(guild_object, client, messageReaction.message, messageReaction.message.guild)
+				play(guild_object, client, messageReaction.message, messageReaction.message.guild, dispatchers)
 					.then(r => { return resolve(r); })
 					.catch(e => { return resolve({ result: false, value: e }); });
 				break;
@@ -106,7 +111,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 			case '⏸': {
 				clear_user_reactions(messageReaction, user);
 
-				pause(guild_object)
+				pause(guild_object, dispatcher)
 					.then(r => { return resolve(r); })
 					.catch(e => { return resolve({ result: false, value: e }); });
 				break;
@@ -124,7 +129,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 					.filter(member => !member.user.bot).size;
 
 				if (votes >= users / 2) {
-					return stop(guild_object, messageReaction.message.guild)
+					return stop(guild_object, messageReaction.message.guild, dispatcher)
 						.then(r => { guild_object.music_data.votes = []; return resolve(r) })
 						.catch(e => { return resolve({ result: false, value: e }) });
 				}
@@ -135,7 +140,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)` });
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-					return stop(guild_object, messageReaction.message.guild)
+					return stop(guild_object, messageReaction.message.guild, dispatcher)
 						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
 						.catch(e => { return resolve({ result: false, value: e }) });
 				}
@@ -153,7 +158,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 				const users = portal_voice_vonnection?.channel?.members.filter(member => !member.user.bot).size;
 
 				if (votes >= users / 2) {
-					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild)
+					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild, dispatcher)
 						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
 						.catch(e => { return resolve({ result: false, value: e }) });
 				}
@@ -164,7 +169,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)` });
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild)
+					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild, dispatcher)
 						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
 						.catch(e => { return resolve({ result: false, value: e }) });
 				}
@@ -197,7 +202,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 				clear_user_reactions(messageReaction, user);
 
 				// client_talk(client, guild_list, 'leave');
-				stop(guild_object, messageReaction.message.guild)
+				stop(guild_object, messageReaction.message.guild, dispatcher)
 					.then(r => {
 						if (portal_voice_vonnection) {
 							portal_voice_vonnection.disconnect();
@@ -212,7 +217,7 @@ async function reaction_music_manager(client: Client, guild_object: GuildPrtl, m
 };
 
 module.exports = async (
-	args: { client: Client, messageReaction: MessageReaction, user: User }
+	args: { client: Client, messageReaction: MessageReaction, user: User, dispatchers: { id: string, dispatcher: StreamDispatcher }[] }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.user.bot) {
@@ -242,7 +247,7 @@ module.exports = async (
 										const return_value_role = reaction_role_manager(guild_object, args.messageReaction, args.user);
 										if (return_value_role.result) return resolve(return_value_role);
 
-										const return_value_music = reaction_music_manager(args.client, guild_object, args.messageReaction, args.user);
+										const return_value_music = reaction_music_manager(args.client, guild_object, args.messageReaction, args.user, args.dispatchers);
 										return resolve(return_value_music);
 									} else {
 										return resolve({

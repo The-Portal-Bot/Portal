@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Document } from "mongoose";
 import GiveRolePrtlSchm from "./schemas/GiveRolePrtlSchm";
 import MemberPrtlSchm from "./schemas/MemberPrtlSchm";
 import PortalChannelPrtlSchm from "./schemas/PortalChannelPrtlSchm";

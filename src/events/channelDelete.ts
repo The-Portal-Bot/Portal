@@ -1,9 +1,9 @@
-import { Channel, PartialDMChannel, TextChannel, VoiceChannel } from "discord.js";
+import { Channel, PartialDMChannel, TextChannel, VoiceChannel, StreamDispatcher } from "discord.js";
 import { ChannelTypePrtl, deleted_channel_sync } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	args: { channel: Channel | PartialDMChannel }
+	args: { channel: Channel | PartialDMChannel, dispatchers: { id: string, dispatcher: StreamDispatcher }[] }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.channel.type !== 'text' && args.channel.type !== 'voice')
@@ -16,18 +16,18 @@ module.exports = async (
 			? <VoiceChannel>args.channel
 			: <TextChannel>args.channel;
 
-		deleted_channel_sync(current_channel)
+		deleted_channel_sync(current_channel, args.dispatchers)
 			.then(r => {
 				if (r > 0) {
 					return resolve({
 						result: true,
-						value: `${ ChannelTypePrtl[r].toString() } channel, has been removed from database ` +
+						value: `${ChannelTypePrtl[r].toString()} channel, has been removed from database ` +
 							`guild: ${current_channel.guild.name} [${current_channel.guild.id}]`,
 					});
 				} else {
 					return resolve({
 						result: false,
-						value: `${ ChannelTypePrtl[r].toString() } channel is not controlled by Portal`
+						value: `${ChannelTypePrtl[r].toString()} channel is not controlled by Portal`
 					});
 				}
 			})

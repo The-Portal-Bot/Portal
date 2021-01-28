@@ -1,4 +1,4 @@
-import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
+import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState, StreamDispatcher } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import config from './config.json';
@@ -20,12 +20,11 @@ mongoose.connect(config.mongo_url, {
 	useCreateIndex: true
 })
 	.then(() => {
-		console.log('> connected to the Portal\'s mongodb');
+		console.log('> connected to the database');
 	}).catch((err) => {
-		console.log('> unable to connect to the Mongodb database: ' + err);
+		console.log('> unable to connect to database: ' + err);
 		process.exit(1);
 	});
-
 
 const anti_spam = new AntiSpam({
 	warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
@@ -45,6 +44,7 @@ const anti_spam = new AntiSpam({
 	ignoredUsers: [], // Array of User IDs that get ignored.
 });
 
+const dispatchers: { id: string, dispatcher: StreamDispatcher }[] = [];
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
 // this is the client the Portal Bot. Some people call it bot, some people call
@@ -76,11 +76,12 @@ const client = new Client(
 );
 
 // This event triggers when the bot joins a guild.
-client.on('channelDelete', (channel: Channel | PartialDMChannel) =>
+client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
 	event_loader('channelDelete', {
-		'channel': channel
-	})
-);
+		'channel': channel,
+		'dispatchers': dispatchers
+	});
+});
 
 // This event triggers when the bot joins a guild
 client.on('guildCreate', (guild: Guild) =>
@@ -124,7 +125,8 @@ client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | 
 	event_loader('messageReactionAdd', {
 		'client': client,
 		'messageReaction': messageReaction,
-		'user': user
+		'user': user,
+		'dispatchers': dispatchers
 	})
 );
 
@@ -148,7 +150,8 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 	event_loader('voiceStateUpdate', {
 		'client': client,
 		'oldState': oldState,
-		'newState': newState
+		'newState': newState,
+		'dispatchers': dispatchers
 	})
 );
 
@@ -390,7 +393,7 @@ function portal_channel_handler(message: Message): boolean {
 				return true;
 			}
 			else if (guild_object.music_data.channel_id === message.channel.id) {
-				start(client, message, message.content, guild_object)
+				start(client, message, message.content, guild_object, dispatchers)
 					.then(joined => {
 						// message_reply(
 						// 	joined.result, message.channel, message,

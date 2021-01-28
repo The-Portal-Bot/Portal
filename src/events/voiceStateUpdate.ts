@@ -1,4 +1,4 @@
-import { Client, TextChannel, VoiceChannel, VoiceConnection, VoiceState } from "discord.js";
+import { Client, TextChannel, VoiceChannel, VoiceConnection, VoiceState, StreamDispatcher } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guildOps";
 import { client_talk } from "../libraries/localisationOps";
 import { fetch_guild, remove_voice } from "../libraries/mongoOps";
@@ -87,7 +87,7 @@ function from_null(
 
 function from_existing(
 	old_channel: VoiceChannel, new_channel: VoiceChannel | null, client: Client,
-	guild_object: GuildPrtl, newState: VoiceState
+	guild_object: GuildPrtl, newState: VoiceState, dispatcher: StreamDispatcher | undefined
 ): ReturnPormise {
 	let report_message = '';
 
@@ -109,7 +109,7 @@ function from_existing(
 						voice_connection.disconnect();
 						delete_voice_channel(old_channel, guild_object)
 							.then(response => { return response; });
-						stop(guild_object, old_channel.guild);
+						stop(guild_object, old_channel.guild, dispatcher);
 					}
 				}
 			}
@@ -154,7 +154,7 @@ function from_existing(
 							voice_connection.disconnect();
 							delete_voice_channel(old_channel, guild_object)
 								.then(response => { return response; });
-							stop(guild_object, old_channel.guild);
+							stop(guild_object, old_channel.guild, dispatcher);
 						}
 					}
 				}
@@ -186,7 +186,7 @@ function from_existing(
 							voiceConnection.disconnect();
 							delete_voice_channel(old_channel, guild_object)
 								.then(response => { return response; });
-							stop(guild_object, old_channel.guild);
+							stop(guild_object, old_channel.guild, dispatcher);
 						}
 					}
 				}
@@ -211,7 +211,7 @@ function from_existing(
 							voiceConnection.disconnect();
 							delete_voice_channel(old_channel, guild_object)
 								.then(response => { return response; });
-							stop(guild_object, old_channel.guild);
+							stop(guild_object, old_channel.guild, dispatcher);
 						}
 					}
 				}
@@ -248,13 +248,16 @@ function from_existing(
 }
 
 module.exports = async (
-	args: { client: Client, newState: VoiceState, oldState: VoiceState }
+	args: { client: Client, newState: VoiceState, oldState: VoiceState, dispatchers: { id: string, dispatcher: StreamDispatcher }[] }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.newState?.guild) {
 			fetch_guild(args.newState?.guild.id)
 				.then(guild_object => {
 					if (guild_object) {
+						const dispatcher_object = args.dispatchers.find(d => d.id === guild_object.id)
+						const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
+
 						const new_channel = args.newState.channel; // join channel
 						const old_channel = args.oldState.channel; // left channel
 
@@ -280,7 +283,7 @@ module.exports = async (
 
 						const execution = (old_channel === null)
 							? from_null(new_channel, guild_object, args.newState)
-							: from_existing(old_channel, new_channel, args.client, guild_object, args.newState);
+							: from_existing(old_channel, new_channel, args.client, guild_object, args.newState, dispatcher);
 
 						if (!execution.result) return resolve(execution);
 						report_message += `${execution.value}`;

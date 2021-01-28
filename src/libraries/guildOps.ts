@@ -440,7 +440,7 @@ export function delete_channel(
 };
 
 export function channel_deleted_update_state(
-	channel_to_remove: GuildChannel, guild_list: GuildPrtl[]
+	channel_to_remove: GuildChannel, guild_list: GuildPrtl[], dispatcher: StreamDispatcher | undefined
 ): number {
 	const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
 	const guilf_object = guild_list.find(g => g.id === channel_to_remove.guild.id);
@@ -483,7 +483,7 @@ export function channel_deleted_update_state(
 		type_of_channel = TypesOfChannel.Announcement;
 	}
 	if (guilf_object.music_data.channel_id === channel_to_remove.id) {
-		stop(guilf_object, channel_to_remove.guild);
+		stop(guilf_object, channel_to_remove.guild, dispatcher);
 		guilf_object.music_data.channel_id = undefined;
 		guilf_object.music_data.message_id = undefined;
 		guilf_object.music_data.votes = [];
@@ -499,8 +499,6 @@ export function channel_deleted_update_state(
 export function generate_channel_name(
 	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild
 ): number {
-
-
 
 	let return_value: number = 0;
 	portal_list.some(p => {

@@ -4,6 +4,7 @@ import { GiveRolePrtl } from "./GiveRolePrtl";
 import { MemberPrtl } from "./MemberPrtl";
 import { PortalChannelPrtl } from "./PortalChannelPrtl";
 import { StreamDispatcher } from "discord.js";
+import { Document } from "mongoose";
 
 export class MusicData {
 	public channel_id: string | undefined;
@@ -75,3 +76,22 @@ export class GuildPrtl {
 		this.premium = premium;
 	}
 };
+
+export interface IGuildPrtl extends Document {
+	id: string,
+	portal_list: PortalChannelPrtl[],
+	member_list: MemberPrtl[],
+	url_list: string[],
+	role_list: GiveRolePrtl[],
+	ranks: Rank[],
+	auth_role: string[],
+	spotify: string | null,
+	music_data: MusicData,
+	music_queue: VideoSearchResult[],
+	dispatcher: StreamDispatcher | undefined,
+	announcement: string | null,
+	locale: string,
+	announce: boolean,
+	level_speed: string,
+	premium: boolean
+}

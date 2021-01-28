@@ -6,7 +6,7 @@ import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
 import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localisationOps";
-import { fetch_guild_list, fetch_guild, set_music_data } from "./mongoOps";
+import { fetch_guild, fetch_guild_list, set_music_data } from "./mongoOps";
 
 export function create_music_message(
 	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl
@@ -44,7 +44,9 @@ export function create_music_message(
 		});
 };
 
-export function update_music_message(guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult): void {
+export function update_music_message(
+	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult
+): void {
 	const music_queue = guild_object.music_queue.length > 0
 		? guild_object.music_queue.map((video, i) => `${i + 1}. **${video.title}`).join('**\n') + '**'
 		: 'empty';
@@ -77,7 +79,7 @@ export function update_music_message(guild: Guild, guild_object: GuildPrtl, yts:
 				.then((message: Message) => {
 					message.edit(music_message_emb)
 						.then((msg: Message) =>
-							console.log(`Updated the content of a message to ${msg.content}`)
+							console.log(`music message has been updated`)
 						)
 						.catch(console.error);
 				})
@@ -137,7 +139,7 @@ export async function join_user_voice(
 		// 		return g.id === message.guild.id;
 		// });
 
-		if (current_guild === undefined) {
+		if (!current_guild) {
 			return resolve({
 				result: false,
 				value: 'could not find guild of message',
@@ -159,7 +161,7 @@ export async function join_user_voice(
 			});
 		}
 
-		if (client.voice === null) {
+		if (!client.voice) {
 			return resolve({
 				result: false,
 				value: 'Portal is not connected to any voice channel',
@@ -198,7 +200,9 @@ export async function join_user_voice(
 	});
 };
 
-export function getJSON(str: string): any | null {
+export function getJSON(
+	str: string
+): any | null {
 	let data = null;
 	try {
 		data = JSON.parse(str);
@@ -209,9 +213,11 @@ export function getJSON(str: string): any | null {
 	return data;
 };
 
-export function create_rich_embed(title: string | null | undefined, description: string | null | undefined, colour: string | null | undefined,
+export function create_rich_embed(
+	title: string | null | undefined, description: string | null | undefined, colour: string | null | undefined,
 	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
-	url: string | null | undefined, image: string | null | undefined): MessageEmbed {
+	url: string | null | undefined, image: string | null | undefined
+): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 	const keybraker_url: string = 'https://github.com/keybraker';
@@ -268,7 +274,9 @@ export async function update_portal_managed_guilds(
 	});
 };
 
-export function is_authorised(guild_object: GuildPrtl, member: GuildMember): boolean {
+export function is_authorised(
+	guild_object: GuildPrtl, member: GuildMember
+): boolean {
 	const administrator: PermissionString = 'ADMINISTRATOR';
 	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
 
@@ -318,7 +326,9 @@ export function message_reply(
 	}
 };
 
-export function is_url(potential_url: string): boolean {
+export function is_url(
+	potential_url: string
+): boolean {
 	const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -329,7 +339,9 @@ export function is_url(potential_url: string): boolean {
 	return pattern.test(potential_url);
 };
 
-export function pad(num: number): string {
+export function pad(
+	num: number
+): string {
 	if (num.toString().length >= 2) {
 		return '' + num;
 	}
@@ -338,7 +350,9 @@ export function pad(num: number): string {
 	}
 };
 
-export function time_elapsed(timestamp: Date | number, timeout: number): TimeElapsed {
+export function time_elapsed(
+	timestamp: Date | number, timeout: number
+): TimeElapsed {
 	const time_elapsed = Date.now() - (typeof timestamp === 'number' ? timestamp : timestamp.getTime());
 	const timeout_time = timeout * 60 * 1000;
 
@@ -363,7 +377,9 @@ export function time_elapsed(timestamp: Date | number, timeout: number): TimeEla
 	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
 };
 
-export function time_remaining(timestamp: number, timeout: number): TimeRemaining {
+export function time_remaining(
+	timestamp: number, timeout: number
+): TimeRemaining {
 	const time_elapsed = Date.now() - timestamp;
 	const timeout_time = timeout * 60 * 1000;
 	const time_remaining = timeout_time - time_elapsed;
@@ -384,7 +400,9 @@ export function time_remaining(timestamp: number, timeout: number): TimeRemainin
 };
 
 // needs update 
-export function remove_deleted_channels(guild: Guild): Promise<boolean> {
+export function remove_deleted_channels(
+	guild: Guild
+): Promise<boolean> {
 	let removed_channel = false;
 	return new Promise((resolve) => {
 		fetch_guild(guild.id)

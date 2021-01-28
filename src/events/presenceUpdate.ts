@@ -84,19 +84,34 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!args.newPresence?.guild)
-			return resolve({ result: false, value: 'could not fetch guild from presence' });
+			return resolve({
+				result: false,
+				value: 'could not fetch guild from presence'
+			});
 
 		fetch_guild(args.newPresence?.guild.id)
 			.then(guild_object => {
 				if (guild_object) {
-					if (!args.newPresence) return resolve({ result: false, value: 'could not fetch presence' });
-					if (!args.newPresence.member) return resolve({ result: false, value: 'could not fetch presence member' });
-					if (!args.newPresence.guild) return resolve({ result: false, value: 'could not fetch presence guild' });
+					if (!args.newPresence) return resolve({
+						result: false,
+						value: 'could not fetch presence'
+					});
+					if (!args.newPresence.member) return resolve({
+						result: false,
+						value: 'could not fetch presence member'
+					});
+					if (!args.newPresence.guild) return resolve({
+						result: false,
+						value: 'could not fetch presence guild'
+					});
 
 					const current_guild = args.newPresence.guild;
 					const current_channel = args.newPresence.member.voice.channel;
 
-					if (!current_channel) return resolve({ result: false, value: 'user not in Portal\'s voice channel' });
+					if (!current_channel) return resolve({
+						result: false,
+						value: ''
+					});
 
 					guild_object.portal_list.some(p => {
 						p.voice_list.some(v => {
@@ -119,11 +134,17 @@ module.exports = async (
 							: 'error with localisation'
 					});
 				} else {
-					return resolve({ result: false, value: 'could not get guild from portal' });
+					return resolve({
+						result: false,
+						value: 'could not find guild from portal'
+					});
 				}
 			})
-			.catch(error => {
-				return resolve({ result: false, value: 'could not get guild from portal' });
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: 'error while fetching guild from portal'
+				});
 			});
 
 	});

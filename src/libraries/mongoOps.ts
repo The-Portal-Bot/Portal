@@ -1,13 +1,14 @@
 import { Client, GuildMember, StreamDispatcher, TextChannel, VoiceChannel } from "discord.js";
 import { VideoSearchResult } from "yt-search";
 import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
-import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
+import { GuildPrtl, MusicData, IGuildPrtl } from "../types/classes/GuildPrtl";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 import { Rank } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 import { stop } from "./musicOps";
+import { Document } from "mongoose";
 
 // fetch guilds
 export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
@@ -27,13 +28,28 @@ export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
 };
 
 export async function fetch_guild(
-    guild_id: string): Promise<
-        GuildPrtl | undefined> {
+    guild_id: string
+): Promise<GuildPrtl | undefined> {
     return new Promise((resolve) => {
         GuildPrtlMdl.findOne({ id: guild_id })
             .then(guild => {
                 if (!!guild) {
-                    return resolve(<GuildPrtl><unknown>guild);
+                    const beef2 = <IGuildPrtl>guild;
+                    console.log('beef2.spotify1 :>> ', beef2.spotify);
+                    beef2.spotify = 'tsiakkas';
+                    console.log('beef2.spotify2 :>> ', beef2.spotify);
+                    // beef2.spotify = 'tsiakkas';
+                    beef2.save()
+                        .then(r => {
+                            console.log('r :>> ', r);
+                            return resolve(<GuildPrtl><unknown>guild);
+
+                        })
+                        .catch(e => {
+                            console.log('e :>> ', e);
+                            return resolve(<GuildPrtl><unknown>guild);
+
+                        });
                 } else {
                     return undefined;
                 }
@@ -445,6 +461,25 @@ export async function remove_role_assigner(
 
 //
 
+
+export async function insert_music_video(
+    guild_id: string, video: VideoSearchResult
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $push: {
+                    music_queue: video
+                }
+            }
+        )
+            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
 export async function clear_music_vote(
     guild_id: string
 ): Promise<boolean> {
@@ -510,9 +545,7 @@ export enum ChannelTypePrtl {
 }
 
 export async function deleted_channel_sync(
-
-
-    channel_to_remove: VoiceChannel | TextChannel
+    channel_to_remove: VoiceChannel | TextChannel, dispatchers: { id: string, dispatcher: StreamDispatcher }[]
 ): Promise<number> {
     return new Promise((resolve) => {
         fetch_guild(channel_to_remove.guild.id)
@@ -576,7 +609,10 @@ export async function deleted_channel_sync(
                                 })
                                 .catch(() => resolve(ChannelTypePrtl.unknown));
                         } else if (guild_object.music_data.channel_id === current_text.id) {
-                            stop(guild_object, current_text.guild);
+                            const dispatcher_object = dispatchers.find(d => d.id === guild_object.id)
+                            const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
+
+                            stop(guild_object, current_text.guild, dispatcher);
                             const music_data = new MusicData('null', 'null', []);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {

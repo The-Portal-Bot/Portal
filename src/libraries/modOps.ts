@@ -4,10 +4,8 @@ import { Language } from '../types/interfaces/InterfacesPrtl';
 const profane_words: Language = <Language>ProfaneWords;
 
 /**
-   * Determine if a string contains profane language.
-   * @param {string} string - String to evaluate for profanity.
-   * 
-   * https://github.com/web-mech/badwords
+   * Determine if a string contains profane language
+   * @param {string} string - String to evaluate for profanity
    */
 export function isProfane(string: string): string[] {
 	if (string.includes('role_assigner')) return [];
