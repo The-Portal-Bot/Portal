@@ -27,7 +27,7 @@
         "translate": "^1.1.2",
         "voca": "^1.4.0",
         "yt-search": "^2.5.1",
-        "ytdl-core": "^4.4.2"
+        "ytdl-core": "^4.4.5"
     },
     "devDependencies": {
         "@types/lodash": "^4.14.167",

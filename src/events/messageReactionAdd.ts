@@ -216,9 +216,12 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.user.bot) {
-			return resolve({ result: true, value: 'not handling bot reactions' });
+			return resolve({ 
+				result: true, 
+				value: 'not handling bot reactions' });
 		} else if (args.messageReaction?.message?.guild) {
-			fetch_guild(args.messageReaction.message.guild.id)
+			const current_guild = args.messageReaction.message.guild;
+			fetch_guild(current_guild.id)
 				.then(guild_object => {
 					if (guild_object) {
 						if (args.messageReaction.partial) {
@@ -232,8 +235,8 @@ module.exports = async (
 							}
 						}
 
-						if (args.messageReaction.message.guild) {
-							fetch_guild(args.messageReaction.message.guild.id)
+						if (current_guild) {
+							fetch_guild(current_guild.id)
 								.then(guild_object => {
 									if (guild_object) {
 										const return_value_role = reaction_role_manager(guild_object, args.messageReaction, args.user);
@@ -251,7 +254,7 @@ module.exports = async (
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: 'e when searching for guild'
+										value: 'error when searching for guild'
 									});
 								});
 						} else {
@@ -260,10 +263,6 @@ module.exports = async (
 								value: 'could not fetch guild of message'
 							});
 						}
-						return resolve({
-							result: false,
-							value: `could not fetch guild`
-						});
 					}
 				});
 		} else {

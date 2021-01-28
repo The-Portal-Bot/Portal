@@ -17,7 +17,7 @@ module.exports = async (
 		}
 		else {
 			resolve({
-				result: false,
+				result: true,
 				value: 'there are no authorisation roles',
 			});
 		}

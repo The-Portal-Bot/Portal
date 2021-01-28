@@ -7,16 +7,30 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		message.channel.send('initial')
-			.then(message_sent => {
+			.then((message_sent: Message) => {
 				message_sent.edit(
-					`RTT    latency:\t**${message_sent.createdTimestamp - message.createdTimestamp}** *ms*.\n` +
-					`Portal latency:\t**${client.ws.ping}** *ms*`)
-					// .then(msg => {
-					// 	msg.delete({ timeout: 15000 });
-					// });
+					`rtt    latency:\t**${message_sent.createdTimestamp - message.createdTimestamp}** *ms*.\n` +
+					`portal latency:\t**${client.ws.ping}** *ms*`)
+					.then((message_edited: Message) => {
+						return resolve({
+							result: true,
+							value: ''
+						})
+					})
+					.catch(e => {
+						console.log('e :>> ', e);
+						return resolve({
+							result: false,
+							value: 'error while editing pong message'
+						})
+					});
 			})
-			.catch(console.error);
-
-		resolve({ result: true, value: 'pong' });
+			.catch(e => {
+				console.log('e :>> ', e);
+				return resolve({
+					result: false,
+					value: 'error while sending pong message'
+				})
+			});
 	});
 };
