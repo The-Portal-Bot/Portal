@@ -275,7 +275,7 @@ function command_loader(
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
-				if (response)
+				if (response && response.value && response.value !== '')
 					message_reply(response.result, message.channel, message, message.author, response.value,
 						guild_object, client, command_options ? command_options.auto_delete : true);
 				// if (command_options.save_after)
@@ -328,7 +328,7 @@ function command_loader(
 			// if (command_options.save_after)
 			// 	update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 
-			if (command_options && response.value)
+			if (command_options && response.value && response.value !== '')
 				message_reply(response.result, message.channel, message, message.author,
 					response.value, guild_object, client, command_options.auto_delete);
 		});

@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { Client, Message } from 'discord.js';
+import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
@@ -126,7 +125,7 @@ module.exports = async (
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `ould not access the server*\nerror: ${error}`,
+					value: `could not access the server*\nerror: ${error}`,
 				});
 			});
 	});

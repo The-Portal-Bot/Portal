@@ -26,7 +26,9 @@ export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
     });
 };
 
-export async function fetch_guild(guild_id: string): Promise<GuildPrtl | undefined> {
+export async function fetch_guild(
+    guild_id: string): Promise<
+        GuildPrtl | undefined> {
     return new Promise((resolve) => {
         GuildPrtlMdl.findOne({ id: guild_id })
             .then(guild => {
@@ -42,7 +44,9 @@ export async function fetch_guild(guild_id: string): Promise<GuildPrtl | undefin
     });
 };
 
-export async function guild_exists(guild_id: string): Promise<boolean> {
+export async function guild_exists(
+    guild_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.countDocuments({ id: guild_id })
             .then(count => {
@@ -73,7 +77,9 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
     return member_list;
 };
 
-export async function insert_guild(guild_id: string, client: Client): Promise<boolean> {
+export async function insert_guild(
+    guild_id: string, client: Client
+): Promise<boolean> {
     const id: string = guild_id;
     const portal_list: PortalChannelPrtl[] = [];
     const member_list = create_member_list(guild_id, client);
@@ -120,7 +126,9 @@ export async function insert_guild(guild_id: string, client: Client): Promise<bo
     });
 };
 
-export async function remove_guild(guild_id: string): Promise<boolean> {
+export async function remove_guild(
+    guild_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.deleteOne({ id: guild_id })
             .then(r => { console.log('r :>> ', r); return resolve(!!r) })
@@ -130,7 +138,9 @@ export async function remove_guild(guild_id: string): Promise<boolean> {
 
 //
 
-export async function update_member_admin(guild_id: string, member_id: string, admin_status: boolean): Promise<boolean> {
+export async function update_member_admin(
+    guild_id: string, member_id: string, admin_status: boolean
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -151,7 +161,9 @@ export async function update_member_admin(guild_id: string, member_id: string, a
     });
 };
 
-export async function insert_member(new_member: GuildMember): Promise<boolean> {
+export async function insert_member(
+    new_member: GuildMember
+): Promise<boolean> {
     const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, null);
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
@@ -168,7 +180,9 @@ export async function insert_member(new_member: GuildMember): Promise<boolean> {
     });
 };
 
-export async function remove_member(member_to_remove: GuildMember): Promise<boolean> {
+export async function remove_member(
+    member_to_remove: GuildMember
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: member_to_remove.guild.id },
@@ -184,7 +198,9 @@ export async function remove_member(member_to_remove: GuildMember): Promise<bool
 
 //
 
-export async function insert_portal(guild_id: string, new_portal: PortalChannelPrtl): Promise<boolean> {
+export async function insert_portal(
+    guild_id: string, new_portal: PortalChannelPrtl
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -197,7 +213,9 @@ export async function insert_portal(guild_id: string, new_portal: PortalChannelP
     });
 };
 
-export async function remove_portal(guild_id: string, portal_id: string): Promise<boolean> {
+export async function remove_portal(
+    guild_id: string, portal_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -216,7 +234,9 @@ export async function remove_portal(guild_id: string, portal_id: string): Promis
 
 //
 
-export async function force_voice(guild_id: string, portal_id: string, old_voice_id: string, new_voice_id: string): Promise<boolean> {
+export async function force_voice(
+    guild_id: string, portal_id: string, old_voice_id: string, new_voice_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -238,7 +258,9 @@ export async function force_voice(guild_id: string, portal_id: string, old_voice
     });
 };
 
-export async function insert_voice(guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl): Promise<boolean> {
+export async function insert_voice(
+    guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -259,7 +281,9 @@ export async function insert_voice(guild_id: string, portal_id: string, new_voic
     });
 };
 
-export async function remove_voice(guild_id: string, portal_id: string, voice_id: string): Promise<boolean> {
+export async function remove_voice(
+    guild_id: string, portal_id: string, voice_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -285,7 +309,9 @@ export async function remove_voice(guild_id: string, portal_id: string, voice_id
 
 
 
-export async function insert_spotify(guild_id: string, new_spotify: string): Promise<boolean> {
+export async function insert_spotify(
+    guild_id: string, new_spotify: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -310,7 +336,9 @@ export async function insert_spotify(guild_id: string, new_spotify: string): Pro
 
 //
 
-export async function insert_announcement(guild_id: string, new_announcement: string): Promise<boolean> {
+export async function insert_announcement(
+    guild_id: string, new_announcement: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
@@ -336,7 +364,9 @@ export async function insert_announcement(guild_id: string, new_announcement: st
 
 //
 
-export async function insert_url(guild_id: string, new_url: string): Promise<boolean> {
+export async function insert_url(
+    guild_id: string, new_url: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
@@ -362,7 +392,8 @@ export async function insert_url(guild_id: string, new_url: string): Promise<boo
 
 //
 
-export async function set_ranks(guild_id: string, new_ranks: Rank[]): Promise<boolean> {
+export async function set_ranks(
+    guild_id: string, new_ranks: Rank[]): Promise<boolean> {
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
@@ -378,7 +409,9 @@ export async function set_ranks(guild_id: string, new_ranks: Rank[]): Promise<bo
 
 //
 
-export async function insert_role_assigner(guild_id: string, new_role_assigner: GiveRolePrtl): Promise<boolean> {
+export async function insert_role_assigner(
+    guild_id: string, new_role_assigner: GiveRolePrtl
+): Promise<boolean> {
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
@@ -392,7 +425,9 @@ export async function insert_role_assigner(guild_id: string, new_role_assigner: 
     });
 };
 
-export async function remove_role_assigner(guild_id: string, message_id: string): Promise<boolean> {
+export async function remove_role_assigner(
+    guild_id: string, message_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
@@ -410,7 +445,9 @@ export async function remove_role_assigner(guild_id: string, message_id: string)
 
 //
 
-export async function clear_music_vote(guild_id: string): Promise<boolean> {
+export async function clear_music_vote(
+    guild_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -425,7 +462,9 @@ export async function clear_music_vote(guild_id: string): Promise<boolean> {
     });
 };
 
-export async function insert_music_vote(guild_id: string, user_id: string): Promise<boolean> {
+export async function insert_music_vote(
+    guild_id: string, user_id: string
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -440,7 +479,9 @@ export async function insert_music_vote(guild_id: string, user_id: string): Prom
     });
 };
 
-export async function set_music_data(guild_id: string, new_music_data: MusicData): Promise<boolean> {
+export async function set_music_data(
+    guild_id: string, new_music_data: MusicData
+): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
@@ -469,6 +510,8 @@ export enum ChannelTypePrtl {
 }
 
 export async function deleted_channel_sync(
+
+
     channel_to_remove: VoiceChannel | TextChannel
 ): Promise<number> {
     return new Promise((resolve) => {
