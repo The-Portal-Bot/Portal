@@ -20,7 +20,7 @@ export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
                     return undefined;
                 }
             })
-            .catch(error => {
+            .catch(e => {
                 return resolve(undefined);
             });
     });
@@ -36,7 +36,7 @@ export async function fetch_guild(guild_id: string): Promise<GuildPrtl | undefin
                     return undefined;
                 }
             })
-            .catch(error => {
+            .catch(e => {
                 return resolve(undefined);
             });
     });
@@ -48,7 +48,7 @@ export async function guild_exists(guild_id: string): Promise<boolean> {
             .then(count => {
                 return resolve(count > 0);
             })
-            .catch(error => {
+            .catch(e => {
                 return resolve(false);
             });
     });
@@ -110,11 +110,11 @@ export async function insert_guild(guild_id: string, client: Client): Promise<bo
             level_speed: level_speed,
             premium: premium
         })
-            .then((response) => {
-                return resolve(!!response);
+            .then((r) => {
+                return resolve(!!r);
             })
-            .catch((error) => {
-                console.log('error inserting guild: ', error);
+            .catch((e) => {
+                console.log('e inserting guild: ', e);
                 return resolve(false);
             });
     });
@@ -216,6 +216,28 @@ export async function remove_portal(guild_id: string, portal_id: string): Promis
 
 //
 
+export async function force_voice(guild_id: string, portal_id: string, old_voice_id: string, new_voice_id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $set: {
+                    "portal_list.$[p].voice_list.$[v].id": new_voice_id
+                }
+            },
+            {
+                "new": true,
+                "arrayFilters": [
+                    { "p.id": portal_id },
+                    { "v.id": old_voice_id }
+                ]
+            }
+        )
+            .then(r => { resolve(!!r) })
+            .catch(e => { resolve(false) });
+    });
+};
+
 export async function insert_voice(guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
@@ -232,8 +254,8 @@ export async function insert_voice(guild_id: string, portal_id: string, new_voic
                 ]
             }
         )
-            .then(response => { resolve(!!response) })
-            .catch(error => { resolve(false) });
+            .then(r => { resolve(!!r) })
+            .catch(e => { resolve(false) });
     });
 };
 
@@ -253,8 +275,8 @@ export async function remove_voice(guild_id: string, portal_id: string, voice_id
                 ]
             }
         )
-            .then(response => { resolve(!!response) })
-            .catch(error => { resolve(false) });
+            .then(r => { resolve(!!r) })
+            .catch(e => { resolve(false) });
     });
 };
 
@@ -271,7 +293,7 @@ export async function insert_spotify(guild_id: string, new_spotify: string): Pro
                 spotify: new_spotify
             }
         )
-            .then(response => resolve(response))
+            .then(r => resolve(r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -297,7 +319,7 @@ export async function insert_announcement(guild_id: string, new_announcement: st
                 announcement: new_announcement
             }
         )
-            .then(response => resolve(response))
+            .then(r => resolve(r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -325,7 +347,7 @@ export async function insert_url(guild_id: string, new_url: string): Promise<boo
                 }
             }
         )
-            .then(response => resolve(response))
+            .then(r => resolve(r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -349,7 +371,7 @@ export async function set_ranks(guild_id: string, new_ranks: Rank[]): Promise<bo
                 ranks: new_ranks
             }
         )
-            .then(response => resolve(response))
+            .then(r => resolve(r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -365,7 +387,7 @@ export async function insert_role_assigner(guild_id: string, new_role_assigner: 
                 role_list: new_role_assigner
             }
         )
-            .then(response => resolve(!!response))
+            .then(r => resolve(!!r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -381,7 +403,7 @@ export async function remove_role_assigner(guild_id: string, message_id: string)
                 }
             }
         )
-            .then(response => resolve(!!response))
+            .then(r => resolve(!!r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -398,7 +420,7 @@ export async function clear_music_vote(guild_id: string): Promise<boolean> {
                 }
             }
         )
-            .then(response => resolve(!!response))
+            .then(r => resolve(!!r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -408,12 +430,12 @@ export async function insert_music_vote(guild_id: string, user_id: string): Prom
         GuildPrtlMdl.updateOne(
             { id: guild_id },
             {
-                $push: { 
+                $push: {
                     'music_data.votes': user_id
                 }
             }
         )
-            .then(response => resolve(!!response))
+            .then(r => resolve(!!r))
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -459,8 +481,8 @@ export async function deleted_channel_sync(
                         guild_object.portal_list.some(p => {
                             if (p.id === current_voice.id) {
                                 remove_portal(current_voice.guild.id, p.id)
-                                    .then(response => {
-                                        return response
+                                    .then(r => {
+                                        return r
                                             ? resolve(ChannelTypePrtl.portal)
                                             : resolve(ChannelTypePrtl.unknown)
                                     })
@@ -471,8 +493,8 @@ export async function deleted_channel_sync(
                             p.voice_list.some(v => {
                                 if (v.id === current_voice.id) {
                                     remove_voice(current_voice.guild.id, p.id, v.id)
-                                        .then(response => {
-                                            return response
+                                        .then(r => {
+                                            return r
                                                 ? resolve(ChannelTypePrtl.voice)
                                                 : resolve(ChannelTypePrtl.unknown)
                                         })
@@ -491,8 +513,8 @@ export async function deleted_channel_sync(
                                     $set: { spotify: 'null' }
                                 }
                             )
-                                .then(response => {
-                                    return response
+                                .then(r => {
+                                    return r
                                         ? resolve(ChannelTypePrtl.spotify)
                                         : resolve(ChannelTypePrtl.unknown)
                                 })
@@ -504,8 +526,8 @@ export async function deleted_channel_sync(
                                     $set: { announcement: 'null' }
                                 }
                             )
-                                .then(response => {
-                                    return response
+                                .then(r => {
+                                    return r
                                         ? resolve(ChannelTypePrtl.announcement)
                                         : resolve(ChannelTypePrtl.unknown)
                                 })
@@ -514,8 +536,8 @@ export async function deleted_channel_sync(
                             stop(guild_object, current_text.guild);
                             const music_data = new MusicData('null', 'null', []);
                             set_music_data(guild_object.id, music_data)
-                                .then(response => {
-                                    return response
+                                .then(r => {
+                                    return r
                                         ? resolve(ChannelTypePrtl.music)
                                         : resolve(ChannelTypePrtl.unknown)
                                 })
@@ -531,8 +553,8 @@ export async function deleted_channel_sync(
                                             }
                                         }
                                     )
-                                        .then(response => {
-                                            return response
+                                        .then(r => {
+                                            return r
                                                 ? resolve(ChannelTypePrtl.url)
                                                 : resolve(ChannelTypePrtl.unknown)
                                         })
