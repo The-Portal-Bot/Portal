@@ -7,7 +7,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "authorised_roles",
@@ -16,7 +17,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": true
             },
             {
                 "name": "focus",
@@ -25,7 +27,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "join",
@@ -34,7 +37,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "leave",
@@ -43,7 +47,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "level",
@@ -52,7 +57,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "ping",
@@ -61,7 +67,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "ranks",
@@ -70,7 +77,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "state",
@@ -79,7 +87,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "whoami",
@@ -88,7 +97,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             }
         ]
     },
@@ -101,7 +111,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "corona",
@@ -110,7 +121,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "help",
@@ -119,7 +131,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "joke",
@@ -128,7 +141,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "leaderboard",
@@ -137,7 +151,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "roll",
@@ -146,7 +161,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "run",
@@ -155,7 +171,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             },
             {
                 "name": "weather",
@@ -164,7 +181,8 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false
+                "save_after": false,
+                "reply": false
             }
         ]
     },
@@ -177,7 +195,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": false,
-                "save_after": true
+                "save_after": true,
+                "reply": false
             },
             {
                 "name": "setup",
@@ -186,7 +205,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             }
         ]
     },
@@ -199,7 +219,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": false
             },
             {
                 "name": "authorise",
@@ -208,7 +229,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "deauthorise",
@@ -217,7 +239,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "delete",
@@ -225,8 +248,9 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
-                "save_after": false
+                "auto_delete": false,
+                "save_after": false,
+                "reply": true
             },
             {
                 "name": "music",
@@ -235,7 +259,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "portal",
@@ -244,7 +269,8 @@
                 "auth": true,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "role_assigner",
@@ -253,7 +279,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "set_ranks",
@@ -262,7 +289,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": false,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "set",
@@ -271,7 +299,8 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": false,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "spotify",
@@ -280,7 +309,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             },
             {
                 "name": "url",
@@ -289,7 +319,8 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true
+                "save_after": true,
+                "reply": true
             }
         ]
     }
