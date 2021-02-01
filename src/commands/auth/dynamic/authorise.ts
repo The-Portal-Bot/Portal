@@ -1,5 +1,5 @@
-import { Client, Message } from "discord.js";
-import { update_member_admin } from "../../../libraries/mongoOps";
+import { Message } from "discord.js";
+import { update_member_admin, insert_authorised_role } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
@@ -21,11 +21,10 @@ module.exports = async (
 			});
 
 		const role_name = args.join(' ');
-		const role = message.guild.roles.cache.find(current_role => role_name === current_role.name);
 
+		// check if it is a user id
 		guild_object.member_list.some(m => {
 			if (m.id === role_name) {
-				// m.admin = true;
 				update_member_admin(guild_object.id, m.id, true);
 				const member = message.guild?.members.cache.find(mb => mb.id === m.id);
 				return resolve({
@@ -36,25 +35,39 @@ module.exports = async (
 			return false;
 		});
 
+		const role = message.guild.roles.cache
+			.find(current_role => role_name === current_role.name ||
+				role_name === current_role.id);
+
 		if (role) {
 			for (const i in guild_object.auth_role) {
 				if (guild_object.auth_role[i] === role.id) {
 					return resolve({
 						result: false,
-						value: `role "${role_name}" is already an authorised role`
+						value: `role "${role.name}" is already an authorised role`
 					});
 				}
 			}
-			guild_object.auth_role.push(role.id);
+
+			insert_authorised_role(guild_object.id, role.id)
+				.then(r => {
+					return resolve({
+						result: r,
+						value: r
+							? `Role "${role.name}" was set as admin role`
+							: `could not set "${role.name}" as admin role`
+					});
+				})
+
 			return resolve({
 				result: true,
-				value: `role "${role_name}" has been added to role list`
+				value: `role "${role.name}" has been added to role list`
 			});
 		}
 		else {
 			return resolve({
 				result: false,
-				value: `"${role_name}" is neither a role nor a member id`
+				value: `"${role_name}" is neither a role name, role id nor a member id`
 			});
 		}
 	});

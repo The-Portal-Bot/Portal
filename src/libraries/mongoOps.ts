@@ -34,22 +34,7 @@ export async function fetch_guild(
         GuildPrtlMdl.findOne({ id: guild_id })
             .then(guild => {
                 if (!!guild) {
-                    const beef2 = <IGuildPrtl>guild;
-                    console.log('beef2.spotify1 :>> ', beef2.spotify);
-                    beef2.spotify = 'tsiakkas';
-                    console.log('beef2.spotify2 :>> ', beef2.spotify);
-                    // beef2.spotify = 'tsiakkas';
-                    beef2.save()
-                        .then(r => {
-                            console.log('r :>> ', r);
-                            return resolve(<GuildPrtl><unknown>guild);
-
-                        })
-                        .catch(e => {
-                            console.log('e :>> ', e);
-                            return resolve(<GuildPrtl><unknown>guild);
-
-                        });
+                    return resolve(<GuildPrtl><unknown>guild);
                 } else {
                     return undefined;
                 }
@@ -161,7 +146,7 @@ export async function update_member_admin(
         GuildPrtlMdl.updateOne(
             { id: guild_id },
             {
-                "$push": {
+                "$set": {
                     "member_list.$[m].admin": admin_status
                 }
             },
@@ -335,7 +320,7 @@ export async function insert_spotify(
                 spotify: new_spotify
             }
         )
-            .then(r => resolve(r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -363,7 +348,7 @@ export async function insert_announcement(
                 announcement: new_announcement
             }
         )
-            .then(r => resolve(r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -393,8 +378,43 @@ export async function insert_url(
                 }
             }
         )
-            .then(r => resolve(r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+export async function insert_authorised_role(
+    guild_id: string, new_auth_role: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        // edo thelei na tou po kai se poio guild na paei
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $push: {
+                    auth_role: new_auth_role
+                }
+            }
+        )
+            .then(r => { return resolve(!!r); })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+export async function remove_authorised_role(
+    guild_id: string, auth_role: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            { id: guild_id },
+            {
+                $pull: {
+                    auth_role: auth_role
+                }
+            }
+        )
+            .then(r => { return resolve(!!r); })
+            .catch(e => { return resolve(false) });
     });
 };
 
@@ -418,7 +438,7 @@ export async function set_ranks(
                 ranks: new_ranks
             }
         )
-            .then(r => resolve(r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -436,7 +456,7 @@ export async function insert_role_assigner(
                 role_list: new_role_assigner
             }
         )
-            .then(r => resolve(!!r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -454,7 +474,7 @@ export async function remove_role_assigner(
                 }
             }
         )
-            .then(r => resolve(!!r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -492,7 +512,7 @@ export async function clear_music_vote(
                 }
             }
         )
-            .then(r => resolve(!!r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -509,7 +529,7 @@ export async function insert_music_vote(
                 }
             }
         )
-            .then(r => resolve(!!r))
+            .then(r => { return resolve(!!r); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
