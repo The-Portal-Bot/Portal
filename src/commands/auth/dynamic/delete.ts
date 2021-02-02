@@ -23,14 +23,14 @@ module.exports = async (
         if (bulk_delete_length <= 0)
             return resolve({
                 result: false,
-                value: 'number of messages you whish to delete'
+                value: 'number of messages to delete must be > 1, for more help run `./help delete`'
             });
 
         (<TextChannel>message.channel).bulkDelete(bulk_delete_length + 1)
             .then(messages => {
                 return resolve({
                     result: true,
-                    value: `deleted ${messages.size} messages`
+                    value: `deleted ${messages.size - 1}, plus delete message`
                 });
             })
             .catch(error => {

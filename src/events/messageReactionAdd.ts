@@ -13,63 +13,106 @@ function clear_user_reactions(
 		.forEach(reaction => reaction.users.remove(user.id));
 };
 
-function reaction_role_manager(
+async function reaction_role_manager(
 	guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
-): ReturnPormise {
-	if (!messageReaction.message.guild) return { result: false, value: 'message has no guild' };
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		clear_user_reactions(messageReaction, user);
 
-	const role_list_object = guild_object.role_list.find(r => r.message_id === messageReaction.message.id);
-	if (!role_list_object) return { result: false, value: 'message is not role assigner' };
+		if (!messageReaction.message.guild) return resolve({
+			result: false,
+			value: 'message has no guild'
+		});
 
-	const current_member = messageReaction.message.guild.members.cache.find(member => member.id === user.id);
-	if (!current_member) return { result: false, value: 'could not fetch member' };
+		const role_list_object = guild_object.role_list
+			.find(r => r.message_id === messageReaction.message.id);
+		if (!role_list_object) return resolve({
+			result: false,
+			value: 'message is not role assigner'
+		});
 
-	let result = false;
-	let value = 'failed to give role';
+		const current_member = messageReaction.message.guild.members.cache
+			.find(member => member.id === user.id);
+		if (!current_member) return resolve({
+			result: false,
+			value: 'could not fetch member'
+		});
 
-	role_list_object.role_emote_map.some(role_map => {
-		if (messageReaction.message.guild) {
-			if (role_map.give === messageReaction.emoji.name) { // give role
-				const role_to_give = get_role(messageReaction?.message?.guild, role_map.role_id);
-				if (role_to_give) {
-					try {
-						current_member.roles.add(role_to_give);
-						result = true;
-						value = `you have been assigned to ${role_map.role_id}`;
+		role_list_object.role_emote_map.some(role_map => {
+			if (messageReaction.message.guild) {
+				if (role_map.give === messageReaction.emoji.name) { // give role
+					const role_to_give = get_role(messageReaction?.message?.guild, role_map.role_id);
+					if (role_to_give) {
+						try {
+							current_member.roles.add(role_to_give)
+								.then(member => {
+									if (!!member) {
+										resolve({
+											result: true,
+											value: `you have been assigned to ${role_map.role_id}`
+										});
+									} else {
+										resolve({
+											result: false,
+											value: `portal role must be higher than given role, contact server admin`
+										});
+									}
+								})
+								.catch(e => {
+									resolve({
+										result: false,
+										value: `portal role must be higher than given role, contact server admin`
+									});
+								});
+						}
+						catch (e) {
+							resolve({
+								result: false,
+								value: `failed to assign you, to role ${role_map.role_id}`
+							});
+						}
 					}
-					catch (e) {
-						result = false;
-						value = `failed to assign you, to role ${role_map.role_id}`;
+				} else if (role_map.strip === messageReaction.emoji.name) {
+					const role_to_strip = get_role(messageReaction?.message?.guild, role_map.role_id);
+					if (role_to_strip) {
+						try {
+							current_member.roles.remove(role_to_strip)
+								.then(member => {
+									if (!!member) {
+										resolve({
+											result: true,
+											value: `you have been removed from ${role_map.role_id}`
+										});
+									} else {
+										resolve({
+											result: false,
+											value: `portal role must be higher than role to remove, contact server admin`
+										});
+									}
+								})
+								.catch(e => {
+									resolve({
+										result: false,
+										value: `portal role must be higher than role to remove, contact server admin`
+									});
+								});
+						}
+						catch (e) {
+							resolve({
+								result: false,
+								value: `failed to strip role ${role_map.role_id}`
+							});
+						}
 					}
-					clear_user_reactions(messageReaction, user);
-					return true;
 				}
-			} else if (role_map.strip === messageReaction.emoji.name) {
-				const role_to_strip = get_role(messageReaction?.message?.guild, role_map.role_id);
-				if (role_to_strip) {
-					try {
-						current_member.roles.remove(role_to_strip);
-						result = true;
-						value = `you no longer have role ${role_map.role_id}`;
-					}
-					catch (e) {
-						result = false;
-						value = `failed to strip role ${role_map.role_id}`;
-					}
-					clear_user_reactions(messageReaction, user);
-					return true;
-				}
-			} // gave other emote
-		}
-		return false;
+			}
+		});
 	});
-
-	return { result: result, value: value };
 };
 
 async function reaction_music_manager(
 	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User, dispatchers: { id: string, dispatcher: StreamDispatcher }[]
-	): Promise<ReturnPormise> {
+): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (!messageReaction.message.guild) return resolve({ result: false, value: 'could not fetch message\'s guild' });
 		const member_object = guild_object.member_list.find(m => m.id === user.id);
@@ -95,8 +138,8 @@ async function reaction_music_manager(
 			clear_user_reactions(messageReaction, user);
 			return resolve({ result: false, value: 'you must be in the same channel with portal to control music' });
 		}
-		
-		const dispatcher_object = dispatchers.find(d => d.id === guild_object.id) 
+
+		const dispatcher_object = dispatchers.find(d => d.id === guild_object.id)
 		const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
 
 		switch (messageReaction.emoji.name) {
@@ -198,7 +241,7 @@ async function reaction_music_manager(
 
 				return resolve({ result: true, value: 'music queue has been cleared' });
 			}
-			case '❌': {
+			case '🚪': {
 				clear_user_reactions(messageReaction, user);
 
 				// client_talk(client, guild_list, 'leave');
@@ -221,9 +264,10 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.user.bot) {
-			return resolve({ 
-				result: true, 
-				value: 'not handling bot reactions' });
+			return resolve({
+				result: true,
+				value: 'not handling bot reactions'
+			});
 		} else if (args.messageReaction?.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;
 			fetch_guild(current_guild.id)
@@ -235,7 +279,7 @@ module.exports = async (
 							} catch (e) {
 								return resolve({
 									result: false,
-									value: 'something went wrong when fetching the message: ',
+									value: 'something went wrong when fetching the message',
 								});
 							}
 						}
@@ -244,11 +288,30 @@ module.exports = async (
 							fetch_guild(current_guild.id)
 								.then(guild_object => {
 									if (guild_object) {
-										const return_value_role = reaction_role_manager(guild_object, args.messageReaction, args.user);
-										if (return_value_role.result) return resolve(return_value_role);
-
-										const return_value_music = reaction_music_manager(args.client, guild_object, args.messageReaction, args.user, args.dispatchers);
-										return resolve(return_value_music);
+										reaction_role_manager(guild_object, args.messageReaction, args.user)
+											.then(rr => {
+												if (rr.result)
+													return resolve(rr);
+												else
+													reaction_music_manager(args.client, guild_object, args.messageReaction, args.user, args.dispatchers)
+														.then(mr => {
+															mr.value = `${rr.value} or ${mr.value}`;
+															return resolve(mr);
+														})
+														.catch(e => {
+															return resolve(e);
+														});
+											})
+											.catch(e => {
+												reaction_music_manager(args.client, guild_object, args.messageReaction, args.user, args.dispatchers)
+													.then(r => {
+														if (r.result)
+															return resolve(r);
+													})
+													.catch(e => {
+														return resolve(e);
+													});
+											});
 									} else {
 										return resolve({
 											result: false,

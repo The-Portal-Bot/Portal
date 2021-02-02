@@ -257,10 +257,13 @@ export function create_voice_channel(
 }
 
 // must be fixed
-export async function create_music_channel(guild: Guild, music_channel: string,
-	music_category: string | CategoryChannel | null, guild_object: GuildPrtl): Promise<void> {
+export async function create_music_channel(
+	guild: Guild, music_channel: string,
+	music_category: string | CategoryChannel | null, guild_object: GuildPrtl
+): Promise<void> {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
+
 	return new Promise((resolve) => {
 		if (music_category && typeof music_category === 'string') { // with category
 			guild.channels
@@ -268,7 +271,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, leave:🚪',
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -287,7 +290,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, leave:🚪',
 						parent: music_category
 					},
 				)
@@ -304,7 +307,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, leave:🚪',
 					},
 				)
 				.then(channel => {
@@ -380,7 +383,7 @@ export function delete_channel(
 			let channel_deleted = false;
 
 			message.channel
-				.send(`${message.author}, do you wish to delete old ${ ChannelTypePrtl[type].toString() } channel **"${channel_to_delete}"** (yes / no) ?`)
+				.send(`${message.author}, do you wish to delete old ${ChannelTypePrtl[type].toString()} channel **"${channel_to_delete}"** (yes / no) ?`)
 				.then((question_msg: Message) => {
 					const filter: CollectorFilter = m => m.author.id === author.id;
 					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
@@ -390,12 +393,17 @@ export function delete_channel(
 							if (channel_to_delete.deletable) {
 								channel_to_delete
 									.delete()
-									.then(g => console.log(`deleted channel with id: ${g}`))
+									.then(g => {
+										if (g.id !== m.channel.id && !m.deleted) {
+											m.channel.send(`deleted channel **"${channel_to_delete_name}"**`)
+												.then(msg => { msg.delete({ timeout: 5000 }); })
+												.catch(error => console.log(error));
+										}
+									})
 									.catch(console.error);
 
-								m.channel.send(`deleted channel **"${channel_to_delete_name}"**`)
-									.then(msg => { msg.delete({ timeout: 5000 }); })
-									.catch(error => console.log(error));
+								
+								
 
 								channel_deleted = true;
 							}

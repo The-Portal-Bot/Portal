@@ -1,4 +1,4 @@
-import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState, StreamDispatcher } from "discord.js";
+import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, StreamDispatcher, TextChannel, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import config from './config.json';
@@ -10,7 +10,7 @@ import { fetch_guild } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl } from './types/classes/GuildPrtl';
-import { ActiveCooldown, ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 const AntiSpam = require('discord-anti-spam');
 
 // Connect to mongoose database
@@ -169,7 +169,8 @@ client.on('message', async (message: Message) => {
 	if (message.channel.type === 'dm') return;
 
 	// check if something written in portal channels
-	if (portal_channel_handler(message)) return;
+	const handled = await portal_channel_handler(message);
+	if (handled) return;
 
 	// ranking system
 	ranking_system(message);
@@ -204,21 +205,14 @@ client.on('message', async (message: Message) => {
 
 	const cmd = cmd_only.toLowerCase();
 
-	let type: string = '';
+
 	let path_to_command: string = '';
 	let command_options: CommandOptions | undefined;
-	let active_cooldown: ActiveCooldown[] = [];
+	let type: string = 'none';
 
 	const is_portal_command = command_config_json.some(category => {
 		command_options = category.commands.find(command => command.name === cmd);
 		if (command_options) {
-			if (command_options.range === "guild")
-				active_cooldown = active_cooldowns.guild;
-			else if (command_options.range === "member")
-				active_cooldown = active_cooldowns.member;
-			else
-				active_cooldown = [];
-
 			type = command_options.range;
 			path_to_command = category.path;
 			return true;
@@ -263,7 +257,7 @@ client.on('message', async (message: Message) => {
 				}
 			}
 
-			command_loader(message, cmd, args, type, command_options, path_to_command, active_cooldown, guild_object);
+			command_loader(message, cmd, args, type, command_options, path_to_command, guild_object);
 		})
 		.catch(error => {
 			console.log('could not fetch guild list' + error);
@@ -273,12 +267,12 @@ client.on('message', async (message: Message) => {
 
 function command_loader(
 	message: Message, cmd: string, args: string[], type: string, command_options: CommandOptions,
-	path_to_command: string, active_cooldown: ActiveCooldown[], guild_object: GuildPrtl
+	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
-				if (response && response.value && response.value !== '')
+				if (response && response.value && response.value !== '' && command_options.reply)
 					message_reply(response.result, message.channel, message, message.author, response.value,
 						guild_object, client, command_options ? command_options.auto_delete : true);
 				// if (command_options.save_after)
@@ -287,7 +281,7 @@ function command_loader(
 		return true;
 	}
 
-	const active = active_cooldown.find(active_current => {
+	const active = active_cooldowns[type === 'guild' ? 'guild' : 'member'].find(active_current => {
 		if (active_current.command === cmd) {
 			if (type === 'member' && active_current.member === message.author.id)
 				return true;
@@ -304,7 +298,7 @@ function command_loader(
 			: `, as it was used again in* **${message.guild?.name}**`;
 
 		message_reply(false, message.channel, message, message.author,
-			`you need to wait* **${pad(time.remaining_min)}:` +
+			`you need to wait **${pad(time.remaining_min)}:` +
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
 			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`,
 			guild_object, client);
@@ -315,7 +309,7 @@ function command_loader(
 	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 		.then((response: ReturnPormise) => {
 			if (response) {
-				active_cooldown.push({
+				active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
 					member: message.author.id,
 					command: cmd,
 					timestamp: Date.now()
@@ -323,7 +317,8 @@ function command_loader(
 
 				if (command_options) {
 					setTimeout(() => {
-						active_cooldown = active_cooldown.filter(active => active.command !== cmd);
+						active_cooldowns[type === 'guild' ? 'guild' : 'member'] =
+							active_cooldowns[type === 'guild' ? 'guild' : 'member'].filter(active => active.command !== cmd);
 					}, command_options.time * 60 * 1000);
 				}
 			}
@@ -331,7 +326,7 @@ function command_loader(
 			// if (command_options.save_after)
 			// 	update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 
-			if (command_options && response.value && response.value !== '')
+			if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
 				message_reply(response.result, message.channel, message, message.author,
 					response.value, guild_object, client, command_options.auto_delete);
 		});
@@ -344,22 +339,26 @@ function event_loader(event: string, args: any): void {
 	console.log(`├─ event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
-			// if (event === 'messageReactionAdd' && response) {
-			// const messageReaction = <MessageReaction>args.messageReaction;
-			// const guild_object = (<GuildPrtl[]>args.guild_list).find(g => g.id === args.messageReaction.message.guild.id);
+			if (event === 'messageReactionAdd' && response) {
+				const messageReaction = <MessageReaction>args.messageReaction;
+				if (messageReaction && messageReaction.message && messageReaction.message.guild) {
+					fetch_guild(messageReaction.message.guild.id)
+						.then(guild_object => {
+							if (guild_object) {
+								if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
+									const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+										.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
+									// auto na trexei mono otan einai music reaction
+									music_channel
+										.send(`${args.user}, ${response.value}`)
+										.then(msg => { msg.delete({ timeout: 5000 }); })
+										.catch(error => console.log(error));
+								}
+							}
+						});
+				}
+			}
 
-			// if (guild_object) {
-			// 	if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
-			// 		const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-			// 			.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
-			// 		// auto na trexei mono otan einai music reaction
-			// 		music_channel
-			// 			.send(`${args.user}, ${response.value}`)
-			// 			.then(msg => { msg.delete({ timeout: 5000 }); })
-			// 			.catch(error => console.log(error));
-			// 	}
-			// }
-			// }
 			if (config.debug && response) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
@@ -374,45 +373,47 @@ function event_loader(event: string, args: any): void {
 		});
 };
 
-function portal_channel_handler(message: Message): boolean {
-	if (!message.guild) return false;
-	fetch_guild(message.guild.id)
-		.then(guild_object => {
-			if (!guild_object) return true;
+async function portal_channel_handler(message: Message): Promise<boolean> {
+	return new Promise((resolve) => {
+		if (!message.guild) return false;
+		fetch_guild(message.guild.id)
+			.then(guild_object => {
+				if (!guild_object) return true;
 
-			if (included_in_url_list(message.channel.id, guild_object)) {
-				if (is_url(message.content)) {
-					client_talk(client, guild_object, 'url');
-				}
-				else {
-					client_talk(client, guild_object, 'read_only');
-					message_reply(false, message.channel, message, message.author,
-						'url-only channel', guild_object, client);
-					message.delete();
-				}
-				return true;
-			}
-			else if (guild_object.music_data.channel_id === message.channel.id) {
-				start(client, message, message.content, guild_object, dispatchers)
-					.then(joined => {
-						// message_reply(
-						// 	joined.result, message.channel, message,
-						// 	message.author, joined.value, guild_list, client, true
-						// );
+				if (included_in_url_list(message.channel.id, guild_object)) {
+					if (is_url(message.content)) {
+						client_talk(client, guild_object, 'url');
+					}
+					else {
+						client_talk(client, guild_object, 'read_only');
+						message_reply(false, message.channel, message, message.author,
+							'url-only channel', guild_object, client);
 						message.delete();
-					})
-					.catch(error => {
-						message_reply(
-							false, message.channel, message,
-							message.author, error, guild_object, client, true
-						);
-					});
-				return true;
-			}
-			return false;
-		});
+					}
+					return resolve(true);
+				}
+				else if (guild_object.music_data.channel_id === message.channel.id) {
+					start(client, message, message.content, guild_object, dispatchers)
+						.then(joined => {
+							// message_reply(
+							// 	joined.result, message.channel, message,
+							// 	message.author, joined.value, guild_list, client, true
+							// );
+							message.delete();
+						})
+						.catch(error => {
+							message_reply(
+								false, message.channel, message,
+								message.author, error, guild_object, client, true
+							);
+						});
+					return resolve(true);
+				}
+				return resolve(false);
+			});
 
-	return false;
+		return resolve(false);
+	});
 }
 
 function ranking_system(message: Message): void {

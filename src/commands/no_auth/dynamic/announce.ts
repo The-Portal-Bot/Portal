@@ -9,9 +9,16 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         if (args.length === 0)
-            return resolve({ result: false, value: 'you can run `./help announce for help' });
+            return resolve({
+                result: false,
+                value: 'you can run `./help announce for help'
+            });
+            console.log('guild_object :>> ', guild_object);
         if (guild_object.announcement !== '')
-            return resolve({ result: false, value: 'announcements channel has not been set yet' });
+            return resolve({
+                result: false,
+                value: 'announcements channel has not been set yet'
+            });
 
         let body = args.join(' ').substr(0, args.join(' ').indexOf('|'));
         let title = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
@@ -25,13 +32,19 @@ module.exports = async (
             .find(c => c.id === guild_object.announcement);
 
         if (!announcement_channel)
-            return resolve({ result: false, value: 'announcements channel could not be fetched' });
+            return resolve({
+                result: false,
+                value: 'announcements channel could not be fetched'
+            });
 
         const rich_message = create_rich_embed(title, `@here ${body}`, '#022E4E', [], null, message.member, null, null, null)
         announcement_channel.send(rich_message);
 
         client_talk(client, guild_object, 'announce');
 
-        return resolve({ result: true, value: 'announcement was sent successfully' });
+        return resolve({
+            result: true,
+            value: 'announcement was sent successfully'
+        });
     });
 };

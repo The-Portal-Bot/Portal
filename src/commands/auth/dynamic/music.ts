@@ -1,8 +1,5 @@
 import { Message, TextChannel } from "discord.js";
-import {
-	create_music_channel, delete_channel, included_in_url_list,
-	is_announcement_channel, is_music_channel, is_spotify_channel
-} from "../../../libraries/guildOps";
+import { create_music_channel, delete_channel, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
 import { create_music_message } from "../../../libraries/helpOps";
 import { ChannelTypePrtl } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
@@ -19,19 +16,19 @@ module.exports = async (
 			if (is_music_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this already is, the Music channel',
+					value: 'this already is, the music channel',
 				});
 			}
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this can\'t be set as the Music channel for it is the Spotify channel',
+					value: 'this can\'t be set as the music channel for it is the spotify channel',
 				});
 			}
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: 'this can\'t be set as the Music channel for it is the Announcement channel',
+					value: 'this can\'t be set as the music channel for it is the announcement channel',
 				});
 			}
 			if (included_in_url_list(message.channel.id, guild_object)) {

@@ -37,7 +37,7 @@ export function create_music_message(
 			sent_message.react('⏭');
 			sent_message.react('📜');
 			sent_message.react('🧹');
-			sent_message.react('❌');
+			sent_message.react('🚪');
 
 			const music_data = new MusicData(channel.id, sent_message.id, []);
 			set_music_data(guild_object.id, music_data);
@@ -303,25 +303,32 @@ export function message_reply(
 	if (!message.channel.deleted && str !== null) {
 		message.channel
 			.send(`${user}, ${str}`)
-			.then(msg => { msg.delete({ timeout: config.delete_msg_after * 1000 }); })
-			.catch(error => console.log(error));
+			.then(msg => {
+				if (msg.deletable)
+					msg.delete({
+						timeout: config.delete_msg_after * 1000
+					})
+					.catch(console.log)
+			})
+			.catch(console.log);
 	}
 	if (!message.deleted) {
 		if (status === true) {
 			message
 				.react(emote_pass)
-				.catch(error => console.log(error));
+				.catch(console.log);
 		}
 		else if (status === false && guild_object) {
 			client_talk(client, guild_object, 'fail');
 			message
 				.react(emote_fail)
-				.catch(error => console.log(error));
+				.catch(console.log);
 		}
-		if (to_delete) {
+
+		if (to_delete && message.deletable) {
 			message
 				.delete({ timeout: 5000 })
-				.catch(error => console.log(error));
+				.catch(console.log);
 		}
 	}
 };

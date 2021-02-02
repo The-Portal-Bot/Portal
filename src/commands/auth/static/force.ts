@@ -15,13 +15,13 @@ module.exports = async (
 				value: 'member could not be fetched'
 			});
 		}
-
-		if (!message.member.voice.channel) {
+		else if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
 				value: 'you must be in a channel handled by Portal',
 			});
-		} else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
+		}
+		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
 				value: 'the channel you are in is not handled by Portal',

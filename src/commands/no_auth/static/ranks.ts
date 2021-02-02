@@ -1,6 +1,6 @@
-import { Client, Message } from "discord.js";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
@@ -22,12 +22,12 @@ module.exports = async (
 
 			message.channel.send(
 				create_rich_embed(
-					null,
+					'Ranking System',
 					null,
 					'#FF4500',
 					ranks_msg,
 					null,
-					message.member,
+					null,
 					false,
 					null,
 					null
