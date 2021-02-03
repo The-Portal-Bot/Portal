@@ -1,12 +1,12 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { get_attribute_help, get_attribute_help_super, get_attribute_guide } from "../../../types/interfaces/Attribute";
-import { get_command_help, get_command_help_super, get_command_guide } from "../../../types/interfaces/Command";
+import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../../types/interfaces/Attribute";
+import { get_command_guide, get_command_help, get_command_help_super } from "../../../types/interfaces/Command";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
-import { get_pipe_help, get_pipe_help_super, get_pipe_guide } from "../../../types/interfaces/Pipe";
-import { get_structure_help, get_structure_help_super, get_structure_guide } from "../../../types/interfaces/Structure";
-import { get_variable_help, get_variable_help_super, get_variable_guide } from "../../../types/interfaces/Variable";
+import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../../types/interfaces/Pipe";
+import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../../types/interfaces/Structure";
+import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../../types/interfaces/Variable";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -98,7 +98,7 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: `*${args[0]} ${args[1]}**, does not exist in Portal™, you can run \`./help help\` for help`,
+					value: `*${args[0]} ${args[1]}* does not exist in portal, you can run \`./help help\` for help`,
 				});
 			}
 		}
@@ -199,7 +199,7 @@ module.exports = async (
 				if (!func_detailed && !vrbl_detailed && !pipe_detailed && !attr_detailed && !strc_detailed) {
 					return resolve({
 						result: false,
-						value: `*${args[0]}**, does not exist in Portal™, you can run \`./help help\` for help`,
+						value: `*${args[0]}* does not exist in portal, you can run \`./help help\` for help`,
 					});
 				}
 			}

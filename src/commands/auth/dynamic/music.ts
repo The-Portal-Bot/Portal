@@ -10,30 +10,33 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!message.guild)
-			return resolve({ result: true, value: 'message\'s guild could not be fetched' });
+			return resolve({
+				result: false,
+				value: 'message\'s guild could not be fetched'
+			});
 
 		if (args.length === 0) {
 			if (is_music_channel(message.channel.id, guild_object)) {
 				return resolve({
-					result: true,
+					result: false,
 					value: 'this already is, the music channel',
 				});
 			}
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				return resolve({
-					result: true,
+					result: false,
 					value: 'this can\'t be set as the music channel for it is the spotify channel',
 				});
 			}
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
-					result: true,
+					result: false,
 					value: 'this can\'t be set as the music channel for it is the announcement channel',
 				});
 			}
 			if (included_in_url_list(message.channel.id, guild_object)) {
 				return resolve({
-					result: true,
+					result: false,
 					value: 'this can\'t be set as the Music channel for it is an url channel',
 				});
 			}

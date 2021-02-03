@@ -12,21 +12,21 @@ module.exports = async (
 
         message.channel.send(create_rich_embed(
             message.member ? message.member?.displayName : 'could not fetch name',
-            'member portal card',
+            'Member portal card',
             '#42f5d7',
             [
                 {
-                    emote: 'id',
+                    emote: 'Id',
                     role: member_object.id,
                     inline: false
                 },
                 {
-                    emote: 'level',
+                    emote: 'Level',
                     role: member_object.level,
                     inline: false
                 },
                 {
-                    emote: 'regex',
+                    emote: 'Regex',
                     role: member_object.regex ? 'not set' : member_object.regex,
                     inline: false
                 },
@@ -36,7 +36,7 @@ module.exports = async (
                     inline: false
                 },
                 {
-                    emote: 'admin',
+                    emote: 'Admin',
                     role: member_object.admin ? 'true' : 'false',
                     inline: false
                 }

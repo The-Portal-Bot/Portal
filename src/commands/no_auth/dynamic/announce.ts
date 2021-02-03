@@ -13,8 +13,8 @@ module.exports = async (
                 result: false,
                 value: 'you can run `./help announce for help'
             });
-            console.log('guild_object :>> ', guild_object);
-        if (guild_object.announcement !== '')
+
+            if (guild_object.announcement === '')
             return resolve({
                 result: false,
                 value: 'announcements channel has not been set yet'

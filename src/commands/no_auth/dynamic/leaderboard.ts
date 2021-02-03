@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { MemberPrtl } from "../../../types/classes/MemberPrtl";
@@ -16,7 +16,10 @@ module.exports = async (
 	return new Promise((resolve) => {
 		const member_list = guild_object.member_list;
 		if (!member_list) {
-			return resolve({ result: false, value: 'server has no members please contact portal support' });
+			return resolve({
+				result: false,
+				value: 'server has no members please contact portal support'
+			});
 		}
 
 		let length = (+args.length > 0 && Object.keys(member_list).length >= args.length)
@@ -24,7 +27,10 @@ module.exports = async (
 			: 9;
 
 		if (length <= 0) {
-			return resolve({ result: false, value: 'user number must be at least 1 (one)' });
+			return resolve({
+				result: false,
+				value: 'user number must be at least 1 (one)'
+			});
 		}
 
 		if (!isNaN(length)) {
@@ -55,7 +61,7 @@ module.exports = async (
 				});
 
 				message.channel.send(create_rich_embed(
-					'Leaderboard',
+					'LEADERBOARD',
 					null,
 					'#00FFFF',
 					member_levels,
@@ -66,7 +72,10 @@ module.exports = async (
 					null),
 				);
 
-				return resolve({ result: true, value: '' });
+				return resolve({
+					result: true,
+					value: ''
+				});
 			}
 			else {
 				resolve({

@@ -9,7 +9,7 @@ module.exports = async (
     return new Promise((resolve) => {
         message.channel.send(create_rich_embed(
             'About',
-            'a portal to a managed discord server',
+            null,
             '#1DB954',
             [{
                 emote: 'Creator',

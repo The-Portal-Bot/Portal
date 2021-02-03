@@ -30,12 +30,21 @@ module.exports = async (
 		if (args.length === 1) {
 			code = get_country_code(args[0]);
 			if (code === null) {
-				return resolve({ result: false, value: `${args[0]} is neither a country name nor a country code` });
+				return resolve({
+					result: false,
+					value: `${args[0]} is neither a country name nor a country code`
+				});
 			}
 		} else if (args.length > 1) {
-			return resolve({ result: false, value: 'you can run `./help corona` for help' });
+			return resolve({
+				result: false,
+				value: 'you can run `./help corona` for help'
+			});
 		} else {
-			return resolve({ result: false, value: 'global stats are not unavailable' });
+			return resolve({
+				result: false,
+				value: 'global stats are not unavailable, you can run `./help corona` for help'
+			});
 		}
 
 		const options: RequestOptions = {
@@ -54,7 +63,10 @@ module.exports = async (
 			.then((response: Buffer) => {
 				const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
 				if (json === null)
-					return resolve({ result: false, value: 'data from source was corrupted' });
+					return resolve({
+						result: false,
+						value: 'data from source was corrupted'
+					});
 
 				if (json.errors.length === 0) {
 					const country_data = json.response.find((data: any) => data.country === code);
@@ -67,11 +79,11 @@ module.exports = async (
 							[
 								{
 									emote: 'NEW cases',
-									role: `${country_data.cases.new}`, inline: true
+									role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`, inline: true
 								},
 								{
 									emote: 'NEW deaths',
-									role: `${country_data.deaths.new}`, inline: true
+									role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`, inline: true
 								},
 								{
 									emote: 'Tests P1M',

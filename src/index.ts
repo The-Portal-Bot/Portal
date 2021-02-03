@@ -272,9 +272,13 @@ function command_loader(
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
-				if (response && response.value && response.value !== '' && command_options.reply)
-					message_reply(response.result, message.channel, message, message.author, response.value,
-						guild_object, client, command_options ? command_options.auto_delete : true);
+				console.log('1. response :>> ', response);
+
+				console.log('command_p[tions.reply :>> ', command_options.reply);
+				if (response)
+					if (command_options.reply || (response.result === false && response.value !== ''))
+						message_reply(response.result, message.channel, message, message.author, response.value,
+							guild_object, client, command_options ? command_options.auto_delete : true);
 				// if (command_options.save_after)
 				// 	update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 			});
@@ -308,6 +312,7 @@ function command_loader(
 
 	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 		.then((response: ReturnPormise) => {
+			console.log('response :>> ', response);
 			if (response) {
 				active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
 					member: message.author.id,
@@ -318,7 +323,8 @@ function command_loader(
 				if (command_options) {
 					setTimeout(() => {
 						active_cooldowns[type === 'guild' ? 'guild' : 'member'] =
-							active_cooldowns[type === 'guild' ? 'guild' : 'member'].filter(active => active.command !== cmd);
+							active_cooldowns[type === 'guild' ? 'guild' : 'member']
+								.filter(active => active.command !== cmd);
 					}, command_options.time * 60 * 1000);
 				}
 			}
@@ -326,6 +332,8 @@ function command_loader(
 			// if (command_options.save_after)
 			// 	update_portal_managed_guilds(portal_managed_guilds_path, guild_list);
 
+			console.log(`${command_options} && ${response.value} && ${response.value} !== '' && (${command_options.reply} || ${response.result} === false) => `,
+				command_options && response.value && response.value !== '' && (command_options.reply || response.result === false));
 			if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
 				message_reply(response.result, message.channel, message, message.author,
 					response.value, guild_object, client, command_options.auto_delete);
