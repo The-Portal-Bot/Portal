@@ -23,7 +23,7 @@ module.exports = async (
             },
             {
                 emote: 'Version',
-                role: '0.5.7',
+                role: '0.6.0',
                 inline: true
             },
             {
