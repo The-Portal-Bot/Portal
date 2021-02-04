@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { update_member_admin, insert_authorised_role } from "../../../libraries/mongoOps";
+import { update_member, insert_authorised_role } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
@@ -25,7 +25,7 @@ module.exports = async (
 		// check if it is a user id
 		guild_object.member_list.some(m => {
 			if (m.id === role_name) {
-				update_member_admin(guild_object.id, m.id, true);
+				update_member(guild_object.id, m.id, 'admin', true);
 				const member = message.guild?.members.cache.find(mb => mb.id === m.id);
 				return resolve({
 					result: true,

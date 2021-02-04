@@ -220,7 +220,7 @@
                 "premium": true,
                 "auto_delete": true,
                 "save_after": true,
-                "reply": false
+                "reply": true
             },
             {
                 "name": "authorise",

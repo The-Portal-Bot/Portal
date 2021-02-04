@@ -2,7 +2,6 @@ import { Message } from "discord.js";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
-/* eslint-disable no-unused-vars */
 const guld_mngr = require('../../../libraries/guildOps');
 
 module.exports = async (

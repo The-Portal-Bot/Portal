@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { included_in_voice_list } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { set_attribute } from "../../../types/interfaces/Attribute";
@@ -15,6 +15,7 @@ module.exports = async (
 				result: true,
 				value: 'guild could not be fetched'
 			});
+
 		if (!message.member)
 			return resolve({
 				result: true,
@@ -26,7 +27,8 @@ module.exports = async (
 				result: false,
 				value: 'you must be in a channel handled by Portal'
 			});
-		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list))
+
+		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list))
 			return resolve({
 				result: false,
 				value: 'the channel you are in is not handled by Portal'

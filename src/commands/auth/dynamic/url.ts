@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { create_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
-import { insert_url } from "../../../libraries/mongoOps";
+import { insert_url, remove_url } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
@@ -16,25 +16,36 @@ module.exports = async (
 
 		if (args.length === 0) {
 			if (included_in_url_list(message.channel.id, guild_object)) {
-				resolve({
-					result: false,
-					value: 'this already is a URL channel',
-				});
+				remove_url(guild_object.id, message.channel.id)
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? 'successfully removed url channel'
+								: 'failed to remove url channel'
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: 'failed to remove url channel'
+						});
+					});
 			}
 			else if (is_announcement_channel(message.channel.id, guild_object)) {
-				resolve({
+				return resolve({
 					result: false,
 					value: 'this can\'t be set as a URL channel for it is the Announcement channel',
 				});
 			}
 			else if (is_spotify_channel(message.channel.id, guild_object)) {
-				resolve({
+				return resolve({
 					result: false,
 					value: 'this can\'t be set as a URL channel for it is the Spotify channel',
 				});
 			}
 			else if (is_music_channel(message.channel.id, guild_object)) {
-				resolve({
+				return resolve({
 					result: true,
 					value: 'this can\'t be set as a URL channel for it is the Music channel',
 				});
@@ -92,10 +103,12 @@ module.exports = async (
 						return resolve(r_create);
 					}
 				})
-				.catch(e => { return resolve(e); });
+				.catch(e => {
+					return resolve(e);
+				});
 		}
 		else {
-			resolve({
+			return resolve({
 				result: false,
 				value: 'you can run `./help url` for help'
 			});

@@ -1,11 +1,10 @@
-import { Client, GuildMember, Message } from "discord.js";
+import { GuildMember, Message } from "discord.js";
 import { create_focus_channel, included_in_voice_list } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 async function ask_for_focus(message: Message, requester: GuildMember, focus_time: number) {
 	return new Promise((resolve) => {
-
 		message.channel
 			.send(`${requester.user}, member ${message.author}, would like to talk in ` +
 				`private for ${focus_time}, do you (yes / no) ?`)
@@ -60,10 +59,18 @@ module.exports = async (
 				value: 'you must be in a channel handled by Portal',
 			});
 		}
-		else if (!included_in_voice_list(message.member.voice.channel.id, current_portal_list)) {
+
+		if (!included_in_voice_list(message.member.voice.channel.id, current_portal_list)) {
 			return resolve({
 				result: false,
 				value: 'the channel you are in is not handled by Portal',
+			});
+		}
+
+		if (message.member.voice.channel.members.size <= 2) {
+			return resolve({
+				result: false,
+				value: 'you must be in a channel with more than two members',
 			});
 		}
 
@@ -71,7 +78,7 @@ module.exports = async (
 		const arg_b = args.join(' ').substr(args.join(' ').indexOf('|') + 1).replace(/\s/g, ' ');
 
 		const focus_name = (arg_a === '' ? arg_b : arg_a).trim();
-		const focus_time = arg_a === '' ? 5 : parseInt(arg_b);
+		const focus_time = arg_a === '' ? 5 : parseFloat(arg_b);
 
 		if (focus_name === '') {
 			return resolve({
@@ -79,6 +86,7 @@ module.exports = async (
 				value: 'you must give a member name'
 			});
 		}
+
 		if (isNaN(focus_time)) {
 			return resolve({
 				result: false,
@@ -86,19 +94,15 @@ module.exports = async (
 			});
 		}
 
-		// if (message.member.voice.channel.members.find(member =>
-		// 	(!!message.member && member.id !== message.member.id))) {
-		// 	return resolve({
-		// 		result: false,
-		// 		value: `you can't focus on yourself`
-		// 	});
-		// }
+		if (message.member.id === focus_name || message.member.displayName === focus_name) {
+			return resolve({
+				result: false,
+				value: `you can't focus on yourself`
+			});
+		}
 
-		const member_object = message.member.voice.channel.members.find(member => {
-			if (member.displayName === focus_name) return true;
-			if (member.id === focus_name) return true;
-			return false;
-		});
+		const member_object = message.member.voice.channel.members.find(member =>
+			member.displayName === focus_name || member.id === focus_name);
 
 		if (member_object) {
 			ask_for_focus(message, member_object, focus_time)
@@ -110,6 +114,7 @@ module.exports = async (
 								value: 'could not fetch message\'s guild'
 							});
 						}
+
 						if (!message.member) {
 							return resolve({
 								result: false,
@@ -117,7 +122,9 @@ module.exports = async (
 							});
 						}
 						create_focus_channel(message.guild, message.member, member_object, focus_time)
-							.then(return_value => { return resolve(return_value); });
+							.then(return_value => {
+								return resolve(return_value);
+							});
 					}
 				});
 		}

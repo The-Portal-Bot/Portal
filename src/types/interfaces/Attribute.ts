@@ -1,11 +1,11 @@
-/* eslint-disable no-unused-vars */
 import { GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
 import { create_rich_embed, is_authorised } from '../../libraries/helpOps';
+import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongoOps';
 import { GuildPrtl } from '../classes/GuildPrtl';
+import { MemberPrtl } from '../classes/MemberPrtl';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl';
-import { MemberPrtl } from '../classes/MemberPrtl';
 
 export const attribute_prefix: string = '&';
 const locales = ['gr', 'en', 'de'];
@@ -28,11 +28,11 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
-				portal_object.ann_announce = true;
+				update_portal(guild_object.id, portal_object.id, 'ann_announce', true);
 				return 1;
 			}
 			else if (value === 'false') {
-				portal_object.ann_announce = false;
+				update_portal(guild_object.id, portal_object.id, 'ann_announce', false);
 				return 1;
 			}
 			return -7;
@@ -56,11 +56,11 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
-				voice_object.ann_announce = true;
+				update_voice(guild_object.id, portal_object.id, voice_object.id, 'ann_announce', true);
 				return 1;
 			}
 			else if (value === 'false') {
-				voice_object.ann_announce = false;
+				update_voice(guild_object.id, portal_object.id, voice_object.id, 'ann_announce', false);
 				return 1;
 			}
 			return -7;
@@ -85,11 +85,11 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
-				portal_object.ann_user = true;
+				update_portal(guild_object.id, portal_object.id, 'ann_user', true);
 				return 1;
 			}
 			else if (value === 'false') {
-				portal_object.ann_user = false;
+				update_portal(guild_object.id, portal_object.id, 'ann_user', false);
 				return 1;
 			}
 			return -7;
@@ -113,11 +113,11 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
-				voice_object.ann_user = true;
+				update_voice(guild_object.id, portal_object.id, voice_object.id, 'ann_user', true);
 				return 1;
 			}
 			else if (value === 'false') {
-				voice_object.ann_user = false;
+				update_voice(guild_object.id, portal_object.id, voice_object.id, 'ann_user', true);
 				return 1;
 			}
 			return -7;
@@ -139,7 +139,6 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
-			// voice_channel.setBitrate(Number(value));
 			voice_channel.edit({ bitrate: Number(value) })
 				.then(channel => console.log(`Channel's new position is ${channel.bitrate} and should be ${value}`))
 				.catch(console.error);
@@ -171,11 +170,11 @@ const attributes: InterfaceBlueprint[] = [
 
 				if (member_object_give) {
 					if (portal_category === 'true') {
-						member_object_give.dj = true;
+						update_member(guild_object.id, member_object_give.id, 'dj', true);
 						return 1;
 					}
 					else if (portal_category === 'false') {
-						member_object_give.dj = false;
+						update_member(guild_object.id, member_object_give.id, 'dj', true);
 						return 1;
 					}
 				} else {
@@ -204,7 +203,7 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (locales.includes(value)) {
-				guild_object.locale = String(value);
+				update_guild(guild_object.id, 'locale', String(value));
 				return 1;
 			}
 			else {
@@ -230,7 +229,7 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (locales.includes(value)) {
-				portal_object.locale = String(value);
+				update_portal(guild_object.id, portal_object.id, 'locale', String(value));
 				return 1;
 			}
 			else {
@@ -256,7 +255,7 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (locales.includes(value)) {
-				voice_object.locale = String(value);
+				update_voice(guild_object.id, portal_object.id, voice_object.id, 'locale', String(value));
 				return 1;
 			}
 			else {
@@ -305,7 +304,7 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
-			portal_object.regex_portal = value;
+			update_portal(guild_object.id, portal_object.id, 'regex_portal', value);
 			return 1;
 		},
 		auth: 'portal'
@@ -326,7 +325,7 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
-			portal_object.regex_voice = value;
+			update_portal(guild_object.id, portal_object.id, 'regex_voice', value);
 			return 1;
 		},
 		auth: 'portal'
@@ -348,11 +347,11 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (value === 'true') {
-				portal_object.regex_overwrite = true;
+				update_portal(guild_object.id, portal_object.id, 'regex_overwrite', true);
 				return 1;
 			}
 			else if (value === 'false') {
-				portal_object.regex_overwrite = false;
+				update_portal(guild_object.id, portal_object.id, 'regex_overwrite', false);
 				return 1;
 			}
 			return -7;
@@ -376,7 +375,7 @@ const attributes: InterfaceBlueprint[] = [
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
 			if (member_object) {
-				member_object.regex = value;
+				update_member(guild_object.id, member_object.id, 'regex', value);
 				return 1;
 			} else {
 				return -8;
@@ -400,7 +399,7 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): number => {
-			voice_object.regex = value;
+			update_voice(guild_object.id, portal_object.id, voice_object.id, 'regex', value);
 			return 1;
 		},
 		auth: 'voice'
@@ -421,7 +420,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
 		): number => {
 			if (value >= 0) {
-				portal_object.user_limit_portal = Number(value);
+				update_portal(guild_object.id, portal_object.id, 'user_limit_portal', Number(value));
 				return 1;
 			}
 			return -6;

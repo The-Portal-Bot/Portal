@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { delete_channel, included_in_voice_list, regex_interpreter } from "../../../libraries/guildOps";
-import { ChannelTypePrtl, force_voice } from "../../../libraries/mongoOps";
+import { ChannelTypePrtl, update_voice } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
@@ -50,7 +50,7 @@ module.exports = async (
 								.then(clone => {
 									if (current_member && current_voice) {
 										current_voice.members.forEach(member => member.voice.setChannel(clone));
-										force_voice(guild_object.id, p.id, current_voice.id, clone.id)
+										update_voice(guild_object.id, p.id, current_voice.id, 'id', clone.id)
 											.then(r => return_value = r ? 'force updated voice' : 'failed to force update')
 											.catch(e => return_value = 'failed to force update channel');
 										delete_channel(ChannelTypePrtl.voice, current_voice, message, true);

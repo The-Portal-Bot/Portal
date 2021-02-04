@@ -1,23 +1,15 @@
-import {
-	CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions,
-	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState, Client, StreamDispatcher
-} from "discord.js";
+import { CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions, GuildMember, Message, MessageCollector, Role, StreamDispatcher, TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import voca from 'voca';
-import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl';
+import { GuildPrtl } from '../types/classes/GuildPrtl';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute';
-import { ReturnPormise, Rank } from "../types/interfaces/InterfacesPrtl";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON } from './helpOps';
+import { ChannelTypePrtl, insert_voice } from "./mongoOps";
 import { stop } from './musicOps';
-import { MemberPrtl } from "../types/classes/MemberPrtl";
-import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
-import { VideoSearchResult } from "yt-search";
-import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
-import { promises } from "dns";
-import { insert_voice, ChannelTypePrtl } from "./mongoOps";
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -319,55 +311,80 @@ export async function create_music_channel(
 	});
 };
 
-export async function create_focus_channel(guild: Guild, member: GuildMember,
-	member_found: GuildMember, focus_time: number): Promise<ReturnPormise> {
+export async function create_focus_channel(
+	guild: Guild, member: GuildMember,
+	member_found: GuildMember, focus_time: number
+): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const return_value = { result: false, value: '*you can run "./help focus" for help.*' };
-		const oldChannel: VoiceChannel | null = member.voice.channel;
-		let newChannel: VoiceChannel | null;
+		const return_value = {
+			result: false,
+			value: 'you can run "./help focus" for help'
+		};
 
-		if (!oldChannel) {
+		if (!member.voice.channel)
 			return resolve(return_value);
-		}
+
+		const oldChannel: VoiceChannel | null = member.voice.channel;
 
 		guild.channels.create(
-			`${member.displayName}&${member_found.displayName}`, {
+			`${focus_time}' private room`, {
 			type: 'voice',
 			bitrate: 64000,
-			userLimit: 2,
+			userLimit: 2
 		})
 			.then(channel => {
-				newChannel = channel;
+				const newChannel = channel;
 				member.voice.setChannel(channel);
 				member_found.voice.setChannel(channel);
 
-				return_value.result = true;
-				return_value.value = 'users have been moved';
-			})
-			.catch(console.error);
-
-		setTimeout(() => {
-			if (!oldChannel.deleted) {
-				member.voice.setChannel(oldChannel)
-					.then(() => {
-						member_found.voice.setChannel(oldChannel)
+				setTimeout(() => {
+					if (!oldChannel.deleted) {
+						member.voice.setChannel(oldChannel)
 							.then(() => {
-								if (newChannel && newChannel.deletable) {
-									newChannel.delete().catch(console.error);
-									return_value.result = true;
-									return_value.value = 'focus ended properly';
-									return resolve(return_value);
-								}
-							}).catch(console.error);
-					}).catch(console.error);
+								member_found.voice.setChannel(oldChannel)
+									.then(() => {
+										if (newChannel && newChannel.deletable) {
+											newChannel.delete().catch(console.error);
 
-			}
-			else {
-				return_value.result = false;
-				return_value.value = 'could not move to original channel because it was deleted';
-				return resolve(return_value);
-			}
-		}, focus_time * 60 * 1000);
+											return resolve({
+												result: true,
+												value: 'focus ended properly'
+											});
+										}
+									})
+									.catch(e => {
+										return resolve({
+											result: false,
+											value: 'focus did not end properly'
+										});
+									});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: 'focus did not end properly'
+								});
+							});
+					}
+					else {
+						return resolve({
+							result: false,
+							value: 'could not move to original voice channel because it was deleted'
+						});
+					}
+				}, focus_time * 60 * 1000);
+
+				// return resolve({
+				// 	result: true,
+				// 	value: 'users have been moved'
+				// });
+			})
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: 'failed to create focus channel'
+				});
+			});
 	});
 };
 
@@ -383,7 +400,7 @@ export function delete_channel(
 			let channel_deleted = false;
 
 			message.channel
-				.send(`${message.author}, do you wish to delete old ${ChannelTypePrtl[type].toString()} channel **"${channel_to_delete}"** (yes / no) ?`)
+				.send(`${message.author}, do you wish to delete old ${ChannelTypePrtl[type].toString()} channel **${channel_to_delete}** (yes / no) ?`)
 				.then((question_msg: Message) => {
 					const filter: CollectorFilter = m => m.author.id === author.id;
 					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
@@ -396,14 +413,14 @@ export function delete_channel(
 									.then(g => {
 										if (g.id !== m.channel.id && !m.deleted) {
 											m.channel.send(`deleted channel **"${channel_to_delete_name}"**`)
-												.then(msg => { msg.delete({ timeout: 5000 }); })
+												.then(msg => { msg.delete({ timeout: 7000 }); })
 												.catch(error => console.log(error));
 										}
 									})
 									.catch(console.error);
 
-								
-								
+
+
 
 								channel_deleted = true;
 							}

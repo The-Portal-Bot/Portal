@@ -1,6 +1,6 @@
 import { GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
 import { create_channel, create_music_channel, delete_channel, getOptions } from "../../../libraries/guildOps";
-import { ChannelTypePrtl, insert_announcement, insert_portal, insert_spotify, insert_url } from "../../../libraries/mongoOps";
+import { ChannelTypePrtl, insert_portal, update_guild, insert_url } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
@@ -63,7 +63,21 @@ module.exports = async (
 				create_channel(current_guild, 'spotify', spotify_options, cat_channel)
 					.then(response => {
 						if (response.result) {
-							insert_spotify(guild_object.id, response.value);
+							update_guild(guild_object.id, 'spotify', response.value)
+								.then(r => {
+									return resolve({
+										result: r,
+										value: r
+											? 'successfully inserted spotify channel'
+											: 'failed to insert spotify channel'
+									});
+								})
+								.catch(e => {
+									return resolve({
+										result: false,
+										value: 'failed to insert spotify channel'
+									});
+								});
 						} else {
 							return resolve(response);
 						}
@@ -72,7 +86,21 @@ module.exports = async (
 				create_channel(current_guild, 'announcement', announcement_options, cat_channel)
 					.then(response => {
 						if (response.result) {
-							insert_announcement(guild_object.id, response.value);
+							update_guild(guild_object.id, 'announcement', response.value)
+								.then(r => {
+									return resolve({
+										result: r,
+										value: r
+											? 'successfully removed announcement channel'
+											: 'failed to remove announcement channel'
+									});
+								})
+								.catch(e => {
+									return resolve({
+										result: false,
+										value: 'failed to remove announcement channel'
+									});
+								});
 						} else {
 							return resolve(response);
 						}
