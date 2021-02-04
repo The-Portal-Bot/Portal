@@ -1,15 +1,15 @@
 import { Client, Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-    client: Client, message: Message, args: string[],
-    guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+    message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         message.channel.send(create_rich_embed(
             'About',
-            'a portal to a managed discord server',
+            null,
             '#1DB954',
             [{
                 emote: 'Creator',
@@ -23,7 +23,7 @@ module.exports = async (
             },
             {
                 emote: 'Version',
-                role: '0.5.7',
+                role: '0.6.0',
                 inline: true
             },
             {

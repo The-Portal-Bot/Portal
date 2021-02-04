@@ -1,7 +1,4 @@
-import {
-	CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions,
-	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState
-} from "discord.js";
+import { CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions, GuildMember, Message, MessageCollector, Role, StreamDispatcher, TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import voca from 'voca';
 import { GuildPrtl } from '../types/classes/GuildPrtl';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
@@ -11,6 +8,7 @@ import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON } from './helpOps';
+import { ChannelTypePrtl, insert_voice } from "./mongoOps";
 import { stop } from './musicOps';
 
 function inline_operator(str: string): any {
@@ -98,8 +96,10 @@ export function get_role_name(role_id: string, i: number, message: Message) {
 
 //
 
-export async function create_channel(guild: Guild, channel_name: string, channel_options: GuildCreateChannelOptions,
-	channel_category: string | CategoryChannel | null): Promise<ReturnPormise> {
+export async function create_channel(
+	guild: Guild, channel_name: string, channel_options: GuildCreateChannelOptions,
+	channel_category: string | CategoryChannel | null
+): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		guild.channels
 			.create(channel_name, channel_options)
@@ -230,10 +230,11 @@ export function create_voice_channel(
 				.create('loading..', voice_options)
 				.then(channel => {
 					if (state.member) {
-						portal_object.voice_list.push(new VoiceChannelPrtl(
+						insert_voice(state.member.guild.id, portal_object.id, new VoiceChannelPrtl(
 							channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
 							portal_object.ann_announce, portal_object.ann_user
 						));
+
 						state.member.voice.setChannel(channel);
 						return resolve({ result: true, value: `created channel and moved member to new voice` });
 					} else {
@@ -247,10 +248,14 @@ export function create_voice_channel(
 	});
 }
 
-export async function create_music_channel(guild: Guild, music_channel: string,
-	music_category: string | CategoryChannel | null, guild_object: GuildPrtl): Promise<void> {
+// must be fixed
+export async function create_music_channel(
+	guild: Guild, music_channel: string,
+	music_category: string | CategoryChannel | null, guild_object: GuildPrtl
+): Promise<void> {
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
+
 	return new Promise((resolve) => {
 		if (music_category && typeof music_category === 'string') { // with category
 			guild.channels
@@ -258,7 +263,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, leave:🚪',
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -277,7 +282,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, leave:🚪',
 						parent: music_category
 					},
 				)
@@ -294,7 +299,7 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, clear list:🧹, leave:❌',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, leave:🚪',
 					},
 				)
 				.then(channel => {
@@ -306,147 +311,174 @@ export async function create_music_channel(guild: Guild, music_channel: string,
 	});
 };
 
-export async function create_focus_channel(guild: Guild, member: GuildMember,
-	member_found: GuildMember, focus_time: number): Promise<ReturnPormise> {
+export async function create_focus_channel(
+	guild: Guild, member: GuildMember,
+	member_found: GuildMember, focus_time: number
+): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const return_value = { result: false, value: '*you can run "./help focus" for help.*' };
-		const oldChannel: VoiceChannel | null = member.voice.channel;
-		let newChannel: VoiceChannel | null;
+		const return_value = {
+			result: false,
+			value: 'you can run "./help focus" for help'
+		};
 
-		if (!oldChannel) {
+		if (!member.voice.channel)
 			return resolve(return_value);
-		}
+
+		const oldChannel: VoiceChannel | null = member.voice.channel;
 
 		guild.channels.create(
-			`${member.displayName}&${member_found.displayName}`, {
+			`${focus_time}' private room`, {
 			type: 'voice',
 			bitrate: 64000,
-			userLimit: 2,
+			userLimit: 2
 		})
 			.then(channel => {
-				newChannel = channel;
+				const newChannel = channel;
 				member.voice.setChannel(channel);
 				member_found.voice.setChannel(channel);
 
-				return_value.result = true;
-				return_value.value = 'users have been moved';
-			})
-			.catch(console.error);
-
-		setTimeout(() => {
-			if (!oldChannel.deleted) {
-				member.voice.setChannel(oldChannel)
-					.then(() => {
-						member_found.voice.setChannel(oldChannel)
+				setTimeout(() => {
+					if (!oldChannel.deleted) {
+						member.voice.setChannel(oldChannel)
 							.then(() => {
-								if (newChannel && newChannel.deletable) {
-									newChannel.delete().catch(console.error);
-									return_value.result = true;
-									return_value.value = 'focus ended properly';
-									return resolve(return_value);
-								}
-							}).catch(console.error);
-					}).catch(console.error);
+								member_found.voice.setChannel(oldChannel)
+									.then(() => {
+										if (newChannel && newChannel.deletable) {
+											newChannel.delete().catch(console.error);
 
-			}
-			else {
-				return_value.result = false;
-				return_value.value = 'could not move to original channel because it was deleted';
-				return resolve(return_value);
-			}
-		}, focus_time * 60 * 1000);
+											return resolve({
+												result: true,
+												value: 'focus ended properly'
+											});
+										}
+									})
+									.catch(e => {
+										return resolve({
+											result: false,
+											value: 'focus did not end properly'
+										});
+									});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: 'focus did not end properly'
+								});
+							});
+					}
+					else {
+						return resolve({
+							result: false,
+							value: 'could not move to original voice channel because it was deleted'
+						});
+					}
+				}, focus_time * 60 * 1000);
+
+				// return resolve({
+				// 	result: true,
+				// 	value: 'users have been moved'
+				// });
+			})
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: 'failed to create focus channel'
+				});
+			});
 	});
 };
 
 //
 
-export function delete_guild(guild_id: string, guild_list: GuildPrtl[]): void {
-	guild_list.some((g, index) => {
-		if (g.id === guild_id)
-			guild_list.splice(index, 1)
+export function delete_channel(
+	type: ChannelTypePrtl, channel_to_delete: VoiceChannel | TextChannel, message: Message | null, isPortal: boolean = false
+): void {
+	if (!isPortal) {
+		if (message) {
+			const author = message.author;
+			const channel_to_delete_name = channel_to_delete.name;
+			let channel_deleted = false;
 
-	});
-};
+			message.channel
+				.send(`${message.author}, do you wish to delete old ${ChannelTypePrtl[type].toString()} channel **${channel_to_delete}** (yes / no) ?`)
+				.then((question_msg: Message) => {
+					const filter: CollectorFilter = m => m.author.id === author.id;
+					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
 
-export function delete_channel(channel_to_delete: VoiceChannel | TextChannel,
-	message: Message | null, isPortal: boolean = false): void {
-	if (!isPortal && message !== null) {
-		const author = message.author;
-		const channel_to_delete_name = channel_to_delete.name;
-		let channel_deleted = false;
+					collector.on('collect', (m: Message) => {
+						if (m.content === 'yes') {
+							if (channel_to_delete.deletable) {
+								channel_to_delete
+									.delete()
+									.then(g => {
+										if (g.id !== m.channel.id && !m.deleted) {
+											m.channel.send(`deleted channel **"${channel_to_delete_name}"**`)
+												.then(msg => { msg.delete({ timeout: 7000 }); })
+												.catch(error => console.log(error));
+										}
+									})
+									.catch(console.error);
 
-		message.channel
-			.send(`${message.author}, do you wish to delete old music channel **"${channel_to_delete}"** (yes / no) ?`)
-			.then((question_msg: Message) => {
-				const filter: CollectorFilter = m => m.author.id === author.id;
-				const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
 
-				collector.on('collect', (m: Message) => {
-					if (m.content === 'yes') {
-						if (channel_to_delete.deletable) {
-							channel_to_delete
-								.delete()
-								.then(g => console.log(`Deleted channel with id: ${g}`))
-								.catch(console.error);
 
-							m.channel.send(`Deleted channel **"${channel_to_delete_name}"**`)
-								.then(msg => { msg.delete({ timeout: 5000 }); })
-								.catch(error => console.log(error));
 
-							channel_deleted = true;
+								channel_deleted = true;
+							}
+							else {
+								message.channel.send(`channel **"${channel_to_delete}"** is not deletable`)
+									.then(msg => { msg.delete({ timeout: 5000 }); })
+									.catch(error => console.log(error));
+							}
+							collector.stop();
 						}
-						else {
-							message.channel.send(`Channel **"${channel_to_delete}"** is not deletable`)
-								.then(msg => { msg.delete({ timeout: 5000 }); })
-								.catch(error => console.log(error));
-						}
-						collector.stop();
-					}
-					else if (m.content === 'no') {
-						collector.stop();
-					}
-				});
-
-				collector.on('end', (collected: Collection<string, Message>) => {
-					collected.forEach((reply_message: Message) => {
-						if (reply_message.deletable) {
-							reply_message
-								.delete()
-								.catch(console.error);
+						else if (m.content === 'no') {
+							collector.stop();
 						}
 					});
 
-					if (!channel_deleted) {
-						message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted`)
-							.then(msg => { msg.delete({ timeout: 5000 }); })
-							.catch(error => console.log(error));
-					}
-					question_msg.delete({ timeout: 5000 });
-				});
-			})
-			.catch(error => console.log(error));
+					collector.on('end', (collected: Collection<string, Message>) => {
+						collected.forEach((reply_message: Message) => {
+							if (reply_message.deletable) {
+								reply_message
+									.delete()
+									.catch(console.error);
+							}
+						});
+
+						if (!channel_deleted) {
+							message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted`)
+								.then(msg => { msg.delete({ timeout: 5000 }); })
+								.catch(error => console.log(error));
+						}
+						question_msg.delete({ timeout: 5000 });
+					});
+				})
+				.catch(error => console.log(error));
+		}
 	}
 	else if (channel_to_delete.deletable) {
 		channel_to_delete
 			.delete()
-			.then(g => console.log(`Deleted channel with id: ${g}`))
+			.then(g => console.log(`deleted channel with id: ${g}`))
 			.catch(console.error);
 	}
 };
 
-export function channel_deleted_update_state(channel_to_remove: GuildChannel, guild_list: GuildPrtl[]): number {
+export function channel_deleted_update_state(
+	channel_to_remove: GuildChannel, guild_list: GuildPrtl[], dispatcher: StreamDispatcher | undefined
+): number {
 	const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
-	const current_guild = guild_list.find(g => g.id === channel_to_remove.guild.id);
+	const guilf_object = guild_list.find(g => g.id === channel_to_remove.guild.id);
 
-	if (!current_guild) {
+	if (!guilf_object) {
 		return -1;
 	}
 
 	let type_of_channel = TypesOfChannel.Unknown;
 
-	current_guild.portal_list.some((p, index) => {
+	guilf_object.portal_list.some((p, index) => {
 		if (p.id === channel_to_remove.id) {
-			current_guild.portal_list.splice(index, 1);
+			guilf_object.portal_list.splice(index, 1);
 			type_of_channel = TypesOfChannel.Portal;
 			return true;
 		}
@@ -459,28 +491,28 @@ export function channel_deleted_update_state(channel_to_remove: GuildChannel, gu
 		});
 	});
 
-	for (let i = 0; i < current_guild.url_list.length; i++) {
-		console.log(`${current_guild.url_list[i]} === ${channel_to_remove.id}`);
-		if (current_guild.url_list[i] === channel_to_remove.id) {
-			current_guild.url_list.splice(i, 1);
+	for (let i = 0; i < guilf_object.url_list.length; i++) {
+		console.log(`${guilf_object.url_list[i]} === ${channel_to_remove.id}`);
+		if (guilf_object.url_list[i] === channel_to_remove.id) {
+			guilf_object.url_list.splice(i, 1);
 			type_of_channel = TypesOfChannel.Url;
 			break;
 		}
 	}
-	if (current_guild.spotify === channel_to_remove.id) {
-		current_guild.spotify = null;
+	if (guilf_object.spotify === channel_to_remove.id) {
+		guilf_object.spotify = null;
 		type_of_channel = TypesOfChannel.Spotify;
 	}
-	if (current_guild.announcement === channel_to_remove.id) {
-		current_guild.announcement = null;
+	if (guilf_object.announcement === channel_to_remove.id) {
+		guilf_object.announcement = null;
 		type_of_channel = TypesOfChannel.Announcement;
 	}
-	if (current_guild.music_data.channel_id === channel_to_remove.id) {
-		stop(channel_to_remove.guild.id, guild_list, channel_to_remove.guild);
-		current_guild.music_data.channel_id = undefined;
-		current_guild.music_data.message_id = undefined;
-		current_guild.music_data.votes = [];
-		current_guild.dispatcher = undefined;
+	if (guilf_object.music_data.channel_id === channel_to_remove.id) {
+		stop(guilf_object, channel_to_remove.guild, dispatcher);
+		guilf_object.music_data.channel_id = undefined;
+		guilf_object.music_data.message_id = undefined;
+		guilf_object.music_data.votes = [];
+		guilf_object.dispatcher = undefined;
 		type_of_channel = TypesOfChannel.Music;
 	}
 
@@ -490,22 +522,22 @@ export function channel_deleted_update_state(channel_to_remove: GuildChannel, gu
 //
 
 export function generate_channel_name(
-	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
-	guild_object: GuildPrtl, guild: Guild
+	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild
 ): number {
+
 	let return_value: number = 0;
 	portal_list.some(p => {
 		p.voice_list.some(v => {
 			if (v.id === voice_channel.id) {
 				let regex = v.regex;
 				if (p.regex_overwrite) {
-					const member = voice_channel.members.find(m => m.id === v.creator_id);
+					const member = voice_channel.members
+						.find(m => m.id === v.creator_id);
 					if (member) {
-						const member_object = guild_object.member_list.find(m => m.id === member.id);
-						if (member_object) {
-							if (member_object.regex) {
-								regex = member_object.regex;
-							}
+						const member_object = guild_object.member_list
+							.find(m => m.id === member.id);
+						if (member_object?.regex && member_object.regex !== 'null') {
+							regex = member_object.regex;
 						}
 					}
 				}

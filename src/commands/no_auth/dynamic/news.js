@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const country_codes = require('../../../assets/jsons/CountryCodes.json');
 
 const http_mngr = require('../../../libraries/httpOps');
@@ -103,13 +102,13 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
                                 {
                                     emote: '%Recovered',
                                     role: `${((country_data.cases.recovered / country_data.cases.total) * 100)
-										.toFixed(2)}%`,
+                                    .toFixed(2)}%`,
                                     inline: true
                                 },
                                 {
                                     emote: '%Diseased',
                                     role: `${((country_data.deaths.total / country_data.cases.total) * 100)
-										.toFixed(2)}%`,
+                                    .toFixed(2)}%`,
                                     inline: true
                                 },
                                 {

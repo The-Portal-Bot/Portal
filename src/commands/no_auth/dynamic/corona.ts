@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { Client, Message } from 'discord.js';
+import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
@@ -8,6 +7,7 @@ import config from '../../../config.json';
 import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
 import { https_fetch } from '../../../libraries/httpOps';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl';
+import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
 
 const country_codes: { name: string; code: string; }[] = country_codes_json;
 
@@ -22,25 +22,29 @@ const get_country_code = function (country: string): string | null {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object)
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-
 		let code: string | null = null;
 
 		if (args.length === 1) {
 			code = get_country_code(args[0]);
 			if (code === null) {
-				return resolve({ result: false, value: `${args[0]} is neither a country name nor a country code` });
+				return resolve({
+					result: false,
+					value: `${args[0]} is neither a country name nor a country code`
+				});
 			}
 		} else if (args.length > 1) {
-			return resolve({ result: false, value: 'you can run `./help corona` for help' });
+			return resolve({
+				result: false,
+				value: 'you can run `./help corona` for help'
+			});
 		} else {
-			return resolve({ result: false, value: 'global stats are not unavailable' });
+			return resolve({
+				result: false,
+				value: 'global stats are not unavailable, you can run `./help corona` for help'
+			});
 		}
 
 		const options: RequestOptions = {
@@ -57,10 +61,12 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
-				console.log('response.toString() :>> ```json\n', response.toString(), '\n```');
 				const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
 				if (json === null)
-					return resolve({ result: false, value: 'data from source was corrupted' });
+					return resolve({
+						result: false,
+						value: 'data from source was corrupted'
+					});
 
 				if (json.errors.length === 0) {
 					const country_data = json.response.find((data: any) => data.country === code);
@@ -73,11 +79,11 @@ module.exports = async (
 							[
 								{
 									emote: 'NEW cases',
-									role: `${country_data.cases.new}`, inline: true
+									role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`, inline: true
 								},
 								{
 									emote: 'NEW deaths',
-									role: `${country_data.deaths.new}`, inline: true
+									role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`, inline: true
 								},
 								{
 									emote: 'Tests P1M',
@@ -131,7 +137,7 @@ module.exports = async (
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `ould not access the server*\nerror: ${error}`,
+					value: `could not access the server*\nerror: ${error}`,
 				});
 			});
 	});

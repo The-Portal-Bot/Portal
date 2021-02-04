@@ -1,22 +1,31 @@
-import { ActivityOptions, Client, Guild } from "discord.js";
-import { insert_guild, remove_deleted_channels, remove_empty_voice_channels, update_portal_managed_guilds } from "../libraries/helpOps";
+import { ActivityOptions, Client, Guild, PresenceData } from "discord.js";
 import { get_function } from "../libraries/localisationOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { guild_exists, insert_guild } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 function add_guild_again(
-	guild_id: string, guild_list: GuildPrtl[], client: Client
-): boolean {
-	const guild_in_db = guild_list.some(g => g.id === guild_id);
-	if (!guild_in_db) {
-		insert_guild(guild_id, guild_list, client);
-		return true;
-	}
-	return false;
+	guild_id: string, client: Client
+): Promise<boolean> {
+	return new Promise((resolve) => {
+		guild_exists(guild_id)
+			.then(exists => {
+				if (!exists)
+					insert_guild(guild_id, client)
+						.then(resposne => {
+							return resolve(resposne);
+						})
+						.catch(error => {
+							return resolve(false);
+						});
+			})
+			.catch(error => {
+				return resolve(false);
+			});
+	});
 }
 
 module.exports = async (
-	args: { client: Client, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
+	args: { client: Client }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!args.client.user)
@@ -25,19 +34,27 @@ module.exports = async (
 				value: 'could not fetch user from client'
 			});
 
-		const options: ActivityOptions = { url: 'https://github.com/keybraker', type: 'LISTENING' };
-		args.client.user.setActivity('./help', options);
+		const options: ActivityOptions = {
+			name: './help',
+			type: 'LISTENING',
+			url: 'https://github.com/keybraker'
+		}
+
+		const data: PresenceData = {
+			status: 'online',
+			afk: false,
+			activity: options
+		};
+
+		args.client.user.setPresence(data);
 
 		let index = 0;
-		console.log(`> loading portal\'s guilds from ${args.portal_managed_guilds_path}`);
 		args.client.guilds.cache.forEach((guild: Guild) => {
 			console.log(`> ${index++}. ${guild} (${guild.id})`);
 
-			add_guild_again(guild.id, args.guild_list, args.client);
-			remove_deleted_channels(guild, args.guild_list);
-			remove_empty_voice_channels(guild, args.guild_list);
-
-			update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
+			add_guild_again(guild.id, args.client);
+			// remove_deleted_channels(guild);
+			// remove_empty_voice_channels(guild);
 		});
 
 		const func = get_function('console', 'en', 'ready');

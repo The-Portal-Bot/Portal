@@ -1,27 +1,38 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { included_in_voice_list } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { set_attribute } from "../../../types/interfaces/Attribute";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 const locales = ['gr', 'en', 'de'];
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object)
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
 		if (!message.guild)
-			return resolve({ result: true, value: 'guild could not be fetched' });
+			return resolve({
+				result: true,
+				value: 'guild could not be fetched'
+			});
+
 		if (!message.member)
-			return resolve({ result: true, value: 'member could not be fetched' });
+			return resolve({
+				result: true,
+				value: 'member could not be fetched'
+			});
 
 		if (message.member.voice.channel === undefined || message.member.voice.channel === null)
-			return resolve({ result: false, value: 'you must be in a channel handled by Portal' });
-		else if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list))
-			return resolve({ result: false, value: 'the channel you are in is not handled by Portal' });
+			return resolve({
+				result: false,
+				value: 'you must be in a channel handled by Portal'
+			});
+
+		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list))
+			return resolve({
+				result: false,
+				value: 'the channel you are in is not handled by Portal'
+			});
 
 		if (args.length >= 2) {
 			guild_object.portal_list.some(p => {

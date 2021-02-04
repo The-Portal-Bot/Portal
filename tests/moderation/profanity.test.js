@@ -4,7 +4,7 @@ test('fuck must return true', () => {
     expect(modOps.isProfane('fuck').length > 0 || false).toBe(true);
 });
 
-test('sample must return true', () => {
+test('sample must return false', () => {
     expect(modOps.isProfane('sample').length > 0 || false).toBe(false);
 });
 
@@ -16,10 +16,6 @@ test('πούτσα must return true', () => {
     expect(modOps.isProfane('πούτσα').length > 0 || false).toBe(true);
 });
 
-test('καλημέρα must return true', () => {
+test('καλημέρα must return false', () => {
     expect(modOps.isProfane('καλημέρα').length > 0 || false).toBe(false);
-});
-
-test('πουτσομπανάνα must return true', () => {
-    expect(modOps.isProfane('πουτσομπανάνα').length > 0 || false).toBe(true);
 });

@@ -1,19 +1,16 @@
-import { Client, Message } from "discord.js";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
-import { Field } from "../../../types/interfaces/InterfacesPrtl";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
-
 		const ranks = guild_object.ranks;
 		if (ranks && ranks.length > 0) {
 			const ranks_msg: Field[] = [];
+
 			ranks.forEach(rank => {
 				const role = message.guild?.roles.cache.find(r => r.id === rank.role);
 				ranks_msg.push({
@@ -25,12 +22,12 @@ module.exports = async (
 
 			message.channel.send(
 				create_rich_embed(
-					null,
+					'Ranking System',
 					null,
 					'#FF4500',
 					ranks_msg,
 					null,
-					message.member,
+					null,
 					false,
 					null,
 					null

@@ -1,25 +1,51 @@
-import { Client, Message, MessageEmbed, TextChannel } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../../libraries/guildOps";
 import { create_rich_embed, getJSON } from "../../../libraries/helpOps";
+import { insert_role_assigner } from "../../../libraries/mongoOps";
 import { GiveRole, GiveRolePrtl } from "../../../types/classes/GiveRolePrtl";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { Field } from "../../../types/interfaces/InterfacesPrtl";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 function create_role_message(
 	channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
 	colour: string, role_emb: Field[], role_map: GiveRole[]
-): void {
-	const role_message_emb: MessageEmbed = create_rich_embed(title, desc, colour, role_emb, null, null, null, null, null);
-	channel
-		.send(role_message_emb)
-		.then(sent_message => {
-			for (let i = 0; i < role_map.length; i++) {
-				sent_message.react(role_map[i].give);
-				sent_message.react(role_map[i].strip);
-			}
-			guild_object.role_list.push(new GiveRolePrtl(sent_message.id, role_map));
-		})
-		.catch(error => console.log(error));
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		const role_message_emb: MessageEmbed = create_rich_embed(
+			title, desc, colour, role_emb, null, null, null, null, null
+		);
+
+		channel
+			.send(role_message_emb)
+			.then(sent_message => {
+				for (let i = 0; i < role_map.length; i++) {
+					sent_message.react(role_map[i].give);
+					sent_message.react(role_map[i].strip);
+				}
+				insert_role_assigner(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? 'Keep in mind that Portal role must be over any role you wish it to be able to distribute.\n' +
+								'In order to change it, please head to your servers settings and put Portal role above them.'
+								: 'failed to set new ranks'
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: 'failed to set new ranks'
+						});
+					});
+			})
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: 'failed to create role assigner message'
+				})
+			});
+	});
 };
 
 function multiple_same_emote(emote_map: GiveRole[]) {
@@ -35,21 +61,42 @@ function multiple_same_emote(emote_map: GiveRole[]) {
 };
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) return resolve({ result: true, value: 'portal guild could not be fetched' });
-		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
-		if (args.length <= 0) return resolve({ result: false, value: 'you can run `./help role_assigner` for help' });
+		if (!message.guild)
+			return resolve({
+				result: true,
+				value: 'guild could not be fetched'
+			});
+		if (args.length <= 0)
+			return resolve({
+				result: false,
+				value: 'you can run `./help role_assigner` for help'
+			});
 
 		const role_map_json = getJSON(args.join(' '));
-		if (!role_map_json) return resolve({ result: false, value: 'roles must be in JSON format for more info `./help role_assigner`' });
+		if (!role_map_json)
+			return resolve({
+				result: false,
+				value: 'roles must be in JSON format for more info `./help role_assigner`'
+			});
 		const role_map = <GiveRole[]>role_map_json;
-		if (!Array.isArray(role_map)) return resolve({ result: false, value: 'must be array even for one role' });
-		if (multiple_same_emote(role_map)) return resolve({ result: false, value: 'emotes should differ `./help role_assigner`' });
-		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id)) return resolve({ result: false, value: 'json misspelled `./help role_assigner`' });
+		if (!Array.isArray(role_map))
+			return resolve({
+				result: false,
+				value: 'must be array even for one role'
+			});
+		if (multiple_same_emote(role_map))
+			return resolve({
+				result: false,
+				value: 'emotes should differ `./help role_assigner`'
+			});
+		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id))
+			return resolve({
+				result: false,
+				value: 'json misspelled `./help role_assigner`'
+			});
 
 		role_map.forEach(r => { r.give = r.give.trim(); r.strip = r.strip.trim(); });
 		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
@@ -79,7 +126,10 @@ module.exports = async (
 			}
 		});
 
-		if (failed) return resolve({ result: false, value: return_value });
+		if (failed) return resolve({
+			result: false,
+			value: return_value
+		});
 
 		create_role_message(
 			<TextChannel>message.channel,
@@ -90,7 +140,14 @@ module.exports = async (
 			role_emb_display_give.concat(role_emb_display_strip),
 			role_map
 		)
-
-		return resolve({ result: true, value: 'role message has been created' });
+			.then(r => {
+				return resolve(r);
+			})
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: e
+				})
+			});
 	});
 };

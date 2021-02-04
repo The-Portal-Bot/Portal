@@ -1,77 +1,72 @@
 import { Client, Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { Field } from "../../../types/interfaces/InterfacesPrtl";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-    client: Client, message: Message, args: string[],
-    guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+    message: Message, args: string[], guild_object: GuildPrtl, client: Client
+): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         const guild = client.guilds.cache.find(g => g.id === message?.guild?.id);
-        if (!guild)
-            return resolve({ result: false, value: 'could not fetch guild' });
+        if (!guild) return resolve({ result: false, value: 'could not fetch guild' });
 
-        const portal_object = guild_list.find(g => g.id === message?.guild?.id);
-        if (!portal_object)
-            return resolve({ result: false, value: 'could not find guild please contact portal support' });
+        let portal_state = [<Field>{ emote: 'Portal Channels', role: '', inline: false }];
 
-        let portal_state = [<Field>{ emote: 'Portals', role: '', inline: false }];
-
-        const portals = portal_object.portal_list.map(p => {
-            const voices = p.voice_list.map(v => {
-                const channel = guild.channels.cache.find(c => c.id === v.id);
-                return `> voice: ${channel ? channel.name : 'undefined'}`;
+        const portals = guild_object.portal_list.map(p => {
+            const voices = p.voice_list.map((v, index_v) => {
+                const voice_channel = guild.channels.cache.find(c => c.id === v.id);
+                return `${index_v + 1}. ${voice_channel ? voice_channel.name : 'removed'}`;
             }).join('\n');
-            const channel = guild.channels.cache.find(c => c.id === p.id);
+            const portal_channel = guild.channels.cache.find(c => c.id === p.id);
 
-            return <Field>{ emote: `${channel ? channel.name : 'undefined'}`, role: voices, inline: true }
+            return <Field>{ emote: `${portal_channel ? portal_channel.name : 'removed'}`, role: voices, inline: true }
         });
         if (portals)
             portal_state = portal_state.concat(portals);
 
-        portal_state.push(<Field>{ emote: 'Music / Spotify / Announcement', role: '', inline: false });
+        portal_state.push(<Field>{ emote: '', role: '', inline: false });
 
-        const music = guild.channels.cache.find(c => c.id === portal_object.music_data.channel_id);
+        const music = guild.channels.cache.find(c => c.id === guild_object.music_data.channel_id);
         if (music)
             portal_state.push(<Field>{
-                emote: `${music ? music.name : 'undefined'} _(music)_`,
-                role: 'the music channel can be used to play music',
+                emote: `Music channel`,
+                role: `${music ? music.name : 'removed'}`,
                 inline: true
             });
 
-        const spotify = guild.channels.cache.find(c => c.id === portal_object.spotify);
+        const spotify = guild.channels.cache.find(c => c.id === guild_object.spotify);
         if (spotify)
             portal_state.push(<Field>{
-                emote: `${spotify ? spotify.name : 'undefined'} _(spotify)_`,
-                role: 'displays Music people in Portal\'s voice channels listen too',
+                emote: 'Spotify channel',
+                role: `${spotify ? spotify.name : 'removed'}`,
                 inline: true
             });
 
-        const announcement = guild.channels.cache.find(c => c.id === portal_object.announcement);
+        const announcement = guild.channels.cache.find(c => c.id === guild_object.announcement);
         if (announcement)
             portal_state.push(<Field>{
-                emote: `${announcement ? announcement.name : 'undefined'} _(announcement)_`,
-                role: 'the announcement channel used by admins and portal',
+                emote: 'Announcement channel',
+                role: `${announcement ? announcement.name : 'removed'}`,
                 inline: true
             });
 
-        portal_state.push(<Field>{ emote: 'Url-only', role: '', inline: false });
-
-        const urls = portal_object.url_list.map(u_id => {
+        const urls = guild_object.url_list.map((u_id, index_u) => {
             const channel = guild.channels.cache.find(c => c.id === u_id);
-            return <Field>{
-                emote: `${channel ? channel.name : 'undefined'}`,
-                role: 'these channels are url only',
-                inline: true
-            }
+            return `${index_u + 1}. ${channel ? channel.name : 'removed'}`;
         });
-        if (urls)
-            portal_state = portal_state.concat(urls);
+
+        const url_sum = <Field>{
+            emote: `Url channels`,
+            role: urls.join('\n'),
+            inline: false
+        };
+
+        if (url_sum)
+            portal_state = portal_state.concat(url_sum);
 
         message.channel.send(create_rich_embed(
-            'Portal State',
-            'current state of Portal',
+            'Portal state - current state of Portal',
+            null,
             '#964B00',
             portal_state,
             null,
@@ -81,6 +76,9 @@ module.exports = async (
             null
         ));
 
-        return resolve({ result: true, value: '' });
+        return resolve({
+            result: true,
+            value: ''
+        });
     });
 };

@@ -1,34 +1,32 @@
 import { Client, Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-    client: Client, message: Message, args: string[],
-    guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+    message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
-        const guild_object = guild_list.find(g => g.id === message.guild?.id);
-        if (!guild_object) return resolve({ result: false, value: 'could not find guild, please contact portal support' });
         const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
         if (!member_object) return resolve({ result: false, value: 'could not find guild, please contact portal support' });
 
         message.channel.send(create_rich_embed(
             message.member ? message.member?.displayName : 'could not fetch name',
-            'member portal card',
+            'Member portal card',
             '#42f5d7',
             [
                 {
-                    emote: 'id',
+                    emote: 'Id',
                     role: member_object.id,
                     inline: false
                 },
                 {
-                    emote: 'level',
+                    emote: 'Level',
                     role: member_object.level,
                     inline: false
                 },
                 {
-                    emote: 'regex',
+                    emote: 'Regex',
                     role: member_object.regex ? 'not set' : member_object.regex,
                     inline: false
                 },
@@ -38,7 +36,7 @@ module.exports = async (
                     inline: false
                 },
                 {
-                    emote: 'admin',
+                    emote: 'Admin',
                     role: member_object.admin ? 'true' : 'false',
                     inline: false
                 }
@@ -50,6 +48,6 @@ module.exports = async (
             null)
         );
 
-        return resolve({ result: true, value: null });
+        return resolve({ result: true, value: '' });
     });
 };

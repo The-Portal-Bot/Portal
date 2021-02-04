@@ -1,22 +1,35 @@
 import { Client, Guild } from "discord.js";
-import { included_in_portal_guilds } from "../libraries/guildOps";
-import { insert_guild, update_portal_managed_guilds } from "../libraries/helpOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { guild_exists, insert_guild } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	args: { client: Client, guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
+	args: { client: Client, guild: Guild }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		// Inserting guild to portal's guild list if it does not exist
-		if (!included_in_portal_guilds(args.guild.id, args.guild_list))
-			insert_guild(args.guild.id, args.guild_list, args.client);
-
-		update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
-
-		return resolve({
-			result: true,
-			value: `portal joined guild ${args.guild.name} [${args.guild.id}]`
-		});
+		guild_exists(args.guild.id)
+			.then(exists => {
+				if (exists) {
+					return resolve({
+						result: false,
+						value: `guild ${args.guild.name} [${args.guild.id}] already in portal`
+					});
+				} else {
+					insert_guild(args.guild.id, args.client)
+						.then(r => {
+							return resolve({
+								result: !!r,
+								value: `Portal ` + !!r 
+									? `joined guild ${args.guild.name} [${args.guild.id}]`
+									: `failed to join ${args.guild.name} [${args.guild.id}]`
+							});
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: `portal failed to joined guild ${args.guild.name} [${args.guild.id}]`
+							});
+						});
+				}
+			});
 	});
 };

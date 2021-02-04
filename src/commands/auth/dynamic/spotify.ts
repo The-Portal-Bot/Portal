@@ -1,99 +1,121 @@
 import { Client, Message, TextChannel } from "discord.js";
-import {
-	delete_channel, included_in_url_list, is_announcement_channel,
-	is_music_channel, is_spotify_channel, getOptions, create_channel
-} from "../../../libraries/guildOps";
+import { create_channel, delete_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { update_guild, ChannelTypePrtl } from "../../../libraries/mongoOps";
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
-			return resolve({ result: true, value: 'guild could not be fetched' });
-		}
+		if (!message.guild)
+			return resolve({
+				result: false,
+				value: 'guild could not be fetched'
+			});
 
 		if (args.length === 0) {
 			if (is_spotify_channel(message.channel.id, guild_object)) {
-				return resolve({
-					result: true,
-					value: 'this already is, the Spotify channel'
-				});
+				update_guild(guild_object.id, 'spotify', 'null')
+					.then(r => {
+						console.log('GUIDELINES 1\n\n');
+						return resolve({
+							result: r,
+							value: r
+								? 'successfully removed spotify channel'
+								: 'failed to remove spotify channel'
+						});
+					})
+					.catch(e => {
+						console.log('GUIDELINES 2\n\n');
+						return resolve({
+							result: false,
+							value: 'failed to remove spotify channel'
+						});
+					});
 			}
-			if (is_music_channel(message.channel.id, guild_object)) {
+			else if (is_music_channel(message.channel.id, guild_object)) {
 				resolve({
-					result: true,
+					result: false,
 					value: 'this can\'t be set as a Spotify channel for it is the Music channel'
 				});
 			}
-			if (is_announcement_channel(message.channel.id, guild_object)) {
+			else if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
-					result: true,
+					result: false,
 					value: 'this can\'t be set as the Spotify channel for it is the Announcement channel'
 				});
 			}
-			if (included_in_url_list(message.channel.id, guild_object)) {
+			else if (included_in_url_list(message.channel.id, guild_object)) {
 				return resolve({
-					result: true,
+					result: false,
 					value: 'this can\'t be set as the Spotify channel for it is an url channel'
 				});
 			}
 		}
 
-		const spotify = message.guild.channels.cache
-			.find(channel => channel.id == guild_object.spotify);
+		if (!is_spotify_channel(message.channel.id, guild_object)) {
+			const spotify = message.guild.channels.cache
+				.find(channel => channel.id == guild_object.spotify);
 
-		if (spotify) delete_channel(<TextChannel>spotify, message);
+			if (spotify) delete_channel(ChannelTypePrtl.spotify, <TextChannel>spotify, message);
 
-		if (args.length === 0) {
-			guild_object.spotify = message.channel.id;
+			if (args.length === 0) {
+				update_guild(guild_object.id, 'spotify', message.channel.id)
+					.then(r => {
+						return resolve({
+							result: r, value: r
+								? 'set as the spotify channel successfully'
+								: 'failed to set as the spotify channel'
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false, value: 'failed to set as the spotify channel'
+						});
+					});
 
-			return resolve({
-				result: true,
-				value: 'this is now the Spotify channel'
-			});
-		}
-		else if (args.length > 0) {
-			const spotify_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-			const spotify_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
-			const spotify_options = getOptions(message.guild, 'displays music users in portal channels are listening too', false);
+				return resolve({
+					result: true,
+					value: 'this is now the Spotify channel'
+				});
+			} else if (args.length > 0) {
+				let spotify_channel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+				let spotify_category: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
-			if (spotify_channel !== '') {
+				if (spotify_channel === '' && spotify_category !== '') {
+					spotify_channel = spotify_category;
+					spotify_category = null;
+				}
+
+				const spotify_options = getOptions(message.guild, 'displays song from spotify users in portal channels are listening too', false);
+
 				create_channel(
 					message.guild, spotify_channel,
 					spotify_options, spotify_category
 				)
-					.then(response => {
-						if (response.result) {
-							guild_object.spotify = response.value;
-							return resolve({ result: true, value: 'spotify channel and category created' });
+					.then(r_create => {
+						if (r_create.result) {
+							update_guild(guild_object.id, 'spotify', r_create.value)
+								.then(r_spotify => {
+									return resolve({
+										result: r_spotify, value: r_spotify
+											? 'created spotify channel successfully'
+											: 'failed to create a spotify channel'
+									});
+								})
+								.catch(e => {
+									return resolve({
+										result: false, value: 'failed to create a spotify channel'
+									});
+								});
 						} else {
-							return resolve(response);
+							return resolve(r_create);
 						}
 					})
-					.catch(error => { return resolve(error); });
-			}
-			else if (spotify_channel === '' && spotify_category !== '') {
-				create_channel(
-					message.guild, spotify_category,
-					spotify_options, null
-				)
-					.then(response => {
-						if (response.result) {
-							guild_object.spotify = response.value;
-							return resolve({ result: true, value: 'spotify channel created' });
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
-			}
-			else {
+					.catch(e => { return resolve(e); });
+
+			} else {
 				return resolve({
 					result: false,
 					value: 'you can run `./help spotify` for help'

@@ -57,18 +57,9 @@ export function add_points_time(member_prtl: MemberPrtl, speed: string): boolean
 	return true;
 };
 
-export function update_timestamp(voiceState: VoiceState, guild_list: GuildPrtl[]): number | boolean {
+export function update_timestamp(voiceState: VoiceState, guild_object: GuildPrtl): number | boolean {
 	if (voiceState.member && voiceState.member.user.bot) {
-		const guild = guild_list.find(guild => {
-			if (voiceState && voiceState.guild)
-				return guild.id === voiceState.guild.id;
-		});
-
-		if (guild === undefined) {
-			return false;
-		}
-
-		const member_prtl = guild.member_list.find(m => {
+		const member_prtl = guild_object.member_list.find(m => {
 			if (voiceState && voiceState.member)
 				return m.id === voiceState.member.id;
 		});
@@ -77,9 +68,9 @@ export function update_timestamp(voiceState: VoiceState, guild_list: GuildPrtl[]
 			return false;
 		}
 
-		const ranks = guild.ranks;
+		const ranks = guild_object.ranks;
 		const member = voiceState.member;
-		const speed = guild.level_speed;
+		const speed = guild_object.level_speed;
 		const cached_level = member_prtl.level;
 
 		if (member_prtl.timestamp === null) {
@@ -98,15 +89,13 @@ export function update_timestamp(voiceState: VoiceState, guild_list: GuildPrtl[]
 	return false;
 };
 
-export function add_points_message(message: Message, guild_list: GuildPrtl[]): number | boolean {
+export function add_points_message(message: Message, guild_object: GuildPrtl): number | boolean {
 	if (!message || !message.guild) return false;
-	const guild = guild_list.find(guild => guild.id === message?.guild?.id);
-	if (!guild) return false;
-	const member = guild.member_list.find(m => m.id === message?.author?.id);
+	const member = guild_object.member_list.find(m => m.id === message?.author?.id);
 	if (!member) return false;
 
 	let speed_num: number = level_speed.normal;
-	switch (guild.level_speed) {
+	switch (guild_object.level_speed) {
 		case 'slow': speed_num = level_speed.slow;
 		case 'normal': speed_num = level_speed.normal;
 		case 'fast': speed_num = level_speed.fast;

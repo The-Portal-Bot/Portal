@@ -1,93 +1,117 @@
-import { Client, Message } from "discord.js";
-import {
-	create_channel, getOptions, included_in_url_list,
-	is_announcement_channel, is_music_channel, is_spotify_channel
-} from "../../../libraries/guildOps";
+import { Message } from "discord.js";
+import { create_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
+import { insert_url, remove_url } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	client: Client, message: Message, args: string[],
-	guild_list: GuildPrtl[], portal_managed_guilds_path: string
-) => {
+	message: Message, args: string[], guild_object: GuildPrtl
+): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const guild_object = guild_list.find(g => g.id === message.guild?.id);
-		if (!guild_object) {
-			return resolve({ result: true, value: 'portal guild could not be fetched' });
-		}
-		if (!message.guild) {
-			return resolve({ result: true, value: 'guild could not be fetched' });
-		}
+		if (!message.guild)
+			return resolve({
+				result: false,
+				value: 'guild could not be fetched'
+			});
 
 		if (args.length === 0) {
 			if (included_in_url_list(message.channel.id, guild_object)) {
-				resolve({
-					result: true,
-					value: 'this already is a URL channel',
-				});
+				remove_url(guild_object.id, message.channel.id)
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? 'successfully removed url channel'
+								: 'failed to remove url channel'
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: 'failed to remove url channel'
+						});
+					});
 			}
-			if (is_announcement_channel(message.channel.id, guild_object)) {
-				resolve({
-					result: true,
+			else if (is_announcement_channel(message.channel.id, guild_object)) {
+				return resolve({
+					result: false,
 					value: 'this can\'t be set as a URL channel for it is the Announcement channel',
 				});
 			}
-			if (is_spotify_channel(message.channel.id, guild_object)) {
-				resolve({
-					result: true,
+			else if (is_spotify_channel(message.channel.id, guild_object)) {
+				return resolve({
+					result: false,
 					value: 'this can\'t be set as a URL channel for it is the Spotify channel',
 				});
 			}
-			if (is_music_channel(message.channel.id, guild_object)) {
-				resolve({
+			else if (is_music_channel(message.channel.id, guild_object)) {
+				return resolve({
 					result: true,
 					value: 'this can\'t be set as a URL channel for it is the Music channel',
 				});
 			}
-		}
+			else {
+				insert_url(guild_object.id, message.channel.id)
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? 'set as an url channel successfully'
+								: 'failed to set as an url channel'
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: 'failed to set as an url channel'
+						});
+					});
+			}
+		} else if (args.length > 0) {
+			let url_channel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+			let url_category: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
-		if (args.length === 0) {
-			guild_object.url_list.push(message.channel.id);
+			if (url_channel === '' && url_category !== '') {
+				url_channel = url_category;
+				url_category = null;
+			}
 
-			resolve({ result: true, value: 'this is now the url channel' });
-		}
-		else if (args.length > 0) {
-			const url_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-			const url_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 			const spotify_options = getOptions(message.guild, 'url only channel', true);
 
-			if (url_channel !== '') {
-				create_channel(
-					message.guild, url_channel,
-					spotify_options, url_category
-				)
-					.then(response => {
-						if (response.result) {
-							guild_object.url_list.push(response.value);
-							return resolve({ result: true, value: 'url channel and category created' });
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
-			}
-			else if (url_channel === '' && url_category !== '') {
-				create_channel(
-					message.guild, url_category,
-					spotify_options, null
-				)
-					.then(response => {
-						if (response.result) {
-							guild_object.url_list.push(response.value);
-							return resolve({ result: true, value: 'url channel created' });
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
-			}
-			else {
-				resolve({ result: false, value: 'you can run `./help url` for help' });
-			}
+			create_channel(
+				message.guild, url_channel,
+				spotify_options, url_category
+			)
+				.then(r_create => {
+					if (r_create.result) {
+						insert_url(guild_object.id, r_create.value)
+							.then(r_url => {
+								return resolve({
+									result: r_url,
+									value: r_url
+										? 'created url channel and category successfully'
+										: 'failed to create a url channel'
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: 'failed to create a url channel'
+								});
+							});
+					} else {
+						return resolve(r_create);
+					}
+				})
+				.catch(e => {
+					return resolve(e);
+				});
+		}
+		else {
+			return resolve({
+				result: false,
+				value: 'you can run `./help url` for help'
+			});
 		}
 	});
 };

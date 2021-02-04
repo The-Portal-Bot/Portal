@@ -1,21 +1,24 @@
 import { Guild } from "discord.js";
-import { delete_guild } from "../libraries/guildOps";
-import { update_portal_managed_guilds } from "../libraries/helpOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { remove_guild } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
-
 module.exports = async (
-	args: { guild: Guild, guild_list: GuildPrtl[], portal_managed_guilds_path: string }
+	args: { guild: Guild }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-
-		delete_guild(args.guild.id, args.guild_list);
-		update_portal_managed_guilds(args.portal_managed_guilds_path, args.guild_list);
-
-		return resolve({
-			result: true,
-			value: `portal has been removed from: ${args.guild.name} [id: ${args.guild.id}]`,
-		});
+		remove_guild(args.guild.id)
+			.then(r => {
+				return resolve({
+					result: r,
+					value: `guild ${args.guild.name} [${args.guild.id}] ` +
+						`${r ? 'removed from portal' : 'failed to be removed from portal'}`
+				});
+			})
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: `guild ${args.guild.name} [${args.guild.id}] failed to be removed from portal`
+				});
+			});
 	});
 };
