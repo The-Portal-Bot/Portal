@@ -492,11 +492,13 @@ export async function insert_role_assigner(
                 id: guild_id
             },
             {
-                role_list: new_role_assigner
+                $push: {
+                    role_list: new_role_assigner
+                }
             }
         )
             .then(r => { return resolve(!!r); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .catch(e => { return resolve(false) });
     });
 };
 

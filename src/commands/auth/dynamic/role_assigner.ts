@@ -25,16 +25,15 @@ function create_role_message(
 				insert_role_assigner(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
 					.then(r => {
 						return resolve({
-
 							result: r,
 							value: r
-								? 'set new ranks successfully'
+								? 'Keep in mind that Portal role must be over any role you wish it to be able to distribute.\n' +
+								'In order to change it, please head to your servers settings and put Portal role above them.'
 								: 'failed to set new ranks'
 						});
 					})
 					.catch(e => {
 						return resolve({
-
 							result: false,
 							value: 'failed to set new ranks'
 						});
@@ -42,7 +41,6 @@ function create_role_message(
 			})
 			.catch(e => {
 				return resolve({
-
 					result: false,
 					value: 'failed to create role assigner message'
 				})
@@ -142,10 +140,14 @@ module.exports = async (
 			role_emb_display_give.concat(role_emb_display_strip),
 			role_map
 		)
-
-		return resolve({
-			result: true,
-			value: 'role message has been created'
-		});
+			.then(r => {
+				return resolve(r);
+			})
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: e
+				})
+			});
 	});
 };

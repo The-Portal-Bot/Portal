@@ -11,7 +11,7 @@ module.exports = async (
         if (!guild) return resolve({ result: false, value: 'could not fetch guild' });
 
         let portal_state = [<Field>{ emote: 'Portal Channels', role: '', inline: false }];
-        console.log('guild_object.portal_list :>> ', guild_object.portal_list);
+
         const portals = guild_object.portal_list.map(p => {
             const voices = p.voice_list.map((v, index_v) => {
                 const voice_channel = guild.channels.cache.find(c => c.id === v.id);
