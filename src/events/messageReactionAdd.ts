@@ -265,7 +265,7 @@ module.exports = async (
 	return new Promise((resolve) => {
 		if (args.user.bot) {
 			return resolve({
-				result: true,
+				result: false,
 				value: 'not handling bot reactions'
 			});
 		} else if (args.messageReaction?.message?.guild) {
