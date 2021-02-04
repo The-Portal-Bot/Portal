@@ -311,7 +311,7 @@ export async function update_voice(
     return new Promise((resolve) => {
         const placeholder: any = {};
         placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
-        console.log('placeholder :>> ', placeholder);
+
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
