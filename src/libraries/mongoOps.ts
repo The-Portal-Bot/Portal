@@ -83,7 +83,7 @@ export async function update_guild(
                 'new': true
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -146,10 +146,10 @@ export async function insert_guild(
             level_speed: level_speed,
             premium: premium
         })
-            .then((r) => {
+            .then(r => {
                 return resolve(!!r);
             })
-            .catch((e) => {
+            .catch(e => {
                 console.log('e inserting guild: ', e);
                 return resolve(false);
             });
@@ -163,7 +163,7 @@ export async function remove_guild(
         GuildPrtlMdl.deleteOne({
             id: guild_id
         })
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -191,7 +191,7 @@ export async function update_member(
                 ]
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -210,7 +210,7 @@ export async function insert_member(
                 }
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -230,7 +230,7 @@ export async function remove_member(
                     }
                 }
             })
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -258,7 +258,7 @@ export async function update_portal(
                 ]
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -277,7 +277,7 @@ export async function insert_portal(
                 }
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -298,7 +298,7 @@ export async function remove_portal(
                 }
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -310,8 +310,8 @@ export async function update_voice(
 ): Promise<boolean> {
     return new Promise((resolve) => {
         const placeholder: any = {};
-        placeholder['portal_list.$[p].voice_list.$[v]' + key] = value;
-
+        placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
+        console.log('placeholder :>> ', placeholder);
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -323,11 +323,11 @@ export async function update_voice(
                 'new': true,
                 'arrayFilters': [
                     { 'p.id': portal_id },
-                    { "v.id": voice_id }
+                    { 'v.id': voice_id }
                 ]
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -352,7 +352,7 @@ export async function insert_voice(
                 ]
             }
         )
-            .then(r => { resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { resolve(!!r) })
             .catch(e => { resolve(false) });
     });
 };
@@ -377,7 +377,7 @@ export async function remove_voice(
                 ]
             }
         )
-            .then(r => { resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { resolve(!!r) })
             .catch(e => { resolve(false) });
     });
 };
@@ -398,7 +398,7 @@ export async function insert_url(
                 }
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -416,7 +416,7 @@ export async function remove_url(
                     url_list: remove_url
                 }
             })
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -438,7 +438,7 @@ export async function insert_authorised_role(
                 }
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -457,7 +457,7 @@ export async function remove_authorised_role(
                 }
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { return resolve(false) });
     });
 };
@@ -476,7 +476,7 @@ export async function set_ranks(
                 ranks: new_ranks
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -497,7 +497,7 @@ export async function insert_role_assigner(
                 }
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { return resolve(false) });
     });
 };
@@ -517,7 +517,7 @@ export async function remove_role_assigner(
                 }
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -539,7 +539,7 @@ export async function insert_music_video(
                 }
             }
         )
-            .then(r => { console.log('r :>> ', r); return resolve(!!r) })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -558,7 +558,7 @@ export async function clear_music_vote(
                 }
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -577,7 +577,7 @@ export async function insert_music_vote(
                 }
             }
         )
-            .then(r => { return resolve(!!r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { console.log('e :>> ', e); return resolve(false) });
     });
 };
@@ -597,7 +597,7 @@ export async function set_music_data(
                 dispatcher: undefined
             }
         )
-            .then(r => { return resolve(r); })
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
             .catch(e => { return resolve(false); });
     });
 }

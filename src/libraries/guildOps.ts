@@ -576,7 +576,7 @@ export function regex_interpreter(
 	let last_variable = '';
 	let last_attribute = '';
 	let new_channel_name = '';
-	console.log('regex :>> ', regex);
+
 	for (let i = 0; i < regex.length; i++) {
 		if (regex[i] === variable_prefix) {
 
