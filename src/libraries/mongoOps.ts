@@ -620,7 +620,7 @@ export async function deleted_channel_sync(
             .then(guild_object => {
                 if (guild_object) {
                     // check if it is a Portal or a Voice channel
-                    if (typeof channel_to_remove === typeof VoiceChannel) {
+                    if (!channel_to_remove.isText()) {
                         const current_voice = <VoiceChannel>channel_to_remove;
                         guild_object.portal_list.some(p => {
                             if (p.id === current_voice.id) {
@@ -630,7 +630,9 @@ export async function deleted_channel_sync(
                                             ? resolve(ChannelTypePrtl.portal)
                                             : resolve(ChannelTypePrtl.unknown)
                                     })
-                                    .catch(() => resolve(ChannelTypePrtl.unknown));
+                                    .catch(() => {
+                                        return resolve(ChannelTypePrtl.unknown)
+                                    });
                                 return true;
                             }
 
@@ -642,7 +644,9 @@ export async function deleted_channel_sync(
                                                 ? resolve(ChannelTypePrtl.voice)
                                                 : resolve(ChannelTypePrtl.unknown)
                                         })
-                                        .catch(() => resolve(ChannelTypePrtl.unknown));
+                                        .catch(() => {
+                                            return resolve(ChannelTypePrtl.unknown)
+                                        });
                                     return true;
                                 }
                             });
@@ -657,7 +661,9 @@ export async function deleted_channel_sync(
                                         ? resolve(ChannelTypePrtl.spotify)
                                         : resolve(ChannelTypePrtl.unknown)
                                 })
-                                .catch(() => resolve(ChannelTypePrtl.unknown));
+                                .catch(() => {
+                                    return resolve(ChannelTypePrtl.unknown)
+                                });
                         } else if (guild_object.announcement === current_text.id) {
                             update_guild(current_text.guild.id, 'announcement', 'null')
                                 .then(r => {

@@ -11,15 +11,15 @@ module.exports = async (
         if (!guild) return resolve({ result: false, value: 'could not fetch guild' });
 
         let portal_state = [<Field>{ emote: 'Portal Channels', role: '', inline: false }];
-
-        const portals = guild_object.portal_list.map((p, index_p) => {
+        console.log('guild_object.portal_list :>> ', guild_object.portal_list);
+        const portals = guild_object.portal_list.map(p => {
             const voices = p.voice_list.map((v, index_v) => {
-                const channel = guild.channels.cache.find(c => c.id === v.id);
-                return `${index_v + 1}. ${channel ? channel.name : 'undefined'}`;
+                const voice_channel = guild.channels.cache.find(c => c.id === v.id);
+                return `${index_v + 1}. ${voice_channel ? voice_channel.name : 'removed'}`;
             }).join('\n');
-            const channel = guild.channels.cache.find(c => c.id === p.id);
+            const portal_channel = guild.channels.cache.find(c => c.id === p.id);
 
-            return <Field>{ emote: `${channel ? channel.name : 'undefined'}`, role: voices, inline: true }
+            return <Field>{ emote: `${portal_channel ? portal_channel.name : 'removed'}`, role: voices, inline: true }
         });
         if (portals)
             portal_state = portal_state.concat(portals);
@@ -30,7 +30,7 @@ module.exports = async (
         if (music)
             portal_state.push(<Field>{
                 emote: `Music channel`,
-                role: `${music ? music.name : 'undefined'}`,
+                role: `${music ? music.name : 'removed'}`,
                 inline: true
             });
 
@@ -38,7 +38,7 @@ module.exports = async (
         if (spotify)
             portal_state.push(<Field>{
                 emote: 'Spotify channel',
-                role: `${spotify ? spotify.name : 'undefined'}`,
+                role: `${spotify ? spotify.name : 'removed'}`,
                 inline: true
             });
 
@@ -46,13 +46,13 @@ module.exports = async (
         if (announcement)
             portal_state.push(<Field>{
                 emote: 'Announcement channel',
-                role: `${announcement ? announcement.name : 'undefined'}`,
+                role: `${announcement ? announcement.name : 'removed'}`,
                 inline: true
             });
 
         const urls = guild_object.url_list.map((u_id, index_u) => {
             const channel = guild.channels.cache.find(c => c.id === u_id);
-            return `${index_u + 1}. ${channel ? channel.name : 'undefined'}`;
+            return `${index_u + 1}. ${channel ? channel.name : 'removed'}`;
         });
 
         const url_sum = <Field>{
