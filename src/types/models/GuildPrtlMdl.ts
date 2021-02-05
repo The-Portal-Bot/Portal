@@ -1,4 +1,4 @@
-import { model, Schema, Document } from "mongoose";
+import { model, Schema } from "mongoose";
 import GiveRolePrtlSchm from "./schemas/GiveRolePrtlSchm";
 import MemberPrtlSchm from "./schemas/MemberPrtlSchm";
 import PortalChannelPrtlSchm from "./schemas/PortalChannelPrtlSchm";
@@ -57,6 +57,7 @@ const GuildPrtlSch = new Schema(
 		portal_list: { type: [PortalChannelPrtlSchm], required: true },
 		member_list: { type: [MemberPrtlSchm], required: true },
 		url_list: { type: [String], required: true },
+		ignore_list: { type: [String], required: true },
 		role_list: { type: [GiveRolePrtlSchm], required: true },
 		ranks: { type: [Rank], required: true },
 		auth_role: { type: [String], required: true },

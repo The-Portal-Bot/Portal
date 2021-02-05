@@ -7,6 +7,7 @@ export class MemberPrtl {
 	public timestamp: Date | null;
 	public dj: boolean;
 	public admin: boolean;
+	public ignored: boolean;
 	public regex: string | null;
 
 	constructor(
@@ -18,6 +19,7 @@ export class MemberPrtl {
 		timestamp: Date | null,
 		dj: boolean,
 		admin: boolean,
+		ignored: boolean,
 		regex: string | null
 	) {
 		this.id = id;
@@ -28,6 +30,7 @@ export class MemberPrtl {
 		this.timestamp = timestamp;
 		this.dj = dj;
 		this.admin = admin;
+		this.ignored = ignored;
 		this.regex = regex;
 	}
 };

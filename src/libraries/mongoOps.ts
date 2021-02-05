@@ -7,6 +7,7 @@ import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 import { Rank } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
+
 import { stop } from "./musicOps";
 
 // fetch guilds
@@ -100,7 +101,7 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
         if (!member.user.bot)
             if (client.user && member.id !== client.user.id)
                 member_list.push(
-                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, 'null')
+                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, false, 'null')
                 );
     });
 
@@ -113,6 +114,7 @@ export async function insert_guild(
     const id: string = guild_id;
     const portal_list: PortalChannelPrtl[] = [];
     const member_list = create_member_list(guild_id, client);
+    const ignore_list: string[] = [];
     const url_list: string[] = [];
     const role_list: GiveRolePrtl[] = [];
     const ranks: Rank[] = [];
@@ -132,6 +134,7 @@ export async function insert_guild(
             id: id,
             portal_list: portal_list,
             member_list: member_list,
+            ignore_list: ignore_list,
             url_list: url_list,
             role_list: role_list,
             ranks: ranks,
@@ -199,7 +202,7 @@ export async function update_member(
 export async function insert_member(
     new_member: GuildMember
 ): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, null);
+    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, false, null);
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
@@ -414,6 +417,45 @@ export async function remove_url(
             {
                 $pull: {
                     url_list: remove_url
+                }
+            })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+//
+
+export async function insert_ignore(
+    guild_id: string, new_ignore: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $push: {
+                    ignore_list: new_ignore
+                }
+            }
+        )
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+export async function remove_ignore(
+    guild_id: string, remove_ignore: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $pull: {
+                    ignore_list: remove_ignore
                 }
             })
             .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })

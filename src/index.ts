@@ -3,11 +3,11 @@ import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
-import { included_in_url_list } from './libraries/guildOps';
+import { included_in_url_list, included_in_ignore_list } from './libraries/guildOps';
 import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
-import { fetch_guild, remove_url, set_music_data } from "./libraries/mongoOps";
+import { fetch_guild, remove_url, set_music_data, remove_ignore } from "./libraries/mongoOps";
 import { start, stop } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
@@ -168,7 +168,7 @@ client.on('message', async (message: Message) => {
 
 	// Ignore any direct message
 	if (message.channel.type === 'dm') return;
-
+	
 	// check if something written in portal channels
 	portal_channel_handler(message)
 		.then(r => {
@@ -248,6 +248,9 @@ client.on('message', async (message: Message) => {
 								'server is not in database, please contact portal support', undefined, client);
 							return false;
 						}
+
+						if (guild_object.member_list.some(m => m.ignored))
+							return;
 
 						if (!command_options) {
 							message_reply(false, message.channel, message, message.author,
@@ -350,7 +353,6 @@ function command_loader(
 }
 
 function event_loader(event: string, args: any): void {
-	// Ignore other bots and also itself ('botception')
 	console.log(`├─ event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
@@ -374,12 +376,8 @@ function event_loader(event: string, args: any): void {
 				}
 			}
 
-			if (config.debug && response) {
-				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
-				const reset = '\x1b[0m';
-				const value_arr = response.value.split('\n');
-				console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
-			} else if (response && !response.result) {
+			const shouldReply = event_config_json.find(e => e.name ===event);
+			if (((config.debug || (shouldReply && shouldReply.reply)) && response) || response.result === false) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
 				const value_arr = response.value.split('\n');
@@ -396,11 +394,27 @@ async function portal_channel_handler(message: Message): Promise<boolean> {
 				if (!guild_object)
 					return resolve(true);
 
-				if (included_in_url_list(message.channel.id, guild_object)) {
+				if (included_in_ignore_list(message.channel.id, guild_object)) {
+					if (message.content === './ignore') {
+						remove_ignore(guild_object.id, message.channel.id)
+							.then(r => {
+								message_reply(true, message.channel, message, message.author,
+									r ? 'successfully removed from ignored channels' : 'failed to remove from ignored channels',
+									guild_object, client);
+							})
+							.catch(e => {
+								message_reply(false, message.channel, message, message.author,
+									'failed to remove from ignored channels', guild_object, client);
+							});
+					}
+
+					return resolve(true);
+				}
+				else if (included_in_url_list(message.channel.id, guild_object)) {
 					if (message.content === './url') {
 						remove_url(guild_object.id, message.channel.id)
 							.then(r => {
-								message_reply(false, message.channel, message, message.author,
+								message_reply(true, message.channel, message, message.author,
 									r ? 'successfully removed url channel' : 'failed to remove url channel',
 									guild_object, client);
 							})
@@ -434,7 +448,7 @@ async function portal_channel_handler(message: Message): Promise<boolean> {
 						const music_data = new MusicData('null', 'null', []);
 						set_music_data(guild_object.id, music_data)
 							.then(r => {
-								message_reply(false, message.channel, message, message.author,
+								message_reply(true, message.channel, message, message.author,
 									r ? 'successfully removed music channel' : 'failed to remove music channel',
 									guild_object, client);
 							})

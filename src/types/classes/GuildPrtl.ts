@@ -26,6 +26,7 @@ export class GuildPrtl {
 	public id: string;
 	public portal_list: PortalChannelPrtl[];
 	public member_list: MemberPrtl[];
+	public ignore_list: string[];
 	public url_list: string[];
 	public role_list: GiveRolePrtl[];
 	public ranks: Rank[];
@@ -44,6 +45,7 @@ export class GuildPrtl {
 		id: string,
 		portal_list: PortalChannelPrtl[],
 		member_list: MemberPrtl[],
+		ignore_list: string[],
 		url_list: string[],
 		role_list: GiveRolePrtl[],
 		ranks: Rank[],
@@ -61,6 +63,7 @@ export class GuildPrtl {
 		this.id = id;
 		this.portal_list = portal_list;
 		this.member_list = member_list;
+		this.ignore_list = ignore_list;
 		this.url_list = url_list;
 		this.role_list = role_list;
 		this.ranks = ranks;

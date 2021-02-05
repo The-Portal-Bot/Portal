@@ -64,6 +64,20 @@ module.exports = async (
         if (url_sum)
             portal_state = portal_state.concat(url_sum);
 
+        const ignores = guild_object.ignore_list.map((u_id, index_u) => {
+            const channel = guild.channels.cache.find(c => c.id === u_id);
+            return `${index_u + 1}. ${channel ? channel.name : 'removed'}`;
+        });
+
+        const ignore_sum = <Field>{
+            emote: `ignore channels`,
+            role: ignores.join('\n'),
+            inline: false
+        };
+
+        if (ignore_sum)
+            portal_state = portal_state.concat(ignore_sum);
+
         message.channel.send(create_rich_embed(
             'Portal state - current state of Portal',
             null,
