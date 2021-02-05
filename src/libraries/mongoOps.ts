@@ -100,7 +100,7 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
         if (!member.user.bot)
             if (client.user && member.id !== client.user.id)
                 member_list.push(
-                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, 'null')
+                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, false, 'null')
                 );
     });
 
@@ -199,7 +199,7 @@ export async function update_member(
 export async function insert_member(
     new_member: GuildMember
 ): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, null);
+    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, false, null);
     return new Promise((resolve) => {
         // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
@@ -414,6 +414,45 @@ export async function remove_url(
             {
                 $pull: {
                     url_list: remove_url
+                }
+            })
+            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+//
+
+export async function insert_mute(
+    guild_id: string, new_mute: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $push: {
+                    mute_list: new_mute
+                }
+            }
+        )
+            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
+            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+    });
+};
+
+export async function remove_mute(
+    guild_id: string, remove_mute: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $pull: {
+                    mute_list: remove_mute
                 }
             })
             .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })

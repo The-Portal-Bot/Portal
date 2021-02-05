@@ -17,8 +17,6 @@ async function reaction_role_manager(
 	guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		clear_user_reactions(messageReaction, user);
-
 		if (!messageReaction.message.guild) return resolve({
 			result: false,
 			value: 'message has no guild'
@@ -26,6 +24,7 @@ async function reaction_role_manager(
 
 		const role_list_object = guild_object.role_list
 			.find(r => r.message_id === messageReaction.message.id);
+
 		if (!role_list_object) return resolve({
 			result: false,
 			value: 'message is not role assigner'
@@ -47,6 +46,8 @@ async function reaction_role_manager(
 							current_member.roles.add(role_to_give)
 								.then(member => {
 									if (!!member) {
+										clear_user_reactions(messageReaction, user);
+
 										resolve({
 											result: true,
 											value: `you have been assigned to ${role_map.role_id}`
@@ -79,6 +80,8 @@ async function reaction_role_manager(
 							current_member.roles.remove(role_to_strip)
 								.then(member => {
 									if (!!member) {
+										clear_user_reactions(messageReaction, user);
+
 										resolve({
 											result: true,
 											value: `you have been removed from ${role_map.role_id}`
@@ -114,10 +117,19 @@ async function reaction_music_manager(
 	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User, dispatchers: { id: string, dispatcher: StreamDispatcher }[]
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		if (!messageReaction.message.guild) return resolve({ result: false, value: 'could not fetch message\'s guild' });
+		if (!messageReaction.message.guild) return resolve({
+			result: false,
+			value: 'could not fetch message\'s guild'
+		});
 		const member_object = guild_object.member_list.find(m => m.id === user.id);
-		if (!guild_object.music_data) return resolve({ result: false, value: 'guild has no music channel' });
-		if (guild_object.music_data.message_id !== messageReaction.message.id) return resolve({ result: false, value: 'message is not music player' });
+		if (!guild_object.music_data) return resolve({
+			result: false,
+			value: 'guild has no music channel'
+		});
+		if (guild_object.music_data.message_id !== messageReaction.message.id) return resolve({
+			result: false,
+			value: 'message is not music player'
+		});
 
 		if (!guild_object.music_data.votes) guild_object.music_data.votes = [];
 		let portal_voice_vonnection: VoiceConnection | undefined = undefined;
@@ -129,14 +141,20 @@ async function reaction_music_manager(
 			});
 		if (!portal_voice_vonnection) {
 			clear_user_reactions(messageReaction, user);
-			return resolve({ result: false, value: 'portal is not connected' });
+			return resolve({
+				result: false,
+				value: 'portal is not connected'
+			});
 		}
 
 		const is_member_in_same_channel_as_portal = portal_voice_vonnection.channel.members
 			.some(member => member.id === user.id);
 		if (!is_member_in_same_channel_as_portal) {
 			clear_user_reactions(messageReaction, user);
-			return resolve({ result: false, value: 'you must be in the same channel with portal to control music' });
+			return resolve({
+				result: false,
+				value: 'you must be in the same channel with portal to control music'
+			});
 		}
 
 		const dispatcher_object = dispatchers.find(d => d.id === guild_object.id)
@@ -148,7 +166,12 @@ async function reaction_music_manager(
 
 				play(guild_object, client, messageReaction.message, messageReaction.message.guild, dispatchers)
 					.then(r => { return resolve(r); })
-					.catch(e => { return resolve({ result: false, value: e }); });
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: e
+						});
+					});
 				break;
 			}
 			case '⏸': {
@@ -156,7 +179,12 @@ async function reaction_music_manager(
 
 				pause(guild_object, dispatcher)
 					.then(r => { return resolve(r); })
-					.catch(e => { return resolve({ result: false, value: e }); });
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: e
+						});
+					});
 				break;
 			}
 			case '⏹': {
@@ -174,21 +202,40 @@ async function reaction_music_manager(
 				if (votes >= users / 2) {
 					return stop(guild_object, messageReaction.message.guild, dispatcher)
 						.then(r => { guild_object.music_data.votes = []; return resolve(r) })
-						.catch(e => { return resolve({ result: false, value: e }) });
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: e
+							})
+						});
 				}
 
 				const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-				if (!guild) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)` });
+				if (!guild) return resolve({
+					result: false,
+					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)`
+				});
 				const member = guild.members.cache.find(m => m.id === user.id);
-				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)` });
+				if (!member) return resolve({
+					result: false,
+					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)`
+				});
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return stop(guild_object, messageReaction.message.guild, dispatcher)
 						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
-						.catch(e => { return resolve({ result: false, value: e }) });
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: e
+							})
+						});
 				}
 
-				return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)` });
+				return resolve({
+					result: false,
+					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)`
+				});
 			}
 			case '⏭': {
 				clear_user_reactions(messageReaction, user);
@@ -203,21 +250,40 @@ async function reaction_music_manager(
 				if (votes >= users / 2) {
 					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild, dispatcher)
 						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
-						.catch(e => { return resolve({ result: false, value: e }) });
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: e
+							})
+						});
 				}
 
 				const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-				if (!guild) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)` });
+				if (!guild) return resolve({
+					result: false,
+					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+				});
 				const member = guild.members.cache.find(m => m.id === user.id);
-				if (!member) return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)` });
+				if (!member) return resolve({
+					result: false,
+					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+				});
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return skip(guild_object, client, messageReaction.message, messageReaction.message.guild, dispatcher)
 						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
-						.catch(e => { return resolve({ result: false, value: e }) });
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: e
+							})
+						});
 				}
 
-				return resolve({ result: false, value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)` });
+				return resolve({
+					result: false,
+					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+				});
 			}
 			case '📜': {
 				clear_user_reactions(messageReaction, user);
@@ -227,7 +293,10 @@ async function reaction_music_manager(
 					? '\n' + current_music_queue.map((video, i) => `${i + 1}. **${video.title}`).join('**\n') + '**'
 					: ' empty';
 
-				return resolve({ result: true, value: `music queue: ${music_queue}` });
+				return resolve({
+					result: true,
+					value: `music queue: ${music_queue}`
+				});
 			}
 			case '🧹': {
 				clear_user_reactions(messageReaction, user);
@@ -235,11 +304,17 @@ async function reaction_music_manager(
 				if (guild_object.music_queue.length > 1) {
 					guild_object.music_queue.splice(1, guild_object.music_queue.length);
 					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-					if (!guild) return resolve({ result: false, value: 'could fetch guild from client' });
+					if (!guild) return resolve({
+						result: false,
+						value: 'could fetch guild from client'
+					});
 					update_music_message(guild, guild_object, guild_object.music_queue[0]);
 				}
 
-				return resolve({ result: true, value: 'music queue has been cleared' });
+				return resolve({
+					result: true,
+					value: 'music queue has been cleared'
+				});
 			}
 			case '🚪': {
 				clear_user_reactions(messageReaction, user);
@@ -251,9 +326,18 @@ async function reaction_music_manager(
 							portal_voice_vonnection.disconnect();
 							guild_object.music_queue = [];
 						}
-						return resolve({ result: true, value: 'leaving voice channel' });
+
+						return resolve({
+							result: true,
+							value: 'leaving voice channel'
+						});
 					})
-					.catch(e => { return resolve({ result: false, value: e }) });
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: e
+						})
+					});
 			}
 		}
 	});

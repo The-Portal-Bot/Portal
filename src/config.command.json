@@ -263,6 +263,16 @@
                 "reply": true
             },
             {
+                "name": "mute",
+                "range": "none",
+                "time": 0,
+                "auth": true,
+                "premium": true,
+                "auto_delete": true,
+                "save_after": true,
+                "reply": true
+            },
+            {
                 "name": "portal",
                 "range": "none",
                 "time": 0,

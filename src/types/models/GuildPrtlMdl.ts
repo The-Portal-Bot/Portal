@@ -57,6 +57,7 @@ const GuildPrtlSch = new Schema(
 		portal_list: { type: [PortalChannelPrtlSchm], required: true },
 		member_list: { type: [MemberPrtlSchm], required: true },
 		url_list: { type: [String], required: true },
+		mute_list: { type: [String], required: true },
 		role_list: { type: [GiveRolePrtlSchm], required: true },
 		ranks: { type: [Rank], required: true },
 		auth_role: { type: [String], required: true },

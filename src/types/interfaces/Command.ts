@@ -204,6 +204,18 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'mute',
+		description: 'mutes the current voice channel, Portal will not reply to them' +
+			' if arguments are given',
+		super_description: '**mute**, sets the text channel you wrote the command in a mute channel.' +
+			' Basically Portal will not respond to anything that is written in it.',
+		example: './mute',
+		args: 'none',
+		auth: 'voice',
+		get: null,
+		set: null
+	},
+	{
 		name: 'ping',
 		description: 'returns round trip latency',
 		super_description: '**ping**, returns the latency of portal bot',

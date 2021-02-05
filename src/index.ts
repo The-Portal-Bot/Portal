@@ -350,7 +350,6 @@ function command_loader(
 }
 
 function event_loader(event: string, args: any): void {
-	// Ignore other bots and also itself ('botception')
 	console.log(`├─ event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
@@ -374,12 +373,8 @@ function event_loader(event: string, args: any): void {
 				}
 			}
 
-			if (config.debug && response) {
-				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
-				const reset = '\x1b[0m';
-				const value_arr = response.value.split('\n');
-				console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
-			} else if (response && !response.result) {
+			const shouldReply = event_config_json.find(e => e.name ===event);
+			if (((config.debug || (shouldReply && shouldReply.reply)) && response) || response.result === false) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
 				const value_arr = response.value.split('\n');
