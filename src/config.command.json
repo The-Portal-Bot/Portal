@@ -263,7 +263,7 @@
                 "reply": true
             },
             {
-                "name": "mute",
+                "name": "ignore",
                 "range": "none",
                 "time": 0,
                 "auth": true,

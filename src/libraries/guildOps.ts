@@ -65,8 +65,8 @@ export function included_in_voice_list(channel_id: string, portal_list: PortalCh
 	return portal_list.some(p => p.voice_list.some(v => v.id === channel_id));
 };
 
-export function included_in_mute_list(channel_id: string, guild_object: GuildPrtl): boolean {
-	return guild_object.mute_list.some(u => u === channel_id);
+export function included_in_ignore_list(channel_id: string, guild_object: GuildPrtl): boolean {
+	return guild_object.ignore_list.some(i => i === channel_id);
 };
 
 export function included_in_url_list(channel_id: string, guild_object: GuildPrtl): boolean {

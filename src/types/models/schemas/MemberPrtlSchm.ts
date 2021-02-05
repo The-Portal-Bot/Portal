@@ -11,7 +11,7 @@ const MemberPrtlSch = new Schema(
 		dj: { type: Boolean, required: true },
 		admin: { type: Boolean, required: true },
 		regex: { type: String, required: true },
-		muted: { type: Boolean, required: true },
+		ignored: { type: Boolean, required: true },
 	},
 	{ collection: 'guild_list' }
 );

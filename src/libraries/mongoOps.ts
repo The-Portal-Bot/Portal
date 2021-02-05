@@ -7,6 +7,7 @@ import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 import { Rank } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
+
 import { stop } from "./musicOps";
 
 // fetch guilds
@@ -113,6 +114,7 @@ export async function insert_guild(
     const id: string = guild_id;
     const portal_list: PortalChannelPrtl[] = [];
     const member_list = create_member_list(guild_id, client);
+    const ignore_list: string[] = [];
     const url_list: string[] = [];
     const role_list: GiveRolePrtl[] = [];
     const ranks: Rank[] = [];
@@ -132,6 +134,7 @@ export async function insert_guild(
             id: id,
             portal_list: portal_list,
             member_list: member_list,
+            ignore_list: ignore_list,
             url_list: url_list,
             role_list: role_list,
             ranks: ranks,
@@ -423,8 +426,8 @@ export async function remove_url(
 
 //
 
-export async function insert_mute(
-    guild_id: string, new_mute: string
+export async function insert_ignore(
+    guild_id: string, new_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
@@ -433,7 +436,7 @@ export async function insert_mute(
             },
             {
                 $push: {
-                    mute_list: new_mute
+                    ignore_list: new_ignore
                 }
             }
         )
@@ -442,8 +445,8 @@ export async function insert_mute(
     });
 };
 
-export async function remove_mute(
-    guild_id: string, remove_mute: string
+export async function remove_ignore(
+    guild_id: string, remove_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
@@ -452,7 +455,7 @@ export async function remove_mute(
             },
             {
                 $pull: {
-                    mute_list: remove_mute
+                    ignore_list: remove_ignore
                 }
             })
             .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
