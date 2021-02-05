@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import { create_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel, included_in_mute_list } from "../../../libraries/guildOps";
-import { insert_url, remove_url, remove_mute, insert_mute } from "../../../libraries/mongoOps";
+import { included_in_mute_list } from "../../../libraries/guildOps";
+import { insert_mute, remove_mute } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 

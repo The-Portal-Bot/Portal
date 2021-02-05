@@ -3,11 +3,11 @@ import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
-import { included_in_url_list } from './libraries/guildOps';
+import { included_in_url_list, included_in_mute_list } from './libraries/guildOps';
 import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
-import { fetch_guild, remove_url, set_music_data } from "./libraries/mongoOps";
+import { fetch_guild, remove_url, set_music_data, remove_mute } from "./libraries/mongoOps";
 import { start, stop } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
@@ -391,11 +391,27 @@ async function portal_channel_handler(message: Message): Promise<boolean> {
 				if (!guild_object)
 					return resolve(true);
 
-				if (included_in_url_list(message.channel.id, guild_object)) {
+				if (included_in_mute_list(message.channel.id, guild_object)) {
+					if (message.content === './mute') {
+						remove_mute(guild_object.id, message.channel.id)
+							.then(r => {
+								message_reply(true, message.channel, message, message.author,
+									r ? 'successfully removed mute channel' : 'failed to remove mute channel',
+									guild_object, client);
+							})
+							.catch(e => {
+								message_reply(false, message.channel, message, message.author,
+									'failed to remove mute channel', guild_object, client);
+							});
+					}
+
+					return resolve(true);
+				}
+				else if (included_in_url_list(message.channel.id, guild_object)) {
 					if (message.content === './url') {
 						remove_url(guild_object.id, message.channel.id)
 							.then(r => {
-								message_reply(false, message.channel, message, message.author,
+								message_reply(true, message.channel, message, message.author,
 									r ? 'successfully removed url channel' : 'failed to remove url channel',
 									guild_object, client);
 							})
@@ -429,7 +445,7 @@ async function portal_channel_handler(message: Message): Promise<boolean> {
 						const music_data = new MusicData('null', 'null', []);
 						set_music_data(guild_object.id, music_data)
 							.then(r => {
-								message_reply(false, message.channel, message, message.author,
+								message_reply(true, message.channel, message, message.author,
 									r ? 'successfully removed music channel' : 'failed to remove music channel',
 									guild_object, client);
 							})

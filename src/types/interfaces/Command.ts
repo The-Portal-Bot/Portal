@@ -209,7 +209,7 @@ const commands: InterfaceBlueprint[] = [
 			' if arguments are given',
 		super_description: '**mute**, sets the text channel you wrote the command in a mute channel.' +
 			' Basically Portal will not respond to anything that is written in it.',
-		example: './mute',
+		example: './mute`',
 		args: 'none',
 		auth: 'voice',
 		get: null,
