@@ -125,6 +125,16 @@
                 "reply": false
             },
             {
+                "name": "crypto",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "auto_delete": false,
+                "save_after": false,
+                "reply": false
+            },
+            {
                 "name": "help",
                 "range": "none",
                 "time": 0,

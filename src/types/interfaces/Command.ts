@@ -77,6 +77,16 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'crypto',
+		description: 'crypto replys with todays latest prices of crypto currencies',
+		super_description: '**crypto**, replys with todays latest prices of crypto currencies',
+		example: './crypto bitcoin | usd',
+		args: '<!crypto currency> | <!authority currency>',
+		auth: 'none',
+		get: null,
+		set: null
+	},
+	{
 		name: 'deauthorise',
 		description: 'deauthorise will remove a role to the autorized list of roles that can access certain commands',
 		super_description: '**deauthorise**, deauthorise will remove a role to the autorized list of roles that ' +
@@ -204,13 +214,13 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'mute',
-		description: 'mutes the current voice channel, Portal will not reply to them' +
+		name: 'ignore',
+		description: 'ignores the current voice channel, Portal will not reply to them' +
 			' if arguments are given',
-		super_description: '**mute**, sets the text channel you wrote the command in a mute channel.' +
+		super_description: '**ignore**, sets the text channel you wrote the command in a ignore channel.' +
 			' Basically Portal will not respond to anything that is written in it.',
-		example: './mute`',
-		args: 'none',
+		example: './ignore`',
+		args: '<@member_id>',
 		auth: 'voice',
 		get: null,
 		set: null

@@ -79,51 +79,42 @@ module.exports = async (
 							[
 								{
 									emote: 'NEW cases',
-									role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`,
-									inline: true
+									role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`, inline: true
 								},
 								{
 									emote: 'NEW deaths',
-									role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`,
-									inline: true
+									role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`, inline: true
 								},
 								{
 									emote: 'Tests P1M',
-									role: `${country_data.tests['1M_pop']}`,
-									inline: true
+									role: `${country_data.tests['1M_pop']}`, inline: true
 								},
 								{
 									emote: 'Cases',
-									role: `${country_data.cases.total}`,
-									inline: true
+									role: `${country_data.cases.total}`, inline: true
 								},
 								{
 									emote: 'Deaths',
-									role: `${country_data.deaths.total}`,
-									inline: true
+									role: `${country_data.deaths.total}`, inline: true
 								},
 								{
 									emote: 'Recovered',
-									role: `${country_data.cases.recovered}`,
-									inline: true
+									role: `${country_data.cases.recovered}`, inline: true
 								},
 								{
 									emote: '%Recovered',
 									role: `${((country_data.cases.recovered / country_data.cases.total) * 100)
-										.toFixed(2)}%`,
-									inline: true
+										.toFixed(2)}%`, inline: true
 								},
 								{
 									emote: '%Diseased',
 									role: `${((country_data.deaths.total / country_data.cases.total) * 100)
-										.toFixed(2)}%`,
-									inline: true
+										.toFixed(2)}%`, inline: true
 								},
 								{
 									emote: 'Critical',
-									role: `${country_data.cases.critical}`,
-									inline: true
-								}
+									role: `${country_data.cases.critical}`, inline: true
+								},
 							],
 							null,
 							null,

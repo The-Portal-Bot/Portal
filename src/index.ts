@@ -254,7 +254,7 @@ client.on('message', async (message: Message) => {
 
 						if (!command_options) {
 							message_reply(false, message.channel, message, message.author,
-								'could not get command option_2', guild_object, client);
+								'could not get command option', guild_object, client);
 							return false;
 						}
 
