@@ -4,7 +4,7 @@ import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 import { join_user_voice, update_music_message } from './helpOps';
-import { insert_music_video, update_guild } from './mongoOps';
+import { clear_music_vote, insert_music_video, update_guild } from './mongoOps';
 // const ytdl = require('ytdl-core');
 
 export async function start(
@@ -33,7 +33,6 @@ export async function start(
 			});
 		}
 
-
 		const guild_id = message.member.voice.channel.guild.id;
 
 		const guild = client.guilds.cache.find(g => g.id === guild_id);
@@ -56,25 +55,31 @@ export async function start(
 			yts(search_term)
 				.then(yts_attempt => {
 					if (yts_attempt) {
-						if (portal_voice_connection && portal_voice_connection.speaking) {
-							insert_music_video(guild_id, yts_attempt.videos[0])
-								.then(r => {
-									update_music_message(guild, guild_object, yts_attempt.videos[0], 'added to queue');
+						if (portal_voice_connection) {
+							if (portal_voice_connection.speaking) {
+								insert_music_video(guild_id, yts_attempt.videos[0])
+									.then(r => {
+										update_music_message(guild, guild_object, yts_attempt.videos[0],
+											r ? 'already playing, added to queue' : 'already playing, could add to queue');
 
-									return resolve({
-										result: r, value: r
-											? 'already playing video, your video has been added in list'
-											: 'already playing video, could not push video to queue'
+										return resolve({
+											result: r,
+											value: r
+												? 'already playing video, your video has been added in list'
+												: 'already playing video, could not push video to queue'
+										});
 									})
-								})
-								.catch(e => {
-									update_music_message(guild, guild_object, yts_attempt.videos[0], 'could not add to queue');
+									.catch(e => {
+										update_music_message(guild, guild_object, yts_attempt.videos[0], 'could not add to queue');
 
-									return resolve({
-										result: false,
-										value: 'already playing video, could not push video to queue'
-									})
-								});
+										return resolve({
+											result: false,
+											value: 'already playing, could add to queue'
+										});
+									});
+							} else {
+
+							}
 						} else {
 							if (message && message.guild) {
 								play(guild_object, client, message, message.guild, dispatchers)
@@ -149,7 +154,7 @@ export async function start(
 													if (message.guild) {
 														skip(guild_object, client, message, message.guild, dispatcher);
 														guild_object.music_data.votes = [];
-														update_guild(guild_object.id, 'music_data', []);
+														clear_music_vote(guild_object.id);
 													}
 												});
 
@@ -209,7 +214,7 @@ export async function play(
 		if (!client.voice) {
 			return resolve({
 				result: false,
-				value: 'portal is not connected to a channel'
+				value: 'portal is not connected to a voice channel'
 			});
 		}
 
@@ -222,47 +227,51 @@ export async function play(
 
 		const guild_id = message.guild.id;
 		const voice_connection = client.voice.connections
-			.find((connection: VoiceConnection) => connection.channel.guild.id === guild_id);
+			.find(connection => connection.channel.guild.id === guild_id);
 
 		if (!voice_connection) {
 			return resolve({
 				result: false,
-				value: 'portal is not connected to your channel'
+				value: 'portal is not connected to a voice channel'
 			});
 		}
 
-		const dispatcher_object = dispatchers.find(d => d.id === guild_object.id)
+		if (voice_connection.channel.id !== message.member?.voice?.channel?.id) {
+			return resolve({
+				result: false,
+				value: 'you must be in the same voice channel as portal'
+			});
+		}
+
+		const dispatcher_object = dispatchers.find(d => d.id === guild_object.id);
 		let dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
 
-		if (dispatcher) {
+		if (dispatcher) { // has already played a video in this channel and is still connected
 			if (dispatcher.paused) {
 				dispatcher.resume();
 
 				dispatcher.on('finish', () => {
 					skip(guild_object, client, message, guild, dispatcher);
 					guild_object.music_data.votes = [];
-					update_guild(guild_object.id, 'music_data', []);
+					clear_music_vote(guild_object.id);
 				});
 
-				const yts_video = guild_object.music_queue[0];
-				update_music_message(guild, guild_object, yts_video, 'playback resumed');
+				update_music_message(guild, guild_object, guild_object.music_queue[0], 'playback resumed');
 
 				return resolve({
 					result: true,
-					value: 'video has been resumed'
+					value: 'playback resumed'
 				});
 			} else {
-				const yts_video = guild_object.music_queue[0];
-				update_music_message(guild, guild_object, yts_video, 'already playing');
+				update_music_message(guild, guild_object, guild_object.music_queue[0], 'already playing');
 
 				return resolve({
 					result: true,
-					value: 'video is already playing'
+					value: 'already playing'
 				});
 			}
 		} else {
 			const next_yts_video = guild_object.music_queue.shift();
-			update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 
 			if (next_yts_video) {
 				if (voice_connection) {
@@ -281,7 +290,7 @@ export async function play(
 					dispatcher.on('finish', () => {
 						skip(guild_object, client, message, guild, dispatcher);
 						guild_object.music_data.votes = []; //FIX TSIAKKAS
-						update_guild(guild_object.id, 'music_data', []);
+						clear_music_vote(guild_object.id);
 					});
 				}
 			} else {
@@ -407,7 +416,7 @@ export async function skip(
 						dispatcher.on('finish', () => {
 							skip(guild_object, client, message, guild, dispatcher);
 							guild_object.music_data.votes = [];
-							update_guild(guild_object.id, 'music_data', []);
+							clear_music_vote(guild_object.id);
 						});
 
 					}
@@ -440,7 +449,7 @@ export async function skip(
 							}
 						},
 						'queue is empty'
-						);
+					);
 					if (!dispatcher.paused) {
 						dispatcher.pause();
 					}
