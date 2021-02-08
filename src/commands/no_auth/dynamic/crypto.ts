@@ -2,24 +2,11 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
-import country_codes_json from '../../../assets/jsons/CountryCodes.json';
 import config from '../../../config.json';
 import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
 import { https_fetch } from '../../../libraries/httpOps';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
-
-const country_codes: { name: string; code: string; }[] = country_codes_json;
-
-const get_country_code = function (country: string): string | null {
-	for (let i = 0; i < country_codes.length; i++) {
-		if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country))
-			return country_codes[i].name;
-		else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country))
-			return country_codes[i].name;
-	}
-	return null;
-};
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -89,6 +76,7 @@ module.exports = async (
 						null,
 						null
 					));
+
 				return resolve({
 					result: true,
 					value: `${json} crypto stats`

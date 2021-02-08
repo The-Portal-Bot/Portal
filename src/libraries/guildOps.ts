@@ -267,7 +267,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -286,7 +286,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
 						parent: music_category
 					},
 				)
@@ -303,7 +303,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, list:📜, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
 					},
 				)
 				.then(channel => {
@@ -516,7 +516,6 @@ export function channel_deleted_update_state(
 		guilf_object.music_data.channel_id = undefined;
 		guilf_object.music_data.message_id = undefined;
 		guilf_object.music_data.votes = [];
-		guilf_object.dispatcher = undefined;
 		type_of_channel = TypesOfChannel.Music;
 	}
 

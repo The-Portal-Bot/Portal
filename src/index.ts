@@ -294,9 +294,11 @@ function command_loader(
 		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
 				if (response)
-					if (command_options.reply || (response.result === false && response.value !== ''))
-						message_reply(response.result, message.channel, message, message.author, response.value,
-							guild_object, client, command_options ? command_options.auto_delete : true);
+					if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
+						message_reply(
+							response.result, message.channel, message, message.author, response.value,
+							guild_object, client, command_options ? command_options.auto_delete : true
+						);
 			});
 		return true;
 	}
@@ -345,8 +347,10 @@ function command_loader(
 			}
 
 			if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
-				message_reply(response.result, message.channel, message, message.author,
-					response.value, guild_object, client, command_options.auto_delete);
+				message_reply(
+					response.result, message.channel, message, message.author, response.value, 
+					guild_object, client, command_options.auto_delete
+				);
 		});
 
 	return false;
@@ -459,10 +463,10 @@ async function portal_channel_handler(message: Message): Promise<boolean> {
 					} else {
 						start(client, message, message.content, guild_object, dispatchers)
 							.then(joined => {
-								// message_reply(
-								// 	joined.result, message.channel, message,
-								// 	message.author, joined.value, guild_list, client, true
-								// );
+								message_reply(
+									joined.result, message.channel, message,
+									message.author, joined.value, guild_object, client, true
+								);
 								message.delete();
 							})
 							.catch(error => {

@@ -131,6 +131,7 @@ module.exports = async (
 							null,
 							null
 						));
+
 					return resolve({
 						result: true,
 						value: `${country_data.country} corona stats`

@@ -34,7 +34,6 @@ export class GuildPrtl {
 	public spotify: string | null;
 	public music_data: MusicData;
 	public music_queue: VideoSearchResult[];
-	public dispatcher: StreamDispatcher | undefined;
 	public announcement: string | null;
 	public locale: string;
 	public announce: boolean;
@@ -53,7 +52,6 @@ export class GuildPrtl {
 		spotify: string | null,
 		music_data: MusicData,
 		music_queue: VideoSearchResult[],
-		dispatcher: StreamDispatcher | undefined,
 		announcement: string | null,
 		locale: string,
 		announce: boolean,
@@ -71,7 +69,6 @@ export class GuildPrtl {
 		this.spotify = spotify;
 		this.music_data = music_data;
 		this.music_queue = music_queue;
-		this.dispatcher = dispatcher;
 		this.announcement = announcement;
 		this.locale = locale;
 		this.announce = announce;

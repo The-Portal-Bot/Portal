@@ -27,36 +27,23 @@ module.exports = async (
 	return new Promise((resolve) => {
 		let code: string | null = null;
 
-		if (args.length === 1) {
-			code = get_country_code(args[0]);
-			if (code === null) {
-				return resolve({
-					result: false,
-					value: `${args[0]} is neither a country name nor a country code`
-				});
-			}
-		} else if (args.length > 1) {
+		if (args.length === 0 || args.length > 1) {
 			return resolve({
 				result: false,
-				value: 'you can run `./help corona` for help'
-			});
-		} else {
-			return resolve({
-				result: false,
-				value: 'global stats are not unavailable, you can run `./help corona` for help'
+				value: 'you can run `./help stock` for help'
 			});
 		}
 
 		const options: RequestOptions = {
 			'method': 'GET',
-			'hostname': 'covid-193.p.rapidapi.com',
+			'hostname': 'yahoo-finance-low-latency.p.rapidapi.com',
 			'port': undefined,
-			'path': '/statistics',
+			'path': `/v8/finance/chart/${args[0]}?events=div%2Csplit`,
 			'headers': {
-				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
-				'x-rapidapi-key': config.api_keys.covid_193,
+				'x-rapidapi-host': 'yahoo-finance-low-latency.p.rapidapi.com',
+				'x-rapidapi-key': config.api_keys.yahoo_finance,
 				'useQueryString': 1
-			},
+			}
 		};
 
 		https_fetch(options)
@@ -68,71 +55,53 @@ module.exports = async (
 						value: 'data from source was corrupted'
 					});
 
-				if (json.errors.length === 0) {
-					const country_data = json.response.find((data: any) => data.country === code);
-
-					message.channel.send(
-						create_rich_embed(
-							`COVID19 ${country_data.country} stats ${moment().format('DD/MM/YY')}`,
-							'powered by api-sports',
-							'#FF0000',
-							[
-								{
-									emote: 'NEW cases',
-									role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`, inline: true
-								},
-								{
-									emote: 'NEW deaths',
-									role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`, inline: true
-								},
-								{
-									emote: 'Tests P1M',
-									role: `${country_data.tests['1M_pop']}`, inline: true
-								},
-								{
-									emote: 'Cases',
-									role: `${country_data.cases.total}`, inline: true
-								},
-								{
-									emote: 'Deaths',
-									role: `${country_data.deaths.total}`, inline: true
-								},
-								{
-									emote: 'Recovered',
-									role: `${country_data.cases.recovered}`, inline: true
-								},
-								{
-									emote: '%Recovered',
-									role: `${((country_data.cases.recovered / country_data.cases.total) * 100)
-										.toFixed(2)}%`, inline: true
-								},
-								{
-									emote: '%Diseased',
-									role: `${((country_data.deaths.total / country_data.cases.total) * 100)
-										.toFixed(2)}%`, inline: true
-								},
-								{
-									emote: 'Critical',
-									role: `${country_data.cases.critical}`, inline: true
-								},
-							],
-							null,
-							null,
-							true,
-							null,
-							null
-						));
-					return resolve({
-						result: true,
-						value: `${country_data.country} corona stats`
-					});
-				}
-				else {
+				const chart = json.chart;
+console.log('chart :>> ', chart);
+				if (chart === null)
 					return resolve({
 						result: false,
-						value: `${args[0]} is neither a country name nor a country code`,
+						value: 'could not find any stock'
 					});
-				}
+
+				const result = chart.result;
+
+				if (result === null)
+					return resolve({
+						result: false,
+						value: 'there were no results'
+					});
+
+				const meta = result[0];
+
+				if (meta === null)
+					return resolve({
+						result: false,
+						value: 'there were no meta data'
+					});
+
+				message.channel.send(
+					create_rich_embed(
+						`STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${moment().format('DD/MM/YY')}`,
+						'powered by yahoo finance',
+						'#FF0000', [],
+						// [
+						// 	{
+						// 		emote: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price`,
+						// 		role: `${json[crypto_name][currnc_name]}`,
+						// 		inline: false
+						// 	}
+						// ],
+						null,
+						null,
+						true,
+						null,
+						null
+					));
+
+				return resolve({
+					result: true,
+					value: `${json} crypto stats`
+				});
 			})
 			.catch((error: any) => {
 				return resolve({
