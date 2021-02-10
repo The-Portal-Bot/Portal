@@ -61,6 +61,7 @@ module.exports = async (
 
 		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 			'.github.io/master/assets/img/logo.png';
+
 		const music = message.guild.channels.cache.find(channel =>
 			channel.id == guild_object.music_data.channel_id);
 

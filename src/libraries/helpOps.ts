@@ -13,15 +13,16 @@ export function create_music_message(
 ): void {
 	const music_message_emb = create_rich_embed(
 		'Music Player',
-		'just type and I\'ll play',
+		'Type and Portal will play',
 		'#0000FF',
 		[
 			{ emote: 'Duration', role: '-', inline: true },
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
-			{ emote: 'Queue', role: '-', inline: false }
+			{ emote: 'Queue', role: '-', inline: false },
+			{ emote: 'Status', role: '-', inline: false }
 		],
-		null,
+		thumbnail,
 		null,
 		true,
 		null,
@@ -35,7 +36,6 @@ export function create_music_message(
 			sent_message.react('⏸');
 			sent_message.react('⏹');
 			sent_message.react('⏭');
-			sent_message.react('📜');
 			sent_message.react('🧹');
 			sent_message.react('🚪');
 
@@ -45,12 +45,16 @@ export function create_music_message(
 };
 
 export function update_music_message(
-	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult
+	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult, status: string
 ): void {
+	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+		'.github.io/master/assets/img/logo.png';
+
 	const music_queue = guild_object.music_queue.length > 0
-		? guild_object.music_queue.map((video, i) => `${i + 1}. **${video.title}`).join('**\n') + '**'
+		? guild_object.music_queue.map((video, i) => video ? `${i + 1}. **${video.title}` : 'OMG').join('**\n') + '**'
 		: 'empty';
 
+	console.log('music_queue :>> ', music_queue);
 	const music_message_emb = create_rich_embed(
 		yts.title,
 		yts.url,
@@ -59,9 +63,10 @@ export function update_music_message(
 			{ emote: 'Duration', role: yts.timestamp, inline: true },
 			{ emote: 'Views', role: yts.views, inline: true },
 			{ emote: 'Uploaded', role: yts.ago, inline: true },
-			{ emote: 'Queue', role: music_queue, inline: false }
+			{ emote: 'Queue', role: music_queue, inline: false },
+			{ emote: 'Status', role: status, inline: false }
 		],
-		null,
+		portal_icon_url,
 		null,
 		true,
 		null,
@@ -267,7 +272,6 @@ export async function update_portal_managed_guilds(
 	return new Promise((resolve) => { // , reject) => {
 		setTimeout(() => {
 			const guild_list_no_voice = cloneDeep(guild_list);
-			guild_list_no_voice.forEach(g => g.dispatcher = undefined);
 			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);
 		}, 1000);
 		return resolve({ result: true, value: '> saved guild_list.json\n' });
@@ -308,7 +312,7 @@ export function message_reply(
 					msg.delete({
 						timeout: config.delete_msg_after * 1000
 					})
-					.catch(console.log)
+						.catch(console.log)
 			})
 			.catch(console.log);
 	}

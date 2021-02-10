@@ -1,13 +1,17 @@
-import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, StreamDispatcher, TextChannel, User, VoiceState } from "discord.js";
+import {
+	Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel,
+	PartialGuildMember, PartialMessage, PartialUser, Presence, StreamDispatcher, TextChannel,
+	User, VoiceState
+} from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
-import { included_in_url_list, included_in_ignore_list } from './libraries/guildOps';
+import { included_in_ignore_list, included_in_url_list } from './libraries/guildOps';
 import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
-import { fetch_guild, remove_url, set_music_data, remove_ignore } from "./libraries/mongoOps";
+import { fetch_guild, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
 import { start, stop } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
@@ -168,7 +172,7 @@ client.on('message', async (message: Message) => {
 
 	// Ignore any direct message
 	if (message.channel.type === 'dm') return;
-	
+
 	// check if something written in portal channels
 	portal_channel_handler(message)
 		.then(r => {
@@ -254,7 +258,7 @@ client.on('message', async (message: Message) => {
 
 						if (!command_options) {
 							message_reply(false, message.channel, message, message.author,
-								'could not get command option_2', guild_object, client);
+								'could not get command option', guild_object, client);
 							return false;
 						}
 
@@ -294,9 +298,11 @@ function command_loader(
 		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
 				if (response)
-					if (command_options.reply || (response.result === false && response.value !== ''))
-						message_reply(response.result, message.channel, message, message.author, response.value,
-							guild_object, client, command_options ? command_options.auto_delete : true);
+					if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
+						message_reply(
+							response.result, message.channel, message, message.author, response.value,
+							guild_object, client, command_options ? command_options.auto_delete : true
+						);
 			});
 		return true;
 	}
@@ -345,8 +351,10 @@ function command_loader(
 			}
 
 			if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
-				message_reply(response.result, message.channel, message, message.author,
-					response.value, guild_object, client, command_options.auto_delete);
+				message_reply(
+					response.result, message.channel, message, message.author, response.value,
+					guild_object, client, command_options.auto_delete
+				);
 		});
 
 	return false;
@@ -376,7 +384,7 @@ function event_loader(event: string, args: any): void {
 				}
 			}
 
-			const shouldReply = event_config_json.find(e => e.name ===event);
+			const shouldReply = event_config_json.find(e => e.name === event);
 			if (((config.debug || (shouldReply && shouldReply.reply)) && response) || response.result === false) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
@@ -386,9 +394,14 @@ function event_loader(event: string, args: any): void {
 		});
 };
 
-async function portal_channel_handler(message: Message): Promise<boolean> {
+async function portal_channel_handler(
+	message: Message
+): Promise<boolean> {
 	return new Promise((resolve) => {
-		if (!message.guild) return false;
+		if (!message.guild) {
+			return false;
+		}
+
 		fetch_guild(message.guild.id)
 			.then(guild_object => {
 				if (!guild_object)
@@ -445,6 +458,7 @@ async function portal_channel_handler(message: Message): Promise<boolean> {
 						const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
 
 						stop(guild_object, message.guild, dispatcher);
+
 						const music_data = new MusicData('null', 'null', []);
 						set_music_data(guild_object.id, music_data)
 							.then(r => {
@@ -459,13 +473,15 @@ async function portal_channel_handler(message: Message): Promise<boolean> {
 					} else {
 						start(client, message, message.content, guild_object, dispatchers)
 							.then(joined => {
-								// message_reply(
-								// 	joined.result, message.channel, message,
-								// 	message.author, joined.value, guild_list, client, true
-								// );
+								// will be replaces by information tab in message
+								message_reply(
+									joined.result, message.channel, message,
+									message.author, joined.value, guild_object, client, true
+								);
 								message.delete();
 							})
 							.catch(error => {
+								// will be replaces by information tab in message
 								message_reply(
 									false, message.channel, message,
 									message.author, error, guild_object, client, true

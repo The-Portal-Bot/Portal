@@ -1,4 +1,4 @@
-import { Client, Message, User } from "discord.js";
+import { Client, Message, User, StreamDispatcher } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { LocalisationOption } from "../types/interfaces/InterfacesPrtl";
 
@@ -85,7 +85,7 @@ export const console_text: LocalisationOption[] = [
 		name: 'ready',
 		lang: {
 			gr: (member_length: number, channel_length: number, guild_length: number) => {
-				return `το μποτ ξεκίνησε, με ${member_length} χρήστες, μέσα σε ${channel_length} κανάλια σε ${guild_length} συντεχνίες`;
+				return `το ρομποτ ξεκίνησε, με ${member_length} χρήστες, μέσα σε ${channel_length} κανάλια σε ${guild_length} συντεχνίες`;
 			},
 			en: (member_length: number, channel_length: number, guild_length: number) => {
 				return `bot has started, with ${member_length} users, in ${channel_length} channels from ${guild_length} guilds`;
@@ -97,7 +97,7 @@ export const console_text: LocalisationOption[] = [
 
 	},
 	{
-		name: 'updating_guild',
+		name: 'updating_guild', // remove
 		lang: {
 
 			gr: (args: any) => { return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε'; },
@@ -142,23 +142,24 @@ export const console_text: LocalisationOption[] = [
 ]
 
 export function client_talk(client: Client, guild_object: GuildPrtl, context: string): boolean {
-	const voiceConnection = client?.voice?.connections.find(connection => !!connection.channel.id);
+	const voiceConnection = client?.voice?.connections
+		.find(connection => connection.channel.guild.id === guild_object.id);
 
 	if (voiceConnection) {
 		return guild_object.portal_list.some(p =>
 			p.voice_list.some(v => {
-				if (!guild_object.dispatcher) {
+				if (!voiceConnection.speaking) {
 					if (type_of_announcement.includes(context) && v.ann_announce) {
 						const locale = v.locale;
 						const random = Math.floor(Math.random() * Math.floor(3));
-						console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+
 						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
 						return true;
 					}
 					else if (type_of_action.includes(context) && v.ann_user) {
 						const locale = v.locale;
 						const random = Math.floor(Math.random() * Math.floor(3));
-						console.log(`I will play: src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+
 						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
 						return true;
 					}
