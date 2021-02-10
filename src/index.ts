@@ -394,7 +394,9 @@ function event_loader(event: string, args: any): void {
 		});
 };
 
-async function portal_channel_handler(message: Message): Promise<boolean> {
+async function portal_channel_handler(
+	message: Message
+): Promise<boolean> {
 	return new Promise((resolve) => {
 		if (!message.guild) {
 			return false;

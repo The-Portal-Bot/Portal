@@ -152,6 +152,7 @@ async function reaction_music_manager(
 				if (!messageReaction.message.guild) return false;
 				return connection.channel.guild.id === messageReaction.message.guild.id;
 			});
+
 		if (!portal_voice_vonnection) {
 			clear_user_reactions(messageReaction, user);
 			return resolve({
@@ -193,7 +194,9 @@ async function reaction_music_manager(
 				clear_user_reactions(messageReaction, user);
 
 				pause(messageReaction.message.guild, guild_object, dispatcher)
-					.then(r => { return resolve(r); })
+					.then(r => {
+						return resolve(r);
+					})
 					.catch(e => {
 						return resolve({
 							result: false,
