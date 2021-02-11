@@ -52,10 +52,10 @@ export function update_music_message(
 
 	const music_queue = guild_object.music_queue.length > 0
 		? guild_object.music_queue.map((video, i) =>
-			video ? `${i !== 0 ? i : 'currrent: '}. **${video.title}` : '?').join('**\n') + '**'
+			video ? `${i !== 0 ? i : 'currrent: '}. **${video.title}` : '?'
+		).join('**\n') + '**'
 		: 'empty';
 
-	console.log('music_queue :>> ', music_queue);
 	const music_message_emb = create_rich_embed(
 		yts.title,
 		yts.url,

@@ -35,12 +35,10 @@ const empty_message: yts.VideoSearchResult = {
 function pop_music_queue(
 	guild_object: GuildPrtl
 ): yts.VideoSearchResult | undefined {
-	if (guild_object.music_queue.length > 1) {
+	if (guild_object.music_queue.length > 0) {
 		guild_object.music_queue.shift();
 		update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 
-		return guild_object.music_queue[0];
-	} else if (guild_object.music_queue.length === 1) {
 		return guild_object.music_queue[0];
 	}
 

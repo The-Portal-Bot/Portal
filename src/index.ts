@@ -383,16 +383,14 @@ function event_loader(event: string, args: any): void {
 			// 	}
 			// }
 
-			// const shouldReply = event_config_json.find(e => e.name === event);
-			// if (event !== 'messageReactionAdd') {
-			// 	if ((config.debug) || (shouldReply && shouldReply.reply) && (response && response.result === false) && response.value !== '') {
-			// 		console.log('response :>> ', response);
-			// 		const colour = response.result ? '\x1b[32m' : '\x1b[31m';
-			// 		const reset = '\x1b[0m';
-			// 		const value_arr = response.value.split('\n') ? response.value.split('\n') : [];
-			// 		console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
-			// 	}
-			// }
+			const shouldReply = event_config_json.find(e => e.name === event);
+			if ((config.debug) || (shouldReply && shouldReply.reply) && (response && response.result === false ) && response.value !== '') {
+				console.log('response :>> ', response);
+				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
+				const reset = '\x1b[0m';
+				const value_arr = response.value.split('\n') ? response.value.split('\n') : [];
+				console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
+			}
 		});
 };
 
@@ -451,7 +449,8 @@ async function portal_channel_handler(
 					}
 
 					return resolve(true);
-				} else if (guild_object.music_data.channel_id === message.channel.id) {
+				}
+				else if (guild_object.music_data.channel_id === message.channel.id) {
 					if (message.content === './music') {
 						if (!message.guild) {
 							return resolve(true);
@@ -478,17 +477,19 @@ async function portal_channel_handler(
 
 						start(voice_connection, client, message, guild_object, message.content)
 							.then(joined => {
-								message_reply(
-									joined.result, message.channel, message,
-									message.author, joined.value, guild_object, client, true
-								);
-								message.delete();
+								// message_reply(
+								// 	joined.result, message.channel, message,
+								// 	message.author, joined.value, guild_object, client, true
+								// );
+								if (message.deletable) {
+									message.delete();
+								}
 							})
 							.catch(error => {
-								message_reply(
-									false, message.channel, message,
-									message.author, error, guild_object, client, true
-								);
+								// message_reply(
+								// 	false, message.channel, message,
+								// 	message.author, error, guild_object, client, true
+								// );
 							});
 					}
 
