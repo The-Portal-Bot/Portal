@@ -1,13 +1,12 @@
-import { Message, StreamDispatcher, TextChannel } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { create_music_channel, delete_channel, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
 import { create_music_message } from "../../../libraries/helpOps";
 import { ChannelTypePrtl, set_music_data } from "../../../libraries/mongoOps";
-import { stop } from "../../../libraries/musicOps";
 import { GuildPrtl, MusicData } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl, dispatchers: { id: string, dispatcher: StreamDispatcher }[]
+	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!message.guild)
@@ -18,10 +17,6 @@ module.exports = async (
 
 		if (args.length === 0) {
 			if (is_music_channel(message.channel.id, guild_object)) {
-				const dispatcher_object = dispatchers.find(d => d.id === guild_object.id)
-				const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
-
-				stop(guild_object, message.guild, dispatcher);
 				const music_data = new MusicData('null', 'null', []);
 				set_music_data(guild_object.id, music_data)
 					.then(r => {

@@ -559,8 +559,13 @@ export async function remove_role_assigner(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: { n: number, nModified: number, ok: number }) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                console.log('e :>> ', e);
+                return resolve(false)
+            });
     });
 };
 
@@ -570,7 +575,6 @@ export async function insert_music_video(
     guild_id: string, video: VideoSearchResult
 ): Promise<boolean> {
     return new Promise((resolve) => {
-        // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -581,8 +585,14 @@ export async function insert_music_video(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: { n: number, nModified: number, ok: number }) => {
+                console.log('r :>> ', r);
+                return resolve(r.ok === 1)
+            })
+            .catch(e => {
+                console.log('e :>> ', e);
+                return resolve(false)
+            });
     });
 };
 
@@ -657,7 +667,7 @@ export enum ChannelTypePrtl {
 }
 
 export async function deleted_channel_sync(
-    channel_to_remove: VoiceChannel | TextChannel, dispatchers: { id: string, dispatcher: StreamDispatcher }[]
+    channel_to_remove: VoiceChannel | TextChannel
 ): Promise<number> {
     return new Promise((resolve) => {
         fetch_guild(channel_to_remove.guild.id)
@@ -719,10 +729,6 @@ export async function deleted_channel_sync(
                                     return resolve(ChannelTypePrtl.unknown);
                                 });
                         } else if (guild_object.music_data.channel_id === current_text.id) {
-                            const dispatcher_object = dispatchers.find(d => d.id === guild_object.id)
-                            const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
-
-                            stop(guild_object, current_text.guild, dispatcher);
                             const music_data = new MusicData('null', 'null', []);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {

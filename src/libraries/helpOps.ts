@@ -20,7 +20,7 @@ export function create_music_message(
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
 			{ emote: 'Queue', role: '-', inline: false },
-			{ emote: 'Status', role: '-', inline: false }
+			{ emote: 'Latest Action', role: '-', inline: false }
 		],
 		thumbnail,
 		null,
@@ -51,7 +51,8 @@ export function update_music_message(
 		'.github.io/master/assets/img/logo.png';
 
 	const music_queue = guild_object.music_queue.length > 0
-		? guild_object.music_queue.map((video, i) => video ? `${i + 1}. **${video.title}` : 'OMG').join('**\n') + '**'
+		? guild_object.music_queue.map((video, i) =>
+			video ? `${i !== 0 ? i : 'currrent: '}. **${video.title}` : '?').join('**\n') + '**'
 		: 'empty';
 
 	console.log('music_queue :>> ', music_queue);
@@ -64,7 +65,7 @@ export function update_music_message(
 			{ emote: 'Views', role: yts.views, inline: true },
 			{ emote: 'Uploaded', role: yts.ago, inline: true },
 			{ emote: 'Queue', role: music_queue, inline: false },
-			{ emote: 'Status', role: status, inline: false }
+			{ emote: 'Latest Action', role: '`' + status + '`', inline: false }
 		],
 		portal_icon_url,
 		null,
@@ -138,13 +139,8 @@ export async function join_user_voice(
 				voice_connection: undefined
 			});
 		}
-		const current_guild = guild_object;
-		// const current_guild = guild_list.find(g => {
-		// 	if (message && message.guild)
-		// 		return g.id === message.guild.id;
-		// });
 
-		if (!current_guild) {
+		if (!guild_object) {
 			return resolve({
 				result: false,
 				value: 'could not find guild of message',
@@ -152,55 +148,70 @@ export async function join_user_voice(
 			});
 		}
 
-		const portal_list = current_guild.portal_list;
+		// const portal_list = guild_object.portal_list;
 
-		const controlled_by_portal = portal_list.some(p =>
-			p.voice_list.some(v => v.id === current_voice.id)
-		);
+		// const controlled_by_portal = portal_list.some(p =>
+		// 	p.voice_list.some(v => v.id === current_voice.id)
+		// );
 
-		if (!controlled_by_portal) {
-			return resolve({
-				result: false,
-				value: 'I can only connect to my channels',
-				voice_connection: undefined
-			});
-		}
+		// if (!controlled_by_portal) {
+		// 	return resolve({
+		// 		result: false,
+		// 		value: 'I can only connect to my channels',
+		// 		voice_connection: undefined
+		// 	});
+		// }
 
 		if (!client.voice) {
 			return resolve({
 				result: false,
-				value: 'Portal is not connected to any voice channel',
+				value: 'could not fetch portal\'s voice connections',
 				voice_connection: undefined
 			});
 		}
 
-		const existing_voice_connection: VoiceConnection | undefined = client.voice.connections.find(connection =>
-			(message && message.member && message.member.voice && message.member.voice.channel)
-				? (connection.channel.id === message.member.voice.channel.id)
-				: false
-		);
+		const voice_connection_in_guild = client.voice.connections
+			.find(connection => connection.channel.guild.id === message.guild?.id);
 
-		if (existing_voice_connection) {
-			existing_voice_connection?.voice?.setSelfDeaf(true);
-			return resolve({
-				result: true,
-				value: 'already in voice channel',
-				voice_connection: existing_voice_connection
-			});
+		if (voice_connection_in_guild) {
+			if (voice_connection_in_guild.channel.id === message.member?.voice.channel?.id) {
+				voice_connection_in_guild?.voice?.setSelfDeaf(true);
+				return resolve({
+					result: true,
+					value: 'already in voice channel',
+					voice_connection: voice_connection_in_guild
+				});
+			} else {
+				return resolve({
+					result: false,
+					value: 'playing music in another channel',
+					voice_connection: voice_connection_in_guild
+				});
+			}
 		} else {
-			// let new_voice_connection = null;
 			current_voice.join()
-				.then(conn => {
-					if (join) client_talk(client, guild_object, 'join');
-					conn?.voice?.setSelfDeaf(true);
+				.then(response => {
+					if (join) {
+						client_talk(client, guild_object, 'join');
+					}
+
+					response.voice?.setSelfDeaf(true);
 
 					return resolve({
 						result: true,
 						value: client_write(message, guild_object, 'join'),
-						voice_connection: conn,
+						voice_connection: response,
 					});
 				})
-				.catch(e => { console.log('ERROR CREATING VOICE CONNECTION TO CHANNEL: ', e); });
+				.catch(e => {
+					console.log('ERROR CREATING VOICE CONNECTION TO CHANNEL: ', e);
+
+					return resolve({
+						result: false,
+						value: 'failed to join voice channel',
+						voice_connection: undefined,
+					});
+				});
 		}
 	});
 };

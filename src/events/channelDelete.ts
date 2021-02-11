@@ -3,7 +3,7 @@ import { ChannelTypePrtl, deleted_channel_sync } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
-	args: { channel: Channel | PartialDMChannel, dispatchers: { id: string, dispatcher: StreamDispatcher }[] }
+	args: { channel: Channel | PartialDMChannel }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.channel.type !== 'text' && args.channel.type !== 'voice')
@@ -16,7 +16,7 @@ module.exports = async (
 			? <VoiceChannel>args.channel
 			: <TextChannel>args.channel;
 
-		deleted_channel_sync(current_channel, args.dispatchers)
+		deleted_channel_sync(current_channel)
 			.then(r => {
 				if (r > 0) {
 					return resolve({
