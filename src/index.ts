@@ -384,7 +384,7 @@ function event_loader(event: string, args: any): void {
 			// }
 
 			const shouldReply = event_config_json.find(e => e.name === event);
-			if ((config.debug) || (shouldReply && shouldReply.reply) && (response && response.result === false ) && response.value !== '') {
+			if ((config.debug) || (shouldReply && shouldReply.reply) && (response && response.result === false) && response.value !== '') {
 				console.log('response :>> ', response);
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
@@ -475,7 +475,21 @@ async function portal_channel_handler(
 						const voice_connection = client.voice?.connections.find(c =>
 							c.channel.guild.id === message.guild?.id);
 
-						start(voice_connection, client, message, guild_object, message.content)
+						if (!message.guild) {
+							if (message.deletable) {
+								message.delete();
+							}
+							return resolve(false);
+						}
+
+						if (!message.member) {
+							if (message.deletable) {
+								message.delete();
+							}
+							return resolve(false);
+						}
+
+						start(voice_connection, client, message.member.user, message.guild, guild_object, message.content)
 							.then(joined => {
 								// message_reply(
 								// 	joined.result, message.channel, message,

@@ -50,11 +50,12 @@ export function update_music_message(
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 
-		console.log('guild_object.music_queue.map(r => r.title) :>> ', guild_object.music_queue.map(r => r.title));
 	const music_queue = guild_object.music_queue.length > 0
-		? guild_object.music_queue.map((video, i) =>
-			video ? `${i !== 0 ? i : 'currrent: '}. **${video.title}` : '?'
-		).join('**\n') + '**'
+		? guild_object.music_queue.map((v, i) => {
+			if (i !== 0) {
+				return (`${i}. **${v.title}**`);
+			}
+		}).filter(v => !!v).join('\n')
 		: 'empty';
 
 	const music_message_emb = create_rich_embed(

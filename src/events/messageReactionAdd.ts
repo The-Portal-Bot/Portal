@@ -167,8 +167,10 @@ async function reaction_music_manager(
 
 		switch (messageReaction.emoji.name) {
 			case '▶️': {
-				play(portal_voice_connection, messageReaction.message,
-					client, messageReaction.message.guild, guild_object, user)
+				play(
+					portal_voice_connection, user, client,
+					messageReaction.message.guild, guild_object
+				)
 					.then(r => {
 						clear_user_reactions(messageReaction, user);
 						return resolve(r);
@@ -304,7 +306,7 @@ async function reaction_music_manager(
 				const users = portal_voice_connection?.channel?.members.filter(member => !member.user.bot).size;
 
 				if (votes >= users / 2) {
-					return skip(messageReaction.message, portal_voice_connection,
+					skip(user, portal_voice_connection,
 						client, messageReaction.message.guild, guild_object)
 						.then(r => {
 							clear_music_vote(guild_object.id);
@@ -338,7 +340,7 @@ async function reaction_music_manager(
 				}
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-					return skip(messageReaction.message, portal_voice_connection,
+					skip(user, portal_voice_connection,
 						client, messageReaction.message.guild, guild_object)
 						.then(r => {
 							clear_music_vote(guild_object.id);
@@ -446,7 +448,6 @@ module.exports = async (
 						if (args.messageReaction.partial) {
 							try {
 								args.messageReaction.fetch();
-								console.log('args.messageReaction :>> ', args.messageReaction);
 							} catch (e) {
 								return resolve({
 									result: false,
