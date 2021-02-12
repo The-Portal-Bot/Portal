@@ -153,8 +153,6 @@ async function reaction_music_manager(
 			.find(c => c.channel.guild.id === messageReaction.message?.guild?.id);
 
 		if (portal_voice_connection) {
-			clear_user_reactions(messageReaction, user);
-
 			const is_member_in_same_channel_as_portal = portal_voice_connection.channel.members
 				.some(member => member.id === user.id);
 
@@ -169,29 +167,30 @@ async function reaction_music_manager(
 
 		switch (messageReaction.emoji.name) {
 			case '▶️': {
-				clear_user_reactions(messageReaction, user);
-
 				play(portal_voice_connection, messageReaction.message,
-					client, messageReaction.message.guild, guild_object)
+					client, messageReaction.message.guild, guild_object, user)
 					.then(r => {
+						clear_user_reactions(messageReaction, user);
 						return resolve(r);
 					})
 					.catch(e => {
+						clear_user_reactions(messageReaction, user);
 						return resolve({
 							result: false,
 							value: e
 						});
 					});
+
 				break;
 			}
 			case '⏸': {
-				clear_user_reactions(messageReaction, user);
-
 				pause(portal_voice_connection, messageReaction.message.guild, guild_object)
 					.then(r => {
+						clear_user_reactions(messageReaction, user);
 						return resolve(r);
 					})
 					.catch(e => {
+						clear_user_reactions(messageReaction, user);
 						return resolve({
 							result: false,
 							value: e
@@ -200,9 +199,8 @@ async function reaction_music_manager(
 				break;
 			}
 			case '⏹': {
-				clear_user_reactions(messageReaction, user);
-
 				if (!portal_voice_connection) {
+					clear_user_reactions(messageReaction, user);
 					return resolve({
 						result: false,
 						value: 'can only stop when with portal'
@@ -210,6 +208,7 @@ async function reaction_music_manager(
 				}
 
 				if (!guild_object.music_data.votes) {
+					clear_user_reactions(messageReaction, user);
 					return resolve({
 						result: false,
 						value: 'could not get music votes'
@@ -232,6 +231,7 @@ async function reaction_music_manager(
 							return resolve(r);
 						})
 						.catch(e => {
+							clear_user_reactions(messageReaction, user);
 							return resolve({
 								result: false,
 								value: e
@@ -240,6 +240,7 @@ async function reaction_music_manager(
 				} else {
 					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
 					if (!guild) {
+						clear_user_reactions(messageReaction, user);
 						return resolve({
 							result: false,
 							value: `could not fetch guild`
@@ -248,6 +249,7 @@ async function reaction_music_manager(
 
 					const member = guild.members.cache.find(m => m.id === user.id);
 					if (!member) {
+						clear_user_reactions(messageReaction, user);
 						return resolve({
 							result: false,
 							value: `could not fetch member`
@@ -255,17 +257,13 @@ async function reaction_music_manager(
 					}
 
 					if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-						const guild_id = messageReaction.message.guild.id;
-						const voice_connection = client.voice?.connections
-							.find(connection => connection.channel.guild.id === guild_id);
-						const dispatcher = voice_connection?.dispatcher;
-
-						return stop(portal_voice_connection, messageReaction.message.guild, guild_object)
+						stop(portal_voice_connection, messageReaction.message.guild, guild_object)
 							.then(r => {
 								clear_music_vote(guild_object.id);
 								return resolve(r);
 							})
 							.catch(e => {
+								clear_user_reactions(messageReaction, user);
 								return resolve({
 									result: false,
 									value: e
@@ -273,6 +271,7 @@ async function reaction_music_manager(
 							});
 					}
 
+					clear_user_reactions(messageReaction, user);
 					return resolve({
 						result: false,
 						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)`
@@ -280,9 +279,8 @@ async function reaction_music_manager(
 				}
 			}
 			case '⏭': {
-				clear_user_reactions(messageReaction, user);
-
 				if (!portal_voice_connection) {
+					clear_user_reactions(messageReaction, user);
 					return resolve({
 						result: false,
 						value: 'can only stop when with portal'
@@ -290,6 +288,7 @@ async function reaction_music_manager(
 				}
 
 				if (!guild_object.music_data.votes) {
+					clear_user_reactions(messageReaction, user);
 					return resolve({
 						result: false,
 						value: 'could not get music votes'
@@ -307,8 +306,12 @@ async function reaction_music_manager(
 				if (votes >= users / 2) {
 					return skip(messageReaction.message, portal_voice_connection,
 						client, messageReaction.message.guild, guild_object)
-						.then(r => { clear_music_vote(guild_object.id); return resolve(r) })
+						.then(r => {
+							clear_music_vote(guild_object.id);
+							return resolve(r)
+						})
 						.catch(e => {
+							clear_user_reactions(messageReaction, user);
 							return resolve({
 								result: false,
 								value: e
@@ -317,16 +320,22 @@ async function reaction_music_manager(
 				}
 
 				const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-				if (!guild) return resolve({
-					result: false,
-					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-				});
+				if (!guild) {
+					clear_user_reactions(messageReaction, user);
+					return resolve({
+						result: false,
+						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+					});
+				}
 
 				const member = guild.members.cache.find(m => m.id === user.id);
-				if (!member) return resolve({
-					result: false,
-					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-				});
+				if (!member) {
+					clear_user_reactions(messageReaction, user);
+					return resolve({
+						result: false,
+						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+					});
+				}
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
 					return skip(messageReaction.message, portal_voice_connection,
@@ -336,17 +345,20 @@ async function reaction_music_manager(
 							return resolve(r);
 						})
 						.catch(e => {
+							clear_user_reactions(messageReaction, user);
 							return resolve({
 								result: false,
 								value: e
 							})
 						});
 				}
-
-				return resolve({
-					result: false,
-					value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-				});
+				else {
+					clear_user_reactions(messageReaction, user);
+					return resolve({
+						result: false,
+						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+					});
+				}
 			}
 			// case '📜': {
 			// 	clear_user_reactions(messageReaction, user);
@@ -362,14 +374,15 @@ async function reaction_music_manager(
 			// 	});
 			// }
 			case '🧹': {
-				clear_user_reactions(messageReaction, user);
-
 				if (guild_object.music_queue.length > 1) {
 					guild_object.music_queue.splice(1, guild_object.music_queue.length);
 					update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 
-					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
+					const guild = client.guilds.cache
+						.find(g => g.id === guild_object.id);
+
 					if (!guild) {
+						clear_user_reactions(messageReaction, user);
 						return resolve({
 							result: false,
 							value: 'could fetch guild from client'
@@ -384,15 +397,13 @@ async function reaction_music_manager(
 					);
 				}
 
+				clear_user_reactions(messageReaction, user);
 				return resolve({
 					result: true,
 					value: 'music queue has been cleared'
 				});
 			}
 			case '🚪': {
-				clear_user_reactions(messageReaction, user);
-
-				// client_talk(client, guild_list, 'leave');
 				stop(portal_voice_connection, messageReaction.message.guild, guild_object)
 					.then(r => {
 						if (portal_voice_connection) {
@@ -400,12 +411,14 @@ async function reaction_music_manager(
 							guild_object.music_queue = [];
 						}
 
+						clear_user_reactions(messageReaction, user);
 						return resolve({
 							result: true,
 							value: 'leaving voice channel'
 						});
 					})
 					.catch(e => {
+						clear_user_reactions(messageReaction, user);
 						return resolve({
 							result: false,
 							value: e
@@ -433,6 +446,7 @@ module.exports = async (
 						if (args.messageReaction.partial) {
 							try {
 								args.messageReaction.fetch();
+								console.log('args.messageReaction :>> ', args.messageReaction);
 							} catch (e) {
 								return resolve({
 									result: false,
@@ -470,6 +484,12 @@ module.exports = async (
 							value: 'something went wrong with guild object',
 						});
 					}
+				})
+				.catch(e => {
+					return resolve({
+						result: false,
+						value: 'failed to fetch message reaction',
+					});
 				});
 		} else {
 			return resolve({

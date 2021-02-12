@@ -50,6 +50,7 @@ export function update_music_message(
 	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
 		'.github.io/master/assets/img/logo.png';
 
+		console.log('guild_object.music_queue.map(r => r.title) :>> ', guild_object.music_queue.map(r => r.title));
 	const music_queue = guild_object.music_queue.length > 0
 		? guild_object.music_queue.map((video, i) =>
 			video ? `${i !== 0 ? i : 'currrent: '}. **${video.title}` : '?'
@@ -94,11 +95,95 @@ export function update_music_message(
 	}
 };
 
-export async function join_user_voice(
-	client: Client, message: Message, guild_object: GuildPrtl, join: boolean
+export async function join_by_reaction (
+	client: Client, guild_object: GuildPrtl, user: User, join: boolean
 ): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
-		if (message.member === null) {
+		if (!user.presence) {
+			return resolve({
+				result: false,
+				value: 'no user presence',
+				voice_connection: undefined
+			});
+		}
+
+		if (!user.presence.member) {
+			return resolve({
+				result: false,
+				value: 'no user presence member',
+				voice_connection: undefined
+			});
+		}
+
+		if (!user.presence.member.voice) {
+			return resolve({
+				result: false,
+				value: 'no user presence member voice',
+				voice_connection: undefined
+			});
+		}
+
+		if (!user.presence.member.voice.channel) {
+			return resolve({
+				result: false,
+				value: 'no user presence member voice channel',
+				voice_connection: undefined
+			});
+		}
+
+		const current_voice = user.presence.member?.voice.channel;
+
+		const voice_connection_in_guild = client.voice?.connections
+			.find(connection => connection.channel.guild.id === user.presence.member?.voice.channel?.guild.id);
+
+		if (voice_connection_in_guild) {
+			if (voice_connection_in_guild.channel.id === user.presence.member?.voice.channel?.id) {
+				voice_connection_in_guild?.voice?.setSelfDeaf(true);
+				return resolve({
+					result: true,
+					value: 'already in voice channel',
+					voice_connection: voice_connection_in_guild
+				});
+			} else {
+				return resolve({
+					result: false,
+					value: 'playing music in another channel',
+					voice_connection: voice_connection_in_guild
+				});
+			}
+		} else {
+			current_voice.join()
+				.then(response => {
+					if (join) {
+						client_talk(client, guild_object, 'join');
+					}
+
+					response.voice?.setSelfDeaf(true);
+
+					return resolve({
+						result: true,
+						value: 'join',
+						voice_connection: response,
+					});
+				})
+				.catch(e => {
+					console.log('ERROR CREATING VOICE CONNECTION TO CHANNEL: ', e);
+
+					return resolve({
+						result: false,
+						value: 'failed to join voice channel',
+						voice_connection: undefined,
+					});
+				});
+		}
+	});
+}
+
+export async function join_user_voice(
+	client: Client, message: Message, guild_object: GuildPrtl, join: boolean
+): Promise<ReturnPormiseVoice> {
+	return new Promise((resolve) => {
+		if (!message.member) {
 			return resolve({
 				result: false,
 				value: 'message has no member',
@@ -106,7 +191,7 @@ export async function join_user_voice(
 			});
 		}
 
-		if (message.guild === null) {
+		if (!message.guild) {
 			return resolve({
 				result: false,
 				value: 'message has no guild',
@@ -116,7 +201,7 @@ export async function join_user_voice(
 
 		const current_voice = message.member.voice.channel;
 
-		if (current_voice === null) {
+		if (!current_voice) {
 			return resolve({
 				result: false,
 				value: 'you are not connected to any channel',
@@ -128,14 +213,6 @@ export async function join_user_voice(
 			return resolve({
 				result: false,
 				value: 'your current channel is on another guild',
-				voice_connection: undefined
-			});
-		}
-
-		if (!message || !message.guild) {
-			return resolve({
-				result: false,
-				value: 'could not find guild of message',
 				voice_connection: undefined
 			});
 		}

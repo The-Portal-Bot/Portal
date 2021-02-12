@@ -1,9 +1,9 @@
 import ytdl from 'discord-ytdl-core';
-import { Client, Guild, Message, StreamDispatcher, VoiceConnection, MessageReaction } from "discord.js";
+import { Client, Guild, Message, StreamDispatcher, User, VoiceConnection } from "discord.js";
 import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { join_user_voice, update_music_message } from './helpOps';
+import { join_by_reaction, join_user_voice, update_music_message } from './helpOps';
 import { clear_music_vote, insert_music_video, update_guild } from './mongoOps';
 // const ytdl = require('ytdl-core');
 
@@ -58,8 +58,8 @@ function spawn_dispatcher(
 }
 
 export async function start(
-	voice_connection: VoiceConnection | undefined, client: Client, message: Message,
-	guild_object: GuildPrtl, search_term: string
+	voice_connection: VoiceConnection | undefined, client: Client,
+	message: Message, guild_object: GuildPrtl, search_term: string
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
 		yts(search_term)
@@ -82,6 +82,7 @@ export async function start(
 
 				if (voice_connection) {
 					if (voice_connection.dispatcher) {
+						guild_object.music_queue.push(yts_attempt.videos[0]);
 						insert_music_video(guild_object.id, yts_attempt.videos[0])
 							.then(r => {
 								const reply_message = r
@@ -238,7 +239,7 @@ export async function start(
 
 export async function play(
 	voice_connection: VoiceConnection | undefined, message: Message,
-	client: Client, guild: Guild, guild_object: GuildPrtl
+	client: Client, guild: Guild, guild_object: GuildPrtl, user: User
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (voice_connection) {
@@ -292,9 +293,7 @@ export async function play(
 				});
 			}
 		} else {
-			const next_video = pop_music_queue(guild_object);
-
-			if (!next_video) {
+			if (guild_object.music_queue.length === 0) {
 				update_music_message(
 					guild,
 					guild_object,
@@ -308,14 +307,16 @@ export async function play(
 				});
 			}
 
-			join_user_voice(client, message, guild_object, true)
+			const current_video = guild_object.music_queue[0];
+
+			join_by_reaction(client, guild_object, user, true)
 				.then(r => {
 					if (r.result) {
 						if (!r.voice_connection) {
 							update_music_message(
 								guild,
 								guild_object,
-								next_video,
+								current_video,
 								'failed to join voice channel'
 							);
 
@@ -325,7 +326,7 @@ export async function play(
 							});
 						}
 
-						const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
+						const dispatcher = spawn_dispatcher(current_video, r.voice_connection);
 
 						dispatcher.on('finish', () => {
 							skip(message, voice_connection, client, guild, guild_object);
@@ -336,7 +337,7 @@ export async function play(
 						update_music_message(
 							guild,
 							guild_object,
-							next_video,
+							current_video,
 							'playing video from queue'
 						);
 
@@ -348,7 +349,7 @@ export async function play(
 						update_music_message(
 							guild,
 							guild_object,
-							next_video,
+							current_video,
 							r.value
 						);
 
@@ -369,7 +370,8 @@ export async function play(
 };
 
 export async function pause(
-	voice_connection: VoiceConnection | undefined, guild: Guild, guild_object: GuildPrtl
+	voice_connection: VoiceConnection | undefined,
+	guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		let returnValue: ReturnPormise = {
@@ -408,7 +410,8 @@ export async function pause(
 };
 
 export async function stop(
-	voice_connection: VoiceConnection | undefined, guild: Guild, guild_object: GuildPrtl
+	voice_connection: VoiceConnection | undefined,
+	guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		let returnValue: ReturnPormise = {
@@ -420,6 +423,7 @@ export async function stop(
 			if (voice_connection.dispatcher) {
 				if (!voice_connection.dispatcher.paused) {
 					voice_connection.dispatcher.pause();
+					voice_connection.dispatcher.end();
 					voice_connection.dispatcher.destroy();
 					returnValue.result = true;
 					returnValue.value = 'playback stopped';

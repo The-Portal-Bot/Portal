@@ -586,11 +586,9 @@ export async function insert_music_video(
             }
         )
             .then((r: { n: number, nModified: number, ok: number }) => {
-                console.log('r :>> ', r);
                 return resolve(r.ok === 1)
             })
             .catch(e => {
-                console.log('e :>> ', e);
                 return resolve(false)
             });
     });
