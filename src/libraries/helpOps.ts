@@ -47,10 +47,12 @@ export function create_music_message(
 export function update_music_message(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult, status: string
 ): void {
-	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-		'.github.io/master/assets/img/logo.png';
+	const portal_icon_url = 'https://raw.githubusercontent.com/' +
+		'keybraker/keybraker.github.io/master/assets/img/logo.png';
 
-	const music_queue = guild_object.music_queue.length > 0
+	console.log('UPDATE: guild_object.music_queue :>> ',
+		guild_object.music_queue.map(r => r.title).join('\n'));
+	const music_queue = guild_object.music_queue.length > 1
 		? guild_object.music_queue.map((v, i) => {
 			if (i !== 0) {
 				return (`${i}. **${v.title}**`);
@@ -96,7 +98,7 @@ export function update_music_message(
 	}
 };
 
-export async function join_by_reaction (
+export async function join_by_reaction(
 	client: Client, guild_object: GuildPrtl, user: User, join: boolean
 ): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {

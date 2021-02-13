@@ -1,9 +1,9 @@
 import ytdl from 'discord-ytdl-core';
-import { Client, Guild, Message, StreamDispatcher, User, VoiceConnection, MessageReaction } from "discord.js";
+import { Client, Guild, StreamDispatcher, User, VoiceConnection } from "discord.js";
 import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { join_by_reaction, join_user_voice, update_music_message } from './helpOps';
+import { join_by_reaction, update_music_message } from './helpOps';
 import { clear_music_vote, insert_music_video, update_guild } from './mongoOps';
 // const ytdl = require('ytdl-core');
 
@@ -36,6 +36,8 @@ function pop_music_queue(
 	guild_object: GuildPrtl
 ): yts.VideoSearchResult | undefined {
 	if (guild_object.music_queue.length > 0) {
+		console.log('was :>> ', guild_object.music_queue);
+		console.log('is  :>> ', guild_object.music_queue);
 		guild_object.music_queue.shift();
 		update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 
@@ -84,9 +86,15 @@ export async function start(
 
 				if (voice_connection) {
 					if (voice_connection.dispatcher) {
+						console.log('1) guild_object.music_queue :>> ',
+							guild_object.music_queue.map(r => r.title).join('\n'));
 						guild_object.music_queue.push(yts_attempt.videos[0]);
+						console.log('2) guild_object.music_queue :>> ',
+							guild_object.music_queue.map(r => r.title).join('\n'));
 						insert_music_video(guild_object.id, yts_attempt.videos[0])
 							.then(r => {
+								console.log('3) guild_object.music_queue :>> ',
+									guild_object.music_queue.map(r => r.title).join('\n'));
 								const reply_message = r
 									? 'already playing, added to queue'
 									: 'already playing, could add to queue';
@@ -117,12 +125,15 @@ export async function start(
 								});
 							});
 					} else {
+						guild_object.music_queue.push(yts_attempt.videos[0]);
 						insert_music_video(guild_object.id, yts_attempt.videos[0]);
 
 						const dispatcher = spawn_dispatcher(yts_attempt.videos[0], voice_connection);
 
 						dispatcher.on('finish', () => {
-							skip(user, voice_connection, client, guild, guild_object);
+							console.log('START ON FINISH');
+							dispatcher.destroy();
+							play(voice_connection, user, client, guild, guild_object);
 							clear_music_vote(guild_object.id);
 						});
 
@@ -173,7 +184,9 @@ export async function start(
 
 								const dispatcher = spawn_dispatcher(yts_attempt.videos[0], r.voice_connection);
 								dispatcher.on('finish', () => {
-									skip(user, r.voice_connection, client, guild, guild_object);
+									console.log('START ON FINISH 2');
+									dispatcher.destroy();
+									play(r.voice_connection, user, client, guild, guild_object);
 									clear_music_vote(guild_object.id);
 								});
 
@@ -237,7 +250,7 @@ export async function play(
 					);
 
 					return resolve({
-						result: false,
+						result: true,
 						value: 'playback resumed'
 					});
 				}
@@ -247,7 +260,7 @@ export async function play(
 					update_music_message(
 						guild,
 						guild_object,
-						guild_object.music_queue[0],
+						empty_message,
 						'music queue is empty'
 					);
 
@@ -259,7 +272,9 @@ export async function play(
 
 				const dispatcher = spawn_dispatcher(next_video, voice_connection);
 				dispatcher.on('finish', () => {
-					skip(user, voice_connection, client, guild, guild_object);
+					console.log('PLAY ON FINISH');
+					dispatcher.destroy();
+					play(voice_connection, user, client, guild, guild_object);
 					clear_music_vote(guild_object.id);
 				});
 
@@ -312,8 +327,9 @@ export async function play(
 						const dispatcher = spawn_dispatcher(current_video, r.voice_connection);
 
 						dispatcher.on('finish', () => {
-							skip(user, voice_connection, client, guild, guild_object);
-							guild_object.music_data.votes = [];
+							console.log('PLAY ON FINISH 2');
+							dispatcher.destroy();
+							play(voice_connection, user, client, guild, guild_object);
 							clear_music_vote(guild_object.id);
 						});
 
@@ -404,14 +420,9 @@ export async function stop(
 
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
-				if (!voice_connection.dispatcher.paused) {
-					voice_connection.dispatcher.end();
-					returnValue.result = true;
-					returnValue.value = 'playback stopped';
-				} else {
-					returnValue.result = false;
-					returnValue.value = 'already stopped';
-				}
+				voice_connection.dispatcher.end();
+				returnValue.result = true;
+				returnValue.value = 'playback stopped';
 			} else {
 				returnValue.result = false;
 				returnValue.value = 'no playback';
@@ -433,16 +444,13 @@ export async function stop(
 };
 
 export async function skip(
-	user: User, voice_connection: VoiceConnection | undefined,
+	voice_connection: VoiceConnection | undefined, user: User,
 	client: Client, guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
-				if (!voice_connection.dispatcher.paused) {
-					voice_connection.dispatcher.pause();
-					voice_connection.dispatcher.destroy();
-				}
+				voice_connection.dispatcher.end();
 			}
 
 			const next_video = pop_music_queue(guild_object);
@@ -455,8 +463,9 @@ export async function skip(
 
 			const dispatcher = spawn_dispatcher(next_video, voice_connection);
 			dispatcher.on('finish', () => {
-				console.log('FINISH');
-				skip(user, voice_connection, client, guild, guild_object);
+				console.log('ON FINISH INSIDE SKIP');
+				dispatcher.destroy();
+				play(voice_connection, user, client, guild, guild_object);
 				clear_music_vote(guild_object.id);
 			});
 
@@ -508,8 +517,9 @@ export async function skip(
 						const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
 
 						dispatcher.on('finish', () => {
-							skip(user, voice_connection, client, guild, guild_object);
-							guild_object.music_data.votes = [];
+							console.log('ON FINSISH INSEIDE OF SKIPERINO');
+							dispatcher.destroy();
+							play(voice_connection, user, client, guild, guild_object);
 							clear_music_vote(guild_object.id);
 						});
 

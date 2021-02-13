@@ -303,11 +303,12 @@ async function reaction_music_manager(
 				}
 
 				const votes = guild_object.music_data.votes.length;
-				const users = portal_voice_connection?.channel?.members.filter(member => !member.user.bot).size;
+				const users = portal_voice_connection?.channel?.members
+					.filter(member => !member.user.bot).size;
 
 				if (votes >= users / 2) {
-					skip(user, portal_voice_connection,
-						client, messageReaction.message.guild, guild_object)
+					skip(portal_voice_connection, user, client,
+						messageReaction.message.guild, guild_object)
 						.then(r => {
 							clear_music_vote(guild_object.id);
 							return resolve(r)
@@ -340,8 +341,8 @@ async function reaction_music_manager(
 				}
 
 				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-					skip(user, portal_voice_connection,
-						client, messageReaction.message.guild, guild_object)
+					skip(portal_voice_connection, user, client,
+						messageReaction.message.guild, guild_object)
 						.then(r => {
 							clear_music_vote(guild_object.id);
 							return resolve(r);
