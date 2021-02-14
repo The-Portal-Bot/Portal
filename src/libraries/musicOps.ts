@@ -50,14 +50,20 @@ function pop_music_queue(
 function spawn_dispatcher(
 	video_options: yts.VideoSearchResult, voice_connection: VoiceConnection
 ): StreamDispatcher {
+	// const fast_stream = fs.createReadStream('./media.webm'), {
+	// 	type: 'webm/opus',
+	// };
+
 	const stream = ytdl(video_options.url, {
 		filter: 'audioonly',
-		opusEncoded: false,
-		fmt: 'mp3'
+		// opusEncoded: false,
+		// fmt: 'mp3'
+		opusEncoded: true,
+		encoderArgs: ['-af', 'bass=g=10, dynaudnorm=f=200']
 	});
 
 	voice_connection.setSpeaking('SOUNDSHARE');
-	const dispatcher = voice_connection.play(stream);
+	const dispatcher = voice_connection.play(stream, { type: 'opus' });
 	dispatcher.setBitrate(96000);
 
 	return dispatcher;
@@ -86,15 +92,9 @@ export async function start(
 
 				if (voice_connection) {
 					if (voice_connection.dispatcher) {
-						console.log('1) guild_object.music_queue :>> ',
-							guild_object.music_queue.map(r => r.title).join('\n'));
 						guild_object.music_queue.push(yts_attempt.videos[0]);
-						console.log('2) guild_object.music_queue :>> ',
-							guild_object.music_queue.map(r => r.title).join('\n'));
 						insert_music_video(guild_object.id, yts_attempt.videos[0])
 							.then(r => {
-								console.log('3) guild_object.music_queue :>> ',
-									guild_object.music_queue.map(r => r.title).join('\n'));
 								const reply_message = r
 									? 'already playing, added to queue'
 									: 'already playing, could add to queue';
@@ -129,6 +129,20 @@ export async function start(
 						insert_music_video(guild_object.id, yts_attempt.videos[0]);
 
 						const dispatcher = spawn_dispatcher(yts_attempt.videos[0], voice_connection);
+
+						dispatcher.on('close', () => {
+							console.log('START ON CLOSE');
+							dispatcher.destroy();
+							play(voice_connection, user, client, guild, guild_object);
+							clear_music_vote(guild_object.id);
+						});
+
+						dispatcher.on('finish', () => {
+							console.log('START ON FINISH');
+							dispatcher.destroy();
+							play(voice_connection, user, client, guild, guild_object);
+							clear_music_vote(guild_object.id);
+						});
 
 						dispatcher.on('finish', () => {
 							console.log('START ON FINISH');
