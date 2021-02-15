@@ -1,10 +1,16 @@
-import { Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User, VoiceConnection } from "discord.js";
+import {
+	Channel, Client, Guild, GuildChannel, GuildMember, Message,
+	MessageEmbed, PermissionString, TextChannel, User
+} from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
-import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
+import {
+	Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed,
+	TimeRemaining
+} from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localisationOps";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongoOps";
 
@@ -34,7 +40,7 @@ export function create_music_message(
 		.then(sent_message => {
 			sent_message.react('▶️');
 			sent_message.react('⏸');
-			sent_message.react('⏹');
+			// sent_message.react('⏹');
 			sent_message.react('⏭');
 			sent_message.react('🧹');
 			sent_message.react('🚪');
@@ -50,8 +56,6 @@ export function update_music_message(
 	const portal_icon_url = 'https://raw.githubusercontent.com/' +
 		'keybraker/keybraker.github.io/master/assets/img/logo.png';
 
-	console.log('UPDATE: guild_object.music_queue :>> ',
-		guild_object.music_queue.map(r => r.title).join('\n'));
 	const music_queue = guild_object.music_queue.length > 1
 		? guild_object.music_queue.map((v, i) => {
 			if (i !== 0) {

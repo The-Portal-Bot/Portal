@@ -8,8 +8,6 @@ import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
 import { Rank } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 
-import { stop } from "./musicOps";
-
 // fetch guilds
 export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
     return new Promise((resolve) => {

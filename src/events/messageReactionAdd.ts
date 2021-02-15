@@ -2,7 +2,7 @@ import { Client, MessageReaction, StreamDispatcher, User, VoiceConnection } from
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
 import { clear_music_vote, fetch_guild, insert_music_vote, update_guild } from "../libraries/mongoOps";
-import { pause, play, skip, stop } from "../libraries/musicOps";
+import { pause, play, skip } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
@@ -198,88 +198,91 @@ async function reaction_music_manager(
 							value: e
 						});
 					});
+
 				break;
 			}
-			case '⏹': {
-				if (!portal_voice_connection) {
-					clear_user_reactions(messageReaction, user);
-					return resolve({
-						result: false,
-						value: 'can only stop when with portal'
-					})
-				}
+			// case '⏹': {
+			// 	if (!portal_voice_connection) {
+			// 		clear_user_reactions(messageReaction, user);
+			// 		return resolve({
+			// 			result: false,
+			// 			value: 'can only stop when with portal'
+			// 		})
+			// 	}
 
-				if (!guild_object.music_data.votes) {
-					clear_user_reactions(messageReaction, user);
-					return resolve({
-						result: false,
-						value: 'could not get music votes'
-					})
-				}
+			// 	if (!guild_object.music_data.votes) {
+			// 		clear_user_reactions(messageReaction, user);
+			// 		return resolve({
+			// 			result: false,
+			// 			value: 'could not get music votes'
+			// 		})
+			// 	}
 
-				if (!guild_object.music_data.votes.includes(user.id)) {
-					guild_object.music_data.votes.push(user.id);
-					insert_music_vote(guild_object.id, user.id);
-				}
+			// 	if (!guild_object.music_data.votes.includes(user.id)) {
+			// 		guild_object.music_data.votes.push(user.id);
+			// 		insert_music_vote(guild_object.id, user.id);
+			// 	}
 
-				const votes = guild_object.music_data.votes.length;
-				const users = portal_voice_connection.channel.members
-					.filter(member => !member.user.bot).size;
+			// 	const votes = guild_object.music_data.votes.length;
+			// 	const users = portal_voice_connection.channel.members
+			// 		.filter(member => !member.user.bot).size;
 
-				if (votes >= users / 2) {
-					stop(portal_voice_connection, messageReaction.message.guild, guild_object)
-						.then(r => {
-							clear_music_vote(guild_object.id);
-							return resolve(r);
-						})
-						.catch(e => {
-							clear_user_reactions(messageReaction, user);
-							return resolve({
-								result: false,
-								value: e
-							});
-						});
-				} else {
-					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-					if (!guild) {
-						clear_user_reactions(messageReaction, user);
-						return resolve({
-							result: false,
-							value: `could not fetch guild`
-						});
-					}
+			// 	if (votes >= users / 2) {
+			// 		stop(portal_voice_connection, messageReaction.message.guild, guild_object)
+			// 			.then(r => {
+			// 				clear_music_vote(guild_object.id);
+			// 				return resolve(r);
+			// 			})
+			// 			.catch(e => {
+			// 				clear_user_reactions(messageReaction, user);
+			// 				return resolve({
+			// 					result: false,
+			// 					value: e
+			// 				});
+			// 			});
+			// 	} else {
+			// 		const guild = client.guilds.cache.find(g => g.id === guild_object.id);
+			// 		if (!guild) {
+			// 			clear_user_reactions(messageReaction, user);
+			// 			return resolve({
+			// 				result: false,
+			// 				value: `could not fetch guild`
+			// 			});
+			// 		}
 
-					const member = guild.members.cache.find(m => m.id === user.id);
-					if (!member) {
-						clear_user_reactions(messageReaction, user);
-						return resolve({
-							result: false,
-							value: `could not fetch member`
-						});
-					}
+			// 		const member = guild.members.cache.find(m => m.id === user.id);
+			// 		if (!member) {
+			// 			clear_user_reactions(messageReaction, user);
+			// 			return resolve({
+			// 				result: false,
+			// 				value: `could not fetch member`
+			// 			});
+			// 		}
 
-					if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-						stop(portal_voice_connection, messageReaction.message.guild, guild_object)
-							.then(r => {
-								clear_music_vote(guild_object.id);
-								return resolve(r);
-							})
-							.catch(e => {
-								clear_user_reactions(messageReaction, user);
-								return resolve({
-									result: false,
-									value: e
-								});
-							});
-					}
+			// 		if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
+			// 			stop(portal_voice_connection, messageReaction.message.guild, guild_object)
+			// 				.then(r => {
+			// 					clear_music_vote(guild_object.id);
+			// 					return resolve(r);
+			// 				})
+			// 				.catch(e => {
+			// 					clear_user_reactions(messageReaction, user);
+			// 					return resolve({
+			// 						result: false,
+			// 						value: e
+			// 					});
+			// 				});
+			// 		}
 
-					clear_user_reactions(messageReaction, user);
-					return resolve({
-						result: false,
-						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)`
-					});
-				}
-			}
+			// 		clear_user_reactions(messageReaction, user);
+			// 		return resolve({
+			// 			result: false,
+			// 			value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)`
+			// 		});
+			// 	}
+
+			//  break;
+			// }
 			case '⏭': {
 				if (!portal_voice_connection) {
 					clear_user_reactions(messageReaction, user);
@@ -307,8 +310,10 @@ async function reaction_music_manager(
 					.filter(member => !member.user.bot).size;
 
 				if (votes >= users / 2) {
-					skip(portal_voice_connection, user, client,
-						messageReaction.message.guild, guild_object)
+					skip(
+						portal_voice_connection, user, client,
+						messageReaction.message.guild, guild_object
+					)
 						.then(r => {
 							clear_music_vote(guild_object.id);
 							return resolve(r)
@@ -320,48 +325,50 @@ async function reaction_music_manager(
 								value: e
 							})
 						});
-				}
-
-				const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-				if (!guild) {
-					clear_user_reactions(messageReaction, user);
-					return resolve({
-						result: false,
-						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-					});
-				}
-
-				const member = guild.members.cache.find(m => m.id === user.id);
-				if (!member) {
-					clear_user_reactions(messageReaction, user);
-					return resolve({
-						result: false,
-						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-					});
-				}
-
-				if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-					skip(portal_voice_connection, user, client,
-						messageReaction.message.guild, guild_object)
-						.then(r => {
-							clear_music_vote(guild_object.id);
-							return resolve(r);
-						})
-						.catch(e => {
-							clear_user_reactions(messageReaction, user);
-							return resolve({
-								result: false,
-								value: e
-							})
+				} else {
+					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
+					if (!guild) {
+						clear_user_reactions(messageReaction, user);
+						return resolve({
+							result: false,
+							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
 						});
+					}
+
+					const member = guild.members.cache.find(m => m.id === user.id);
+					if (!member) {
+						clear_user_reactions(messageReaction, user);
+						return resolve({
+							result: false,
+							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+						});
+					}
+
+					if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
+						skip(portal_voice_connection, user, client,
+							messageReaction.message.guild, guild_object)
+							.then(r => {
+								clear_music_vote(guild_object.id);
+								return resolve(r);
+							})
+							.catch(e => {
+								clear_user_reactions(messageReaction, user);
+								return resolve({
+									result: false,
+									value: e
+								})
+							});
+					}
+					else {
+						clear_user_reactions(messageReaction, user);
+						return resolve({
+							result: false,
+							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
+						});
+					}
 				}
-				else {
-					clear_user_reactions(messageReaction, user);
-					return resolve({
-						result: false,
-						value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-					});
-				}
+
+				break;
 			}
 			// case '📜': {
 			// 	clear_user_reactions(messageReaction, user);
@@ -405,12 +412,15 @@ async function reaction_music_manager(
 					result: true,
 					value: 'music queue has been cleared'
 				});
+
+				break;
 			}
 			case '🚪': {
-				stop(portal_voice_connection, messageReaction.message.guild, guild_object)
+				pause(portal_voice_connection, messageReaction.message.guild, guild_object)
 					.then(r => {
 						if (portal_voice_connection) {
 							portal_voice_connection.disconnect();
+							portal_voice_connection.dispatcher.destroy();
 							guild_object.music_queue = [];
 						}
 
@@ -427,6 +437,8 @@ async function reaction_music_manager(
 							value: e
 						})
 					});
+
+				break;
 			}
 		}
 	});

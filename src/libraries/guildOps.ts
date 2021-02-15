@@ -9,7 +9,6 @@ import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON } from './helpOps';
 import { ChannelTypePrtl, insert_voice } from "./mongoOps";
-import { stop } from './musicOps';
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -267,7 +266,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -286,7 +285,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 						parent: music_category
 					},
 				)
@@ -303,7 +302,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 					},
 				)
 				.then(channel => {
@@ -395,7 +394,8 @@ export async function create_focus_channel(
 //
 
 export function delete_channel(
-	type: ChannelTypePrtl, channel_to_delete: VoiceChannel | TextChannel, message: Message | null, isPortal: boolean = false
+	type: ChannelTypePrtl, channel_to_delete: VoiceChannel | TextChannel,
+	message: Message | null, isPortal: boolean = false
 ): void {
 	if (!isPortal) {
 		if (message) {
@@ -404,7 +404,8 @@ export function delete_channel(
 			let channel_deleted = false;
 
 			message.channel
-				.send(`${message.author}, do you wish to delete old ${ChannelTypePrtl[type].toString()} channel **${channel_to_delete}** (yes / no) ?`)
+				.send(`${message.author}, do you wish to delete old ` +
+					`${ChannelTypePrtl[type].toString()} channel **${channel_to_delete}** (yes / no) ?`)
 				.then((question_msg: Message) => {
 					const filter: CollectorFilter = m => m.author.id === author.id;
 					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
@@ -422,9 +423,6 @@ export function delete_channel(
 										}
 									})
 									.catch(console.error);
-
-
-
 
 								channel_deleted = true;
 							}

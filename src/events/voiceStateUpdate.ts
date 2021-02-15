@@ -2,7 +2,6 @@ import { Client, TextChannel, VoiceChannel, VoiceConnection, VoiceState, StreamD
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guildOps";
 import { client_talk } from "../libraries/localisationOps";
 import { fetch_guild, remove_voice } from "../libraries/mongoOps";
-import { stop } from "../libraries/musicOps";
 import { update_timestamp } from "../libraries/userOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";

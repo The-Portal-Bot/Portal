@@ -12,7 +12,7 @@ import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libra
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
 import { fetch_guild, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
-import { start, stop } from './libraries/musicOps';
+import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
@@ -384,7 +384,10 @@ function event_loader(event: string, args: any): void {
 			// }
 
 			const shouldReply = event_config_json.find(e => e.name === event);
-			if ((config.debug) || (shouldReply && shouldReply.reply) && (response && response.result === false) && response.value !== '') {
+			if ((config.debug) || (shouldReply && shouldReply.reply) &&
+				(response && response.result === false) &&
+				(response.value && response.value !== '')
+			) {
 				console.log('response :>> ', response);
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
@@ -457,8 +460,6 @@ async function portal_channel_handler(
 						}
 						const voice_connection = client.voice?.connections.find(c =>
 							c.channel.guild.id === message.guild?.id);
-
-						stop(voice_connection, message.guild, guild_object);
 
 						const music_data = new MusicData('null', 'null', []);
 						set_music_data(guild_object.id, music_data)
