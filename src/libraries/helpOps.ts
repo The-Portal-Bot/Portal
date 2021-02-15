@@ -70,7 +70,7 @@ export function update_music_message(
 		'#0000FF',
 		[
 			{ emote: 'Duration', role: yts.timestamp, inline: true },
-			{ emote: 'Views', role: yts.views, inline: true },
+			{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
 			{ emote: 'Uploaded', role: yts.ago, inline: true },
 			{ emote: 'Queue', role: music_queue, inline: false },
 			{ emote: 'Latest Action', role: '`' + status + '`', inline: false }

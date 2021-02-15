@@ -319,12 +319,12 @@ async function reaction_music_manager(
 							return resolve(r)
 						})
 						.catch(e => {
-							clear_user_reactions(messageReaction, user);
 							return resolve({
 								result: false,
 								value: e
 							})
 						});
+					clear_user_reactions(messageReaction, user);
 				} else {
 					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
 					if (!guild) {
@@ -348,17 +348,16 @@ async function reaction_music_manager(
 						skip(portal_voice_connection, user, client,
 							messageReaction.message.guild, guild_object)
 							.then(r => {
-								clear_user_reactions(messageReaction, user);
 								clear_music_vote(guild_object.id);
 								return resolve(r);
 							})
 							.catch(e => {
-								clear_user_reactions(messageReaction, user);
 								return resolve({
 									result: false,
 									value: e
 								})
 							});
+						clear_user_reactions(messageReaction, user);
 					}
 					else {
 						clear_user_reactions(messageReaction, user);

@@ -388,7 +388,6 @@ function event_loader(event: string, args: any): void {
 				(response && response.result === false) &&
 				(response.value && response.value !== '')
 			) {
-				console.log('response :>> ', response);
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
 				const value_arr = response.value.split('\n') ? response.value.split('\n') : [];

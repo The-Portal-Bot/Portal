@@ -43,9 +43,7 @@ function pop_music_queue(
 				}
 				guild_object = r;
 				if (guild_object.music_queue.length > 0) {
-					console.log('was :>> ', guild_object.music_queue.map(r => r.title));
 					guild_object.music_queue.shift();
-					console.log('is  :>> ', guild_object.music_queue.map(r => r.title));
 					update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 
 					return resolve(guild_object.music_queue[0]);
@@ -123,7 +121,6 @@ export async function start(
 						const dispatcher = spawn_dispatcher(yts_attempt.videos[0], voice_connection);
 
 						dispatcher.once('finish', () => {
-							console.log('START ON FINISH');
 							dispatcher.destroy();
 							skip(voice_connection, user, client, guild, guild_object);
 							clear_music_vote(guild_object.id);
@@ -176,7 +173,6 @@ export async function start(
 
 								const dispatcher = spawn_dispatcher(yts_attempt.videos[0], r.voice_connection);
 								dispatcher.once('finish', () => {
-									console.log('START ON FINISH 2');
 									dispatcher.destroy();
 									skip(r.voice_connection, user, client, guild, guild_object);
 									clear_music_vote(guild_object.id);
@@ -265,7 +261,6 @@ export async function play(
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							console.log('PLAY ON FINISH');
 							dispatcher.destroy();
 							skip(voice_connection, user, client, guild, guild_object);
 							clear_music_vote(guild_object.id);
@@ -321,7 +316,6 @@ export async function play(
 						const dispatcher = spawn_dispatcher(current_video, r.voice_connection);
 
 						dispatcher.once('finish', () => {
-							console.log('PLAY ON FINISH 2');
 							dispatcher.destroy();
 							skip(voice_connection, user, client, guild, guild_object);
 							clear_music_vote(guild_object.id);
@@ -444,8 +438,6 @@ export async function skip(
 	client: Client, guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		console.log('ZERO guild_object.music_queue :>> ', guild_object.music_queue.map(r => r.title));
-
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
 				console.log('A guild_object.music_queue :>> ', guild_object.music_queue.map(r => r.title));
@@ -458,15 +450,21 @@ export async function skip(
 					.then(next_video => {
 
 						if (!next_video) {
+							update_music_message(
+								guild,
+								guild_object,
+								empty_message,
+								'queue is empty'
+							);
+
 							return resolve({
 								result: false,
-								value: 'music queue is empty'
+								value: 'queue is empty'
 							});
 						}
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							console.log('ON FINISH INSIDE SKIP');
 							dispatcher.destroy();
 							skip(voice_connection, user, client, guild, guild_object);
 							clear_music_vote(guild_object.id);
@@ -493,8 +491,8 @@ export async function skip(
 						update_music_message(
 							guild,
 							guild_object,
-							guild_object.music_queue[0],
-							'playing video from queue'
+							empty_message,
+							'queue is empty'
 						);
 
 						return resolve({
@@ -523,7 +521,6 @@ export async function skip(
 								const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
 
 								dispatcher.once('finish', () => {
-									console.log('ON FINSISH INSEIDE OF SKIPERINO');
 									dispatcher.destroy();
 									skip(voice_connection, user, client, guild, guild_object);
 									clear_music_vote(guild_object.id);
