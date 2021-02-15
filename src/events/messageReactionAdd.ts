@@ -348,6 +348,7 @@ async function reaction_music_manager(
 						skip(portal_voice_connection, user, client,
 							messageReaction.message.guild, guild_object)
 							.then(r => {
+								clear_user_reactions(messageReaction, user);
 								clear_music_vote(guild_object.id);
 								return resolve(r);
 							})

@@ -9,7 +9,8 @@ import { Rank } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 
 // fetch guilds
-export async function fetch_guild_list(): Promise<GuildPrtl[] | undefined> {
+export async function fetch_guild_list(
+): Promise<GuildPrtl[] | undefined> {
     return new Promise((resolve) => {
         GuildPrtlMdl.find({})
             .then(guilds => {
