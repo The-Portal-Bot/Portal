@@ -3,6 +3,7 @@ version: "3"
 services:
   portal:
     container_name: portal
+    restart: always
     image: keybraker/portal:latest
     build: 
       context: .

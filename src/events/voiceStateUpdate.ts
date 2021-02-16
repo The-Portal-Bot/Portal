@@ -67,7 +67,12 @@ function from_null(
 					if (!response.result) return response;
 					generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				})
-				.catch(error => { console.log('error :>> ', error); return { result: false, value: error }; });
+				.catch(error => {
+					return {
+						result: false, 
+						value: error
+					};
+				});
 		}
 		// joined voice channel
 		else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) {
