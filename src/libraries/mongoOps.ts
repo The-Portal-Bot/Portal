@@ -714,8 +714,7 @@ export async function set_music_data(
             {
                 $set: {
                     music_data: new_music_data
-                },
-                dispatcher: undefined
+                }
             }
         )
             .then((r: MongoPromise) => {

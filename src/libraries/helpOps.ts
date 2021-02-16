@@ -193,8 +193,6 @@ export async function join_by_reaction(
 					});
 				})
 				.catch(e => {
-					console.log('ERROR CREATING VOICE CONNECTION TO CHANNEL: ', e);
-
 					return resolve({
 						result: false,
 						value: 'failed to join voice channel',
@@ -524,7 +522,6 @@ export function time_remaining(
 	return { timeout_min, timeout_sec, remaining_min, remaining_sec };
 };
 
-// needs update 
 export function remove_deleted_channels(
 	guild: Guild
 ): Promise<boolean> {
