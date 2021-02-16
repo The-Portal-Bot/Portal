@@ -440,15 +440,10 @@ export async function skip(
 	return new Promise((resolve) => {
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
-				console.log('A guild_object.music_queue :>> ', guild_object.music_queue.map(r => r.title));
 				voice_connection.dispatcher.end();
 			} else {
-				console.log('NO DISPATCHER');
-				console.log('B guild_object.music_queue :>> ', guild_object.music_queue.map(r => r.title));
-
 				pop_music_queue(guild_object)
 					.then(next_video => {
-
 						if (!next_video) {
 							update_music_message(
 								guild,
