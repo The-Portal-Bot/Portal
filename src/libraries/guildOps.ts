@@ -9,7 +9,6 @@ import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON } from './helpOps';
 import { ChannelTypePrtl, insert_voice } from "./mongoOps";
-import { stop } from './musicOps';
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -267,7 +266,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -286,7 +285,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 						parent: music_category
 					},
 				)
@@ -303,7 +302,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, stop:⏹, skip:⏭, clear queue:🧹, leave:🚪',
+						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 					},
 				)
 				.then(channel => {
@@ -395,7 +394,8 @@ export async function create_focus_channel(
 //
 
 export function delete_channel(
-	type: ChannelTypePrtl, channel_to_delete: VoiceChannel | TextChannel, message: Message | null, isPortal: boolean = false
+	type: ChannelTypePrtl, channel_to_delete: VoiceChannel | TextChannel,
+	message: Message | null, isPortal: boolean = false
 ): void {
 	if (!isPortal) {
 		if (message) {
@@ -404,7 +404,8 @@ export function delete_channel(
 			let channel_deleted = false;
 
 			message.channel
-				.send(`${message.author}, do you wish to delete old ${ChannelTypePrtl[type].toString()} channel **${channel_to_delete}** (yes / no) ?`)
+				.send(`${message.author}, do you wish to delete old ` +
+					`${ChannelTypePrtl[type].toString()} channel **${channel_to_delete}** (yes / no) ?`)
 				.then((question_msg: Message) => {
 					const filter: CollectorFilter = m => m.author.id === author.id;
 					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
@@ -422,9 +423,6 @@ export function delete_channel(
 										}
 									})
 									.catch(console.error);
-
-
-
 
 								channel_deleted = true;
 							}
@@ -469,20 +467,20 @@ export function delete_channel(
 };
 
 export function channel_deleted_update_state(
-	channel_to_remove: GuildChannel, guild_list: GuildPrtl[], dispatcher: StreamDispatcher | undefined
+	channel_to_remove: GuildChannel, guild_list: GuildPrtl[]
 ): number {
 	const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
-	const guilf_object = guild_list.find(g => g.id === channel_to_remove.guild.id);
+	const guild_object = guild_list.find(g => g.id === channel_to_remove.guild.id);
 
-	if (!guilf_object) {
+	if (!guild_object) {
 		return -1;
 	}
 
 	let type_of_channel = TypesOfChannel.Unknown;
 
-	guilf_object.portal_list.some((p, index) => {
+	guild_object.portal_list.some((p, index) => {
 		if (p.id === channel_to_remove.id) {
-			guilf_object.portal_list.splice(index, 1);
+			guild_object.portal_list.splice(index, 1);
 			type_of_channel = TypesOfChannel.Portal;
 			return true;
 		}
@@ -495,27 +493,26 @@ export function channel_deleted_update_state(
 		});
 	});
 
-	for (let i = 0; i < guilf_object.url_list.length; i++) {
-		console.log(`${guilf_object.url_list[i]} === ${channel_to_remove.id}`);
-		if (guilf_object.url_list[i] === channel_to_remove.id) {
-			guilf_object.url_list.splice(i, 1);
+	for (let i = 0; i < guild_object.url_list.length; i++) {
+		console.log(`${guild_object.url_list[i]} === ${channel_to_remove.id}`);
+		if (guild_object.url_list[i] === channel_to_remove.id) {
+			guild_object.url_list.splice(i, 1);
 			type_of_channel = TypesOfChannel.Url;
 			break;
 		}
 	}
-	if (guilf_object.spotify === channel_to_remove.id) {
-		guilf_object.spotify = null;
+	if (guild_object.spotify === channel_to_remove.id) {
+		guild_object.spotify = null;
 		type_of_channel = TypesOfChannel.Spotify;
 	}
-	if (guilf_object.announcement === channel_to_remove.id) {
-		guilf_object.announcement = null;
+	if (guild_object.announcement === channel_to_remove.id) {
+		guild_object.announcement = null;
 		type_of_channel = TypesOfChannel.Announcement;
 	}
-	if (guilf_object.music_data.channel_id === channel_to_remove.id) {
-		stop(guilf_object, channel_to_remove.guild, dispatcher);
-		guilf_object.music_data.channel_id = undefined;
-		guilf_object.music_data.message_id = undefined;
-		guilf_object.music_data.votes = [];
+	if (guild_object.music_data.channel_id === channel_to_remove.id) {
+		guild_object.music_data.channel_id = undefined;
+		guild_object.music_data.message_id = undefined;
+		guild_object.music_data.votes = [];
 		type_of_channel = TypesOfChannel.Music;
 	}
 

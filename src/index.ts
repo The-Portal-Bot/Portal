@@ -12,7 +12,7 @@ import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libra
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
 import { fetch_guild, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
-import { start, stop } from './libraries/musicOps';
+import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
@@ -49,7 +49,6 @@ const anti_spam = new AntiSpam({
 	ignoredUsers: [], // Array of User IDs that get ignored.
 });
 
-const dispatchers: { id: string, dispatcher: StreamDispatcher }[] = [];
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
 // this is the client the Portal Bot. Some people call it bot, some people call
@@ -83,8 +82,7 @@ const client = new Client(
 // This event triggers when the bot joins a guild.
 client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
 	event_loader('channelDelete', {
-		'channel': channel,
-		'dispatchers': dispatchers
+		'channel': channel
 	});
 });
 
@@ -130,8 +128,7 @@ client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | 
 	event_loader('messageReactionAdd', {
 		'client': client,
 		'messageReaction': messageReaction,
-		'user': user,
-		'dispatchers': dispatchers
+		'user': user
 	})
 );
 
@@ -155,8 +152,7 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
 	event_loader('voiceStateUpdate', {
 		'client': client,
 		'oldState': oldState,
-		'newState': newState,
-		'dispatchers': dispatchers
+		'newState': newState
 	})
 );
 
@@ -174,7 +170,7 @@ client.on('message', async (message: Message) => {
 	if (message.channel.type === 'dm') return;
 
 	// check if something written in portal channels
-	portal_channel_handler(message)
+	portal_channel_handler(message, client)
 		.then(r => {
 			if (!r) {
 				// ranking system
@@ -297,12 +293,15 @@ function command_loader(
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
-				if (response)
-					if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
+				if (response) {
+					if ((command_options && response.value && response.value !== '') &&
+						(command_options.reply || response.result === false)) {
 						message_reply(
 							response.result, message.channel, message, message.author, response.value,
 							guild_object, client, command_options ? command_options.auto_delete : true
 						);
+					}
+				}
 			});
 		return true;
 	}
@@ -332,7 +331,7 @@ function command_loader(
 		return false;
 	}
 
-	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client, dispatchers)
+	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 		.then((response: ReturnPormise) => {
 			if (response) {
 				active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
@@ -364,38 +363,41 @@ function event_loader(event: string, args: any): void {
 	console.log(`├─ event-${event}`);
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
-			if (event === 'messageReactionAdd' && response && response.result === true) {
-				const messageReaction = <MessageReaction>args.messageReaction;
-				if (messageReaction && messageReaction.message && messageReaction.message.guild) {
-					fetch_guild(messageReaction.message.guild.id)
-						.then(guild_object => {
-							if (guild_object) {
-								if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
-									const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-										.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
+			// if (event === 'messageReactionAdd' && response && response.result === true) {
+			// 	const messageReaction = <MessageReaction>args.messageReaction;
+			// 	if (messageReaction && messageReaction.message && messageReaction.message.guild) {
+			// 		fetch_guild(messageReaction.message.guild.id)
+			// 			.then(guild_object => {
+			// 				if (guild_object) {
+			// 					if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
+			// 						const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
+			// 							.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
 
-									music_channel
-										.send(`${args.user}, ${response.value}`)
-										.then(msg => { msg.delete({ timeout: 5000 }); })
-										.catch(error => console.log(error));
-								}
-							}
-						});
-				}
-			}
+			// 						music_channel
+			// 							.send(`${args.user}, ${response.value}`)
+			// 							.then(msg => { msg.delete({ timeout: 5000 }); })
+			// 							.catch(error => console.log(error));
+			// 					}
+			// 				}
+			// 			});
+			// 	}
+			// }
 
 			const shouldReply = event_config_json.find(e => e.name === event);
-			if (((config.debug || (shouldReply && shouldReply.reply)) && response) || response.result === false) {
+			if ((config.debug) || (shouldReply && shouldReply.reply) &&
+				(response && response.result === false) &&
+				(response.value && response.value !== '')
+			) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
-				const value_arr = response.value.split('\n');
+				const value_arr = response.value.split('\n') ? response.value.split('\n') : [];
 				console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
 			}
 		});
 };
 
 async function portal_channel_handler(
-	message: Message
+	message: Message, client: Client
 ): Promise<boolean> {
 	return new Promise((resolve) => {
 		if (!message.guild) {
@@ -404,16 +406,18 @@ async function portal_channel_handler(
 
 		fetch_guild(message.guild.id)
 			.then(guild_object => {
-				if (!guild_object)
+				if (!guild_object) {
 					return resolve(true);
+				}
 
 				if (included_in_ignore_list(message.channel.id, guild_object)) {
 					if (message.content === './ignore') {
 						remove_ignore(guild_object.id, message.channel.id)
 							.then(r => {
+								const reply_message = r ? 'successfully removed from ignored channels'
+									: 'failed to remove from ignored channels'
 								message_reply(true, message.channel, message, message.author,
-									r ? 'successfully removed from ignored channels' : 'failed to remove from ignored channels',
-									guild_object, client);
+									reply_message, guild_object, client);
 							})
 							.catch(e => {
 								message_reply(false, message.channel, message, message.author,
@@ -453,11 +457,8 @@ async function portal_channel_handler(
 						if (!message.guild) {
 							return resolve(true);
 						}
-
-						const dispatcher_object = dispatchers.find(d => d.id === guild_object.id)
-						const dispatcher = dispatcher_object ? dispatcher_object.dispatcher : undefined;
-
-						stop(guild_object, message.guild, dispatcher);
+						const voice_connection = client.voice?.connections.find(c =>
+							c.channel.guild.id === message.guild?.id);
 
 						const music_data = new MusicData('null', 'null', []);
 						set_music_data(guild_object.id, music_data)
@@ -471,21 +472,38 @@ async function portal_channel_handler(
 									'failed to remove music channel', guild_object, client);
 							});
 					} else {
-						start(client, message, message.content, guild_object, dispatchers)
-							.then(joined => {
-								// will be replaces by information tab in message
-								message_reply(
-									joined.result, message.channel, message,
-									message.author, joined.value, guild_object, client, true
-								);
+						const voice_connection = client.voice?.connections.find(c =>
+							c.channel.guild.id === message.guild?.id);
+
+						if (!message.guild) {
+							if (message.deletable) {
 								message.delete();
+							}
+							return resolve(false);
+						}
+
+						if (!message.member) {
+							if (message.deletable) {
+								message.delete();
+							}
+							return resolve(false);
+						}
+
+						start(voice_connection, client, message.member.user, message.guild, guild_object, message.content)
+							.then(joined => {
+								// message_reply(
+								// 	joined.result, message.channel, message,
+								// 	message.author, joined.value, guild_object, client, true
+								// );
+								if (message.deletable) {
+									message.delete();
+								}
 							})
 							.catch(error => {
-								// will be replaces by information tab in message
-								message_reply(
-									false, message.channel, message,
-									message.author, error, guild_object, client, true
-								);
+								// message_reply(
+								// 	false, message.channel, message,
+								// 	message.author, error, guild_object, client, true
+								// );
 							});
 					}
 
