@@ -1003,7 +1003,6 @@ export function set_attribute(
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		for (let l = 0; l < attributes.length; l++) {
-			console.log(`${candidate} === ${attributes[l].name} = ${candidate === attributes[l].name}`);
 			if (candidate === attributes[l].name) {
 				switch (attributes[l].auth) {
 					case 'admin':
@@ -1045,6 +1044,7 @@ export function set_attribute(
 							value: `attribute ${candidate} failed to be set`
 						});
 					});
+				break;
 			}
 			else if (l + 1 === attributes.length) {
 				return resolve({
