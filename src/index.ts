@@ -308,10 +308,12 @@ function command_loader(
 
 	const active = active_cooldowns[type === 'guild' ? 'guild' : 'member'].find(active_current => {
 		if (active_current.command === cmd) {
-			if (type === 'member' && active_current.member === message.author.id)
+			if (type === 'member' && active_current.member === message.author.id) {
 				return true;
-			if (type === 'guild')
+			}
+			if (type === 'guild') {
 				return true;
+			}
 		}
 		return false;
 	});
@@ -333,7 +335,7 @@ function command_loader(
 
 	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 		.then((response: ReturnPormise) => {
-			if (response) {
+			if (response && response.result) {
 				active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
 					member: message.author.id,
 					command: cmd,
