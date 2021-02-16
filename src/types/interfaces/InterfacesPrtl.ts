@@ -1,5 +1,11 @@
 import { VoiceConnection } from "discord.js";
 
+export interface MongoPromise { 
+	n: number, 
+	nModified: number, 
+	ok: number 
+}
+
 export interface ReturnPormise {
 	result: boolean;
 	value: string;
