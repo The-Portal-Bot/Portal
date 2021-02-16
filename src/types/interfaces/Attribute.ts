@@ -36,37 +36,37 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'p.ann_announce'} set to ${value} successfully`
+									: `attribute ${'p.ann_announce'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'p.ann_announce'} failed to be set (${e})`
 							});
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object.id, 'ann_announce', false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'p.ann_announce'} set to ${value} successfully`
+									: `attribute ${'p.ann_announce'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'p.ann_announce'} failed to be set (${e})`
 							});
 						});
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be true or false`
+						value: `attribute ${'p.ann_announce'} can only be true or false`
 					});
 				}
 			});
@@ -97,37 +97,37 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'v.ann_announce'} set to ${value} successfully`
+									: `attribute ${'v.ann_announce'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'v.ann_announce'} failed to be set (${e})`
 							});
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, 'ann_announce', false)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'v.ann_announce'} set to ${value} successfully`
+									: `attribute ${'v.ann_announce'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'v.ann_announce'} failed to be set (${e})`
 							});
 						});
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be true or false`
+						value: `attribute ${'v.ann_announce'} can only be true or false`
 					});
 				}
 			});
@@ -159,37 +159,37 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'p.ann_user'} set to ${value} successfully`
+									: `attribute ${'p.ann_user'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'p.ann_user'} failed to be set (${e})`
 							});
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object.id, 'ann_user', false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'p.ann_user'} set to ${value} successfully`
+									: `attribute ${'p.ann_user'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'p.ann_user'} failed to be set (${e})`
 							});
 						});
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be true or false`
+						value: `attribute ${'p.ann_user'} can only be true or false`
 					});
 				}
 			});
@@ -220,37 +220,37 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'v.ann_user'} set to ${value} successfully`
+									: `attribute ${'v.ann_user'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'v.ann_user'} failed to be set (${e})`
 							});
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, 'ann_user', false)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'v.ann_user'} set to ${value} successfully`
+									: `attribute ${'v.ann_user'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'v.ann_user'} failed to be set (${e})`
 							});
 						});
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be true or false`
+						value: `attribute ${'v.ann_user'} can only be true or false`
 					});
 				}
 			});
@@ -274,27 +274,35 @@ const attributes: InterfaceBlueprint[] = [
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const attr = 'bitrate';
+				const new_bitrate = Number(value);
 
-				if (!isNumber(Number(value))) {
+				if (!isNumber(new_bitrate)) {
 					return resolve({
 						result: false,
 						value: `attribute ${attr} can only be a number`
 					});
 				}
 
-				voice_channel.edit({ bitrate: Number(value) })
+				if (new_bitrate < 8000) {
+					return resolve({
+						result: false,
+						value: `attribute ${attr} must be greater or equal to 8000`
+					});
+				}
+
+				voice_channel.edit({ bitrate: new_bitrate })
 					.then(r => {
 						return resolve({
-							result: r.position === Number(value),
-							value: r.position === Number(value)
+							result: r.bitrate === new_bitrate,
+							value: r.bitrate === new_bitrate
 								? `attribute ${attr} set to ${value} successfully`
-								: `attribute ${attr} failed to be set`
+								: `attribute ${attr} failed to be set to ${value} (is ${r.bitrate})`
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `attribute ${attr} failed to be set`
+							value: `attribute ${attr} failed to be set (${e})`
 						});
 					});
 			});
@@ -327,36 +335,36 @@ const attributes: InterfaceBlueprint[] = [
 
 					if (member_object_give) {
 						if (portal_category === 'true') {
-							update_member(guild_object.id, member_object_give.id, 'dj', true)
+							update_member(guild_object.id, member_object_give.id, attr, true)
 								.then(r => {
 									return resolve({
 										result: r,
 										value: r
-											? `attribute ${attr} set to ${value} successfully`
-											: `attribute ${attr} can failed to be set`
+											? `attribute ${'m.dj'} set to ${value} successfully`
+											: `attribute ${'m.dj'} can failed to be set`
 									});
 								})
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: `attribute ${attr} can failed to be set`
+										value: `attribute ${'m.dj'} failed to be set (${e})`
 									});
 								});
 						}
 						else if (portal_category === 'false') {
-							update_member(guild_object.id, member_object_give.id, 'dj', false)
+							update_member(guild_object.id, member_object_give.id, attr, false)
 								.then(r => {
 									return resolve({
 										result: r,
 										value: r
-											? `attribute ${attr} set to ${value} successfully`
-											: `attribute ${attr} can failed to be set`
+											? `attribute ${'m.dj'} set to ${value} successfully`
+											: `attribute ${'m.dj'} can failed to be set`
 									});
 								})
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: `attribute ${attr} can failed to be set`
+										value: `attribute ${'m.dj'} failed to be set (${e})`
 									});
 								});
 						}
@@ -401,21 +409,21 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'g.locale'} set to ${value} successfully`
+									: `attribute ${'g.locale'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'g.locale'} failed to be set (${e})`
 							});
 						});
 				}
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be ${locales.join(', ')}`
+						value: `attribute ${'g.locale'} can only be ${locales.join(', ')}`
 					});
 				}
 			});
@@ -441,26 +449,26 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'locale';
 			return new Promise((resolve) => {
 				if (locales.includes(value)) {
-					update_portal(guild_object.id, portal_object.id, 'locale', String(value))
+					update_portal(guild_object.id, portal_object.id, attr, String(value))
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'p.locale'} set to ${value} successfully`
+									: `attribute ${'p.locale'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'p.locale'} failed to be set (${e})`
 							});
 						});
 				}
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be ${locales.join(', ')}`
+						value: `attribute ${'p.locale'} can only be ${locales.join(', ')}`
 					});
 				}
 			});
@@ -486,26 +494,26 @@ const attributes: InterfaceBlueprint[] = [
 			return new Promise((resolve) => {
 				const attr = 'locale';
 				if (locales.includes(value)) {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, 'locale', String(value))
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, String(value))
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} can failed to be set`
+									? `attribute ${'v.locale'} set to ${value} successfully`
+									: `attribute ${'v.locale'} can failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} can failed to be set`
+								value: `attribute ${'v.locale'} failed to be set (${e})`
 							});
 						});
 				}
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be ${locales.join(', ')}`
+						value: `attribute ${'v.locale'} can only be ${locales.join(', ')}`
 					});
 				}
 			});
@@ -534,22 +542,23 @@ const attributes: InterfaceBlueprint[] = [
 				if (!isNumber(Number(value))) {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be a number`
+						value: `attribute ${'v.position'} can only be a number`
 					});
 				}
+
 				voice_channel.edit({ position: Number(value) })
 					.then(r => {
 						return resolve({
 							result: r.position === Number(value),
 							value: r.position === Number(value)
-								? `attribute ${attr} set to ${value} successfully`
-								: `attribute ${attr} failed to be set`
+								? `attribute ${'v.position'} set to ${value} successfully`
+								: `attribute ${'v.position'} failed to be set to ${value} (is ${r.position})`
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `attribute ${attr} failed to be set`
+							value: `attribute ${'v.position'} failed to be set`
 						});
 					});
 			});
@@ -580,37 +589,37 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} failed to be set`
+									? `attribute ${'p.regex_overwrite'} set to ${value} successfully`
+									: `attribute ${'p.regex_overwrite'} failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} failed to be set`
+								value: `attribute ${'p.regex_overwrite'} failed to be set`
 							});
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object.id, 'regex_overwrite', false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} failed to be set`
+									? `attribute ${'p.regex_overwrite'} set to ${value} successfully`
+									: `attribute ${'p.regex_overwrite'} failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} failed to be set`
+								value: `attribute ${'p.regex_overwrite'} failed to be set`
 							});
 						});
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be true or false`
+						value: `attribute ${'p.regex_overwrite'} can only be true or false`
 					});
 				}
 			});
@@ -640,14 +649,14 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r,
 							value: r
-								? `attribute ${attr} set to ${value} successfully`
-								: `attribute ${attr} failed to be set`
+								? `attribute ${'p.regex'} set to ${value} successfully`
+								: `attribute ${'p.regex'} failed to be set`
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `attribute ${attr} failed to be set`
+							value: `attribute ${'p.regex'} failed to be set`
 						});
 					});
 			});
@@ -677,14 +686,14 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r,
 							value: r
-								? `attribute ${attr} set to ${value} successfully`
-								: `attribute ${attr} failed to be set`
+								? `attribute ${'p.v.regex'} set to ${value} successfully`
+								: `attribute ${'p.v.regex'} failed to be set`
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `attribute ${attr} failed to be set`
+							value: `attribute ${'p.v.regex'} failed to be set`
 						});
 					});
 			});
@@ -714,14 +723,14 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r,
 							value: r
-								? `attribute ${attr} set to ${value} successfully`
-								: `attribute ${attr} failed to be set`
+								? `attribute ${'v.regex'} set to ${value} successfully`
+								: `attribute ${'v.regex'} failed to be set`
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `attribute ${attr} failed to be set`
+							value: `attribute ${'v.regex'} failed to be set`
 						});
 					});
 			});
@@ -747,19 +756,19 @@ const attributes: InterfaceBlueprint[] = [
 			return new Promise((resolve) => {
 				const attr = 'regex';
 				if (member_object) {
-					update_member(guild_object.id, member_object.id, 'regex', value)
+					update_member(guild_object.id, member_object.id, attr, value)
 						.then(r => {
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} failed to be set`
+									? `attribute ${'m.regex'} set to ${value} successfully`
+									: `attribute ${'m.regex'} failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} failed to be set`
+								value: `attribute ${'m.regex'} failed to be set`
 							});
 						});
 				} else {
@@ -794,7 +803,7 @@ const attributes: InterfaceBlueprint[] = [
 				if (isNumber(new_user_limit)) {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be a number from 0-n (0 means unlimited)`
+						value: `attribute ${'p.user_limit'} can only be a number from 0-n (0 means unlimited)`
 					});
 				}
 
@@ -804,20 +813,20 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} failed to be set`
+									? `attribute ${'p.user_limit'} set to ${value} successfully`
+									: `attribute ${'p.user_limit'} failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} failed to be set`
+								value: `attribute ${'p.user_limit'} failed to be set`
 							});
 						});
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can be a number from 0-n (0 means unlimited)`
+						value: `attribute ${'p.user_limit'} can be a number from 0-n (0 means unlimited)`
 					});
 				}
 			});
@@ -850,20 +859,20 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r.userLimit === new_user_limit,
 								value: r.userLimit === new_user_limit
-									? `attribute ${attr} set to ${value} successfully`
-									: `attribute ${attr} failed to be set`
+									? `attribute ${'v.user_limit'} set to ${value} successfully`
+									: `attribute ${'v.user_limit'} failed to be set`
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${attr} failed to be set`
+								value: `attribute ${'v.user_limit'} failed to be set`
 							});
 						});
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${attr} can only be a number from 0-n (0 means unlimited)`
+						value: `attribute ${'v.user_limit'} can only be a number from 0-n (0 means unlimited)`
 					});
 				}
 			});
@@ -1049,7 +1058,7 @@ export function set_attribute(
 			else if (l + 1 === attributes.length) {
 				return resolve({
 					result: false,
-					value: `${candidate}, is not an attribute`
+					value: `${candidate} is not an attribute`
 				});
 			}
 		}
