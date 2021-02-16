@@ -52,54 +52,73 @@ export function create_music_message(
 
 export function update_music_message(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult, status: string
-): void {
-	const portal_icon_url = 'https://raw.githubusercontent.com/' +
-		'keybraker/keybraker.github.io/master/assets/img/logo.png';
+): Promise<boolean> {
+	return new Promise((resolve) => {
+		const portal_icon_url = 'https://raw.githubusercontent.com/' +
+			'keybraker/keybraker.github.io/master/assets/img/logo.png';
 
-	const music_queue = guild_object.music_queue.length > 1
-		? guild_object.music_queue.map((v, i) => {
-			if (i !== 0) {
-				return (`${i}. **${v.title}**`);
-			}
-		}).filter(v => !!v).join('\n')
-		: 'empty';
+		const music_queue = guild_object.music_queue.length > 1
+			? guild_object.music_queue.map((v, i) => {
+				if (i !== 0) {
+					return (`${i}. **${v.title}**`);
+				}
+			}).filter(v => !!v).join('\n')
+			: 'empty';
 
-	const music_message_emb = create_rich_embed(
-		yts.title,
-		yts.url,
-		'#0000FF',
-		[
-			{ emote: 'Duration', role: yts.timestamp, inline: true },
-			{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
-			{ emote: 'Uploaded', role: yts.ago, inline: true },
-			{ emote: 'Queue', role: music_queue, inline: false },
-			{ emote: 'Latest Action', role: '`' + status + '`', inline: false }
-		],
-		portal_icon_url,
-		null,
-		true,
-		null,
-		yts.thumbnail
-	);
+		const music_message_emb = create_rich_embed(
+			yts.title,
+			yts.url,
+			'#0000FF',
+			[
+				{ emote: 'Duration', role: yts.timestamp, inline: true },
+				{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
+				{ emote: 'Uploaded', role: yts.ago, inline: true },
+				{ emote: 'Queue', role: music_queue, inline: false },
+				{ emote: 'Latest Action', role: '`' + status + '`', inline: false }
+			],
+			portal_icon_url,
+			null,
+			true,
+			null,
+			yts.thumbnail
+		);
 
-	const guild_channel: GuildChannel | undefined = guild.channels.cache
-		.find(c => c.id === guild_object.music_data.channel_id);
-	const channel: TextChannel = <TextChannel>guild_channel;
+		const guild_channel: GuildChannel | undefined = guild.channels.cache
+			.find(c => c.id === guild_object.music_data.channel_id);
 
-	if (guild_object.music_data.message_id) {
-		if (channel) {
-			channel.messages
-				.fetch(guild_object.music_data.message_id)
-				.then((message: Message) => {
-					message.edit(music_message_emb)
-						.then((msg: Message) =>
-							console.log(`music message has been updated`)
-						)
-						.catch(console.error);
-				})
-				.catch(console.error);
+		if (!guild_channel) {
+			return resolve(false);
 		}
-	}
+
+		const channel: TextChannel = <TextChannel>guild_channel;
+
+		if (!channel) {
+			return resolve(false);
+		}
+
+		if (!guild_object.music_data.message_id) {
+			return resolve(false);
+		}
+
+		if (guild_object.music_data.message_id) {
+			if (channel) {
+				channel.messages
+					.fetch(guild_object.music_data.message_id)
+					.then((message: Message) => {
+						message.edit(music_message_emb)
+							.then(() => {
+								return resolve(true);
+							})
+							.catch(() => {
+								return resolve(false);
+							});
+					})
+					.catch(() => {
+						return resolve(false);
+					});
+			}
+		}
+	});
 };
 
 export async function join_by_reaction(
@@ -165,7 +184,7 @@ export async function join_by_reaction(
 						client_talk(client, guild_object, 'join');
 					}
 
-					response.voice?.setSelfDeaf(true);
+					response.voice?.setDeaf(true); // setSelfDeaf(true);
 
 					return resolve({
 						result: true,

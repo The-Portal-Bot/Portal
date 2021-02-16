@@ -530,8 +530,13 @@ function ranking_system(message: Message): void {
 
 function log_portal() {
 	client.login(config.token)
-		.then(r => console.log('r :>> ', r))
-		.catch(e => console.log('e :>> ', e))
+		.then(r => {
+			console.log('> loged into Discord: ', r)
+		})
+		.catch(e => {
+			console.log('> could not login to Discord: ', e)
+			process.exit(1);
+		});
 }
 
 log_portal();
