@@ -5,7 +5,7 @@ import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
 import { MemberPrtl } from "../types/classes/MemberPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
-import { Rank } from "../types/interfaces/InterfacesPrtl";
+import { Rank, MongoPromise } from "../types/interfaces/InterfacesPrtl";
 import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
 
 // fetch guilds
@@ -61,7 +61,7 @@ export async function guild_exists(
                 return resolve(count > 0);
             })
             .catch(e => {
-                return resolve(false);
+                return resolve(false);;
             });
     });
 };
@@ -83,8 +83,12 @@ export async function update_guild(
                 'new': true
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -153,7 +157,7 @@ export async function insert_guild(
             })
             .catch(e => {
                 console.log('e inserting guild: ', e);
-                return resolve(false);
+                return resolve(false);;
             });
     });
 };
@@ -165,8 +169,12 @@ export async function remove_guild(
         GuildPrtlMdl.deleteOne({
             id: guild_id
         })
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -193,8 +201,12 @@ export async function update_member(
                 ]
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -212,8 +224,12 @@ export async function insert_member(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -232,8 +248,12 @@ export async function remove_member(
                     }
                 }
             })
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -260,8 +280,12 @@ export async function update_portal(
                 ]
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -279,8 +303,12 @@ export async function insert_portal(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -300,8 +328,12 @@ export async function remove_portal(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -329,8 +361,12 @@ export async function update_voice(
                 ]
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -354,7 +390,7 @@ export async function insert_voice(
                 ]
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { resolve(!!r) })
+            .then((r: MongoPromise) => { resolve(!!r) })
             .catch(e => { resolve(false) });
     });
 };
@@ -379,7 +415,7 @@ export async function remove_voice(
                 ]
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { resolve(!!r) })
+            .then((r: MongoPromise) => { resolve(!!r) })
             .catch(e => { resolve(false) });
     });
 };
@@ -400,8 +436,12 @@ export async function insert_url(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -418,8 +458,12 @@ export async function remove_url(
                     url_list: remove_url
                 }
             })
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -439,8 +483,12 @@ export async function insert_ignore(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -457,8 +505,12 @@ export async function remove_ignore(
                     ignore_list: remove_ignore
                 }
             })
-            .then((r: { n: number, nModified: number, ok: number }) => { console.log('r :>> ', r); return resolve(r.ok === 1) })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -479,8 +531,12 @@ export async function insert_authorised_role(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -498,8 +554,10 @@ export async function remove_authorised_role(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => { return resolve(false); });
     });
 };
 
@@ -517,8 +575,12 @@ export async function set_ranks(
                 ranks: new_ranks
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -538,8 +600,10 @@ export async function insert_role_assigner(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => { return resolve(false); });
     });
 };
 
@@ -558,12 +622,12 @@ export async function remove_role_assigner(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => {
-                return resolve(r.ok === 1);
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
             })
             .catch(e => {
                 console.log('e :>> ', e);
-                return resolve(false)
+                return resolve(false);
             });
     });
 };
@@ -584,11 +648,11 @@ export async function insert_music_video(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => {
-                return resolve(r.ok === 1)
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);
             })
             .catch(e => {
-                return resolve(false)
+                return resolve(false);
             });
     });
 };
@@ -607,8 +671,12 @@ export async function clear_music_vote(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -626,8 +694,12 @@ export async function insert_music_vote(
                 }
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { console.log('e :>> ', e); return resolve(false) });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -646,8 +718,10 @@ export async function set_music_data(
                 dispatcher: undefined
             }
         )
-            .then((r: { n: number, nModified: number, ok: number }) => { return resolve(r.ok === 1); })
-            .catch(e => { return resolve(false); });
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => { return resolve(false);; });
     });
 }
 

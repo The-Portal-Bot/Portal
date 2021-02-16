@@ -16,10 +16,10 @@ function update_channel_name(
 			// current_voice_channel.last_update = Date.now();
 			break;
 		case 2:
-			console.log('new name channel is the same as old');
+			// console.log('new name channel is the same as old');
 			break;
 		case 3:
-			console.log('new channel name is empty');
+			// console.log('new channel name is empty');
 			break;
 		default:
 			break;

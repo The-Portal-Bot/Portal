@@ -144,7 +144,7 @@ export async function join_by_reaction(
 		if (!user.presence.member.voice) {
 			return resolve({
 				result: false,
-				value: 'no user presence member voice',
+				value: 'you must be connected to a voice channel',
 				voice_connection: undefined
 			});
 		}
@@ -152,7 +152,7 @@ export async function join_by_reaction(
 		if (!user.presence.member.voice.channel) {
 			return resolve({
 				result: false,
-				value: 'no user presence member voice channel',
+				value: 'you must be connected to a voice channel',
 				voice_connection: undefined
 			});
 		}
