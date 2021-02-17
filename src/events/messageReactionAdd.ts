@@ -425,8 +425,8 @@ async function reaction_music_manager(
 							client_talk(client, guild_object, 'leave');
 							setTimeout(
 								function () {
+									// portal_voice_connection.dispatcher.destroy();
 									portal_voice_connection.disconnect();
-									portal_voice_connection.dispatcher.destroy();
 								},
 								4000
 							);

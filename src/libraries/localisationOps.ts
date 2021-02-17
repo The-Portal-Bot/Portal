@@ -142,30 +142,34 @@ export const console_text: LocalisationOption[] = [
 ]
 
 export function client_talk(client: Client, guild_object: GuildPrtl, context: string): boolean {
-	const voiceConnection = client?.voice?.connections
+	const voice_connection = client?.voice?.connections
 		.find(connection => connection.channel.guild.id === guild_object.id);
 
-	if (voiceConnection) {
-		if (!voiceConnection.dispatcher) {
+	if (voice_connection) {
+		console.log('!voice_connection.dispatcher :>> ', !voice_connection.dispatcher);
+		if (!voice_connection.dispatcher) {
 			return guild_object.portal_list.some(p =>
 				p.voice_list.some(v => {
-					if (!voiceConnection.speaking) {
+					console.log('!voice_connection.speaking :>> ', !voice_connection.speaking);
+					// if (!voice_connection.speaking) {
+						console.log('type_of_announcement.includes(context) :>> ', type_of_announcement.includes(context));
+						console.log('v.ann_announce :>> ', v.ann_announce);
 						if (type_of_announcement.includes(context) && v.ann_announce) {
 							const locale = v.locale;
 							const random = Math.floor(Math.random() * Math.floor(3));
 
-							voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+							voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
 							return true;
 						}
 						else if (type_of_action.includes(context) && v.ann_user) {
 							const locale = v.locale;
 							const random = Math.floor(Math.random() * Math.floor(3));
 
-							voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+							voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
 							return true;
 						}
-					}
-					return v.id === voiceConnection.channel.id;
+					// }
+					return v.id === voice_connection.channel.id;
 				})
 			);
 		}
