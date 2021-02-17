@@ -46,19 +46,18 @@ _argument preceded by **!** is **mandatory**, **@** is **optional** (not include
 
 1. For frequently asked questions (FAQ) with their answers click [here](https://github.com/keybraker/portal/blob/master/docs/faq.md).
 2. If you want to host Portal on your own system you can follow the guide [here](https://github.com/keybraker/portal/blob/master/docs/Hosting.md).
-3. Portal is an open source project you can contribute too.
-There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md).
+3. Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md).
 
 ## Release History
 
 | Version | Date       | Argument     |
 | :------ | :--------- | :----------- |
-| 0.6.0   | 15-02-2021 | _MongoDB_    |
-| 0.5.7   | 18-01-2021 | _polishing_  |
-| 0.5.0   | 08-01-2021 | _Typescript_ |
-| 0.2.1   | 16-06-2020 | _Javascript_ |
-| 0.1.0   | 18-05-2020 | _Beta_       |
-| 0.0.1   | 05-05-2020 | _Alpha_      |
+| 0.6.0   | 15-02-2021 | _transition to MongoDB from plain JSON file with many improvements, especially on music player_    |
+| 0.5.7   | 18-01-2021 | _updates throughout the app to fix bugs and small problems_  |
+| 0.5.0   | 08-01-2021 | _transition to Typescript from Javascript, a lot of errors have been fixed and is more robust_ |
+| 0.2.1   | 16-06-2020 | _first version with more commands and feature with full test is now on two servers_ |
+| 0.1.0   | 18-05-2020 | _beta testing with a small set of commands on one server_       |
+| 0.0.1   | 05-05-2020 | _alpha version with initial features more of a test phase to test viability_      |
 
 > **Disclaimers**
 > 
