@@ -7,7 +7,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -17,7 +16,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": true
             },
             {
@@ -27,7 +25,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -37,7 +34,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -47,7 +43,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -57,7 +52,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -67,7 +61,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -77,7 +70,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -87,7 +79,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -97,7 +88,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             }
         ]
@@ -111,7 +101,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -121,7 +110,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -131,7 +119,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -141,7 +128,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -151,7 +137,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -161,7 +146,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -171,7 +155,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -181,7 +164,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false,
                 "reply": false
             },
             {
@@ -191,7 +173,6 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "save_after": false,
                 "reply": false
             }
         ]
@@ -205,7 +186,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": false,
-                "save_after": true,
                 "reply": false
             },
             {
@@ -215,7 +195,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             }
         ]
@@ -229,7 +208,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -239,7 +217,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -249,7 +226,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -259,7 +235,15 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": false,
-                "save_after": false,
+                "reply": true
+            },
+            {
+                "name": "dj",
+                "range": "none",
+                "time": 0,
+                "auth": true,
+                "premium": true,
+                "auto_delete": false,
                 "reply": true
             },
             {
@@ -269,7 +253,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -279,7 +262,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -289,7 +271,6 @@
                 "auth": true,
                 "premium": false,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -299,7 +280,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -309,7 +289,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": false,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -319,7 +298,6 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": false,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -329,7 +307,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             },
             {
@@ -339,7 +316,6 @@
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
-                "save_after": true,
                 "reply": true
             }
         ]

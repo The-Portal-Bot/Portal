@@ -12,7 +12,6 @@
 | `p.ann_user`        | _if join/leave announcements will be made in voices of portal_ | boolean | _true_                                |
 | `v.ann_user`        | _if join/leave announcements will be made in voice_            | boolean | _true_                                |
 | `v.bitrate`         | _if voice's current bitrate_                                   | number  | _96000_                               |
-| `m.dj`              | _makes user a dj_                                              | boolean | _false_                               |
 | `g.locale`          | _global locale_                                                | enum    | _gr_, _en_, _de_                      |
 | `p.locale`          | _portal's locale_                                              | enum    | _gr_, _en_, _de_                      |
 | `v.locale`          | _voice's locale_                                               | enum    | _gr_, _en_, _de_                      |
