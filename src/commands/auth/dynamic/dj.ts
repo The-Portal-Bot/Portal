@@ -22,14 +22,14 @@ module.exports = async (
 			});
 		}
 
-		const role_name = args.join(' ');
+		const member_data = args.join(' ');
 
-		const member = message.guild?.members.cache.find(mb => mb.id === role_name || mb.displayName === role_name);
+		const member = message.guild?.members.cache.find(mb => mb.id === member_data || mb.displayName === member_data);
 
 		if (!member) {
 			return resolve({
 				result: false,
-				value: `${role_name} is neither member id nor member name`
+				value: `${member_data} is neither member id nor member name`
 			});
 		}
 		

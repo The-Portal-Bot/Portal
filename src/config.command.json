@@ -274,6 +274,15 @@
                 "reply": true
             },
             {
+                "name": "prefix",
+                "range": "none",
+                "time": 0,
+                "auth": true,
+                "premium": false,
+                "auto_delete": true,
+                "reply": true
+            },
+            {
                 "name": "role_assigner",
                 "range": "none",
                 "time": 0,

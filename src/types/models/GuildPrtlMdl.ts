@@ -69,7 +69,8 @@ const GuildPrtlSch = new Schema(
 		locale: { type: String, required: true },
 		announce: { type: Boolean, required: true },
 		level_speed: { type: String, required: true },
-		premium: { type: Boolean, required: true }
+		premium: { type: Boolean, required: true },
+		prefix: { type: String, required: true }
 	},
 	{ collection: 'guild_list' }
 );
