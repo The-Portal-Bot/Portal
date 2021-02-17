@@ -61,17 +61,18 @@ There are guidelines for how to properly contribute [here](https://github.com/ke
 | 0.1.0   | 18-05-2020 | _Beta_       |
 | 0.0.1   | 05-05-2020 | _Alpha_      |
 
-> Acknowledgments - _[Discord.js](https://discord.js.org/#/)_<br>
-> Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
-> License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
-
 > **Disclaimers**
 > 
 > 1. Portal will never record conversations or store anything you type<br>
 > 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
 > 3. Runs on nodejs 14.x
 > 4. As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at [Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)
+> 5. Portal is made using _[Discord.js](https://discord.js.org/#/)_
 
 <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
 
+<p align="center">
+   <a href="https://itsiakkas.com">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a>
+</p>
+   
 <p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>
