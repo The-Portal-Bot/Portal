@@ -43,123 +43,27 @@ _pipes are applied to variables or text in order to change their outcome_<br>
 _default premium regex: `G$#-P$member_count | $status_list`_<br>
 _argument preceded by **!** is **mandatory**, **@** is **optional** (not included)_
 
-For frequently asked questions (FAQ) with their answers click [here](https://github.com/keybraker/portal/blob/master/docs/faq.md).
+## More
 
-## Self Hosting
-
-### Prerequisites
-
-#### macOS
-
-1. install [homebrew](https://brew.sh)
-
-       $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-2. update homebrew
-
-       $ brew update
-
-3. install npm and node ^14.x
-
-       $ brew install node@14
-
-#### ubuntu
-
-1. install npm ^6.x
-
-       $ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash –
-
-2. install nodejs ^14.x
-
-       $ sudo apt install nodejs
-
-> make sure you have version ^14.x or higher with `node -v`
-
-### Build
-
-1. Open a terminal windows and clone Portal
-
-       $ git clone https://github.com/keybraker/portal.git && cd portal
-
-2. Install node packages
-
-       $ npm install
-
-### Configure
-
-1. Create a bot on Discord Portal and add the toke in config.json
-
-    ```json
-    {
-      "token": "add-your-token-here",
-      "prefix": "./",
-      "database_json": "src/database/guild_list.json",
-      "owner_id": "add-your-id-(optional)",
-      "portal_id": "add-bots-id-(optional)",
-      "api_keys": {
-        "OpenWeatherMap": "add-open-weather-map-api-key",
-        "covid_193": "add-covid-193-api-key",
-        "translate": {
-          "engine": "yandex",
-          "key": "add-yeandex-api-key"
-        }
-      },
-      "delete_msg": false,
-      "delete_msg_after": 5,
-      "always_reply": true
-    }
-    ```
-
-### Run
-
-#### In case you want to run Portal with terminal (ex. tmux)
-
-1. Compile Portal
-
-       $ npm run compile
-        
-2. Run Portal
-
-       $ npm start
-        
-#### In case you want to run Portal with docker
-
-1. Create Portal docker image
-
-       $ docker build . -f docker/Dockerfile -t portal
-        
-2. Check if everything went well
-
-       $ docker images
-
-       REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
-       portal       latest    4cfb856dc61d   15 minutes ago   1.27GB
-        
-3. Run docker image
-
-       $ docker run portal
-        
-4. Run docker image (4cfb856dc61d is id from `docker images`)
-
-       $ docker stop 4cfb856dc61d
+1. For frequently asked questions (FAQ) with their answers click [here](https://github.com/keybraker/portal/blob/master/docs/faq.md).
+2. If you want to host Portal on your own system you can follow the guide [here](https://github.com/keybraker/portal/blob/master/docs/Hosting.md).
+3. Portal is an open source project you can contribute too.
+There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md).
 
 ## Release History
 
 | Version | Date       | Argument     |
 | :------ | :--------- | :----------- |
+| 0.6.0   | 15-02-2021 | _MongoDB_    |
 | 0.5.7   | 18-01-2021 | _polishing_  |
 | 0.5.0   | 08-01-2021 | _Typescript_ |
 | 0.2.1   | 16-06-2020 | _Javascript_ |
 | 0.1.0   | 18-05-2020 | _Beta_       |
 | 0.0.1   | 05-05-2020 | _Alpha_      |
 
-## Acknowledgements
-
 > Acknowledgments - _[Discord.js](https://discord.js.org/#/)_<br>
 > Author - _[Ioannis Tsiakkas](https://itsiakkas.com)_<br>
 > License - _[GNU LICENSE](http://www.gnu.org/philosophy/free-sw.html)_
-
-Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)
 
 > **Disclaimers**
 > 
