@@ -40,7 +40,6 @@ Regex Interpreter: there are four types of data _(used by run command and naming
 4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
 
 _pipes are applied to variables or text in order to change their outcome_<br>
-_default premium regex: `G$#-P$member_count | $status_list`_<br>
 _argument preceded by **!** is **mandatory**, **@** is **optional** (not included)_
 
 ## More
