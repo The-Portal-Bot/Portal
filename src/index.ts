@@ -19,15 +19,15 @@ import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfac
 const AntiSpam = require('discord-anti-spam');
 
 // Connect to mongoose database
-mongoose.connect(config.mongo_url, {
+mongoose.connect('mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal', { // mongodb://mongo:27017/portal
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useCreateIndex: true
 })
-	.then(() => {
-		console.log('> connected to the database');
-	}).catch((err) => {
-		console.log('> unable to connect to database: ' + err);
+	.then(r => {
+		console.log('> connected to the database: ');
+	}).catch((e) => {
+		console.log('> unable to connect to database: ', e);
 		process.exit(1);
 	});
 
@@ -540,7 +540,7 @@ function ranking_system(message: Message): void {
 function log_portal() {
 	client.login(config.token)
 		.then(r => {
-			console.log('> loged into Discord: ', r)
+			console.log('> logged into discord: ', r)
 		})
 		.catch(e => {
 			console.log('> could not login to Discord: ', e)

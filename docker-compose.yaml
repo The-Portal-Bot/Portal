@@ -9,6 +9,13 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile 
     depends_on:
-    - mongo
+      - mongo
   mongo:
+    container_name: mongo
     image: mongo:4.4.3
+    ports:
+     - '29017:27017'
+    volumes:
+      - 'mongoDB:/home'
+volumes:
+  mongoDB:
