@@ -1,6 +1,7 @@
-version: "3"
+version: "3.2"
 
 services:
+
   portal:
     container_name: portal
     restart: always
@@ -10,12 +11,13 @@ services:
       dockerfile: ./docker/Dockerfile 
     depends_on:
       - mongo
+
   mongo:
     container_name: mongo
     image: mongo:4.4.3
     ports:
      - '29017:27017'
     volumes:
-      - 'mongoDB:/home'
-volumes:
-  mongoDB:
+      - type: bind
+        source: ../portal-mongodb
+        target: /container/location

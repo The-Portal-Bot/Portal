@@ -25,8 +25,8 @@ mongoose.connect('mongodb://mongo/portal?compressors=zlib&gssapiServiceName=port
 	useCreateIndex: true
 })
 	.then(r => {
-		console.log('> connected to the database: ');
-	}).catch((e) => {
+		console.log('> connected to the database');
+	}).catch(e => {
 		console.log('> unable to connect to database: ', e);
 		process.exit(1);
 	});
