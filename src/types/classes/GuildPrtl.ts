@@ -39,6 +39,7 @@ export class GuildPrtl {
 	public announce: boolean;
 	public level_speed: string;
 	public premium: boolean;
+	public prefix: string;
 
 	constructor(
 		id: string,
@@ -56,7 +57,8 @@ export class GuildPrtl {
 		locale: string,
 		announce: boolean,
 		level_speed: string,
-		premium: boolean
+		premium: boolean,
+		prefix: string
 	) {
 		this.id = id;
 		this.portal_list = portal_list;
@@ -74,6 +76,7 @@ export class GuildPrtl {
 		this.announce = announce;
 		this.level_speed = level_speed;
 		this.premium = premium;
+		this.prefix = prefix;
 	}
 };
 

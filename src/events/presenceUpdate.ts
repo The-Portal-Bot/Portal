@@ -37,45 +37,41 @@ function time_out_repeat(
 };
 
 function display_spotify_song(
-	current_channel: VoiceChannel, guild_object: GuildPrtl, newPresence: Presence, client: Client
+	guild_object: GuildPrtl, newPresence: Presence, client: Client
 ) {
-	current_channel.members.forEach(member => {
-		member.presence.activities.some(activity => {
-			if (activity.name === 'Spotify' && newPresence.guild) {
-				if (!guild_object) return false;
+	newPresence.activities.some(activity => {
+		if (activity.name === 'Spotify' && newPresence.guild) {
+			const spotify = <TextChannel | undefined>newPresence.guild.channels.cache
+				.find(c => c.id === guild_object.spotify);
 
-				const spotify = <TextChannel | undefined>newPresence.guild.channels.cache
-					.find(c => { return c.id === guild_object.spotify; });
-
-				if (spotify) {
-					client_talk(client, guild_object, 'spotify');
-					spotify.send(
-						create_rich_embed(
-							`**${activity.details}**`,
-							'',
-							'#1DB954',
-							[
-								{
-									emote: 'Artist',
-									role: `${activity.state}`,
-									inline: false,
-								},
-								{
-									emote: 'Album',
-									role: `${activity.assets?.largeText}`,
-									inline: false,
-								},
-							],
-							activity.assets ? activity.assets.largeImageURL() : null,
-							member,
-							false,
-							null,
-							null
-						)
-					);
-				}
+			if (spotify) {
+				client_talk(client, guild_object, 'spotify');
+				spotify.send(
+					create_rich_embed(
+						`**${activity.details}**`,
+						'',
+						'#1DB954',
+						[
+							{
+								emote: 'Artist',
+								role: `${activity.state}`,
+								inline: true,
+							},
+							{
+								emote: 'Album',
+								role: `${activity.assets?.largeText}`,
+								inline: true,
+							},
+						],
+						activity.assets ? activity.assets.largeImageURL() : null,
+						newPresence.member,
+						true,
+						null,
+						null
+					)
+				);
 			}
-		});
+		}
 	});
 };
 
@@ -116,9 +112,9 @@ module.exports = async (
 					guild_object.portal_list.some(p => {
 						p.voice_list.some(v => {
 							if (v.id === current_channel.id) {
-								if (guild_object.spotify !== 'null' && args.newPresence)
-									display_spotify_song(current_channel, guild_object,
-										args.newPresence, args.client);
+								if (guild_object.spotify !== 'null' && args.newPresence) {
+									display_spotify_song(guild_object, args.newPresence, args.client);
+								}
 
 								time_out_repeat(v, current_guild, current_channel, guild_object.portal_list,
 									guild_object, 5);

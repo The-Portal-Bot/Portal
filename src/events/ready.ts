@@ -28,14 +28,15 @@ module.exports = async (
 	args: { client: Client }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!args.client.user)
+		if (!args.client.user) {
 			return resolve({
 				result: false,
 				value: 'could not fetch user from client'
 			});
+		}
 
 		const options: ActivityOptions = {
-			name: './help',
+			name: './help', // `in ${args.client.guilds.cache.size} servers``
 			type: 'LISTENING',
 			url: 'https://github.com/keybraker'
 		}

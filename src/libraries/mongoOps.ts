@@ -1,12 +1,13 @@
-import { Client, GuildMember, StreamDispatcher, TextChannel, VoiceChannel } from "discord.js";
-import { VideoSearchResult } from "yt-search";
-import { GiveRolePrtl } from "../types/classes/GiveRolePrtl";
-import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
-import { MemberPrtl } from "../types/classes/MemberPrtl";
-import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
-import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
-import { Rank, MongoPromise } from "../types/interfaces/InterfacesPrtl";
-import GuildPrtlMdl from "../types/models/GuildPrtlMdl";
+import { Client, GuildMember, StreamDispatcher, TextChannel, VoiceChannel } from 'discord.js';
+import { VideoSearchResult } from 'yt-search';
+import { GiveRolePrtl } from '../types/classes/GiveRolePrtl';
+import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl';
+import { MemberPrtl } from '../types/classes/MemberPrtl';
+import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
+import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
+import { Rank, MongoPromise } from '../types/interfaces/InterfacesPrtl';
+import GuildPrtlMdl from '../types/models/GuildPrtlMdl';
+import config from '../config.json';
 
 // fetch guilds
 export async function fetch_guild_list(
@@ -131,6 +132,7 @@ export async function insert_guild(
     const announce: boolean = true;
     const level_speed: string = 'normal';
     const premium: boolean = true; // as it is not a paid service anymore
+    const prefix: string = config.prefix;
 
     return new Promise((resolve) => {
         GuildPrtlMdl.create({
@@ -150,13 +152,13 @@ export async function insert_guild(
             locale: locale,
             announce: announce,
             level_speed: level_speed,
-            premium: premium
+            premium: premium,
+            prefix: prefix
         })
             .then(r => {
                 return resolve(!!r);
             })
             .catch(e => {
-                console.log('e inserting guild: ', e);
                 return resolve(false);;
             });
     });
@@ -714,8 +716,7 @@ export async function set_music_data(
             {
                 $set: {
                     music_data: new_music_data
-                },
-                dispatcher: undefined
+                }
             }
         )
             .then((r: MongoPromise) => {

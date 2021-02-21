@@ -11,7 +11,7 @@ import { included_in_ignore_list, included_in_url_list } from './libraries/guild
 import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
-import { fetch_guild, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
+import { fetch_guild, remove_ignore, remove_url, set_music_data, guild_exists } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
@@ -19,15 +19,15 @@ import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfac
 const AntiSpam = require('discord-anti-spam');
 
 // Connect to mongoose database
-mongoose.connect(config.mongo_url, {
+mongoose.connect('mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal', { // mongodb://mongo:27017/portal
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useCreateIndex: true
 })
-	.then(() => {
+	.then(r => {
 		console.log('> connected to the database');
-	}).catch((err) => {
-		console.log('> unable to connect to database: ' + err);
+	}).catch(e => {
+		console.log('> unable to connect to database: ', e);
 		process.exit(1);
 	});
 
@@ -195,42 +195,6 @@ client.on('message', async (message: Message) => {
 						.catch(console.error);
 				}
 
-				// Ignore any message that does not start with prefix
-				if (message.content.indexOf(config.prefix) !== 0) return;
-
-				// Separate function name, and arguments of function
-				const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-
-				const cmd_only = args.shift();
-				if (!cmd_only) return;
-
-				const cmd = cmd_only.toLowerCase();
-
-				let path_to_command: string = '';
-				let command_options: CommandOptions | undefined;
-				let type: string = 'none';
-
-				const is_portal_command = command_config_json.some(category => {
-					command_options = category.commands.find(command => command.name === cmd);
-					if (command_options) {
-						type = command_options.range;
-						path_to_command = category.path;
-						return true;
-					}
-					return false;
-				});
-
-				// is not a portal command
-				if (!is_portal_command) {
-					return false;
-				}
-
-				if (!command_options) {
-					message_reply(false, message.channel, message, message.author,
-						'could not get command option', undefined, client);
-					return false;
-				}
-
 				if (!message) {
 					return false;
 				}
@@ -249,8 +213,51 @@ client.on('message', async (message: Message) => {
 							return false;
 						}
 
-						if (guild_object.member_list.some(m => m.ignored))
+						if (guild_object.member_list.some(m => m.ignored)) {
 							return;
+						}
+
+						// Ignore any message that does not start with prefix
+						if (message.content.indexOf(guild_object.prefix) !== 0) {
+							if (message.content === 'prefix') {
+								message_reply(true, message.channel, message, message.author,
+									`portal's prefix is \`${guild_object.prefix}\``, undefined, client);
+							}
+							return;
+						}
+
+						// Separate function name, and arguments of function
+						const args = message.content.slice(guild_object.prefix.length).trim().split(/ +/g);
+
+						const cmd_only = args.shift();
+						if (!cmd_only) return;
+
+						const cmd = cmd_only.toLowerCase();
+
+						let path_to_command: string = '';
+						let command_options: CommandOptions | undefined;
+						let type: string = 'none';
+
+						const is_portal_command = command_config_json.some(category => {
+							command_options = category.commands.find(command => command.name === cmd);
+							if (command_options) {
+								type = command_options.range;
+								path_to_command = category.path;
+								return true;
+							}
+							return false;
+						});
+
+						// is not a portal command
+						if (!is_portal_command) {
+							return false;
+						}
+
+						if (!command_options) {
+							message_reply(false, message.channel, message, message.author,
+								'could not get command option', undefined, client);
+							return false;
+						}
 
 						if (!command_options) {
 							message_reply(false, message.channel, message, message.author,
@@ -533,7 +540,7 @@ function ranking_system(message: Message): void {
 function log_portal() {
 	client.login(config.token)
 		.then(r => {
-			console.log('> loged into Discord: ', r)
+			console.log('> logged into discord: ', r)
 		})
 		.catch(e => {
 			console.log('> could not login to Discord: ', e)

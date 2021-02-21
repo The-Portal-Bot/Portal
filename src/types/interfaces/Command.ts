@@ -110,6 +110,17 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'dj',
+		description: 'dj will give or strip dj statusfrom a member',
+		super_description: '**dj**, will give or strip dj statusfrom a member, \n' +
+			'dj can control music without the need of a majority or admin permissions',
+		example: './dj 704400876860735569 or dj username',
+		args: '<!member id> or <!member name>',
+		auth: 'admin',
+		get: null,
+		set: null
+	},
+	{
 		name: 'focus',
 		description: 'focus creates a channel with the people you selected and auto deletes on set time',
 		super_description: '**focus**, solves the problem that people have when in a channel with ' +

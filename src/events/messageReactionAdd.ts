@@ -5,6 +5,7 @@ import { clear_music_vote, fetch_guild, insert_music_vote, update_guild } from "
 import { pause, play, skip } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { client_talk } from "../libraries/localisationOps";
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
@@ -419,9 +420,16 @@ async function reaction_music_manager(
 				pause(portal_voice_connection, messageReaction.message.guild, guild_object)
 					.then(r => {
 						if (portal_voice_connection) {
-							portal_voice_connection.disconnect();
-							portal_voice_connection.dispatcher.destroy();
 							guild_object.music_queue = [];
+							update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
+							client_talk(client, guild_object, 'leave');
+							setTimeout(
+								function () {
+									// portal_voice_connection.dispatcher.destroy();
+									portal_voice_connection.disconnect();
+								},
+								4000
+							);
 						}
 
 						clear_user_reactions(messageReaction, user);
