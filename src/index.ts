@@ -19,7 +19,7 @@ import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfac
 const AntiSpam = require('discord-anti-spam');
 
 // Connect to mongoose database
-mongoose.connect('mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal', { // mongodb://mongo:27017/portal
+mongoose.connect(config.mongo_url, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useCreateIndex: true

@@ -1,7 +1,7 @@
 {
     "token": "add-your-token-here",
     "prefix": "./",
-    "mongo_url": "mongodb://localhost:27017/portal?compressors=zlib&gssapiServiceName=portal",
+    "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
     "owner_id": "add-your-id-(optional)",
     "portal_id": "add-bots-id-(optional)",
     "api_keys": {
