@@ -19,5 +19,5 @@ services:
      - '29017:27017'
     volumes:
       - type: bind
-        source: ../portal-mongodb
-        target: /container/location
+        source: ../mongo/data/db
+        target: /data/db
