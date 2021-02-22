@@ -18,7 +18,6 @@ module.exports = async (
 						})
 					})
 					.catch(e => {
-						console.log('e :>> ', e);
 						return resolve({
 							result: false,
 							value: 'error while editing pong message'
@@ -26,7 +25,6 @@ module.exports = async (
 					});
 			})
 			.catch(e => {
-				console.log('e :>> ', e);
 				return resolve({
 					result: false,
 					value: 'error while sending pong message'

@@ -964,7 +964,7 @@ export function set_attribute(
 			if (candidate === attributes[l].name) {
 				switch (attributes[l].auth) {
 					case 'admin':
-						if (!is_authorised(guild_object, member)) {
+						if (!is_authorised(guild_object.member_list, guild_object.auth_role, member)) {
 							return resolve({
 								result: false,
 								value: `attribute ${candidate} can only be set by an administrator`

@@ -11,33 +11,33 @@
         "test": "npx tsc && jest"
     },
     "dependencies": {
-        "@discordjs/opus": "^0.3.3",
+        "@discordjs/opus": "^0.4.0",
         "@types/jsonfile": "^6.0.0",
-        "discord-anti-spam": "^2.4.1",
+        "discord-anti-spam": "^2.5.0",
         "discord-ytdl-core": "^5.0.0",
         "discord.js": "^12.5.1",
         "ffmpeg-static": "^4.2.7",
         "give-me-a-joke": "^0.4.0",
         "jest": "^26.6.3",
         "jsonfile": "^6.1.0",
-        "lodash": "^4.17.20",
+        "lodash": "^4.17.21",
         "moment": "^2.29.1",
-        "mongoose": "^5.11.13",
+        "mongoose": "^5.11.17",
         "roll": "^1.3.1",
-        "translate": "^1.1.2",
+        "translate": "^1.2.1",
         "voca": "^1.4.0",
-        "yt-search": "^2.5.1",
-        "ytdl-core": "^4.4.5"
+        "yt-search": "^2.7.3",
+        "ytdl-core": "^4.5.0"
     },
     "devDependencies": {
-        "@types/lodash": "^4.14.167",
-        "@types/node": "^10.17.50",
+        "@types/lodash": "^4.14.168",
+        "@types/node": "^14.14.31",
         "@types/roll": "^1.2.0",
         "@types/voca": "^1.4.0",
         "@types/ws": "^7.4.0",
         "@types/yt-search": "^2.3.0",
-        "eslint": "^7.17.0",
+        "eslint": "^7.20.0",
         "nodemon": "^2.0.7",
-        "typescript": "^4.1.3"
+        "typescript": "^4.1.5"
     }
 }

@@ -1,8 +1,8 @@
 import { Client, Guild, Presence, TextChannel, VoiceChannel } from "discord.js";
 import { generate_channel_name } from "../libraries/guildOps";
 import { create_rich_embed } from "../libraries/helpOps";
-import { client_talk, get_function } from "../libraries/localisationOps";
-import { fetch_guild } from "../libraries/mongoOps";
+import { get_function } from "../libraries/localisationOps";
+import { fetch_guild, fetch_guild_spotify } from "../libraries/mongoOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
@@ -27,25 +27,32 @@ function update_channel_name(
 };
 
 function time_out_repeat(
-	current_voice_channel: VoiceChannelPrtl, current_guild: Guild,
-	current_channel: VoiceChannel, current_portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, minutes: number
+	current_voice_channel: VoiceChannelPrtl, current_guild: Guild, current_channel: VoiceChannel,
+	current_portal_list: PortalChannelPrtl[], minutes: number
 ): void {
-	setTimeout(() => {
-		update_channel_name(current_guild, current_channel, current_portal_list, guild_object);
-		time_out_repeat(current_voice_channel, current_guild, current_channel, current_portal_list, guild_object, minutes);
-	}, minutes * 60 * 1000);
+	fetch_guild(current_guild.id)
+		.then(guild_object => {
+			if (guild_object) {
+				setTimeout(() => {
+					update_channel_name(current_guild, current_channel, current_portal_list, guild_object);
+					time_out_repeat(current_voice_channel, current_guild, current_channel, current_portal_list, minutes);
+				}, minutes * 60 * 1000);
+			}
+		})
+		.catch(() => {
+			return;
+		});
 };
 
 function display_spotify_song(
-	guild_object: GuildPrtl, newPresence: Presence, client: Client
+	spotify_data: { spotify: string, portal_list: PortalChannelPrtl[] }, newPresence: Presence, client: Client
 ) {
 	newPresence.activities.some(activity => {
 		if (activity.name === 'Spotify' && newPresence.guild) {
 			const spotify = <TextChannel | undefined>newPresence.guild.channels.cache
-				.find(c => c.id === guild_object.spotify);
+				.find(c => c.id === spotify_data.spotify);
 
 			if (spotify) {
-				client_talk(client, guild_object, 'spotify');
 				spotify.send(
 					create_rich_embed(
 						`**${activity.details}**`,
@@ -79,23 +86,26 @@ module.exports = async (
 	args: { client: Client, newPresence: Presence | undefined }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!args.newPresence?.guild)
+		if (!args.newPresence?.guild) {
 			return resolve({
 				result: false,
 				value: 'could not fetch guild from presence'
 			});
+		}
 
-		fetch_guild(args.newPresence?.guild.id)
-			.then(guild_object => {
-				if (guild_object) {
+		fetch_guild_spotify(args.newPresence?.guild.id)
+			.then(spotify_data => {
+				if (spotify_data) {
 					if (!args.newPresence) return resolve({
 						result: false,
-						value: 'could not fetch presence'
+						value: 'could not fetch spotify data'
 					});
+
 					if (!args.newPresence.member) return resolve({
 						result: false,
 						value: 'could not fetch presence member'
 					});
+
 					if (!args.newPresence.guild) return resolve({
 						result: false,
 						value: 'could not fetch presence guild'
@@ -109,15 +119,15 @@ module.exports = async (
 						value: ''
 					});
 
-					guild_object.portal_list.some(p => {
+					spotify_data.portal_list.some(p => {
 						p.voice_list.some(v => {
 							if (v.id === current_channel.id) {
-								if (guild_object.spotify !== 'null' && args.newPresence) {
-									display_spotify_song(guild_object, args.newPresence, args.client);
+								if (spotify_data.spotify !== 'null' && args.newPresence) {
+									display_spotify_song(spotify_data, args.newPresence, args.client);
 								}
 
-								time_out_repeat(v, current_guild, current_channel, guild_object.portal_list,
-									guild_object, 5);
+								time_out_repeat(v, current_guild, current_channel,
+									spotify_data.portal_list, 5);
 							}
 						});
 					});

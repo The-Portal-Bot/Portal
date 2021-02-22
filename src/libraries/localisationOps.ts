@@ -146,14 +146,10 @@ export function client_talk(client: Client, guild_object: GuildPrtl, context: st
 		.find(connection => connection.channel.guild.id === guild_object.id);
 
 	if (voice_connection) {
-		console.log('!voice_connection.dispatcher :>> ', !voice_connection.dispatcher);
 		if (!voice_connection.dispatcher) {
 			return guild_object.portal_list.some(p =>
 				p.voice_list.some(v => {
-					console.log('!voice_connection.speaking :>> ', !voice_connection.speaking);
 					// if (!voice_connection.speaking) {
-						console.log('type_of_announcement.includes(context) :>> ', type_of_announcement.includes(context));
-						console.log('v.ann_announce :>> ', v.ann_announce);
 						if (type_of_announcement.includes(context) && v.ann_announce) {
 							const locale = v.locale;
 							const random = Math.floor(Math.random() * Math.floor(3));

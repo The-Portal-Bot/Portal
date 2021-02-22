@@ -345,7 +345,7 @@ async function reaction_music_manager(
 						});
 					}
 
-					if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
+					if ((member_object && member_object.dj) || is_authorised(guild_object.member_list, guild_object.auth_role, member)) {
 						skip(portal_voice_connection, user, client,
 							messageReaction.message.guild, guild_object)
 							.then(r => {
