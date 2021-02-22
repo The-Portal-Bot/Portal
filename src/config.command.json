@@ -25,7 +25,7 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "reply": true
+                "reply": false
             },
             {
                 "name": "join",
@@ -70,7 +70,7 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "reply": false
+                "reply": true
             },
             {
                 "name": "state",
@@ -137,7 +137,7 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
-                "reply": false
+                "reply": true
             },
             {
                 "name": "leaderboard",
@@ -146,7 +146,7 @@
                 "auth": false,
                 "premium": false,
                 "auto_delete": true,
-                "reply": false
+                "reply": true
             },
             {
                 "name": "roll",
@@ -195,7 +195,7 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": false,
-                "reply": false
+                "reply": true
             },
             {
                 "name": "setup",

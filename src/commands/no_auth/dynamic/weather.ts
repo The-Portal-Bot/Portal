@@ -28,7 +28,10 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.length < 1)
-			return resolve({ result: false, value: 'you can run `./help weather` for help', });
+			return resolve({
+				result: false,
+				value: 'you can run `./help weather` for help',
+			});
 
 		const location = args.join('%2C%20');
 		const options: RequestOptions = {
@@ -41,10 +44,19 @@ module.exports = async (
 		https_fetch(options)
 			.then((rspns: Buffer) => {
 				const json = getJSON(rspns.toString().substring(rspns.toString().indexOf('{')));
-				if (json === null)
-					return resolve({ result: false, value: 'data from source was corrupted' });
-				if (json.cod === '404')
-					return resolve({ result: false, value: 'city not found' });
+				if (json === null) {
+					return resolve({
+						result: false,
+						value: 'data from source was corrupted'
+					});
+				}
+
+				if (json.cod === '404') {
+					return resolve({
+						result: false,
+						value: 'city not found'
+					});
+				}
 
 				if (json.cod === 200) {
 					message.channel.send(
@@ -100,11 +112,17 @@ module.exports = async (
 					return resolve({ result: true, value: `${json.name} weather` });
 				}
 				else {
-					return resolve({ result: false, value: `could not access the server\nerror: ${json.cod}` });
+					return resolve({
+						result: false,
+						value: `could not access the server\nerror: ${json.cod}`
+					});
 				}
 			})
 			.catch((error: any) => {
-				return resolve({ result: false, value: `could not access the server\nerror: ${error}` });
+				return resolve({
+					result: false,
+					value: `could not access the server\nerror: ${error}`
+				});
 			});
 	});
 };

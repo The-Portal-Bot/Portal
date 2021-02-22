@@ -33,12 +33,21 @@ module.exports = async (
 				),
 			);
 
-			resolve({ result: true, value: '' });
+			resolve({
+				result: true,
+				value: ''
+			});
 		}
 		else {
-			resolve({ result: true, value: 'There are no ignored memebers' });
+			resolve({
+				result: true,
+				value: 'there are no ignored members'
+			});
 		}
 
-		resolve({ result: true, value: 'There are no ignored memebers' });
+		resolve({
+			result: true,
+			value: 'there are no ignored members'
+		});
 	});
 };
