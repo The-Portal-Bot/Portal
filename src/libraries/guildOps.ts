@@ -494,7 +494,6 @@ export function channel_deleted_update_state(
 	});
 
 	for (let i = 0; i < guild_object.url_list.length; i++) {
-		console.log(`${guild_object.url_list[i]} === ${channel_to_remove.id}`);
 		if (guild_object.url_list[i] === channel_to_remove.id) {
 			guild_object.url_list.splice(i, 1);
 			type_of_channel = TypesOfChannel.Url;
@@ -524,7 +523,6 @@ export function channel_deleted_update_state(
 export function generate_channel_name(
 	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild
 ): number {
-
 	let return_value: number = 0;
 	portal_list.some(p => {
 		p.voice_list.some(v => {
@@ -737,8 +735,8 @@ export function regex_interpreter(
 					}
 				}
 			}
-			catch (error) {
-				console.log('ERROR: in JSON parse: ', error);
+			catch (e) {
+				console.log(`error in JSON parse (${e})`);
 				new_channel_name += regex[i];
 			}
 
@@ -749,6 +747,8 @@ export function regex_interpreter(
 		}
 	}
 
-	if (new_channel_name === '') { return ''; }
+	if (new_channel_name === '') {
+		return '';
+	}
 	return new_channel_name;
 };

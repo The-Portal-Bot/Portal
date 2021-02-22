@@ -18,7 +18,6 @@ module.exports = async (
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				update_guild(guild_object.id, 'spotify', 'null')
 					.then(r => {
-						console.log('GUIDELINES 1\n\n');
 						return resolve({
 							result: r,
 							value: r
@@ -27,7 +26,6 @@ module.exports = async (
 						});
 					})
 					.catch(e => {
-						console.log('GUIDELINES 2\n\n');
 						return resolve({
 							result: false,
 							value: 'failed to remove spotify channel'

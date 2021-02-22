@@ -56,7 +56,7 @@ module.exports = async (
 					});
 
 				const chart = json.chart;
-console.log('chart :>> ', chart);
+
 				if (chart === null)
 					return resolve({
 						result: false,

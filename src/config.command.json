@@ -189,6 +189,15 @@
                 "reply": false
             },
             {
+                "name": "ignored",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": true,
+                "auto_delete": false,
+                "reply": false
+            },
+            {
                 "name": "setup",
                 "range": "guild",
                 "time": 10,

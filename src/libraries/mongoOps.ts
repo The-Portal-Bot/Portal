@@ -49,6 +49,64 @@ export async function fetch_guild(
     });
 };
 
+export async function fetch_guild_authenticate(
+    guild_id: string, member_id: string
+): Promise<{ prefix: string, member_list: MemberPrtl[], auth_role: string[] } | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                prefix: 1,
+                member_list: { $elemMatch: { id: member_id } },
+                auth_role: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<{ prefix: string, member_list: MemberPrtl[], auth_role: string[] }><unknown>{
+                        prefix: r.prefix,
+                        member_list: r.member_list,
+                        auth_role: r.auth_role
+                    });
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
+export async function fetch_guild_spotify(
+    guild_id: string
+): Promise<{ spotify: string, portal_list: PortalChannelPrtl[] } | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                spotify: 1,
+                portal_list: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<{ spotify: string, portal_list: PortalChannelPrtl[] }><unknown>{
+                        spotify: r.spotify,
+                        portal_list: r.portal_list
+                    });
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
 export async function guild_exists(
     guild_id: string
 ): Promise<boolean> {
@@ -102,11 +160,13 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
     if (!guild) return member_list;
 
     guild.members.cache.forEach(member => {
-        if (!member.user.bot)
-            if (client.user && member.id !== client.user.id)
+        if (!member.user.bot) {
+            if (client.user && member.id !== client.user.id) {
                 member_list.push(
                     new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, false, 'null')
                 );
+            }
+        }
     });
 
     return member_list;
@@ -628,7 +688,6 @@ export async function remove_role_assigner(
                 return resolve(r.ok === 1);;
             })
             .catch(e => {
-                console.log('e :>> ', e);
                 return resolve(false);
             });
     });

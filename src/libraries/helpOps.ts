@@ -13,6 +13,7 @@ import {
 } from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localisationOps";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongoOps";
+import { MemberPrtl } from "../types/classes/MemberPrtl";
 
 export function create_music_message(
 	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl
@@ -305,7 +306,7 @@ export async function join_user_voice(
 					});
 				})
 				.catch(e => {
-					console.log('ERROR CREATING VOICE CONNECTION TO CHANNEL: ', e);
+					console.log(`error created voice connection (${e})`);
 
 					return resolve({
 						result: false,
@@ -391,29 +392,33 @@ export async function update_portal_managed_guilds(
 };
 
 export function is_authorised(
-	guild_object: GuildPrtl, member: GuildMember
+	member_list: MemberPrtl[], auth_role: string[] , member: GuildMember
 ): boolean {
 	const administrator: PermissionString = 'ADMINISTRATOR';
 	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
 
-	if (member.hasPermission(administrator, options)) return true;
+	if (member.hasPermission(administrator, options)) {
+		return true;
+	}
 
 	if (member.roles.cache) {
-		const has_authorised_role = member.roles.cache.some(role =>
-			guild_object.auth_role
-				? guild_object.auth_role.some((auth: string) => auth === role.id)
-				: false
-		);
+		const has_authorised_role = member.roles.cache
+			.some(role =>
+				auth_role
+					? auth_role
+						.some((auth: string) => auth === role.id)
+					: false
+			);
 		if (has_authorised_role) return true;
 	}
 
-	const member_object = guild_object.member_list.find(m => m.id === member.id);
+	const member_object = member_list.find(m => m.id === member.id);
 	return !!member_object && member_object.admin;
 };
 
 export function message_reply(
 	status: boolean, channel: Channel, message: Message, user: User, str: string,
-	guild_object: GuildPrtl | undefined, client: Client, to_delete: boolean = config.delete_msg,
+	client: Client, to_delete: boolean = config.delete_msg,
 	emote_pass: string = '✔️', emote_fail: string = '❌'
 ): void {
 	if (!message.channel.deleted && str !== null) {
@@ -434,8 +439,7 @@ export function message_reply(
 				.react(emote_pass)
 				.catch(console.log);
 		}
-		else if (status === false && guild_object) {
-			client_talk(client, guild_object, 'fail');
+		else if (status === false) {
 			message
 				.react(emote_fail)
 				.catch(console.log);

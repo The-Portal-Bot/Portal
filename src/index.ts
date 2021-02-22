@@ -1,8 +1,4 @@
-import {
-	Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel,
-	PartialGuildMember, PartialMessage, PartialUser, Presence, StreamDispatcher, TextChannel,
-	User, VoiceState
-} from "discord.js";
+import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
@@ -11,7 +7,7 @@ import { included_in_ignore_list, included_in_url_list } from './libraries/guild
 import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { isProfane } from "./libraries/modOps";
-import { fetch_guild, remove_ignore, remove_url, set_music_data, guild_exists } from "./libraries/mongoOps";
+import { fetch_guild, fetch_guild_authenticate, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
@@ -201,33 +197,39 @@ client.on('message', async (message: Message) => {
 
 				if (!message.guild) {
 					message_reply(false, message.channel, message, message.author,
-						'could not fetch guild of message', undefined, client);
+						'could not fetch guild of message', client);
 					return false;
 				}
 
-				fetch_guild(message.guild.id)
-					.then(guild_object => {
-						if (!guild_object) {
+				if (!message.member) {
+					message_reply(false, message.channel, message, message.author,
+						'could not fetch member of message', client);
+					return false;
+				}
+
+				fetch_guild_authenticate(message.guild.id, message.member.id)
+					.then(authenticate => {
+						if (!authenticate) {
 							message_reply(false, message.channel, message, message.author,
-								'server is not in database, please contact portal support', undefined, client);
+								'server is not in database, please contact portal support', client);
 							return false;
 						}
 
-						if (guild_object.member_list.some(m => m.ignored)) {
-							return;
+						if (authenticate.member_list.length > 0 && authenticate.member_list[0].ignored) {
+							return false;
 						}
 
 						// Ignore any message that does not start with prefix
-						if (message.content.indexOf(guild_object.prefix) !== 0) {
+						if (message.content.indexOf(authenticate.prefix) !== 0) {
 							if (message.content === 'prefix') {
 								message_reply(true, message.channel, message, message.author,
-									`portal's prefix is \`${guild_object.prefix}\``, undefined, client);
+									`portal's prefix is \`${authenticate.prefix}\``, client);
 							}
-							return;
+							return false;
 						}
 
 						// Separate function name, and arguments of function
-						const args = message.content.slice(guild_object.prefix.length).trim().split(/ +/g);
+						const args = message.content.slice(authenticate.prefix.length).trim().split(/ +/g);
 
 						const cmd_only = args.shift();
 						if (!cmd_only) return;
@@ -255,34 +257,55 @@ client.on('message', async (message: Message) => {
 
 						if (!command_options) {
 							message_reply(false, message.channel, message, message.author,
-								'could not get command option', undefined, client);
+								'could not get command option', client);
 							return false;
 						}
 
-						if (!command_options) {
-							message_reply(false, message.channel, message, message.author,
-								'could not get command option', guild_object, client);
-							return false;
-						}
-
-						if (command_options.premium && !guild_object.premium) {
-							message_reply(false, message.channel, message, message.author,
-								'server is not premium', guild_object, client);
-							return false;
-						}
+						// if (command_options.premium && !guild_object.premium) {
+						// 	message_reply(false, message.channel, message, message.author,
+						// 		'server is not premium', client);
+						// 	return false;
+						// }
 
 						if (command_options.auth && message.member) {
-							if (!is_authorised(guild_object, message.member)) {
+							if (!is_authorised(authenticate.member_list, authenticate.auth_role, message.member)) {
 								message_reply(false, message.channel, message, message.author,
-									'you are not authorised to use this command', guild_object, client);
+									'you are not authorised to use this command', client);
 								return false;
 							}
 						}
 
-						command_loader(message, cmd, args, type, command_options, path_to_command, guild_object);
+						if (!message.guild) {
+							message_reply(false, message.channel, message, message.author,
+								'could not fetch guild from message', client);
+							return false;
+						}
+
+						fetch_guild(message.guild.id)
+							.then(guild_object => {
+								if (!guild_object) {
+									message_reply(false, message.channel, message, message.author,
+										'server is not in database, please contact portal support', client);
+									return false;
+								}
+
+								if (!command_options) {
+									message_reply(false, message.channel, message, message.author,
+										'could not get command option', client);
+									return false;
+								}
+
+								command_loader(message, cmd, args, type, command_options, path_to_command, guild_object);
+							})
+							.catch(error => {
+								message_reply(false, message.channel, message, message.author,
+									'could not get guild from message', client);
+								return false;
+							});
 					})
 					.catch(error => {
-						console.log('could not fetch guild list' + error);
+						message_reply(false, message.channel, message, message.author,
+							'could not get authentication data from message', client);
 						return false;
 					});
 			}
@@ -305,7 +328,7 @@ function command_loader(
 						(command_options.reply || response.result === false)) {
 						message_reply(
 							response.result, message.channel, message, message.author, response.value,
-							guild_object, client, command_options ? command_options.auto_delete : true
+							client, command_options ? command_options.auto_delete : true
 						);
 					}
 				}
@@ -335,7 +358,7 @@ function command_loader(
 			`you need to wait **${pad(time.remaining_min)}:` +
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
 			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`,
-			guild_object, client);
+			client);
 
 		return false;
 	}
@@ -361,7 +384,7 @@ function command_loader(
 			if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
 				message_reply(
 					response.result, message.channel, message, message.author, response.value,
-					guild_object, client, command_options.auto_delete
+					client, command_options.auto_delete
 				);
 		});
 
@@ -369,7 +392,10 @@ function command_loader(
 }
 
 function event_loader(event: string, args: any): void {
-	console.log(`├─ event-${event}`);
+	if (config.debug === true) {
+		console.log(`├─ event (${event})`);
+	}
+
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
 			// if (event === 'messageReactionAdd' && response && response.result === true) {
@@ -394,13 +420,17 @@ function event_loader(event: string, args: any): void {
 
 			const shouldReply = event_config_json.find(e => e.name === event);
 			if ((config.debug) || (shouldReply && shouldReply.reply) &&
-				(response && response.result === false) &&
-				(response.value && response.value !== '')
+				(response && response.result === false)
 			) {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
-				const value_arr = response.value.split('\n') ? response.value.split('\n') : [];
-				console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
+
+				if (response.value === '') {
+					console.log(`${colour}├── (empty)${reset}`);
+				} else {
+					const value_arr = response.value.split('\n') ? response.value.split('\n') : [];
+					console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
+				}
 			}
 		});
 };
@@ -426,11 +456,11 @@ async function portal_channel_handler(
 								const reply_message = r ? 'successfully removed from ignored channels'
 									: 'failed to remove from ignored channels'
 								message_reply(true, message.channel, message, message.author,
-									reply_message, guild_object, client);
+									reply_message, client);
 							})
 							.catch(e => {
 								message_reply(false, message.channel, message, message.author,
-									'failed to remove from ignored channels', guild_object, client);
+									'failed to remove from ignored channels', client);
 							});
 					}
 
@@ -441,12 +471,11 @@ async function portal_channel_handler(
 						remove_url(guild_object.id, message.channel.id)
 							.then(r => {
 								message_reply(true, message.channel, message, message.author,
-									r ? 'successfully removed url channel' : 'failed to remove url channel',
-									guild_object, client);
+									r ? 'successfully removed url channel' : 'failed to remove url channel', client);
 							})
 							.catch(e => {
 								message_reply(false, message.channel, message, message.author,
-									'failed to remove url channel', guild_object, client);
+									'failed to remove url channel', client);
 							});
 					}
 					else if (is_url(message.content)) {
@@ -455,7 +484,7 @@ async function portal_channel_handler(
 					else {
 						client_talk(client, guild_object, 'read_only');
 						message_reply(false, message.channel, message, message.author,
-							'url-only channel', guild_object, client);
+							'url-only channel', client);
 						message.delete();
 					}
 
@@ -473,12 +502,14 @@ async function portal_channel_handler(
 						set_music_data(guild_object.id, music_data)
 							.then(r => {
 								message_reply(true, message.channel, message, message.author,
-									r ? 'successfully removed music channel' : 'failed to remove music channel',
-									guild_object, client);
+									r
+										? 'successfully removed music channel'
+										: 'failed to remove music channel'
+									, client);
 							})
 							.catch(e => {
 								message_reply(false, message.channel, message, message.author,
-									'failed to remove music channel', guild_object, client);
+									'failed to remove music channel', client);
 							});
 					} else {
 						const voice_connection = client.voice?.connections.find(c =>
@@ -504,6 +535,7 @@ async function portal_channel_handler(
 								// 	joined.result, message.channel, message,
 								// 	message.author, joined.value, guild_object, client, true
 								// );
+
 								if (message.deletable) {
 									message.delete();
 								}
@@ -513,6 +545,10 @@ async function portal_channel_handler(
 								// 	false, message.channel, message,
 								// 	message.author, error, guild_object, client, true
 								// );
+
+								if (message.deletable) {
+									message.delete();
+								}
 							});
 					}
 
@@ -532,18 +568,22 @@ function ranking_system(message: Message): void {
 				const level = add_points_message(message, guild_object);
 				if (level)
 					message_reply(true, message.channel, message, message.author,
-						`you reached level ${level}!`, guild_object, client);
+						`you reached level ${level}!`, client);
 			}
+		})
+		.catch(e => {
+			message_reply(true, message.channel, message, message.author,
+				'an error occured while accesing data', client);
 		});
 }
 
 function log_portal() {
 	client.login(config.token)
 		.then(r => {
-			console.log('> logged into discord: ', r)
+			console.log(`> logged into discord (${r})`)
 		})
 		.catch(e => {
-			console.log('> could not login to Discord: ', e)
+			console.log(`> could not login to discord (${e})`)
 			process.exit(1);
 		});
 }

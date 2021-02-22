@@ -232,7 +232,18 @@ const commands: InterfaceBlueprint[] = [
 			' Basically Portal will not respond to anything that is written in it.',
 		example: './ignore`',
 		args: '<@member_id>',
-		auth: 'voice',
+		auth: 'admin',
+		get: null,
+		set: null
+	},
+	{
+		name: 'ignored',
+		description: 'returns all ignored members',
+		super_description: '**ignored**, returns a list of members that Portal is ignoring.' +
+			' These members can not access any portal command.',
+		example: './ignored`',
+		args: 'none',
+		auth: 'admin',
 		get: null,
 		set: null
 	},
