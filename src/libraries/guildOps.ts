@@ -324,8 +324,9 @@ export async function create_focus_channel(
 			value: 'you can run "./help focus" for help'
 		};
 
-		if (!member.voice.channel)
+		if (!member.voice.channel) {
 			return resolve(return_value);
+		}
 
 		const oldChannel: VoiceChannel | null = member.voice.channel;
 
@@ -376,11 +377,6 @@ export async function create_focus_channel(
 						});
 					}
 				}, focus_time * 60 * 1000);
-
-				// return resolve({
-				// 	result: true,
-				// 	value: 'users have been moved'
-				// });
 			})
 			.catch(e => {
 				return resolve({
@@ -484,6 +480,7 @@ export function channel_deleted_update_state(
 			type_of_channel = TypesOfChannel.Portal;
 			return true;
 		}
+
 		return p.voice_list.some((v, index_v) => {
 			if (v.id === channel_to_remove.id) {
 				p.voice_list.splice(index_v, 1);
@@ -500,14 +497,17 @@ export function channel_deleted_update_state(
 			break;
 		}
 	}
+
 	if (guild_object.spotify === channel_to_remove.id) {
 		guild_object.spotify = null;
 		type_of_channel = TypesOfChannel.Spotify;
 	}
+
 	if (guild_object.announcement === channel_to_remove.id) {
 		guild_object.announcement = null;
 		type_of_channel = TypesOfChannel.Announcement;
 	}
+
 	if (guild_object.music_data.channel_id === channel_to_remove.id) {
 		guild_object.music_data.channel_id = undefined;
 		guild_object.music_data.message_id = undefined;
@@ -545,7 +545,9 @@ export function generate_channel_name(
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
 						voice_channel.edit({ name: new_name.substring(0, 99) })
-							.then(newChannel => console.log(`voice's new name from promise is ${newChannel.name}`))
+							.then(newChannel => {
+								// console.log(`voice's new name from promise is ${newChannel.name}`)
+							})
 							.catch(console.log);
 						return_value = 1;
 					}
