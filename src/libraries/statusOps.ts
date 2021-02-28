@@ -1,5 +1,4 @@
-import { GuildMember, VoiceChannel, Activity } from "discord.js";
-
+import { Activity, GuildMember, VoiceChannel } from "discord.js";
 import games from '../assets/jsons/GameNames.json';
 import programs from '../assets/jsons/ProgramNames.json';
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
@@ -9,6 +8,11 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 
 	activities.forEach(activity => {
 		let found = false;
+
+		if (activity.name === 'Custom Status') {
+			found = true;
+		}
+
 		for (let l = 0; l < games.game_attributes.length; l++) {
 			if (activity.name == games.game_attributes[l].status) {
 				if (locale === 'gr') {
