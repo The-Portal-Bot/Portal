@@ -1,14 +1,10 @@
-import {
-	Client, TextChannel, VoiceChannel, VoiceConnection, VoiceState
-} from "discord.js";
-import {
-	create_voice_channel, generate_channel_name, included_in_portal_list,
-	included_in_voice_list
-} from "../libraries/guildOps";
+import { Client, Guild, TextChannel, VoiceChannel, VoiceConnection, VoiceState } from "discord.js";
+import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guildOps";
 import { client_talk } from "../libraries/localisationOps";
 import { fetch_guild, remove_voice } from "../libraries/mongoOps";
 import { update_timestamp } from "../libraries/userOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
+import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 // delete portal's voice channel
@@ -56,6 +52,26 @@ async function delete_voice_channel(
 		}
 	});
 }
+
+function five_min_refresher(
+	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild, minutes: number
+): void {
+	fetch_guild(guild.id)
+		.then(guild_object => {
+			if (guild_object) {
+				generate_channel_name(voice_channel, portal_list, guild_object, guild);
+				setTimeout(() => {
+					if (!guild.deleted && !voice_channel.deleted) {
+						generate_channel_name(voice_channel, portal_list, guild_object, guild);
+						five_min_refresher(voice_channel, portal_list, guild_object, guild, minutes);
+					}
+				}, minutes * 60 * 1000);
+			}
+		})
+		.catch(() => {
+			return;
+		});
+};
 
 async function channel_empty_check(
 	old_channel: VoiceChannel | TextChannel, guild_object: GuildPrtl, client: Client
@@ -118,6 +134,7 @@ async function from_null(
 			if (included_in_portal_list(new_channel.id, guild_object.portal_list)) {
 				const portal_object = guild_object.portal_list
 					.find(p => p.id === new_channel.id);
+
 				if (!portal_object) {
 					return resolve({
 						result: false,
@@ -130,7 +147,8 @@ async function from_null(
 						if (!response.result) {
 							return resolve(response);
 						}
-						generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+						five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+						// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 					})
 					.catch(e => {
 						return resolve({
@@ -143,7 +161,8 @@ async function from_null(
 			}
 			// joined voice channel
 			else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) {
-				generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+				five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+				// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				update_timestamp(newState, guild_object); // points for voice
 			}
 			else { // joined other channel
@@ -188,7 +207,8 @@ async function from_existing(
 
 					report_message += '->dest: voice_list\n';
 					report_message += 'has been handled before';
-					generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				}
 			}
 			else if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
@@ -212,7 +232,8 @@ async function from_existing(
 							if (!response.result) {
 								return resolve(response);
 							}
-							generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+							five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+							// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 						})
 						.catch(e => {
 							return resolve({
@@ -226,14 +247,16 @@ async function from_existing(
 
 					channel_empty_check(old_channel, guild_object, client);
 					update_timestamp(newState, guild_object); // points calculation from any channel
-					generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				}
 				else { // moved from voice to other
 					report_message += '->dest: other\n';
 
 					channel_empty_check(old_channel, guild_object, client);
 					update_timestamp(newState, guild_object); // points calculation from any channel
-					generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				}
 			}
 			else {
@@ -250,7 +273,8 @@ async function from_existing(
 							if (!response.result) {
 								return resolve(response);
 							}
-							generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+							five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+							// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 						})
 						.catch(e => {
 							return resolve({
@@ -263,7 +287,8 @@ async function from_existing(
 					new_channel.id, guild_object.portal_list)) { // left created channel and joins another created
 					report_message += '->dest: voice_list\n';
 
-					generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
+					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				}
 			}
 		}
@@ -277,21 +302,16 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.newState?.guild) {
+			const new_channel = args.newState.channel; // join channel
+			const old_channel = args.oldState.channel; // left channel
+
+			console.log('State will be updated');
+
 			fetch_guild(args.newState?.guild.id)
 				.then(guild_object => {
+					console.log(`fetched !`);
+
 					if (guild_object) {
-						const new_channel = args.newState.channel; // join channel
-						const old_channel = args.oldState.channel; // left channel
-
-						if (old_channel && new_channel) {
-							if (new_channel.id === old_channel.id) {
-								return resolve({
-									result: true,
-									value: 'changed voice state but remains in the same channel'
-								});
-							}
-						}
-
 						if (args.client.voice && args.newState.member) {
 							const new_voice_connection = args.client.voice.connections
 								.find((connection: VoiceConnection) =>

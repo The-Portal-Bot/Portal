@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
@@ -12,7 +12,7 @@ module.exports = async (
 
         message.channel.send(create_rich_embed(
             message.member ? message.member?.displayName : 'could not fetch name',
-            'Member portal card',
+            'Portal member card',
             '#42f5d7',
             [
                 {

@@ -144,13 +144,21 @@ client.on('ready', () =>
 );
 
 // This event triggers when a member joins or leaves a voice channel
-client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) =>
+client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
+	const new_channel = newState.channel; // join channel
+	const old_channel = oldState.channel; // left channel
+
+	if ((old_channel && new_channel) &&
+		(new_channel.id === old_channel.id)) {
+		return;
+	}
+
 	event_loader('voiceStateUpdate', {
 		'client': client,
 		'oldState': oldState,
 		'newState': newState
-	})
-);
+	});
+});
 
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
@@ -323,6 +331,10 @@ function command_loader(
 	message: Message, cmd: string, args: string[], type: string, command_options: CommandOptions,
 	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
+	if (config.debug === true) {
+		console.log(`├─ cmd (${cmd})`);
+	}
+
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
@@ -339,17 +351,18 @@ function command_loader(
 		return true;
 	}
 
-	const active = active_cooldowns[type === 'guild' ? 'guild' : 'member'].find(active_current => {
-		if (active_current.command === cmd) {
-			if (type === 'member' && active_current.member === message.author.id) {
-				return true;
+	const active = active_cooldowns[type === 'guild' ? 'guild' : 'member']
+		.find(active_current => {
+			if (active_current.command === cmd) {
+				if (type === 'member' && active_current.member === message.author.id) {
+					return true;
+				}
+				if (type === 'guild') {
+					return true;
+				}
 			}
-			if (type === 'guild') {
-				return true;
-			}
-		}
-		return false;
-	});
+			return false;
+		});
 
 	if (active) {
 		const time = time_elapsed(active.timestamp, command_options.time);
@@ -395,6 +408,10 @@ function command_loader(
 }
 
 function event_loader(event: string, args: any): void {
+	if (event === 'presenceUpdate') {
+		return;
+	}
+
 	if (config.debug === true) {
 		console.log(`├─ event (${event})`);
 	}
@@ -521,14 +538,7 @@ async function portal_channel_handler(
 						const voice_connection = client.voice?.connections.find(c =>
 							c.channel.guild.id === message.guild?.id);
 
-						if (!message.guild) {
-							if (message.deletable) {
-								message.delete();
-							}
-							return resolve(false);
-						}
-
-						if (!message.member) {
+						if (!message.guild || !message.member) {
 							if (message.deletable) {
 								message.delete();
 							}

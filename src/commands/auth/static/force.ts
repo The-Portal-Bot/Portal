@@ -19,14 +19,14 @@ module.exports = async (
 		if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
-				value: 'you must be in a channel handled by Portal',
+				value: 'you must be in a channel handled by Portal'
 			});
 		}
 
 		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
-				value: 'the channel you are in is not handled by Portal',
+				value: 'the channel you are in is not handled by Portal'
 			});
 		}
 
@@ -49,7 +49,7 @@ module.exports = async (
 
 							current_voice.clone({ name: updated_name })
 								.then(clone => {
-									if (current_member && current_voice) {
+									if (current_voice) {
 										current_voice.members.forEach(member => member.voice.setChannel(clone));
 										update_voice(guild_object.id, p.id, current_voice.id, 'id', clone.id)
 											.then(r => {
@@ -64,7 +64,7 @@ module.exports = async (
 											})
 											.catch(e => {
 												return resolve({
-													result: true,
+													result: false,
 													value: `failed to force update channel ${e}`
 												});
 											});
@@ -79,7 +79,7 @@ module.exports = async (
 						} else {
 							return resolve({
 								result: false,
-								value: 'could not fetch message\'s guild',
+								value: 'could not fetch message\'s guild'
 							});
 						}
 					} else {
