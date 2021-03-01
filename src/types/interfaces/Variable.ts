@@ -102,7 +102,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$date',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().subtract(10, 'days').calendar();
+			}
 			return moment().locale(voice_object.locale).subtract(10, 'days').calendar();
 		},
 		set: null,
@@ -115,7 +117,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$day_number',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().date();
+			}
 			return moment().locale(voice_object.locale).date();
 		},
 		set: null,
@@ -128,7 +132,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$day_name',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().format('dddd');
+			}
 			return moment().locale(voice_object.locale).format('dddd');
 		},
 		set: null,
@@ -141,7 +147,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$month_number',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().format('M');
+			}
 			return moment().locale(voice_object.locale).format('M');
 		},
 		set: null,
@@ -154,9 +162,10 @@ const variables: InterfaceBlueprint[] = [
 		example: '$month_name',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
-			return moment().locale(voice_object.locale)
-				.startOf('month').format('MMMM');
+			if (!voice_object) {
+				return moment().startOf('month').format('MMMM');
+			}
+			return moment().locale(voice_object.locale).startOf('month').format('MMMM');
 		},
 		set: null,
 		auth: 'none'
@@ -168,7 +177,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$year',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().format('yyyy');
+			}
 			return moment().locale(voice_object.locale).format('yyyy');
 		},
 		set: null,
@@ -181,7 +192,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$time',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().format('h:mm:ss');
+			}
 			return moment().locale(voice_object.locale).format('h:mm:ss');
 		},
 		set: null,
@@ -194,7 +207,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$hour',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().format('h');
+			}
 			return moment().locale(voice_object.locale).format('h');
 		},
 		set: null,
@@ -207,7 +222,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$minute',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().format('mm');
+			}
 			return moment().locale(voice_object.locale).format('mm');
 		},
 		set: null,
@@ -220,7 +237,9 @@ const variables: InterfaceBlueprint[] = [
 		example: '$second',
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
-			if (!voice_object) return 'must be in portal channel'
+			if (!voice_object) {
+				return moment().format('ss');
+			}
 			return moment().locale(voice_object.locale).format('ss');
 		},
 		set: null,

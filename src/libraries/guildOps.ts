@@ -574,7 +574,6 @@ export function regex_interpreter(
 
 	for (let i = 0; i < regex.length; i++) {
 		if (regex[i] === variable_prefix) {
-
 			const vrbl = is_variable(regex.substring(i));
 
 			if (vrbl.length !== 0) {
@@ -595,7 +594,6 @@ export function regex_interpreter(
 			else {
 				new_channel_name += regex[i];
 			}
-
 		}
 		else if (regex[i] === attribute_prefix) {
 			const attr = is_attribute(regex.substring(i));
