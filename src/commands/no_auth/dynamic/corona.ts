@@ -62,14 +62,23 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 				const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
-				if (json === null)
+
+				if (json === null) {
 					return resolve({
 						result: false,
 						value: 'data from source was corrupted'
 					});
-
+				}
+				
 				if (json.errors.length === 0) {
 					const country_data = json.response.find((data: any) => data.country === code);
+
+					if (!country_data) {
+						return resolve({
+							result: false,
+							value: `${args[0]} is neither a country name nor a country code`,
+						});
+					}
 
 					message.channel.send(
 						create_rich_embed(
@@ -134,20 +143,20 @@ module.exports = async (
 
 					return resolve({
 						result: true,
-						value: `${country_data.country} corona stats`
+						value: ''
 					});
 				}
 				else {
 					return resolve({
 						result: false,
-						value: `${args[0]} is neither a country name nor a country code`,
+						value: `fetched data had errors`
 					});
 				}
 			})
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server*\nerror: ${error}`,
+					value: `could not access the server\nerror: ${error}`
 				});
 			});
 	});

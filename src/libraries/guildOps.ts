@@ -92,11 +92,6 @@ export function get_role(guild: Guild, role_name_or_name: string): Role | undefi
 	);
 };
 
-export function get_role_name(role_id: string, i: number, message: Message) {
-	const role = message?.guild?.roles.cache.find(r => r.id === role_id);
-	return role ? `${i + 1}. ${role.name}` : `${i + 1}. undefined`;
-};
-
 //
 
 export async function create_channel(

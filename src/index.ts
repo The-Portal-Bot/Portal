@@ -485,10 +485,13 @@ async function portal_channel_handler(
 						client_talk(client, guild_object, 'url');
 					}
 					else {
-						client_talk(client, guild_object, 'read_only');
-						message_reply(false, message.channel, message, message.author,
-							'url-only channel', client);
-						message.delete();
+						// client_talk(client, guild_object, 'read_only');
+						message.author
+							.send(`${message.channel} is a url-only channel`)
+							.catch(console.error);
+						if (message.deletable) {
+							message.delete();
+						}
 					}
 
 					return resolve(true);

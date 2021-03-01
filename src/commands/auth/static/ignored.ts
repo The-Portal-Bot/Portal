@@ -22,8 +22,8 @@ module.exports = async (
 				const member = message.guild?.members.cache.find(mb => mb.id === ignored);
 
 				ignored_msg.push({
-					emote: `${member?.displayName} | ${ignored}`,
-					role: '',
+					emote: `${member?.displayName}`,
+					role: `${ignored}`,
 					inline: false,
 				});
 			});

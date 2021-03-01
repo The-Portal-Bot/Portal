@@ -21,18 +21,21 @@ module.exports = async (
 				value: 'server has no members please contact portal support'
 			});
 		}
-		if (isNaN(+args[0])) {
+
+		const requested_number = +args[0];
+		if (args.length > 0 && isNaN(requested_number)) {
 			return resolve({
 				result: false,
 				value: args[0] + ' is not a number'
 			});
 		}
 
-		let entries = (+args[0] > 0 && member_list.length >= +args[0])
-			? +args[0] > 100 ? 99 : +args[0]
+		let entries = (args.length > 0 && requested_number > 0 && member_list.length >= requested_number)
+			? requested_number > 100
+				? 99
+				: requested_number
 			: 9;
 
-		console.log('entries :>> ', entries);
 		if (entries <= 0) {
 			return resolve({
 				result: false,
@@ -40,65 +43,56 @@ module.exports = async (
 			});
 		}
 
-		if (!isNaN(entries)) {
-			if (guild_object.member_list) {
-				const member_levels: Field[] = [];
-				member_list.sort(compare)
-					.filter((m, j) => entries > j)
-					.forEach((member_object, i) => {
-						if (message.guild) {
-							const this_member = message.guild.members.cache
-								.find(member => member.id === member_object.id);
+		if (guild_object.member_list) {
+			const member_levels: Field[] = [];
+			member_list.sort(compare)
+				.filter((m, j) => entries > j)
+				.forEach((member_object, i) => {
+					if (message.guild) {
+						const this_member = message.guild.members.cache
+							.find(member => member.id === member_object.id);
 
-							if (this_member) {
-								member_levels.push(
-									{
-										emote: `${i + 1}. ${this_member.displayName}`,
-										role: `points: ${Math.round(member_object.points)}`,
-										inline: false
-									}
-								);
-								entries--;
-							}
-							else {
-								resolve({
-									result: false,
-									value: 'a member has been stored incorrectly please contact Portal maintainter',
-								});
-							}
+						if (this_member) {
+							member_levels.push(
+								{
+									emote: `${i + 1}. ${this_member.displayName}`,
+									role: `points: ${Math.round(member_object.points)}`,
+									inline: false
+								}
+							);
+							entries--;
 						}
-					});
-
-				message.channel.send(create_rich_embed(
-					'LEADERBOARD',
-					null,
-					'#00FFFF',
-					member_levels,
-					null,
-					null,
-					true,
-					null,
-					null),
-				);
-
-				return resolve({
-					result: true,
-					value: ''
+						else {
+							resolve({
+								result: false,
+								value: 'a member has been stored incorrectly please contact Portal maintainter',
+							});
+						}
+					}
 				});
-			}
-			else {
-				resolve({
-					result: false,
-					value: 'there are no members for this server, please contact Portal Bot maintainer',
-				});
-			}
+
+			message.channel.send(create_rich_embed(
+				'LEADERBOARD',
+				null,
+				'#00FFFF',
+				member_levels,
+				null,
+				null,
+				true,
+				null,
+				null),
+			);
+
+			return resolve({
+				result: true,
+				value: ''
+			});
 		}
 		else {
 			resolve({
 				result: false,
-				value: 'you can run `./help leaderboard` for help',
+				value: 'there are no members for this server, please contact Portal Bot maintainer',
 			});
 		}
-
 	});
 };

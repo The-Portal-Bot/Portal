@@ -1,19 +1,13 @@
-import {
-	Channel, Client, Guild, GuildChannel, GuildMember, Message,
-	MessageEmbed, PermissionString, TextChannel, User
-} from "discord.js";
+import { Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
-import {
-	Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed,
-	TimeRemaining
-} from "../types/interfaces/InterfacesPrtl";
+import { MemberPrtl } from "../types/classes/MemberPrtl";
+import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localisationOps";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongoOps";
-import { MemberPrtl } from "../types/classes/MemberPrtl";
 
 export function create_music_message(
 	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl
@@ -21,7 +15,7 @@ export function create_music_message(
 	const music_message_emb = create_rich_embed(
 		'Music Player',
 		'Type and Portal will play',
-		'#0000FF',
+		'#e60026',
 		[
 			{ emote: 'Duration', role: '-', inline: true },
 			{ emote: 'Views', role: '-', inline: true },
@@ -69,7 +63,7 @@ export function update_music_message(
 		const music_message_emb = create_rich_embed(
 			yts.title,
 			yts.url,
-			'#0000FF',
+			'#e60026',
 			[
 				{ emote: 'Duration', role: yts.timestamp, inline: true },
 				{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
@@ -392,7 +386,7 @@ export async function update_portal_managed_guilds(
 };
 
 export function is_authorised(
-	member_list: MemberPrtl[], auth_role: string[] , member: GuildMember
+	member_list: MemberPrtl[], auth_role: string[], member: GuildMember
 ): boolean {
 	const administrator: PermissionString = 'ADMINISTRATOR';
 	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };

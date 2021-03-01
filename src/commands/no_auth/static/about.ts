@@ -49,7 +49,7 @@ module.exports = async (
             null,
             null,
             true,
-            'https://top.gg/bot/704400876860735569',
+            'https://portal-bot.xyz',
             null)
         );
 
