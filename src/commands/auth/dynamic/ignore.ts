@@ -64,25 +64,48 @@ module.exports = async (
 				guild_object.member_list.some(m => {
 					if (m.id === role_name) {
 						if (m.ignored === false) {
-							update_member(guild_object.id, m.id, 'ignored', true);
-							const member = message.guild?.members.cache.find(mb => mb.id === m.id);
+							update_member(guild_object.id, m.id, 'ignored', true)
+								.then(r => {
+									const member = message.guild?.members.cache.find(mb => mb.id === m.id);
 
-							return resolve({
-								result: true,
-								value: `member ${member ? member : m.id} has been added to ignore list`
-							});
+									return resolve({
+										result: r,
+										value: r
+											? `successfully started ignoring member ${member ? member : m.id}`
+											: `failed to ignore member ${member ? member : m.id}`
+									});
+								})
+								.catch(e => {
+									const member = message.guild?.members.cache.find(mb => mb.id === m.id);
+
+									return resolve({
+										result: false,
+										value: `something when wrong while ignoring ${member ? member : m.id}`
+									});
+								});
 						}
 						else {
-							update_member(guild_object.id, m.id, 'ignored', false);
-							const member = message.guild?.members.cache.find(mb => mb.id === m.id);
+							update_member(guild_object.id, m.id, 'ignored', false)
+								.then(r => {
+									const member = message.guild?.members.cache.find(mb => mb.id === m.id);
 
-							return resolve({
-								result: true,
-								value: `member ${member ? member : m.id} has been removed from ignore list`
-							});
+									return resolve({
+										result: r,
+										value: r
+											? `successfully stopped ignoring member ${member ? member : m.id}`
+											: `failed to stop ignoring member ${member ? member : m.id}`
+									});
+								})
+								.catch(e => {
+									const member = message.guild?.members.cache.find(mb => mb.id === m.id);
+
+									return resolve({
+										result: false,
+										value: `something when wrong while removing ignore from ${member ? member : m.id}`
+									});
+								});
 						}
 					}
-					return false;
 				});
 			}
 		}

@@ -336,8 +336,8 @@ export function create_rich_embed(
 	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
 	url: string | null | undefined, image: string | null | undefined
 ): MessageEmbed {
-	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-		'.github.io/master/assets/img/logo.png';
+	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/' +
+		'Portal/master/src/assets/img/logo.png';
 	const keybraker_url: string = 'https://github.com/keybraker';
 
 	const rich_message: MessageEmbed = new MessageEmbed()
@@ -348,7 +348,7 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal bot by Keybraker', portal_icon_url);
+	if (from_bot) rich_message.setFooter('Portal by Keybraker', portal_icon_url);
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
 	if (member) {

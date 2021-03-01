@@ -224,6 +224,9 @@ client.on('message', async (message: Message) => {
 							if (message.content === 'prefix') {
 								message_reply(true, message.channel, message, message.author,
 									`portal's prefix is \`${authenticate.prefix}\``, client);
+								if (message.deletable) {
+									message.delete();
+								}
 							}
 							return false;
 						}

@@ -5,9 +5,9 @@
     "private": true,
     "main": "src/index.ts",
     "scripts": {
-        "compile": "npx tsc",
+        "build": "npx tsc",
         "start": "node build/index.js",
-        "compile-start": "npx tsc && node build/index.js",
+        "build-start": "npx tsc && node build/index.js",
         "test": "npx tsc && jest"
     },
     "dependencies": {

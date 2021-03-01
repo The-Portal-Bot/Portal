@@ -7,7 +7,9 @@ const profane_words: Language = <Language>ProfaneWords;
    * Determine if a string contains profane language
    * @param {string} string - String to evaluate for profanity
    */
-export function isProfane(string: string): string[] {
+export function isProfane(
+	string: string
+): string[] {
 	if (string.includes('role_assigner')) {
 		return [];
 	}
@@ -26,7 +28,6 @@ export function isProfane(string: string): string[] {
 		return word_exp.test(string);
 	});
 
-	console.log('en :>> ', en);
 	return (gr.length > 0 || false) || (en.length > 0 || false) || (de.length > 0 || false)
 		? gr.concat(en).concat(de)
 		: [];

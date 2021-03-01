@@ -21,44 +21,53 @@ module.exports = async (
 				value: 'server has no members please contact portal support'
 			});
 		}
-
-		let length = (+args.length > 0 && Object.keys(member_list).length >= args.length)
-			? +args[0]
-			: 9;
-
-		if (length <= 0) {
+		if (isNaN(+args[0])) {
 			return resolve({
 				result: false,
-				value: 'user number must be at least 1 (one)'
+				value: args[0] + ' is not a number'
 			});
 		}
 
-		if (!isNaN(length)) {
+		let entries = (+args[0] > 0 && member_list.length >= +args[0])
+			? +args[0] > 100 ? 99 : +args[0]
+			: 9;
+
+		console.log('entries :>> ', entries);
+		if (entries <= 0) {
+			return resolve({
+				result: false,
+				value: 'leaderboard entries must be at least one'
+			});
+		}
+
+		if (!isNaN(entries)) {
 			if (guild_object.member_list) {
 				const member_levels: Field[] = [];
-				member_list.sort(compare).forEach((member_object, i) => {
-					if (message.guild) {
-						const this_member = message.guild.members.cache
-							.find(member => member.id === member_object.id);
+				member_list.sort(compare)
+					.filter((m, j) => entries > j)
+					.forEach((member_object, i) => {
+						if (message.guild) {
+							const this_member = message.guild.members.cache
+								.find(member => member.id === member_object.id);
 
-						if (this_member !== null && this_member !== undefined) {
-							member_levels.push(
-								{
-									emote: `${i + 1}. ${this_member.displayName}`,
-									role: `points: ${Math.round(member_object.points)}`,
-									inline: false
-								}
-							);
-							length--;
+							if (this_member) {
+								member_levels.push(
+									{
+										emote: `${i + 1}. ${this_member.displayName}`,
+										role: `points: ${Math.round(member_object.points)}`,
+										inline: false
+									}
+								);
+								entries--;
+							}
+							else {
+								resolve({
+									result: false,
+									value: 'a member has been stored incorrectly please contact Portal maintainter',
+								});
+							}
 						}
-						else {
-							resolve({
-								result: false,
-								value: 'a member has been stored incorrectly please contact Portal maintainter',
-							});
-						}
-					}
-				});
+					});
 
 				message.channel.send(create_rich_embed(
 					'LEADERBOARD',

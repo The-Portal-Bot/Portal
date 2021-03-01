@@ -1,17 +1,17 @@
 {
-    "token": "add-your-token-here",
+    "token": "NzU1ODI1ODcwMTAyNTkzNjI2.X2I7sQ.ZCK-aRNN7A5Flv_1zY9SNzVd0NM",
     "prefix": "./",
     "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
-    "owner_id": "add-your-id-(optional)",
-    "portal_id": "add-bots-id-(optional)",
+    "owner_id": 228666893068795905,
+    "portal_id": 755825870102593626,
     "api_keys": {
-        "OpenWeatherMap": "add-open-weather-map-api-key",
-        "covid_193": "add-covid-193-api-key",
-        "coingecko": "add-coingecko-api-key",
-        "yahoo_finance": "add-yahoo-finance-api-key",
+        "OpenWeatherMap": "7692e8876197f1532fe027f43c6f3227",
+        "covid_193": "b694675e7amsh7a749ca6bcadf5bp1a7403jsnffa201099297",
+        "coingecko": "b694675e7amsh7a749ca6bcadf5bp1a7403jsnffa201099297",
+        "yahoo_finance": "b694675e7amsh7a749ca6bcadf5bp1a7403jsnffa201099297",
         "translate": {
             "engine": "yandex",
-            "key": "add-yeandex-api-key"
+            "key": "pdct.1.1.20210108T115346Z.8c752ef4694c06bb.efe449cd7367ac260b85058afac0ae307995599b"
         }
     },
     "delete_msg": false,

@@ -410,7 +410,16 @@ export function get_variable_guide(): MessageEmbed {
 	];
 
 	return create_rich_embed(
-		'Variable Guide', 'how to use variables with regex interpreter', '#EEB902', strc_array, null, null, null, null, null
+		'Variable Guide',
+		'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
+		'how to use variables with regex interpreter',
+		'#EEB902',
+		strc_array,
+		null,
+		null,
+		null,
+		null,
+		null
 	);
 }
 
@@ -433,11 +442,12 @@ export function get_variable_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Variables',
+				'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
 				'Prefix: ' + variable_prefix + '\n' +
 				'Immutable and live data that return information\n' +
 				'about your current voice channel' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-'#1BE7FF', vrbl_array[0], null, null, null, null, null
+				'#1BE7FF', vrbl_array[0], null, null, null, null, null
 			)
 		} else {
 			return create_rich_embed(
@@ -456,7 +466,7 @@ export function get_variable_help_super(candidate: string): MessageEmbed | boole
 				'Type: Variable' +
 				'\nPrefix: ' + variable_prefix + '\n' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-'#1BE7FF',
+				'#1BE7FF',
 				[
 					{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
 					{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false },

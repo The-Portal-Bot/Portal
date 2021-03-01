@@ -101,7 +101,7 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
-                "reply": false
+                "reply": true
             },
             {
                 "name": "corona",
