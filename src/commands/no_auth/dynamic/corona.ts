@@ -82,8 +82,8 @@ module.exports = async (
 
 					message.channel.send(
 						create_rich_embed(
-							`COVID19 ${country_data.country} stats ${moment().format('DD/MM/YY')}`,
-							'powered by api-sports',
+							`${country_data.country} | ${moment().format('DD/MM/YY')}`,
+							'Covid19 stats powered by api-sports',
 							'#FF0000',
 							[
 								{

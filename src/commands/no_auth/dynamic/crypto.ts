@@ -60,8 +60,8 @@ module.exports = async (
 
 				message.channel.send(
 					create_rich_embed(
-						`CRYPTO ${voca.titleCase(crypto_name)} - ${moment().format('DD/MM/YY')}`,
-						'powered by coingecko',
+						`${voca.titleCase(crypto_name)} | ${moment().format('DD/MM/YY')}`,
+						'Crypto stats powered by coingecko',
 						'#FF0000',
 						[
 							{
