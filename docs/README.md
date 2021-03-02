@@ -1,4 +1,4 @@
-<h1 align="center">Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/logo.png" alt="alt text" width="25" height="25">
+<h1 align="center">Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="alt text" width="25" height="25">
 </h1>
 
 <p align="center">A fully fledged and feature rich bot for Discord</p>
