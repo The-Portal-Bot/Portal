@@ -204,22 +204,19 @@ client.on('message', async (message: Message) => {
 				}
 
 				if (!message.guild) {
-					message_reply(false, message.channel, message, message.author,
-						'could not fetch guild of message', client);
+					message_reply(false, message, message.author, 'could not fetch guild of message');
 					return false;
 				}
 
 				if (!message.member) {
-					message_reply(false, message.channel, message, message.author,
-						'could not fetch member of message', client);
+					message_reply(false, message, message.author, 'could not fetch member of message');
 					return false;
 				}
 
 				fetch_guild_authenticate(message.guild.id, message.member.id)
 					.then(authenticate => {
 						if (!authenticate) {
-							message_reply(false, message.channel, message, message.author,
-								'server is not in database, please contact portal support', client);
+							message_reply(false, message, message.author, 'server is not in database, please contact portal support');
 							return false;
 						}
 
@@ -230,8 +227,8 @@ client.on('message', async (message: Message) => {
 						// Ignore any message that does not start with prefix
 						if (message.content.indexOf(authenticate.prefix) !== 0) {
 							if (message.content === 'prefix') {
-								message_reply(true, message.channel, message, message.author,
-									`portal's prefix is \`${authenticate.prefix}\``, client);
+								message_reply(true, message, message.author,
+									`portal's prefix is \`${authenticate.prefix}\``, false);
 								if (message.deletable) {
 									message.delete();
 								}
@@ -267,8 +264,8 @@ client.on('message', async (message: Message) => {
 						}
 
 						if (!command_options) {
-							message_reply(false, message.channel, message, message.author,
-								'could not get command option', client);
+							message_reply(false, message, message.author,
+								'could not get command option');
 							return false;
 						}
 
@@ -280,43 +277,42 @@ client.on('message', async (message: Message) => {
 
 						if (command_options.auth && message.member) {
 							if (!is_authorised(authenticate.member_list, authenticate.auth_role, message.member)) {
-								message_reply(false, message.channel, message, message.author,
-									'you are not authorised to use this command', client);
+								message_reply(false, message, message.author, 'you are not authorised to use this command');
 								return false;
 							}
 						}
 
 						if (!message.guild) {
-							message_reply(false, message.channel, message, message.author,
-								'could not fetch guild from message', client);
+							message_reply(false, message, message.author,
+								'could not fetch guild from message');
 							return false;
 						}
 
 						fetch_guild(message.guild.id)
 							.then(guild_object => {
 								if (!guild_object) {
-									message_reply(false, message.channel, message, message.author,
-										'server is not in database, please contact portal support', client);
+									message_reply(false, message, message.author,
+										'server is not in database, please contact portal support');
 									return false;
 								}
 
 								if (!command_options) {
-									message_reply(false, message.channel, message, message.author,
-										'could not get command option', client);
+									message_reply(false, message, message.author,
+										'could not get command option');
 									return false;
 								}
 
 								command_loader(message, cmd, args, type, command_options, path_to_command, guild_object);
 							})
 							.catch(e => {
-								message_reply(false, message.channel, message, message.author,
-									`could not get guild from message (${e})`, client);
+								message_reply(false, message, message.author,
+									`could not get guild from message (${e})`);
 								return false;
 							});
 					})
 					.catch(e => {
-						message_reply(false, message.channel, message, message.author,
-							`could not get authentication data from message (${e})`, client);
+						message_reply(false, message, message.author,
+							`could not get authentication data from message (${e})`);
 						return false;
 					});
 			}
@@ -342,8 +338,8 @@ function command_loader(
 					if ((command_options && response.value && response.value !== '') &&
 						(command_options.reply || response.result === false)) {
 						message_reply(
-							response.result, message.channel, message, message.author, response.value,
-							client, command_options ? command_options.auto_delete : true
+							response.result, message, message.author, response.value,
+							command_options ? command_options.auto_delete : true
 						);
 					}
 				}
@@ -370,11 +366,10 @@ function command_loader(
 			? '.*'
 			: `, as it was used again in* **${message.guild?.name}**`;
 
-		message_reply(false, message.channel, message, message.author,
+		message_reply(false, message, message.author,
 			`you need to wait **${pad(time.remaining_min)}:` +
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
-			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`,
-			client);
+			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`);
 
 		return false;
 	}
@@ -398,10 +393,7 @@ function command_loader(
 			}
 
 			if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
-				message_reply(
-					response.result, message.channel, message, message.author, response.value,
-					client, command_options.auto_delete
-				);
+				message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
 		});
 
 	return false;
@@ -475,12 +467,12 @@ async function portal_channel_handler(
 							.then(r => {
 								const reply_message = r ? 'successfully removed from ignored channels'
 									: 'failed to remove from ignored channels'
-								message_reply(true, message.channel, message, message.author,
-									reply_message, client);
+								message_reply(true, message, message.author,
+									reply_message);
 							})
 							.catch(e => {
-								message_reply(false, message.channel, message, message.author,
-									'failed to remove from ignored channels', client);
+								message_reply(false, message, message.author,
+									'failed to remove from ignored channels');
 							});
 					}
 
@@ -490,12 +482,12 @@ async function portal_channel_handler(
 					if (message.content === './url') {
 						remove_url(guild_object.id, message.channel.id)
 							.then(r => {
-								message_reply(true, message.channel, message, message.author,
-									r ? 'successfully removed url channel' : 'failed to remove url channel', client);
+								message_reply(true, message, message.author,
+									r ? 'successfully removed url channel' : 'failed to remove url channel');
 							})
 							.catch(e => {
-								message_reply(false, message.channel, message, message.author,
-									'failed to remove url channel', client);
+								message_reply(false, message, message.author,
+									'failed to remove url channel');
 							});
 					}
 					else if (is_url(message.content)) {
@@ -524,15 +516,14 @@ async function portal_channel_handler(
 						const music_data = new MusicData('null', 'null', []);
 						set_music_data(guild_object.id, music_data)
 							.then(r => {
-								message_reply(true, message.channel, message, message.author,
+								message_reply(true, message, message.author,
 									r
 										? 'successfully removed music channel'
-										: 'failed to remove music channel'
-									, client);
+										: 'failed to remove music channel');
 							})
 							.catch(e => {
-								message_reply(false, message.channel, message, message.author,
-									'failed to remove music channel', client);
+								message_reply(false, message, message.author,
+									'failed to remove music channel');
 							});
 					} else {
 						const voice_connection = client.voice?.connections.find(c =>
@@ -548,8 +539,8 @@ async function portal_channel_handler(
 						start(voice_connection, client, message.member.user, message.guild, guild_object, message.content)
 							.then(joined => {
 								// message_reply(
-								// 	joined.result, message.channel, message,
-								// 	message.author, joined.value, guild_object, client, true
+								// 	joined.result, message,
+								// 	message.author, joined.value, guild_object, true
 								// );
 
 								if (message.deletable) {
@@ -558,8 +549,8 @@ async function portal_channel_handler(
 							})
 							.catch(error => {
 								// message_reply(
-								// 	false, message.channel, message,
-								// 	message.author, error, guild_object, client, true
+								// 	false, message,
+								// 	message.author, error, guild_object, true
 								// );
 
 								if (message.deletable) {
@@ -582,14 +573,13 @@ function ranking_system(message: Message): void {
 		.then(guild_object => {
 			if (guild_object) {
 				const level = add_points_message(message, guild_object);
-				if (level)
-					message_reply(true, message.channel, message, message.author,
-						`you reached level ${level}!`, client);
+				if (level) {
+					message_reply(true, message, message.author, `you reached level ${level}!`);
+				}
 			}
 		})
 		.catch(e => {
-			message_reply(true, message.channel, message, message.author,
-				'an error occured while accesing data', client);
+			message_reply(true, message, message.author, 'an error occured while accesing data');
 		});
 }
 

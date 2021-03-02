@@ -13,7 +13,7 @@ module.exports = async (
 				const roll = roll_lib.roll(args[0])
 
 				message.channel.send(
-					`${message.author} rolled **${roll.result}** __(${roll.rolled} from ${args[0]})__`
+					`${message.author} rolled **${roll.result}** *(${roll.rolled} from ${args[0]})*`
 				);
 
 				return resolve({

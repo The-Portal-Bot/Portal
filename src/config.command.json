@@ -154,7 +154,7 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": false,
+                "auto_delete": true,
                 "reply": false
             },
             {
@@ -306,7 +306,7 @@
                 "time": 10,
                 "auth": true,
                 "premium": true,
-                "auto_delete": false,
+                "auto_delete": true,
                 "reply": true
             },
             {

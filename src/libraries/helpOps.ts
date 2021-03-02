@@ -410,8 +410,8 @@ export function is_authorised(
 };
 
 export function message_reply(
-	status: boolean, channel: Channel, message: Message, user: User, str: string,
-	client: Client, to_delete: boolean = config.delete_msg,
+	status: boolean, message: Message, user: User, str: string,
+	to_delete: boolean = config.delete_msg,
 	emote_pass: string = '✔️', emote_fail: string = '❌'
 ): void {
 	if (!message.channel.deleted && str !== null) {

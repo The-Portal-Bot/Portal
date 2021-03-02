@@ -31,8 +31,8 @@ module.exports = async (
 		}
 
 		let entries = (args.length > 0 && requested_number > 0 && member_list.length >= requested_number)
-			? requested_number > 100
-				? 99
+			? requested_number > 25
+				? 24
 				: requested_number
 			: 9;
 
