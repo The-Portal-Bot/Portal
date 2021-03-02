@@ -65,10 +65,10 @@ module.exports = async (
 			});
 		}
 
-		if (message.member.voice.channel.members.size < 2) {
+		if (message.member.voice.channel.members.size <= 2) {
 			return resolve({
 				result: false,
-				value: 'you can use `./focus` in channels with more than 2 members',
+				value: 'you can *only* use focus in channels with *more* than 2 members',
 			});
 		}
 
@@ -92,12 +92,12 @@ module.exports = async (
 			});
 		}
 
-		// if (message.member.id === focus_name || message.member.displayName === focus_name) {
-		// 	return resolve({
-		// 		result: false,
-		// 		value: `you can't focus on yourself`
-		// 	});
-		// }
+		if (message.member.id === focus_name || message.member.displayName === focus_name) {
+			return resolve({
+				result: false,
+				value: `you can't focus on yourself`
+			});
+		}
 
 		const member_object = message.member.voice.channel.members.find(member =>
 			member.displayName === focus_name || member.id === focus_name);

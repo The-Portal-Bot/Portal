@@ -239,7 +239,7 @@ client.on('message', async (message: Message) => {
 							return false;
 						}
 
-						// Separate function name, and arguments of function
+						// Separate command name and arguments
 						const args = message.content.slice(authenticate.prefix.length).trim().split(/ +/g);
 
 						const cmd_only = args.shift();
@@ -308,15 +308,15 @@ client.on('message', async (message: Message) => {
 
 								command_loader(message, cmd, args, type, command_options, path_to_command, guild_object);
 							})
-							.catch(error => {
+							.catch(e => {
 								message_reply(false, message.channel, message, message.author,
-									'could not get guild from message', client);
+									`could not get guild from message (${e})`, client);
 								return false;
 							});
 					})
-					.catch(error => {
+					.catch(e => {
 						message_reply(false, message.channel, message, message.author,
-							'could not get authentication data from message', client);
+							`could not get authentication data from message (${e})`, client);
 						return false;
 					});
 			}

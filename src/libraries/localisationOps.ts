@@ -150,20 +150,20 @@ export function client_talk(client: Client, guild_object: GuildPrtl, context: st
 			return guild_object.portal_list.some(p =>
 				p.voice_list.some(v => {
 					// if (!voice_connection.speaking) {
-						if (type_of_announcement.includes(context) && v.ann_announce) {
-							const locale = v.locale;
-							const random = Math.floor(Math.random() * Math.floor(3));
+					if (type_of_announcement.includes(context) && v.ann_announce) {
+						const locale = v.locale;
+						const random = Math.floor(Math.random() * Math.floor(3));
 
-							voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-							return true;
-						}
-						else if (type_of_action.includes(context) && v.ann_user) {
-							const locale = v.locale;
-							const random = Math.floor(Math.random() * Math.floor(3));
+						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+						return true;
+					}
+					else if (type_of_action.includes(context) && v.ann_user) {
+						const locale = v.locale;
+						const random = Math.floor(Math.random() * Math.floor(3));
 
-							voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-							return true;
-						}
+						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+						return true;
+					}
 					// }
 					return v.id === voice_connection.channel.id;
 				})
@@ -174,7 +174,9 @@ export function client_talk(client: Client, guild_object: GuildPrtl, context: st
 	return false;
 };
 
-export function get_function(output: string, language: string, context: string): any {
+export function get_function(
+	output: string, language: string, context: string
+): any {
 	let func: any = null;
 	if (output === 'portal') {
 		portal.some(ct => {
@@ -188,7 +190,8 @@ export function get_function(output: string, language: string, context: string):
 				}
 			}
 		});
-	} else if (output === 'console') {
+	}
+	else if (output === 'console') {
 		console_text.some(ct => {
 			if (ct.name === context) {
 				if (language === 'gr') {

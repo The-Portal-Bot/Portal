@@ -330,10 +330,13 @@ export async function create_focus_channel(
 			userLimit: 2
 		};
 
-		const chatroom_name = `${focus_time === 0
+		const chatroom_name = `PR${focus_time === 0
 			? ''
-			: `${focus_time}' | $minute/${moment().locale(portal_object.locale).format('mm')} `
-			}private`;
+			: `-${focus_time}' $hour:$minute/${moment()
+				.locale(portal_object.locale)
+				.add(focus_time, focus_time === 1 ? "minute" : "minutes")
+				.format('hh:mm')}`
+			}`;
 
 		guild.channels.create(chatroom_name, voice_options)
 			.then(channel => {

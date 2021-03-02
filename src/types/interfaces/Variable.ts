@@ -193,9 +193,9 @@ const variables: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
 			if (!voice_object) {
-				return moment().format('h:mm:ss');
+				return moment().format('hh:mm:ss');
 			}
-			return moment().locale(voice_object.locale).format('h:mm:ss');
+			return moment().locale(voice_object.locale).format('hh:mm:ss');
 		},
 		set: null,
 		auth: 'none'
@@ -208,9 +208,9 @@ const variables: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null) => {
 			if (!voice_object) {
-				return moment().format('h');
+				return moment().format('hh');
 			}
-			return moment().locale(voice_object.locale).format('h');
+			return moment().locale(voice_object.locale).format('hh');
 		},
 		set: null,
 		auth: 'none'

@@ -319,15 +319,6 @@
                 "reply": true
             },
             {
-                "name": "spotify",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "auto_delete": true,
-                "reply": true
-            },
-            {
                 "name": "url",
                 "range": "none",
                 "time": 0,

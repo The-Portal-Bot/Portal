@@ -308,8 +308,6 @@ module.exports = async (
 
 			fetch_guild(args.newState?.guild.id)
 				.then(guild_object => {
-					console.log(`fetched !`);
-
 					if (guild_object) {
 						if (args.client.voice && args.newState.member) {
 							const new_voice_connection = args.client.voice.connections
