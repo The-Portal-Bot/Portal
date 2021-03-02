@@ -147,6 +147,7 @@ async function from_null(
 						if (!response.result) {
 							return resolve(response);
 						}
+
 						five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
 						// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 					})
@@ -305,8 +306,6 @@ module.exports = async (
 			const new_channel = args.newState.channel; // join channel
 			const old_channel = args.oldState.channel; // left channel
 
-			console.log('State will be updated');
-
 			fetch_guild(args.newState?.guild.id)
 				.then(guild_object => {
 					console.log(`fetched !`);
@@ -364,7 +363,7 @@ module.exports = async (
 				.catch(error => {
 					return resolve({
 						result: false,
-						value: 'could not find guild in Portal'
+						value: 'could not find guild in Portal (' + error + ')'
 					});
 				});
 		} else {

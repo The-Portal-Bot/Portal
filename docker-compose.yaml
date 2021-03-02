@@ -6,11 +6,11 @@ services:
     container_name: portal
     restart: always
     image: keybraker/portal:latest
-    deploy:
-        resources:
-            limits:
-              cpus: 1.00
-              memory: 1024M
+    # deploy:
+    #     resources:
+    #         limits:
+    #           cpus: 1.00
+    #           memory: 1024M
     build: 
       context: .
       dockerfile: ./docker/Dockerfile 
@@ -20,11 +20,11 @@ services:
   mongo:
     container_name: mongo
     image: mongo:4.4.3
-    deploy:
-        resources:
-            limits:
-              cpus: 1.00
-              memory: 1024M
+    # deploy:
+    #     resources:
+    #         limits:
+    #           cpus: 1.00
+    #           memory: 1024M
     ports:
      - '29017:27017'
     volumes:

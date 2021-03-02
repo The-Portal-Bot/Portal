@@ -9,6 +9,7 @@ import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON } from './helpOps';
 import { ChannelTypePrtl, insert_voice } from "./mongoOps";
+import moment from "moment";
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -212,8 +213,7 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 };
 
 export function create_voice_channel(
-	state: VoiceState, portal_object: PortalChannelPrtl,
-	portal_channel: GuildChannel, creator_id: string
+	state: VoiceState, portal_object: PortalChannelPrtl, portal_channel: GuildChannel, creator_id: string
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (state && state.channel) {
@@ -310,8 +310,7 @@ export async function create_music_channel(
 };
 
 export async function create_focus_channel(
-	guild: Guild, member: GuildMember,
-	member_found: GuildMember, focus_time: number
+	guild: Guild, member: GuildMember, member_found: GuildMember, focus_time: number, portal_object: PortalChannelPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const return_value = {
@@ -325,58 +324,66 @@ export async function create_focus_channel(
 
 		const oldChannel: VoiceChannel | null = member.voice.channel;
 
-		guild.channels.create(
-			`${focus_time}' private room`, {
+		const voice_options: GuildCreateChannelOptions = {
 			type: 'voice',
-			bitrate: 64000,
+			bitrate: 96000,
 			userLimit: 2
-		})
+		};
+
+		const chatroom_name = `${focus_time === 0
+			? ''
+			: `${focus_time}' | $minute/${moment().locale(portal_object.locale).format('mm')} `
+			}private`;
+
+		guild.channels.create(chatroom_name, voice_options)
 			.then(channel => {
-				const newChannel = channel;
 				member.voice.setChannel(channel);
 				member_found.voice.setChannel(channel);
 
-				setTimeout(() => {
-					if (!oldChannel.deleted) {
-						member.voice.setChannel(oldChannel)
-							.then(() => {
-								member_found.voice.setChannel(oldChannel)
-									.then(() => {
-										if (newChannel && newChannel.deletable) {
-											newChannel.delete().catch(console.error);
+				insert_voice(guild.id, portal_object.id, new VoiceChannelPrtl(
+					channel.id, member.id, chatroom_name, false, 0, 0, portal_object.locale,
+					portal_object.ann_announce, portal_object.ann_user
+				));
 
+				if (focus_time !== 0) {
+					setTimeout(() => {
+						if (!oldChannel.deleted) {
+							member.voice.setChannel(oldChannel)
+								.then(() => {
+									member_found.voice.setChannel(oldChannel)
+										.then(() => {
 											return resolve({
 												result: true,
 												value: 'focus ended properly'
 											});
-										}
-									})
-									.catch(e => {
-										return resolve({
-											result: false,
-											value: 'focus did not end properly'
+										})
+										.catch(e => {
+											return resolve({
+												result: false,
+												value: `focus did not end properly (${e})`
+											});
 										});
+								})
+								.catch(e => {
+									return resolve({
+										result: false,
+										value: `focus did not end properly (${e})`
 									});
-							})
-							.catch(e => {
-								return resolve({
-									result: false,
-									value: 'focus did not end properly'
 								});
+						}
+						else {
+							return resolve({
+								result: false,
+								value: 'could not move to original voice channel because it was deleted'
 							});
-					}
-					else {
-						return resolve({
-							result: false,
-							value: 'could not move to original voice channel because it was deleted'
-						});
-					}
-				}, focus_time * 60 * 1000);
+						}
+					}, focus_time * 60 * 1000);
+				}
 			})
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: 'failed to create focus channel'
+					value: `failed to create focus channel (${e})`
 				});
 			});
 	});
