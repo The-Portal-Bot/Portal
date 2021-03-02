@@ -13,7 +13,7 @@ module.exports = async (
         message.channel.send(create_rich_embed(
             message.member ? message.member?.displayName : 'could not fetch name',
             'Portal member card',
-            '#42f5d7',
+            '#ffffff',
             [
                 {
                     emote: 'Id',
