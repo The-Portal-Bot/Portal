@@ -311,7 +311,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**run**, gives you the opportunity to run regexes in any text channel. ' +
 			'You can get properties about the channel you are in.\n' +
 			'If regex is empty string it will return a dot (.)',
-		example: './run $member_count &locale\nwill return 4 and gr if member count and locale are that',
+		example: './run $member_count &g.locale\n\nwill return 4 and gr if member count and locale are that',
 		args: '<!exec_command>',
 		auth: 'admin',
 		get: null,

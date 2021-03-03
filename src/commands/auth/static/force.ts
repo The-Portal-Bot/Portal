@@ -44,7 +44,8 @@ module.exports = async (
 								v,
 								guild_object.portal_list,
 								guild_object,
-								message.guild
+								message.guild, 
+								message.author.id
 							);
 
 							current_voice.clone({ name: updated_name })
