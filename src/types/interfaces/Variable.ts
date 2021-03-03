@@ -533,137 +533,137 @@ const variables: InterfaceBlueprint[] = [
 	// }
 ];
 
-	export function is_variable(candidate: string): string {
-		for (let i = 0; i < variables.length; i++) {
-			if (String(candidate).substring(1, (String(variables[i].name).length + 1)) == variables[i].name) {
-				return variables[i].name;
-			}
+export function is_variable(candidate: string): string {
+	for (let i = 0; i < variables.length; i++) {
+		if (String(candidate).substring(1, (String(variables[i].name).length + 1)) == variables[i].name) {
+			return variables[i].name;
 		}
-		return '';
-	};
+	}
+	return '';
+};
 
-	export function get_variable_guide(): MessageEmbed {
-		const strc_array: Field[] = [
-			{
-				emote: 'Used in Regex Interpreter',
-				role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
-				inline: true
-			},
-			{
-				emote: 'variables are immutable and live data',
-				role: '*data coresponds to server, portal or voice channel live data*',
-				inline: true
-			},
-			{
-				emote: '1. Go to any channel',
-				role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
-				inline: false
-			},
-			{
-				emote: '2-1. `./run year is: $year`',
-				role: '*run command, processes given text and returns processed text (note it is JSON format)*',
-				inline: false
-			},
-			{
-				emote: '2-2. Wait for portal response which will be `year is: 2021` (as it currently is 2021)',
-				role: '*it will reply with your string until it edits it with processed info*',
-				inline: false
-			},
-			{
-				emote: '3-1. `./set regex_voice year is: $year` (note that when setting you do not need prefix &)',
-				role: '*set command, updates the data of an attribute in this case **regex_voice** to ***year is: $year***',
-				inline: false
-			},
-			{
-				emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
-				role: '*portal will either confirm update or inform you of the error it faced*',
-				inline: false
-			}
-		];
+export function get_variable_guide(): MessageEmbed {
+	const strc_array: Field[] = [
+		{
+			emote: 'Used in Regex Interpreter',
+			role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
+			inline: true
+		},
+		{
+			emote: 'variables are immutable and live data',
+			role: '*data coresponds to server, portal or voice channel live data*',
+			inline: true
+		},
+		{
+			emote: '1. Go to any channel',
+			role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
+			inline: false
+		},
+		{
+			emote: '2-1. `./run year is: $year`',
+			role: '*run command, processes given text and returns processed text (note it is JSON format)*',
+			inline: false
+		},
+		{
+			emote: '2-2. Wait for portal response which will be `year is: 2021` (as it currently is 2021)',
+			role: '*it will reply with your string until it edits it with processed info*',
+			inline: false
+		},
+		{
+			emote: '3-1. `./set regex_voice year is: $year` (note that when setting you do not need prefix &)',
+			role: '*set command, updates the data of an attribute in this case **regex_voice** to ***year is: $year***',
+			inline: false
+		},
+		{
+			emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
+			role: '*portal will either confirm update or inform you of the error it faced*',
+			inline: false
+		}
+	];
 
-		return create_rich_embed(
-			'Variable Guide',
-			'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
-			'how to use variables with regex interpreter',
-			'#EEB902',
-			strc_array,
-			null,
-			null,
-			null,
-			null,
-			null
-		);
+	return create_rich_embed(
+		'Variable Guide',
+		'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
+		'how to use variables with regex interpreter',
+		'#EEB902',
+		strc_array,
+		null,
+		null,
+		null,
+		null,
+		null
+	);
+}
+
+export function get_variable_help(): MessageEmbed[] {
+	const vrbl_array: Field[][] = [];
+
+	for (let l = 0; l <= variables.length / 24; l++) {
+		vrbl_array[l] = []
+		for (let i = (24 * l); i < variables.length && i < 24 * (l + 1); i++) {
+			vrbl_array[l].push({
+				emote: `${i + 1}. ${variables[i].name}`,
+				role: '**desc**: *' + variables[i].description + '*' +
+					'\n**args**: *' + variables[i].args + '*',
+				inline: true
+			});
+		}
 	}
 
-	export function get_variable_help(): MessageEmbed[] {
-		const vrbl_array: Field[][] = [];
-
-		for (let l = 0; l <= variables.length / 24; l++) {
-			vrbl_array[l] = []
-			for (let i = (24 * l); i < variables.length && i < 24 * (l + 1); i++) {
-				vrbl_array[l].push({
-					emote: `${i + 1}. ${variables[i].name}`,
-					role: '**desc**: *' + variables[i].description + '*' +
-						'\n**args**: *' + variables[i].args + '*',
-					inline: true
-				});
-			}
+	return vrbl_array.map((cmmd, index) => {
+		if (index === 0) {
+			return create_rich_embed(
+				'Variables',
+				'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
+				'Prefix: ' + variable_prefix + '\n' +
+				'Immutable and live data that return information\n' +
+				'about your current voice channel' +
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
+				'#1BE7FF', vrbl_array[0], null, null, null, null, null
+			)
+		} else {
+			return create_rich_embed(
+				null, null, '#1BE7FF', vrbl_array[index], null, null, null, null, null
+			)
 		}
+	});
+};
 
-		return vrbl_array.map((cmmd, index) => {
-			if (index === 0) {
-				return create_rich_embed(
-					'Variables',
-					'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
-					'Prefix: ' + variable_prefix + '\n' +
-					'Immutable and live data that return information\n' +
-					'about your current voice channel' +
-					'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-					'#1BE7FF', vrbl_array[0], null, null, null, null, null
-				)
-			} else {
-				return create_rich_embed(
-					null, null, '#1BE7FF', vrbl_array[index], null, null, null, null, null
-				)
-			}
-		});
-	};
-
-	export function get_variable_help_super(candidate: string): MessageEmbed | boolean {
-		for (let i = 0; i < variables.length; i++) {
-			const vrbl = variables[i];
-			if (vrbl.name === candidate) {
-				return create_rich_embed(
-					vrbl.name,
-					'Type: Variable' +
-					'\nPrefix: ' + variable_prefix + '\n' +
-					'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-					'#1BE7FF',
-					[
-						{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
-						{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false },
-						{ emote: 'Example', role: '```' + vrbl.example + '```', inline: false }
-					],
-					null,
-					null,
-					null,
-					null,
-					null);
-			}
+export function get_variable_help_super(candidate: string): MessageEmbed | boolean {
+	for (let i = 0; i < variables.length; i++) {
+		const vrbl = variables[i];
+		if (vrbl.name === candidate) {
+			return create_rich_embed(
+				vrbl.name,
+				'Type: Variable' +
+				'\nPrefix: ' + variable_prefix + '\n' +
+				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
+				'#1BE7FF',
+				[
+					{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
+					{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false },
+					{ emote: 'Example', role: '```' + vrbl.example + '```', inline: false }
+				],
+				null,
+				null,
+				null,
+				null,
+				null);
 		}
-		return false;
-	};
+	}
+	return false;
+};
 
-	export function get_variable(
-		voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-		portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild, vrbl: string
-	): any {
-		for (let l = 0; l < variables.length; l++) {
-			if (vrbl === variables[l].name) {
-				return variables[l].get(
-					voice_channel, voice_object, portal_object_list, guild_object, guild
-				);
-			}
+export function get_variable(
+	voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+	portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild, vrbl: string
+): any {
+	for (let l = 0; l < variables.length; l++) {
+		if (vrbl === variables[l].name) {
+			return variables[l].get(
+				voice_channel, voice_object, portal_object_list, guild_object, guild
+			);
 		}
-		return -1;
-	};
+	}
+	return -1;
+};

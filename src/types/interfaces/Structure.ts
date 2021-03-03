@@ -1,6 +1,5 @@
 import { MessageEmbed } from 'discord.js';
 import { create_rich_embed } from '../../libraries/helpOps';
-import { command_prefix } from './Command';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl';
 
 export const structure_prefix: string = '{{';

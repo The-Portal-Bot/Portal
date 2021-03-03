@@ -128,7 +128,8 @@ export async function create_channel(
 	});
 }
 
-export function create_portal_channel(guild: Guild, portal_channel: string,
+export function create_portal_channel(
+	guild: Guild, portal_channel: string,
 	portal_category: string | CategoryChannel | null, portal_object: any,
 	guild_object: GuildPrtl, creator_id: string): void {
 
@@ -138,18 +139,16 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 
 	if (portal_category && typeof portal_category === 'string') { // with category
 		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
+			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1 })
 			.then(channel => {
 				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
+					true,
 					portal_channel,
 					voice_name,
 					[],
 					false,
-					2,
-					0,
-					0,
 					guild_object.locale,
 					true,
 					true,
@@ -165,19 +164,17 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 	}
 	else if (portal_category) { // with category given
 		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1, parent: portal_category })
+			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1, parent: portal_category })
 			.then(channel => {
 				channel.setParent(portal_category);
 				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
+					true,
 					portal_channel,
 					voice_name,
 					[],
 					false,
-					2,
-					0,
-					0,
 					guild_object.locale,
 					true,
 					true,
@@ -189,18 +186,16 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 	}
 	else { // without category
 		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
+			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1 })
 			.then(channel => {
 				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
+					true,
 					portal_channel,
 					voice_name,
 					[],
 					false,
-					2,
-					0,
-					0,
 					guild_object.locale,
 					true,
 					true,
@@ -229,8 +224,8 @@ export function create_voice_channel(
 				.then(channel => {
 					if (state.member) {
 						insert_voice(state.member.guild.id, portal_object.id, new VoiceChannelPrtl(
-							channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
-							portal_object.ann_announce, portal_object.ann_user
+							channel.id, creator_id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
+							portal_object.locale, portal_object.ann_announce, portal_object.ann_user
 						));
 
 						state.member.voice.setChannel(channel);
@@ -344,8 +339,8 @@ export async function create_focus_channel(
 				member_found.voice.setChannel(channel);
 
 				insert_voice(guild.id, portal_object.id, new VoiceChannelPrtl(
-					channel.id, member.id, chatroom_name, false, 0, 0, portal_object.locale,
-					portal_object.ann_announce, portal_object.ann_user
+					channel.id, member.id, portal_object.render, chatroom_name, portal_object.no_bots,
+					portal_object.locale, portal_object.ann_announce, portal_object.ann_user
 				));
 
 				if (focus_time !== 0) {
@@ -532,6 +527,11 @@ export function generate_channel_name(
 	portal_list.some(p => {
 		p.voice_list.some(v => {
 			if (v.id === voice_channel.id) {
+				if (!v.render) {
+					return true;
+				}
+
+				console.log('v.render :>> ', v.render);
 				let regex = v.regex;
 				if (p.regex_overwrite) {
 					const member = voice_channel.members

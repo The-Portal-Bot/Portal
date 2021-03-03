@@ -40,8 +40,8 @@ module.exports = async (
 							if (response.result) {
 								if (message.member) {
 									insert_portal(guild_object.id, new PortalChannelPrtl(
-										response.value, message.member.id, 'voice-portal', voice_regex,
-										[], false, 2, 0, 0, guild_object.locale, true, true, 0, false
+										response.value, message.member.id, true, 'voice-portal', voice_regex,
+										[], false, guild_object.locale, true, true, 0, false
 									));
 								} else {
 									return resolve({

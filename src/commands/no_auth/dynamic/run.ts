@@ -80,10 +80,18 @@ module.exports = async (
 		});
 
 		if (voice_found) {
-			return resolve({ result: true, value: 'instruction ran successfully', });
+			return resolve(
+				{
+					result: true,
+					value: 'instruction ran successfully'
+				});
 		}
 		else {
-			return resolve({ result: false, value: 'could not find your voice channel', });
+			return resolve(
+				{
+					result: false,
+					value: 'could not find your voice channel'
+				});
 		}
 
 	});

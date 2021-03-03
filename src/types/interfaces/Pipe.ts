@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
 import { create_rich_embed } from '../../libraries/helpOps';
-import { InterfaceBlueprint, Field } from './InterfacesPrtl';
+import { Field, InterfaceBlueprint } from './InterfacesPrtl';
 
 export const pipe_prefix: string = '|';
 const pipes: InterfaceBlueprint[] = [
