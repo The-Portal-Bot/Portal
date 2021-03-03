@@ -91,11 +91,11 @@ module.exports = async (
 		if (poll_map.length > 9) {
 			return resolve({
 				result: false,
-				value: 'polls must have maximum 9 options'
+				value: 'polls can have maximum 9 options'
 			});
 		}
 
-		if (poll_map.length < 3) {
+		if (poll_map.length < 2) {
 			return resolve({
 				result: false,
 				value: 'polls must have minimum 2 options'

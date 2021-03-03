@@ -457,7 +457,8 @@ module.exports = async (
 				result: false,
 				value: 'not handling bot reactions'
 			});
-		} else if (args.messageReaction?.message?.guild) {
+		}
+		else if (args.messageReaction?.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;
 			fetch_guild(current_guild.id)
 				.then(guild_object => {
