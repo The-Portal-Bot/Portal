@@ -35,8 +35,8 @@ module.exports = async (
 					inline: false
 				},
 				{
-					emote: './help arguments OR ./help arguments guide',
-					role: 'Arguments are options the options of your current portal, which you can change with ./set',
+					emote: './help attributes OR ./help attributes guide',
+					role: 'Attributes are options the options of your current portal, which you can change with ./set',
 					inline: false
 				},
 				{
