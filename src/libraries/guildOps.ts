@@ -545,7 +545,15 @@ export function generate_channel_name(
 					}
 				}
 
-				const new_name = regex_interpreter(regex, voice_channel, v, portal_list, guild_object, guild);
+				const new_name = regex_interpreter(
+					regex,
+					voice_channel,
+					v,
+					portal_list,
+					guild_object,
+					guild,
+					v.creator_id
+				);
 
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
@@ -572,7 +580,7 @@ export function generate_channel_name(
 
 export function regex_interpreter(
 	regex: string, voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-	portal_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+	portal_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild, member_id: string
 ): string {
 	let last_space_index = 0;
 	let last_vatiable_end_index = 0;
@@ -609,27 +617,21 @@ export function regex_interpreter(
 			const attr = is_attribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				if (portal_list && voice_channel && voice_object) {
-					portal_list.find(p =>
-						p.voice_list.some(v => {
-							if (v.id === voice_channel.id) {
-								const member_object = guild_object.member_list.find(m => m.id === v.creator_id);
-								const return_value = get_attribute(
-									voice_channel, voice_object, p, guild_object, attr, member_object
-								);
+				const member_object = guild_object.member_list.find(m => m.id === member_id);
 
-								if (return_value !== null) {
-									last_attribute = `${return_value}`;
-									new_channel_name += return_value;
-									i += voca.chars(attr).length;
-									last_attribute_end_index = i;
-								}
-								else {
-									new_channel_name += regex[i];
-								}
-							}
-						})
-					);
+				const return_value = get_attribute(
+					voice_channel, voice_object, portal_list, guild_object, guild, attr, member_object
+					// voice_channel, voice_object, p, guild_object, attr, member_object
+				);
+
+				if (return_value !== null) {
+					last_attribute = `${return_value}`;
+					new_channel_name += return_value;
+					i += voca.chars(attr).length;
+					last_attribute_end_index = i;
+				}
+				else {
+					new_channel_name += regex[i];
 				}
 			}
 			else {
@@ -720,16 +722,16 @@ export function regex_interpreter(
 					if (statement.is === "==" || statement.is === "===" || statement.is === "!=" || statement.is === "!==" ||
 						statement.is === ">" || statement.is === "<" || statement.is === ">=" || statement.is === "<=") {
 						if (inline_operator(statement.is)(
-							regex_interpreter(statement.if, voice_channel, voice_object, portal_list, guild_object, guild),
-							regex_interpreter(statement.with, voice_channel, voice_object, portal_list, guild_object, guild)
+							regex_interpreter(statement.if, voice_channel, voice_object, portal_list, guild_object, guild, member_id),
+							regex_interpreter(statement.with, voice_channel, voice_object, portal_list, guild_object, guild, member_id)
 						)) {
-							const value = regex_interpreter(statement.yes, voice_channel, voice_object, portal_list, guild_object, guild);
+							const value = regex_interpreter(statement.yes, voice_channel, voice_object, portal_list, guild_object, guild, member_id);
 							if (value !== '--') {
 								new_channel_name += value;
 							}
 						}
 						else {
-							const value = regex_interpreter(statement.no, voice_channel, voice_object, portal_list, guild_object, guild);
+							const value = regex_interpreter(statement.no, voice_channel, voice_object, portal_list, guild_object, guild, member_id);
 							if (value !== '--') {
 								new_channel_name += value;
 							}

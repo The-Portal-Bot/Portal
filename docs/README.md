@@ -52,6 +52,7 @@ _argument preceded by **!** is **mandatory**, **@** is **optional** (not include
 
 | Version | Date       | Argument                                                                                        |
 | :------ | :--------- | :---------------------------------------------------------------------------------------------- |
+| 0.6.2   | 03-03-2021 | _major refactoring and updates to code throughout, a lot of performance improvements_           |
 | 0.6.0   | 15-02-2021 | _transition to MongoDB from plain JSON file with many improvements, especially on music player_ |
 | 0.5.7   | 18-01-2021 | _updates throughout the app to fix bugs and small problems_                                     |
 | 0.5.0   | 08-01-2021 | _transition to Typescript from Javascript, a lot of errors have been fixed and is more robust_  |

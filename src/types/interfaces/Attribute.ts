@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
+import { GuildMember, MessageEmbed, VoiceChannel, Guild } from 'discord.js';
 import { create_rich_embed, is_authorised } from '../../libraries/helpOps';
 import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongoOps';
 import { GuildPrtl } from '../classes/GuildPrtl';
@@ -19,20 +19,36 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&p.ann_announce',
 		args: 'true/false',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): boolean => {
-			return portal_object.ann_announce;
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): boolean | string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+			if (!portal_object_list) {
+				return 'must be in portal channel';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.ann_announce;
+			}
+
+			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['p'];
 				const attr = 'ann_announce';
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object.id, attr, true)
+					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -49,7 +65,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object.id, attr, false)
+					update_portal(guild_object.id, portal_object_list.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -81,20 +97,24 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&v.ann_announce',
 		args: 'true/false',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): boolean => {
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): boolean | string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+
 			return voice_object.ann_announce;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['v'];
 				const attr = 'ann_announce';
 				if (value === 'true') {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
+					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -111,7 +131,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
+					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -144,20 +164,36 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&p.ann_user',
 		args: 'true/false',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): boolean => {
-			return portal_object.ann_user;
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): boolean | string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+			if (!portal_object_list) {
+				return 'must be in portal channel';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.ann_user;
+			}
+
+			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['p'];
 				const attr = 'ann_user';
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object.id, attr, true)
+					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -174,7 +210,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object.id, attr, false)
+					update_portal(guild_object.id, portal_object_list.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -206,20 +242,24 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&v.ann_user',
 		args: 'true/false',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): boolean => {
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): boolean | string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+
 			return voice_object.ann_user;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['v'];
 				const attr = 'ann_user';
 				if (value === 'true') {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
+					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -236,7 +276,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
+					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -273,7 +313,7 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_channel.bitrate;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
@@ -315,6 +355,46 @@ const attributes: InterfaceBlueprint[] = [
 		auth: 'voice'
 	},
 	{
+		name: 'g.prefix',
+		description: 'returns/sets g.prefix of Portal',
+		super_description: '**g.prefix**, returns/sets guild prefix which is how you refere to Portal',
+		example: '&g.prefix',
+		args: 'string',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): string => {
+			console.log('ima a bout to return prefix : ', guild_object.prefix);
+			return guild_object.prefix;
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
+		): Promise<ReturnPormise> => {
+			return new Promise((resolve) => {
+				const ctgr = ['g'];
+				const attr = 'prefix';
+
+				update_guild(guild_object.id, attr, String(value))
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
+								: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+						});
+					});
+			});
+		},
+		auth: 'admin'
+	},
+	{
 		name: 'g.locale',
 		description: 'returns/sets g.locale of the guild',
 		super_description: '**g.locale**, returns/sets guild locale makes the bot talk your language and all communication is done' +
@@ -322,13 +402,13 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&g.locale',
 		args: 'en/gr/de',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
 			return guild_object.locale;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
@@ -369,13 +449,29 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&p.locale',
 		args: 'en/gr/de',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
-			return portal_object.locale;
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+			if (!portal_object_list) {
+				return 'must be in portal channel';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.locale;
+			}
+
+			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
@@ -383,7 +479,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (locales.includes(value)) {
-					update_portal(guild_object.id, portal_object.id, attr, String(value))
+					update_portal(guild_object.id, portal_object_list.id, attr, String(value))
 						.then(r => {
 							return resolve({
 								result: r,
@@ -416,13 +512,17 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&v.locale',
 		args: 'en/gr/de',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+
 			return voice_object.locale;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
@@ -430,7 +530,7 @@ const attributes: InterfaceBlueprint[] = [
 				const attr = 'locale';
 
 				if (locales.includes(value)) {
-					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, String(value))
+					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, String(value))
 						.then(r => {
 							return resolve({
 								result: r,
@@ -463,13 +563,17 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&v.position',
 		args: '!v.position_of_channel',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): number => {
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): number | string => {
+			if (!voice_channel) {
+				return 'must be in voice channel';
+			}
+
 			return voice_channel.position;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
@@ -509,13 +613,29 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&p.regex_overwrite',
 		args: '!true/false',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): boolean => {
-			return portal_object.regex_overwrite;
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): boolean | string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+			if (!portal_object_list) {
+				return 'must be in portal channel';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.regex_overwrite;
+			}
+
+			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
@@ -523,7 +643,7 @@ const attributes: InterfaceBlueprint[] = [
 				const attr = 'regex_overwrite';
 
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object.id, attr, true)
+					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -540,7 +660,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object.id, attr, false)
+					update_portal(guild_object.id, portal_object_list.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -572,20 +692,36 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&p.regex',
 		args: '!regex',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
-			return portal_object.regex_portal;
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+			if (!portal_object_list) {
+				return 'must be in portal channel';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.regex_portal;
+			}
+
+			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['p'];
 				const attr = 'regex_portal';
 
-				update_portal(guild_object.id, portal_object.id, attr, value)
+				update_portal(guild_object.id, portal_object_list.id, attr, value)
 					.then(r => {
 						return resolve({
 							result: r,
@@ -611,20 +747,36 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&p.v.regex',
 		args: '!regex',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
-			return portal_object.regex_voice;
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+			if (!portal_object_list) {
+				return 'must be in portal channel';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.regex_voice;
+			}
+
+			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['p', 'v'];
 				const attr = 'regex_voice';
 
-				update_portal(guild_object.id, portal_object.id, attr, value)
+				update_portal(guild_object.id, portal_object_list.id, attr, value)
 					.then(r => {
 						return resolve({
 							result: r,
@@ -650,20 +802,24 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&v.regex',
 		args: '!v.regex',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+
 			return voice_object.regex;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['v'];
 				const attr = 'regex';
 
-				update_voice(guild_object.id, portal_object.id, voice_object.id, attr, value)
+				update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, value)
 					.then(r => {
 						return resolve({
 							result: r,
@@ -689,13 +845,16 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&m.regex',
 		args: '!m.regex',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild,
+			member_object: MemberPrtl | undefined
 		): string => {
-			return member_object && member_object.regex ? member_object.regex : 'not set';
+			return (member_object && member_object.regex)
+				? member_object.regex
+				: 'not-set';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
@@ -735,20 +894,37 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&p.user_limit',
 		args: '!number of maximum members (0 is infinite)',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl
-		): number => {
-			return portal_object.user_limit_portal;
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): number | string => {
+			if (!voice_object) {
+				return 'must be in voice channel';
+			}
+			if (!portal_object_list) {
+				return 'must be in portal channel';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.user_limit_portal;
+			}
+
+			return 'ERROR';
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
+			portal_object_list: PortalChannelPrtl, guild_object: GuildPrtl, value: number
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['p'];
 				const attr = 'user_limit_portal';
 				const new_user_limit = Number(value);
 
-				if (isNumber(new_user_limit)) {
+				if (isNaN(new_user_limit)) {
 					return resolve({
 						result: false,
 						value: `attribute ${ctgr.join('.') + '.' + attr} can only be a number from 0-n (0 means unlimited)`
@@ -756,7 +932,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 
 				if (value >= 0) {
-					update_portal(guild_object.id, portal_object.id, 'user_limit_portal', new_user_limit)
+					update_portal(guild_object.id, portal_object_list.id, 'user_limit_portal', new_user_limit)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -788,14 +964,18 @@ const attributes: InterfaceBlueprint[] = [
 		example: '&v.user_limit',
 		args: '!number of maximum members (0 is infinite)',
 		get: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, member_object: MemberPrtl | undefined
-		): number => {
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): number | string => {
+			if (!voice_channel) {
+				return 'must be in voice channel';
+			}
+
 			return voice_channel.userLimit;
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
+			portal_object_list: PortalChannelPrtl, guild_object: GuildPrtl, value: number
 		): Promise<ReturnPormise> => {
 			return new Promise((resolve) => {
 				const ctgr = ['v'];
@@ -954,19 +1134,35 @@ export function get_attribute_help_super(
 };
 
 export function get_attribute(
-	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-	guild_object: GuildPrtl, candidate: string, member_object: MemberPrtl | undefined | undefined
+	voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null, 
+	portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl,
+	guild: Guild, attr: string, member_object: MemberPrtl | undefined
 ): string | number | boolean {
+
 	for (let l = 0; l < attributes.length; l++) {
-		if (candidate === attributes[l].name) {
-			return attributes[l].get(voice_channel, voice_object, portal_object, guild_object, member_object);
+		if (attr === attributes[l].name) {
+			return attributes[l].get(
+				voice_channel, voice_object, portal_object_list, guild_object, guild
+			);
 		}
 	}
 	return -1;
 };
 
+// export function get_attribute(
+// 	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+// 	guild_object: GuildPrtl, candidate: string, member_object: MemberPrtl | undefined | undefined
+// ): string | number | boolean {
+// 	for (let l = 0; l < attributes.length; l++) {
+// 		if (candidate === attributes[l].name) {
+// 			return attributes[l].get(voice_channel, voice_object, portal_object_list, guild_object, member_object);
+// 		}
+// 	}
+// 	return -1;
+// };
+
 export function set_attribute(
-	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 	guild_object: GuildPrtl, candidate: string, value: any, member: GuildMember
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
@@ -982,7 +1178,7 @@ export function set_attribute(
 						}
 						break;
 					case 'portal':
-						if (portal_object.creator_id !== member.id) {
+						if (portal_object_list.creator_id !== member.id) {
 							return resolve({
 								result: false,
 								value: `attribute ${candidate} can only be set by the portal creator`
@@ -1002,7 +1198,7 @@ export function set_attribute(
 				}
 
 				const member_object = guild_object.member_list.find(m => m.id === member.id);
-				attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value, member_object)
+				attributes[l].set(voice_channel, voice_object, portal_object_list, guild_object, value, member_object)
 					.then((r: ReturnPormise) => {
 						return resolve(r);
 					})
