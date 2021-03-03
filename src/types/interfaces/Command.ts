@@ -258,6 +258,19 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'poll',
+		description: 'creates a poll',
+		super_description: '**poll**, creates poll, with up to 4 options and 5 minutes in duration',
+		example: 'json\n./poll How much should I pay for a new phone ? | ' +
+			'[\n\t"<299$",' +
+			'\n\t">299$"' +
+			']',
+		args: '[JSON type]```json\n[ ... ]```',
+		auth: 'none',
+		get: null,
+		set: null
+	},
+	{
 		name: 'portal',
 		description: 'creates a voice channel and a category for it',
 		super_description: '**portal**, creates, portal channels. ' +
@@ -266,7 +279,7 @@ const commands: InterfaceBlueprint[] = [
 			'the owner of. When everyone leaves the channel will be destroyed.\n',
 		example: './portal portal_name | portal_category, ./portal portal_name',
 		args: '<!channel_name> | <@category_name>',
-		auth: 'admin',
+		auth: 'none',
 		get: null,
 		set: null
 	},

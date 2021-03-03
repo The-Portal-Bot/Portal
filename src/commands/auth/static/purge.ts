@@ -16,15 +16,19 @@ module.exports = async (
             message.guild.channels.cache.forEach((value) => {
                 if (value.deletable) {
                     value.delete()
-                        .then(channel => console.log('Deleted the channel: ' + channel))
+                        .then(channel => console.log('deleted the channel: ' + channel))
                         .catch(console.error);
                 }
             });
 
             message.guild.channels.create('general voice', { type: 'voice', bitrate: 8 })
                 .then(() => {
-                    message?.guild?.channels.create('general text', { type: 'text' })
-                        .then(value => { value.send('purge done').then(msg => { msg.delete({ timeout: 5000 }); }); })
+                    message?.guild?.channels
+                        .create('general text', { type: 'text' })
+                        .then(value => {
+                            value.send('purge done')
+                                .then(msg => { msg.delete({ timeout: 5000 }); });
+                        })
                 });
 
             guld_mngr.delete_guild(message.guild.id, guild_object);

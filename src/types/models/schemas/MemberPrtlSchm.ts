@@ -13,7 +13,9 @@ const MemberPrtlSch = new Schema(
 		regex: { type: String, required: true },
 		ignored: { type: Boolean, required: true },
 	},
-	{ collection: 'guild_list' }
+	{
+		collection: 'guild_list'
+	}
 );
 
 // export default model('MemberPrtlSch', MemberPrtlSch);

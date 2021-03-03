@@ -28,7 +28,7 @@ function create_role_message(
 							result: r,
 							value: r
 								? 'Keep in mind that Portal role must be over any role you wish it to be able to distribute.\n' +
-								'In order to change it, please head to your servers settings and put Portal role above them.'
+								'In order to change it, please head to your servers settings and put Portal role above them'
 								: 'failed to set new ranks'
 						});
 					})

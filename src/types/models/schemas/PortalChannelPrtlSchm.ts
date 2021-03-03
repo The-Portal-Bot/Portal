@@ -20,7 +20,9 @@ const PortalChannelPrtlSch = new Schema(
 		user_limit_portal: { type: Number, required: true },
 		regex_overwrite: { type: Boolean, required: true }
 	},
-	{ collection: 'guild_list' }
+	{
+		collection: 'guild_list'
+	}
 );
 
 // export default model('PortalChannelPrtlSch', PortalChannelPrtlSch);

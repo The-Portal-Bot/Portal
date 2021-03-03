@@ -5,6 +5,7 @@ import { MemberPrtl } from "./MemberPrtl";
 import { PortalChannelPrtl } from "./PortalChannelPrtl";
 import { StreamDispatcher } from "discord.js";
 import { Document } from "mongoose";
+import { PollPrtl } from "./PollPrtl";
 
 export class MusicData {
 	public channel_id: string | undefined;
@@ -29,6 +30,7 @@ export class GuildPrtl {
 	public ignore_list: string[];
 	public url_list: string[];
 	public role_list: GiveRolePrtl[];
+	public poll_list: PollPrtl[];
 	public ranks: Rank[];
 	public auth_role: string[];
 	public spotify: string | null;
@@ -48,6 +50,7 @@ export class GuildPrtl {
 		ignore_list: string[],
 		url_list: string[],
 		role_list: GiveRolePrtl[],
+		poll_list: PollPrtl[],
 		ranks: Rank[],
 		auth_role: string[],
 		spotify: string | null,
@@ -66,6 +69,7 @@ export class GuildPrtl {
 		this.ignore_list = ignore_list;
 		this.url_list = url_list;
 		this.role_list = role_list;
+		this.poll_list = poll_list;
 		this.ranks = ranks;
 		this.auth_role = auth_role;
 		this.spotify = spotify;

@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 import GiveRolePrtlSchm from "./schemas/GiveRolePrtlSchm";
 import MemberPrtlSchm from "./schemas/MemberPrtlSchm";
 import PortalChannelPrtlSchm from "./schemas/PortalChannelPrtlSchm";
+import PollPrtlSch from "./schemas/PollPrtlSchm";
 
 const VideoSearchResult = new Schema(
 	{
@@ -31,7 +32,9 @@ const VideoSearchResult = new Schema(
 		level: { type: Number, required: true },
 		role: { type: String, required: true }
 	},
-	{ collection: 'guild_list' }
+	{
+		collection: 'guild_list'
+	}
 );
 
 const Rank = new Schema(
@@ -39,7 +42,9 @@ const Rank = new Schema(
 		level: { type: Number, required: true },
 		role: { type: String, required: true }
 	},
-	{ collection: 'guild_list' }
+	{
+		collection: 'guild_list'
+	}
 );
 
 const MusicData = new Schema(
@@ -48,7 +53,9 @@ const MusicData = new Schema(
 		channel_id: { type: String, required: true },
 		votes: { type: [String], required: true }
 	},
-	{ collection: 'guild_list' }
+	{
+		collection: 'guild_list'
+	}
 );
 
 const GuildPrtlSch = new Schema(
@@ -59,6 +66,7 @@ const GuildPrtlSch = new Schema(
 		url_list: { type: [String], required: true },
 		ignore_list: { type: [String], required: true },
 		role_list: { type: [GiveRolePrtlSchm], required: true },
+		poll_list: { type: [PollPrtlSch], required: true },
 		ranks: { type: [Rank], required: true },
 		auth_role: { type: [String], required: true },
 		spotify: { type: String, required: true },
@@ -72,7 +80,9 @@ const GuildPrtlSch = new Schema(
 		premium: { type: Boolean, required: true },
 		prefix: { type: String, required: true }
 	},
-	{ collection: 'guild_list' }
+	{
+		collection: 'guild_list'
+	}
 );
 
 export default model('GuildPrtlSch', GuildPrtlSch);
