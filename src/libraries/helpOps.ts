@@ -328,7 +328,7 @@ export function create_rich_embed(
 	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
 	url: string | null | undefined, image: string | null | undefined
 ): MessageEmbed {
-	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spin.gif';
+	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spinner.gif';
 	const keybraker_url: string = 'https://github.com/keybraker';
 
 	const rich_message: MessageEmbed = new MessageEmbed()

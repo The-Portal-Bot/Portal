@@ -1,6 +1,6 @@
-import { Client, Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel, MessageReaction } from "discord.js";
 import { create_music_message } from "../libraries/helpOps";
-import { fetch_guild, remove_role_assigner } from "../libraries/mongoOps";
+import { fetch_guild, remove_role_assigner, remove_poll } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
@@ -33,6 +33,26 @@ module.exports = async (
 									result: false,
 									value: 'could not find channel',
 								});
+							}
+						} else if (guild_object.poll_list.some(p => p.message_id === args.message.id)) {
+							const poll = guild_object.poll_list.find(p => p.message_id === args.message.id);
+
+							if (poll) {
+								remove_poll(guild_object.id, args.message.id)
+									.then(r => {
+										return resolve({
+											result: r,
+											value: r
+												? 'successfully removed poll'
+												: 'failed to remove poll'
+										});
+									})
+									.catch(e => {
+										return resolve({
+											result: false,
+											value: e
+										});
+									});
 							}
 						} else {
 							role_list.find(role_giver => {

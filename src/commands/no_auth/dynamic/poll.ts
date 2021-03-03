@@ -13,7 +13,7 @@ function create_role_message(
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const role_message_emb: MessageEmbed = create_rich_embed(
-			title, desc, colour, poll_map, null, null, null, null, null
+			title, desc, colour, poll_map, null, null, true, null, null
 		);
 
 		channel

@@ -191,13 +191,13 @@ client.on('message', async (message: Message) => {
 				// }
 
 				// profanity check
-				const profanities = isProfane(message.content);
-				if (profanities.length > 0) {
-					message.react('🚩');
-					message.author
-						.send(`try not to use profanities (${profanities.join(',')})`)
-						.catch(console.error);
-				}
+				// const profanities = isProfane(message.content);
+				// if (profanities.length > 0) {
+				// 	message.react('🚩');
+				// 	message.author
+				// 		.send(`try not to use profanities (${profanities.join(',')})`)
+				// 		.catch(console.error);
+				// }
 
 				if (!message) {
 					return false;
