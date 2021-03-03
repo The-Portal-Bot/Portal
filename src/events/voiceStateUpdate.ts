@@ -309,38 +309,32 @@ module.exports = async (
 			fetch_guild(args.newState?.guild.id)
 				.then(guild_object => {
 					if (guild_object) {
-						console.log('!!new_channel :>> ', !!new_channel);
-						console.log('args.newState.member?.user.bot :>> ', args.newState.member?.user.bot);
 						if (!!new_channel && args.newState.member?.user.bot) {
-							const found = guild_object.portal_list.find(p => {
+							guild_object.portal_list.find(p => {
 								if (p.id === new_channel.id) {
-									console.log(`in portal channel`);
 									if (p.no_bots) {
-										console.log(`no bots allowed`);
-										args.newState.connection?.disconnect();
-										return true;
+										args.newState.kick();
+
+										return resolve({
+											result: false,
+											value: `no bots are allowed`
+										});
 									}
 								}
 
-								return p.voice_list.find(v => {
+								p.voice_list.some(v => {
 									if (v.id === new_channel.id) {
-										console.log(`in portal channel`);
 										if (v.no_bots) {
-											console.log(`no bots allowed`);
-											args.newState.connection?.disconnect();
-											return true;
+											args.newState.kick();
+
+											return resolve({
+												result: false,
+												value: `no bots are allowed`
+											});
 										}
 									}
 								});
 							});
-
-							console.log('found :>> ', found);
-							if (found) {
-								return resolve({
-									result: false,
-									value: `no bots are allowed`
-								});
-							}
 						}
 
 						if (args.client.voice && args.newState.member) {

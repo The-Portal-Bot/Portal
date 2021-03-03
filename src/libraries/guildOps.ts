@@ -1,4 +1,8 @@
-import { CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions, GuildMember, Message, MessageCollector, Role, StreamDispatcher, TextChannel, VoiceChannel, VoiceState } from "discord.js";
+import {
+	CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions,
+	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState
+} from "discord.js";
+import moment from "moment";
 import voca from 'voca';
 import { GuildPrtl } from '../types/classes/GuildPrtl';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
@@ -9,7 +13,6 @@ import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON } from './helpOps';
 import { ChannelTypePrtl, insert_voice } from "./mongoOps";
-import moment from "moment";
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -104,26 +107,41 @@ export async function create_channel(
 			.create(channel_name, channel_options)
 			.then(new_channel => {
 				if (channel_category === null) { // does not want category
-					return resolve({ result: true, value: new_channel.id });
+					return resolve({
+						result: true,
+						value: new_channel.id
+					});
 				} else {
 					if (typeof channel_category === "string") { // create category
 						guild.channels
 							.create(channel_category, { type: 'category' })
 							.then(category => {
 								new_channel.setParent(category);
-								return resolve({ result: true, value: new_channel.id });
+								return resolve({
+									result: true,
+									value: new_channel.id
+								});
 							})
 							.catch(error => {
-								return resolve({ result: false, value: `CH/CR/000: ${error}` });
+								return resolve({
+									result: false,
+									value: `CH/CR/000: ${error}`
+								});
 							});
 					} else {
 						new_channel.setParent(channel_category);
-						return resolve({ result: true, value: new_channel.id });
+						return resolve({
+							result: true,
+							value: new_channel.id
+						});
 					}
 				}
 			})
 			.catch(error => {
-				return resolve({ result: false, value: `CH/CR/001: ${error}` });
+				return resolve({
+					result: false,
+					value: `CH/CR/001: ${error}`
+				});
 			});
 	});
 }
@@ -229,13 +247,22 @@ export function create_voice_channel(
 						));
 
 						state.member.voice.setChannel(channel);
-						return resolve({ result: true, value: `created channel and moved member to new voice` });
+						return resolve({
+							result: true,
+							value: `created channel and moved member to new voice`
+						});
 					} else {
-						return resolve({ result: false, value: `VC/CR/000: could not fetch member` });
+						return resolve({
+							result: false,
+							value: `VC/CR/000: could not fetch member`
+						});
 					}
 				})
 				.catch(error => {
-					return resolve({ result: false, value: `VC/CR/001: ${error}` });
+					return resolve({
+						result: false,
+						value: `VC/CR/001: ${error}`
+					});
 				});
 		}
 	});
@@ -527,33 +554,32 @@ export function generate_channel_name(
 	portal_list.some(p => {
 		p.voice_list.some(v => {
 			if (v.id === voice_channel.id) {
-				if (!v.render) {
-					return true;
-				}
-
-				console.log('v.render :>> ', v.render);
 				let regex = v.regex;
 				if (p.regex_overwrite) {
 					const member = voice_channel.members
 						.find(m => m.id === v.creator_id);
+
 					if (member) {
 						const member_object = guild_object.member_list
 							.find(m => m.id === member.id);
+
 						if (member_object?.regex && member_object.regex !== 'null') {
 							regex = member_object.regex;
 						}
 					}
 				}
 
-				const new_name = regex_interpreter(
-					regex,
-					voice_channel,
-					v,
-					portal_list,
-					guild_object,
-					guild,
-					v.creator_id
-				);
+				const new_name = v.render
+					? regex_interpreter(
+						regex,
+						voice_channel,
+						v,
+						portal_list,
+						guild_object,
+						guild,
+						v.creator_id
+					)
+					: regex;
 
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
