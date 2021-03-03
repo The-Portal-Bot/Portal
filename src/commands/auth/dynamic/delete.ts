@@ -30,7 +30,7 @@ module.exports = async (
             .then(messages => {
                 return resolve({
                     result: true,
-                    value: `deleted ${messages.size - 1}, plus delete message`
+                    value: `deleted ${messages.size - 1}`
                 });
             })
             .catch(error => {

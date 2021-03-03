@@ -27,8 +27,18 @@ module.exports = async (
                 inline: true
             },
             {
-                emote: 'Show your support',
+                emote: 'Website',
+                role: 'https://portal-bot.xyz',
+                inline: false
+            },
+            {
+                emote: 'Upvote on top.gg',
                 role: 'https://top.gg/bot/704400876860735569',
+                inline: false
+            },
+            {
+                emote: 'Official Server',
+                role: 'https://discord.com/invite/nuKXgFXr5y',
                 inline: false
             },
             {
@@ -39,7 +49,7 @@ module.exports = async (
             null,
             null,
             true,
-            'https://top.gg/bot/704400876860735569',
+            'https://portal-bot.xyz',
             null)
         );
 

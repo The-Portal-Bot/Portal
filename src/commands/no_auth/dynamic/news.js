@@ -128,7 +128,7 @@ module.exports = async(client, message, args, portal_guilds, portal_managed_guil
             .catch(rspns => {
                 return resolve({
                     result: false,
-                    value: 'Could not access the server*',
+                    value: 'could not access the server',
                 });
             });
     });

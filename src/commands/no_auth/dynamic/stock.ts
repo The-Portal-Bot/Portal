@@ -106,7 +106,7 @@ module.exports = async (
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server*\nerror: ${error}`,
+					value: `could not access the server\nerror: ${error}`,
 				});
 			});
 	});

@@ -84,7 +84,16 @@ export function get_structure_guide(): MessageEmbed {
 	];
 
 	return create_rich_embed(
-		'Structure Guide', 'how to use structures with regex interpreter', '#EEB902', strc_array, null, null, null, null, null
+		'Structure Guide',
+		'go to https://portal-bot.xyz/docs/regex/interpreter/structures\n\n' +
+		'how to use structures with regex interpreter',
+		'#EEB902',
+		strc_array,
+		null,
+		null,
+		null,
+		null,
+		null
 	);
 }
 
@@ -107,6 +116,7 @@ export function get_structure_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Structures',
+				'go to https://portal-bot.xyz/docs/regex/interpreter/structures\n\n' +
 				'Prefix: ' + structure_prefix + '\n' +
 				'Conditional flow manipulators\n' +
 				'(if this do that, or if that do this).\n' +

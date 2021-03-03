@@ -28,7 +28,7 @@ module.exports = async (
 					ranks_msg,
 					null,
 					null,
-					false,
+					true,
 					null,
 					null
 				),

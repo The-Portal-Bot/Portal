@@ -14,11 +14,11 @@ function add_guild_again(
 						.then(resposne => {
 							return resolve(resposne);
 						})
-						.catch(error => {
+						.catch(() => {
 							return resolve(false);
 						});
 			})
-			.catch(error => {
+			.catch(() => {
 				return resolve(false);
 			});
 	});

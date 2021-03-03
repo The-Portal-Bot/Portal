@@ -6,8 +6,8 @@ import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 async function ask_for_focus(message: Message, requester: GuildMember, focus_time: number) {
 	return new Promise((resolve) => {
 		message.channel
-			.send(`${requester.user}, member ${message.author}, would like to talk in ` +
-				`private for ${focus_time}, do you (yes / no) ?`)
+			.send(`*${requester.user}, member ${message.author}, would like to talk in ` +
+				`private${focus_time === 0 ? '' : ` for ${focus_time}'`}*, do you **(yes / no)** ?`)
 			.then(question_msg => {
 				let reply = false;
 				const filter = (m: Message) => m.author.id === requester.user.id;
@@ -51,8 +51,6 @@ module.exports = async (
 				value: 'message author could not be fetched'
 			});
 
-		const current_portal_list = guild_object.portal_list;
-
 		if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
@@ -60,7 +58,7 @@ module.exports = async (
 			});
 		}
 
-		if (!included_in_voice_list(message.member.voice.channel.id, current_portal_list)) {
+		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
 				value: 'the channel you are in is not handled by Portal',
@@ -70,7 +68,7 @@ module.exports = async (
 		if (message.member.voice.channel.members.size <= 2) {
 			return resolve({
 				result: false,
-				value: 'you must be in a channel with more than two members',
+				value: 'you can *only* use focus in channels with *more* than 2 members',
 			});
 		}
 
@@ -78,7 +76,7 @@ module.exports = async (
 		const arg_b = args.join(' ').substr(args.join(' ').indexOf('|') + 1).replace(/\s/g, ' ');
 
 		const focus_name = (arg_a === '' ? arg_b : arg_a).trim();
-		const focus_time = arg_a === '' ? 5 : parseFloat(arg_b);
+		const focus_time = arg_a === '' ? 0 : parseFloat(arg_b);
 
 		if (focus_name === '') {
 			return resolve({
@@ -121,10 +119,33 @@ module.exports = async (
 								value: 'could not fetch message\'s member'
 							});
 						}
-						create_focus_channel(message.guild, message.member, member_object, focus_time)
+
+						const portal_object = guild_object.portal_list.find(p => {
+							return p.voice_list.some(v => v.id === message.member?.voice.channel?.id);
+						});
+
+						if (!portal_object) {
+							return resolve({
+								result: false,
+								value: 'could not find member\'s portal channel'
+							});
+						}
+
+						create_focus_channel(message.guild, message.member, member_object, focus_time, portal_object)
 							.then(return_value => {
 								return resolve(return_value);
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `error while creating focus channel ${e}`
+								});
 							});
+					} else {
+						return resolve({
+							result: false,
+							value: 'user declined the request'
+						});
 					}
 				});
 		}

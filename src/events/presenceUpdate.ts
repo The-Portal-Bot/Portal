@@ -34,8 +34,10 @@ function time_out_repeat(
 		.then(guild_object => {
 			if (guild_object) {
 				setTimeout(() => {
-					update_channel_name(current_guild, current_channel, current_portal_list, guild_object);
-					time_out_repeat(current_voice_channel, current_guild, current_channel, current_portal_list, minutes);
+					if (!current_guild.deleted && !current_channel.deleted) {
+						update_channel_name(current_guild, current_channel, current_portal_list, guild_object);
+						time_out_repeat(current_voice_channel, current_guild, current_channel, current_portal_list, minutes);
+					}
 				}, minutes * 60 * 1000);
 			}
 		})
@@ -96,28 +98,36 @@ module.exports = async (
 		fetch_guild_spotify(args.newPresence?.guild.id)
 			.then(spotify_data => {
 				if (spotify_data) {
-					if (!args.newPresence) return resolve({
-						result: false,
-						value: 'could not fetch spotify data'
-					});
+					if (!args.newPresence) {
+						return resolve({
+							result: false,
+							value: 'could not fetch spotify data'
+						});
+					}
 
-					if (!args.newPresence.member) return resolve({
-						result: false,
-						value: 'could not fetch presence member'
-					});
+					if (!args.newPresence.member) {
+						return resolve({
+							result: false,
+							value: 'could not fetch presence member'
+						});
+					}
 
-					if (!args.newPresence.guild) return resolve({
-						result: false,
-						value: 'could not fetch presence guild'
-					});
+					if (!args.newPresence.guild) {
+						return resolve({
+							result: false,
+							value: 'could not fetch presence guild'
+						});
+					}
 
 					const current_guild = args.newPresence.guild;
 					const current_channel = args.newPresence.member.voice.channel;
 
-					if (!current_channel) return resolve({
-						result: false,
-						value: ''
-					});
+					if (!current_channel) {
+						return resolve({
+							result: false,
+							value: ''
+						});
+					}
 
 					spotify_data.portal_list.some(p => {
 						p.voice_list.some(v => {
@@ -126,8 +136,8 @@ module.exports = async (
 									display_spotify_song(spotify_data, args.newPresence, args.client);
 								}
 
-								time_out_repeat(v, current_guild, current_channel,
-									spotify_data.portal_list, 5);
+								// time_out_repeat(v, current_guild, current_channel,
+									// spotify_data.portal_list, 5);
 							}
 						});
 					});

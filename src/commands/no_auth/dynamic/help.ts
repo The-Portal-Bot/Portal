@@ -58,39 +58,39 @@ module.exports = async (
 			message.reply(
 				create_rich_embed(
 					'Portal Documentation',
+					'For a descriptive documentaion go to https://portal-bot.xyz/docs\n\n' +
 					'Bellow you can see Portal\'s commands and variables and how you can access them',
 					'#9775A9', func_array, null, null, true, null, null
 				))
 				.catch(console.error);
-			return resolve({ result: true, value: '' });
+
+			return resolve({
+				result: true,
+				value: ''
+			});
 		}
 		else if (args.length === 2) {
 			if (args[0] === 'commands' && args[1] === 'guide') {
-
 				message.author
 					.send(get_command_guide())
 					.catch(console.error);
 			}
 			else if (args[0] === 'variables' && args[1] === 'guide') {
-
 				message.author
 					.send(get_variable_guide())
 					.catch(console.error);
 			}
 			else if (args[0] === 'pipes' && args[1] === 'guide') {
-
 				message.author
 					.send(get_pipe_guide())
 					.catch(console.error);
 			}
 			else if (args[0] === 'attributes' && args[1] === 'guide') {
-
 				message.author
 					.send(get_attribute_guide())
 					.catch(console.error);
 			}
 			else if (args[0] === 'structures' && args[1] === 'guide') {
-
 				message.author
 					.send(get_structure_guide())
 					.catch(console.error);
@@ -98,7 +98,9 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: `*${args[0]} ${args[1]}* does not exist in portal, you can run \`./help help\` for help`,
+					value: `*${args[0]} ${args[1]}* does not exist in portal' + 
+					'go to https://portal-bot.xyz/docs\n' +
+					'or type \`./help help\` for help`,
 				});
 			}
 		}
@@ -203,7 +205,11 @@ module.exports = async (
 					});
 				}
 			}
-			return resolve({ result: true, value: 'I sent you a private message' });
+
+			return resolve({
+				result: true,
+				value: 'I sent you a private message'
+			});
 		}
 	});
 };

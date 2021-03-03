@@ -164,7 +164,16 @@ export function get_pipe_guide(): MessageEmbed {
 	];
 
 	return create_rich_embed(
-		'Pipe Guide', 'how to use pipes with regex interpreter', '#6EEB83', pipe_array, null, null, null, null, null
+		'Pipe Guide',
+		'go to https://portal-bot.xyz/docs/regex/interpreter/pipes\n\n' +
+		'how to use pipes with regex interpreter',
+		'#6EEB83',
+		pipe_array,
+		null,
+		null,
+		null,
+		null,
+		null
 	);
 }
 
@@ -187,6 +196,7 @@ export function get_pipe_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Pipes',
+				'go to https://portal-bot.xyz/docs/regex/interpreter/pipes\n\n' +
 				'Prefix: ' + pipe_prefix + '\n' +
 				'Mini functions you can pass text or Variables to manipulate their outcome\n' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',

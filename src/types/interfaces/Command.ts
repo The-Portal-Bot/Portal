@@ -462,7 +462,16 @@ export function get_command_guide(): MessageEmbed {
 	];
 
 	return create_rich_embed(
-		'Command Guide', 'how to use commands', '#9775A9', cmmd_array, null, null, null, null, null
+		'Command Guide',
+		'go to https://portal-bot.xyz/docs/commands\n\n' +
+		'how to use commands',
+		'#9775A9',
+		cmmd_array,
+		null,
+		null,
+		null,
+		null,
+		null
 	);
 }
 
@@ -485,6 +494,7 @@ export function get_command_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Commands',
+				'go to https://portal-bot.xyz/docs/commands\n\n' +
 				'Prefix: *' + command_prefix + '*\n' +
 				'**The way to communicate with Portal.**\n' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',

@@ -25,7 +25,7 @@ module.exports = async (
 			],
 			null,
 			message.member,
-			null,
+			true,
 			null,
 			null)
 		);

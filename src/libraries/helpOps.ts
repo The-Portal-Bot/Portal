@@ -1,19 +1,13 @@
-import {
-	Channel, Client, Guild, GuildChannel, GuildMember, Message,
-	MessageEmbed, PermissionString, TextChannel, User
-} from "discord.js";
+import { Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
-import {
-	Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed,
-	TimeRemaining
-} from "../types/interfaces/InterfacesPrtl";
+import { MemberPrtl } from "../types/classes/MemberPrtl";
+import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
 import { client_talk, client_write } from "./localisationOps";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongoOps";
-import { MemberPrtl } from "../types/classes/MemberPrtl";
 
 export function create_music_message(
 	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl
@@ -21,7 +15,7 @@ export function create_music_message(
 	const music_message_emb = create_rich_embed(
 		'Music Player',
 		'Type and Portal will play',
-		'#0000FF',
+		'#e60026',
 		[
 			{ emote: 'Duration', role: '-', inline: true },
 			{ emote: 'Views', role: '-', inline: true },
@@ -69,7 +63,7 @@ export function update_music_message(
 		const music_message_emb = create_rich_embed(
 			yts.title,
 			yts.url,
-			'#0000FF',
+			'#e60026',
 			[
 				{ emote: 'Duration', role: yts.timestamp, inline: true },
 				{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
@@ -336,8 +330,7 @@ export function create_rich_embed(
 	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
 	url: string | null | undefined, image: string | null | undefined
 ): MessageEmbed {
-	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-		'.github.io/master/assets/img/logo.png';
+	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spin.gif';
 	const keybraker_url: string = 'https://github.com/keybraker';
 
 	const rich_message: MessageEmbed = new MessageEmbed()
@@ -348,7 +341,7 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal bot by Keybraker', portal_icon_url);
+	if (from_bot) rich_message.setFooter('Portal', portal_icon_url);
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
 	if (member) {
@@ -392,7 +385,7 @@ export async function update_portal_managed_guilds(
 };
 
 export function is_authorised(
-	member_list: MemberPrtl[], auth_role: string[] , member: GuildMember
+	member_list: MemberPrtl[], auth_role: string[], member: GuildMember
 ): boolean {
 	const administrator: PermissionString = 'ADMINISTRATOR';
 	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
@@ -417,8 +410,8 @@ export function is_authorised(
 };
 
 export function message_reply(
-	status: boolean, channel: Channel, message: Message, user: User, str: string,
-	client: Client, to_delete: boolean = config.delete_msg,
+	status: boolean, message: Message, user: User, str: string,
+	to_delete: boolean = config.delete_msg,
 	emote_pass: string = '✔️', emote_fail: string = '❌'
 ): void {
 	if (!message.channel.deleted && str !== null) {

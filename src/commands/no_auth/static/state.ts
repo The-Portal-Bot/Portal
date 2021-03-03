@@ -70,7 +70,7 @@ module.exports = async (
         });
 
         const ignore_sum = <Field>{
-            emote: `ignore channels`,
+            emote: `ignored channels`,
             role: ignores.join('\n'),
             inline: false
         };

@@ -879,7 +879,16 @@ export function get_attribute_guide(): MessageEmbed {
 	];
 
 	return create_rich_embed(
-		'Attribute Guide', 'how to use attributes with regex interpreter', '#FF5714', attr_array, null, null, null, null, null
+		'Attribute Guide',
+		'go to https://portal-bot.xyz/docs/regex/interpreter/atributes\n\n' +
+		'how to use attributes with regex interpreter',
+		'#FF5714',
+		attr_array,
+		null,
+		null,
+		null,
+		null,
+		null
 	);
 }
 
@@ -902,6 +911,7 @@ export function get_attribute_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Attributes',
+				'go to https://portal-bot.xyz/docs/regex/interpreter/attributes\n\n' +
 				'Prefix: ' + attribute_prefix + '\n' +
 				'are Portal\'s, portal or voice channel options ' +
 				'that can be manipulated by whomever has clearance.\n' +
