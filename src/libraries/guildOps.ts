@@ -1,4 +1,8 @@
-import { CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions, GuildMember, Message, MessageCollector, Role, StreamDispatcher, TextChannel, VoiceChannel, VoiceState } from "discord.js";
+import {
+	CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions,
+	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState
+} from "discord.js";
+import moment from "moment";
 import voca from 'voca';
 import { GuildPrtl } from '../types/classes/GuildPrtl';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
@@ -9,7 +13,6 @@ import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
 import { create_music_message, getJSON } from './helpOps';
 import { ChannelTypePrtl, insert_voice } from "./mongoOps";
-import moment from "moment";
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -104,31 +107,47 @@ export async function create_channel(
 			.create(channel_name, channel_options)
 			.then(new_channel => {
 				if (channel_category === null) { // does not want category
-					return resolve({ result: true, value: new_channel.id });
+					return resolve({
+						result: true,
+						value: new_channel.id
+					});
 				} else {
 					if (typeof channel_category === "string") { // create category
 						guild.channels
 							.create(channel_category, { type: 'category' })
 							.then(category => {
 								new_channel.setParent(category);
-								return resolve({ result: true, value: new_channel.id });
+								return resolve({
+									result: true,
+									value: new_channel.id
+								});
 							})
 							.catch(error => {
-								return resolve({ result: false, value: `CH/CR/000: ${error}` });
+								return resolve({
+									result: false,
+									value: `CH/CR/000: ${error}`
+								});
 							});
 					} else {
 						new_channel.setParent(channel_category);
-						return resolve({ result: true, value: new_channel.id });
+						return resolve({
+							result: true,
+							value: new_channel.id
+						});
 					}
 				}
 			})
 			.catch(error => {
-				return resolve({ result: false, value: `CH/CR/001: ${error}` });
+				return resolve({
+					result: false,
+					value: `CH/CR/001: ${error}`
+				});
 			});
 	});
 }
 
-export function create_portal_channel(guild: Guild, portal_channel: string,
+export function create_portal_channel(
+	guild: Guild, portal_channel: string,
 	portal_category: string | CategoryChannel | null, portal_object: any,
 	guild_object: GuildPrtl, creator_id: string): void {
 
@@ -138,18 +157,16 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 
 	if (portal_category && typeof portal_category === 'string') { // with category
 		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
+			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1 })
 			.then(channel => {
 				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
+					true,
 					portal_channel,
 					voice_name,
 					[],
 					false,
-					2,
-					0,
-					0,
 					guild_object.locale,
 					true,
 					true,
@@ -165,19 +182,17 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 	}
 	else if (portal_category) { // with category given
 		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1, parent: portal_category })
+			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1, parent: portal_category })
 			.then(channel => {
 				channel.setParent(portal_category);
 				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
+					true,
 					portal_channel,
 					voice_name,
 					[],
 					false,
-					2,
-					0,
-					0,
 					guild_object.locale,
 					true,
 					true,
@@ -189,18 +204,16 @@ export function create_portal_channel(guild: Guild, portal_channel: string,
 	}
 	else { // without category
 		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 64000, userLimit: 1 })
+			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1 })
 			.then(channel => {
 				portal_object.push(new PortalChannelPrtl(
 					channel.id,
 					creator_id,
+					true,
 					portal_channel,
 					voice_name,
 					[],
 					false,
-					2,
-					0,
-					0,
 					guild_object.locale,
 					true,
 					true,
@@ -229,18 +242,27 @@ export function create_voice_channel(
 				.then(channel => {
 					if (state.member) {
 						insert_voice(state.member.guild.id, portal_object.id, new VoiceChannelPrtl(
-							channel.id, creator_id, portal_object.regex_voice, false, 0, 0, portal_object.locale,
-							portal_object.ann_announce, portal_object.ann_user
+							channel.id, creator_id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
+							portal_object.locale, portal_object.ann_announce, portal_object.ann_user
 						));
 
 						state.member.voice.setChannel(channel);
-						return resolve({ result: true, value: `created channel and moved member to new voice` });
+						return resolve({
+							result: true,
+							value: `created channel and moved member to new voice`
+						});
 					} else {
-						return resolve({ result: false, value: `VC/CR/000: could not fetch member` });
+						return resolve({
+							result: false,
+							value: `VC/CR/000: could not fetch member`
+						});
 					}
 				})
 				.catch(error => {
-					return resolve({ result: false, value: `VC/CR/001: ${error}` });
+					return resolve({
+						result: false,
+						value: `VC/CR/001: ${error}`
+					});
 				});
 		}
 	});
@@ -344,8 +366,8 @@ export async function create_focus_channel(
 				member_found.voice.setChannel(channel);
 
 				insert_voice(guild.id, portal_object.id, new VoiceChannelPrtl(
-					channel.id, member.id, chatroom_name, false, 0, 0, portal_object.locale,
-					portal_object.ann_announce, portal_object.ann_user
+					channel.id, member.id, portal_object.render, chatroom_name, portal_object.no_bots,
+					portal_object.locale, portal_object.ann_announce, portal_object.ann_user
 				));
 
 				if (focus_time !== 0) {
@@ -536,24 +558,28 @@ export function generate_channel_name(
 				if (p.regex_overwrite) {
 					const member = voice_channel.members
 						.find(m => m.id === v.creator_id);
+
 					if (member) {
 						const member_object = guild_object.member_list
 							.find(m => m.id === member.id);
+
 						if (member_object?.regex && member_object.regex !== 'null') {
 							regex = member_object.regex;
 						}
 					}
 				}
 
-				const new_name = regex_interpreter(
-					regex,
-					voice_channel,
-					v,
-					portal_list,
-					guild_object,
-					guild,
-					v.creator_id
-				);
+				const new_name = v.render
+					? regex_interpreter(
+						regex,
+						voice_channel,
+						v,
+						portal_list,
+						guild_object,
+						guild,
+						v.creator_id
+					)
+					: regex;
 
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {

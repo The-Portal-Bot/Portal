@@ -309,6 +309,34 @@ module.exports = async (
 			fetch_guild(args.newState?.guild.id)
 				.then(guild_object => {
 					if (guild_object) {
+						if (!!new_channel && args.newState.member?.user.bot) {
+							guild_object.portal_list.find(p => {
+								if (p.id === new_channel.id) {
+									if (p.no_bots) {
+										args.newState.kick();
+
+										return resolve({
+											result: false,
+											value: `no bots are allowed`
+										});
+									}
+								}
+
+								p.voice_list.some(v => {
+									if (v.id === new_channel.id) {
+										if (v.no_bots) {
+											args.newState.kick();
+
+											return resolve({
+												result: false,
+												value: `no bots are allowed`
+											});
+										}
+									}
+								});
+							});
+						}
+
 						if (args.client.voice && args.newState.member) {
 							const new_voice_connection = args.client.voice.connections
 								.find((connection: VoiceConnection) =>

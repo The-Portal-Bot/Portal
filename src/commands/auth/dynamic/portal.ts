@@ -38,8 +38,8 @@ module.exports = async (
 			.then(r_channel => {
 				if (r_channel.result) {
 					insert_portal(guild_object.id, new PortalChannelPrtl(
-						r_channel.value, current_member.id, portal_channel, voice_regex,
-						[], false, 2, 0, 0, guild_object.locale, true, true, 0, false
+						r_channel.value, current_member.id, true, portal_channel, voice_regex,
+						[], false, guild_object.locale, true, true, 0, false
 					))
 						.then(r_portal => {
 							if (r_portal) {

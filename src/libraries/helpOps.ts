@@ -300,11 +300,9 @@ export async function join_user_voice(
 					});
 				})
 				.catch(e => {
-					console.log(`error created voice connection (${e})`);
-
 					return resolve({
 						result: false,
-						value: 'failed to join voice channel',
+						value: `error while creating voice connection (${e})`,
 						voice_connection: undefined,
 					});
 				});
