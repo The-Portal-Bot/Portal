@@ -657,7 +657,6 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
-			console.log('ima a bout to return prefix : ', guild_object.prefix);
 			return guild_object.prefix;
 		},
 		set: (

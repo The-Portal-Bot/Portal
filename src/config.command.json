@@ -149,6 +149,15 @@
                 "reply": true
             },
             {
+                "name": "poll",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "auto_delete": true,
+                "reply": false
+            },
+            {
                 "name": "roll",
                 "range": "none",
                 "time": 0,
@@ -288,7 +297,7 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
+                "auto_delete": false,
                 "reply": true
             },
             {

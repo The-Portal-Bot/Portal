@@ -1,11 +1,11 @@
-import { Client, MessageReaction, StreamDispatcher, User, VoiceConnection } from "discord.js";
+import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
-import { clear_music_vote, fetch_guild, insert_music_vote, update_guild } from "../libraries/mongoOps";
+import { client_talk } from "../libraries/localisationOps";
+import { clear_music_vote, fetch_guild, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
 import { pause, play, skip } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { client_talk } from "../libraries/localisationOps";
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
@@ -113,10 +113,6 @@ async function reaction_role_manager(
 		});
 	});
 };
-
-function connect_to_voice() {
-
-}
 
 async function reaction_music_manager(
 	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
@@ -461,7 +457,8 @@ module.exports = async (
 				result: false,
 				value: 'not handling bot reactions'
 			});
-		} else if (args.messageReaction?.message?.guild) {
+		}
+		else if (args.messageReaction?.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;
 			fetch_guild(current_guild.id)
 				.then(guild_object => {
@@ -493,6 +490,37 @@ module.exports = async (
 								.catch(e => {
 									return resolve(e);
 								});
+						} else if (args.messageReaction.emoji.name === '🏁' && guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
+							const poll = guild_object.poll_list.find(p => p.message_id === args.messageReaction.message.id);
+
+							if (poll && args.user.id === poll.member_id) {
+								const winner = args.messageReaction.message.reactions.cache
+									.filter(r => r.emoji.name !== '🏁')
+									.reduce((ac: MessageReaction, r: MessageReaction) => {
+										if ((ac.count ? ac.count : 0) > (r.count ? r.count : 0)) {
+											return ac;
+										}
+										return r;
+									});
+
+								args.messageReaction.message.reply(`Poll winner is option ${winner.emoji} with ${winner.count} votes`);
+
+								remove_poll(guild_object.id, args.messageReaction.message.id)
+									.then(r => {
+										return resolve({
+											result: r,
+											value: r
+												? 'successfully removed poll'
+												: 'failed to remove poll'
+										});
+									})
+									.catch(e => {
+										return resolve({
+											result: false,
+											value: e
+										});
+									});
+							}
 						} else {
 							return resolve({
 								result: false,

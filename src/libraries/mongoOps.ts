@@ -8,6 +8,7 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
 import { Rank, MongoPromise } from '../types/interfaces/InterfacesPrtl';
 import GuildPrtlMdl from '../types/models/GuildPrtlMdl';
 import config from '../config.json';
+import { PollPrtl } from '../types/classes/PollPrtl';
 
 // fetch guilds
 export async function fetch_guild_list(
@@ -277,7 +278,6 @@ export async function insert_member(
 ): Promise<boolean> {
     const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, false, null);
     return new Promise((resolve) => {
-        // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
             { id: new_member.guild.id },
             {
@@ -582,7 +582,6 @@ export async function insert_authorised_role(
     guild_id: string, new_auth_role: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
-        // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -619,7 +618,9 @@ export async function remove_authorised_role(
             .then((r: MongoPromise) => {
                 return resolve(r.ok === 1);;
             })
-            .catch(e => { return resolve(false); });
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -628,13 +629,60 @@ export async function remove_authorised_role(
 export async function set_ranks(
     guild_id: string, new_ranks: Rank[]): Promise<boolean> {
     return new Promise((resolve) => {
-        // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
             },
             {
                 ranks: new_ranks
+            }
+        )
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
+    });
+};
+
+//
+
+export async function insert_poll(
+    guild_id: string, poll: PollPrtl
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $push: {
+                    poll_list: poll
+                }
+            }
+        )
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
+    });
+};
+
+export async function remove_poll(
+    guild_id: string, message_id: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $pull: {
+                    poll_list: { message_id: message_id }
+                }
             }
         )
             .then((r: MongoPromise) => {
@@ -665,7 +713,9 @@ export async function insert_role_assigner(
             .then((r: MongoPromise) => {
                 return resolve(r.ok === 1);;
             })
-            .catch(e => { return resolve(false); });
+            .catch(e => {
+                return resolve(false);
+            });
     });
 };
 
@@ -673,7 +723,6 @@ export async function remove_role_assigner(
     guild_id: string, message_id: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
-        // edo thelei na tou po kai se poio guild na paei
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
