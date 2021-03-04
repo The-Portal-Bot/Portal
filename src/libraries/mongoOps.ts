@@ -119,6 +119,7 @@ export async function fetch_guild_predata(
                 id: guild_id
             },
             {
+                id: 1,
                 prefix: 1,
                 member_list: { $elemMatch: { id: member_id } },
                 auth_role: 1,
@@ -131,6 +132,7 @@ export async function fetch_guild_predata(
             .then((r: any) => {
                 if (!!r) {
                     return resolve(<GuildPrtl>{
+                        id: r.id,
                         prefix: r.prefix,
                         member_list: r.member_list,
                         auth_role: r.auth_role,
@@ -286,7 +288,7 @@ export async function update_guild(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -375,7 +377,7 @@ export async function remove_guild(
             id: guild_id
         })
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -407,7 +409,7 @@ export async function update_member(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -429,7 +431,7 @@ export async function insert_member(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -453,7 +455,7 @@ export async function remove_member(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -485,7 +487,7 @@ export async function update_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -508,7 +510,7 @@ export async function insert_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -533,7 +535,7 @@ export async function remove_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -566,7 +568,7 @@ export async function update_voice(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -641,7 +643,7 @@ export async function insert_url(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -663,7 +665,7 @@ export async function remove_url(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -688,7 +690,7 @@ export async function insert_ignore(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -710,7 +712,7 @@ export async function remove_ignore(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -735,7 +737,7 @@ export async function insert_authorised_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -758,7 +760,7 @@ export async function remove_authorised_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -783,7 +785,7 @@ export async function insert_ignored_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -806,7 +808,7 @@ export async function remove_ignored_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -828,7 +830,7 @@ export async function set_ranks(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -853,7 +855,7 @@ export async function insert_poll(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -876,7 +878,7 @@ export async function remove_poll(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -901,7 +903,7 @@ export async function insert_role_assigner(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -924,7 +926,7 @@ export async function remove_role_assigner(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -949,7 +951,8 @@ export async function insert_music_video(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);
+                console.log('mongopose :>> ', r);
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -972,7 +975,7 @@ export async function clear_music_vote(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -995,7 +998,7 @@ export async function insert_music_vote(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
                 return resolve(false);
@@ -1018,7 +1021,7 @@ export async function set_music_data(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok === 1);;
+                return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => { return resolve(false);; });
     });

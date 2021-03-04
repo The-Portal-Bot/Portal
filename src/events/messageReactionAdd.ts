@@ -170,10 +170,12 @@ async function reaction_music_manager(
 				)
 					.then(r => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve(r);
 					})
 					.catch(e => {
 						clear_user_reactions(messageReaction, user);
+						
 						return resolve({
 							result: false,
 							value: e
@@ -186,10 +188,12 @@ async function reaction_music_manager(
 				pause(portal_voice_connection, messageReaction.message.guild, guild_object)
 					.then(r => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve(r);
 					})
 					.catch(e => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: e
