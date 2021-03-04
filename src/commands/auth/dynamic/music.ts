@@ -37,19 +37,19 @@ module.exports = async (
 			if (is_spotify_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: 'this can\'t be set as the music channel for it is the spotify channel',
+					value: 'this can\'t be set as the music channel for it is the spotify channel'
 				});
 			}
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: 'this can\'t be set as the music channel for it is the announcement channel',
+					value: 'this can\'t be set as the music channel for it is the announcement channel'
 				});
 			}
 			if (included_in_url_list(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: 'this can\'t be set as the Music channel for it is an url channel',
+					value: 'this can\'t be set as the Music channel for it is an url channel'
 				});
 			}
 		}
@@ -102,13 +102,13 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: 'you can run `./help music` for help',
+					value: 'you can run `./help music` for help'
 				});
 			}
 
 			return resolve({
 				result: result,
-				value: value,
+				value: value
 			});
 		}
 	});

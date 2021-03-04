@@ -469,7 +469,7 @@ module.exports = async (
 							} catch (e) {
 								return resolve({
 									result: false,
-									value: 'something went wrong when fetching the message',
+									value: 'something went wrong when fetching the message'
 								});
 							}
 						}
@@ -524,21 +524,21 @@ module.exports = async (
 						} else {
 							return resolve({
 								result: false,
-								value: 'message is neither role assigning or music',
+								value: 'message is neither role assigning or music'
 							});
 						}
 					}
 					else {
 						return resolve({
 							result: false,
-							value: 'something went wrong with guild object',
+							value: 'something went wrong with guild object'
 						});
 					}
 				})
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: 'failed to fetch message reaction',
+						value: 'failed to fetch message reaction'
 					});
 				});
 		} else {

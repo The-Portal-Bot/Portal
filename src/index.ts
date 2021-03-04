@@ -14,6 +14,8 @@ import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
 const AntiSpam = require('discord-anti-spam');
 
+const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
+
 // Connect to mongoose database
 mongoose.connect(config.mongo_url, {
 	useNewUrlParser: true,
@@ -44,8 +46,6 @@ const anti_spam = new AntiSpam({
 	verbose: true, // Extended Logs from module.
 	ignoredUsers: [], // Array of User IDs that get ignored.
 });
-
-const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
 // this is the client the Portal Bot. Some people call it bot, some people call
 // it 'self', client.user is actually the presence of portal bot in the server
@@ -166,12 +166,8 @@ client.on('message', async (message: Message) => {
 	if (!message) return;
 	if (!message.member) return;
 	if (!message.guild) return;
-
-	// Ignore other bots and also itself ('botception')
-	if (message.author.bot) return;
-
-	// Ignore any direct message
-	if (message.channel.type === 'dm') return;
+	if (message.author.bot) return; // Ignore other bots and also itself ('botception')
+	if (message.channel.type === 'dm') return; // Ignore any direct message
 
 	// check if something written in portal channels
 	portal_channel_handler(message, client)
@@ -568,7 +564,10 @@ async function portal_channel_handler(
 }
 
 function ranking_system(message: Message): void {
-	if (!message.guild) return;
+	if (!message.guild) {
+		return;
+	}
+
 	fetch_guild(message.guild.id)
 		.then(guild_object => {
 			if (guild_object) {
@@ -579,7 +578,7 @@ function ranking_system(message: Message): void {
 			}
 		})
 		.catch(e => {
-			message_reply(true, message, message.author, 'an error occured while accesing data');
+			message_reply(false, message, message.author, 'an error occured while accesing data');
 		});
 }
 

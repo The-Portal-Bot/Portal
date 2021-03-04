@@ -33,6 +33,7 @@ export class GuildPrtl {
 	public poll_list: PollPrtl[];
 	public ranks: Rank[];
 	public auth_role: string[];
+	public ignore_role: string[];
 	public spotify: string | null;
 	public music_data: MusicData;
 	public music_queue: VideoSearchResult[];
@@ -53,6 +54,7 @@ export class GuildPrtl {
 		poll_list: PollPrtl[],
 		ranks: Rank[],
 		auth_role: string[],
+		ignore_role: string[],
 		spotify: string | null,
 		music_data: MusicData,
 		music_queue: VideoSearchResult[],
@@ -72,6 +74,7 @@ export class GuildPrtl {
 		this.poll_list = poll_list;
 		this.ranks = ranks;
 		this.auth_role = auth_role;
+		this.ignore_role = ignore_role;
 		this.spotify = spotify;
 		this.music_data = music_data;
 		this.music_queue = music_queue;

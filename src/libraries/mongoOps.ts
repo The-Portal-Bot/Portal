@@ -626,6 +626,54 @@ export async function remove_authorised_role(
 
 //
 
+export async function insert_ignored_role(
+    guild_id: string, new_ignore_role: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $push: {
+                    ignore_role: new_ignore_role
+                }
+            }
+        )
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
+    });
+};
+
+export async function remove_ignored_role(
+    guild_id: string, ignore_role: string
+): Promise<boolean> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $pull: {
+                    ignore_role: ignore_role
+                }
+            }
+        )
+            .then((r: MongoPromise) => {
+                return resolve(r.ok === 1);;
+            })
+            .catch(e => {
+                return resolve(false);
+            });
+    });
+};
+
+//
+
 export async function set_ranks(
     guild_id: string, new_ranks: Rank[]): Promise<boolean> {
     return new Promise((resolve) => {
