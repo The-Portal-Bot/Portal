@@ -1,5 +1,5 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { create_channel, delete_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
+import { create_channel, delete_channel, getOptions, is_url_only_channel, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 import { update_guild, ChannelTypePrtl } from "../../../libraries/mongoOps";
@@ -44,7 +44,7 @@ module.exports = async (
 					value: 'this can\'t be set as the Spotify channel for it is the Announcement channel'
 				});
 			}
-			else if (included_in_url_list(message.channel.id, guild_object)) {
+			else if (is_url_only_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
 					value: 'this can\'t be set as the Spotify channel for it is an url channel'

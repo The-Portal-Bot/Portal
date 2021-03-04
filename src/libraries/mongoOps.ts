@@ -50,6 +50,148 @@ export async function fetch_guild(
     });
 };
 
+export async function fetch_guild_announcement(
+    guild_id: string
+): Promise<string | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                announcement: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<string>r);
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
+export async function fetch_guild_reaction_data(
+    guild_id: string, member_id: string
+): Promise<GuildPrtl | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                id: 1,
+                member_list: { $elemMatch: { id: member_id } },
+                role_list: 1,
+                poll_list: 1,
+                music_data: 1,
+                music_queue: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<GuildPrtl>{
+                        id: r.id,
+                        member_list: r.member_list,
+                        role_list: r.role_list,
+                        poll_list: r.poll_list,
+                        music_data: r.music_data,
+                        music_queue: r.music_queue
+                    });
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
+export async function fetch_guild_predata(
+    guild_id: string, member_id: string
+): Promise<GuildPrtl | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                prefix: 1,
+                member_list: { $elemMatch: { id: member_id } },
+                auth_role: 1,
+                ignore_role: 1,
+                ignore_list: 1,
+                url_list: 1,
+                music_data: 1,
+                level_speed: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<GuildPrtl>{
+                        prefix: r.prefix,
+                        member_list: r.member_list,
+                        auth_role: r.auth_role,
+                        ignore_role: r.ignore_role,
+                        ignore_list: r.ignore_list,
+                        url_list: r.url_list,
+                        music_data: r.music_data,
+                        level_speed: r.level_speed
+                    });
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
+export async function fetch_guild_rest(
+    guild_id: string
+): Promise<GuildPrtl | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                prefix: 0,
+                member_list: 0,
+                auth_role: 0,
+                ignore_role: 0,
+                ignore_list: 0,
+                url_list: 0,
+                music_data: 0,
+                level_speed: 0
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<GuildPrtl>{
+                        id: r.id,
+                        portal_list: r.portal_list,
+                        poll_list: r.poll_list,
+                        ranks: r.ranks,
+                        spotify: r.spotify,
+                        music_queue: r.music_queue,
+                        announcement: r.announcement,
+                        locale: r.locale,
+                        announce: r.announce,
+                        premium: r.premium
+                    });
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
 export async function fetch_guild_authenticate(
     guild_id: string, member_id: string
 ): Promise<{ prefix: string, member_list: MemberPrtl[], auth_role: string[] } | undefined> {

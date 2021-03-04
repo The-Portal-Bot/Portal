@@ -3,11 +3,10 @@ import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
-import { included_in_ignore_list, included_in_url_list } from './libraries/guildOps';
+import { included_in_ignore_list, is_url_only_channel } from './libraries/guildOps';
 import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
-import { isProfane } from "./libraries/modOps";
-import { fetch_guild, fetch_guild_authenticate, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
+import { fetch_guild, fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
@@ -169,153 +168,107 @@ client.on('message', async (message: Message) => {
 	if (message.author.bot) return; // Ignore other bots and also itself ('botception')
 	if (message.channel.type === 'dm') return; // Ignore any direct message
 
-	// check if something written in portal channels
-	portal_channel_handler(message, client)
-		.then(r => {
-			if (!r) {
-				// ranking system
-				ranking_system(message);
+	fetch_guild_predata(message.guild.id, message.author.id)
+		.then(guild_object => {
+			if (!guild_object) {
+				message_reply(false, message, message.author,
+					'error with Portal');
 
-				anti_spam.message(message);
+				return false;
+			}
 
-				// const spam = isSpam(message.content);
-				// if (spam.length > 0) {
-				// 	message.react('🚩');
-				// 	message.author
-				// 		.send(`try not to spam`)
-				// 		.catch(console.error);
-				// }
+			if (portal_preprocessor(message, guild_object)) {
+				// preprocessor has handled the message
+				return true;
+			} else {
+				// Ignore any message that does not start with prefix
+				if (message.content.indexOf(guild_object.prefix) !== 0) {
+					if (message.content === 'prefix') {
+						message_reply(true, message, message.author,
+							`portal's prefix is \`${guild_object.prefix}\``, false);
+						if (message.deletable) {
+							message.delete();
+						}
+					}
 
-				// profanity check
-				// const profanities = isProfane(message.content);
-				// if (profanities.length > 0) {
-				// 	message.react('🚩');
-				// 	message.author
-				// 		.send(`try not to use profanities (${profanities.join(',')})`)
-				// 		.catch(console.error);
-				// }
-
-				if (!message) {
 					return false;
+				}
+
+				let command = command_cypher(message, guild_object);
+
+				if (!command.command_options) {
+					message_reply(false, message, message.author,
+						'could not get command option');
+
+					return false;
+				}
+
+				if (command.command_options.auth && message.member) {
+					if (!is_authorised(guild_object.member_list, guild_object.auth_role, message.member)) {
+						message_reply(false, message, message.author,
+							'you are not authorised to use this command');
+
+						return false;
+					}
 				}
 
 				if (!message.guild) {
-					message_reply(false, message, message.author, 'could not fetch guild of message');
+					message_reply(false, message, message.author,
+						'could not fetch guild of message');
+
 					return false;
 				}
 
-				if (!message.member) {
-					message_reply(false, message, message.author, 'could not fetch member of message');
-					return false;
-				}
+				fetch_guild_rest(message.guild.id)
+					.then(guild_object_rest => {
+						if (!guild_object_rest) {
+							message_reply(false, message, message.author,
+								'server is not in database, please contact portal support');
 
-				fetch_guild_authenticate(message.guild.id, message.member.id)
-					.then(authenticate => {
-						if (!authenticate) {
-							message_reply(false, message, message.author, 'server is not in database, please contact portal support');
 							return false;
 						}
 
-						if (authenticate.member_list.length > 0 && authenticate.member_list[0].ignored) {
-							return false;
-						}
+						guild_object.id = guild_object_rest.id;
+						guild_object.portal_list = guild_object_rest.portal_list;
+						guild_object.poll_list = guild_object_rest.poll_list;
+						guild_object.ranks = guild_object_rest.ranks;
+						guild_object.spotify = guild_object_rest.spotify;
+						guild_object.music_queue = guild_object_rest.music_queue;
+						guild_object.announcement = guild_object_rest.announcement;
+						guild_object.locale = guild_object_rest.locale;
+						guild_object.announce = guild_object_rest.announce;
+						guild_object.premium = guild_object_rest.premium;
 
-						// Ignore any message that does not start with prefix
-						if (message.content.indexOf(authenticate.prefix) !== 0) {
-							if (message.content === 'prefix') {
-								message_reply(true, message, message.author,
-									`portal's prefix is \`${authenticate.prefix}\``, false);
-								if (message.deletable) {
-									message.delete();
-								}
-							}
-							return false;
-						}
-
-						// Separate command name and arguments
-						const args = message.content.slice(authenticate.prefix.length).trim().split(/ +/g);
-
-						const cmd_only = args.shift();
-						if (!cmd_only) return;
-
-						const cmd = cmd_only.toLowerCase();
-
-						let path_to_command: string = '';
-						let command_options: CommandOptions | undefined;
-						let type: string = 'none';
-
-						const is_portal_command = command_config_json.some(category => {
-							command_options = category.commands.find(command => command.name === cmd);
-							if (command_options) {
-								type = command_options.range;
-								path_to_command = category.path;
-								return true;
-							}
-							return false;
-						});
-
-						// is not a portal command
-						if (!is_portal_command) {
-							return false;
-						}
-
-						if (!command_options) {
+						if (!command.command_options) {
 							message_reply(false, message, message.author,
 								'could not get command option');
+
 							return false;
 						}
 
-						// if (command_options.premium && !guild_object.premium) {
-						// 	message_reply(false, message.channel, message, message.author,
-						// 		'server is not premium', client);
-						// 	return false;
-						// }
-
-						if (command_options.auth && message.member) {
-							if (!is_authorised(authenticate.member_list, authenticate.auth_role, message.member)) {
-								message_reply(false, message, message.author, 'you are not authorised to use this command');
-								return false;
-							}
-						}
-
-						if (!message.guild) {
-							message_reply(false, message, message.author,
-								'could not fetch guild from message');
-							return false;
-						}
-
-						fetch_guild(message.guild.id)
-							.then(guild_object => {
-								if (!guild_object) {
-									message_reply(false, message, message.author,
-										'server is not in database, please contact portal support');
-									return false;
-								}
-
-								if (!command_options) {
-									message_reply(false, message, message.author,
-										'could not get command option');
-									return false;
-								}
-
-								command_loader(message, cmd, args, type, command_options, path_to_command, guild_object);
-							})
-							.catch(e => {
-								message_reply(false, message, message.author,
-									`could not get guild from message (${e})`);
-								return false;
-							});
+						command_loader(
+							message,
+							command.cmd,
+							command.args,
+							command.type,
+							command.command_options,
+							command.path_to_command,
+							guild_object
+						);
 					})
 					.catch(e => {
 						message_reply(false, message, message.author,
-							`could not get authentication data from message (${e})`);
+							`could not find server (${e})`);
+
 						return false;
 					});
 			}
-			return;
 		})
 		.catch(e => {
-			return;
+			message_reply(false, message, message.author,
+				`could not find server (${e})`);
+
+			return false;
 		});
 });
 
@@ -406,26 +359,6 @@ function event_loader(event: string, args: any): void {
 
 	require(`./events/${event}.js`)(args)
 		.then((response: ReturnPormise) => {
-			// if (event === 'messageReactionAdd' && response && response.result === true) {
-			// 	const messageReaction = <MessageReaction>args.messageReaction;
-			// 	if (messageReaction && messageReaction.message && messageReaction.message.guild) {
-			// 		fetch_guild(messageReaction.message.guild.id)
-			// 			.then(guild_object => {
-			// 				if (guild_object) {
-			// 					if (messageReaction.message.channel.id === guild_object.music_data.channel_id) {
-			// 						const music_channel: TextChannel = args.messageReaction.message.guild.channels.cache
-			// 							.find((channel: TextChannel) => channel.id === guild_object.music_data.channel_id);
-
-			// 						music_channel
-			// 							.send(`${args.user}, ${response.value}`)
-			// 							.then(msg => { msg.delete({ timeout: 5000 }); })
-			// 							.catch(error => console.log(error));
-			// 					}
-			// 				}
-			// 			});
-			// 	}
-			// }
-
 			const shouldReply = event_config_json.find(e => e.name === event);
 			if ((config.debug) || (shouldReply && shouldReply.reply) &&
 				(response && response.result === false)
@@ -433,153 +366,18 @@ function event_loader(event: string, args: any): void {
 				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
 				const reset = '\x1b[0m';
 
-				if (response.value === '') {
+				if (!response.value) {
+					console.log(`${colour}├── (empty)${reset}`);
+				}
+				else if (response.value === '') {
 					console.log(`${colour}├── (empty)${reset}`);
 				} else {
 					const value_arr = response.value.split('\n') ? response.value.split('\n') : [];
 					console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
 				}
 			}
-		});
-};
-
-async function portal_channel_handler(
-	message: Message, client: Client
-): Promise<boolean> {
-	return new Promise((resolve) => {
-		if (!message.guild) {
-			return false;
-		}
-
-		fetch_guild(message.guild.id)
-			.then(guild_object => {
-				if (!guild_object) {
-					return resolve(true);
-				}
-
-				if (included_in_ignore_list(message.channel.id, guild_object)) {
-					if (message.content === './ignore') {
-						remove_ignore(guild_object.id, message.channel.id)
-							.then(r => {
-								const reply_message = r ? 'successfully removed from ignored channels'
-									: 'failed to remove from ignored channels'
-								message_reply(true, message, message.author,
-									reply_message);
-							})
-							.catch(e => {
-								message_reply(false, message, message.author,
-									'failed to remove from ignored channels');
-							});
-					}
-
-					return resolve(true);
-				}
-				else if (included_in_url_list(message.channel.id, guild_object)) {
-					if (message.content === './url') {
-						remove_url(guild_object.id, message.channel.id)
-							.then(r => {
-								message_reply(true, message, message.author,
-									r ? 'successfully removed url channel' : 'failed to remove url channel');
-							})
-							.catch(e => {
-								message_reply(false, message, message.author,
-									'failed to remove url channel');
-							});
-					}
-					else if (is_url(message.content)) {
-						client_talk(client, guild_object, 'url');
-					}
-					else {
-						// client_talk(client, guild_object, 'read_only');
-						message.author
-							.send(`${message.channel} is a url-only channel`)
-							.catch(console.error);
-						if (message.deletable) {
-							message.delete();
-						}
-					}
-
-					return resolve(true);
-				}
-				else if (guild_object.music_data.channel_id === message.channel.id) {
-					if (message.content === './music') {
-						if (!message.guild) {
-							return resolve(true);
-						}
-						const voice_connection = client.voice?.connections.find(c =>
-							c.channel.guild.id === message.guild?.id);
-
-						const music_data = new MusicData('null', 'null', []);
-						set_music_data(guild_object.id, music_data)
-							.then(r => {
-								message_reply(true, message, message.author,
-									r
-										? 'successfully removed music channel'
-										: 'failed to remove music channel');
-							})
-							.catch(e => {
-								message_reply(false, message, message.author,
-									'failed to remove music channel');
-							});
-					} else {
-						const voice_connection = client.voice?.connections.find(c =>
-							c.channel.guild.id === message.guild?.id);
-
-						if (!message.guild || !message.member) {
-							if (message.deletable) {
-								message.delete();
-							}
-							return resolve(false);
-						}
-
-						start(voice_connection, client, message.member.user, message.guild, guild_object, message.content)
-							.then(joined => {
-								// message_reply(
-								// 	joined.result, message,
-								// 	message.author, joined.value, guild_object, true
-								// );
-
-								if (message.deletable) {
-									message.delete();
-								}
-							})
-							.catch(error => {
-								// message_reply(
-								// 	false, message,
-								// 	message.author, error, guild_object, true
-								// );
-
-								if (message.deletable) {
-									message.delete();
-								}
-							});
-					}
-
-					return resolve(true);
-				}
-
-				return resolve(false);
-			});
-	});
-}
-
-function ranking_system(message: Message): void {
-	if (!message.guild) {
-		return;
-	}
-
-	fetch_guild(message.guild.id)
-		.then(guild_object => {
-			if (guild_object) {
-				const level = add_points_message(message, guild_object);
-				if (level) {
-					message_reply(true, message, message.author, `you reached level ${level}!`);
-				}
-			}
 		})
-		.catch(e => {
-			message_reply(false, message, message.author, 'an error occured while accesing data');
-		});
+		.catch(console.log);
 }
 
 function log_portal() {
@@ -597,3 +395,251 @@ log_portal();
 
 exports.client = client;
 exports.log_portal = log_portal;
+
+/*
+* Returns: true/false if processing must continue
+*/
+function portal_preprocessor(
+	message: Message, guild_object: GuildPrtl
+): boolean {
+	if (handle_ignored_members(message, guild_object)) {
+		if (!handle_url_channels(message, guild_object)) {
+			anti_spam.message(message);
+			if (guild_object.music_data.channel_id === message.channel.id) {
+				if (message.deletable) {
+					message.delete();
+				}
+			}
+		}
+
+		return true;
+	} else {
+		if (handle_url_channels(message, guild_object)) {
+			anti_spam.message(message);
+			return true;
+
+		}
+		else if (handle_ignored_channels(message, guild_object)) {
+			handle_ranking_system(message, guild_object);
+			anti_spam.message(message);
+
+			return true;
+		}
+		else if (handle_music_channels(message, guild_object)) {
+			handle_ranking_system(message, guild_object);
+			anti_spam.message(message);
+
+			return true;
+		} else {
+			handle_ranking_system(message, guild_object);
+			anti_spam.message(message);
+			// profanity check
+			// const profanities = isProfane(message.content);
+			// if (profanities.length > 0) {
+			// 	message.react('🚩');
+			// 	message.author
+			// 		.send(`try not to use profanities (${profanities.join(',')})`)
+			// 		.catch(console.error);
+			// }
+
+			return false;
+		}
+	}
+}
+
+function handle_ignored_members(
+	message: Message, guild_object: GuildPrtl
+): boolean {
+	return guild_object.member_list[0].ignored;
+}
+
+function handle_ranking_system(
+	message: Message, guild_object: GuildPrtl
+): void {
+	const level = add_points_message(
+		message, guild_object.member_list[0], guild_object.level_speed
+	);
+
+	// store to db
+
+	if (level) {
+		message_reply(true, message, message.author,
+			`you reached level ${level}!`);
+	}
+}
+
+function handle_url_channels(
+	message: Message, guild_object: GuildPrtl
+): boolean {
+	if (is_url_only_channel(message.channel.id, guild_object)) {
+		if (message.content === './url') {
+			remove_url(guild_object.id, message.channel.id)
+				.then(r => {
+					message_reply(true, message, message.author,
+						r
+							? 'successfully removed url channel'
+							: 'failed to remove url channel'
+					);
+				})
+				.catch(e => {
+					message_reply(false, message, message.author,
+						'failed to remove url channel');
+				});
+		}
+		else if (is_url(message.content)) {
+			client_talk(client, guild_object, 'url');
+		}
+		else {
+			// client_talk(client, guild_object, 'read_only');
+			message.author
+				.send(`${message.channel} is a url-only channel`)
+				.catch(console.error);
+			if (message.deletable) {
+				message.delete();
+			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+function handle_ignored_channels(
+	message: Message, guild_object: GuildPrtl
+): boolean {
+	if (included_in_ignore_list(message.channel.id, guild_object)) {
+		if (message.content === './ignore') {
+			remove_ignore(guild_object.id, message.channel.id)
+				.then(r => {
+					const reply_message = r
+						? 'successfully removed from ignored channels'
+						: 'failed to remove from ignored channels';
+
+					message_reply(true, message, message.author,
+						reply_message);
+				})
+				.catch(e => {
+					message_reply(false, message, message.author,
+						'failed to remove from ignored channels');
+				});
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+function handle_music_channels(
+	message: Message, guild_object: GuildPrtl
+): boolean {
+	if (guild_object.music_data.channel_id === message.channel.id) {
+		if (message.content === './music') {
+			if (!message.guild) {
+				return true;
+			}
+
+			const music_data = new MusicData('null', 'null', []);
+			set_music_data(guild_object.id, music_data)
+				.then(r => {
+					message_reply(true, message, message.author,
+						r
+							? 'successfully removed music channel'
+							: 'failed to remove music channel');
+				})
+				.catch(e => {
+					message_reply(false, message, message.author,
+						`failed to remove music channel (${e})`);
+				});
+		} else {
+			const voice_connection = client.voice?.connections.find(c =>
+				c.channel.guild.id === message.guild?.id);
+
+			if (!message.guild || !message.member) {
+				if (message.deletable) {
+					message.delete();
+				}
+
+				return false;
+			}
+
+			start(voice_connection, client, message.member.user, message.guild, guild_object, message.content)
+				.then(joined => {
+					// message_reply(
+					// 	joined.result, message,
+					// 	message.author, joined.value, guild_object, true
+					// );
+
+					if (message.deletable) {
+						message.delete();
+					}
+				})
+				.catch(error => {
+					// message_reply(
+					// 	false, message,
+					// 	message.author, error, guild_object, true
+					// );
+
+					if (message.deletable) {
+						message.delete();
+					}
+				});
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+function command_cypher(
+	message: Message, guild_object: GuildPrtl
+): {
+	args: string[],
+	cmd: string,
+	path_to_command: string,
+	command_options: CommandOptions | undefined,
+	type: string
+} {
+	// Separate command name and arguments
+	const args = message.content.slice(guild_object.prefix.length).trim().split(/ +/g);
+
+	const cmd_only = args.shift();
+	if (!cmd_only) {
+		return {
+			args: [],
+			cmd: '',
+			path_to_command: '',
+			command_options: undefined,
+			type: ''
+		};
+	}
+	const cmd = cmd_only.toLowerCase();
+
+	let path_to_command: string = '';
+	let command_options: CommandOptions | undefined = undefined;
+	let type: string = 'none';
+
+	const is_portal_command = command_config_json.some(category => {
+		command_options = category.commands.
+			find(command => command.name === cmd);
+
+		if (command_options) {
+			type = command_options.range;
+			path_to_command = category.path;
+
+			return true;
+		}
+
+		return false;
+	});
+
+	return {
+		args: args,
+		cmd: cmd,
+		path_to_command: path_to_command,
+		command_options: command_options,
+		type: type
+	};
+}

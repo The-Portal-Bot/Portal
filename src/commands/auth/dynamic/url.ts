@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_channel, getOptions, included_in_url_list, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
+import { create_channel, getOptions, is_url_only_channel, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
 import { insert_url, remove_url } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
@@ -15,7 +15,7 @@ module.exports = async (
 			});
 
 		if (args.length === 0) {
-			if (included_in_url_list(message.channel.id, guild_object)) {
+			if (is_url_only_channel(message.channel.id, guild_object)) {
 				remove_url(guild_object.id, message.channel.id)
 					.then(r => {
 						return resolve({

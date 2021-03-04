@@ -52,12 +52,14 @@ export function update_music_message(
 		const portal_icon_url = 'https://raw.githubusercontent.com/' +
 			'keybraker/keybraker.github.io/master/assets/img/logo.png';
 
-		const music_queue = guild_object.music_queue.length > 1
-			? guild_object.music_queue.map((v, i) => {
-				if (i !== 0) {
-					return (`${i}. **${v.title}**`);
-				}
-			}).filter(v => !!v).join('\n')
+			const music_queue = guild_object.music_queue ?
+			guild_object.music_queue.length > 1
+				? guild_object.music_queue.map((v, i) => {
+					if (i !== 0) {
+						return (`${i}. **${v.title}**`);
+					}
+				}).filter(v => !!v).join('\n')
+				: 'empty'
 			: 'empty';
 
 		const music_message_emb = create_rich_embed(
@@ -419,8 +421,7 @@ export function message_reply(
 				if (msg.deletable)
 					msg.delete({
 						timeout: config.delete_msg_after * 1000
-					})
-						.catch(console.log)
+					}).catch(console.log)
 			})
 			.catch(console.log);
 	}

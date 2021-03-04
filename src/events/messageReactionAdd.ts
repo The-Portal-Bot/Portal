@@ -2,7 +2,7 @@ import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
 import { client_talk } from "../libraries/localisationOps";
-import { clear_music_vote, fetch_guild, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
+import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
 import { pause, play, skip } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
@@ -460,7 +460,7 @@ module.exports = async (
 		}
 		else if (args.messageReaction?.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;
-			fetch_guild(current_guild.id)
+			fetch_guild_reaction_data(current_guild.id, args.user.id)
 				.then(guild_object => {
 					if (guild_object) {
 						if (args.messageReaction.partial) {
@@ -490,8 +490,10 @@ module.exports = async (
 								.catch(e => {
 									return resolve(e);
 								});
-						} else if (args.messageReaction.emoji.name === '🏁' && guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
-							const poll = guild_object.poll_list.find(p => p.message_id === args.messageReaction.message.id);
+						} else if (args.messageReaction.emoji.name === '🏁' &&
+							guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
+							const poll = guild_object.poll_list.find(p =>
+								p.message_id === args.messageReaction.message.id);
 
 							if (poll && args.user.id === poll.member_id) {
 								const winner = args.messageReaction.message.reactions.cache
@@ -503,9 +505,11 @@ module.exports = async (
 										return r;
 									});
 
-								args.messageReaction.message.reply(`Poll winner is option ${winner.emoji} with ${winner.count} votes`);
+								args.messageReaction.message.reply(
+									`Poll winner is option ${winner.emoji} with ${winner.count} votes`
+								);
 
-								remove_poll(guild_object.id, args.messageReaction.message.id)
+								remove_poll(current_guild.id, args.messageReaction.message.id)
 									.then(r => {
 										return resolve({
 											result: r,

@@ -1,21 +1,21 @@
 import { GuildMember, TextChannel } from "discord.js";
 import { create_rich_embed } from "../libraries/helpOps";
-import { fetch_guild, remove_member } from "../libraries/mongoOps";
+import { fetch_guild_announcement, remove_member } from "../libraries/mongoOps";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
 module.exports = async (
 	args: { member: GuildMember }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		fetch_guild(args.member.guild.id)
-			.then(guild_object => {
-				if (guild_object) {
+		fetch_guild_announcement(args.member.guild.id)
+			.then(announcement => {
+				if (announcement) {
 					const leave_message = `member: ${args.member.presence.user} ` +
 						`[${args.member.guild.id}]\n\thas left ${args.member.guild}`;
 
-					if (guild_object.announcement) {
+					if (announcement) {
 						const announcement_channel = args.member.guild.channels.cache
-							.find(channel => channel.id === guild_object.announcement)
+							.find(channel => channel.id === announcement)
 
 						if (announcement_channel && announcement_channel.isText)
 							(<TextChannel>announcement_channel).send(

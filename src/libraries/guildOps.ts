@@ -72,7 +72,7 @@ export function included_in_ignore_list(channel_id: string, guild_object: GuildP
 	return guild_object.ignore_list.some(i => i === channel_id);
 };
 
-export function included_in_url_list(channel_id: string, guild_object: GuildPrtl): boolean {
+export function is_url_only_channel(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object.url_list.some(u => u === channel_id);
 };
 
