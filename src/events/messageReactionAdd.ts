@@ -343,6 +343,7 @@ async function reaction_music_manager(
 						messageReaction.message.guild, guild_object
 					)
 						.then(r => {
+							clear_user_reactions(messageReaction, user);
 							clear_music_vote(guild_object.id);
 
 							return resolve(r)
@@ -355,12 +356,11 @@ async function reaction_music_manager(
 								value: e
 							})
 						});
-
-					clear_user_reactions(messageReaction, user);
 				} else {
 					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
 					if (!guild) {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
@@ -370,13 +370,16 @@ async function reaction_music_manager(
 					const member = guild.members.cache.find(m => m.id === user.id);
 					if (!member) {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
 						});
 					}
 
-					if ((member_object && member_object.dj) || is_authorised(guild_object.member_list, guild_object.auth_role, member)) {
+					if ((member_object && member_object.dj) ||
+						is_authorised(guild_object.member_list, guild_object.auth_role, member)
+					) {
 						skip(portal_voice_connection, user, client,
 							messageReaction.message.guild, guild_object)
 							.then(r => {

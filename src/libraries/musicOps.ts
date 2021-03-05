@@ -212,7 +212,6 @@ async function start_playback(
 									'playback started'
 								);
 
-								console.log(`returtnign playback started`);
 								return {
 									result: true,
 									value: 'playback started'
