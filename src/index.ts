@@ -4,7 +4,7 @@ import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guildOps';
-import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
+import { is_authorised, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { fetch_guild, fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
@@ -161,7 +161,6 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
 
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
-	// message has errors
 	if (!message) return;
 	if (!message.member) return;
 	if (!message.guild) return;
@@ -416,8 +415,8 @@ function portal_preprocessor(
 	} else {
 		if (handle_url_channels(message, guild_object)) {
 			anti_spam.message(message);
-			return true;
 
+			return true;
 		}
 		else if (handle_ignored_channels(message, guild_object)) {
 			handle_ranking_system(message, guild_object);
@@ -553,8 +552,10 @@ function handle_music_channels(
 						`failed to remove music channel (${e})`);
 				});
 		} else {
-			const voice_connection = client.voice?.connections.find(c =>
-				c.channel.guild.id === message.guild?.id);
+			const voice_connection = client.voice
+				? client.voice.connections.find(c =>
+					c.channel.guild.id === message.guild?.id)
+				: undefined;
 
 			if (!message.guild || !message.member) {
 				if (message.deletable) {
@@ -564,23 +565,16 @@ function handle_music_channels(
 				return false;
 			}
 
-			start(voice_connection, client, message.member.user, message.guild, guild_object, message.content)
-				.then(joined => {
-					// message_reply(
-					// 	joined.result, message,
-					// 	message.author, joined.value, guild_object, true
-					// );
-
+			start(
+				voice_connection, client, message.member.user,
+				message.guild, guild_object, message.content
+			)
+				.then(() => {
 					if (message.deletable) {
 						message.delete();
 					}
 				})
-				.catch(error => {
-					// message_reply(
-					// 	false, message,
-					// 	message.author, error, guild_object, true
-					// );
-
+				.catch(() => {
 					if (message.deletable) {
 						message.delete();
 					}

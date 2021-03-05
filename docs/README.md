@@ -52,6 +52,7 @@ _argument preceded by **!** is **mandatory**, **@** is **optional** (not include
 
 | Version | Date       | Argument                                                                                        |
 | :------ | :--------- | :---------------------------------------------------------------------------------------------- |
+| 0.6.3   | 05-03-2021 | _increased responsed time by 70% and updated music player_                                      |
 | 0.6.2   | 03-03-2021 | _major refactoring and updates to code throughout, a lot of performance improvements_           |
 | 0.6.0   | 15-02-2021 | _transition to MongoDB from plain JSON file with many improvements, especially on music player_ |
 | 0.5.7   | 18-01-2021 | _updates throughout the app to fix bugs and small problems_                                     |

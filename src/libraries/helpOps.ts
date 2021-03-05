@@ -1,4 +1,4 @@
-import { Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
+import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
@@ -21,7 +21,7 @@ export function create_music_message(
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
 			{ emote: 'Queue', role: '-', inline: false },
-			{ emote: 'Latest Action', role: '-', inline: false }
+			{ emote: 'Latest Action', role: '```-```', inline: false }
 		],
 		thumbnail,
 		null,
@@ -52,13 +52,16 @@ export function update_music_message(
 		const portal_icon_url = 'https://raw.githubusercontent.com/' +
 			'keybraker/keybraker.github.io/master/assets/img/logo.png';
 
-			const music_queue = guild_object.music_queue ?
+		const music_queue = guild_object.music_queue ?
 			guild_object.music_queue.length > 1
-				? guild_object.music_queue.map((v, i) => {
-					if (i !== 0) {
-						return (`${i}. **${v.title}**`);
-					}
-				}).filter(v => !!v).join('\n')
+				? guild_object.music_queue
+					.map((v, i) => {
+						if (i !== 0) {
+							return (`${i}. **${v.title}**`);
+						}
+					})
+					.filter(v => !!v)
+					.join('\n')
 				: 'empty'
 			: 'empty';
 
@@ -71,7 +74,7 @@ export function update_music_message(
 				{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
 				{ emote: 'Uploaded', role: yts.ago, inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
-				{ emote: 'Latest Action', role: '`' + status + '`', inline: false }
+				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
 			portal_icon_url,
 			null,
@@ -119,7 +122,7 @@ export function update_music_message(
 };
 
 export async function join_by_reaction(
-	client: Client, guild_object: GuildPrtl, user: User, join: boolean
+	client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
 ): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
 		if (!user.presence) {
@@ -156,6 +159,14 @@ export async function join_by_reaction(
 
 		const current_voice = user.presence.member?.voice.channel;
 
+		if (!current_voice) {
+			return resolve({
+				result: false,
+				value: `could not fing your voice channel`,
+				voice_connection: undefined,
+			});
+		}
+
 		const voice_connection_in_guild = client.voice?.connections
 			.find(connection => connection.channel.guild.id === user.presence.member?.voice.channel?.guild.id);
 
@@ -177,7 +188,7 @@ export async function join_by_reaction(
 		} else {
 			current_voice.join()
 				.then(response => {
-					if (join) {
+					if (announce_entrance) {
 						client_talk(client, guild_object, 'join');
 					}
 
@@ -190,9 +201,10 @@ export async function join_by_reaction(
 					});
 				})
 				.catch(e => {
+					console.log('e :>> ', e);
 					return resolve({
 						result: false,
-						value: 'failed to join voice channel',
+						value: `failed to join voice channel 1 (${e})`,
 						voice_connection: undefined,
 					});
 				});
@@ -246,20 +258,6 @@ export async function join_user_voice(
 			});
 		}
 
-		// const portal_list = guild_object.portal_list;
-
-		// const controlled_by_portal = portal_list.some(p =>
-		// 	p.voice_list.some(v => v.id === current_voice.id)
-		// );
-
-		// if (!controlled_by_portal) {
-		// 	return resolve({
-		// 		result: false,
-		// 		value: 'I can only connect to my channels',
-		// 		voice_connection: undefined
-		// 	});
-		// }
-
 		if (!client.voice) {
 			return resolve({
 				result: false,
@@ -304,7 +302,7 @@ export async function join_user_voice(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `error while creating voice connection (${e})`,
+						value: `error while joining voice connection (${e})`,
 						voice_connection: undefined,
 					});
 				});

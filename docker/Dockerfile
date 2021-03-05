@@ -18,5 +18,6 @@ RUN npm install typescript --save-dev
 # Bundle app source
 COPY . .
 
-RUN npx tsc
+# RUN npx tsc
+RUN npm run build
 CMD [ "node", "build/index.js" ]

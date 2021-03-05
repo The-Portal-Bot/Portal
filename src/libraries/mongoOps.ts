@@ -121,12 +121,17 @@ export async function fetch_guild_predata(
             {
                 id: 1,
                 prefix: 1,
-                member_list: { $elemMatch: { id: member_id } },
+                member_list: {
+                    $elemMatch: {
+                        id: member_id
+                    }
+                },
                 auth_role: 1,
                 ignore_role: 1,
                 ignore_list: 1,
                 url_list: 1,
                 music_data: 1,
+                music_queue: 1,
                 level_speed: 1
             })
             .then((r: any) => {
@@ -140,6 +145,7 @@ export async function fetch_guild_predata(
                         ignore_list: r.ignore_list,
                         url_list: r.url_list,
                         music_data: r.music_data,
+                        music_queue: r.music_queue,
                         level_speed: r.level_speed
                     });
                 } else {
@@ -209,7 +215,11 @@ export async function fetch_guild_authenticate(
             })
             .then((r: any) => {
                 if (!!r) {
-                    return resolve(<{ prefix: string, member_list: MemberPrtl[], auth_role: string[] }><unknown>{
+                    return resolve(<{
+                        prefix: string,
+                        member_list: MemberPrtl[],
+                        auth_role: string[]
+                    }><unknown>{
                         prefix: r.prefix,
                         member_list: r.member_list,
                         auth_role: r.auth_role
@@ -238,7 +248,10 @@ export async function fetch_guild_spotify(
             })
             .then((r: any) => {
                 if (!!r) {
-                    return resolve(<{ spotify: string, portal_list: PortalChannelPrtl[] }><unknown>{
+                    return resolve(<{
+                        spotify: string,
+                        portal_list: PortalChannelPrtl[]
+                    }><unknown>{
                         spotify: r.spotify,
                         portal_list: r.portal_list
                     });
@@ -951,7 +964,6 @@ export async function insert_music_video(
             }
         )
             .then((r: MongoPromise) => {
-                console.log('mongopose :>> ', r);
                 return resolve(r.ok > 0 && r.n > 0);
             })
             .catch(e => {
