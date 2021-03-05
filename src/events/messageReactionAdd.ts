@@ -1,11 +1,36 @@
 import { Client, MessageReaction, User } from "discord.js";
+import yts from "yt-search";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
-import { client_talk } from "../libraries/localisationOps";
-import { clear_music_vote, fetch_guild, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
+import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
 import { pause, play, skip } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+
+const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+	'.github.io/master/assets/img/logo.png';
+
+const empty_message: yts.VideoSearchResult = {
+	type: 'video',
+	videoId: '-',
+	url: 'just type and I\'ll play',
+	title: 'Music Player',
+	description: '-',
+	image: '-',
+	thumbnail: portal_icon_url,
+	seconds: 0,
+	timestamp: '-',
+	duration: {
+		seconds: 0,
+		timestamp: '0'
+	},
+	ago: '-',
+	views: 0,
+	author: {
+		name: '-',
+		url: '-'
+	}
+};
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
@@ -170,10 +195,12 @@ async function reaction_music_manager(
 				)
 					.then(r => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve(r);
 					})
 					.catch(e => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: e
@@ -186,10 +213,12 @@ async function reaction_music_manager(
 				pause(portal_voice_connection, messageReaction.message.guild, guild_object)
 					.then(r => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve(r);
 					})
 					.catch(e => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: e
@@ -283,6 +312,7 @@ async function reaction_music_manager(
 			case '⏭': {
 				if (!portal_voice_connection) {
 					clear_user_reactions(messageReaction, user);
+
 					return resolve({
 						result: false,
 						value: 'can only stop when with portal'
@@ -291,6 +321,7 @@ async function reaction_music_manager(
 
 				if (!guild_object.music_data.votes) {
 					clear_user_reactions(messageReaction, user);
+
 					return resolve({
 						result: false,
 						value: 'could not get music votes'
@@ -313,14 +344,18 @@ async function reaction_music_manager(
 					)
 						.then(r => {
 							clear_music_vote(guild_object.id);
+
 							return resolve(r)
 						})
 						.catch(e => {
+							clear_user_reactions(messageReaction, user);
+
 							return resolve({
 								result: false,
 								value: e
 							})
 						});
+
 					clear_user_reactions(messageReaction, user);
 				} else {
 					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
@@ -346,18 +381,22 @@ async function reaction_music_manager(
 							messageReaction.message.guild, guild_object)
 							.then(r => {
 								clear_music_vote(guild_object.id);
+								clear_user_reactions(messageReaction, user);
+
 								return resolve(r);
 							})
 							.catch(e => {
+								clear_user_reactions(messageReaction, user);
+
 								return resolve({
 									result: false,
 									value: e
 								})
 							});
-						clear_user_reactions(messageReaction, user);
 					}
 					else {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
@@ -390,6 +429,7 @@ async function reaction_music_manager(
 
 					if (!guild) {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: 'could fetch guild from client'
@@ -399,12 +439,15 @@ async function reaction_music_manager(
 					update_music_message(
 						guild,
 						guild_object,
-						guild_object.music_queue[0],
+						guild_object.music_queue
+							? guild_object.music_queue[0]
+							: empty_message,
 						'queue cleared'
 					);
 				}
 
 				clear_user_reactions(messageReaction, user);
+
 				return resolve({
 					result: true,
 					value: 'music queue has been cleared'
@@ -418,17 +461,22 @@ async function reaction_music_manager(
 						if (portal_voice_connection) {
 							guild_object.music_queue = [];
 							update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
-							client_talk(client, guild_object, 'leave');
-							setTimeout(
-								function () {
-									// portal_voice_connection.dispatcher.destroy();
-									portal_voice_connection.disconnect();
-								},
-								4000
-							);
+							portal_voice_connection.disconnect();
+
+							if (messageReaction.message.guild) {
+								update_music_message(
+									messageReaction.message.guild,
+									guild_object,
+									guild_object.music_queue
+										? guild_object.music_queue[0]
+										: empty_message,
+									'queue cleared'
+								);
+							}
 						}
 
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: true,
 							value: 'leaving voice channel'
@@ -436,6 +484,7 @@ async function reaction_music_manager(
 					})
 					.catch(e => {
 						clear_user_reactions(messageReaction, user);
+
 						return resolve({
 							result: false,
 							value: e
@@ -460,7 +509,7 @@ module.exports = async (
 		}
 		else if (args.messageReaction?.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;
-			fetch_guild(current_guild.id)
+			fetch_guild_reaction_data(current_guild.id, args.user.id)
 				.then(guild_object => {
 					if (guild_object) {
 						if (args.messageReaction.partial) {
@@ -469,7 +518,7 @@ module.exports = async (
 							} catch (e) {
 								return resolve({
 									result: false,
-									value: 'something went wrong when fetching the message',
+									value: 'something went wrong when fetching the message'
 								});
 							}
 						}
@@ -490,8 +539,10 @@ module.exports = async (
 								.catch(e => {
 									return resolve(e);
 								});
-						} else if (args.messageReaction.emoji.name === '🏁' && guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
-							const poll = guild_object.poll_list.find(p => p.message_id === args.messageReaction.message.id);
+						} else if (args.messageReaction.emoji.name === '🏁' &&
+							guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
+							const poll = guild_object.poll_list.find(p =>
+								p.message_id === args.messageReaction.message.id);
 
 							if (poll && args.user.id === poll.member_id) {
 								const winner = args.messageReaction.message.reactions.cache
@@ -503,9 +554,11 @@ module.exports = async (
 										return r;
 									});
 
-								args.messageReaction.message.reply(`Poll winner is option ${winner.emoji} with ${winner.count} votes`);
+								args.messageReaction.message.reply(
+									`Poll winner is option ${winner.emoji} with ${winner.count} votes`
+								);
 
-								remove_poll(guild_object.id, args.messageReaction.message.id)
+								remove_poll(current_guild.id, args.messageReaction.message.id)
 									.then(r => {
 										return resolve({
 											result: r,
@@ -524,21 +577,21 @@ module.exports = async (
 						} else {
 							return resolve({
 								result: false,
-								value: 'message is neither role assigning or music',
+								value: 'message is neither role assigning or music'
 							});
 						}
 					}
 					else {
 						return resolve({
 							result: false,
-							value: 'something went wrong with guild object',
+							value: 'something went wrong with guild object'
 						});
 					}
 				})
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: 'failed to fetch message reaction',
+						value: 'failed to fetch message reaction'
 					});
 				});
 		} else {

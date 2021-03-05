@@ -52,6 +52,7 @@ _argument preceded by **!** is **mandatory**, **@** is **optional** (not include
 
 | Version | Date       | Argument                                                                                        |
 | :------ | :--------- | :---------------------------------------------------------------------------------------------- |
+| 0.6.3   | 05-03-2021 | _increased responsed time by 70% and updated music player_                                      |
 | 0.6.2   | 03-03-2021 | _major refactoring and updates to code throughout, a lot of performance improvements_           |
 | 0.6.0   | 15-02-2021 | _transition to MongoDB from plain JSON file with many improvements, especially on music player_ |
 | 0.5.7   | 18-01-2021 | _updates throughout the app to fix bugs and small problems_                                     |
@@ -62,11 +63,11 @@ _argument preceded by **!** is **mandatory**, **@** is **optional** (not include
 
 > **Disclaimers**
 > 
-> 1. Portal will never record conversations or store anything you type<br>
-> 2. Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
-> 3. Runs on nodejs 14.x
-> 4. As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at [Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)
-> 5. Portal is made using _[Discord.js](https://discord.js.org/#/)_
+> * Portal will never record conversations or store anything you type<br>
+> * Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
+> * Runs on nodejs 14.x
+> * As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at [Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)
+> * Portal is made using _[Discord.js](https://discord.js.org/#/)_
 
 <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
 

@@ -1,4 +1,4 @@
-import { Channel, Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
+import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
@@ -21,7 +21,7 @@ export function create_music_message(
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
 			{ emote: 'Queue', role: '-', inline: false },
-			{ emote: 'Latest Action', role: '-', inline: false }
+			{ emote: 'Latest Action', role: '```-```', inline: false }
 		],
 		thumbnail,
 		null,
@@ -46,18 +46,24 @@ export function create_music_message(
 };
 
 export function update_music_message(
-	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult, status: string
+	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult,
+	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve) => {
 		const portal_icon_url = 'https://raw.githubusercontent.com/' +
 			'keybraker/keybraker.github.io/master/assets/img/logo.png';
 
-		const music_queue = guild_object.music_queue.length > 1
-			? guild_object.music_queue.map((v, i) => {
-				if (i !== 0) {
-					return (`${i}. **${v.title}**`);
-				}
-			}).filter(v => !!v).join('\n')
+		const music_queue = guild_object.music_queue ?
+			guild_object.music_queue.length > 1
+				? guild_object.music_queue
+					.map((v, i) => {
+						if (i !== 0) {
+							return (`${i}. **${v.title}**`);
+						}
+					})
+					.filter(v => !!v)
+					.join('\n')
+				: 'empty'
 			: 'empty';
 
 		const music_message_emb = create_rich_embed(
@@ -69,13 +75,16 @@ export function update_music_message(
 				{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
 				{ emote: 'Uploaded', role: yts.ago, inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
-				{ emote: 'Latest Action', role: '`' + status + '`', inline: false }
+				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
 			portal_icon_url,
 			null,
 			true,
 			null,
-			yts.thumbnail
+			yts.thumbnail,
+			animated
+				? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
+				: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
 		);
 
 		const guild_channel: GuildChannel | undefined = guild.channels.cache
@@ -117,7 +126,7 @@ export function update_music_message(
 };
 
 export async function join_by_reaction(
-	client: Client, guild_object: GuildPrtl, user: User, join: boolean
+	client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
 ): Promise<ReturnPormiseVoice> { // localize
 	return new Promise((resolve) => {
 		if (!user.presence) {
@@ -154,6 +163,14 @@ export async function join_by_reaction(
 
 		const current_voice = user.presence.member?.voice.channel;
 
+		if (!current_voice) {
+			return resolve({
+				result: false,
+				value: `could not fing your voice channel`,
+				voice_connection: undefined,
+			});
+		}
+
 		const voice_connection_in_guild = client.voice?.connections
 			.find(connection => connection.channel.guild.id === user.presence.member?.voice.channel?.guild.id);
 
@@ -175,7 +192,7 @@ export async function join_by_reaction(
 		} else {
 			current_voice.join()
 				.then(response => {
-					if (join) {
+					if (announce_entrance) {
 						client_talk(client, guild_object, 'join');
 					}
 
@@ -188,9 +205,10 @@ export async function join_by_reaction(
 					});
 				})
 				.catch(e => {
+					console.log('e :>> ', e);
 					return resolve({
 						result: false,
-						value: 'failed to join voice channel',
+						value: `failed to join voice channel 1 (${e})`,
 						voice_connection: undefined,
 					});
 				});
@@ -244,20 +262,6 @@ export async function join_user_voice(
 			});
 		}
 
-		// const portal_list = guild_object.portal_list;
-
-		// const controlled_by_portal = portal_list.some(p =>
-		// 	p.voice_list.some(v => v.id === current_voice.id)
-		// );
-
-		// if (!controlled_by_portal) {
-		// 	return resolve({
-		// 		result: false,
-		// 		value: 'I can only connect to my channels',
-		// 		voice_connection: undefined
-		// 	});
-		// }
-
 		if (!client.voice) {
 			return resolve({
 				result: false,
@@ -302,7 +306,7 @@ export async function join_user_voice(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `error while creating voice connection (${e})`,
+						value: `error while joining voice connection (${e})`,
 						voice_connection: undefined,
 					});
 				});
@@ -326,7 +330,7 @@ export function getJSON(
 export function create_rich_embed(
 	title: string | null | undefined, description: string | null | undefined, colour: string | null | undefined,
 	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
-	url: string | null | undefined, image: string | null | undefined
+	url: string | null | undefined, image: string | null | undefined, custom_gif?: string
 ): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spinr.gif';
 	const keybraker_url: string = 'https://github.com/keybraker';
@@ -339,7 +343,7 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal', portal_icon_url);
+	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url);
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
 	if (member) {
@@ -419,8 +423,7 @@ export function message_reply(
 				if (msg.deletable)
 					msg.delete({
 						timeout: config.delete_msg_after * 1000
-					})
-						.catch(console.log)
+					}).catch(console.log)
 			})
 			.catch(console.log);
 	}

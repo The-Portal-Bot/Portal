@@ -89,21 +89,20 @@ export function update_timestamp(voiceState: VoiceState, guild_object: GuildPrtl
 	return false;
 };
 
-export function add_points_message(message: Message, guild_object: GuildPrtl): number | boolean {
-	if (!message || !message.guild) return false;
-	const member = guild_object.member_list.find(m => m.id === message?.author?.id);
-	if (!member) return false;
-
+export function add_points_message(
+	message: Message, member: MemberPrtl, speed: string
+): number | boolean {
 	let speed_num: number = level_speed.normal;
-	switch (guild_object.level_speed) {
+	switch (speed) {
 		case 'slow': speed_num = level_speed.slow;
 		case 'normal': speed_num = level_speed.normal;
 		case 'fast': speed_num = level_speed.fast;
 	}
+
 	const points = message.content.length * speed_num;
 	member.points += points > 5 ? 5 : points;
-	const level = calculate_rank(member);
 
+	const level = calculate_rank(member);
 	return level ? level : false;
 };
 

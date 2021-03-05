@@ -69,6 +69,7 @@ const GuildPrtlSch = new Schema(
 		poll_list: { type: [PollPrtlSch], required: true },
 		ranks: { type: [Rank], required: true },
 		auth_role: { type: [String], required: true },
+		ignore_role: { type: [String], required: true },
 		spotify: { type: String, required: true },
 		music_data: { type: MusicData, required: true },
 		music_queue: { type: [VideoSearchResult], required: true },
