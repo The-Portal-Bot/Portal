@@ -110,6 +110,30 @@ export async function fetch_guild_reaction_data(
     });
 };
 
+export async function fetch_guild_music_queue(
+    guild_id: string
+): Promise<VideoSearchResult[] | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                music_queue: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<VideoSearchResult[]>r.music_queue);
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
 export async function fetch_guild_predata(
     guild_id: string, member_id: string
 ): Promise<GuildPrtl | undefined> {
@@ -301,7 +325,7 @@ export async function update_guild(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -390,7 +414,7 @@ export async function remove_guild(
             id: guild_id
         })
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -422,7 +446,7 @@ export async function update_member(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -444,7 +468,7 @@ export async function insert_member(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -468,7 +492,7 @@ export async function remove_member(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -500,7 +524,7 @@ export async function update_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -523,7 +547,7 @@ export async function insert_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -548,7 +572,7 @@ export async function remove_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -581,7 +605,7 @@ export async function update_voice(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -656,7 +680,7 @@ export async function insert_url(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -678,7 +702,7 @@ export async function remove_url(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -703,7 +727,7 @@ export async function insert_ignore(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -725,7 +749,7 @@ export async function remove_ignore(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -750,7 +774,7 @@ export async function insert_authorised_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -773,7 +797,7 @@ export async function remove_authorised_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -798,7 +822,7 @@ export async function insert_ignored_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -821,7 +845,7 @@ export async function remove_ignored_role(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -843,7 +867,7 @@ export async function set_ranks(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -868,7 +892,7 @@ export async function insert_poll(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -891,7 +915,7 @@ export async function remove_poll(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -916,7 +940,7 @@ export async function insert_role_assigner(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -939,7 +963,7 @@ export async function remove_role_assigner(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -964,7 +988,7 @@ export async function insert_music_video(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -987,7 +1011,7 @@ export async function clear_music_vote(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -1010,7 +1034,7 @@ export async function insert_music_vote(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 return resolve(false);
@@ -1033,7 +1057,7 @@ export async function set_music_data(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve(r.ok > 0 && r.n > 0);
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => { return resolve(false);; });
     });

@@ -46,7 +46,8 @@ export function create_music_message(
 };
 
 export function update_music_message(
-	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult, status: string
+	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult,
+	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve) => {
 		const portal_icon_url = 'https://raw.githubusercontent.com/' +
@@ -80,7 +81,10 @@ export function update_music_message(
 			null,
 			true,
 			null,
-			yts.thumbnail
+			yts.thumbnail,
+			animated
+				? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
+				: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
 		);
 
 		const guild_channel: GuildChannel | undefined = guild.channels.cache
@@ -326,7 +330,7 @@ export function getJSON(
 export function create_rich_embed(
 	title: string | null | undefined, description: string | null | undefined, colour: string | null | undefined,
 	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
-	url: string | null | undefined, image: string | null | undefined
+	url: string | null | undefined, image: string | null | undefined, custom_gif?: string
 ): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spinr.gif';
 	const keybraker_url: string = 'https://github.com/keybraker';
@@ -339,7 +343,7 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal', portal_icon_url);
+	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url);
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
 	if (member) {

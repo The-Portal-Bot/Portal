@@ -1,9 +1,10 @@
 import { VoiceConnection } from "discord.js";
 
 export interface MongoPromise { 
-	n: number, 
-	nModified: number, 
-	ok: number 
+	ok?: number | undefined;
+	n?: number | undefined;
+	nModified?: number | undefined;
+	deletedCount?: number | undefined;
 }
 
 export interface ReturnPormise {

@@ -4,7 +4,7 @@ import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 import { join_by_reaction, update_music_message } from './helpOps';
-import { clear_music_vote, insert_music_video, update_guild, fetch_guild } from './mongoOps';
+import { clear_music_vote, insert_music_video, update_guild, fetch_guild_music_queue } from './mongoOps';
 // const ytdl = require('ytdl-core');
 
 const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
@@ -36,17 +36,18 @@ async function pop_music_queue(
 	guild_object: GuildPrtl
 ): Promise<yts.VideoSearchResult | undefined> {
 	return new Promise((resolve) => {
-		fetch_guild(guild_object.id)
-			.then(r => {
-				if (!r) {
+		fetch_guild_music_queue(guild_object.id)
+			.then(music_queue => {
+				if (!music_queue) {
 					return resolve(undefined);
 				}
-				guild_object = r;
-				if (guild_object.music_queue.length > 0) {
-					guild_object.music_queue.shift();
-					update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 
-					return resolve(guild_object.music_queue[0]);
+				if (music_queue.length > 0) {
+					music_queue.shift();
+					update_guild(guild_object.id, 'music_queue', music_queue);
+					guild_object.music_queue = music_queue;
+
+					return resolve(music_queue[0]);
 				}
 
 				return resolve(undefined);
@@ -70,7 +71,7 @@ function spawn_dispatcher(
 		type: 'opus',
 		bitrate: 96000
 	}
-
+	
 	return voice_connection.play(stream, stream_options);
 }
 
@@ -81,13 +82,21 @@ async function push_video_to_queue(
 		if (!guild_object.music_queue) {
 			guild_object.music_queue = [];
 		}
+
 		guild_object.music_queue.push(video);
 		insert_music_video(guild_object.id, video)
 			.then(r => {
 				const msg = r
-					? 'already playing, added to queue'
-					: 'already playing, could add to queue';
-				update_music_message(guild, guild_object, video, msg);
+					? `${video.title} has been added to queue`
+					: `${video.title} failed to get added to queue`;
+				update_music_message(
+					guild,
+					guild_object,
+					guild_object.music_queue
+						? guild_object.music_queue[0]
+						: video,
+					msg,
+					false);
 
 				return resolve({
 					result: r,
@@ -96,7 +105,14 @@ async function push_video_to_queue(
 			})
 			.catch(e => {
 				const msg = `error while adding to queue: ${e}`;
-				update_music_message(guild, guild_object, video, msg);
+				update_music_message(
+					guild,
+					guild_object,
+					guild_object.music_queue
+						? guild_object.music_queue[0]
+						: video,
+					msg,
+					false);
 
 				return resolve({
 					result: false,
@@ -151,7 +167,6 @@ async function start_playback(
 							'already playing'
 						);
 
-						console.log('push_response :>> ', push_response);
 						return resolve(
 							push_response
 						);
@@ -267,11 +282,9 @@ export async function start(
 					guild, guild_object, yts_attempt.videos[0]
 				)
 					.then(r => {
-						console.log('mazonakis ena 1');
 						return resolve(r);
 					})
 					.catch(e => {
-						console.log('mazonakis ena 2');
 						return resolve({
 							result: false,
 							value: `error while starting music player (${e})`
@@ -326,12 +339,13 @@ export async function play(
 								guild,
 								guild_object,
 								empty_message,
-								'music queue is empty'
+								'queue is empty',
+								false
 							);
 
 							return resolve({
 								result: false,
-								value: 'music queue is empty'
+								value: 'queue is empty'
 							});
 						}
 
@@ -361,7 +375,8 @@ export async function play(
 					guild,
 					guild_object,
 					empty_message,
-					'queue is empty'
+					'queue is empty',
+					false
 				);
 
 				return resolve({
@@ -437,7 +452,7 @@ export async function pause(
 	guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		let returnValue: ReturnPormise = {
+		let return_value: ReturnPormise = {
 			result: false,
 			value: ''
 		};
@@ -446,19 +461,19 @@ export async function pause(
 			if (voice_connection.dispatcher) {
 				if (!voice_connection.dispatcher.paused) {
 					voice_connection.dispatcher.pause();
-					returnValue.result = true;
-					returnValue.value = 'playback paused';
+					return_value.result = true;
+					return_value.value = 'playback paused';
 				} else {
-					returnValue.result = false;
-					returnValue.value = 'already paused';
+					return_value.result = false;
+					return_value.value = 'already paused';
 				}
 			} else {
-				returnValue.result = false;
-				returnValue.value = 'no playback';
+				return_value.result = false;
+				return_value.value = 'no playback';
 			}
 		} else {
-			returnValue.result = false;
-			returnValue.value = 'portal is not connected';
+			return_value.result = false;
+			return_value.value = 'portal is not connected';
 		}
 
 		update_music_message(
@@ -467,10 +482,11 @@ export async function pause(
 			guild_object.music_queue[0]
 				? guild_object.music_queue[0]
 				: empty_message,
-			returnValue.value
+			return_value.value,
+			false
 		);
 
-		return resolve(returnValue);
+		return resolve(return_value);
 	});
 };
 
@@ -479,7 +495,7 @@ export async function pause(
 // 	guild: Guild, guild_object: GuildPrtl
 // ): Promise<ReturnPormise> {
 // 	return new Promise((resolve) => {
-// 		let returnValue: ReturnPormise = {
+// 		let return_value: ReturnPormise = {
 // 			result: false,
 // 			value: ''
 // 		};
@@ -487,25 +503,25 @@ export async function pause(
 // 		if (voice_connection) {
 // 			if (voice_connection.dispatcher) {
 // 				voice_connection.dispatcher.end();
-// 				returnValue.result = true;
-// 				returnValue.value = 'playback stopped';
+// 				return_value.result = true;
+// 				return_value.value = 'playback stopped';
 // 			} else {
-// 				returnValue.result = false;
-// 				returnValue.value = 'no playback';
+// 				return_value.result = false;
+// 				return_value.value = 'no playback';
 // 			}
 // 		} else {
-// 			returnValue.result = false;
-// 			returnValue.value = 'portal is not connected';
+// 			return_value.result = false;
+// 			return_value.value = 'portal is not connected';
 // 		}
 
 // 		update_music_message(
 // 			guild,
 // 			guild_object,
 // 			empty_message,
-// 			returnValue.value
+// 			return_value.value
 // 		);
 
-// 		return resolve(returnValue);
+// 		return resolve(return_value);
 // 	});
 // };
 
@@ -525,7 +541,8 @@ export async function skip(
 								guild,
 								guild_object,
 								empty_message,
-								'queue is empty'
+								'queue is empty',
+								false
 							);
 
 							return resolve({
@@ -563,7 +580,8 @@ export async function skip(
 							guild,
 							guild_object,
 							empty_message,
-							'queue is empty'
+							'queue is empty',
+							false
 						);
 
 						return resolve({
