@@ -28,23 +28,22 @@
 
 <br>
 
-<p align="center"><a href="https://github.com/keybraker/portal/blob/master/docs/Commands.md">Commands</a>, a list of all Portal commands with description, arguments and how to use them.</p>
+<p align="center">A full Documentation with everything you may need can be found at https://portal-bot.xyz.</p>
 
-<br>
+* **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
+* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name. It has four types of data _(used by run command and naming portal channels)_:
 
-Regex Interpreter: there are four types of data _(used by run command and naming portal channels)_:
+    1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data that return information.
+    2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
+    3. **[Pipes](https://portal-bot.xyz/docs/regex/interpreter/pipes)**, are mini functions you can pass text or Variables to manipulate their outcome.
+    4. **[Structures](https://portal-bot.xyz/docs/regex/interpreter/structures)**, are conditional flow manipulators.
 
-1. [Variables](https://github.com/keybraker/portal/blob/master/docs/Variables.md), are immutable and live data that return information.
-2. [Attributes](https://github.com/keybraker/portal/blob/master/docs/Attributes.md), are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
-3. [Pipes](https://github.com/keybraker/portal/blob/master/docs/Pipes.md), are mini functions you can pass text or Variables to manipulate their outcome.
-4. [Structures](https://github.com/keybraker/portal/blob/master/docs/Structures.md), are conditional flow manipulators.
-
-_pipes are applied to variables or text in order to change their outcome_<br>
-_argument preceded by **!** is **mandatory**, **@** is **optional** (not included)_
+    _pipes are applied to variables or text in order to change their outcome_<br>
+    _argument preceded by **!** is **mandatory**, **@** is **optional** (not included)_
 
 ## More
 
-1. For frequently asked questions (FAQ) with their answers click [here](https://github.com/keybraker/portal/blob/master/docs/faq.md).
+1. For frequently asked questions (FAQ) with their answers click [here](https://portal-bot.xyz/help/).
 2. If you want to host Portal on your own system you can follow the guide [here](https://github.com/keybraker/portal/blob/master/docs/Hosting.md).
 3. Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md).
 
