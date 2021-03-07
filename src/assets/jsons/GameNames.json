@@ -4,6 +4,7 @@
             "type": "game",
             "locale": {
                 "en": "Among Us",
+                "de": "Among Us",
                 "gr": "Μεταξύ Μας"
             }
         },
@@ -12,6 +13,7 @@
             "type": "game",
             "locale": {
                 "en": "FIFA 21",
+                "de": "FIFA 21",
                 "gr": "FIFA 21"
             }
         },
@@ -20,6 +22,7 @@
             "type": "game",
             "locale": {
                 "en": "SWB II",
+                "de": "SWB II",
                 "gr": "ΠΑΠ ΙΙ"
             }
         },
@@ -28,6 +31,7 @@
             "type": "game",
             "locale": {
                 "en": "SC2",
+                "de": "SC2",
                 "gr": "SC2"
             }
         },
@@ -36,6 +40,7 @@
             "type": "game",
             "locale": {
                 "en": "LoL",
+                "de": "LoL",
                 "gr": "LoL"
             }
         },
@@ -44,6 +49,7 @@
             "type": "game",
             "locale": {
                 "en": "Heroes of the Storm",
+                "de": "Heroes of the Storm",
                 "gr": "Ήρωες της Καταιγίδας"
             }
         },
@@ -52,6 +58,7 @@
             "type": "game",
             "locale": {
                 "en": "Hearthstone",
+                "de": "Hearthstone",
                 "gr": "Πέτρινη Εστίας"
             }
         },
@@ -60,6 +67,7 @@
             "type": "game",
             "locale": {
                 "en": "Apex",
+                "de": "Apex",
                 "gr": "Κορυφαίοι"
             }
         },
@@ -68,6 +76,7 @@
             "type": "game",
             "locale": {
                 "en": "Minecraft",
+                "de": "Minecraft",
                 "gr": "Minecraft"
             }
         },
@@ -76,6 +85,7 @@
             "type": "game",
             "locale": {
                 "en": "Fortnite",
+                "de": "Fortnite",
                 "gr": "Φορτνάιτ"
             }
         },
@@ -84,6 +94,7 @@
             "type": "game",
             "locale": {
                 "en": "Don't Starve Together",
+                "de": "Don't Starve Together",
                 "gr": "Μην Πεθάνετε Μαζί"
             }
         },
@@ -92,6 +103,7 @@
             "type": "game",
             "locale": {
                 "en": "Overwatch",
+                "de": "Overwatch",
                 "gr": "Παρακολούθηση"
             }
         },
@@ -100,6 +112,7 @@
             "type": "game",
             "locale": {
                 "en": "The Mean Greens - Plastic Warfare",
+                "de": "The Mean Greens - Plastic Warfare",
                 "gr": "Οι Κακοί Πράσινο - Πλαστικό Πόλεμο"
             }
         },
@@ -108,6 +121,7 @@
             "type": "game",
             "locale": {
                 "en": "Valorant",
+                "de": "Valorant",
                 "gr": "Γενναίος"
             }
         },
@@ -116,6 +130,7 @@
             "type": "game",
             "locale": {
                 "en": "7 Days to Die",
+                "de": "7 Days to Die",
                 "gr": "7 Μέρες να Πεθάνεις"
             }
         },
@@ -124,6 +139,7 @@
             "type": "game",
             "locale": {
                 "en": "Plague Tale",
+                "de": "Plague Tale",
                 "gr": "Ιστορία Πανούκλας"
             }
         },
@@ -131,16 +147,27 @@
             "status": "Age of Empires II: Definitive Edition",
             "type": "game",
             "locale": {
-                "en": "AoE2",
-                "gr": "Εποχή των Αυτοκρατοριών 2"
+                "en": "AoE 2",
+                "de": "AoE 2",
+                "gr": "AoE 2"
+            }
+        },
+        {
+            "status": "Age of Empires II: HD Edition",
+            "type": "game",
+            "locale": {
+                "en": "AoE 2",
+                "de": "AoE 2",
+                "gr": "AoE 2"
             }
         },
         {
             "status": "Age of Empires II (2013)",
             "type": "game",
             "locale": {
-                "en": "AoE2",
-                "gr": "Εποχή των Αυτοκρατοριών 2"
+                "en": "AoE 2",
+                "de": "AoE 2",
+                "gr": "AoE 2"
             }
         },
         {
@@ -148,6 +175,7 @@
             "type": "game",
             "locale": {
                 "en": "ARK",
+                "de": "ARK",
                 "gr": "ΑΡΚ"
             }
         },
@@ -156,6 +184,7 @@
             "type": "game",
             "locale": {
                 "en": "Arma 3",
+                "de": "Arma 3",
                 "gr": "Άρμα 3"
             }
         },
@@ -164,6 +193,7 @@
             "type": "game",
             "locale": {
                 "en": "AC Odyssey",
+                "de": "AC Odyssey",
                 "gr": "Δολοφονικό Θρήσκευμα: Οδύσσεια"
             }
         },
@@ -172,6 +202,7 @@
             "type": "game",
             "locale": {
                 "en": "BATTLETECH",
+                "de": "BATTLETECH",
                 "gr": "Πολεμική Τεχνολογία"
             }
         },
@@ -180,6 +211,7 @@
             "type": "game",
             "locale": {
                 "en": "Beat Saber",
+                "de": "Beat Saber",
                 "gr": "Σέιπερ Νίκης"
             }
         },
@@ -188,6 +220,7 @@
             "type": "game",
             "locale": {
                 "en": "Black Desert",
+                "de": "Black Desert",
                 "gr": "Μαύρη Έρημος"
             }
         },
@@ -196,6 +229,7 @@
             "type": "game",
             "locale": {
                 "en": "BONEWORKS",
+                "de": "BONEWORKS",
                 "gr": "ΚΟΚΑΛΟΕΡΓΑΣΙΕΣ"
             }
         },
@@ -204,6 +238,7 @@
             "type": "game",
             "locale": {
                 "en": "CoD: Black Ops 2",
+                "de": "CoD: Black Ops 2",
                 "gr": "Κάλεσμα του Καθήκοντος: Μαύρος Χειριστής 2"
             }
         },
@@ -212,6 +247,7 @@
             "type": "game",
             "locale": {
                 "en": "CoD: Black Ops 3",
+                "de": "CoD: Black Ops 3",
                 "gr": "Κάλεσμα του Καθήκοντος Μαύρος Χειριστής 3"
             }
         },
@@ -220,6 +256,7 @@
             "type": "game",
             "locale": {
                 "en": "CODE VEIN",
+                "de": "CODE VEIN",
                 "gr": "ΚΩΔΙΚΑΣ ΦΛΕΒΑΣ"
             }
         },
@@ -228,6 +265,7 @@
             "type": "game",
             "locale": {
                 "en": "Conan Exile",
+                "de": "Conan Exile",
                 "gr": "Conan Εξορία"
             }
         },
@@ -236,6 +274,7 @@
             "type": "game",
             "locale": {
                 "en": "CS:GO",
+                "de": "CS:GO",
                 "gr": "CS:GO"
             }
         },
@@ -244,6 +283,7 @@
             "type": "game",
             "locale": {
                 "en": "DARK SOULS III",
+                "de": "DARK SOULS III",
                 "gr": "Μαύρες Ψυχές III"
             }
         },
@@ -252,6 +292,7 @@
             "type": "game",
             "locale": {
                 "en": "DARK SOULS III",
+                "de": "DARK SOULS III",
                 "gr": "Μαύρες Ψυχές III"
             }
         },
@@ -260,6 +301,7 @@
             "type": "game",
             "locale": {
                 "en": "DARK SOULS II",
+                "de": "DARK SOULS II",
                 "gr": "Μαύρες Ψυχές II"
             }
         },
@@ -268,6 +310,7 @@
             "type": "game",
             "locale": {
                 "en": "DARK SOULS II",
+                "de": "DARK SOULS II",
                 "gr": "Μαύρες Ψυχές II"
             }
         },
@@ -276,6 +319,7 @@
             "type": "game",
             "locale": {
                 "en": "Day",
+                "de": "Day",
                 "gr": "ΜέρεςΖ"
             }
         },
@@ -284,6 +328,7 @@
             "type": "game",
             "locale": {
                 "en": "Dead by Dayligh",
+                "de": "Dead by Dayligh",
                 "gr": "Νεκρός με το Ξημέρωμα"
             }
         },
@@ -292,6 +337,7 @@
             "type": "game",
             "locale": {
                 "en": "Deep Rock Galactic",
+                "de": "Deep Rock Galactic",
                 "gr": "Βαθύς Γαλαξιακός Βράχος"
             }
         },
@@ -300,6 +346,7 @@
             "type": "game",
             "locale": {
                 "en": "Destiny 2",
+                "de": "Destiny 2",
                 "gr": "Πεπρωμένο 2 "
             }
         },
@@ -308,6 +355,7 @@
             "type": "game",
             "locale": {
                 "en": "Devil May Cry 5",
+                "de": "Devil May Cry 5",
                 "gr": "Διάβολος Μπορεί να Κλάψει 5"
             }
         },
@@ -316,6 +364,7 @@
             "type": "game",
             "locale": {
                 "en": "Dishonored 2",
+                "de": "Dishonored 2",
                 "gr": "Ατιμωμένος 2"
             }
         },
@@ -324,6 +373,7 @@
             "type": "game",
             "locale": {
                 "en": "DOOM",
+                "de": "DOOM",
                 "gr": "Καταδίκη"
             }
         },
@@ -332,6 +382,7 @@
             "type": "game",
             "locale": {
                 "en": "DOOM Eternal",
+                "de": "DOOM Eternal",
                 "gr": "Αιώνια Καταδίκη"
             }
         },
@@ -340,6 +391,7 @@
             "type": "game",
             "locale": {
                 "en": "Dota 2",
+                "de": "Dota 2",
                 "gr": "Ντότα 2 "
             }
         },
@@ -348,6 +400,7 @@
             "type": "game",
             "locale": {
                 "en": "DRAGON BALL FighterZ",
+                "de": "DRAGON BALL FighterZ",
                 "gr": "Δρακόν Μπάλα ΠολεμιστήςΖ"
             }
         },
@@ -356,6 +409,7 @@
             "type": "game",
             "locale": {
                 "en": "Dying Light",
+                "de": "Dying Light",
                 "gr": "Φως θανάτου"
             }
         },
@@ -364,6 +418,7 @@
             "type": "game",
             "locale": {
                 "en": "Skyrim V",
+                "de": "Skyrim V",
                 "gr": "Σκάιριμ V"
             }
         },
@@ -372,6 +427,7 @@
             "type": "game",
             "locale": {
                 "en": "Elder Scrolls Online",
+                "de": "Elder Scrolls Online",
                 "gr": "Γεροντικοί Κύλινδροι στο διαδίκτυο"
             }
         },
@@ -380,6 +436,7 @@
             "type": "game",
             "locale": {
                 "en": "Fallout 4",
+                "de": "Fallout 4",
                 "gr": "Επιπτώσεις 4"
             }
         },
@@ -388,6 +445,7 @@
             "type": "game",
             "locale": {
                 "en": "Far Cry 5",
+                "de": "Far Cry 5",
                 "gr": "Πολύ Μακρυά 5"
             }
         },
@@ -396,6 +454,7 @@
             "type": "game",
             "locale": {
                 "en": "FINAL FANTASY XIV Online",
+                "de": "FINAL FANTASY XIV Online",
                 "gr": "Τελική Φαντασία στο διαδίκτυο"
             }
         },
@@ -404,6 +463,7 @@
             "type": "game",
             "locale": {
                 "en": "The Fores",
+                "de": "The Fores",
                 "gr": "Το Δάσος"
             }
         },
@@ -412,6 +472,7 @@
             "type": "game",
             "locale": {
                 "en": "Garry's Mod",
+                "de": "Garry's Mod",
                 "gr": "Η Μόντα του Γκάρι"
             }
         },
@@ -420,6 +481,7 @@
             "type": "game",
             "locale": {
                 "en": "Grand Theft Auto 5",
+                "de": "Grand Theft Auto 5",
                 "gr": "Μεγάλη Κλοπή Αυτοκινήτων 5"
             }
         },
@@ -428,6 +490,7 @@
             "type": "game",
             "locale": {
                 "en": "GreedFall",
+                "de": "GreedFall",
                 "gr": "Πτώση Απληστίας"
             }
         },
@@ -436,6 +499,7 @@
             "type": "game",
             "locale": {
                 "en": "Grim Daw",
+                "de": "Grim Daw",
                 "gr": "Απαίσια Αυγή"
             }
         },
@@ -444,6 +508,7 @@
             "type": "game",
             "locale": {
                 "en": "GTFO",
+                "de": "GTFO",
                 "gr": "ΒΓΑΕ"
             }
         },
@@ -452,6 +517,7 @@
             "type": "game",
             "locale": {
                 "en": "Hade",
+                "de": "Hade",
                 "gr": "Άδης"
             }
         },
@@ -460,6 +526,7 @@
             "type": "game",
             "locale": {
                 "en": "RL",
+                "de": "RL",
                 "gr": "Ρουκετάμαξα"
             }
         },
@@ -468,6 +535,7 @@
             "type": "game",
             "locale": {
                 "en": "Halo: The Master Chief Collection",
+                "de": "Halo: The Master Chief Collection",
                 "gr": "Φωτοστέφανο: Η κύρια συλλογή"
             }
         },
@@ -476,6 +544,7 @@
             "type": "game",
             "locale": {
                 "en": "Half-Life",
+                "de": "Half-Life",
                 "gr": "Μισή-Ζωή"
             }
         },
@@ -484,6 +553,7 @@
             "type": "game",
             "locale": {
                 "en": "Half-Life 2",
+                "de": "Half-Life 2",
                 "gr": "Μισή-Ζωή 2"
             }
         },
@@ -492,6 +562,7 @@
             "type": "game",
             "locale": {
                 "en": "Half-Life 2: Episode On",
+                "de": "Half-Life 2: Episode On",
                 "gr": "Μισή-Ζωή 2: Επεισόδιο Ένα"
             }
         },
@@ -500,6 +571,7 @@
             "type": "game",
             "locale": {
                 "en": "Half-Life 2: Episode Two",
+                "de": "Half-Life 2: Episode Two",
                 "gr": "Μισή-Ζωή 2: Επεισόδιο Δύο"
             }
         },
@@ -508,6 +580,7 @@
             "type": "game",
             "locale": {
                 "en": "Half-Life 2: Lost Coast",
+                "de": "Half-Life 2: Lost Coast",
                 "gr": "Μισή-Ζωή 2: Χαμένη Ακτή"
             }
         },
@@ -516,6 +589,7 @@
             "type": "game",
             "locale": {
                 "en": "Half-Life: Blue Shif",
+                "de": "Half-Life: Blue Shif",
                 "gr": "Μισή-Ζωή: Μπλε Μετατόπιση"
             }
         },
@@ -524,6 +598,7 @@
             "type": "game",
             "locale": {
                 "en": "Half-Life: Opposing Force",
+                "de": "Half-Life: Opposing Force",
                 "gr": "Μισή-Ζωή: Αντίθετη Δύναμη"
             }
         },
@@ -532,6 +607,7 @@
             "type": "game",
             "locale": {
                 "en": "HITMAN 2",
+                "de": "HITMAN 2",
                 "gr": "Πληρωμένος Δολοφόνος"
             }
         },
@@ -540,6 +616,7 @@
             "type": "game",
             "locale": {
                 "en": "Hollow Knigh",
+                "de": "Hollow Knigh",
                 "gr": "Κούφιος Ιππότης"
             }
         },
@@ -548,6 +625,7 @@
             "type": "game",
             "locale": {
                 "en": "Hunt: Showdown",
+                "de": "Hunt: Showdown",
                 "gr": "Κυνήγι: Αναμέτρηση"
             }
         },
@@ -556,6 +634,7 @@
             "type": "game",
             "locale": {
                 "en": "theHunter: Call of the Wild",
+                "de": "theHunter: Call of the Wild",
                 "gr": "ΟΚυνηγός: Κάλεσμα της Φύσης"
             }
         },
@@ -564,7 +643,17 @@
             "type": "game",
             "locale": {
                 "en": "Insurgency: Sandstorm",
+                "de": "Insurgency: Sandstorm",
                 "gr": "Εξέγερση: Αμμοθύελλα"
+            }
+        },
+        {
+            "status": "World of Tanks",
+            "type": "game",
+            "locale": {
+                "en": "World of Tanks",
+                "de": "World of Tanks",
+                "gr": "Κόσμος των Τάνκ"
             }
         },
         {
@@ -572,6 +661,7 @@
             "type": "game",
             "locale": {
                 "en": "Jurassic World Evolution",
+                "de": "Jurassic World Evolution",
                 "gr": "Ιουρασικός Κόσμος Εξέλιξη"
             }
         },
@@ -580,6 +670,7 @@
             "type": "game",
             "locale": {
                 "en": "Middle-earth™: Shadow of War",
+                "de": "Middle-earth™: Shadow of War",
                 "gr": "Μέση-Γη: Σκιά του Πολέμου"
             }
         },
@@ -588,6 +679,7 @@
             "type": "game",
             "locale": {
                 "en": "MONSTER HUNTER: WORLD",
+                "de": "MONSTER HUNTER: WORLD",
                 "gr": "ΚΥΝΗΓΟΣ ΤΕΡΑΤΩΝ: ΚΟΣΜΟΣ"
             }
         },
@@ -596,7 +688,17 @@
             "type": "game",
             "locale": {
                 "en": "MORDHA",
+                "de": "MORDHA",
                 "gr": "ΜΟΡΝΧΑ"
+            }
+        },
+        {
+            "status": "Wargame: Red Dragon",
+            "type": "game",
+            "locale": {
+                "en": "Wargame",
+                "de": "Wargame",
+                "gr": "Πολεμοπαίχνιδο"
             }
         },
         {
@@ -604,6 +706,7 @@
             "type": "game",
             "locale": {
                 "en": "Path of Exile",
+                "de": "Path of Exile",
                 "gr": "Μονοπάτι της Εξορίας"
             }
         },
@@ -612,6 +715,7 @@
             "type": "game",
             "locale": {
                 "en": "PAYDAY 2",
+                "de": "PAYDAY 2",
                 "gr": "ΗΜΕΡΑ ΠΛΗΡΩΜΗΣ 2"
             }
         },
@@ -620,6 +724,7 @@
             "type": "game",
             "locale": {
                 "en": "PUBG",
+                "de": "PUBG",
                 "gr": "PUBG"
             }
         },
@@ -628,6 +733,7 @@
             "type": "game",
             "locale": {
                 "en": "Portal",
+                "de": "Portal",
                 "gr": "Πύλη"
             }
         },
@@ -636,6 +742,7 @@
             "type": "game",
             "locale": {
                 "en": "Portal 2",
+                "de": "Portal 2",
                 "gr": "Πύλη 2"
             }
         },
@@ -644,6 +751,7 @@
             "type": "game",
             "locale": {
                 "en": "Pummel Party",
+                "de": "Pummel Party",
                 "gr": "Πάρτι Γρονθοκοπήματος"
             }
         },
@@ -652,6 +760,7 @@
             "type": "game",
             "locale": {
                 "en": "Red Dead Redemption 2",
+                "de": "Red Dead Redemption 2",
                 "gr": "Κόκκινο Νεκρή Εξαργύρωση 2"
             }
         },
@@ -660,6 +769,7 @@
             "type": "game",
             "locale": {
                 "en": "Remnant: From the Ashes",
+                "de": "Remnant: From the Ashes",
                 "gr": "Υπόλοιπο: Από τις Στάχτες"
             }
         },
@@ -668,6 +778,7 @@
             "type": "game",
             "locale": {
                 "en": "RESIDENT EVIL 2",
+                "de": "RESIDENT EVIL 2",
                 "gr": "ΚΑΤΟΙΚΟΣ ΚΑΚΟΥ 2"
             }
         },
@@ -676,6 +787,7 @@
             "type": "game",
             "locale": {
                 "en": "Risk of Rain 2",
+                "de": "Risk of Rain 2",
                 "gr": "Κίνδυνος βροχής 2"
             }
         },
@@ -684,6 +796,7 @@
             "type": "game",
             "locale": {
                 "en": "Rocket League",
+                "de": "Rocket League",
                 "gr": "Λίγκα Ρουκετών"
             }
         },
@@ -692,6 +805,7 @@
             "type": "game",
             "locale": {
                 "en": "Rust",
+                "de": "Rust",
                 "gr": "Σκουριά"
             }
         },
@@ -700,6 +814,7 @@
             "type": "game",
             "locale": {
                 "en": "Sekiro: Shadows Die Twic",
+                "de": "Sekiro: Shadows Die Twic",
                 "gr": "Σεκίρο: Οι σκιές πεθαίνουν δύο φορές"
             }
         },
@@ -708,6 +823,7 @@
             "type": "game",
             "locale": {
                 "en": "Shadow of the Tomb Raider",
+                "de": "Shadow of the Tomb Raider",
                 "gr": "Σκιά του Επιδρομέα Ταφών"
             }
         },
@@ -716,6 +832,7 @@
             "type": "game",
             "locale": {
                 "en": "SMITΕ",
+                "de": "SMITΕ",
                 "gr": "ΧΤΥΠΩ"
             }
         },
@@ -724,6 +841,7 @@
             "type": "game",
             "locale": {
                 "en": "STAR WARS: Fallen Order",
+                "de": "STAR WARS: Fallen Order",
                 "gr": "ΠΟΛΕΜΟΣ ΤΩΝ ΑΣΤΡΩΝ: Πεσμένη παραγγελία"
             }
         },
@@ -732,6 +850,7 @@
             "type": "game",
             "locale": {
                 "en": "Team Fortress 2",
+                "de": "Team Fortress 2",
                 "gr": "Ομαδικό φρούριο 2"
             }
         },
@@ -740,6 +859,7 @@
             "type": "game",
             "locale": {
                 "en": "TEKKEN 7",
+                "de": "TEKKEN 7",
                 "gr": "TEKKEN 7"
             }
         },
@@ -748,6 +868,7 @@
             "type": "game",
             "locale": {
                 "en": "Terraria",
+                "de": "Terraria",
                 "gr": "Terraria"
             }
         },
@@ -756,6 +877,7 @@
             "type": "game",
             "locale": {
                 "en": "Rainbow Six Siege",
+                "de": "Rainbow Six Siege",
                 "gr": "Ουράνιο-Τόξο Έξι Πολιορκία"
             }
         },
@@ -764,6 +886,7 @@
             "type": "game",
             "locale": {
                 "en": "Total War: THREE KINGDOM",
+                "de": "Total War: THREE KINGDOM",
                 "gr": "Απόλυτος πόλεμος: ΤΡΙΑ ΒΑΣΙΛΕΙΑ"
             }
         },
@@ -772,6 +895,7 @@
             "type": "game",
             "locale": {
                 "en": "Total War: WARHAMMER",
+                "de": "Total War: WARHAMMER",
                 "gr": "Απόλυτος πόλεμος: ΠΟΛΕΜΟΣΦΥΡΙ"
             }
         },
@@ -780,6 +904,7 @@
             "type": "game",
             "locale": {
                 "en": "Total War: WARHAMMER II",
+                "de": "Total War: WARHAMMER II",
                 "gr": "Απόλυτος πόλεμος: ΠΟΛΕΜΟΣΦΥΡΙ 2"
             }
         },
@@ -788,6 +913,7 @@
             "type": "game",
             "locale": {
                 "en": "Totally Accurate Battle Simulator",
+                "de": "Totally Accurate Battle Simulator",
                 "gr": "Πλήρως Ακριβής Προσομοιωτής Μάχης"
             }
         },
@@ -796,6 +922,7 @@
             "type": "game",
             "locale": {
                 "en": "Warframe",
+                "de": "Warframe",
                 "gr": "Πολεμικό Πλαίσιο"
             }
         },
@@ -804,6 +931,7 @@
             "type": "game",
             "locale": {
                 "en": "Warhammer: Vermintide 2",
+                "de": "Warhammer: Vermintide 2",
                 "gr": "Πολεμοσφύρι: Βερμιντίδη 2"
             }
         },
@@ -812,6 +940,7 @@
             "type": "game",
             "locale": {
                 "en": "War Thunder",
+                "de": "War Thunder",
                 "gr": "Κεραυνός του πολέμου"
             }
         },
@@ -820,6 +949,7 @@
             "type": "game",
             "locale": {
                 "en": "Witcher 3",
+                "de": "Witcher 3",
                 "gr": "Γητευτής 3"
             }
         },
@@ -828,6 +958,7 @@
             "type": "game",
             "locale": {
                 "en": "Witcher 2",
+                "de": "Witcher 2",
                 "gr": "Γητευτής 2"
             }
         },
@@ -836,6 +967,7 @@
             "type": "game",
             "locale": {
                 "en": "Witcher 2",
+                "de": "Witcher 2",
                 "gr": "Γητευτής 2"
             }
         }

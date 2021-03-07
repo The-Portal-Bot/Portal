@@ -46,7 +46,7 @@ export function create_music_message(
 };
 
 export function update_music_message(
-	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult,
+	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve) => {
@@ -67,13 +67,13 @@ export function update_music_message(
 			: 'empty';
 
 		const music_message_emb = create_rich_embed(
-			yts.title,
-			yts.url,
+			yts ? yts.title : '-',
+			yts ? yts.url : '-',
 			'#e60026',
 			[
-				{ emote: 'Duration', role: yts.timestamp, inline: true },
-				{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
-				{ emote: 'Uploaded', role: yts.ago, inline: true },
+				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
+				{ emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
+				{ emote: 'Uploaded', role: yts ? yts.ago: '-', inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
 				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
@@ -81,7 +81,7 @@ export function update_music_message(
 			null,
 			true,
 			null,
-			yts.thumbnail,
+			yts ? yts.thumbnail : null,
 			animated
 				? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
 				: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'

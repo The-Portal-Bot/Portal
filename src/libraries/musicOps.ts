@@ -71,7 +71,7 @@ function spawn_dispatcher(
 		type: 'opus',
 		bitrate: 96000
 	}
-	
+
 	return voice_connection.play(stream, stream_options);
 }
 
@@ -384,8 +384,6 @@ export async function play(
 				});
 			}
 
-			const current_video = guild_object.music_queue[0];
-
 			join_by_reaction(client, guild_object, user, false)
 				.then(r => {
 					if (r.result) {
@@ -393,7 +391,7 @@ export async function play(
 							update_music_message(
 								guild,
 								guild_object,
-								current_video,
+								guild_object.music_queue[0],
 								'failed to join voice channel 3'
 							);
 
@@ -403,7 +401,7 @@ export async function play(
 							});
 						}
 
-						const dispatcher = spawn_dispatcher(current_video, r.voice_connection);
+						const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r.voice_connection);
 
 						dispatcher.once('finish', () => {
 							dispatcher.destroy();
@@ -414,7 +412,7 @@ export async function play(
 						update_music_message(
 							guild,
 							guild_object,
-							current_video,
+							guild_object.music_queue[0],
 							'playing video from queue'
 						);
 
@@ -426,7 +424,7 @@ export async function play(
 						update_music_message(
 							guild,
 							guild_object,
-							current_video,
+							guild_object.music_queue[0],
 							r.value
 						);
 
@@ -447,7 +445,7 @@ export async function play(
 };
 
 export async function pause(
-	voice_connection: VoiceConnection | undefined,
+	voice_connection: VoiceConnection | undefined, user: User,
 	guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {

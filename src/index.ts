@@ -4,9 +4,9 @@ import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guildOps';
-import { is_authorised, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/helpOps';
+import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
-import { fetch_guild, fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
+import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
 import { add_points_message } from './libraries/userOps';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
@@ -401,7 +401,8 @@ exports.log_portal = log_portal;
 function portal_preprocessor(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
-	if (handle_ignored_members(message, guild_object)) {
+	if (handle_ignored_members(message, guild_object) ||
+		handle_ignored_roles(message, guild_object)) {
 		if (!handle_url_channels(message, guild_object)) {
 			anti_spam.message(message);
 			if (guild_object.music_data.channel_id === message.channel.id) {
@@ -444,6 +445,14 @@ function portal_preprocessor(
 			return false;
 		}
 	}
+}
+
+function handle_ignored_roles(
+	message: Message, guild_object: GuildPrtl
+): boolean {
+	if (!message.member) return false;
+	return message.member.roles.cache.some(r =>
+		guild_object.ignore_role.includes(r.id));
 }
 
 function handle_ignored_members(

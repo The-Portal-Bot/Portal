@@ -5,6 +5,7 @@
 			"type": "browser",
 			"locale": {
 				"en": "Chrome",
+				"de": "Chrome",
 				"gr": "Κρόουμ"
 			}
 		},
@@ -13,6 +14,7 @@
 			"type": "music",
 			"locale": {
 				"en": "♫",
+				"de": "♫",
 				"gr": "♫"
 			}
 		},
@@ -21,6 +23,7 @@
 			"type": "code",
 			"locale": {
 				"en": "VSCode",
+				"de": "VSCode",
 				"gr": "ΟΣΚώδικα"
 			}
 		},
@@ -29,6 +32,7 @@
 			"type": "code",
 			"locale": {
 				"en": "VSCode",
+				"de": "VSCode",
 				"gr": "ΟΣΚώδικα"
 			}
 		},
@@ -37,6 +41,7 @@
 			"type": "code",
 			"locale": {
 				"en": "VSCode",
+				"de": "VSCode",
 				"gr": "ΟΣΚώδικα"
 			}
 		},
@@ -45,6 +50,7 @@
 			"type": "code",
 			"locale": {
 				"en": "IntelliJ IDEA",
+				"de": "IntelliJ IDEA",
 				"gr": "ΈξυπνοΤζει ΙΔΕΑ"
 			}
 		},
@@ -53,6 +59,7 @@
 			"type": "code",
 			"locale": {
 				"en": "Sublime Tex",
+				"de": "Sublime Tex",
 				"gr": "Πανέμορφο Κείμενο"
 			}
 		},
@@ -61,6 +68,7 @@
 			"type": "code",
 			"locale": {
 				"en": "Firefox",
+				"de": "Firefox",
 				"gr": "Πυραλεπού"
 			}
 		},
@@ -69,6 +77,7 @@
 			"type": "chat",
 			"locale": {
 				"en": "Discord",
+				"de": "Discord",
 				"gr": "Ντίσκορντ"
 			}
 		}
