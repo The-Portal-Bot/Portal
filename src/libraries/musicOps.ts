@@ -3,34 +3,9 @@ import { Client, Guild, StreamDispatcher, StreamOptions, User, VoiceConnection }
 import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { join_by_reaction, update_music_message } from './helpOps';
-import { clear_music_vote, insert_music_video, update_guild, fetch_guild_music_queue } from './mongoOps';
+import { join_by_reaction } from './helpOps';
+import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongoOps';
 // const ytdl = require('ytdl-core');
-
-const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-	'.github.io/master/assets/img/logo.png';
-
-const empty_message: yts.VideoSearchResult = {
-	type: 'video',
-	videoId: '-',
-	url: 'Just type and I\'ll play',
-	title: 'Music Player',
-	description: '-',
-	image: '-',
-	thumbnail: portal_icon_url,
-	seconds: 0,
-	timestamp: '-',
-	duration: {
-		seconds: 0,
-		timestamp: '0'
-	},
-	ago: '-',
-	views: 0,
-	author: {
-		name: '-',
-		url: '-'
-	}
-};
 
 async function pop_music_queue(
 	guild_object: GuildPrtl
@@ -76,7 +51,7 @@ function spawn_dispatcher(
 }
 
 async function push_video_to_queue(
-	guild: Guild, guild_object: GuildPrtl, video: yts.VideoSearchResult
+	guild_object: GuildPrtl, video: yts.VideoSearchResult
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
 		if (!guild_object.music_queue) {
@@ -89,14 +64,6 @@ async function push_video_to_queue(
 				const msg = r
 					? `${video.title} has been added to queue`
 					: `${video.title} failed to get added to queue`;
-				// update_music_message(
-				// 	guild,
-				// 	guild_object,
-				// 	guild_object.music_queue
-				// 		? guild_object.music_queue[0]
-				// 		: video,
-				// 	msg,
-				// 	false);
 
 				return resolve({
 					result: r,
@@ -104,19 +71,9 @@ async function push_video_to_queue(
 				});
 			})
 			.catch(e => {
-				const msg = `error while adding to queue: ${e}`;
-				// update_music_message(
-				// 	guild,
-				// 	guild_object,
-				// 	guild_object.music_queue
-				// 		? guild_object.music_queue[0]
-				// 		: video,
-				// 	msg,
-				// 	false);
-
 				return resolve({
 					result: false,
-					value: msg
+					value: `error while adding to queue: ${e}`
 				});
 			});
 	});
@@ -127,7 +84,7 @@ async function start_playback(
 	guild: Guild, guild_object: GuildPrtl, video: yts.VideoSearchResult
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
-		push_video_to_queue(guild, guild_object, video)
+		push_video_to_queue(guild_object, video)
 			.then(push_response => {
 				if (voice_connection) {
 					if (!voice_connection.dispatcher) {
@@ -144,29 +101,11 @@ async function start_playback(
 							clear_music_vote(guild_object.id);
 						});
 
-						// update_music_message(
-						// 	guild,
-						// 	guild_object,
-						// 	guild_object.music_queue
-						// 		? guild_object.music_queue[0]
-						// 		: video,
-						// 	'playback started'
-						// );
-
 						return resolve({
 							result: true,
 							value: 'playback started'
 						});
 					} else {
-						// update_music_message(
-						// 	guild,
-						// 	guild_object,
-						// 	guild_object.music_queue
-						// 		? guild_object.music_queue[0]
-						// 		: video,
-						// 	'already playing'
-						// );
-
 						return resolve({
 							result: true,
 							value: 'already playing'
@@ -177,14 +116,6 @@ async function start_playback(
 						.then(r => {
 							if (r.result) {
 								if (!r.voice_connection) {
-									// update_music_message(
-									// 	guild,
-									// 	guild_object,
-									// 	guild_object.music_queue
-									// 		? guild_object.music_queue[0]
-									// 		: video,
-									// 	'could not join your voice channel');
-
 									return resolve({
 										result: false,
 										value: `could not join your voice channel`
@@ -204,29 +135,11 @@ async function start_playback(
 									clear_music_vote(guild_object.id);
 								});
 
-								// update_music_message(
-								// 	guild,
-								// 	guild_object,
-								// 	guild_object.music_queue
-								// 		? guild_object.music_queue[0]
-								// 		: video,
-								// 	'playback started'
-								// );
-
 								return resolve({
 									result: true,
 									value: 'playback started'
 								});
 							} else {
-								// update_music_message(
-								// 	guild,
-								// 	guild_object,
-								// 	guild_object.music_queue
-								// 		? guild_object.music_queue[0]
-								// 		: video,
-								// 	r.value
-								// );
-
 								return resolve({
 									result: false,
 									value: r.value
@@ -234,29 +147,14 @@ async function start_playback(
 							}
 						})
 						.catch(e => {
-							const msg = `error while joining voice channel ${e}`;
-							// update_music_message(
-							// 	guild,
-							// 	guild_object,
-							// 	empty_message,
-							// 	msg
-							// );
-
 							return resolve({
 								result: false,
-								value: msg
+								value: `error while joining channel (${e})`
 							});
 						});
 				}
 			})
 			.catch(e => {
-				// update_music_message(
-				// 	guild,
-				// 	guild_object,
-				// 	empty_message,
-				// 	`error while adding video to queue 2: ${e}`
-				// );
-
 				return resolve({
 					result: false,
 					value: `error while adding video to queue 2: ${e}`
@@ -297,15 +195,6 @@ export async function start(
 
 			})
 			.catch(e => {
-				// update_music_message(
-				// 	guild,
-				// 	guild_object,
-				// 	guild_object.music_queue[0]
-				// 		? guild_object.music_queue[0]
-				// 		: empty_message,
-				// 	`error while searching youtube (${e})`
-				// );
-
 				return resolve({
 					result: false,
 					value: `error while searching youtube (${e})`
@@ -323,12 +212,6 @@ export async function play(
 			if (voice_connection.dispatcher) {
 				if (voice_connection.dispatcher.paused) {
 					voice_connection.dispatcher.resume();
-					update_music_message(
-						guild,
-						guild_object,
-						guild_object.music_queue[0],
-						'playback resumed'
-					);
 
 					return resolve({
 						result: true,
@@ -339,14 +222,6 @@ export async function play(
 				pop_music_queue(guild_object)
 					.then(next_video => {
 						if (!next_video) {
-							update_music_message(
-								guild,
-								guild_object,
-								empty_message,
-								'queue is empty',
-								false
-							);
-
 							return resolve({
 								result: false,
 								value: 'queue is empty'
@@ -360,13 +235,6 @@ export async function play(
 							clear_music_vote(guild_object.id);
 						});
 
-						update_music_message(
-							guild,
-							guild_object,
-							guild_object.music_queue[0],
-							'playing queued song'
-						);
-
 						return resolve({
 							result: true,
 							value: 'playing queued song'
@@ -375,14 +243,6 @@ export async function play(
 			}
 		} else {
 			if (guild_object.music_queue.length === 0) {
-				// update_music_message(
-				// 	guild,
-				// 	guild_object,
-				// 	empty_message,
-				// 	'queue is empty',
-				// 	false
-				// );
-
 				return resolve({
 					result: false,
 					value: 'queue is empty'
@@ -393,13 +253,6 @@ export async function play(
 				.then(r => {
 					if (r.result) {
 						if (!r.voice_connection) {
-							// update_music_message(
-							// 	guild,
-							// 	guild_object,
-							// 	guild_object.music_queue[0],
-							// 	'could not join voice channel'
-							// );
-
 							return resolve({
 								result: false,
 								value: 'could not join voice channel'
@@ -414,25 +267,11 @@ export async function play(
 							clear_music_vote(guild_object.id);
 						});
 
-						// update_music_message(
-						// 	guild,
-						// 	guild_object,
-						// 	guild_object.music_queue[0],
-						// 	'playing video from queue'
-						// );
-
 						return resolve({
 							result: true,
 							value: 'playing video from queue'
 						});
 					} else {
-						// update_music_message(
-						// 	guild,
-						// 	guild_object,
-						// 	guild_object.music_queue[0],
-						// 	r.value
-						// );
-
 						return resolve({
 							result: false,
 							value: r.value
@@ -482,41 +321,6 @@ export async function pause(
 	});
 };
 
-// export async function stop(
-// 	voice_connection: VoiceConnection | undefined,
-// 	guild: Guild, guild_object: GuildPrtl
-// ): Promise<ReturnPormise> {
-// 	return new Promise((resolve) => {
-// 		let return_value: ReturnPormise = {
-// 			result: false,
-// 			value: ''
-// 		};
-
-// 		if (voice_connection) {
-// 			if (voice_connection.dispatcher) {
-// 				voice_connection.dispatcher.end();
-// 				return_value.result = true;
-// 				return_value.value = 'playback stopped';
-// 			} else {
-// 				return_value.result = false;
-// 				return_value.value = 'no playback';
-// 			}
-// 		} else {
-// 			return_value.result = false;
-// 			return_value.value = 'portal is not connected';
-// 		}
-
-// 		update_music_message(
-// 			guild,
-// 			guild_object,
-// 			empty_message,
-// 			return_value.value
-// 		);
-
-// 		return resolve(return_value);
-// 	});
-// };
-
 export async function skip(
 	voice_connection: VoiceConnection | undefined, user: User,
 	client: Client, guild: Guild, guild_object: GuildPrtl
@@ -529,14 +333,6 @@ export async function skip(
 				pop_music_queue(guild_object)
 					.then(next_video => {
 						if (!next_video) {
-							// update_music_message(
-							// 	guild,
-							// 	guild_object,
-							// 	empty_message,
-							// 	'queue is empty',
-							// 	false
-							// );
-
 							return resolve({
 								result: false,
 								value: 'queue is empty'
@@ -550,13 +346,6 @@ export async function skip(
 							clear_music_vote(guild_object.id);
 						});
 
-						// update_music_message(
-						// 	guild,
-						// 	guild_object,
-						// 	next_video,
-						// 	'skipped to queued song'
-						// );
-
 						return resolve({
 							result: true,
 							value: 'skipped to queued song'
@@ -568,14 +357,6 @@ export async function skip(
 				.then(next_video => {
 
 					if (!next_video) {
-						// update_music_message(
-						// 	guild,
-						// 	guild_object,
-						// 	empty_message,
-						// 	'queue is empty',
-						// 	false
-						// );
-
 						return resolve({
 							result: false,
 							value: 'queue is empty'
@@ -586,13 +367,6 @@ export async function skip(
 						.then(r => {
 							if (r.result) {
 								if (!r.voice_connection) {
-									// update_music_message(
-									// 	guild,
-									// 	guild_object,
-									// 	guild_object.music_queue[0],
-									// 	'could not join voice channel'
-									// );
-
 									return resolve({
 										result: false,
 										value: 'could not join voice channel'
@@ -607,25 +381,11 @@ export async function skip(
 									clear_music_vote(guild_object.id);
 								});
 
-								// update_music_message(
-								// 	guild,
-								// 	guild_object,
-								// 	guild_object.music_queue[0],
-								// 	'playing video from queue'
-								// );
-
 								return resolve({
 									result: true,
 									value: 'playing video from queue'
 								});
 							} else {
-								// update_music_message(
-								// 	guild,
-								// 	guild_object,
-								// 	guild_object.music_queue[0],
-								// 	r.value
-								// );
-
 								return resolve({
 									result: false,
 									value: r.value

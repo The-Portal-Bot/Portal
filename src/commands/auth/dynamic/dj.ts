@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { update_member, insert_authorised_role } from "../../../libraries/mongoOps";
+import { update_member } from "../../../libraries/mongoOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
@@ -10,8 +10,7 @@ module.exports = async (
 		if (args.length <= 0) {
 			return resolve({
 				result: false,
-				value: 'give a member name ' +
-					'or member id, \nyou can run `./help authorise` for help'
+				value: 'must give one argument, \nyou can run `./help dj` for help'
 			});
 		}
 
@@ -24,7 +23,8 @@ module.exports = async (
 
 		const member_data = args.join(' ');
 
-		const member = message.guild?.members.cache.find(mb => mb.id === member_data || mb.displayName === member_data);
+		const member = message.guild?.members.cache.find(mb => 
+			mb.id === member_data || mb.displayName === member_data);
 
 		if (!member) {
 			return resolve({
@@ -38,7 +38,7 @@ module.exports = async (
 		if (!member_object) {
 			return resolve({
 				result: false,
-				value: `member could not be found in portal`
+				value: `member could not be found in Portal`
 			});
 		}
 

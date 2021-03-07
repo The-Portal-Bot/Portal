@@ -72,8 +72,6 @@ async function reaction_role_manager(
 							current_member.roles.add(role_to_give)
 								.then(member => {
 									if (!!member) {
-										clear_user_reactions(messageReaction, user);
-
 										resolve({
 											result: true,
 											value: `you have been assigned to ${role_map.role_id}`
@@ -106,8 +104,6 @@ async function reaction_role_manager(
 							current_member.roles.remove(role_to_strip)
 								.then(member => {
 									if (!!member) {
-										clear_user_reactions(messageReaction, user);
-
 										resolve({
 											result: true,
 											value: `you have been removed from ${role_map.role_id}`
@@ -167,9 +163,9 @@ async function reaction_music_manager(
 		const member_object = guild_object.member_list
 			.find(m => m.id === user.id);
 
-		if (!guild_object.music_data.votes) {
-			clear_music_vote(guild_object.id);
-		}
+		// if (!guild_object.music_data.votes) {
+		// 	clear_music_vote(guild_object.id);
+		// }
 
 		const portal_voice_connection = client.voice?.connections
 			.find(c => c.channel.guild.id === messageReaction.message?.guild?.id);
@@ -190,9 +186,13 @@ async function reaction_music_manager(
 					messageReaction.message.guild, guild_object
 				)
 					.then(r => {
+						clear_music_vote(guild_object.id);
+
 						return resolve(r);
 					})
 					.catch(e => {
+						clear_music_vote(guild_object.id);
+
 						return resolve({
 							result: false,
 							value: `error while playing (${e})`
@@ -204,9 +204,13 @@ async function reaction_music_manager(
 			case '⏸': {
 				pause(portal_voice_connection)
 					.then(r => {
+						clear_music_vote(guild_object.id);
+
 						return resolve(r);
 					})
 					.catch(e => {
+						clear_music_vote(guild_object.id);
+
 						return resolve({
 							result: false,
 							value: `error while pausing (${e})`
@@ -266,27 +270,29 @@ async function reaction_music_manager(
 						if (!(votes >= users / 2)) {
 							return resolve({
 								result: false,
-								value: `${votes}/${users / 2} votes`
+								value: `${votes}/${Math.round(users / 2)} votes`
 							});
 						}
 					}
-
-					skip(
-						portal_voice_connection, user, client,
-						messageReaction.message.guild, guild_object
-					)
-						.then(r => {
-							clear_music_vote(guild_object.id);
-
-							return resolve(r)
-						})
-						.catch(e => {
-							return resolve({
-								result: false,
-								value: `error while skipping (${e})`
-							})
-						});
 				}
+
+				skip(
+					portal_voice_connection, user, client,
+					messageReaction.message.guild, guild_object
+				)
+					.then(r => {
+						clear_music_vote(guild_object.id);
+
+						return resolve(r)
+					})
+					.catch(e => {
+						clear_music_vote(guild_object.id);
+
+						return resolve({
+							result: false,
+							value: `error while skipping (${e})`
+						})
+					});
 
 				break;
 			}
@@ -299,12 +305,16 @@ async function reaction_music_manager(
 						.find(g => g.id === guild_object.id);
 
 					if (!guild) {
+						clear_music_vote(guild_object.id);
+
 						return resolve({
 							result: false,
 							value: 'could fetch guild from client'
 						});
 					}
 				}
+
+				clear_music_vote(guild_object.id);
 
 				return resolve({
 					result: true,
@@ -322,24 +332,15 @@ async function reaction_music_manager(
 							portal_voice_connection.disconnect();
 						}
 
+						clear_music_vote(guild_object.id);
+
 						return resolve({
 							result: true,
 							value: 'Portal has been disconnected'
 						});
 					})
 					.catch(e => {
-						if (messageReaction.message.guild) {
-							update_music_message(
-								messageReaction.message.guild,
-								guild_object,
-								guild_object.music_queue
-									? guild_object.music_queue[0]
-									: empty_message,
-								`Portal failed to get disconnected (${e})`
-							);
-						}
-
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve({
 							result: false,
@@ -382,9 +383,13 @@ module.exports = async (
 						if (guild_object.role_list.some(r => r.message_id === args.messageReaction.message.id)) {
 							reaction_role_manager(guild_object, args.messageReaction, args.user)
 								.then(r => {
+									clear_user_reactions(args.messageReaction, args.user);
+
 									return resolve(r);
 								})
 								.catch(e => {
+									clear_user_reactions(args.messageReaction, args.user);
+
 									return resolve(e);
 								});
 						} else if (guild_object.music_data.message_id === args.messageReaction.message.id) {
@@ -437,7 +442,7 @@ module.exports = async (
 									});
 
 								args.messageReaction.message.reply(
-									`Poll winner is option ${winner.emoji} with ${winner.count} votes`
+									`Poll winner is option ${winner.emoji} with ${(winner.count ? winner.count : 0)- 1} votes`
 								);
 
 								remove_poll(current_guild.id, args.messageReaction.message.id)

@@ -1117,17 +1117,7 @@ export async function deleted_channel_sync(
                     } else {
                         const current_text = <TextChannel>channel_to_remove;
 
-                        if (guild_object.spotify === current_text.id) {
-                            update_guild(current_text.guild.id, 'spotify', 'null')
-                                .then(r => {
-                                    return r
-                                        ? resolve(ChannelTypePrtl.spotify)
-                                        : resolve(ChannelTypePrtl.unknown)
-                                })
-                                .catch(() => {
-                                    return resolve(ChannelTypePrtl.unknown)
-                                });
-                        } else if (guild_object.announcement === current_text.id) {
+                        if (guild_object.announcement === current_text.id) {
                             update_guild(current_text.guild.id, 'announcement', 'null')
                                 .then(r => {
                                     return r
@@ -1151,7 +1141,22 @@ export async function deleted_channel_sync(
                         } else {
                             for (let i = 0; i < guild_object.url_list.length; i++) {
                                 if (guild_object.url_list[i] === current_text.id) {
-                                    insert_url(current_text.guild.id, current_text.id)
+                                    remove_url(current_text.guild.id, current_text.id)
+                                        .then(r => {
+                                            return r
+                                                ? resolve(ChannelTypePrtl.url)
+                                                : resolve(ChannelTypePrtl.unknown);
+                                        })
+                                        .catch(() => {
+                                            return resolve(ChannelTypePrtl.unknown);
+                                        });
+                                    break;
+                                }
+                            }
+
+                            for (let i = 0; i < guild_object.ignore_list.length; i++) {
+                                if (guild_object.ignore_list[i] === current_text.id) {
+                                    remove_ignore(current_text.guild.id, current_text.id)
                                         .then(r => {
                                             return r
                                                 ? resolve(ChannelTypePrtl.url)

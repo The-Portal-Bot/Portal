@@ -73,7 +73,7 @@ export function update_music_message(
 			[
 				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
 				{ emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
-				{ emote: 'Uploaded', role: yts ? yts.ago: '-', inline: true },
+				{ emote: 'Uploaded', role: yts ? yts.ago : '-', inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
 				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
@@ -161,35 +161,31 @@ export async function join_by_reaction(
 			});
 		}
 
-		const current_voice = user.presence.member?.voice.channel;
-
-		if (!current_voice) {
-			return resolve({
-				result: false,
-				value: `could not fing your voice channel`,
-				voice_connection: undefined,
-			});
-		}
-
 		const voice_connection_in_guild = client.voice?.connections
 			.find(connection => connection.channel.guild.id === user.presence.member?.voice.channel?.guild.id);
 
-		if (voice_connection_in_guild) {
-			if (voice_connection_in_guild.channel.id === user.presence.member?.voice.channel?.id) {
-				voice_connection_in_guild?.voice?.setSelfDeaf(true);
-				return resolve({
-					result: true,
-					value: 'already in voice channel',
-					voice_connection: voice_connection_in_guild
-				});
-			} else {
+		if (voice_connection_in_guild &&
+			voice_connection_in_guild.channel.id === user.presence.member.voice.channel?.id
+		) {
+			voice_connection_in_guild?.voice?.setSelfDeaf(true);
+			return resolve({
+				result: true,
+				value: 'already in voice channel',
+				voice_connection: voice_connection_in_guild
+			});
+		} else if (!voice_connection_in_guild ||
+			(voice_connection_in_guild && !voice_connection_in_guild.channel.members.some(m => !m.user.bot))
+		) {
+			const current_voice = user.presence.member?.voice.channel;
+
+			if (!current_voice) {
 				return resolve({
 					result: false,
-					value: 'playing music in another channel',
-					voice_connection: voice_connection_in_guild
+					value: `could not find your voice channel`,
+					voice_connection: undefined,
 				});
 			}
-		} else {
+
 			current_voice.join()
 				.then(response => {
 					if (announce_entrance) {
@@ -236,24 +232,6 @@ export async function join_user_voice(
 			});
 		}
 
-		const current_voice = message.member.voice.channel;
-
-		if (!current_voice) {
-			return resolve({
-				result: false,
-				value: 'you are not connected to any channel',
-				voice_connection: undefined
-			});
-		}
-
-		if (current_voice.guild.id !== message.guild.id) {
-			return resolve({
-				result: false,
-				value: 'your current channel is on another guild',
-				voice_connection: undefined
-			});
-		}
-
 		if (!guild_object) {
 			return resolve({
 				result: false,
@@ -272,23 +250,39 @@ export async function join_user_voice(
 
 		const voice_connection_in_guild = client.voice.connections
 			.find(connection => connection.channel.guild.id === message.guild?.id);
+			
+		if (
+			voice_connection_in_guild &&
+			voice_connection_in_guild.channel.id === message.member.voice.channel?.id
+		) {
+			voice_connection_in_guild?.voice?.setSelfDeaf(true);
+			return resolve({
+				result: true,
+				value: 'already in voice channel',
+				voice_connection: voice_connection_in_guild
+			});
+		} else if (
+			!voice_connection_in_guild ||
+			(voice_connection_in_guild && !voice_connection_in_guild.channel.members.some(m => !m.user.bot))
+		) {
+			const current_voice = message.member.voice.channel;
 
-		if (voice_connection_in_guild) {
-			if (voice_connection_in_guild.channel.id === message.member?.voice.channel?.id) {
-				voice_connection_in_guild?.voice?.setSelfDeaf(true);
-				return resolve({
-					result: true,
-					value: 'already in voice channel',
-					voice_connection: voice_connection_in_guild
-				});
-			} else {
+			if (!current_voice) {
 				return resolve({
 					result: false,
-					value: 'playing music in another channel',
-					voice_connection: voice_connection_in_guild
+					value: 'you are not connected to any channel',
+					voice_connection: undefined
 				});
 			}
-		} else {
+
+			if (current_voice.guild.id !== message.guild.id) {
+				return resolve({
+					result: false,
+					value: 'your current channel is on another guild',
+					voice_connection: undefined
+				});
+			}
+
 			current_voice.join()
 				.then(response => {
 					if (join) {
