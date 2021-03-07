@@ -67,7 +67,7 @@ export function update_music_message(
 			: 'empty';
 
 		const music_message_emb = create_rich_embed(
-			yts ? yts.title : '-',
+			yts ? yts.title : 'Just type and I\'ll play',
 			yts ? yts.url : '-',
 			'#e60026',
 			[

@@ -1,10 +1,11 @@
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
+import yts from "yt-search";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guildOps';
-import { is_authorised, is_url, message_reply, pad, time_elapsed } from './libraries/helpOps';
+import { is_authorised, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
@@ -539,6 +540,31 @@ function handle_ignored_channels(
 	return false;
 }
 
+const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
+	'.github.io/master/assets/img/logo.png';
+
+const empty_message: yts.VideoSearchResult = {
+	type: 'video',
+	videoId: '-',
+	url: 'Just type and I\'ll play',
+	title: 'Music Player',
+	description: '-',
+	image: '-',
+	thumbnail: portal_icon_url,
+	seconds: 0,
+	timestamp: '-',
+	duration: {
+		seconds: 0,
+		timestamp: '0'
+	},
+	ago: '-',
+	views: 0,
+	author: {
+		name: '-',
+		url: '-'
+	}
+};
+
 function handle_music_channels(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
@@ -578,12 +604,33 @@ function handle_music_channels(
 				voice_connection, client, message.member.user,
 				message.guild, guild_object, message.content
 			)
-				.then(() => {
+				.then(r => {
+					if (message.guild) {
+						update_music_message(
+							message.guild,
+							guild_object,
+							guild_object.music_queue
+								? guild_object.music_queue[0]
+								: empty_message,
+							r.value);
+					}
+
 					if (message.deletable) {
 						message.delete();
 					}
 				})
-				.catch(() => {
+				.catch(e => {
+					if (message.guild) {
+						update_music_message(
+							message.guild,
+							guild_object,
+							guild_object.music_queue
+								? guild_object.music_queue[0]
+								: empty_message,
+							`error while starting playback (${e})`
+						);
+					}
+
 					if (message.deletable) {
 						message.delete();
 					}
