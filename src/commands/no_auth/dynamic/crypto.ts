@@ -60,21 +60,20 @@ module.exports = async (
 
 				message.channel.send(
 					create_rich_embed(
-						`${voca.titleCase(crypto_name)} | ${moment().format('DD/MM/YY')}`,
-						'Crypto stats powered by coingecko',
-						'#FF0000',
-						[
-							{
-								emote: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price`,
-								role: `${json[crypto_name][currnc_name]}`,
-								inline: false
-							}
-						],
 						null,
 						null,
-						true,
+						'#FFE600',
 						null,
-						null
+						null,
+						null,
+						false,
+						null,
+						null,
+						undefined,
+						{
+							name: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price is ${json[crypto_name][currnc_name]}`,
+							icon: 'https://media3.giphy.com/media/XzeRWmW7f5K4kZnrgB/giphy.gif'
+						}						
 					));
 
 				return resolve({

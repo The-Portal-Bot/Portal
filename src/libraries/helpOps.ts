@@ -27,7 +27,8 @@ export function create_music_message(
 		null,
 		true,
 		null,
-		thumbnail
+		thumbnail,
+		'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
 	);
 
 	channel
@@ -35,7 +36,9 @@ export function create_music_message(
 		.then(sent_message => {
 			sent_message.react('▶️');
 			sent_message.react('⏸');
-			// sent_message.react('⏹');
+			sent_message.react('⏭');
+			sent_message.react('➖');
+			sent_message.react('➕');
 			sent_message.react('⏭');
 			sent_message.react('🧹');
 			sent_message.react('🚪');
@@ -46,12 +49,12 @@ export function create_music_message(
 };
 
 export function update_music_message(
-	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult,
+	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve) => {
-		const portal_icon_url = 'https://raw.githubusercontent.com/' +
-			'keybraker/keybraker.github.io/master/assets/img/logo.png';
+		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
+			'Portal/implement-football-data/src/assets/img/music_empty.png';
 
 		const music_queue = guild_object.music_queue ?
 			guild_object.music_queue.length > 1
@@ -67,21 +70,21 @@ export function update_music_message(
 			: 'empty';
 
 		const music_message_emb = create_rich_embed(
-			yts.title,
-			yts.url,
+			yts ? yts.title : 'Music Player',
+			yts ? yts.url : 'Type and Portal will play it !',
 			'#e60026',
 			[
-				{ emote: 'Duration', role: yts.timestamp, inline: true },
-				{ emote: 'Views', role: yts.views === 0 ? '-' : yts.views, inline: true },
-				{ emote: 'Uploaded', role: yts.ago, inline: true },
+				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
+				{ emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
+				{ emote: 'Uploaded', role: yts ? yts.ago : '-', inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
 				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
-			portal_icon_url,
+			null,
 			null,
 			true,
 			null,
-			yts.thumbnail,
+			yts ? yts.thumbnail : idle_thumbnail,
 			animated
 				? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
 				: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
@@ -161,35 +164,31 @@ export async function join_by_reaction(
 			});
 		}
 
-		const current_voice = user.presence.member?.voice.channel;
-
-		if (!current_voice) {
-			return resolve({
-				result: false,
-				value: `could not fing your voice channel`,
-				voice_connection: undefined,
-			});
-		}
-
 		const voice_connection_in_guild = client.voice?.connections
 			.find(connection => connection.channel.guild.id === user.presence.member?.voice.channel?.guild.id);
 
-		if (voice_connection_in_guild) {
-			if (voice_connection_in_guild.channel.id === user.presence.member?.voice.channel?.id) {
-				voice_connection_in_guild?.voice?.setSelfDeaf(true);
-				return resolve({
-					result: true,
-					value: 'already in voice channel',
-					voice_connection: voice_connection_in_guild
-				});
-			} else {
+		if (voice_connection_in_guild &&
+			voice_connection_in_guild.channel.id === user.presence.member.voice.channel?.id
+		) {
+			voice_connection_in_guild?.voice?.setSelfDeaf(true);
+			return resolve({
+				result: true,
+				value: 'already in voice channel',
+				voice_connection: voice_connection_in_guild
+			});
+		} else if (!voice_connection_in_guild ||
+			(voice_connection_in_guild && !voice_connection_in_guild.channel.members.some(m => !m.user.bot))
+		) {
+			const current_voice = user.presence.member?.voice.channel;
+
+			if (!current_voice) {
 				return resolve({
 					result: false,
-					value: 'playing music in another channel',
-					voice_connection: voice_connection_in_guild
+					value: `could not find your voice channel`,
+					voice_connection: undefined,
 				});
 			}
-		} else {
+
 			current_voice.join()
 				.then(response => {
 					if (announce_entrance) {
@@ -236,24 +235,6 @@ export async function join_user_voice(
 			});
 		}
 
-		const current_voice = message.member.voice.channel;
-
-		if (!current_voice) {
-			return resolve({
-				result: false,
-				value: 'you are not connected to any channel',
-				voice_connection: undefined
-			});
-		}
-
-		if (current_voice.guild.id !== message.guild.id) {
-			return resolve({
-				result: false,
-				value: 'your current channel is on another guild',
-				voice_connection: undefined
-			});
-		}
-
 		if (!guild_object) {
 			return resolve({
 				result: false,
@@ -273,22 +254,38 @@ export async function join_user_voice(
 		const voice_connection_in_guild = client.voice.connections
 			.find(connection => connection.channel.guild.id === message.guild?.id);
 
-		if (voice_connection_in_guild) {
-			if (voice_connection_in_guild.channel.id === message.member?.voice.channel?.id) {
-				voice_connection_in_guild?.voice?.setSelfDeaf(true);
-				return resolve({
-					result: true,
-					value: 'already in voice channel',
-					voice_connection: voice_connection_in_guild
-				});
-			} else {
+		if (
+			voice_connection_in_guild &&
+			voice_connection_in_guild.channel.id === message.member.voice.channel?.id
+		) {
+			voice_connection_in_guild?.voice?.setSelfDeaf(true);
+			return resolve({
+				result: true,
+				value: 'already in voice channel',
+				voice_connection: voice_connection_in_guild
+			});
+		} else if (
+			!voice_connection_in_guild ||
+			(voice_connection_in_guild && !voice_connection_in_guild.channel.members.some(m => !m.user.bot))
+		) {
+			const current_voice = message.member.voice.channel;
+
+			if (!current_voice) {
 				return resolve({
 					result: false,
-					value: 'playing music in another channel',
-					voice_connection: voice_connection_in_guild
+					value: 'you are not connected to any channel',
+					voice_connection: undefined
 				});
 			}
-		} else {
+
+			if (current_voice.guild.id !== message.guild.id) {
+				return resolve({
+					result: false,
+					value: 'your current channel is on another guild',
+					voice_connection: undefined
+				});
+			}
+
 			current_voice.join()
 				.then(response => {
 					if (join) {
@@ -328,31 +325,30 @@ export function getJSON(
 };
 
 export function create_rich_embed(
-	title: string | null | undefined, description: string | null | undefined, colour: string | null | undefined,
-	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
-	url: string | null | undefined, image: string | null | undefined, custom_gif?: string
+	title: string | null | undefined,
+	description: string | null | undefined,
+	colour: string | null | undefined,
+	field_array: Field[] | null,
+	thumbnail: string | null | undefined,
+	member: GuildMember | null | undefined,
+	from_bot: boolean | null | undefined,
+	url: string | null | undefined,
+	image: string | null | undefined,
+	custom_gif?: string,
+	author?: { name: string, icon: string }
 ): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spinr.gif';
-	const keybraker_url: string = 'https://github.com/keybraker';
+	const portal_url: string = 'https://www.portal-bot.xyz';
 
-	const rich_message: MessageEmbed = new MessageEmbed()
-		.setTimestamp();
-	// .setAuthor('Portal', portal_icon_url, keybraker_url)
+	const rich_message: MessageEmbed = new MessageEmbed();
 
 	if (title) rich_message.setTitle(title);
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url);
+	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url).setTimestamp();
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
-	if (member) {
-		const url = member.user.avatarURL() !== null
-			? member.user.avatarURL()
-			: undefined;
-		rich_message
-			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
-	}
 	if (field_array) {
 		field_array.forEach(row => {
 			rich_message
@@ -367,10 +363,15 @@ export function create_rich_embed(
 				);
 		});
 	}
-	else {
-		rich_message.addField('\u200b', '\u200b');
+	if (member) {
+		const url = member.user.avatarURL() !== null
+			? member.user.avatarURL()
+			: undefined;
+		rich_message
+			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
 	}
-
+	if (author) rich_message.setAuthor(author.name, author.icon);
+	
 	return rich_message;
 };
 

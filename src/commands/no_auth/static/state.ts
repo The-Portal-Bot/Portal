@@ -10,73 +10,120 @@ module.exports = async (
         const guild = client.guilds.cache.find(g => g.id === message?.guild?.id);
         if (!guild) return resolve({ result: false, value: 'could not fetch guild' });
 
-        let portal_state = [<Field>{ emote: 'Portal Channels', role: '', inline: false }];
+        let portal_state = [<Field>{
+            emote: 'Portal Channels',
+            role: '',
+            inline: false
+        }];
 
         const portals = guild_object.portal_list.map(p => {
-            const voices = p.voice_list.map((v, index_v) => {
-                const voice_channel = guild.channels.cache.find(c => c.id === v.id);
-                return `${index_v + 1}. ${voice_channel ? voice_channel.name : 'removed'}`;
-            }).join('\n');
-            const portal_channel = guild.channels.cache.find(c => c.id === p.id);
+            const portal_channel = guild.channels.cache
+                .find(c => c.id === p.id);
+            const voices = p.voice_list
+                .map((v, index_v) => {
+                    const voice_channel = guild.channels.cache.find(c => c.id === v.id);
+                    return `${index_v + 1}. ${voice_channel ? voice_channel.name : 'unavailable'}`;
+                })
+                .join('\n');
 
-            return <Field>{ emote: `${portal_channel ? portal_channel.name : 'removed'}`, role: voices, inline: true }
+            return <Field>{
+                emote: `${portal_channel ? portal_channel.name : 'unavailable'}`,
+                role: voices ? voices : 'no voice',
+                inline: true
+            }
         });
-        if (portals)
+
+        if (portals) {
             portal_state = portal_state.concat(portals);
+        }
 
-        portal_state.push(<Field>{ emote: '', role: '', inline: false });
+        portal_state.push(<Field>{
+            emote: '',
+            role: '',
+            inline: false
+        });
 
-        const music = guild.channels.cache.find(c => c.id === guild_object.music_data.channel_id);
-        if (music)
+        const music = guild.channels.cache.find(c =>
+            c.id === guild_object.music_data.channel_id);
+        if (music) {
             portal_state.push(<Field>{
                 emote: `Music channel`,
-                role: `${music ? music.name : 'removed'}`,
+                role: `${music ? music.name : 'unavailable'}`,
                 inline: true
             });
-
-        const spotify = guild.channels.cache.find(c => c.id === guild_object.spotify);
-        if (spotify)
+        } else {
             portal_state.push(<Field>{
-                emote: 'Spotify channel',
-                role: `${spotify ? spotify.name : 'removed'}`,
+                emote: `Music channel`,
+                role: `none`,
                 inline: true
             });
+        }
 
-        const announcement = guild.channels.cache.find(c => c.id === guild_object.announcement);
-        if (announcement)
+        const announcement = guild.channels.cache.find(c =>
+            c.id === guild_object.announcement);
+        if (announcement) {
             portal_state.push(<Field>{
                 emote: 'Announcement channel',
-                role: `${announcement ? announcement.name : 'removed'}`,
+                role: `${announcement ? announcement.name : 'unavailable'}`,
                 inline: true
             });
+        } else {
+            portal_state.push(<Field>{
+                emote: `Announcement channel`,
+                role: `none`,
+                inline: true
+            });
+        }
+
+        portal_state.push(<Field>{
+            emote: '',
+            role: '',
+            inline: false
+        });
 
         const urls = guild_object.url_list.map((u_id, index_u) => {
-            const channel = guild.channels.cache.find(c => c.id === u_id);
-            return `${index_u + 1}. ${channel ? channel.name : 'removed'}`;
+            const channel = guild.channels.cache.find(c =>
+                c.id === u_id);
+            return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
         });
 
-        const url_sum = <Field>{
-            emote: `Url channels`,
-            role: urls.join('\n'),
-            inline: false
-        };
+        if (urls.length > 0) {
+            const url_sum = <Field>{
+                emote: `URL channels`,
+                role: urls ? urls.join('\n') : 'unavailable',
+                inline: true
+            };
 
-        if (url_sum)
             portal_state = portal_state.concat(url_sum);
+        } else {
+            portal_state.push(<Field>{
+                emote: `URL channels`,
+                role: `none`,
+                inline: true
+            });
+        }
 
-        const ignores = guild_object.ignore_list.map((u_id, index_u) => {
-            const channel = guild.channels.cache.find(c => c.id === u_id);
-            return `${index_u + 1}. ${channel ? channel.name : 'removed'}`;
+        const ignore = guild_object.ignore_list.map((u_id, index_u) => {
+            const channel = guild.channels.cache.find(c => 
+                c.id === u_id);
+            return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
         });
 
-        const ignore_sum = <Field>{
-            emote: `ignored channels`,
-            role: ignores.join('\n'),
-            inline: false
-        };
+        if (ignore.length > 0) {
+            const ignore_sum = <Field>{
+                emote: `Ignored channels`,
+                role: ignore ? ignore.join('\n') : 'unavailable',
+                inline: true
+            };
 
-        if (ignore_sum)
             portal_state = portal_state.concat(ignore_sum);
+        } else {
+            portal_state.push(<Field>{
+                emote: `Ignored channels`,
+                role: `none`,
+                inline: true
+            });
+        }
 
         message.channel.send(create_rich_embed(
             'Portal state - current state of Portal',

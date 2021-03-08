@@ -283,7 +283,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
+						topic: 'Portal Music,\nplay:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -302,7 +302,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
+						topic: 'Portal Music,\nplay:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 						parent: music_category
 					},
 				)
@@ -319,7 +319,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'Portal Music, play:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
+						topic: 'Portal Music,\nplay:▶️, pause:⏸, skip:⏭, clear queue:🧹, leave:🚪', // stop:⏹,
 					},
 				)
 				.then(channel => {

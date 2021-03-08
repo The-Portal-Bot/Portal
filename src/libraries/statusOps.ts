@@ -9,18 +9,23 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 	activities.forEach(activity => {
 		let found = false;
 
-		if (activity.name === 'Custom Status') {
+		if (activity.name.toLowerCase() === 'custom status') {
 			found = true;
 		}
 
-		for (let l = 0; l < games.game_attributes.length; l++) {
-			if (activity.name == games.game_attributes[l].status) {
-				if (locale === 'gr') {
-					new_status.push(games.game_attributes[l].locale.gr);
-					found = true;
-				}
-				else {
-					new_status.push(games.game_attributes[l].locale.en);
+		if (!found) {
+			for (let l = 0; l < games.game_attributes.length; l++) {
+				if (activity.name == games.game_attributes[l].status) {
+					if (locale === 'gr') {
+						new_status.push(games.game_attributes[l].locale.gr);
+					}
+					else if (locale === 'de') {
+						new_status.push(games.game_attributes[l].locale.de);
+					}
+					else {
+						new_status.push(games.game_attributes[l].locale.en);
+					}
+
 					found = true;
 				}
 			}
@@ -31,12 +36,15 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 				if (activity.name == programs.program_attributes[l].status) {
 					if (locale === 'gr') {
 						new_status.push(programs.program_attributes[l].locale.gr);
-						found = true;
+					}
+					else if (locale === 'de') {
+						new_status.push(programs.program_attributes[l].locale.de);
 					}
 					else {
 						new_status.push(programs.program_attributes[l].locale.en);
-						found = true;
 					}
+
+					found = true;
 				}
 			}
 		}

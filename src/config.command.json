@@ -108,7 +108,7 @@
                 "range": "none",
                 "time": 0,
                 "auth": false,
-                "premium": false,
+                "premium": true,
                 "auto_delete": false,
                 "reply": false
             },
@@ -119,6 +119,15 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
+                "reply": false
+            },
+            {
+                "name": "football",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": true,
+                "auto_delete": false,
                 "reply": false
             },
             {

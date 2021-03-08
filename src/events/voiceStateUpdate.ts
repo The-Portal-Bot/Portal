@@ -195,6 +195,11 @@ async function from_existing(
 
 			channel_empty_check(old_channel, guild_object, client);
 			update_timestamp(newState, guild_object); // points calculation from any channel
+
+			return resolve({
+				result: false,
+				value: report_message
+			});
 		}
 		else if (new_channel !== null) { // Moved from channel to channel
 			report_message += 'existing->existing\n';
@@ -210,21 +215,31 @@ async function from_existing(
 					report_message += 'has been handled before';
 					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
 					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+
+					return resolve({
+						result: true,
+						value: report_message
+					});
+				} else {
+					return resolve({
+						result: true,
+						value: 'not handled by portal'
+					});
 				}
 			}
 			else if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
 				report_message += '->source: voice_list\n';
 
+				channel_empty_check(old_channel, guild_object, client);
+
 				if (included_in_portal_list(new_channel.id, guild_object.portal_list)) { // moved from voice to portal
 					report_message += '->dest: portal_list';
-
-					channel_empty_check(old_channel, guild_object, client);
 
 					const portal_object = guild_object.portal_list.find(p => p.id === new_channel.id);
 					if (!portal_object) {
 						return resolve({
 							result: false,
-							value: 'error with data'
+							value: 'could not find Portal in DB, contact support'
 						});
 					}
 
@@ -246,18 +261,26 @@ async function from_existing(
 				else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // moved from voice to voice
 					report_message += '->dest: voice_list\n';
 
-					channel_empty_check(old_channel, guild_object, client);
 					update_timestamp(newState, guild_object); // points calculation from any channel
 					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
 					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+
+					return resolve({
+						result: true,
+						value: report_message
+					});
 				}
 				else { // moved from voice to other
 					report_message += '->dest: other\n';
 
-					channel_empty_check(old_channel, guild_object, client);
 					update_timestamp(newState, guild_object); // points calculation from any channel
 					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
 					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+
+					return resolve({
+						result: true,
+						value: report_message
+					});
 				}
 			}
 			else {
@@ -266,16 +289,30 @@ async function from_existing(
 				// Joined portal channel
 				if (included_in_portal_list(new_channel.id, guild_object.portal_list)) {
 					report_message += '->dest: portal_list';
-					const portal_object = guild_object.portal_list.find(p => p.id === new_channel.id);
-					if (!portal_object) return { result: false, value: 'error with data' };
+
+					const portal_object = guild_object.portal_list
+						.find(p => p.id === new_channel.id);
+
+					if (!portal_object) {
+						return resolve({
+							result: false,
+							value: 'could not find portal in DB, contact Portal support'
+						});
+					}
 
 					create_voice_channel(newState, portal_object, new_channel, newState.id)
 						.then(response => {
 							if (!response.result) {
 								return resolve(response);
 							}
+
 							five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
 							// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+
+							return resolve({
+								result: true,
+								value: report_message
+							});
 						})
 						.catch(e => {
 							return resolve({
@@ -290,11 +327,14 @@ async function from_existing(
 
 					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
 					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
+
+					return resolve({
+						result: true,
+						value: report_message
+					});
 				}
 			}
 		}
-
-		return { result: true, value: report_message };
 	});
 }
 

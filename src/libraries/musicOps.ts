@@ -3,34 +3,9 @@ import { Client, Guild, StreamDispatcher, StreamOptions, User, VoiceConnection }
 import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { join_by_reaction, update_music_message } from './helpOps';
-import { clear_music_vote, insert_music_video, update_guild, fetch_guild_music_queue } from './mongoOps';
+import { join_by_reaction } from './helpOps';
+import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongoOps';
 // const ytdl = require('ytdl-core');
-
-const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-	'.github.io/master/assets/img/logo.png';
-
-const empty_message: yts.VideoSearchResult = {
-	type: 'video',
-	videoId: '-',
-	url: 'just type and I\'ll play',
-	title: 'Music Player',
-	description: '-',
-	image: '-',
-	thumbnail: portal_icon_url,
-	seconds: 0,
-	timestamp: '-',
-	duration: {
-		seconds: 0,
-		timestamp: '0'
-	},
-	ago: '-',
-	views: 0,
-	author: {
-		name: '-',
-		url: '-'
-	}
-};
 
 async function pop_music_queue(
 	guild_object: GuildPrtl
@@ -71,12 +46,12 @@ function spawn_dispatcher(
 		type: 'opus',
 		bitrate: 96000
 	}
-	
+
 	return voice_connection.play(stream, stream_options);
 }
 
 async function push_video_to_queue(
-	guild: Guild, guild_object: GuildPrtl, video: yts.VideoSearchResult
+	guild_object: GuildPrtl, video: yts.VideoSearchResult
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
 		if (!guild_object.music_queue) {
@@ -89,14 +64,6 @@ async function push_video_to_queue(
 				const msg = r
 					? `${video.title} has been added to queue`
 					: `${video.title} failed to get added to queue`;
-				update_music_message(
-					guild,
-					guild_object,
-					guild_object.music_queue
-						? guild_object.music_queue[0]
-						: video,
-					msg,
-					false);
 
 				return resolve({
 					result: r,
@@ -104,19 +71,9 @@ async function push_video_to_queue(
 				});
 			})
 			.catch(e => {
-				const msg = `error while adding to queue: ${e}`;
-				update_music_message(
-					guild,
-					guild_object,
-					guild_object.music_queue
-						? guild_object.music_queue[0]
-						: video,
-					msg,
-					false);
-
 				return resolve({
 					result: false,
-					value: msg
+					value: `error while adding to queue: ${e}`
 				});
 			});
 	});
@@ -127,7 +84,7 @@ async function start_playback(
 	guild: Guild, guild_object: GuildPrtl, video: yts.VideoSearchResult
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
-		push_video_to_queue(guild, guild_object, video)
+		push_video_to_queue(guild_object, video)
 			.then(push_response => {
 				if (voice_connection) {
 					if (!voice_connection.dispatcher) {
@@ -139,55 +96,35 @@ async function start_playback(
 						);
 
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
-
-						update_music_message(
-							guild,
-							guild_object,
-							guild_object.music_queue
-								? guild_object.music_queue[0]
-								: video,
-							'playback started'
-						);
 
 						return resolve({
 							result: true,
 							value: 'playback started'
 						});
 					} else {
-						update_music_message(
-							guild,
-							guild_object,
-							guild_object.music_queue
-								? guild_object.music_queue[0]
-								: video,
-							'already playing'
-						);
-
-						return resolve(
-							push_response
-						);
+						return resolve({
+							result: true,
+							value: 'already playing'
+						});
 					}
 				} else {
 					join_by_reaction(client, guild_object, user, false)
 						.then(r => {
 							if (r.result) {
 								if (!r.voice_connection) {
-									update_music_message(
-										guild,
-										guild_object,
-										guild_object.music_queue
-											? guild_object.music_queue[0]
-											: video,
-										'failed to join voice channel 2');
-
-									return {
+									return resolve({
 										result: false,
 										value: `could not join your voice channel`
-									};
+									});
 								}
 
 								const dispatcher = spawn_dispatcher(
@@ -198,54 +135,36 @@ async function start_playback(
 								);
 
 								dispatcher.once('finish', () => {
-									dispatcher.destroy();
-									skip(r.voice_connection, user, client, guild, guild_object);
-									clear_music_vote(guild_object.id);
+									if (!dispatcher.destroyed) {
+										dispatcher.destroy();
+									}
+									skip(r.voice_connection, user, client, guild, guild_object)
+										.then(r => {
+											clear_music_vote(guild_object.id);
+										})
+										.catch(console.log);
 								});
 
-								update_music_message(
-									guild,
-									guild_object,
-									guild_object.music_queue
-										? guild_object.music_queue[0]
-										: video,
-									'playback started'
-								);
-
-								console.log(`returtnign playback started`);
-								return {
+								return resolve({
 									result: true,
 									value: 'playback started'
-								};
+								});
 							} else {
-								update_music_message(
-									guild,
-									guild_object,
-									guild_object.music_queue
-										? guild_object.music_queue[0]
-										: video, r.value);
-
-								return {
+								return resolve({
 									result: false,
 									value: r.value
-								};
+								});
 							}
 						})
 						.catch(e => {
-							const msg = `error while joining voice channel ${e}`;
-							update_music_message(guild, guild_object, empty_message, msg);
-
 							return resolve({
 								result: false,
-								value: msg
+								value: `error while joining channel (${e})`
 							});
 						});
 				}
 			})
 			.catch(e => {
-				update_music_message(guild, guild_object, empty_message,
-					`error while adding video to queue 2: ${e}`);
-
 				return resolve({
 					result: false,
 					value: `error while adding video to queue 2: ${e}`
@@ -262,18 +181,9 @@ export async function start(
 		yts(search_term)
 			.then(yts_attempt => {
 				if (yts_attempt.videos.length <= 0) {
-					const msg = `could not find something matching ${search_term}, on youtube`;
-					update_music_message(
-						guild,
-						guild_object,
-						yts_attempt.videos
-							? yts_attempt.videos[0]
-							: empty_message,
-						msg);
-
 					return resolve({
 						result: false,
-						value: msg
+						value: `could not find something matching ${search_term}, on youtube`
 					});
 				}
 
@@ -282,7 +192,9 @@ export async function start(
 					guild, guild_object, yts_attempt.videos[0]
 				)
 					.then(r => {
-						return resolve(r);
+						return resolve(
+							r
+						);
 					})
 					.catch(e => {
 						return resolve({
@@ -293,15 +205,6 @@ export async function start(
 
 			})
 			.catch(e => {
-				update_music_message(
-					guild,
-					guild_object,
-					guild_object.music_queue[0]
-						? guild_object.music_queue[0]
-						: empty_message,
-					`error while searching youtube (${e})`
-				);
-
 				return resolve({
 					result: false,
 					value: `error while searching youtube (${e})`
@@ -319,12 +222,6 @@ export async function play(
 			if (voice_connection.dispatcher) {
 				if (voice_connection.dispatcher.paused) {
 					voice_connection.dispatcher.resume();
-					update_music_message(
-						guild,
-						guild_object,
-						guild_object.music_queue[0],
-						'playback resumed'
-					);
 
 					return resolve({
 						result: true,
@@ -335,14 +232,6 @@ export async function play(
 				pop_music_queue(guild_object)
 					.then(next_video => {
 						if (!next_video) {
-							update_music_message(
-								guild,
-								guild_object,
-								empty_message,
-								'queue is empty',
-								false
-							);
-
 							return resolve({
 								result: false,
 								value: 'queue is empty'
@@ -351,17 +240,15 @@ export async function play(
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
-
-						update_music_message(
-							guild,
-							guild_object,
-							guild_object.music_queue[0],
-							'playing queued song'
-						);
 
 						return resolve({
 							result: true,
@@ -371,66 +258,40 @@ export async function play(
 			}
 		} else {
 			if (guild_object.music_queue.length === 0) {
-				update_music_message(
-					guild,
-					guild_object,
-					empty_message,
-					'queue is empty',
-					false
-				);
-
 				return resolve({
 					result: false,
 					value: 'queue is empty'
 				});
 			}
 
-			const current_video = guild_object.music_queue[0];
-
 			join_by_reaction(client, guild_object, user, false)
 				.then(r => {
 					if (r.result) {
 						if (!r.voice_connection) {
-							update_music_message(
-								guild,
-								guild_object,
-								current_video,
-								'failed to join voice channel 3'
-							);
-
 							return resolve({
 								result: false,
-								value: 'failed to join voice channel 4'
+								value: 'could not join voice channel'
 							});
 						}
 
-						const dispatcher = spawn_dispatcher(current_video, r.voice_connection);
+						const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r.voice_connection);
 
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
-
-						update_music_message(
-							guild,
-							guild_object,
-							current_video,
-							'playing video from queue'
-						);
 
 						return resolve({
 							result: true,
 							value: 'playing video from queue'
 						});
 					} else {
-						update_music_message(
-							guild,
-							guild_object,
-							current_video,
-							r.value
-						);
-
 						return resolve({
 							result: false,
 							value: r.value
@@ -440,7 +301,7 @@ export async function play(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: 'failed to join voice channel 5, ' + e
+						value: `could not to join voice channel (${e})`
 					});
 				});
 		}
@@ -448,82 +309,37 @@ export async function play(
 };
 
 export async function pause(
-	voice_connection: VoiceConnection | undefined,
-	guild: Guild, guild_object: GuildPrtl
+	voice_connection: VoiceConnection | undefined
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		let return_value: ReturnPormise = {
-			result: false,
-			value: ''
-		};
-
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
 				if (!voice_connection.dispatcher.paused) {
 					voice_connection.dispatcher.pause();
-					return_value.result = true;
-					return_value.value = 'playback paused';
+					return resolve({
+						result: true,
+						value: 'playback paused'
+					});
 				} else {
-					return_value.result = false;
-					return_value.value = 'already paused';
+					return resolve({
+						result: false,
+						value: 'already paused'
+					});
 				}
 			} else {
-				return_value.result = false;
-				return_value.value = 'no playback';
+				return resolve({
+					result: false,
+					value: 'player is idle'
+				});
 			}
 		} else {
-			return_value.result = false;
-			return_value.value = 'portal is not connected';
+			return resolve({
+				result: false,
+				value: 'Portal is not connected'
+			});
 		}
-
-		update_music_message(
-			guild,
-			guild_object,
-			guild_object.music_queue[0]
-				? guild_object.music_queue[0]
-				: empty_message,
-			return_value.value,
-			false
-		);
-
-		return resolve(return_value);
 	});
 };
-
-// export async function stop(
-// 	voice_connection: VoiceConnection | undefined,
-// 	guild: Guild, guild_object: GuildPrtl
-// ): Promise<ReturnPormise> {
-// 	return new Promise((resolve) => {
-// 		let return_value: ReturnPormise = {
-// 			result: false,
-// 			value: ''
-// 		};
-
-// 		if (voice_connection) {
-// 			if (voice_connection.dispatcher) {
-// 				voice_connection.dispatcher.end();
-// 				return_value.result = true;
-// 				return_value.value = 'playback stopped';
-// 			} else {
-// 				return_value.result = false;
-// 				return_value.value = 'no playback';
-// 			}
-// 		} else {
-// 			return_value.result = false;
-// 			return_value.value = 'portal is not connected';
-// 		}
-
-// 		update_music_message(
-// 			guild,
-// 			guild_object,
-// 			empty_message,
-// 			return_value.value
-// 		);
-
-// 		return resolve(return_value);
-// 	});
-// };
 
 export async function skip(
 	voice_connection: VoiceConnection | undefined, user: User,
@@ -532,19 +348,26 @@ export async function skip(
 	return new Promise((resolve) => {
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
-				voice_connection.dispatcher.end();
+				if (voice_connection.dispatcher.paused) {
+					setTimeout(() => {
+						voice_connection.dispatcher.resume();
+						setTimeout(() => {
+							voice_connection.dispatcher.end();
+						}, 0.5 * 1000);
+					}, 0.5 * 1000);
+					voice_connection.dispatcher.resume();
+				} else {
+					voice_connection.dispatcher.end();
+				}
+
+				return resolve({
+					result: true,
+					value: 'skipped to queued song'
+				});
 			} else {
 				pop_music_queue(guild_object)
 					.then(next_video => {
 						if (!next_video) {
-							update_music_message(
-								guild,
-								guild_object,
-								empty_message,
-								'queue is empty',
-								false
-							);
-
 							return resolve({
 								result: false,
 								value: 'queue is empty'
@@ -553,17 +376,15 @@ export async function skip(
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
-
-						update_music_message(
-							guild,
-							guild_object,
-							next_video,
-							'skipped to queued song'
-						);
 
 						return resolve({
 							result: true,
@@ -576,17 +397,9 @@ export async function skip(
 				.then(next_video => {
 
 					if (!next_video) {
-						update_music_message(
-							guild,
-							guild_object,
-							empty_message,
-							'queue is empty',
-							false
-						);
-
 						return resolve({
 							result: false,
-							value: 'playing video from queue'
+							value: 'queue is empty'
 						});
 					}
 
@@ -594,46 +407,30 @@ export async function skip(
 						.then(r => {
 							if (r.result) {
 								if (!r.voice_connection) {
-									update_music_message(
-										guild,
-										guild_object,
-										guild_object.music_queue[0],
-										'failed to join voice channel 6'
-									);
-
 									return resolve({
 										result: false,
-										value: 'failed to join voice channel 7'
+										value: 'could not join voice channel'
 									});
 								}
 
 								const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
 
 								dispatcher.once('finish', () => {
-									dispatcher.destroy();
-									skip(voice_connection, user, client, guild, guild_object);
-									clear_music_vote(guild_object.id);
+									if (!dispatcher.destroyed) {
+										dispatcher.destroy();
+									}
+									skip(voice_connection, user, client, guild, guild_object)
+										.then(r => {
+											clear_music_vote(guild_object.id);
+										})
+										.catch(console.log);
 								});
-
-								update_music_message(
-									guild,
-									guild_object,
-									guild_object.music_queue[0],
-									'playing video from queue'
-								);
 
 								return resolve({
 									result: true,
 									value: 'playing video from queue'
 								});
 							} else {
-								update_music_message(
-									guild,
-									guild_object,
-									guild_object.music_queue[0],
-									r.value
-								);
-
 								return resolve({
 									result: false,
 									value: r.value
@@ -643,10 +440,76 @@ export async function skip(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: 'failed to join voice channel 8, ' + e
+								value: `failed to join voice channel (${e})`
 							});
 						});
 				});
+		}
+	});
+};
+
+export async function volume_down(
+	voice_connection: VoiceConnection | undefined
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		if (voice_connection) {
+			if (voice_connection.dispatcher) {
+				if (voice_connection.dispatcher.volume !== 1) {
+					voice_connection.dispatcher.setVolume(voice_connection.dispatcher.volume - 0.25);
+					return resolve({
+						result: true,
+						value: `volume increased by 25% to ${voice_connection.dispatcher.volume*100}%`
+					});
+				} else {
+					return resolve({
+						result: false,
+						value: 'volume is at 100%'
+					});
+				}
+			} else {
+				return resolve({
+					result: false,
+					value: 'player is idle'
+				});
+			}
+		} else {
+			return resolve({
+				result: false,
+				value: 'Portal is not connected'
+			});
+		}
+	});
+};
+
+export async function volume_up(
+	voice_connection: VoiceConnection | undefined
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		if (voice_connection) {
+			if (voice_connection.dispatcher) {
+				if (voice_connection.dispatcher.volume !==0) {
+					voice_connection.dispatcher.setVolume(voice_connection.dispatcher.volume + 0.25);
+					return resolve({
+						result: true,
+						value: `volume increased by 25% to ${voice_connection.dispatcher.volume*100}%`
+					});
+				} else {
+					return resolve({
+						result: false,
+						value: 'volume is at 0%'
+					});
+				}
+			} else {
+				return resolve({
+					result: false,
+					value: 'player is idle'
+				});
+			}
+		} else {
+			return resolve({
+				result: false,
+				value: 'Portal is not connected'
+			});
 		}
 	});
 };

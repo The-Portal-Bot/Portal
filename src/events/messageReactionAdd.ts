@@ -1,36 +1,10 @@
 import { Client, MessageReaction, User } from "discord.js";
-import yts from "yt-search";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
-import { pause, play, skip } from "../libraries/musicOps";
+import { pause, play, skip, volume_down, volume_up } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-
-const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-	'.github.io/master/assets/img/logo.png';
-
-const empty_message: yts.VideoSearchResult = {
-	type: 'video',
-	videoId: '-',
-	url: 'just type and I\'ll play',
-	title: 'Music Player',
-	description: '-',
-	image: '-',
-	thumbnail: portal_icon_url,
-	seconds: 0,
-	timestamp: '-',
-	duration: {
-		seconds: 0,
-		timestamp: '0'
-	},
-	ago: '-',
-	views: 0,
-	author: {
-		name: '-',
-		url: '-'
-	}
-};
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
@@ -72,8 +46,6 @@ async function reaction_role_manager(
 							current_member.roles.add(role_to_give)
 								.then(member => {
 									if (!!member) {
-										clear_user_reactions(messageReaction, user);
-
 										resolve({
 											result: true,
 											value: `you have been assigned to ${role_map.role_id}`
@@ -106,8 +78,6 @@ async function reaction_role_manager(
 							current_member.roles.remove(role_to_strip)
 								.then(member => {
 									if (!!member) {
-										clear_user_reactions(messageReaction, user);
-
 										resolve({
 											result: true,
 											value: `you have been removed from ${role_map.role_id}`
@@ -167,22 +137,14 @@ async function reaction_music_manager(
 		const member_object = guild_object.member_list
 			.find(m => m.id === user.id);
 
-		if (!guild_object.music_data.votes) {
-			clear_music_vote(guild_object.id);
-		}
-
 		const portal_voice_connection = client.voice?.connections
 			.find(c => c.channel.guild.id === messageReaction.message?.guild?.id);
 
 		if (portal_voice_connection) {
-			const is_member_in_same_channel_as_portal = portal_voice_connection.channel.members
-				.some(member => member.id === user.id);
-
-			if (!is_member_in_same_channel_as_portal) {
-				clear_user_reactions(messageReaction, user);
+			if (!portal_voice_connection.channel.members.has(user.id)) {
 				return resolve({
 					result: false,
-					value: 'you must be in the same channel with portal to control music'
+					value: 'you must be in the same channel as Portal'
 				});
 			}
 		}
@@ -194,231 +156,148 @@ async function reaction_music_manager(
 					messageReaction.message.guild, guild_object
 				)
 					.then(r => {
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve(r);
 					})
 					.catch(e => {
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve({
 							result: false,
-							value: e
+							value: `error while playing (${e})`
 						});
 					});
 
 				break;
 			}
 			case '⏸': {
-				pause(portal_voice_connection, messageReaction.message.guild, guild_object)
+				pause(portal_voice_connection)
 					.then(r => {
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve(r);
 					})
 					.catch(e => {
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve({
 							result: false,
-							value: e
+							value: `error while pausing (${e})`
 						});
 					});
 
 				break;
 			}
-			// case '⏹': {
-			// 	if (!portal_voice_connection) {
-			// 		clear_user_reactions(messageReaction, user);
-			// 		return resolve({
-			// 			result: false,
-			// 			value: 'can only stop when with portal'
-			// 		})
-			// 	}
-
-			// 	if (!guild_object.music_data.votes) {
-			// 		clear_user_reactions(messageReaction, user);
-			// 		return resolve({
-			// 			result: false,
-			// 			value: 'could not get music votes'
-			// 		})
-			// 	}
-
-			// 	if (!guild_object.music_data.votes.includes(user.id)) {
-			// 		guild_object.music_data.votes.push(user.id);
-			// 		insert_music_vote(guild_object.id, user.id);
-			// 	}
-
-			// 	const votes = guild_object.music_data.votes.length;
-			// 	const users = portal_voice_connection.channel.members
-			// 		.filter(member => !member.user.bot).size;
-
-			// 	if (votes >= users / 2) {
-			// 		stop(portal_voice_connection, messageReaction.message.guild, guild_object)
-			// 			.then(r => {
-			// 				clear_music_vote(guild_object.id);
-			// 				return resolve(r);
-			// 			})
-			// 			.catch(e => {
-			// 				clear_user_reactions(messageReaction, user);
-			// 				return resolve({
-			// 					result: false,
-			// 					value: e
-			// 				});
-			// 			});
-			// 	} else {
-			// 		const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-			// 		if (!guild) {
-			// 			clear_user_reactions(messageReaction, user);
-			// 			return resolve({
-			// 				result: false,
-			// 				value: `could not fetch guild`
-			// 			});
-			// 		}
-
-			// 		const member = guild.members.cache.find(m => m.id === user.id);
-			// 		if (!member) {
-			// 			clear_user_reactions(messageReaction, user);
-			// 			return resolve({
-			// 				result: false,
-			// 				value: `could not fetch member`
-			// 			});
-			// 		}
-
-			// 		if ((member_object && member_object.dj) || is_authorised(guild_object, member)) {
-			// 			stop(portal_voice_connection, messageReaction.message.guild, guild_object)
-			// 				.then(r => {
-			// 					clear_music_vote(guild_object.id);
-			// 					return resolve(r);
-			// 				})
-			// 				.catch(e => {
-			// 					clear_user_reactions(messageReaction, user);
-			// 					return resolve({
-			// 						result: false,
-			// 						value: e
-			// 					});
-			// 				});
-			// 		}
-
-			// 		clear_user_reactions(messageReaction, user);
-			// 		return resolve({
-			// 			result: false,
-			// 			value: `${votes}/${users / 2} (dj/majority/admin/owner needed to stop)`
-			// 		});
-			// 	}
-
-			//  break;
-			// }
 			case '⏭': {
 				if (!portal_voice_connection) {
-					clear_user_reactions(messageReaction, user);
-
 					return resolve({
 						result: false,
-						value: 'can only stop when with portal'
+						value: 'nothing to skip, player is idle'
 					})
 				}
 
 				if (!guild_object.music_data.votes) {
-					clear_user_reactions(messageReaction, user);
-
 					return resolve({
 						result: false,
-						value: 'could not get music votes'
+						value: 'could not fetch music votes'
 					})
 				}
 
-				if (!guild_object.music_data.votes.includes(user.id)) {
-					guild_object.music_data.votes.push(user.id);
-					insert_music_vote(guild_object.id, user.id);
+				const guild = client.guilds.cache
+					.find(g => g.id === guild_object.id);
+
+				if (!guild) {
+					return resolve({
+						result: false,
+						value: `could not fetch guild`
+					});
 				}
 
-				const votes = guild_object.music_data.votes.length;
-				const users = portal_voice_connection?.channel?.members
-					.filter(member => !member.user.bot).size;
+				if (!(member_object && member_object.dj)) {
+					const member = guild.members.cache
+						.find(m => m.id === user.id);
 
-				if (votes >= users / 2) {
-					skip(
-						portal_voice_connection, user, client,
-						messageReaction.message.guild, guild_object
-					)
-						.then(r => {
-							clear_music_vote(guild_object.id);
+					if (!member) {
+						return resolve({
+							result: false,
+							value: `could not fetch memeber`
+						});
+					}
 
-							return resolve(r)
-						})
-						.catch(e => {
-							clear_user_reactions(messageReaction, user);
+					if (!is_authorised(guild_object.member_list, guild_object.auth_role, member)) {
+						if (!guild_object.music_data.votes.includes(user.id)) {
+							guild_object.music_data.votes.push(user.id);
+							insert_music_vote(guild_object.id, user.id);
+						}
 
+						const votes = guild_object.music_data.votes.length;
+						const users = portal_voice_connection?.channel?.members
+							.filter(member => !member.user.bot).size;
+
+						if (!(votes < users / 2)) {
 							return resolve({
 								result: false,
-								value: e
-							})
-						});
-
-					clear_user_reactions(messageReaction, user);
-				} else {
-					const guild = client.guilds.cache.find(g => g.id === guild_object.id);
-					if (!guild) {
-						clear_user_reactions(messageReaction, user);
-						return resolve({
-							result: false,
-							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-						});
-					}
-
-					const member = guild.members.cache.find(m => m.id === user.id);
-					if (!member) {
-						clear_user_reactions(messageReaction, user);
-						return resolve({
-							result: false,
-							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-						});
-					}
-
-					if ((member_object && member_object.dj) || is_authorised(guild_object.member_list, guild_object.auth_role, member)) {
-						skip(portal_voice_connection, user, client,
-							messageReaction.message.guild, guild_object)
-							.then(r => {
-								clear_music_vote(guild_object.id);
-								clear_user_reactions(messageReaction, user);
-
-								return resolve(r);
-							})
-							.catch(e => {
-								clear_user_reactions(messageReaction, user);
-
-								return resolve({
-									result: false,
-									value: e
-								})
+								value: `${votes}/${Math.round(users / 2)} votes`
 							});
-					}
-					else {
-						clear_user_reactions(messageReaction, user);
-
-						return resolve({
-							result: false,
-							value: `${votes}/${users / 2} (dj/majority/admin/owner needed to skip)`
-						});
+						}
 					}
 				}
+
+				skip(
+					portal_voice_connection, user, client,
+					messageReaction.message.guild, guild_object
+				)
+					.then(r => {
+						clear_music_vote(guild_object.id);
+						guild_object.music_queue.shift();
+						return resolve(r)
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `error while skipping (${e})`
+						})
+					});
 
 				break;
 			}
-			// case '📜': {
-			// 	clear_user_reactions(messageReaction, user);
+			case '➖': {
+				volume_down(portal_voice_connection)
+					.then(r => {
+						clear_music_vote(guild_object.id);
 
-			// 	const current_music_queue = guild_object.music_queue;
-			// 	const music_queue = current_music_queue.length > 0
-			// 		? '\n' + current_music_queue.map((video, i) => `${i + 1}. **${video.title}`).join('**\n') + '**'
-			// 		: ' empty';
+						return resolve(r);
+					})
+					.catch(e => {
+						clear_music_vote(guild_object.id);
 
-			// 	return resolve({
-			// 		result: true,
-			// 		value: `music queue: ${music_queue}`
-			// 	});
-			// }
+						return resolve({
+							result: false,
+							value: `error while decreasing volume (${e})`
+						});
+					});
+
+				break;
+			}
+			case '➕': {
+				volume_up(portal_voice_connection)
+					.then(r => {
+						clear_music_vote(guild_object.id);
+
+						return resolve(r);
+					})
+					.catch(e => {
+						clear_music_vote(guild_object.id);
+
+						return resolve({
+							result: false,
+							value: `error while increasing volume (${e})`
+						});
+					});
+
+				break;
+			}
 			case '🧹': {
 				if (guild_object.music_queue.length > 1) {
 					guild_object.music_queue.splice(1, guild_object.music_queue.length);
@@ -428,66 +307,46 @@ async function reaction_music_manager(
 						.find(g => g.id === guild_object.id);
 
 					if (!guild) {
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve({
 							result: false,
 							value: 'could fetch guild from client'
 						});
 					}
-
-					update_music_message(
-						guild,
-						guild_object,
-						guild_object.music_queue
-							? guild_object.music_queue[0]
-							: empty_message,
-						'queue cleared'
-					);
 				}
 
-				clear_user_reactions(messageReaction, user);
+				clear_music_vote(guild_object.id);
 
 				return resolve({
 					result: true,
-					value: 'music queue has been cleared'
+					value: 'queue has been cleared'
 				});
 
 				break;
 			}
 			case '🚪': {
-				pause(portal_voice_connection, messageReaction.message.guild, guild_object)
+				pause(portal_voice_connection)
 					.then(r => {
 						if (portal_voice_connection) {
 							guild_object.music_queue = [];
 							update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 							portal_voice_connection.disconnect();
-
-							if (messageReaction.message.guild) {
-								update_music_message(
-									messageReaction.message.guild,
-									guild_object,
-									guild_object.music_queue
-										? guild_object.music_queue[0]
-										: empty_message,
-									'queue cleared'
-								);
-							}
 						}
 
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve({
 							result: true,
-							value: 'leaving voice channel'
+							value: 'Portal has been disconnected'
 						});
 					})
 					.catch(e => {
-						clear_user_reactions(messageReaction, user);
+						clear_music_vote(guild_object.id);
 
 						return resolve({
 							result: false,
-							value: e
+							value: `Portal failed to get disconnected (${e})`
 						})
 					});
 
@@ -526,17 +385,47 @@ module.exports = async (
 						if (guild_object.role_list.some(r => r.message_id === args.messageReaction.message.id)) {
 							reaction_role_manager(guild_object, args.messageReaction, args.user)
 								.then(r => {
+									clear_user_reactions(args.messageReaction, args.user);
+
 									return resolve(r);
 								})
 								.catch(e => {
+									clear_user_reactions(args.messageReaction, args.user);
+
 									return resolve(e);
 								});
 						} else if (guild_object.music_data.message_id === args.messageReaction.message.id) {
 							reaction_music_manager(args.client, guild_object, args.messageReaction, args.user)
 								.then(r => {
+									if (args.messageReaction.message.guild) {
+										update_music_message(
+											args.messageReaction.message.guild,
+											guild_object,
+											guild_object.music_queue.length > 0
+												? guild_object.music_queue[0]
+												: undefined,
+											r.value
+										);
+									}
+
+									clear_user_reactions(args.messageReaction, args.user);
+
 									return resolve(r);
 								})
 								.catch(e => {
+									if (args.messageReaction.message.guild) {
+										update_music_message(
+											args.messageReaction.message.guild,
+											guild_object,
+											guild_object.music_queue.length > 0
+												? guild_object.music_queue[0]
+												: undefined,
+											`error while handling music reaction (${e})`
+										);
+									}
+
+									clear_user_reactions(args.messageReaction, args.user);
+
 									return resolve(e);
 								});
 						} else if (args.messageReaction.emoji.name === '🏁' &&
@@ -555,7 +444,7 @@ module.exports = async (
 									});
 
 								args.messageReaction.message.reply(
-									`Poll winner is option ${winner.emoji} with ${winner.count} votes`
+									`Poll winner is option ${winner.emoji} with ${(winner.count ? winner.count : 0) - 1} votes`
 								);
 
 								remove_poll(current_guild.id, args.messageReaction.message.id)
@@ -570,14 +459,14 @@ module.exports = async (
 									.catch(e => {
 										return resolve({
 											result: false,
-											value: e
+											value: `error while removing poll (${e})`
 										});
 									});
 							}
 						} else {
 							return resolve({
 								result: false,
-								value: 'message is neither role assigning or music'
+								value: 'message is not controlled by Portal'
 							});
 						}
 					}
