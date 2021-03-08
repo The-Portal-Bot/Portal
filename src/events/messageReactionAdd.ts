@@ -2,7 +2,7 @@ import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
-import { pause, play, skip } from "../libraries/musicOps";
+import { pause, play, skip, volume_down, volume_up } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
 
@@ -262,6 +262,42 @@ async function reaction_music_manager(
 
 				break;
 			}
+			case '➖': {
+				volume_down(portal_voice_connection)
+					.then(r => {
+						clear_music_vote(guild_object.id);
+
+						return resolve(r);
+					})
+					.catch(e => {
+						clear_music_vote(guild_object.id);
+
+						return resolve({
+							result: false,
+							value: `error while decreasing volume (${e})`
+						});
+					});
+
+				break;
+			}
+			case '➕': {
+				volume_up(portal_voice_connection)
+					.then(r => {
+						clear_music_vote(guild_object.id);
+
+						return resolve(r);
+					})
+					.catch(e => {
+						clear_music_vote(guild_object.id);
+
+						return resolve({
+							result: false,
+							value: `error while increasing volume (${e})`
+						});
+					});
+
+				break;
+			}
 			case '🧹': {
 				if (guild_object.music_queue.length > 1) {
 					guild_object.music_queue.splice(1, guild_object.music_queue.length);
@@ -368,7 +404,7 @@ module.exports = async (
 											guild_object.music_queue.length > 0
 												? guild_object.music_queue[0]
 												: undefined,
-											r.value + 'edo'
+											r.value
 										);
 									}
 

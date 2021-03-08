@@ -447,3 +447,69 @@ export async function skip(
 		}
 	});
 };
+
+export async function volume_down(
+	voice_connection: VoiceConnection | undefined
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		if (voice_connection) {
+			if (voice_connection.dispatcher) {
+				if (voice_connection.dispatcher.volume !== 1) {
+					voice_connection.dispatcher.setVolume(voice_connection.dispatcher.volume - 0.25);
+					return resolve({
+						result: true,
+						value: `volume increased by 25% to ${voice_connection.dispatcher.volume*100}%`
+					});
+				} else {
+					return resolve({
+						result: false,
+						value: 'volume is at 100%'
+					});
+				}
+			} else {
+				return resolve({
+					result: false,
+					value: 'player is idle'
+				});
+			}
+		} else {
+			return resolve({
+				result: false,
+				value: 'Portal is not connected'
+			});
+		}
+	});
+};
+
+export async function volume_up(
+	voice_connection: VoiceConnection | undefined
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		if (voice_connection) {
+			if (voice_connection.dispatcher) {
+				if (voice_connection.dispatcher.volume !==0) {
+					voice_connection.dispatcher.setVolume(voice_connection.dispatcher.volume + 0.25);
+					return resolve({
+						result: true,
+						value: `volume increased by 25% to ${voice_connection.dispatcher.volume*100}%`
+					});
+				} else {
+					return resolve({
+						result: false,
+						value: 'volume is at 0%'
+					});
+				}
+			} else {
+				return resolve({
+					result: false,
+					value: 'player is idle'
+				});
+			}
+		} else {
+			return resolve({
+				result: false,
+				value: 'Portal is not connected'
+			});
+		}
+	});
+};
