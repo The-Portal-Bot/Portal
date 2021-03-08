@@ -546,9 +546,9 @@ const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' 
 const empty_message: yts.VideoSearchResult = {
 	type: 'video',
 	videoId: '-',
-	url: 'Just type and I\'ll play',
+	url: '',
 	title: 'Music Player',
-	description: '-',
+	description: 'Type and Portal will play',
 	image: '-',
 	thumbnail: portal_icon_url,
 	seconds: 0,

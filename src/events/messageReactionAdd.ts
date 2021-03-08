@@ -13,9 +13,9 @@ const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' 
 const empty_message: yts.VideoSearchResult = {
 	type: 'video',
 	videoId: '-',
-	url: 'just type and I\'ll play',
+	url: '',
 	title: 'Music Player',
-	description: '-',
+	description: 'Type and Portal will play',
 	image: '-',
 	thumbnail: portal_icon_url,
 	seconds: 0,
@@ -163,10 +163,6 @@ async function reaction_music_manager(
 		const member_object = guild_object.member_list
 			.find(m => m.id === user.id);
 
-		// if (!guild_object.music_data.votes) {
-		// 	clear_music_vote(guild_object.id);
-		// }
-
 		const portal_voice_connection = client.voice?.connections
 			.find(c => c.channel.guild.id === messageReaction.message?.guild?.id);
 
@@ -244,8 +240,6 @@ async function reaction_music_manager(
 					});
 				}
 
-				const msg = null;
-
 				if (!(member_object && member_object.dj)) {
 					const member = guild.members.cache
 						.find(m => m.id === user.id);
@@ -267,7 +261,7 @@ async function reaction_music_manager(
 						const users = portal_voice_connection?.channel?.members
 							.filter(member => !member.user.bot).size;
 
-						if (!(votes >= users / 2)) {
+						if (!(votes < users / 2)) {
 							return resolve({
 								result: false,
 								value: `${votes}/${Math.round(users / 2)} votes`
@@ -282,12 +276,10 @@ async function reaction_music_manager(
 				)
 					.then(r => {
 						clear_music_vote(guild_object.id);
-
+						guild_object.music_queue.shift();
 						return resolve(r)
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id);
-
 						return resolve({
 							result: false,
 							value: `error while skipping (${e})`
@@ -442,7 +434,7 @@ module.exports = async (
 									});
 
 								args.messageReaction.message.reply(
-									`Poll winner is option ${winner.emoji} with ${(winner.count ? winner.count : 0)- 1} votes`
+									`Poll winner is option ${winner.emoji} with ${(winner.count ? winner.count : 0) - 1} votes`
 								);
 
 								remove_poll(current_guild.id, args.messageReaction.message.id)

@@ -96,9 +96,15 @@ async function start_playback(
 						);
 
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							console.log('event finish !');
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
 
 						return resolve({
@@ -130,9 +136,15 @@ async function start_playback(
 								);
 
 								dispatcher.once('finish', () => {
-									dispatcher.destroy();
-									skip(r.voice_connection, user, client, guild, guild_object);
-									clear_music_vote(guild_object.id);
+									console.log('event finish !');
+									if (!dispatcher.destroyed) {
+										dispatcher.destroy();
+									}
+									skip(r.voice_connection, user, client, guild, guild_object)
+										.then(r => {
+											clear_music_vote(guild_object.id);
+										})
+										.catch(console.log);
 								});
 
 								return resolve({
@@ -230,9 +242,15 @@ export async function play(
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							console.log('event finish !');
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
 
 						return resolve({
@@ -243,6 +261,7 @@ export async function play(
 			}
 		} else {
 			if (guild_object.music_queue.length === 0) {
+				console.log(`guild_object.music_queue.length === 0`);
 				return resolve({
 					result: false,
 					value: 'queue is empty'
@@ -262,9 +281,15 @@ export async function play(
 						const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r.voice_connection);
 
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							console.log('event finish !');
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
 
 						return resolve({
@@ -328,7 +353,22 @@ export async function skip(
 	return new Promise((resolve) => {
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
-				voice_connection.dispatcher.end();
+				if (voice_connection.dispatcher.paused) {
+					setTimeout(() => {
+						voice_connection.dispatcher.resume();
+						setTimeout(() => {
+							voice_connection.dispatcher.end();
+						}, 0.5 * 1000);
+					}, 0.5 * 1000);
+					voice_connection.dispatcher.resume();
+				} else {
+					voice_connection.dispatcher.end();
+				}
+
+				return resolve({
+					result: true,
+					value: 'skipped to queued song'
+				});
 			} else {
 				pop_music_queue(guild_object)
 					.then(next_video => {
@@ -341,9 +381,15 @@ export async function skip(
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							dispatcher.destroy();
-							skip(voice_connection, user, client, guild, guild_object);
-							clear_music_vote(guild_object.id);
+							console.log('event finish !');
+							if (!dispatcher.destroyed) {
+								dispatcher.destroy();
+							}
+							skip(voice_connection, user, client, guild, guild_object)
+								.then(r => {
+									clear_music_vote(guild_object.id);
+								})
+								.catch(console.log);
 						});
 
 						return resolve({
@@ -376,9 +422,15 @@ export async function skip(
 								const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
 
 								dispatcher.once('finish', () => {
-									dispatcher.destroy();
-									skip(voice_connection, user, client, guild, guild_object);
-									clear_music_vote(guild_object.id);
+									console.log('event finish !');
+									if (!dispatcher.destroyed) {
+										dispatcher.destroy();
+									}
+									skip(voice_connection, user, client, guild, guild_object)
+										.then(r => {
+											clear_music_vote(guild_object.id);
+										})
+										.catch(console.log);
 								});
 
 								return resolve({

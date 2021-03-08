@@ -27,7 +27,8 @@ export function create_music_message(
 		null,
 		true,
 		null,
-		thumbnail
+		thumbnail,
+		'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
 	);
 
 	channel
@@ -35,7 +36,9 @@ export function create_music_message(
 		.then(sent_message => {
 			sent_message.react('▶️');
 			sent_message.react('⏸');
-			// sent_message.react('⏹');
+			sent_message.react('⏭');
+			sent_message.react('➖');
+			sent_message.react('➕');
 			sent_message.react('⏭');
 			sent_message.react('🧹');
 			sent_message.react('🚪');
@@ -67,8 +70,8 @@ export function update_music_message(
 			: 'empty';
 
 		const music_message_emb = create_rich_embed(
-			yts ? yts.title : 'Just type and I\'ll play',
-			yts ? yts.url : '-',
+			yts ? yts.title : 'Music Player',
+			yts ? yts.url : 'Type and Portal will play',
 			'#e60026',
 			[
 				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
@@ -250,7 +253,7 @@ export async function join_user_voice(
 
 		const voice_connection_in_guild = client.voice.connections
 			.find(connection => connection.channel.guild.id === message.guild?.id);
-			
+
 		if (
 			voice_connection_in_guild &&
 			voice_connection_in_guild.channel.id === message.member.voice.channel?.id
@@ -322,31 +325,30 @@ export function getJSON(
 };
 
 export function create_rich_embed(
-	title: string | null | undefined, description: string | null | undefined, colour: string | null | undefined,
-	field_array: Field[], thumbnail: string | null | undefined, member: GuildMember | null | undefined, from_bot: boolean | null | undefined,
-	url: string | null | undefined, image: string | null | undefined, custom_gif?: string
+	title: string | null | undefined,
+	description: string | null | undefined,
+	colour: string | null | undefined,
+	field_array: Field[] | null,
+	thumbnail: string | null | undefined,
+	member: GuildMember | null | undefined,
+	from_bot: boolean | null | undefined,
+	url: string | null | undefined,
+	image: string | null | undefined,
+	custom_gif?: string,
+	author?: { name: string, icon: string }
 ): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spinr.gif';
-	const keybraker_url: string = 'https://github.com/keybraker';
+	const portal_url: string = 'https://www.portal-bot.xyz';
 
-	const rich_message: MessageEmbed = new MessageEmbed()
-		.setTimestamp();
-	// .setAuthor('Portal', portal_icon_url, keybraker_url)
+	const rich_message: MessageEmbed = new MessageEmbed();
 
 	if (title) rich_message.setTitle(title);
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url);
+	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url).setTimestamp();
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
-	if (member) {
-		const url = member.user.avatarURL() !== null
-			? member.user.avatarURL()
-			: undefined;
-		rich_message
-			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
-	}
 	if (field_array) {
 		field_array.forEach(row => {
 			rich_message
@@ -361,10 +363,15 @@ export function create_rich_embed(
 				);
 		});
 	}
-	else {
-		rich_message.addField('\u200b', '\u200b');
+	if (member) {
+		const url = member.user.avatarURL() !== null
+			? member.user.avatarURL()
+			: undefined;
+		rich_message
+			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
 	}
-
+	if (author) rich_message.setAuthor(author.name, author.icon);
+	
 	return rich_message;
 };
 
