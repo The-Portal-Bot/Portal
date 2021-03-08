@@ -54,7 +54,7 @@ export function update_music_message(
 ): Promise<boolean> {
 	return new Promise((resolve) => {
 		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
-			'Portal/implement-football-data/src/assets/img/music_empty.png';
+			'Portal/master/src/assets/img/music_empty.png';
 
 		const music_queue = guild_object.music_queue ?
 			guild_object.music_queue.length > 1

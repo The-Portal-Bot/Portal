@@ -443,8 +443,8 @@ module.exports = async (
 										return r;
 									});
 
-								args.messageReaction.message.reply(
-									`Poll winner is option ${winner.emoji} with ${(winner.count ? winner.count : 0) - 1} votes`
+								args.messageReaction.message.channel.send(
+									`Poll outcome is option ${winner.emoji} with ${(winner.count ? winner.count : 0) - 1} votes`
 								);
 
 								remove_poll(current_guild.id, args.messageReaction.message.id)
