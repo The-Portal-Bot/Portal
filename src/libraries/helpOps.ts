@@ -12,6 +12,9 @@ import { fetch_guild, fetch_guild_list, set_music_data } from "./mongoOps";
 export function create_music_message(
 	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl
 ): void {
+	const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
+		'Portal/master/src/assets/img/music_empty.png';
+
 	const music_message_emb = create_rich_embed(
 		'Music Player',
 		'Type and Portal will play',
@@ -20,14 +23,14 @@ export function create_music_message(
 			{ emote: 'Duration', role: '-', inline: true },
 			{ emote: 'Views', role: '-', inline: true },
 			{ emote: 'Uploaded', role: '-', inline: true },
-			{ emote: 'Queue', role: '-', inline: false },
-			{ emote: 'Latest Action', role: '```-```', inline: false }
+			{ emote: 'Queue', role: 'empty', inline: false },
+			{ emote: 'Latest Action', role: '```music message created```', inline: false }
 		],
-		thumbnail,
+		null,
 		null,
 		true,
 		null,
-		thumbnail,
+		idle_thumbnail,
 		'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
 	);
 
@@ -39,7 +42,6 @@ export function create_music_message(
 			sent_message.react('⏭');
 			sent_message.react('➖');
 			sent_message.react('➕');
-			sent_message.react('⏭');
 			sent_message.react('🧹');
 			sent_message.react('🚪');
 
@@ -54,7 +56,7 @@ export function update_music_message(
 ): Promise<boolean> {
 	return new Promise((resolve) => {
 		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
-			'Portal/implement-football-data/src/assets/img/music_empty.png';
+			'Portal/master/src/assets/img/music_empty.png';
 
 		const music_queue = guild_object.music_queue ?
 			guild_object.music_queue.length > 1
@@ -371,7 +373,7 @@ export function create_rich_embed(
 			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
 	}
 	if (author) rich_message.setAuthor(author.name, author.icon);
-	
+
 	return rich_message;
 };
 

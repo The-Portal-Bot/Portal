@@ -261,8 +261,8 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": false,
-                "reply": true
+                "auto_delete": true,
+                "reply": false
             },
             {
                 "name": "dj",
