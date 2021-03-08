@@ -1,36 +1,10 @@
 import { Client, MessageReaction, User } from "discord.js";
-import yts from "yt-search";
 import { get_role } from "../libraries/guildOps";
 import { is_authorised, update_music_message } from "../libraries/helpOps";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
 import { pause, play, skip } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-
-const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-	'.github.io/master/assets/img/logo.png';
-
-const empty_message: yts.VideoSearchResult = {
-	type: 'video',
-	videoId: '-',
-	url: '',
-	title: 'Music Player',
-	description: 'Type and Portal will play',
-	image: '-',
-	thumbnail: portal_icon_url,
-	seconds: 0,
-	timestamp: '-',
-	duration: {
-		seconds: 0,
-		timestamp: '0'
-	},
-	ago: '-',
-	views: 0,
-	author: {
-		name: '-',
-		url: '-'
-	}
-};
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
@@ -391,10 +365,10 @@ module.exports = async (
 										update_music_message(
 											args.messageReaction.message.guild,
 											guild_object,
-											guild_object.music_queue
+											guild_object.music_queue.length > 0
 												? guild_object.music_queue[0]
-												: empty_message,
-											r.value
+												: undefined,
+											r.value + 'edo'
 										);
 									}
 
@@ -407,9 +381,9 @@ module.exports = async (
 										update_music_message(
 											args.messageReaction.message.guild,
 											guild_object,
-											guild_object.music_queue
+											guild_object.music_queue.length > 0
 												? guild_object.music_queue[0]
-												: empty_message,
+												: undefined,
 											`error while handling music reaction (${e})`
 										);
 									}
@@ -456,7 +430,7 @@ module.exports = async (
 						} else {
 							return resolve({
 								result: false,
-								value: 'message is neither role assigning or music'
+								value: 'message is not controlled by Portal'
 							});
 						}
 					}

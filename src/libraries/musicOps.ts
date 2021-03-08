@@ -96,7 +96,6 @@ async function start_playback(
 						);
 
 						dispatcher.once('finish', () => {
-							console.log('event finish !');
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
@@ -136,7 +135,6 @@ async function start_playback(
 								);
 
 								dispatcher.once('finish', () => {
-									console.log('event finish !');
 									if (!dispatcher.destroyed) {
 										dispatcher.destroy();
 									}
@@ -242,7 +240,6 @@ export async function play(
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							console.log('event finish !');
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
@@ -261,7 +258,6 @@ export async function play(
 			}
 		} else {
 			if (guild_object.music_queue.length === 0) {
-				console.log(`guild_object.music_queue.length === 0`);
 				return resolve({
 					result: false,
 					value: 'queue is empty'
@@ -281,7 +277,6 @@ export async function play(
 						const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r.voice_connection);
 
 						dispatcher.once('finish', () => {
-							console.log('event finish !');
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
@@ -381,7 +376,6 @@ export async function skip(
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
 						dispatcher.once('finish', () => {
-							console.log('event finish !');
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
@@ -422,7 +416,6 @@ export async function skip(
 								const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
 
 								dispatcher.once('finish', () => {
-									console.log('event finish !');
 									if (!dispatcher.destroyed) {
 										dispatcher.destroy();
 									}

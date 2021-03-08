@@ -540,31 +540,6 @@ function handle_ignored_channels(
 	return false;
 }
 
-const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-	'.github.io/master/assets/img/logo.png';
-
-const empty_message: yts.VideoSearchResult = {
-	type: 'video',
-	videoId: '-',
-	url: '',
-	title: 'Music Player',
-	description: 'Type and Portal will play',
-	image: '-',
-	thumbnail: portal_icon_url,
-	seconds: 0,
-	timestamp: '-',
-	duration: {
-		seconds: 0,
-		timestamp: '0'
-	},
-	ago: '-',
-	views: 0,
-	author: {
-		name: '-',
-		url: '-'
-	}
-};
-
 function handle_music_channels(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
@@ -609,9 +584,9 @@ function handle_music_channels(
 						update_music_message(
 							message.guild,
 							guild_object,
-							guild_object.music_queue
+							guild_object.music_queue.length > 0
 								? guild_object.music_queue[0]
-								: empty_message,
+								: undefined,
 							r.value);
 					}
 
@@ -624,9 +599,9 @@ function handle_music_channels(
 						update_music_message(
 							message.guild,
 							guild_object,
-							guild_object.music_queue
+							guild_object.music_queue.length > 0
 								? guild_object.music_queue[0]
-								: empty_message,
+								: undefined,
 							`error while starting playback (${e})`
 						);
 					}

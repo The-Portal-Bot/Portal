@@ -53,8 +53,8 @@ export function update_music_message(
 	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve) => {
-		const portal_icon_url = 'https://raw.githubusercontent.com/' +
-			'keybraker/keybraker.github.io/master/assets/img/logo.png';
+		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
+			'Portal/implement-football-data/src/assets/img/music_empty.png';
 
 		const music_queue = guild_object.music_queue ?
 			guild_object.music_queue.length > 1
@@ -71,7 +71,7 @@ export function update_music_message(
 
 		const music_message_emb = create_rich_embed(
 			yts ? yts.title : 'Music Player',
-			yts ? yts.url : 'Type and Portal will play',
+			yts ? yts.url : 'Type and Portal will play it !',
 			'#e60026',
 			[
 				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
@@ -80,11 +80,11 @@ export function update_music_message(
 				{ emote: 'Queue', role: music_queue, inline: false },
 				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
-			portal_icon_url,
+			null,
 			null,
 			true,
 			null,
-			yts ? yts.thumbnail : null,
+			yts ? yts.thumbnail : idle_thumbnail,
 			animated
 				? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
 				: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
