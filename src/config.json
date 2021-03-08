@@ -9,6 +9,7 @@
       "OpenWeatherMap": "add-open-weather-map-api-key",
       "covid_193": "add-covid-193-api-key",
       "coingecko": "add-coingecko-api-key",
+      "footbal_data": "add-football-data-api-key",
       "yahoo_finance": "add-yahoo-finance-api-key",
       "translate": {
           "engine": "yandex",
