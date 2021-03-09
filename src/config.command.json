@@ -10,15 +10,6 @@
                 "reply": false
             },
             {
-                "name": "authorised_roles",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "auto_delete": true,
-                "reply": true
-            },
-            {
                 "name": "join",
                 "range": "none",
                 "time": 1,
@@ -207,15 +198,6 @@
                 "reply": false
             },
             {
-                "name": "ignored",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "auto_delete": false,
-                "reply": true
-            },
-            {
                 "name": "setup",
                 "range": "guild",
                 "time": 10,
@@ -238,24 +220,6 @@
                 "reply": true
             },
             {
-                "name": "authorise",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "auto_delete": true,
-                "reply": true
-            },
-            {
-                "name": "deauthorise",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "auto_delete": true,
-                "reply": true
-            },
-            {
                 "name": "delete",
                 "range": "none",
                 "time": 0,
@@ -263,15 +227,6 @@
                 "premium": true,
                 "auto_delete": true,
                 "reply": false
-            },
-            {
-                "name": "dj",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "auto_delete": false,
-                "reply": true
             },
             {
                 "name": "music",

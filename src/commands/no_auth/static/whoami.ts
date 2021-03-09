@@ -29,21 +29,6 @@ module.exports = async (
                     emote: 'Regex',
                     role: member_object.regex ? 'not set' : member_object.regex,
                     inline: false
-                },
-                {
-                    emote: 'DJ',
-                    role: member_object.dj ? 'true' : 'false',
-                    inline: false
-                },
-                {
-                    emote: 'Admin',
-                    role: member_object.admin ? 'true' : 'false',
-                    inline: false
-                },
-                {
-                    emote: 'Ignored',
-                    role: member_object.ignored ? 'true' : 'false',
-                    inline: false
                 }
             ],
             message.member?.user.avatarURL(),

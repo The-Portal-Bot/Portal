@@ -5,7 +5,7 @@ import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guildOps';
-import { is_authorised, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/helpOps';
+import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/helpOps';
 import { client_talk } from './libraries/localisationOps';
 import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
 import { start } from './libraries/musicOps';
@@ -198,13 +198,13 @@ client.on('message', async (message: Message) => {
 
 				if (!command.command_options) {
 					message_reply(false, message, message.author,
-						'could not get command option');
+						'could not find command option');
 
 					return false;
 				}
 
 				if (command.command_options.auth && message.member) {
-					if (!is_authorised(guild_object.member_list, guild_object.auth_role, message.member)) {
+					if (!is_authorised(message.member)) {
 						message_reply(false, message, message.author,
 							'you are not authorised to use this command');
 
@@ -232,7 +232,6 @@ client.on('message', async (message: Message) => {
 						guild_object.portal_list = guild_object_rest.portal_list;
 						guild_object.poll_list = guild_object_rest.poll_list;
 						guild_object.ranks = guild_object_rest.ranks;
-						guild_object.spotify = guild_object_rest.spotify;
 						guild_object.music_queue = guild_object_rest.music_queue;
 						guild_object.announcement = guild_object_rest.announcement;
 						guild_object.locale = guild_object_rest.locale;
@@ -241,7 +240,7 @@ client.on('message', async (message: Message) => {
 
 						if (!command.command_options) {
 							message_reply(false, message, message.author,
-								'could not get command option');
+								'could not find command option');
 
 							return false;
 						}
@@ -258,7 +257,7 @@ client.on('message', async (message: Message) => {
 					})
 					.catch(e => {
 						message_reply(false, message, message.author,
-							`could not find server (${e})`);
+							`1 could not find server [rst] (${e})`);
 
 						return false;
 					});
@@ -266,7 +265,7 @@ client.on('message', async (message: Message) => {
 		})
 		.catch(e => {
 			message_reply(false, message, message.author,
-				`could not find server (${e})`);
+				`could not find server [pre] (${e})`);
 
 			return false;
 		});
@@ -402,11 +401,15 @@ exports.log_portal = log_portal;
 function portal_preprocessor(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
-	if (handle_ignored_members(message, guild_object) ||
-		handle_ignored_roles(message, guild_object)) {
+	if (!message.member) {
+		return true;
+	}
+
+	if (is_ignored(message.member)) {
 		if (!handle_url_channels(message, guild_object)) {
 			anti_spam.message(message);
 			if (guild_object.music_data.channel_id === message.channel.id) {
+				message.member.send('you can\'t play music when ignored');
 				if (message.deletable) {
 					message.delete();
 				}
@@ -434,6 +437,7 @@ function portal_preprocessor(
 		} else {
 			handle_ranking_system(message, guild_object);
 			anti_spam.message(message);
+
 			// profanity check
 			// const profanities = isProfane(message.content);
 			// if (profanities.length > 0) {
@@ -446,20 +450,6 @@ function portal_preprocessor(
 			return false;
 		}
 	}
-}
-
-function handle_ignored_roles(
-	message: Message, guild_object: GuildPrtl
-): boolean {
-	if (!message.member) return false;
-	return message.member.roles.cache.some(r =>
-		guild_object.ignore_role.includes(r.id));
-}
-
-function handle_ignored_members(
-	message: Message, guild_object: GuildPrtl
-): boolean {
-	return guild_object.member_list[0].ignored;
 }
 
 function handle_ranking_system(
@@ -646,7 +636,7 @@ function command_cypher(
 	let command_options: CommandOptions | undefined = undefined;
 	let type: string = 'none';
 
-	const is_portal_command = command_config_json.some(category => {
+	command_config_json.some(category => {
 		command_options = category.commands.
 			find(command => command.name === cmd);
 

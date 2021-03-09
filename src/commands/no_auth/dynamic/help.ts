@@ -15,33 +15,42 @@ module.exports = async (
 		if (args.length === 0) {
 			const func_array: Field[] = [
 				{
-					emote: './help commands OR ./help commands guide',
-					role: 'Commands are mini programs you can use to get a response',
+					emote: null,
+					role: '[Commands](https://portal-bot.xyz/docs/commands)',
+					inline: false
+				},
+				{
+					emote: '`./help commands` or `./help commands guide`',
+					role: 'Commands are mini programs you can use to get a response or action\n',
 					inline: false
 				},
 				{
 					emote: null,
-					role: 'Regex Interpreter',
+					role: '[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter/)',
 					inline: false
 				},
 				{
-					emote: './help variables OR ./help variables guide',
-					role: 'Variables are live data you can use to make voice channel names or run with ./run',
+					emote: '`./help variables` or `./help variables guide`',
+					role: 'Variables are live data about the current state of things\n' +
+						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/variables/)_',
 					inline: false
 				},
 				{
-					emote: './help pipes OR ./help pipes guide',
-					role: 'Pipes are mini-programs that manipulate text or even variables',
+					emote: '`./help pipes` or `./help pipes guide`',
+					role: 'Pipes are mini-programs that manipulate text or even variables\n' +
+						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/pipes/)_',
 					inline: false
 				},
 				{
-					emote: './help attributes OR ./help attributes guide',
-					role: 'Attributes are options the options of your current portal, which you can change with ./set',
+					emote: '`./help attributes` or `./help attributes guide`',
+					role: 'Attributes are options that can be altered with command `set`\n' +
+						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/attributes/)_',
 					inline: false
 				},
 				{
-					emote: './help structures OR ./help structures guide',
-					role: 'Structures are a way to manipulate the outcome of a text to greater extend',
+					emote: '`./help structures` or `./help structures guide`',
+					role: 'Structures are rules to further manipulate the text outcome\n' +
+						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/structures/)_',
 					inline: false
 				},
 				{
@@ -50,17 +59,21 @@ module.exports = async (
 					inline: false
 				},
 				{
-					emote: './help <specific_property_name>',
-					role: 'If you want to specify the action of a anything just type ./help <specific_property_name>',
+					emote: '`./help <specific_property_name>`',
+					role: 'If you want to get a complete description of any property\n' +
+						'_(lets say you want to learn more about variables year, just type `./help year`)_',
 					inline: false
 				}
 			];
+
 			message.reply(
 				create_rich_embed(
-					'Portal Documentation',
-					'For a descriptive documentaion go to https://portal-bot.xyz/docs\n\n' +
-					'Bellow you can see Portal\'s commands and variables and how you can access them',
-					'#9775A9', func_array, null, null, true, null, null
+					'Documentation: https://portal-bot.xyz/docs',
+					'> To make a member a **dj**, give him role with name `p.dj`\n' +
+					'> To make a member an **admin**, give him role with name `p.admin`\n' +
+					'> To make **ignore** a member, give him role with name `p.ignore`\n' +
+					'> for more click [here](https://portal-bot.xyz/help#q-how-to-give-member-authority)',
+					'#05d1ff', func_array, null, null, true, null, null
 				))
 				.catch(console.error);
 

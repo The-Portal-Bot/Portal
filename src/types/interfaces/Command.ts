@@ -42,30 +42,6 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'authorise',
-		description: 'authorise will add a role to the autorized list of roles that can access certain commands',
-		super_description: '**authorise**, authorise will add a role to the autorized list of roles that ' +
-			' can access certain commands. Selected roles will be granted higher access to more powerful Portal ' +
-			' commands that can manipulate the flow of the server',
-		example: './deauthorise one_role',
-		args: '<@role_name>',
-		auth: 'admin',
-		get: null,
-		set: null
-	},
-	{
-		name: 'authorised_roles',
-		description: 'authorised_roles will display all the authorization roles that allow user to use portal ',
-		super_description: '**authorised_roles**, authorised_roles will add a role to the autorized list of roles that ' +
-			' can access certain commands. Selected roles will be granted higher access to more powerful Portal ' +
-			' commands that can manipulate the flow of the server',
-		example: './authorised_roles one_role',
-		args: '<@role_name>',
-		auth: 'admin',
-		get: null,
-		set: null
-	},
-	{
 		name: 'corona',
 		description: 'corona replys with todays latest figures on the novel corona virus',
 		super_description: '**corona**, replys with todays latest figures on the novel corona virus. ' +
@@ -87,35 +63,12 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'deauthorise',
-		description: 'deauthorise will remove a role to the autorized list of roles that can access certain commands',
-		super_description: '**deauthorise**, deauthorise will remove a role to the autorized list of roles that ' +
-			' can access certain commands. Selected roles will be stripped of the higher access to more powerful Portal ' +
-			' commands that can manipulate the flow of the server',
-		example: './deauthorise one_role',
-		args: '<@role_name>',
-		auth: 'admin',
-		get: null,
-		set: null
-	},
-	{
 		name: 'delete',
 		description: 'delete will remove number of messages given',
 		super_description: '**delete**, elete will remove number of messages given, keep in mind that you basically delete\n' +
 			'n+1 messages because portal deletes the command delete you send and n more messages',
 		example: './delete 5',
 		args: '<!number of messages>',
-		auth: 'admin',
-		get: null,
-		set: null
-	},
-	{
-		name: 'dj',
-		description: 'dj will give or strip dj statusfrom a member',
-		super_description: '**dj**, will give or strip dj statusfrom a member, \n' +
-			'dj can control music without the need of a majority or admin permissions',
-		example: './dj 704400876860735569 or dj username',
-		args: '<!member id> or <!member name>',
 		auth: 'admin',
 		get: null,
 		set: null
@@ -229,20 +182,9 @@ const commands: InterfaceBlueprint[] = [
 		description: 'ignores the current voice channel, Portal will not reply to them' +
 			' if arguments are given',
 		super_description: '**ignore**, sets the text channel you wrote the command in a ignore channel.' +
-			' Basically Portal will not respond to anything that is written in it.',
+			' Portal will not respond to anything that is written in it.',
 		example: './ignore`',
 		args: '<@member_id>',
-		auth: 'admin',
-		get: null,
-		set: null
-	},
-	{
-		name: 'ignored',
-		description: 'returns all ignored members',
-		super_description: '**ignored**, returns a list of members that Portal is ignoring.' +
-			' These members can not access any portal command.',
-		example: './ignored`',
-		args: 'none',
 		auth: 'admin',
 		get: null,
 		set: null
@@ -367,8 +309,8 @@ const commands: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'setup',
-		description: 'creates a portal, spotify, url-only and announcement channel automatically',
-		super_description: '**setup**, will autogenerate a portal, spotify, url-only and announcement channels ' +
+		description: 'creates a portal, url-only and announcement channel automatically',
+		super_description: '**setup**, will autogenerate a portal, url-only and announcement channels ' +
 			'at once, removing the hustle of setting up the server.\n',
 		example: './setup',
 		args: 'none',
@@ -377,24 +319,11 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'spotify',
-		description: 'sets the text channel you wrote the command in as the Spotify channel or creates a new channel' +
-			' if arguments are given',
-		super_description: '**spotify**, sets the text channel you wrote the command in as the Spotify channel, ' +
-			'which means that every time someone listens to a song on Spotify it will be displayed. If channel is given as ' +
-			'argument, a new channel is created and set as Spotify channel',
-		example: './spotify spotify_name | spotify_category, ./spotify spotify_name, ./spotify',
-		args: '<@channel_name> | <@category_name>',
-		auth: 'admin',
-		get: null,
-		set: null
-	},
-	{
 		name: 'state',
 		description: 'returns a visualisation of Portal\'s current state',
 		super_description: '**state**, returns a visualisation of Portal\'s current state, ' +
-			'which means all portal channels with their controlled voice channels spotify, ' +
-			'announcement and url channels',
+			'which means all portal channels with their controlled voice channels ' +
+			'announcement, ignored and url channels',
 		example: './state',
 		args: 'none',
 		auth: 'none',
@@ -452,6 +381,7 @@ export function is_command(candidate: string): string {
 	for (let i = 0; i < commands.length; i++) {
 		if (String(candidate).substring(1, (String(commands[i].name).length + 1)) == commands[i].name) { return commands[i].name; }
 	}
+
 	return '';
 }
 
@@ -545,6 +475,7 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 			);
 		}
 	}
+
 	return false;
 };
 

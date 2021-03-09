@@ -1,5 +1,5 @@
 import { Message, TextChannel } from "discord.js";
-import { create_music_channel, delete_channel, is_url_only_channel, is_announcement_channel, is_music_channel, is_spotify_channel } from "../../../libraries/guildOps";
+import { create_music_channel, delete_channel, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../../libraries/guildOps";
 import { create_music_message } from "../../../libraries/helpOps";
 import { ChannelTypePrtl, set_music_data } from "../../../libraries/mongoOps";
 import { GuildPrtl, MusicData } from "../../../types/classes/GuildPrtl";
@@ -33,12 +33,6 @@ module.exports = async (
 							value: 'failed to remove music channel'
 						});
 					});
-			}
-			if (is_spotify_channel(message.channel.id, guild_object)) {
-				return resolve({
-					result: false,
-					value: 'this can\'t be set as the music channel for it is the spotify channel'
-				});
 			}
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({

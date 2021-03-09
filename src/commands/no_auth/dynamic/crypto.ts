@@ -72,7 +72,7 @@ module.exports = async (
 						undefined,
 						{
 							name: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price is ${json[crypto_name][currnc_name]}`,
-							icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/coin.webp'
+							icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/coin.gif'
 						}						
 					));
 

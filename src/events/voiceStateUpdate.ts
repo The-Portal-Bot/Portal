@@ -89,6 +89,11 @@ async function channel_empty_check(
 							value: `an error occured while deleting voice (${e})`
 						});
 					});
+			} else {
+				return resolve({
+					result: false,
+					value: `nothing to do`
+				});
 			}
 		}
 		else if (old_channel.members.size === 1) {
@@ -115,10 +120,20 @@ async function channel_empty_check(
 					} else {
 						return resolve({
 							result: true,
-							value: 'portal left voice channel'
+							value: 'Portal left voice channel'
 						})
 					}
+				} else {
+					return resolve({
+						result: false,
+						value: `Portal is not connected`
+					});
 				}
+			} else {
+				return resolve({
+					result: false,
+					value: `Portal is not connected`
+				});
 			}
 		}
 	});

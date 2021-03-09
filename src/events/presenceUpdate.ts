@@ -1,8 +1,7 @@
 import { Client, Guild, Presence, TextChannel, VoiceChannel } from "discord.js";
 import { generate_channel_name } from "../libraries/guildOps";
 import { create_rich_embed } from "../libraries/helpOps";
-import { get_function } from "../libraries/localisationOps";
-import { fetch_guild, fetch_guild_spotify } from "../libraries/mongoOps";
+import { fetch_guild } from "../libraries/mongoOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
@@ -94,74 +93,5 @@ module.exports = async (
 				value: 'could not fetch guild from presence'
 			});
 		}
-
-		fetch_guild_spotify(args.newPresence?.guild.id)
-			.then(spotify_data => {
-				if (spotify_data) {
-					if (!args.newPresence) {
-						return resolve({
-							result: false,
-							value: 'could not fetch spotify data'
-						});
-					}
-
-					if (!args.newPresence.member) {
-						return resolve({
-							result: false,
-							value: 'could not fetch presence member'
-						});
-					}
-
-					if (!args.newPresence.guild) {
-						return resolve({
-							result: false,
-							value: 'could not fetch presence guild'
-						});
-					}
-
-					const current_guild = args.newPresence.guild;
-					const current_channel = args.newPresence.member.voice.channel;
-
-					if (!current_channel) {
-						return resolve({
-							result: false,
-							value: ''
-						});
-					}
-
-					spotify_data.portal_list.some(p => {
-						p.voice_list.some(v => {
-							if (v.id === current_channel.id) {
-								if (spotify_data.spotify !== 'null' && args.newPresence) {
-									display_spotify_song(spotify_data, args.newPresence, args.client);
-								}
-
-								// time_out_repeat(v, current_guild, current_channel,
-									// spotify_data.portal_list, 5);
-							}
-						});
-					});
-
-					const func = get_function('console', 'en', 'presence_controlled');
-					return resolve({
-						result: true,
-						value: func
-							? func(args.newPresence.member.displayName, args.newPresence.guild.name)
-							: 'error with localisation'
-					});
-				} else {
-					return resolve({
-						result: false,
-						value: 'could not find guild from portal'
-					});
-				}
-			})
-			.catch(e => {
-				return resolve({
-					result: false,
-					value: 'error while fetching guild from portal'
-				});
-			});
-
 	});
 };

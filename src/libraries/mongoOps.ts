@@ -150,8 +150,6 @@ export async function fetch_guild_predata(
                         id: member_id
                     }
                 },
-                auth_role: 1,
-                ignore_role: 1,
                 ignore_list: 1,
                 url_list: 1,
                 music_data: 1,
@@ -164,8 +162,6 @@ export async function fetch_guild_predata(
                         id: r.id,
                         prefix: r.prefix,
                         member_list: r.member_list,
-                        auth_role: r.auth_role,
-                        ignore_role: r.ignore_role,
                         ignore_list: r.ignore_list,
                         url_list: r.url_list,
                         music_data: r.music_data,
@@ -193,8 +189,6 @@ export async function fetch_guild_rest(
             {
                 prefix: 0,
                 member_list: 0,
-                auth_role: 0,
-                ignore_role: 0,
                 ignore_list: 0,
                 url_list: 0,
                 music_data: 0,
@@ -207,77 +201,11 @@ export async function fetch_guild_rest(
                         portal_list: r.portal_list,
                         poll_list: r.poll_list,
                         ranks: r.ranks,
-                        spotify: r.spotify,
                         music_queue: r.music_queue,
                         announcement: r.announcement,
                         locale: r.locale,
                         announce: r.announce,
                         premium: r.premium
-                    });
-                } else {
-                    return undefined;
-                }
-            })
-            .catch(e => {
-                return resolve(undefined);
-            });
-    });
-};
-
-export async function fetch_guild_authenticate(
-    guild_id: string, member_id: string
-): Promise<{ prefix: string, member_list: MemberPrtl[], auth_role: string[] } | undefined> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                prefix: 1,
-                member_list: { $elemMatch: { id: member_id } },
-                auth_role: 1
-            })
-            .then((r: any) => {
-                if (!!r) {
-                    return resolve(<{
-                        prefix: string,
-                        member_list: MemberPrtl[],
-                        auth_role: string[]
-                    }><unknown>{
-                        prefix: r.prefix,
-                        member_list: r.member_list,
-                        auth_role: r.auth_role
-                    });
-                } else {
-                    return undefined;
-                }
-            })
-            .catch(e => {
-                return resolve(undefined);
-            });
-    });
-};
-
-export async function fetch_guild_spotify(
-    guild_id: string
-): Promise<{ spotify: string, portal_list: PortalChannelPrtl[] } | undefined> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                spotify: 1,
-                portal_list: 1
-            })
-            .then((r: any) => {
-                if (!!r) {
-                    return resolve(<{
-                        spotify: string,
-                        portal_list: PortalChannelPrtl[]
-                    }><unknown>{
-                        spotify: r.spotify,
-                        portal_list: r.portal_list
                     });
                 } else {
                     return undefined;
@@ -345,7 +273,7 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
         if (!member.user.bot) {
             if (client.user && member.id !== client.user.id) {
                 member_list.push(
-                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), false, false, false, 'null')
+                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), 'null')
                 );
             }
         }
@@ -364,11 +292,8 @@ export async function insert_guild(
     const url_list: string[] = [];
     const role_list: GiveRolePrtl[] = [];
     const ranks: Rank[] = [];
-    const auth_role: string[] = [];
-    const spotify: string | null = 'null';
     const music_data: MusicData = { channel_id: 'null', message_id: 'null', votes: [] };
     const music_queue: VideoSearchResult[] = [];
-    const dispatcher: StreamDispatcher | undefined = undefined;
     const announcement: string | null = 'null';
     const locale: string = 'en';
     const announce: boolean = true;
@@ -385,11 +310,8 @@ export async function insert_guild(
             url_list: url_list,
             role_list: role_list,
             ranks: ranks,
-            auth_role: auth_role,
-            spotify: spotify,
             music_data: music_data,
             music_queue: music_queue,
-            dispatcher: dispatcher,
             announcement: announcement,
             locale: locale,
             announce: announce,
@@ -457,7 +379,7 @@ export async function update_member(
 export async function insert_member(
     new_member: GuildMember
 ): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, false, false, false, null);
+    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, 'null');
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             { id: new_member.guild.id },
@@ -712,7 +634,7 @@ export async function remove_url(
 
 //
 
-export async function insert_ignore(
+export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
@@ -735,7 +657,7 @@ export async function insert_ignore(
     });
 };
 
-export async function remove_ignore(
+export async function remove_ignore( // channel
     guild_id: string, remove_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
@@ -748,102 +670,6 @@ export async function remove_ignore(
                     ignore_list: remove_ignore
                 }
             })
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-//
-
-export async function insert_authorised_role(
-    guild_id: string, new_auth_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    auth_role: new_auth_role
-                }
-            }
-        )
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-export async function remove_authorised_role(
-    guild_id: string, auth_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    auth_role: auth_role
-                }
-            }
-        )
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-//
-
-export async function insert_ignored_role(
-    guild_id: string, new_ignore_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    ignore_role: new_ignore_role
-                }
-            }
-        )
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-export async function remove_ignored_role(
-    guild_id: string, ignore_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    ignore_role: ignore_role
-                }
-            }
-        )
             .then((r: MongoPromise) => {
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
@@ -1070,9 +896,8 @@ export enum ChannelTypePrtl {
     portal = 1,
     voice = 2,
     url = 3,
-    spotify = 4,
-    announcement = 5,
-    music = 6
+    announcement = 4,
+    music = 5
 }
 
 export async function deleted_channel_sync(
