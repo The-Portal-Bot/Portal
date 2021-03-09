@@ -47,7 +47,10 @@ function spawn_dispatcher(
 		bitrate: 96000
 	}
 
-	return voice_connection.play(stream, stream_options);
+	const dispatcher = voice_connection.play(stream, stream_options);
+	dispatcher.setMaxListeners(20); // check
+
+	return dispatcher;
 }
 
 async function push_video_to_queue(
