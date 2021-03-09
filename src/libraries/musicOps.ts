@@ -113,7 +113,7 @@ async function start_playback(
 					} else {
 						return resolve({
 							result: true,
-							value: 'already playing'
+							value: 'already playing, song added to queue'
 						});
 					}
 				} else {

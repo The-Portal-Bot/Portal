@@ -1,6 +1,7 @@
-import { Client, MessageReaction, User } from "discord.js";
+import { GuildEmoji, ReactionEmoji } from "discord.js";
+import { Client, Collection, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guildOps";
-import { is_authorised, update_music_message } from "../libraries/helpOps";
+import { create_rich_embed, is_authorised, is_dj, update_music_message } from "../libraries/helpOps";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
 import { pause, play, skip, volume_down, volume_up } from "../libraries/musicOps";
 import { GuildPrtl } from "../types/classes/GuildPrtl";
@@ -241,21 +242,23 @@ async function reaction_music_manager(
 					});
 				}
 
-				if (!(member_object && member_object.dj)) {
-					const member = guild.members.cache
-						.find(m => m.id === user.id);
+				const member = guild.members.cache
+					.find(m => m.id === user.id);
 
-					if (!member) {
-						return resolve({
-							promise: {
-								result: false,
-								value: `could not fetch memeber`
-							},
-							animated: false
-						});
-					}
+				if (!member) {
+					return resolve({
+						promise: {
+							result: false,
+							value: `could not fetch memeber`
+						},
+						animated: false
+					});
+				}
 
-					if (!is_authorised(guild_object.member_list, guild_object.auth_role, member)) {
+				let reason = 'none';
+
+				if (!is_dj(member)) {
+					if (!is_authorised(member)) {
 						if (!guild_object.music_data.votes.includes(user.id)) {
 							guild_object.music_data.votes.push(user.id);
 							insert_music_vote(guild_object.id, user.id);
@@ -269,12 +272,18 @@ async function reaction_music_manager(
 							return resolve({
 								promise: {
 									result: false,
-									value: `${votes}/${Math.round(users / 2)} votes`
+									value: `${votes}/${Math.round(users / 2)} votes required`
 								},
 								animated: false
 							});
+						} else {
+							reason = 'vote'
 						}
+					} else {
+						reason = 'admin'
 					}
+				} else {
+					reason = 'DJ'
 				}
 
 				skip(
@@ -284,7 +293,13 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 						guild_object.music_queue.shift();
-						return resolve({ promise: r, animated: r.result });
+						return resolve({
+							promise: {
+								result: r.result,
+								value: r.value + ` (by ${reason})`
+							},
+							animated: r.result
+						});
 					})
 					.catch(e => {
 						return resolve({
@@ -489,18 +504,46 @@ module.exports = async (
 								p.message_id === args.messageReaction.message.id);
 
 							if (poll && args.user.id === poll.member_id) {
-								const winner = args.messageReaction.message.reactions.cache
-									.filter(r => r.emoji.name !== '🏁')
-									.reduce((ac: MessageReaction, r: MessageReaction) => {
-										if ((ac.count ? ac.count : 0) > (r.count ? r.count : 0)) {
-											return ac;
+								const winner: MessageReaction[] = [];
+								let count: number = 0;
+
+								args.messageReaction.message.reactions.cache
+									.filter(r => r.emoji.name !== '🏁' && r.count !== 1)
+									.sort((a, b) => (b.count ? b.count : 0) - (a.count ? a.count : 0))
+									.forEach((value: MessageReaction, key: string, map: Map<string, MessageReaction>) => {
+										if (winner.length === 0) {
+											count = value.count ? value.count : 0;
+											winner.push(value);
+										} else {
+											if ((winner[0] ? winner[0].count : 0) === (value ? value.count : 0)) {
+												winner.push(value);
+											}
 										}
-										return r;
 									});
 
+								const message = winner.length > 0
+									? `Poll outcome ${winner.length > 1 ? 'are options' : 'is option'} ` +
+									`${winner.map(r => r.emoji).join(', ')} ` +
+									`with ${(count) - 1} ${(count - 1 > 1 ? 'votes' : 'vote')}`
+									: `Noboody voted`;
+
 								args.messageReaction.message.channel.send(
-									`Poll outcome is option ${winner.emoji} with ${(winner.count ? winner.count : 0) - 1} votes`
-								);
+									create_rich_embed(
+										null,
+										null,
+										'#ffa500',
+										null,
+										null,
+										null,
+										false,
+										null,
+										null,
+										undefined,
+										{
+											name: message,
+											icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/firework.gif'
+										}
+									));
 
 								remove_poll(current_guild.id, args.messageReaction.message.id)
 									.then(r => {
@@ -535,7 +578,7 @@ module.exports = async (
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: 'failed to fetch message reaction'
+						value: `failed to fetch message reaction (${e})`
 					});
 				});
 		} else {

@@ -712,7 +712,7 @@ export async function remove_url(
 
 //
 
-export async function insert_ignore(
+export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
@@ -735,7 +735,7 @@ export async function insert_ignore(
     });
 };
 
-export async function remove_ignore(
+export async function remove_ignore( // channel
     guild_id: string, remove_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
@@ -748,102 +748,6 @@ export async function remove_ignore(
                     ignore_list: remove_ignore
                 }
             })
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-//
-
-export async function insert_authorised_role(
-    guild_id: string, new_auth_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    auth_role: new_auth_role
-                }
-            }
-        )
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-export async function remove_authorised_role(
-    guild_id: string, auth_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    auth_role: auth_role
-                }
-            }
-        )
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-//
-
-export async function insert_ignored_role(
-    guild_id: string, new_ignore_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    ignore_role: new_ignore_role
-                }
-            }
-        )
-            .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
-            })
-            .catch(e => {
-                return resolve(false);
-            });
-    });
-};
-
-export async function remove_ignored_role(
-    guild_id: string, ignore_role: string
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    ignore_role: ignore_role
-                }
-            }
-        )
             .then((r: MongoPromise) => {
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })

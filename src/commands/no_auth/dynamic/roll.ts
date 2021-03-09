@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import Roll from 'roll';
+import { create_rich_embed } from "../../../libraries/helpOps";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
 
@@ -13,8 +14,22 @@ module.exports = async (
 				const roll = roll_lib.roll(args[0])
 
 				message.channel.send(
-					`${message.author} rolled **${roll.result}** *(${roll.rolled} from ${args[0]})*`
-				);
+					create_rich_embed(
+						null,
+						null,
+						'#FF0000',
+						null,
+						null,
+						null,
+						false,
+						null,
+						null,
+						undefined,
+						{
+							name: `${message.member?.displayName} rolled ${roll.result} (${roll.rolled} from ${args[0]})`,
+							icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif'
+						}						
+					));
 
 				return resolve({
 					result: true,

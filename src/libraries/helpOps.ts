@@ -390,7 +390,7 @@ export async function update_portal_managed_guilds(
 };
 
 export function is_authorised(
-	member_list: MemberPrtl[], auth_role: string[], member: GuildMember
+	member: GuildMember
 ): boolean {
 	const administrator: PermissionString = 'ADMINISTRATOR';
 	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
@@ -400,18 +400,30 @@ export function is_authorised(
 	}
 
 	if (member.roles.cache) {
-		const has_authorised_role = member.roles.cache
-			.some(role =>
-				auth_role
-					? auth_role
-						.some((auth: string) => auth === role.id)
-					: false
-			);
-		if (has_authorised_role) return true;
+		return member.roles.cache.some(r => r.name.toLocaleLowerCase() === 'p.admin');
 	}
 
-	const member_object = member_list.find(m => m.id === member.id);
-	return !!member_object && member_object.admin;
+	return false;
+};
+
+export function is_dj(
+	member: GuildMember
+): boolean {
+	if (member.roles.cache) {
+		return member.roles.cache.some(r => r.name.toLocaleLowerCase() === 'p.dj');
+	}
+
+	return false;
+};
+
+export function is_ignored(
+	member: GuildMember
+): boolean {
+	if (member.roles.cache) {
+		return member.roles.cache.some(r => r.name.toLocaleLowerCase() === 'p.ignore');
+	}
+
+	return false;
 };
 
 export function message_reply(
