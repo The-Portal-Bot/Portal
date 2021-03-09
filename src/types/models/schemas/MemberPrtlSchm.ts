@@ -8,10 +8,7 @@ const MemberPrtlSch = new Schema(
 		tier: { type: Number, required: true },
 		points: { type: Number, required: true },
 		timestamp: { type: Date, required: true },
-		dj: { type: Boolean, required: true },
-		admin: { type: Boolean, required: true },
 		regex: { type: String, required: true },
-		ignored: { type: Boolean, required: true },
 	},
 	{
 		collection: 'guild_list'

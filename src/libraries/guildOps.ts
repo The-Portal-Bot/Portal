@@ -57,35 +57,31 @@ export function getOptions(guild: Guild, topic: string, can_write: boolean): Gui
 };
 
 export function included_in_portal_guilds(guild_id: string, guild_list: GuildPrtl[]): boolean {
-	return guild_list.some(g => g.id === guild_id);
+	return guild_list ? guild_list.some(g => g.id === guild_id) : false;
 };
 
 export function included_in_portal_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
-	return portal_list.some(p => p.id === channel_id);
+	return portal_list ? portal_list.some(p => p.id === channel_id) : false;
 };
 
 export function included_in_voice_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
-	return portal_list.some(p => p.voice_list.some(v => v.id === channel_id));
+	return portal_list ? portal_list.some(p => p.voice_list.some(v => v.id === channel_id)) : false;
 };
 
 export function included_in_ignore_list(channel_id: string, guild_object: GuildPrtl): boolean {
-	return guild_object.ignore_list.some(i => i === channel_id);
+	return guild_object.ignore_list ? guild_object.ignore_list.some(i => i === channel_id) : false;
 };
 
 export function is_url_only_channel(channel_id: string, guild_object: GuildPrtl): boolean {
-	return guild_object.url_list.some(u => u === channel_id);
-};
-
-export function is_spotify_channel(channel_id: string, guild_object: GuildPrtl): boolean {
-	return guild_object.spotify === channel_id;
+	return guild_object.url_list ? guild_object.url_list.some(u => u === channel_id) : false;
 };
 
 export function is_music_channel(channel_id: string, guild_object: GuildPrtl): boolean {
-	return guild_object.music_data.channel_id === channel_id;
+	return guild_object ? guild_object.music_data.channel_id === channel_id : false;
 };
 
 export function is_announcement_channel(channel_id: string, guild_object: GuildPrtl): boolean {
-	return guild_object.announcement === channel_id;
+	return guild_object ? guild_object.announcement === channel_id : false;
 };
 
 //
@@ -523,11 +519,6 @@ export function channel_deleted_update_state(
 			type_of_channel = TypesOfChannel.Url;
 			break;
 		}
-	}
-
-	if (guild_object.spotify === channel_to_remove.id) {
-		guild_object.spotify = null;
-		type_of_channel = TypesOfChannel.Spotify;
 	}
 
 	if (guild_object.announcement === channel_to_remove.id) {

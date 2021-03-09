@@ -591,11 +591,6 @@ export function remove_deleted_channels(
 						}
 					});
 
-					if (!guild.channels.cache.some(c => c.id === guild_object.spotify)) {
-						removed_channel = true;
-						guild_object.spotify = null;
-					}
-
 					if (!guild.channels.cache.some(c => c.id === guild_object.music_data.channel_id)) {
 						removed_channel = true;
 						guild_object.music_data.channel_id = undefined;

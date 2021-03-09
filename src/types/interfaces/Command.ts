@@ -182,7 +182,7 @@ const commands: InterfaceBlueprint[] = [
 		description: 'ignores the current voice channel, Portal will not reply to them' +
 			' if arguments are given',
 		super_description: '**ignore**, sets the text channel you wrote the command in a ignore channel.' +
-			' Basically Portal will not respond to anything that is written in it.',
+			' Portal will not respond to anything that is written in it.',
 		example: './ignore`',
 		args: '<@member_id>',
 		auth: 'admin',
@@ -381,6 +381,7 @@ export function is_command(candidate: string): string {
 	for (let i = 0; i < commands.length; i++) {
 		if (String(candidate).substring(1, (String(commands[i].name).length + 1)) == commands[i].name) { return commands[i].name; }
 	}
+
 	return '';
 }
 
@@ -474,6 +475,7 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 			);
 		}
 	}
+
 	return false;
 };
 

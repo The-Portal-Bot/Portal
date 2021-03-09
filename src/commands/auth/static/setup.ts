@@ -16,8 +16,6 @@ module.exports = async (
 			.create('portal-hub', { type: 'category' })
 			.then(cat_channel => {
 				current_guild.channels.cache.forEach(channel => {
-					if (channel.id === guild_object.spotify)
-						delete_channel(ChannelTypePrtl.spotify, <TextChannel>channel, message);
 					if (channel.id === guild_object.announcement)
 						delete_channel(ChannelTypePrtl.announcement, <TextChannel>channel, message);
 					if (channel.id === guild_object.music_data.channel_id)

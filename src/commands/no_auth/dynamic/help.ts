@@ -55,11 +55,13 @@ module.exports = async (
 					inline: false
 				}
 			];
+
 			message.reply(
 				create_rich_embed(
 					'Portal Documentation',
-					'For a descriptive documentaion go to https://portal-bot.xyz/docs\n\n' +
-					'Bellow you can see Portal\'s commands and variables and how you can access them',
+					'Documentation: https://portal-bot.xyz/docs\n\n' +
+					'```If you want to make a member a dj, admin or ignore him. ' +
+					'You have to assign him roles p.dj, p.admin, p.ignore respectively```',
 					'#9775A9', func_array, null, null, true, null, null
 				))
 				.catch(console.error);

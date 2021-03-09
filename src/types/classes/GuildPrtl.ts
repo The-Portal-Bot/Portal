@@ -1,11 +1,10 @@
+import { Document } from "mongoose";
 import { VideoSearchResult } from "yt-search";
 import { Rank } from "../interfaces/InterfacesPrtl";
 import { GiveRolePrtl } from "./GiveRolePrtl";
 import { MemberPrtl } from "./MemberPrtl";
-import { PortalChannelPrtl } from "./PortalChannelPrtl";
-import { StreamDispatcher } from "discord.js";
-import { Document } from "mongoose";
 import { PollPrtl } from "./PollPrtl";
+import { PortalChannelPrtl } from "./PortalChannelPrtl";
 
 export class MusicData {
 	public channel_id: string | undefined;
@@ -32,9 +31,6 @@ export class GuildPrtl {
 	public role_list: GiveRolePrtl[];
 	public poll_list: PollPrtl[];
 	public ranks: Rank[];
-	public auth_role: string[];
-	public ignore_role: string[];
-	public spotify: string | null;
 	public music_data: MusicData;
 	public music_queue: VideoSearchResult[];
 	public announcement: string | null;
@@ -53,9 +49,6 @@ export class GuildPrtl {
 		role_list: GiveRolePrtl[],
 		poll_list: PollPrtl[],
 		ranks: Rank[],
-		auth_role: string[],
-		ignore_role: string[],
-		spotify: string | null,
 		music_data: MusicData,
 		music_queue: VideoSearchResult[],
 		announcement: string | null,
@@ -73,9 +66,6 @@ export class GuildPrtl {
 		this.role_list = role_list;
 		this.poll_list = poll_list;
 		this.ranks = ranks;
-		this.auth_role = auth_role;
-		this.ignore_role = ignore_role;
-		this.spotify = spotify;
 		this.music_data = music_data;
 		this.music_queue = music_queue;
 		this.announcement = announcement;
@@ -91,17 +81,17 @@ export interface IGuildPrtl extends Document {
 	id: string,
 	portal_list: PortalChannelPrtl[],
 	member_list: MemberPrtl[],
+	ignore_list: string[],
 	url_list: string[],
 	role_list: GiveRolePrtl[],
+	poll_list: PollPrtl[],
 	ranks: Rank[],
-	auth_role: string[],
-	spotify: string | null,
 	music_data: MusicData,
 	music_queue: VideoSearchResult[],
-	dispatcher: StreamDispatcher | undefined,
 	announcement: string | null,
 	locale: string,
 	announce: boolean,
 	level_speed: string,
-	premium: boolean
+	premium: boolean,
+	prefix: string
 }

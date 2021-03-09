@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
 import GiveRolePrtlSchm from "./schemas/GiveRolePrtlSchm";
 import MemberPrtlSchm from "./schemas/MemberPrtlSchm";
-import PortalChannelPrtlSchm from "./schemas/PortalChannelPrtlSchm";
 import PollPrtlSch from "./schemas/PollPrtlSchm";
+import PortalChannelPrtlSchm from "./schemas/PortalChannelPrtlSchm";
 
 const VideoSearchResult = new Schema(
 	{
@@ -19,7 +19,8 @@ const VideoSearchResult = new Schema(
 			type: {
 				seconds: { type: String, required: true },
 				timestamp: { type: Number, required: true }
-			}, required: true
+			},
+			required: true
 		},
 		ago: { type: String, required: true },
 		views: { type: Number, required: true },
@@ -27,7 +28,8 @@ const VideoSearchResult = new Schema(
 			type: {
 				name: { type: String, required: true },
 				url: { type: String, required: true }
-			}, required: true
+			},
+			required: true
 		},
 		level: { type: Number, required: true },
 		role: { type: String, required: true }
@@ -64,16 +66,11 @@ const GuildPrtlSch = new Schema(
 		portal_list: { type: [PortalChannelPrtlSchm], required: true },
 		member_list: { type: [MemberPrtlSchm], required: true },
 		url_list: { type: [String], required: true },
-		ignore_list: { type: [String], required: true },
 		role_list: { type: [GiveRolePrtlSchm], required: true },
 		poll_list: { type: [PollPrtlSch], required: true },
 		ranks: { type: [Rank], required: true },
-		auth_role: { type: [String], required: true },
-		ignore_role: { type: [String], required: true },
-		spotify: { type: String, required: true },
 		music_data: { type: MusicData, required: true },
 		music_queue: { type: [VideoSearchResult], required: true },
-		dispatcher: { type: Object, required: false },
 		announcement: { type: String, required: true },
 		locale: { type: String, required: true },
 		announce: { type: Boolean, required: true },

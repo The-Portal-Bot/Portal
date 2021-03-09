@@ -232,7 +232,6 @@ client.on('message', async (message: Message) => {
 						guild_object.portal_list = guild_object_rest.portal_list;
 						guild_object.poll_list = guild_object_rest.poll_list;
 						guild_object.ranks = guild_object_rest.ranks;
-						guild_object.spotify = guild_object_rest.spotify;
 						guild_object.music_queue = guild_object_rest.music_queue;
 						guild_object.announcement = guild_object_rest.announcement;
 						guild_object.locale = guild_object_rest.locale;
@@ -258,7 +257,7 @@ client.on('message', async (message: Message) => {
 					})
 					.catch(e => {
 						message_reply(false, message, message.author,
-							`could not find server (${e})`);
+							`1 could not find server [rst] (${e})`);
 
 						return false;
 					});
@@ -266,7 +265,7 @@ client.on('message', async (message: Message) => {
 		})
 		.catch(e => {
 			message_reply(false, message, message.author,
-				`could not find server (${e})`);
+				`could not find server [pre] (${e})`);
 
 			return false;
 		});
@@ -637,7 +636,7 @@ function command_cypher(
 	let command_options: CommandOptions | undefined = undefined;
 	let type: string = 'none';
 
-	const is_portal_command = command_config_json.some(category => {
+	command_config_json.some(category => {
 		command_options = category.commands.
 			find(command => command.name === cmd);
 
