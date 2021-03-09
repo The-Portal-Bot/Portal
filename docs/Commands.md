@@ -9,11 +9,8 @@
 | `about`            | _returns an about Portal message_                                | _none_                               | everyone                                            | -               |
 | `announce`         | _announceces whatever is given by the writter to online members_ | _@title \| @body_                    | everyone                                            | 01 user         |
 | `announcement`     | _creates a new or sets the current channel as announcement_      | _@channel\_name \| @category\_name_  | admin, portal-admin                                 | admin           |
-| `authorise`        | _add role to admin roles_                                        | _!role_                              | admin, portal-admin, admin                          | admin           |
-| `authorised_roles` | _displayes all authorised roles_                                 | _none_                               | everyone                                            | admin           |
 | `corona`           | _replies with the daily state of corona virus cases_             | _!country code (gr, de, us, etc)_    | everyone                                            | -               |
 | `crypto`           | _replies with the current price of requested cryptocurrency_     | _!cryptocurrency \| exchange_        | everyone                                            | -               |
-| `deauthorise`      | _removes role from admin roles_                                  | _!role_                              | admin, portal-admin, admin                          | admin           |
 | `delete`           | _deletes x number of messsages on the text channel_              | _!number of messages to delete_      | admin, portal-admin, admin                          | admin           |
 | `dj`               | _sets given member as a dj_                                      | _!member\_id_                        | admin, portal-admin, admin                          | admin           |
 | `focus`            | _creates focus channel for you and your requested user_          | _!username @time (default 5minutes)_ | everyone                                            | -               |
@@ -36,7 +33,6 @@
 | `set_ranks`        | _sets roles that will be given when said level reached_          | _rank json_                          | voice-portal owner, admin, portal-admin, admin-role | admin           |
 | `set`              | _sets the value of an attribute_                                 | _!attribute !value_                  | voice-portal owner, admin, portal-admin, admin      | -               |
 | `setup`            | _creates an announcement, spotify, url-only and music channel_   | _none_                               | admin, portal-admin, admin                          | 10 server       |
-| `spotify`          | _creates a new or sets the current channel as spotify channel_   | _none_                               | none                                                | admin           |
 | `state`            | _returns the current state of portal_                            | _@channel\_name \| @category\_name_  | admin, portal-admin                                 | -               |
 | `url`              | _creates a new or sets the current channel as url-only_          | _@channel\_name \| @category\_name_  | admin, portal-admin, admin                          | admin           |
 | `weather`          | _replies with the current wheather for the requested city_       | _!city\_name_                        | everyone                                            | -               |
