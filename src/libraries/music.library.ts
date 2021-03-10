@@ -3,7 +3,7 @@ import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, UserMana
 import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
-import { join_by_reaction, join_user_voice } from './help.library';
+import { join_by_reaction, join_user_voice, update_music_message } from './help.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
@@ -105,6 +105,15 @@ async function start_playback(
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
+									update_music_message(
+										guild,
+										guild_object,
+										guild_object.music_queue.length > 0
+											? guild_object.music_queue[0]
+											: undefined,
+										r.value,
+										r.result
+									);
 								})
 								.catch(console.log);
 						});
@@ -144,6 +153,15 @@ async function start_playback(
 									skip(r.voice_connection, user, client, guild, guild_object)
 										.then(r => {
 											clear_music_vote(guild_object.id);
+											update_music_message(
+												guild,
+												guild_object,
+												guild_object.music_queue.length > 0
+													? guild_object.music_queue[0]
+													: undefined,
+												r.value,
+												r.result
+											);
 										})
 										.catch(console.log);
 								});
@@ -249,6 +267,15 @@ export async function play(
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
+									update_music_message(
+										guild,
+										guild_object,
+										guild_object.music_queue.length > 0
+											? guild_object.music_queue[0]
+											: undefined,
+										r.value,
+										r.result
+									);
 								})
 								.catch(console.log);
 						});
@@ -286,6 +313,15 @@ export async function play(
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
+									update_music_message(
+										guild,
+										guild_object,
+										guild_object.music_queue.length > 0
+											? guild_object.music_queue[0]
+											: undefined,
+										r.value,
+										r.result
+									);
 								})
 								.catch(console.log);
 						});
@@ -385,6 +421,15 @@ export async function skip(
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
+									update_music_message(
+										guild,
+										guild_object,
+										guild_object.music_queue.length > 0
+											? guild_object.music_queue[0]
+											: undefined,
+										r.value,
+										r.result
+									);
 								})
 								.catch(console.log);
 						});
@@ -425,6 +470,15 @@ export async function skip(
 									skip(voice_connection, user, client, guild, guild_object)
 										.then(r => {
 											clear_music_vote(guild_object.id);
+											update_music_message(
+												guild,
+												guild_object,
+												guild_object.music_queue.length > 0
+													? guild_object.music_queue[0]
+													: undefined,
+												r.value,
+												r.result
+											);
 										})
 										.catch(console.log);
 								});
