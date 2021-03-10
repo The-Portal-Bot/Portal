@@ -1,7 +1,6 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import config from '../../../config.json';
 import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
 import { https_fetch } from '../../../libraries/httpOps';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl';
@@ -30,8 +29,10 @@ module.exports = async (
 					value: `${args[0]} does not exist, you can run \`./help bet\` for help`
 				});
 			} else {
-				const game = game_ids.find(g => g.name === args[1])
-				if (!game) {
+				const game = game_ids.find(g => 
+					g.name.toLowerCase() === args[1].toLowerCase())
+				
+					if (!game) {
 					return resolve({
 						result: false,
 						value: `${args[1]} does not exist in ${args[0]}, you can run \`./help bet\` for help`

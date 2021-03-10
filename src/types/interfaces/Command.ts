@@ -42,12 +42,23 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'bet',
+		description: 'bet replys with todays latest requested betting report',
+		super_description: '**bet**, replys with todays latest requested betting report. ' +
+			'You have to specify both provide and game you wan to get the stats from',
+		example: './bet opap tzoker',
+		args: '<!provider> <!game>',
+		auth: 'none',
+		get: null,
+		set: null
+	},
+	{
 		name: 'corona',
 		description: 'corona replys with todays latest figures on the novel corona virus',
 		super_description: '**corona**, replys with todays latest figures on the novel corona virus. ' +
 			'You can give input lower or upper case ex: gr or GR if none is given global stats are displayed',
-		example: './corona code, ./corona country, ./corona',
-		args: '<@country code>, <@country country>',
+		example: './corona gr',
+		args: '<!country code> or <!country name>',
 		auth: 'none',
 		get: null,
 		set: null
@@ -174,6 +185,20 @@ const commands: InterfaceBlueprint[] = [
 		example: './music music_name | music_category, ./music music_name, ./music',
 		args: '<@channel_name> | <@category_name>',
 		auth: 'voice',
+		get: null,
+		set: null
+	},
+	{
+		name: 'news',
+		description: 'news replys with todays latest news',
+		super_description: '**news**, replys with todays latest news. ' +
+			'for the category you requested.\nCategories: arts, automobiles, books, ' +
+			'business, fashion, food, health, home, insider, magazine, movies, ' +
+			'nyregion, obituaries, opinion, politics, realestate, science, sports, ' +
+			'sundayreview, technology, theater, t-magazine, travel, upshot, us, world',
+		example: './news world',
+		args: '<!category>',
+		auth: 'none',
 		get: null,
 		set: null
 	},
