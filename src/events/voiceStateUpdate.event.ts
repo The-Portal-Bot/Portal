@@ -1,11 +1,11 @@
 import { Client, Guild, TextChannel, VoiceChannel, VoiceConnection, VoiceState } from "discord.js";
-import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guildOps";
-import { client_talk } from "../libraries/localisationOps";
-import { fetch_guild, remove_voice } from "../libraries/mongoOps";
-import { update_timestamp } from "../libraries/userOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guild.library";
+import { client_talk } from "../libraries/localisation.library";
+import { fetch_guild, remove_voice } from "../libraries/mongo.library";
+import { update_timestamp } from "../libraries/user.library";
+import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl.class";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 // delete portal's voice channel
 async function delete_voice_channel(

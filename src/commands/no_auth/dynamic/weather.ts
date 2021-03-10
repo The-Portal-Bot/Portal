@@ -2,10 +2,10 @@ import { Client, Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import config from '../../../config.json';
-import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
-import { https_fetch } from '../../../libraries/httpOps';
-import { GuildPrtl } from '../../../types/classes/GuildPrtl';
-import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
+import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { https_fetch } from '../../../libraries/http.library';
+import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
+import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
 function kelvin_to_celsius(kelvin: number): number {
 	return Math.round(kelvin - 273.15);

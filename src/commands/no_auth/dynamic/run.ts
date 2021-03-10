@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import { regex_interpreter } from "../../../libraries/guildOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { regex_interpreter } from "../../../libraries/guild.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

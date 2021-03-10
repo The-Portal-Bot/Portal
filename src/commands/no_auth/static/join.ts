@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
-import { join_user_voice } from "../../../libraries/helpOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { join_user_voice } from "../../../libraries/help.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl, client: Client

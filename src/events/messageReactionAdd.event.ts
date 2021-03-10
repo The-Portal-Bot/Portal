@@ -1,11 +1,11 @@
 import { GuildEmoji, ReactionEmoji } from "discord.js";
 import { Client, Collection, MessageReaction, User } from "discord.js";
-import { get_role } from "../libraries/guildOps";
-import { create_rich_embed, is_authorised, is_dj, update_music_message } from "../libraries/helpOps";
-import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongoOps";
-import { pause, play, skip, volume_down, volume_up } from "../libraries/musicOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { get_role } from "../libraries/guild.library";
+import { create_rich_embed, is_authorised, is_dj, update_music_message } from "../libraries/help.library";
+import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongo.library";
+import { pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
+import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User

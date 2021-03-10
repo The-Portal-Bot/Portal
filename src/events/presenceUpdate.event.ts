@@ -1,11 +1,11 @@
 import { Client, Guild, Presence, TextChannel, VoiceChannel } from "discord.js";
-import { generate_channel_name } from "../libraries/guildOps";
-import { create_rich_embed } from "../libraries/helpOps";
-import { fetch_guild } from "../libraries/mongoOps";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl";
-import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { generate_channel_name } from "../libraries/guild.library";
+import { create_rich_embed } from "../libraries/help.library";
+import { fetch_guild } from "../libraries/mongo.library";
+import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl.class";
+import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 function update_channel_name(
 	current_guild: Guild, current_channel: VoiceChannel, current_portal_list: PortalChannelPrtl[], guild_object: GuildPrtl

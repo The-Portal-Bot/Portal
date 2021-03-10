@@ -1,7 +1,7 @@
 import { ActivityOptions, Client, Guild, PresenceData } from "discord.js";
-import { get_function } from "../libraries/localisationOps";
-import { guild_exists, insert_guild } from "../libraries/mongoOps";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { get_function } from "../libraries/localisation.library";
+import { guild_exists, insert_guild } from "../libraries/mongo.library";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 function add_guild_again(
 	guild_id: string, client: Client

@@ -1,10 +1,10 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { get_role } from "../../../libraries/guildOps";
-import { create_rich_embed, getJSON } from "../../../libraries/helpOps";
-import { insert_role_assigner } from "../../../libraries/mongoOps";
-import { GiveRole, GiveRolePrtl } from "../../../types/classes/GiveRolePrtl";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { get_role } from "../../../libraries/guild.library";
+import { create_rich_embed, getJSON } from "../../../libraries/help.library";
+import { insert_role_assigner } from "../../../libraries/mongo.library";
+import { GiveRole, GiveRolePrtl } from "../../../types/classes/GiveRolePrtl.class";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 function create_role_message(
 	channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,

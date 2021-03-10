@@ -3,11 +3,11 @@ import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
-import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl";
-import { MemberPrtl } from "../types/classes/MemberPrtl";
-import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl";
-import { client_talk, client_write } from "./localisationOps";
-import { fetch_guild, fetch_guild_list, set_music_data } from "./mongoOps";
+import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
+import { MemberPrtl } from "../types/classes/MemberPrtl.class";
+import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl.interface";
+import { client_talk, client_write } from "./localisation.library";
+import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
 export function create_music_message(
 	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl

@@ -1,10 +1,10 @@
 import ytdl from 'discord-ytdl-core';
 import { Client, Guild, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
 import yts from 'yt-search';
-import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { join_by_reaction } from './helpOps';
-import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongoOps';
+import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { join_by_reaction } from './help.library';
+import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
 async function pop_music_queue(

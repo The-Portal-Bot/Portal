@@ -1,14 +1,14 @@
 import { Client, GuildMember, StreamDispatcher, TextChannel, VoiceChannel } from 'discord.js';
 import { VideoSearchResult } from 'yt-search';
-import { GiveRolePrtl } from '../types/classes/GiveRolePrtl';
-import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl';
-import { MemberPrtl } from '../types/classes/MemberPrtl';
-import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
-import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
-import { Rank, MongoPromise } from '../types/interfaces/InterfacesPrtl';
-import GuildPrtlMdl from '../types/models/GuildPrtlMdl';
+import { GiveRolePrtl } from '../types/classes/GiveRolePrtl.class';
+import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl.class';
+import { MemberPrtl } from '../types/classes/MemberPrtl.class';
+import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
+import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
+import { Rank, MongoPromise } from '../types/interfaces/InterfacesPrtl.interface';
+import GuildPrtlMdl from '../types/models/GuildPrtl.model';
 import config from '../config.json';
-import { PollPrtl } from '../types/classes/PollPrtl';
+import { PollPrtl } from '../types/classes/PollPrtl.class';
 
 // fetch guilds
 export async function fetch_guild_list(

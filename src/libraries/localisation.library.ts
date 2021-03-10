@@ -1,6 +1,6 @@
 import { Client, Message, User, StreamDispatcher } from "discord.js";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { LocalisationOption } from "../types/interfaces/InterfacesPrtl";
+import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { LocalisationOption } from "../types/interfaces/InterfacesPrtl.interface";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
 const type_of_action = ['user_connected', 'user_disconnected'];

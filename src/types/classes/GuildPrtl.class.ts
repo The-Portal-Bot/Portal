@@ -1,10 +1,10 @@
 import { Document } from "mongoose";
 import { VideoSearchResult } from "yt-search";
-import { Rank } from "../interfaces/InterfacesPrtl";
-import { GiveRolePrtl } from "./GiveRolePrtl";
-import { MemberPrtl } from "./MemberPrtl";
-import { PollPrtl } from "./PollPrtl";
-import { PortalChannelPrtl } from "./PortalChannelPrtl";
+import { Rank } from "../interfaces/InterfacesPrtl.interface";
+import { GiveRolePrtl } from "./GiveRolePrtl.class";
+import { MemberPrtl } from "./MemberPrtl.class";
+import { PollPrtl } from "./PollPrtl.class";
+import { PortalChannelPrtl } from "./PortalChannelPrtl.class";
 
 export class MusicData {
 	public channel_id: string | undefined;

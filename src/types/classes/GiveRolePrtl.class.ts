@@ -1,7 +1,7 @@
 export class GiveRole {
-	role_id: string;
-	give: string;
-	strip: string;
+	public role_id: string;
+	public give: string;
+	public strip: string;
 
 	constructor(
 		role_id: string,

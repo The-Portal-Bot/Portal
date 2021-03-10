@@ -1,11 +1,11 @@
 import { Guild, GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
-import { create_rich_embed, is_authorised } from '../../libraries/helpOps';
-import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongoOps';
-import { GuildPrtl } from '../classes/GuildPrtl';
-import { MemberPrtl } from '../classes/MemberPrtl';
-import { PortalChannelPrtl } from '../classes/PortalChannelPrtl';
-import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl';
-import { Field, InterfaceBlueprint, ReturnPormise } from './InterfacesPrtl';
+import { create_rich_embed, is_authorised } from '../../libraries/help.library';
+import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongo.library';
+import { GuildPrtl } from '../classes/GuildPrtl.class';
+import { MemberPrtl } from '../classes/MemberPrtl.class';
+import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
+import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
+import { Field, InterfaceBlueprint, ReturnPormise } from './InterfacesPrtl.interface';
 
 export const attribute_prefix: string = '&';
 const locales = ['gr', 'en', 'de'];

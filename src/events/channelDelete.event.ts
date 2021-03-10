@@ -1,6 +1,6 @@
 import { Channel, PartialDMChannel, TextChannel, VoiceChannel, StreamDispatcher } from "discord.js";
-import { ChannelTypePrtl, deleted_channel_sync } from "../libraries/mongoOps";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { ChannelTypePrtl, deleted_channel_sync } from "../libraries/mongo.library";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	args: { channel: Channel | PartialDMChannel }

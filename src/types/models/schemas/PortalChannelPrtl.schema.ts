@@ -1,6 +1,6 @@
 
 import { Schema } from "mongoose";
-import VoiceChannelPrtlSch from './VoiceChannelPrtlSchm';
+import VoiceChannelPrtlSch from './VoiceChannelPrtl.schema';
 
 const PortalChannelPrtlSch = new Schema(
 	{
@@ -11,9 +11,6 @@ const PortalChannelPrtlSch = new Schema(
 		regex_voice: { type: String, required: true },
 		voice_list: { type: [VoiceChannelPrtlSch], required: true },
 		no_bots: { type: Boolean, required: true },
-		// limit_portal: { type: Number, required: true },
-		// time_to_live: { type: Number, required: true },
-		// refresh_rate: { type: Number, required: true },
 		locale: { type: String, required: true },
 		ann_announce: { type: Boolean, required: true },
 		ann_user: { type: Boolean, required: true },

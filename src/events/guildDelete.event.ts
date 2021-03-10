@@ -1,6 +1,6 @@
 import { Guild } from "discord.js";
-import { remove_guild } from "../libraries/mongoOps";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
+import { remove_guild } from "../libraries/mongo.library";
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	args: { guild: Guild }

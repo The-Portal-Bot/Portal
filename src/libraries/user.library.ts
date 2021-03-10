@@ -1,7 +1,7 @@
 import { Guild, GuildMember, Message, VoiceState } from "discord.js";
-import { GuildPrtl } from "../types/classes/GuildPrtl";
-import { MemberPrtl } from "../types/classes/MemberPrtl";
-import { time_elapsed } from './helpOps';
+import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { MemberPrtl } from "../types/classes/MemberPrtl.class";
+import { time_elapsed } from './help.library';
 
 const level_speed = { slow: 0.05, normal: 0.1, fast: 0.15 };
 

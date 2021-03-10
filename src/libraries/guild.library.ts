@@ -4,15 +4,15 @@ import {
 } from "discord.js";
 import moment from "moment";
 import voca from 'voca';
-import { GuildPrtl } from '../types/classes/GuildPrtl';
-import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl';
-import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl';
-import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute';
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl";
-import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe';
-import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable';
-import { create_music_message, getJSON } from './helpOps';
-import { ChannelTypePrtl, insert_voice } from "./mongoOps";
+import { GuildPrtl } from '../types/classes/GuildPrtl.class';
+import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
+import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
+import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
+import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
+import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
+import { create_music_message, getJSON } from './help.library';
+import { ChannelTypePrtl, insert_voice } from "./mongo.library";
 
 function inline_operator(str: string): any {
 	switch (str) {

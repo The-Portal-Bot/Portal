@@ -1,7 +1,7 @@
 import { GuildMember, Message } from "discord.js";
-import { create_focus_channel, included_in_voice_list } from "../../../libraries/guildOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { create_focus_channel, included_in_voice_list } from "../../../libraries/guild.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 async function ask_for_focus(message: Message, requester: GuildMember, focus_time: number) {
 	return new Promise((resolve) => {

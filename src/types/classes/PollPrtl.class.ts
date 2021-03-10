@@ -1,6 +1,6 @@
 export class PollPrtl {
-	message_id: string;
-	member_id: string;
+	public message_id: string;
+	public member_id: string;
 
 	constructor(
 		message_id: string,

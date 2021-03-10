@@ -1,8 +1,8 @@
-import { model, Schema } from "mongoose";
-import GiveRolePrtlSchm from "./schemas/GiveRolePrtlSchm";
-import MemberPrtlSchm from "./schemas/MemberPrtlSchm";
-import PollPrtlSch from "./schemas/PollPrtlSchm";
-import PortalChannelPrtlSchm from "./schemas/PortalChannelPrtlSchm";
+import { model, Schema } from 'mongoose';
+import PortalChannelPrtlSchm from './schemas/PortalChannelPrtl.schema';
+import MemberPrtlSchm from './schemas/MemberPrtl.schema';
+import GiveRolePrtlSchm from './schemas/GiveRolePrtl.schema';
+import PollPrtlSch from './schemas/PollPrtl.schema';
 
 const VideoSearchResult = new Schema(
 	{

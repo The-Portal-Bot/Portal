@@ -4,14 +4,14 @@ import yts from "yt-search";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
-import { included_in_ignore_list, is_url_only_channel } from './libraries/guildOps';
-import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/helpOps';
-import { client_talk } from './libraries/localisationOps';
-import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongoOps";
-import { start } from './libraries/musicOps';
-import { add_points_message } from './libraries/userOps';
-import { GuildPrtl, MusicData } from './types/classes/GuildPrtl';
-import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl";
+import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
+import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
+import { client_talk } from './libraries/localisation.library';
+import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
+import { start } from './libraries/music.library';
+import { add_points_message } from './libraries/user.library';
+import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
+import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl.interface";
 const AntiSpam = require('discord-anti-spam');
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
@@ -340,8 +340,9 @@ function command_loader(
 				}
 			}
 
-			if (command_options && response.value && response.value !== '' && (command_options.reply || response.result === false))
+			if ((command_options && response.value && response.value !== '') && (command_options.reply || response.result === false)) {
 				message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
+			}
 		});
 
 	return false;
@@ -356,7 +357,7 @@ function event_loader(event: string, args: any): void {
 		console.log(`├─ event (${event})`);
 	}
 
-	require(`./events/${event}.js`)(args)
+	require(`./events/${event}.event.js`)(args)
 		.then((response: ReturnPormise) => {
 			const shouldReply = event_config_json.find(e => e.name === event);
 			if ((config.debug) || (shouldReply && shouldReply.reply) &&

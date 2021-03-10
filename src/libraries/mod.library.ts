@@ -1,5 +1,5 @@
 import ProfaneWords from '../assets/jsons/ProfaneWords.json';
-import { Language } from '../types/interfaces/InterfacesPrtl';
+import { Language } from '../types/interfaces/InterfacesPrtl.interface';
 
 const profane_words: Language = <Language>ProfaneWords;
 

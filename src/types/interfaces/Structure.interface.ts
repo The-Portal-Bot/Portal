@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
-import { create_rich_embed } from '../../libraries/helpOps';
-import { Field, InterfaceBlueprint } from './InterfacesPrtl';
+import { create_rich_embed } from '../../libraries/help.library';
+import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
 
 export const structure_prefix: string = '{{';
 const structures: InterfaceBlueprint[] = [

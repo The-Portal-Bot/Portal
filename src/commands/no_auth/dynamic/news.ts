@@ -2,11 +2,11 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import config from '../../../config.json';
-import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
-import { https_fetch } from '../../../libraries/httpOps';
-import { GuildPrtl } from '../../../types/classes/GuildPrtl';
-import { News } from '../../../types/classes/NewYorkTime.type';
-import { Field, ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
+import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { https_fetch } from '../../../libraries/http.library';
+import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
+import { News } from '../../../types/classes/NewYorkTime.class';
+import { Field, ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
 const categories = ['arts', 'automobiles', 'books', 'business', 'fashion', 'food', 'health', 'home', 'insider',
 	'magazine', 'movies', 'nyregion', 'obituaries', 'opinion', 'politics', 'realestate', 'science', 'sports',
