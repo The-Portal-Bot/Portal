@@ -458,7 +458,7 @@ function handle_ranking_system(
 	message: Message, guild_object: GuildPrtl
 ): void {
 	const level = add_points_message(
-		message, guild_object.member_list[0], guild_object.level_speed
+		message, guild_object.member_list[0], guild_object.rank_speed
 	);
 
 	// store to db
@@ -568,7 +568,7 @@ function handle_music_channels(
 			}
 
 			start(
-				voice_connection, client, message.member.user,
+				voice_connection, client, message.member.user, message,
 				message.guild, guild_object, message.content
 			)
 				.then(r => {
@@ -579,7 +579,8 @@ function handle_music_channels(
 							guild_object.music_queue.length > 0
 								? guild_object.music_queue[0]
 								: undefined,
-							r.value);
+							r.value
+						);
 					}
 
 					if (message.deletable) {

@@ -1,9 +1,9 @@
 import ytdl from 'discord-ytdl-core';
-import { Client, Guild, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
+import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, UserManager, VoiceConnection } from "discord.js";
 import yts from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
-import { join_by_reaction } from './help.library';
+import { join_by_reaction, join_user_voice } from './help.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
@@ -83,7 +83,7 @@ async function push_video_to_queue(
 }
 
 async function start_playback(
-	voice_connection: VoiceConnection | undefined, client: Client, user: User,
+	voice_connection: VoiceConnection | undefined, client: Client, user: User, message: Message,
 	guild: Guild, guild_object: GuildPrtl, video: yts.VideoSearchResult
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
@@ -120,7 +120,7 @@ async function start_playback(
 						});
 					}
 				} else {
-					join_by_reaction(client, guild_object, user, false)
+					join_user_voice(client, message, guild_object, false)
 						.then(r => {
 							if (r.result) {
 								if (!r.voice_connection) {
@@ -177,7 +177,7 @@ async function start_playback(
 }
 
 export async function start(
-	voice_connection: VoiceConnection | undefined, client: Client, user: User,
+	voice_connection: VoiceConnection | undefined, client: Client, user: User, message: Message,
 	guild: Guild, guild_object: GuildPrtl, search_term: string
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
@@ -191,7 +191,7 @@ export async function start(
 				}
 
 				start_playback(
-					voice_connection, client, user,
+					voice_connection, client, user, message,
 					guild, guild_object, yts_attempt.videos[0]
 				)
 					.then(r => {

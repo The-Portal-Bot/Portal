@@ -695,24 +695,24 @@ const attributes: InterfaceBlueprint[] = [
 		auth: 'admin'
 	},
 	{
-		name: 'g.level_speed', // rank_speed
+		name: 'g.rank_speed', // rank_speed
 		description: 'returns/sets leveling speed of your server',
-		super_description: '**g.level_speed**, returns/sets leveling speed of your server,' +
+		super_description: '**g.rank_speed**, returns/sets leveling speed of your server,' +
 			'Basically how fast or slow members will reach levels that will give them roles.',
-		example: '&g.level_speed',
+		example: '&g.rank_speed',
 		args: 'none/slow/default/fast',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
-			return RankSpeedEnum[guild_object.level_speed];
+			return RankSpeedEnum[guild_object.rank_speed];
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['g'];
-			const attr = 'level_speed';
+			const attr = 'rank_speed';
 
 			return new Promise((resolve) => {
 				const speed = get_key_from_enum(value, RankSpeedEnum);

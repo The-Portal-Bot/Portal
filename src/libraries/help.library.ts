@@ -63,6 +63,7 @@ export function update_music_message(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
+	console.log('Animating :>> ', animated);
 	return new Promise((resolve) => {
 		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 			'Portal/master/src/assets/img/music_empty.png';
@@ -227,7 +228,7 @@ export async function join_by_reaction(
 }
 
 export async function join_user_voice(
-	client: Client, message: Message, guild_object: GuildPrtl, join: boolean
+	client: Client, message: Message, guild_object: GuildPrtl, join: boolean = false
 ): Promise<ReturnPormiseVoice> {
 	return new Promise((resolve) => {
 		if (!message.member) {

@@ -217,8 +217,9 @@ export function client_write(message: Message, guild_object: GuildPrtl, context:
 
 	let return_value = 'could not find data';
 
-	const found = guild_object.portal_list.some(p =>
-		p.voice_list.some(v => {
+	console.log('guild_object.portal_list :>> ', guild_object.portal_list);
+	const found = guild_object.portal_list.some(p =>{
+		return p.voice_list.some(v => {
 			if (message.member && message.member.voice.channel) {
 				if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 					switch (v.locale) {
@@ -231,12 +232,12 @@ export function client_write(message: Message, guild_object: GuildPrtl, context:
 			}
 			return false;
 		})
-	);
+	});
 
 	if (found)
 		return return_value
 	else
-		return 'there was an error';
+		return portal.find(p => p.name === context)?.lang.en();
 };
 
 export function client_log(
@@ -260,6 +261,6 @@ export function client_log(
 		)
 	);
 
-	return 'there was an error';
+	return console_text.find(c => c.name === context)?.lang.en(args);
 };
 

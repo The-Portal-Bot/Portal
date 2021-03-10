@@ -36,7 +36,7 @@ export class GuildPrtl {
 	public announcement: string | null;
 	public locale: number;
 	public announce: boolean;
-	public level_speed: number;
+	public rank_speed: number;
 	public profanity_level: number;
 	public premium: boolean;
 	public prefix: string;
@@ -55,7 +55,7 @@ export class GuildPrtl {
 		announcement: string | null,
 		locale: number,
 		announce: boolean,
-		level_speed: number,
+		rank_speed: number,
 		profanity_level: number,
 		premium: boolean,
 		prefix: string
@@ -73,7 +73,7 @@ export class GuildPrtl {
 		this.announcement = announcement;
 		this.locale = locale;
 		this.announce = announce;
-		this.level_speed = level_speed;
+		this.rank_speed = rank_speed;
 		this.profanity_level = profanity_level;
 		this.premium = premium;
 		this.prefix = prefix;
@@ -94,7 +94,7 @@ export interface IGuildPrtl extends Document {
 	announcement: string | null,
 	locale: number,
 	announce: boolean,
-	level_speed: string,
+	rank_speed: string,
 	profanity_level: string,
 	premium: boolean,
 	prefix: string

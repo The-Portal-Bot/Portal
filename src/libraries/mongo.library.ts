@@ -148,6 +148,7 @@ export async function fetch_guild_predata(
             {
                 id: 1,
                 prefix: 1,
+                portal_list: 1,
                 member_list: {
                     $elemMatch: {
                         id: member_id
@@ -157,7 +158,7 @@ export async function fetch_guild_predata(
                 url_list: 1,
                 music_data: 1,
                 music_queue: 1,
-                level_speed: 1,
+                rank_speed: 1,
                 profanity_level: 1
             })
             .then((r: any) => {
@@ -165,12 +166,13 @@ export async function fetch_guild_predata(
                     return resolve(<GuildPrtl>{
                         id: r.id,
                         prefix: r.prefix,
+                        portal_list: r.portal_list,
                         member_list: r.member_list,
                         ignore_list: r.ignore_list,
                         url_list: r.url_list,
                         music_data: r.music_data,
                         music_queue: r.music_queue,
-                        level_speed: r.level_speed,
+                        rank_speed: r.rank_speed,
                         profanity_level: r.profanity_level
                     });
                 } else {
@@ -194,17 +196,17 @@ export async function fetch_guild_rest(
             {
                 prefix: 0,
                 member_list: 0,
+                portal_list: 0,
                 ignore_list: 0,
                 url_list: 0,
                 music_data: 0,
-                level_speed: 0,
+                rank_speed: 0,
                 profanity_level: 0
             })
             .then((r: any) => {
                 if (!!r) {
                     return resolve(<GuildPrtl>{
                         id: r.id,
-                        portal_list: r.portal_list,
                         poll_list: r.poll_list,
                         ranks: r.ranks,
                         music_queue: r.music_queue,
@@ -303,7 +305,7 @@ export async function insert_guild(
     const announcement: string | null = 'null';
     const locale: string = 'en';
     const announce: boolean = true;
-    const level_speed: number = RankSpeedEnum.default;
+    const rank_speed: number = RankSpeedEnum.default;
     const profanity_level: number = ProfanityLevelEnum.default;
     const premium: boolean = true; // as it is not a paid service anymore
     const prefix: string = config.prefix;
@@ -322,7 +324,7 @@ export async function insert_guild(
             announcement: announcement,
             locale: locale,
             announce: announce,
-            level_speed: level_speed,
+            rank_speed: rank_speed,
             profanity_level: profanity_level,
             premium: premium,
             prefix: prefix

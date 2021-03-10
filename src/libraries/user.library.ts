@@ -4,7 +4,7 @@ import { MemberPrtl } from "../types/classes/MemberPrtl.class";
 import { RankSpeedEnum } from "../data/enums/RankSpeed.enum";
 import { time_elapsed } from './help.library';
 
-const level_speed = { none: 0.00, slow: 0.05, normal: 0.1, fast: 0.15 };
+const rank_speed = { none: 0.00, slow: 0.05, normal: 0.1, fast: 0.15 };
 
 export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild): boolean {
 	if (ranks) return false;
@@ -42,12 +42,12 @@ export function add_points_time(member_prtl: MemberPrtl, speed: number): boolean
 	
 	const voice_time = time_elapsed(member_prtl.timestamp, 0);
 
-	let speed_num: number = level_speed.normal;
+	let speed_num: number = rank_speed.normal;
 	switch (speed) {
-		case RankSpeedEnum.none: speed_num = level_speed.none;
-		case RankSpeedEnum.slow: speed_num = level_speed.slow;
-		case RankSpeedEnum.default: speed_num = level_speed.normal;
-		case RankSpeedEnum.fast: speed_num = level_speed.fast;
+		case RankSpeedEnum.none: speed_num = rank_speed.none;
+		case RankSpeedEnum.slow: speed_num = rank_speed.slow;
+		case RankSpeedEnum.default: speed_num = rank_speed.normal;
+		case RankSpeedEnum.fast: speed_num = rank_speed.fast;
 	}
 
 	member_prtl.points += Math.round(voice_time.remaining_sec * speed_num);
@@ -72,7 +72,7 @@ export function update_timestamp(voiceState: VoiceState, guild_object: GuildPrtl
 
 		const ranks = guild_object.ranks;
 		const member = voiceState.member;
-		const speed = guild_object.level_speed;
+		const speed = guild_object.rank_speed;
 		const cached_level = member_prtl.level;
 
 		if (member_prtl.timestamp === null) {
@@ -94,12 +94,12 @@ export function update_timestamp(voiceState: VoiceState, guild_object: GuildPrtl
 export function add_points_message(
 	message: Message, member: MemberPrtl, speed: number
 ): number | boolean {
-	let speed_num: number = level_speed.normal;
+	let speed_num: number = rank_speed.normal;
 	switch (speed) {
-		case RankSpeedEnum.none: speed_num = level_speed.none;
-		case RankSpeedEnum.slow: speed_num = level_speed.slow;
-		case RankSpeedEnum.default: speed_num = level_speed.normal;
-		case RankSpeedEnum.fast: speed_num = level_speed.fast;
+		case RankSpeedEnum.none: speed_num = rank_speed.none;
+		case RankSpeedEnum.slow: speed_num = rank_speed.slow;
+		case RankSpeedEnum.default: speed_num = rank_speed.normal;
+		case RankSpeedEnum.fast: speed_num = rank_speed.fast;
 	}
 
 	const points = message.content.length * speed_num;
