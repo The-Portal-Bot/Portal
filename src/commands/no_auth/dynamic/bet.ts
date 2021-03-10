@@ -1,35 +1,36 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
+import { isNumber } from 'lodash';
 import moment from 'moment';
-import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { create_rich_embed, getJSON, get_key_from_enum } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
-import { GameIds } from '../../../types/enums/OpapGames.enum';
+import { OpapGameIdEnum } from '../../../data/enums/OpapGames.enum';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		let game_id = 0;
+		let game_code: number | undefined = undefined;
 
 		if (args.length === 2) {
-			if (args[0] !== 'opap') {
+			if (args[0].toLocaleLowerCase() !== 'opap') {
 				return resolve({
 					result: false,
-					value: `${args[0]} does not exist, you can run \`./help bet\` for help`
+					value: `${args[0]} is not a provider, you can run \`./help bet\` for help`
 				});
 			} else {
-				const game = GameIds.find(g => 
-					g.name.toLowerCase() === args[1].toLowerCase())
-				
-					if (!game) {
+				if (isNaN(+args[1])) {
+					game_code = <number>get_key_from_enum(args[1], OpapGameIdEnum);
+				}
+
+				if (!game_code) {
 					return resolve({
 						result: false,
 						value: `${args[1]} does not exist in ${args[0]}, you can run \`./help bet\` for help`
 					});
 				}
-				game_id = game.id;
 			}
 		} else {
 			return resolve({
@@ -42,9 +43,9 @@ module.exports = async (
 			'method': 'GET',
 			'hostname': `api.opap.gr`,
 			'port': undefined,
-			'path': `/draws/v3.0/${game_id}/last-result-and-active`,
+			'path': `/draws/v3.0/${game_code}/last-result-and-active`,
 			'headers': {
-				'x-rapidapi-host': 'api.opap.gr',
+				'x-opap-host': 'api.opap.gr',
 				'useQueryString': 1
 			}
 		};
@@ -65,7 +66,7 @@ module.exports = async (
 				message.channel.send(
 					create_rich_embed(
 						`${args[1]} from ${args[0]} | ${moment(last.drawTime).format('DD/MM/YY')}`,
-						'powered by opap',
+						'powered by ${args[0]}',
 						'#0384fc',
 						[
 							{

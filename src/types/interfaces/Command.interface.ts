@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { create_rich_embed } from '../../libraries/help.library';
+import { OpapGameIdList } from '../../data/enums/OpapGames.enum';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
 
 export const command_prefix: string = './';
@@ -45,7 +46,8 @@ const commands: InterfaceBlueprint[] = [
 		name: 'bet',
 		description: 'bet replys with todays latest requested betting report',
 		super_description: '**bet**, replys with todays latest requested betting report. ' +
-			'You have to specify both provide and game you wan to get the stats from',
+			'You have to specify both provider and game you wan to get the stats from.\n' +
+			'proveders: opap with games: ' + OpapGameIdList.join(', '),
 		example: './bet opap tzoker',
 		args: '<!provider> <!game>',
 		auth: 'none',

@@ -1,15 +1,17 @@
-import { Client, GuildMember, StreamDispatcher, TextChannel, VoiceChannel } from 'discord.js';
+import { Client, GuildMember, TextChannel, VoiceChannel } from 'discord.js';
 import { VideoSearchResult } from 'yt-search';
+import config from '../config.json';
 import { GiveRolePrtl } from '../types/classes/GiveRolePrtl.class';
 import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl.class';
 import { MemberPrtl } from '../types/classes/MemberPrtl.class';
+import { PollPrtl } from '../types/classes/PollPrtl.class';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
-import { Rank, MongoPromise } from '../types/interfaces/InterfacesPrtl.interface';
+import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
+import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
+import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
+import { MongoPromise, Rank } from '../types/interfaces/InterfacesPrtl.interface';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
-import config from '../config.json';
-import { PollPrtl } from '../types/classes/PollPrtl.class';
-import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
 
 // fetch guilds
 export async function fetch_guild_list(
@@ -155,7 +157,8 @@ export async function fetch_guild_predata(
                 url_list: 1,
                 music_data: 1,
                 music_queue: 1,
-                level_speed: 1
+                level_speed: 1,
+                profanity_level: 1
             })
             .then((r: any) => {
                 if (!!r) {
@@ -167,7 +170,8 @@ export async function fetch_guild_predata(
                         url_list: r.url_list,
                         music_data: r.music_data,
                         music_queue: r.music_queue,
-                        level_speed: r.level_speed
+                        level_speed: r.level_speed,
+                        profanity_level: r.profanity_level
                     });
                 } else {
                     return undefined;
@@ -193,7 +197,8 @@ export async function fetch_guild_rest(
                 ignore_list: 0,
                 url_list: 0,
                 music_data: 0,
-                level_speed: 0
+                level_speed: 0,
+                profanity_level: 0
             })
             .then((r: any) => {
                 if (!!r) {
@@ -298,7 +303,8 @@ export async function insert_guild(
     const announcement: string | null = 'null';
     const locale: string = 'en';
     const announce: boolean = true;
-    const level_speed: string = 'normal';
+    const level_speed: number = RankSpeedEnum.default;
+    const profanity_level: number = ProfanityLevelEnum.default;
     const premium: boolean = true; // as it is not a paid service anymore
     const prefix: string = config.prefix;
 
@@ -317,6 +323,7 @@ export async function insert_guild(
             locale: locale,
             announce: announce,
             level_speed: level_speed,
+            profanity_level: profanity_level,
             premium: premium,
             prefix: prefix
         })

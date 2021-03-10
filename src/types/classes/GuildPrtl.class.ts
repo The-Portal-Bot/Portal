@@ -34,9 +34,10 @@ export class GuildPrtl {
 	public music_data: MusicData;
 	public music_queue: VideoSearchResult[];
 	public announcement: string | null;
-	public locale: string;
+	public locale: number;
 	public announce: boolean;
-	public level_speed: string;
+	public level_speed: number;
+	public profanity_level: number;
 	public premium: boolean;
 	public prefix: string;
 
@@ -52,9 +53,10 @@ export class GuildPrtl {
 		music_data: MusicData,
 		music_queue: VideoSearchResult[],
 		announcement: string | null,
-		locale: string,
+		locale: number,
 		announce: boolean,
-		level_speed: string,
+		level_speed: number,
+		profanity_level: number,
 		premium: boolean,
 		prefix: string
 	) {
@@ -72,6 +74,7 @@ export class GuildPrtl {
 		this.locale = locale;
 		this.announce = announce;
 		this.level_speed = level_speed;
+		this.profanity_level = profanity_level;
 		this.premium = premium;
 		this.prefix = prefix;
 	}
@@ -89,9 +92,10 @@ export interface IGuildPrtl extends Document {
 	music_data: MusicData,
 	music_queue: VideoSearchResult[],
 	announcement: string | null,
-	locale: string,
+	locale: number,
 	announce: boolean,
 	level_speed: string,
+	profanity_level: string,
 	premium: boolean,
 	prefix: string
 }

@@ -3,7 +3,7 @@ import { create_channel, create_music_channel, delete_channel, getOptions } from
 import { insert_portal, update_guild, insert_url } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl.class";
-import { PortalChannelTypes } from "../../../types/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (

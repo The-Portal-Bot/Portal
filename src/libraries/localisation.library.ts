@@ -1,5 +1,6 @@
 import { Client, Message, User, StreamDispatcher } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { LocaleEnum } from "../data/enums/Locales.enum";
 import { LocalisationOption } from "../types/interfaces/InterfacesPrtl.interface";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
@@ -221,9 +222,9 @@ export function client_write(message: Message, guild_object: GuildPrtl, context:
 			if (message.member && message.member.voice.channel) {
 				if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 					switch (v.locale) {
-						case 'gr': return_value = portal.find(p => p.name === context)?.lang.gr(); break;
-						case 'en': return_value = portal.find(p => p.name === context)?.lang.en(); break;
-						case 'de': return_value = portal.find(p => p.name === context)?.lang.de(); break;
+						case LocaleEnum.gr: return_value = portal.find(p => p.name === context)?.lang.gr(); break;
+						case LocaleEnum.en: return_value = portal.find(p => p.name === context)?.lang.en(); break;
+						case LocaleEnum.de: return_value = portal.find(p => p.name === context)?.lang.de(); break;
 					}
 					return true;
 				}
@@ -249,9 +250,9 @@ export function client_log(
 				if (message.member && message.member.voice.channel) {
 					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 						switch (v.locale) {
-							case 'gr': return console_text.find(c => c.name === context)?.lang.gr(args);
-							case 'en': return console_text.find(c => c.name === context)?.lang.en(args);
-							case 'de': return console_text.find(c => c.name === context)?.lang.de(args);
+							case LocaleEnum.gr: return console_text.find(c => c.name === context)?.lang.gr(args);
+							case LocaleEnum.en: return console_text.find(c => c.name === context)?.lang.en(args);
+							case LocaleEnum.de: return console_text.find(c => c.name === context)?.lang.de(args);
 						}
 					}
 				}

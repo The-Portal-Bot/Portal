@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { delete_channel, included_in_voice_list, regex_interpreter } from "../../../libraries/guild.library";
 import { update_voice } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { PortalChannelTypes } from "../../../types/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 // NEEDS FIXING

@@ -1,14 +1,17 @@
 import { Guild, GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
-import { create_rich_embed, is_authorised } from '../../libraries/help.library';
+import { create_rich_embed, get_key_from_enum, is_authorised } from '../../libraries/help.library';
 import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongo.library';
 import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { MemberPrtl } from '../classes/MemberPrtl.class';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
+import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
+import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
+import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
 import { Field, InterfaceBlueprint, ReturnPormise } from './InterfacesPrtl.interface';
 
 export const attribute_prefix: string = '&';
-const locales = ['gr', 'en', 'de'];
+
 const attributes: InterfaceBlueprint[] = [
 	{
 		name: 'p.ann_announce',
@@ -43,9 +46,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['p'];
+			const attr = 'ann_announce';
+
 			return new Promise((resolve) => {
-				const ctgr = ['p'];
-				const attr = 'ann_announce';
 				if (value === 'true') {
 					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
@@ -109,9 +113,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['v'];
+			const attr = 'ann_announce';
+
 			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'ann_announce';
 				if (value === 'true') {
 					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
 						.then(r => {
@@ -155,7 +160,6 @@ const attributes: InterfaceBlueprint[] = [
 		},
 		auth: 'voice'
 	},
-
 	{
 		name: 'p.no_bots',
 		description: 'returns/sets whether bots can join portal\'s voice channels',
@@ -189,9 +193,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['p'];
+			const attr = 'no_bots';
+
 			return new Promise((resolve) => {
-				const ctgr = ['p'];
-				const attr = 'no_bots';
 				if (value === 'true') {
 					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
@@ -255,9 +260,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['v'];
+			const attr = 'no_bots';
+
 			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'no_bots';
 				if (value === 'true') {
 					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
 						.then(r => {
@@ -301,7 +307,6 @@ const attributes: InterfaceBlueprint[] = [
 		},
 		auth: 'voice'
 	},
-
 	{
 		name: 'p.render',
 		description: 'returns/sets whether portal\'s voice channels render names',
@@ -335,9 +340,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['p'];
+			const attr = 'render';
+
 			return new Promise((resolve) => {
-				const ctgr = ['p'];
-				const attr = 'render';
 				if (value === 'true') {
 					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
@@ -402,9 +408,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['v'];
+			const attr = 'render';
+
 			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'render';
 				if (value === 'true') {
 					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
 						.then(r => {
@@ -448,7 +455,6 @@ const attributes: InterfaceBlueprint[] = [
 		},
 		auth: 'voice'
 	},
-
 	{
 		name: 'p.ann_user',
 		description: 'returns/sets whether Portal announces user\'s join or leave from current portals spawned channels',
@@ -482,9 +488,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['p'];
+			const attr = 'ann_user';
+
 			return new Promise((resolve) => {
-				const ctgr = ['p'];
-				const attr = 'ann_user';
 				if (value === 'true') {
 					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
@@ -548,9 +555,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
+			const ctgr = ['v'];
+			const attr = 'ann_user';
+
 			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'ann_user';
 				if (value === 'true') {
 					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
 						.then(r => {
@@ -609,11 +617,11 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'bitrate';
-				const new_bitrate = Number(value);
+			const ctgr = ['v'];
+			const attr = 'bitrate';
+			const new_bitrate = Number(value);
 
+			return new Promise((resolve) => {
 				if (isNaN(new_bitrate)) {
 					return resolve({
 						result: false,
@@ -649,8 +657,8 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.prefix',
-		description: 'returns/sets g.prefix of Portal',
-		super_description: '**g.prefix**, returns/sets guild prefix which is how you refere to Portal',
+		description: 'returns/sets prefix of Portal',
+		super_description: '**prefix**, returns/sets guild prefix which is how you refere to Portal',
 		example: '&g.prefix',
 		args: 'string',
 		get: (
@@ -663,10 +671,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['g'];
-				const attr = 'prefix';
+			const ctgr = ['g'];
+			const attr = 'prefix';
 
+			return new Promise((resolve) => {
 				update_guild(guild_object.id, attr, String(value))
 					.then(r => {
 						return resolve({
@@ -687,28 +695,30 @@ const attributes: InterfaceBlueprint[] = [
 		auth: 'admin'
 	},
 	{
-		name: 'g.locale',
-		description: 'returns/sets g.locale of the guild',
-		super_description: '**g.locale**, returns/sets guild locale makes the bot talk your language and all communication is done' +
-			'in your local language',
-		example: '&g.locale',
-		args: 'en/gr/de',
+		name: 'g.level_speed', // rank_speed
+		description: 'returns/sets leveling speed of your server',
+		super_description: '**g.level_speed**, returns/sets leveling speed of your server,' +
+			'Basically how fast or slow members will reach levels that will give them roles.',
+		example: '&g.level_speed',
+		args: 'none/slow/default/fast',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
-			return guild_object.locale;
+			return RankSpeedEnum[guild_object.level_speed];
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['g'];
-				const attr = 'locale';
+			const ctgr = ['g'];
+			const attr = 'level_speed';
 
-				if (locales.includes(value)) {
-					update_guild(guild_object.id, attr, String(value))
+			return new Promise((resolve) => {
+				const speed = get_key_from_enum(value, RankSpeedEnum);
+
+				if (speed !== undefined) {
+					update_guild(guild_object.id, attr, speed)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -727,7 +737,109 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${locales.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${RankSpeedList.join(', ')}`
+					});
+				}
+
+			});
+		},
+		auth: 'admin'
+	},
+	{
+		name: 'g.profanity_level', // rank_speed
+		description: 'returns/sets the level of Profanity check strictness',
+		super_description: '**g.profanity_level**, returns/sets the level of Profanity check strictness,' +
+			'For example fuckshit would not be flagged in `default` level but would in `strict`.',
+		example: '&g.profanity_level',
+		args: 'none/default/strict',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): string => {
+			return ProfanityLevelEnum[guild_object.profanity_level];
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
+		): Promise<ReturnPormise> => {
+			const ctgr = ['g'];
+			const attr = 'profanity_level';
+
+			return new Promise((resolve) => {
+				const level = get_key_from_enum(value, LocaleEnum);
+
+				if (level !== undefined) {
+					update_guild(guild_object.id, attr, level)
+						.then(r => {
+							return resolve({
+								result: r,
+								value: r
+									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
+									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+							});
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+							});
+						});
+				}
+				else {
+					return resolve({
+						result: false,
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${ProfanityLevelList.join(', ')}`
+					});
+				}
+
+			});
+		},
+		auth: 'admin'
+	},
+	{
+		name: 'g.locale',
+		description: 'returns/sets g.locale of the guild',
+		super_description: '**g.locale**, returns/sets guild locale makes the bot talk your language and all communication is done' +
+			'in your local language',
+		example: '&g.locale',
+		args: 'en/gr/de',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): string => {
+			return LocaleEnum[guild_object.locale];
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
+		): Promise<ReturnPormise> => {
+			const ctgr = ['g'];
+			const attr = 'locale';
+
+			return new Promise((resolve) => {
+				const locale = get_key_from_enum(value, LocaleEnum);
+
+				if (locale !== undefined) {
+					update_guild(guild_object.id, attr, locale)
+						.then(r => {
+							return resolve({
+								result: r,
+								value: r
+									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
+									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+							});
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+							});
+						});
+				}
+				else {
+					return resolve({
+						result: false,
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${LocaleList.join(', ')}`
 					});
 				}
 			});
@@ -757,7 +869,7 @@ const attributes: InterfaceBlueprint[] = [
 			);
 
 			if (portal_object) {
-				return portal_object.locale;
+				return LocaleEnum[portal_object.locale];
 			}
 
 			return 'ERROR';
@@ -770,8 +882,10 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'locale';
 
 			return new Promise((resolve) => {
-				if (locales.includes(value)) {
-					update_portal(guild_object.id, portal_object_list.id, attr, String(value))
+				const locale = get_key_from_enum(value, LocaleEnum);
+
+				if (locale !== undefined) {
+					update_portal(guild_object.id, portal_object_list.id, attr, locale)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -790,7 +904,7 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${locales.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${LocaleList.join(', ')}`
 					});
 				}
 			});
@@ -811,18 +925,20 @@ const attributes: InterfaceBlueprint[] = [
 				return 'must be in voice channel';
 			}
 
-			return voice_object.locale;
+			return LocaleEnum[voice_object.locale];
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'locale';
+			const ctgr = ['v'];
+			const attr = 'locale';
 
-				if (locales.includes(value)) {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, String(value))
+			return new Promise((resolve) => {
+				const locale = get_key_from_enum(value, LocaleEnum);
+
+				if (locale !== undefined) {
+					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, locale)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -841,9 +957,10 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${locales.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${LocaleList.join(', ')}`
 					});
 				}
+
 			});
 		},
 		auth: 'voice'
@@ -868,10 +985,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'position';
+			const ctgr = ['v'];
+			const attr = 'position';
 
+			return new Promise((resolve) => {
 				if (isNaN(Number(value))) {
 					return resolve({
 						result: false,
@@ -930,10 +1047,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['p'];
-				const attr = 'regex_overwrite';
+			const ctgr = ['p'];
+			const attr = 'regex_overwrite';
 
+			return new Promise((resolve) => {
 				if (value === 'true') {
 					update_portal(guild_object.id, portal_object_list.id, attr, true)
 						.then(r => {
@@ -1009,10 +1126,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['p'];
-				const attr = 'regex_portal';
+			const ctgr = ['p'];
+			const attr = 'regex_portal';
 
+			return new Promise((resolve) => {
 				update_portal(guild_object.id, portal_object_list.id, attr, value)
 					.then(r => {
 						return resolve({
@@ -1064,10 +1181,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['p', 'v'];
-				const attr = 'regex_voice';
+			const ctgr = ['p', 'v'];
+			const attr = 'regex_voice';
 
+			return new Promise((resolve) => {
 				update_portal(guild_object.id, portal_object_list.id, attr, value)
 					.then(r => {
 						return resolve({
@@ -1107,10 +1224,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'regex';
+			const ctgr = ['v'];
+			const attr = 'regex';
 
+			return new Promise((resolve) => {
 				update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, value)
 					.then(r => {
 						return resolve({
@@ -1149,10 +1266,10 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['m'];
-				const attr = 'regex';
+			const ctgr = ['m'];
+			const attr = 'regex';
 
+			return new Promise((resolve) => {
 				if (member_object) {
 					update_member(guild_object.id, member_object.id, attr, value)
 						.then(r => {
@@ -1211,11 +1328,11 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
 			portal_object_list: PortalChannelPrtl, guild_object: GuildPrtl, value: number
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['p'];
-				const attr = 'user_limit_portal';
-				const new_user_limit = Number(value);
+			const ctgr = ['p'];
+			const attr = 'user_limit_portal';
+			const new_user_limit = Number(value);
 
+			return new Promise((resolve) => {
 				if (isNaN(new_user_limit)) {
 					return resolve({
 						result: false,
@@ -1269,11 +1386,11 @@ const attributes: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
 			portal_object_list: PortalChannelPrtl, guild_object: GuildPrtl, value: number
 		): Promise<ReturnPormise> => {
-			return new Promise((resolve) => {
-				const ctgr = ['v'];
-				const attr = 'user_limit';
-				const new_user_limit = Number(value);
+			const ctgr = ['v'];
+			const attr = 'user_limit';
+			const new_user_limit = Number(value);
 
+			return new Promise((resolve) => {
 				if (new_user_limit >= 0) {
 					voice_channel.setUserLimit(new_user_limit)
 						.then(r => {
@@ -1426,7 +1543,7 @@ export function get_attribute_help_super(
 };
 
 export function get_attribute(
-	voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null, 
+	voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 	portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl,
 	guild: Guild, attr: string, member_object: MemberPrtl | undefined
 ): string | number | boolean {

@@ -2,7 +2,7 @@
 import { Schema } from "mongoose";
 import VoiceChannelPrtlSch from './VoiceChannelPrtl.schema';
 
-const PortalChannelPrtlSch = new Schema(
+const PortalChannelPrtlSchm = new Schema(
 	{
 		id: { type: String, required: true },
 		creator_id: { type: String, required: true },
@@ -11,7 +11,7 @@ const PortalChannelPrtlSch = new Schema(
 		regex_voice: { type: String, required: true },
 		voice_list: { type: [VoiceChannelPrtlSch], required: true },
 		no_bots: { type: Boolean, required: true },
-		locale: { type: String, required: true },
+		locale: { type: Number, required: true },
 		ann_announce: { type: Boolean, required: true },
 		ann_user: { type: Boolean, required: true },
 		user_limit_portal: { type: Number, required: true },
@@ -22,5 +22,5 @@ const PortalChannelPrtlSch = new Schema(
 	}
 );
 
-// export default model('PortalChannelPrtlSch', PortalChannelPrtlSch);
-export default PortalChannelPrtlSch;
+// export default model('PortalChannelPrtlSchm', PortalChannelPrtlSchm);
+export default PortalChannelPrtlSchm;

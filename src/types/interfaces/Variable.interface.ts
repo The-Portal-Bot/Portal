@@ -149,7 +149,6 @@ const variables: InterfaceBlueprint[] = [
 			}
 
 			return moment()
-				.locale(voice_object.locale)
 				.subtract(10, 'days')
 				.calendar();
 		},
@@ -172,7 +171,6 @@ const variables: InterfaceBlueprint[] = [
 			}
 
 			return moment()
-				.locale(voice_object.locale)
 				.date();
 		},
 		set: null,
@@ -193,7 +191,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('dddd');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.format('dddd');
 		},
 		set: null,
@@ -214,7 +211,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('M');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.format('M');
 		},
 		set: null,
@@ -236,7 +232,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('MMMM');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.startOf('month')
 				.format('MMMM');
 		},
@@ -258,7 +253,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('yyyy');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.format('yyyy');
 		},
 		set: null,
@@ -279,7 +273,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('hh:mm:ss');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.format('hh:mm:ss');
 		},
 		set: null,
@@ -300,7 +293,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('hh');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.format('hh');
 		},
 		set: null,
@@ -321,7 +313,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('mm');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.format('mm');
 		},
 		set: null,
@@ -342,7 +333,6 @@ const variables: InterfaceBlueprint[] = [
 					.format('ss');
 			}
 			return moment()
-				.locale(voice_object.locale)
 				.format('ss');
 		},
 		set: null,

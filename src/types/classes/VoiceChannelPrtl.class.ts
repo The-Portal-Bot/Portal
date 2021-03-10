@@ -4,7 +4,7 @@ export class VoiceChannelPrtl {
 	public render: boolean;
 	public regex: string;
 	public no_bots: boolean;
-	public locale: string;
+	public locale: number;
 	public ann_announce: boolean;
 	public ann_user: boolean;
 
@@ -14,7 +14,7 @@ export class VoiceChannelPrtl {
 		render: boolean,
 		regex: string,
 		no_bots: boolean,
-		locale: string,
+		locale: number,
 		ann_announce: boolean,
 		ann_user: boolean
 	) {

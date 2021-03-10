@@ -8,7 +8,7 @@ export class PortalChannelPrtl {
 	public regex_voice: string;
 	public voice_list: VoiceChannelPrtl[];
 	public no_bots: boolean;
-	public locale: string;
+	public locale: number;
 	public ann_announce: boolean;
 	public ann_user: boolean;
 	public user_limit_portal: number;
@@ -22,7 +22,7 @@ export class PortalChannelPrtl {
 		regex_voice: string,
 		voice_list: VoiceChannelPrtl[],
 		no_bots: boolean,
-		locale: string,
+		locale: number,
 		ann_announce: boolean,
 		ann_user: boolean,
 		user_limit_portal: number,

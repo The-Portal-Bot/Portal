@@ -1,16 +1,17 @@
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
-import yts from "yt-search";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { client_talk } from './libraries/localisation.library';
+import { isProfane } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
+import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl.interface";
 const AntiSpam = require('discord-anti-spam');
 
@@ -197,8 +198,7 @@ client.on('message', async (message: Message) => {
 				let command = command_cypher(message, guild_object);
 
 				if (!command.command_options) {
-					message_reply(false, message, message.author,
-						'could not find command option');
+					message_reply(false, message, message.author, 'is not a Portal command');
 
 					return false;
 				}
@@ -239,8 +239,7 @@ client.on('message', async (message: Message) => {
 						guild_object.premium = guild_object_rest.premium;
 
 						if (!command.command_options) {
-							message_reply(false, message, message.author,
-								'could not find command option');
+							message_reply(false, message, message.author, 'is not a Portal command');
 
 							return false;
 						}
@@ -439,14 +438,16 @@ function portal_preprocessor(
 			handle_ranking_system(message, guild_object);
 			anti_spam.message(message);
 
-			// profanity check
-			// const profanities = isProfane(message.content);
-			// if (profanities.length > 0) {
-			// 	message.react('🚩');
-			// 	message.author
-			// 		.send(`try not to use profanities (${profanities.join(',')})`)
-			// 		.catch(console.error);
-			// }
+			if (guild_object.profanity_level !== ProfanityLevelEnum.none) {
+				// profanity check
+				const profanities = isProfane(message.content, guild_object.profanity_level);
+				if (profanities.length > 0) {
+					message.react('🚩');
+					message.author
+						.send(`try not to use profanities (${profanities.join(',')})`)
+						.catch(console.error);
+				}
+			}
 
 			return false;
 		}

@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-const VoiceChannelPrtlSch = new Schema(
+const VoiceChannelPrtlSchm = new Schema(
 	{
 		id: { type: String, required: true },
 		creator_id: { type: String, required: true },
@@ -9,7 +9,7 @@ const VoiceChannelPrtlSch = new Schema(
 		no_bots: { type: Boolean, required: true },
 		time_to_live: { type: Number, required: true },
 		refresh_rate: { type: Number, required: true },
-		locale: { type: String, required: true },
+		locale: { type: Number, required: true },
 		ann_announce: { type: Boolean, required: true },
 		ann_user: { type: Boolean, required: true }
 	},
@@ -18,5 +18,5 @@ const VoiceChannelPrtlSch = new Schema(
 	}
 );
 
-// export default model('VoiceChannelPrtlSch', VoiceChannelPrtlSch);
-export default VoiceChannelPrtlSch;
+// export default model('VoiceChannelPrtlSchm', VoiceChannelPrtlSchm);
+export default VoiceChannelPrtlSchm;

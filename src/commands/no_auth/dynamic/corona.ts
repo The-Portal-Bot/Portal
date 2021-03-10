@@ -3,10 +3,10 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
 import config from '../../../config.json';
+import { CountryCodes } from '../../../data/lists/country_codes_iso.static';
 import { create_rich_embed, getJSON } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
-import { CountryCodes } from '../../../data/lists/country_codes_iso.static';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
 const country_codes: { name: string; code: string; }[] = CountryCodes;
@@ -18,6 +18,7 @@ const get_country_code = function (country: string): string | null {
 		else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country))
 			return country_codes[i].name;
 	}
+
 	return null;
 };
 

@@ -1,8 +1,8 @@
 import { model, Schema } from 'mongoose';
-import PortalChannelPrtlSchm from './schemas/PortalChannelPrtl.schema';
-import MemberPrtlSchm from './schemas/MemberPrtl.schema';
 import GiveRolePrtlSchm from './schemas/GiveRolePrtl.schema';
-import PollPrtlSch from './schemas/PollPrtl.schema';
+import MemberPrtlSchm from './schemas/MemberPrtl.schema';
+import PollPrtlSchm from './schemas/PollPrtl.schema';
+import PortalChannelPrtlSchm from './schemas/PortalChannelPrtl.schema';
 
 const VideoSearchResult = new Schema(
 	{
@@ -60,21 +60,22 @@ const MusicData = new Schema(
 	}
 );
 
-const GuildPrtlSch = new Schema(
+const GuildPrtlSchm = new Schema(
 	{
 		id: { type: String, required: true },
 		portal_list: { type: [PortalChannelPrtlSchm], required: true },
 		member_list: { type: [MemberPrtlSchm], required: true },
 		url_list: { type: [String], required: true },
 		role_list: { type: [GiveRolePrtlSchm], required: true },
-		poll_list: { type: [PollPrtlSch], required: true },
+		poll_list: { type: [PollPrtlSchm], required: true },
 		ranks: { type: [Rank], required: true },
 		music_data: { type: MusicData, required: true },
 		music_queue: { type: [VideoSearchResult], required: true },
 		announcement: { type: String, required: true },
-		locale: { type: String, required: true },
+		locale: { type: Number, required: true },
 		announce: { type: Boolean, required: true },
-		level_speed: { type: String, required: true },
+		level_speed: { type: Number, required: true },
+		profanity_level: { type: Number, required: true },
 		premium: { type: Boolean, required: true },
 		prefix: { type: String, required: true }
 	},
@@ -83,4 +84,4 @@ const GuildPrtlSch = new Schema(
 	}
 );
 
-export default model('GuildPrtlSch', GuildPrtlSch);
+export default model('GuildPrtlSchm', GuildPrtlSchm);

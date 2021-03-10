@@ -2,7 +2,7 @@ import { Message, VoiceChannel } from "discord.js";
 import { create_channel, delete_channel, getOptions, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../../libraries/guild.library";
 import { update_guild } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { PortalChannelTypes } from "../../../types/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (

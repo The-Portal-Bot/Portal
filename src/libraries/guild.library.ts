@@ -7,7 +7,7 @@ import voca from 'voca';
 import { GuildPrtl } from '../types/classes/GuildPrtl.class';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
-import { PortalChannelTypes } from "../types/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
@@ -352,7 +352,6 @@ export async function create_focus_channel(
 		const chatroom_name = `PR${focus_time === 0
 			? ''
 			: `-${focus_time}' $hour:$minute/${moment()
-				.locale(portal_object.locale)
 				.add(focus_time, focus_time === 1 ? "minute" : "minutes")
 				.format('hh:mm')}`
 			}`;

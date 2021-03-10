@@ -2,8 +2,9 @@ import { Activity, GuildMember, VoiceChannel } from "discord.js";
 import { GameNames } from "../data/lists/game_names.static";
 import { ProgramNames } from "../data/lists/program_names.static";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
+import { LocaleEnum } from "../data/enums/Locales.enum";
 
-function status_aliases(activities: Activity[], locale: string): string[] {
+function status_aliases(activities: Activity[], locale: number): string[] {
 	const new_status: string[] = [];
 
 	activities.forEach(activity => {
@@ -16,10 +17,10 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 		if (!found) {
 			for (let l = 0; l < GameNames.game_attributes.length; l++) {
 				if (activity.name == GameNames.game_attributes[l].status) {
-					if (locale === 'gr') {
+					if (locale === LocaleEnum.gr) {
 						new_status.push(GameNames.game_attributes[l].locale.gr);
 					}
-					else if (locale === 'de') {
+					else if (locale === LocaleEnum.de) {
 						new_status.push(GameNames.game_attributes[l].locale.de);
 					}
 					else {
@@ -34,10 +35,10 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 		if (!found) {
 			for (let l = 0; l < ProgramNames.program_attributes.length; l++) {
 				if (activity.name == ProgramNames.program_attributes[l].status) {
-					if (locale === 'gr') {
+					if (locale === LocaleEnum.gr) {
 						new_status.push(ProgramNames.program_attributes[l].locale.gr);
 					}
-					else if (locale === 'de') {
+					else if (locale === LocaleEnum.de) {
 						new_status.push(ProgramNames.program_attributes[l].locale.de);
 					}
 					else {
@@ -76,10 +77,10 @@ export function get_status_list(voice_channel: VoiceChannel, voice_object: Voice
 	});
 
 	if (array_of_statuses.length === 0) {
-		if (voice_object.locale === 'gr') {
+		if (voice_object.locale === LocaleEnum.gr) {
 			array_of_statuses.push('Άραγμα');
 		}
-		else if (voice_object.locale === 'de') {
+		else if (voice_object.locale === LocaleEnum.de) {
 			array_of_statuses.push('Chillen');
 		}
 		else {
