@@ -1,4 +1,4 @@
-{
+export const ProgramNames = {
 	"program_attributes": [
 		{
 			"status": "Google Chrome",
@@ -24,7 +24,7 @@
 			"locale": {
 				"en": "VSCode",
 				"de": "VSCode",
-				"gr": "ΟΣΚώδικα"
+				"gr": "VSCode"
 			}
 		},
 		{
@@ -33,7 +33,7 @@
 			"locale": {
 				"en": "VSCode",
 				"de": "VSCode",
-				"gr": "ΟΣΚώδικα"
+				"gr": "VSCode"
 			}
 		},
 		{
@@ -42,7 +42,7 @@
 			"locale": {
 				"en": "VSCode",
 				"de": "VSCode",
-				"gr": "ΟΣΚώδικα"
+				"gr": "VSCode"
 			}
 		},
 		{

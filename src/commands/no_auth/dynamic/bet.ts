@@ -4,17 +4,8 @@ import moment from 'moment';
 import { create_rich_embed, getJSON } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
+import { GameIds } from '../../../types/enums/OpapGames.enum';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
-
-const game_ids = [
-	{ name: 'Kino', id: 1100 },
-	{ name: 'Powerspin', id: 1110 },
-	{ name: 'Super3', id: 2100 },
-	{ name: 'Proto', id: 2101 },
-	{ name: 'Lotto', id: 5103 },
-	{ name: 'Tzoker', id: 5104 },
-	{ name: 'Extra5', id: 5106 }
-];
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -29,7 +20,7 @@ module.exports = async (
 					value: `${args[0]} does not exist, you can run \`./help bet\` for help`
 				});
 			} else {
-				const game = game_ids.find(g => 
+				const game = GameIds.find(g => 
 					g.name.toLowerCase() === args[1].toLowerCase())
 				
 					if (!game) {

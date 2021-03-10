@@ -1,4 +1,4 @@
-{
+export const GameNames = {
     "game_attributes": [{
             "status": "Among Us",
             "type": "game",

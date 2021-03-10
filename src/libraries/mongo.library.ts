@@ -9,6 +9,7 @@ import { Rank, MongoPromise } from '../types/interfaces/InterfacesPrtl.interface
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
 import config from '../config.json';
 import { PollPrtl } from '../types/classes/PollPrtl.class';
+import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
 
 // fetch guilds
 export async function fetch_guild_list(
@@ -891,15 +892,6 @@ export async function set_music_data(
 
 //
 
-export enum ChannelTypePrtl {
-    unknown = 0,
-    portal = 1,
-    voice = 2,
-    url = 3,
-    announcement = 4,
-    music = 5
-}
-
 export async function deleted_channel_sync(
     channel_to_remove: VoiceChannel | TextChannel
 ): Promise<number> {
@@ -915,11 +907,11 @@ export async function deleted_channel_sync(
                                 remove_portal(current_voice.guild.id, p.id)
                                     .then(r => {
                                         return r
-                                            ? resolve(ChannelTypePrtl.portal)
-                                            : resolve(ChannelTypePrtl.unknown)
+                                            ? resolve(PortalChannelTypes.portal)
+                                            : resolve(PortalChannelTypes.unknown)
                                     })
                                     .catch(() => {
-                                        return resolve(ChannelTypePrtl.unknown)
+                                        return resolve(PortalChannelTypes.unknown)
                                     });
                                 return true;
                             }
@@ -929,11 +921,11 @@ export async function deleted_channel_sync(
                                     remove_voice(current_voice.guild.id, p.id, v.id)
                                         .then(r => {
                                             return r
-                                                ? resolve(ChannelTypePrtl.voice)
-                                                : resolve(ChannelTypePrtl.unknown)
+                                                ? resolve(PortalChannelTypes.voice)
+                                                : resolve(PortalChannelTypes.unknown)
                                         })
                                         .catch(() => {
-                                            return resolve(ChannelTypePrtl.unknown)
+                                            return resolve(PortalChannelTypes.unknown)
                                         });
                                     return true;
                                 }
@@ -946,22 +938,22 @@ export async function deleted_channel_sync(
                             update_guild(current_text.guild.id, 'announcement', 'null')
                                 .then(r => {
                                     return r
-                                        ? resolve(ChannelTypePrtl.announcement)
-                                        : resolve(ChannelTypePrtl.unknown);
+                                        ? resolve(PortalChannelTypes.announcement)
+                                        : resolve(PortalChannelTypes.unknown);
                                 })
                                 .catch(() => {
-                                    return resolve(ChannelTypePrtl.unknown);
+                                    return resolve(PortalChannelTypes.unknown);
                                 });
                         } else if (guild_object.music_data.channel_id === current_text.id) {
                             const music_data = new MusicData('null', 'null', []);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {
                                     return r
-                                        ? resolve(ChannelTypePrtl.music)
-                                        : resolve(ChannelTypePrtl.unknown)
+                                        ? resolve(PortalChannelTypes.music)
+                                        : resolve(PortalChannelTypes.unknown)
                                 })
                                 .catch(() => {
-                                    return resolve(ChannelTypePrtl.unknown);
+                                    return resolve(PortalChannelTypes.unknown);
                                 });
                         } else {
                             for (let i = 0; i < guild_object.url_list.length; i++) {
@@ -969,11 +961,11 @@ export async function deleted_channel_sync(
                                     remove_url(current_text.guild.id, current_text.id)
                                         .then(r => {
                                             return r
-                                                ? resolve(ChannelTypePrtl.url)
-                                                : resolve(ChannelTypePrtl.unknown);
+                                                ? resolve(PortalChannelTypes.url)
+                                                : resolve(PortalChannelTypes.unknown);
                                         })
                                         .catch(() => {
-                                            return resolve(ChannelTypePrtl.unknown);
+                                            return resolve(PortalChannelTypes.unknown);
                                         });
                                     break;
                                 }
@@ -984,11 +976,11 @@ export async function deleted_channel_sync(
                                     remove_ignore(current_text.guild.id, current_text.id)
                                         .then(r => {
                                             return r
-                                                ? resolve(ChannelTypePrtl.url)
-                                                : resolve(ChannelTypePrtl.unknown);
+                                                ? resolve(PortalChannelTypes.url)
+                                                : resolve(PortalChannelTypes.unknown);
                                         })
                                         .catch(() => {
-                                            return resolve(ChannelTypePrtl.unknown);
+                                            return resolve(PortalChannelTypes.unknown);
                                         });
                                     break;
                                 }
@@ -996,11 +988,11 @@ export async function deleted_channel_sync(
                         }
                     }
                 } else {
-                    return resolve(ChannelTypePrtl.unknown);
+                    return resolve(PortalChannelTypes.unknown);
                 }
             })
             .catch(() => {
-                return resolve(ChannelTypePrtl.unknown);
+                return resolve(PortalChannelTypes.unknown);
             });
     });
 };

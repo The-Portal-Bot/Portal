@@ -1,7 +1,8 @@
 import { Message } from "discord.js";
 import { delete_channel, included_in_voice_list, regex_interpreter } from "../../../libraries/guild.library";
-import { ChannelTypePrtl, update_voice } from "../../../libraries/mongo.library";
+import { update_voice } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { PortalChannelTypes } from "../../../types/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 // NEEDS FIXING
@@ -54,7 +55,7 @@ module.exports = async (
 										current_voice.members.forEach(member => member.voice.setChannel(clone));
 										update_voice(guild_object.id, p.id, current_voice.id, 'id', clone.id)
 											.then(r => {
-												delete_channel(ChannelTypePrtl.voice, current_voice, message, true);
+												delete_channel(PortalChannelTypes.voice, current_voice, message, true);
 
 												return resolve({
 													result: r,

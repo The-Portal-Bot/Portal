@@ -2,14 +2,14 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
-import country_codes_json from '../../../assets/jsons/CountryCodes.json';
 import config from '../../../config.json';
 import { create_rich_embed, getJSON } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
+import { CountryCodes } from '../../../data/lists/country_codes_iso.static';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
-const country_codes: { name: string; code: string; }[] = country_codes_json;
+const country_codes: { name: string; code: string; }[] = CountryCodes;
 
 const get_country_code = function (country: string): string | null {
 	for (let i = 0; i < country_codes.length; i++) {

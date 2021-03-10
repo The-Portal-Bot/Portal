@@ -1,5 +1,6 @@
 import { Channel, PartialDMChannel, TextChannel, VoiceChannel, StreamDispatcher } from "discord.js";
-import { ChannelTypePrtl, deleted_channel_sync } from "../libraries/mongo.library";
+import { deleted_channel_sync } from "../libraries/mongo.library";
+import { PortalChannelTypes } from "../types/enums/PortalChannel.enum";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
@@ -21,13 +22,13 @@ module.exports = async (
 				if (r > 0) {
 					return resolve({
 						result: true,
-						value: `${ChannelTypePrtl[r].toString()} channel, has been removed from database ` +
+						value: `${PortalChannelTypes[r].toString()} channel, has been removed from database ` +
 							`guild: ${current_channel.guild.name} [${current_channel.guild.id}]`,
 					});
 				} else {
 					return resolve({
 						result: false,
-						value: `${ChannelTypePrtl[r].toString()} channel is not controlled by Portal`
+						value: `${PortalChannelTypes[r].toString()} channel is not controlled by Portal`
 					});
 				}
 			})

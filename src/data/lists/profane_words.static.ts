@@ -1,4 +1,4 @@
-{
+export const ProfaneWords = {
     "gr": [
         "γαμώ",
         "γαμω",

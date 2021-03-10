@@ -1,7 +1,8 @@
 import { Message, VoiceChannel } from "discord.js";
 import { create_channel, delete_channel, getOptions, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../../libraries/guild.library";
-import { ChannelTypePrtl, update_guild } from "../../../libraries/mongo.library";
+import { update_guild } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { PortalChannelTypes } from "../../../types/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
@@ -51,7 +52,7 @@ module.exports = async (
 				.find(channel => channel.id == guild_object.announcement);
 
 			if (announcement)
-				delete_channel(ChannelTypePrtl.announcement, announcement, message);
+				delete_channel(PortalChannelTypes.announcement, announcement, message);
 
 			if (args.length === 0) {
 				update_guild(guild_object.id, 'announcement', message.channel.id)

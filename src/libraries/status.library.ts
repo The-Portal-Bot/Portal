@@ -1,6 +1,6 @@
 import { Activity, GuildMember, VoiceChannel } from "discord.js";
-import games from '../assets/jsons/GameNames.json';
-import programs from '../assets/jsons/ProgramNames.json';
+import { GameNames } from "../data/lists/game_names.static";
+import { ProgramNames } from "../data/lists/program_names.static";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
 
 function status_aliases(activities: Activity[], locale: string): string[] {
@@ -14,16 +14,16 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 		}
 
 		if (!found) {
-			for (let l = 0; l < games.game_attributes.length; l++) {
-				if (activity.name == games.game_attributes[l].status) {
+			for (let l = 0; l < GameNames.game_attributes.length; l++) {
+				if (activity.name == GameNames.game_attributes[l].status) {
 					if (locale === 'gr') {
-						new_status.push(games.game_attributes[l].locale.gr);
+						new_status.push(GameNames.game_attributes[l].locale.gr);
 					}
 					else if (locale === 'de') {
-						new_status.push(games.game_attributes[l].locale.de);
+						new_status.push(GameNames.game_attributes[l].locale.de);
 					}
 					else {
-						new_status.push(games.game_attributes[l].locale.en);
+						new_status.push(GameNames.game_attributes[l].locale.en);
 					}
 
 					found = true;
@@ -32,16 +32,16 @@ function status_aliases(activities: Activity[], locale: string): string[] {
 		}
 
 		if (!found) {
-			for (let l = 0; l < programs.program_attributes.length; l++) {
-				if (activity.name == programs.program_attributes[l].status) {
+			for (let l = 0; l < ProgramNames.program_attributes.length; l++) {
+				if (activity.name == ProgramNames.program_attributes[l].status) {
 					if (locale === 'gr') {
-						new_status.push(programs.program_attributes[l].locale.gr);
+						new_status.push(ProgramNames.program_attributes[l].locale.gr);
 					}
 					else if (locale === 'de') {
-						new_status.push(programs.program_attributes[l].locale.de);
+						new_status.push(ProgramNames.program_attributes[l].locale.de);
 					}
 					else {
-						new_status.push(programs.program_attributes[l].locale.en);
+						new_status.push(ProgramNames.program_attributes[l].locale.en);
 					}
 
 					found = true;
