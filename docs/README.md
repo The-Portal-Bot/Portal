@@ -51,6 +51,7 @@
 
 | Version | Date       | Argument                                                                                        |
 | :------ | :--------- | :---------------------------------------------------------------------------------------------- |
+| 0.6.4   | 10-03-2021 | _implemented bet and news commands, updated music player design other minor updates_            |
 | 0.6.3   | 05-03-2021 | _increased responsed time by 70% and updated music player_                                      |
 | 0.6.2   | 03-03-2021 | _major refactoring and updates to code throughout, a lot of performance improvements_           |
 | 0.6.0   | 15-02-2021 | _transition to MongoDB from plain JSON file with many improvements, especially on music player_ |

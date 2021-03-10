@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
-import { included_in_voice_list } from "../../../libraries/guildOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { set_attribute } from "../../../types/interfaces/Attribute";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { included_in_voice_list } from "../../../libraries/guild.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { set_attribute } from "../../../types/interfaces/Attribute.interface";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 const locales = ['gr', 'en', 'de'];
 

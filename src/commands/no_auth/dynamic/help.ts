@@ -1,12 +1,12 @@
 import { Message } from "discord.js";
-import { create_rich_embed } from "../../../libraries/helpOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../../types/interfaces/Attribute";
-import { get_command_guide, get_command_help, get_command_help_super } from "../../../types/interfaces/Command";
-import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
-import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../../types/interfaces/Pipe";
-import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../../types/interfaces/Structure";
-import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../../types/interfaces/Variable";
+import { create_rich_embed } from "../../../libraries/help.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../../types/interfaces/Attribute.interface";
+import { get_command_guide, get_command_help, get_command_help_super } from "../../../types/interfaces/Command.interface";
+import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../../types/interfaces/Pipe.interface";
+import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../../types/interfaces/Structure.interface";
+import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../../types/interfaces/Variable.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

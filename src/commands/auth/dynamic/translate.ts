@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import config from '../../../config.json';
-import { GuildPrtl } from '../../../types/classes/GuildPrtl';
-import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
+import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
+import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
 const translate = require('translate')
 translate.engine = config.api_keys.translate.engine;

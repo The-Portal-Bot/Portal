@@ -1,7 +1,7 @@
 import { Client, Message, ActivityOptions, PresenceData } from "discord.js";
-import { update_guild } from "../../../libraries/mongoOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { update_guild } from "../../../libraries/mongo.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

@@ -1,9 +1,10 @@
 import { GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
-import { create_channel, create_music_channel, delete_channel, getOptions } from "../../../libraries/guildOps";
-import { ChannelTypePrtl, insert_portal, update_guild, insert_url } from "../../../libraries/mongoOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { create_channel, create_music_channel, delete_channel, getOptions } from "../../../libraries/guild.library";
+import { insert_portal, update_guild, insert_url } from "../../../libraries/mongo.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl.class";
+import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -17,9 +18,9 @@ module.exports = async (
 			.then(cat_channel => {
 				current_guild.channels.cache.forEach(channel => {
 					if (channel.id === guild_object.announcement)
-						delete_channel(ChannelTypePrtl.announcement, <TextChannel>channel, message);
+						delete_channel(PortalChannelTypes.announcement, <TextChannel>channel, message);
 					if (channel.id === guild_object.music_data.channel_id)
-						delete_channel(ChannelTypePrtl.music, <TextChannel>channel, message);
+						delete_channel(PortalChannelTypes.music, <TextChannel>channel, message);
 				});
 
 				if (message.member) {

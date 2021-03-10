@@ -1,5 +1,5 @@
 {
-  "version": "0.6.3",
+  "version": "0.6.4",
   "token": "add-your-token-here",
   "prefix": "./",
   "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
@@ -11,6 +11,7 @@
       "coingecko": "add-coingecko-api-key",
       "footbal_data": "add-football-data-api-key",
       "yahoo_finance": "add-yahoo-finance-api-key",
+      "new_york_times": "add-new-york-time-api-key",
       "translate": {
           "engine": "yandex",
           "key": "add-yeandex-api-key"

@@ -1,9 +1,9 @@
 import { GuildCreateChannelOptions, Message } from "discord.js";
-import { create_channel } from "../../../libraries/guildOps";
-import { insert_portal } from "../../../libraries/mongoOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { create_channel } from "../../../libraries/guild.library";
+import { insert_portal } from "../../../libraries/mongo.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl.class";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

@@ -3,10 +3,10 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
 import config from '../../../config.json';
-import { create_rich_embed, getJSON } from '../../../libraries/helpOps';
-import { https_fetch } from '../../../libraries/httpOps';
-import { GuildPrtl } from '../../../types/classes/GuildPrtl';
-import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl';
+import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { https_fetch } from '../../../libraries/http.library';
+import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
+import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

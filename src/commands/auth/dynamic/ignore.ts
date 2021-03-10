@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
-import { included_in_ignore_list } from "../../../libraries/guildOps";
-import { insert_ignore, remove_ignore } from "../../../libraries/mongoOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
+import { included_in_ignore_list } from "../../../libraries/guild.library";
+import { insert_ignore, remove_ignore } from "../../../libraries/mongo.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

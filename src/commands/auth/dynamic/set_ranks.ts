@@ -1,8 +1,8 @@
 import { Client, Message, Role } from "discord.js";
-import { getJSON } from "../../../libraries/helpOps";
-import { GuildPrtl } from "../../../types/classes/GuildPrtl";
-import { Rank, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl";
-import { set_ranks } from "../../../libraries/mongoOps";
+import { getJSON } from "../../../libraries/help.library";
+import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
+import { Rank, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { set_ranks } from "../../../libraries/mongo.library";
 
 function is_rank(rank: Rank) {
 	return !!rank.level && !!rank.role;
