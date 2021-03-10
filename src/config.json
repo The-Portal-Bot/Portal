@@ -1,23 +1,24 @@
 {
   "version": "0.6.3",
-  "token": "add-your-token-here",
+  "token": "NzU1ODI1ODcwMTAyNTkzNjI2.X2I7sQ.JWnszwfXvdOU5O4FUPYFfE7MTac",
   "prefix": "./",
   "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
-  "owner_id": "add-your-id-(optional)",
-  "portal_id": "add-bots-id-(optional)",
+  "owner_id": 228666893068795905,
+  "portal_id": 755825870102593626,
   "api_keys": {
-      "OpenWeatherMap": "add-open-weather-map-api-key",
-      "covid_193": "add-covid-193-api-key",
-      "coingecko": "add-coingecko-api-key",
-      "footbal_data": "add-football-data-api-key",
-      "yahoo_finance": "add-yahoo-finance-api-key",
-      "translate": {
-          "engine": "yandex",
-          "key": "add-yeandex-api-key"
-      }
+    "OpenWeatherMap": "7692e8876197f1532fe027f43c6f3227",
+    "covid_193": "b694675e7amsh7a749ca6bcadf5bp1a7403jsnffa201099297",
+    "coingecko": "b694675e7amsh7a749ca6bcadf5bp1a7403jsnffa201099297",
+    "football_data": "a994e3cb02f04936a0c629fea9d31313",
+    "yahoo_finance": "b694675e7amsh7a749ca6bcadf5bp1a7403jsnffa201099297",
+    "new_york_times": "S8jt2X4CKMKqSWHe2Tew5BxAdL6u2saU",
+    "translate": {
+      "engine": "yandex",
+      "key": "pdct.1.1.20210108T115346Z.8c752ef4694c06bb.efe449cd7367ac260b85058afac0ae307995599b"
+    }
   },
   "delete_msg": false,
   "delete_msg_after": 5,
   "always_reply": true,
-  "debug": false
+  "debug": true
 }

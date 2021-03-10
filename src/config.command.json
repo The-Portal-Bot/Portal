@@ -158,6 +158,15 @@
                 "reply": true
             },
             {
+                "name": "news",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "auto_delete": false,
+                "reply": false
+            },
+            {
                 "name": "poll",
                 "range": "none",
                 "time": 0,

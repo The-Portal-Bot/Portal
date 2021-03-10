@@ -23,12 +23,7 @@ module.exports = async (
 	return new Promise((resolve) => {
 		let game_id = 0;
 
-		if (args.length < 2) {
-			return resolve({
-				result: false,
-				value: 'you can run `./help bet` for help'
-			});
-		} else if (args.length === 2) {
+		if (args.length === 2) {
 			if (args[0] !== 'opap') {
 				return resolve({
 					result: false,
@@ -44,10 +39,10 @@ module.exports = async (
 				}
 				game_id = game.id;
 			}
-		} else if (args.length === 3) {
+		} else {
 			return resolve({
 				result: false,
-				value: 'you should specify the league and match day, you can run `./help bet` for help'
+				value: 'you can run `./help bet` for help'
 			});
 		}
 
@@ -77,7 +72,7 @@ module.exports = async (
 
 				message.channel.send(
 					create_rich_embed(
-						`${args[1]} from ${args[0]} |  ${moment(last.drawTime).format('DD/MM/YY')}`,
+						`${args[1]} from ${args[0]} | ${moment(last.drawTime).format('DD/MM/YY')}`,
 						'powered by opap',
 						'#0384fc',
 						[
