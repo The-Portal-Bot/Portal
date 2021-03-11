@@ -9,7 +9,7 @@ import { client_talk, client_write } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
 export function get_key_from_enum(value: string, enumeration: any): string | number | undefined {
-	for (var e in enumeration) {
+	for (let e in enumeration) {
 		if (e === value) {
 			return enumeration[e];
 		}

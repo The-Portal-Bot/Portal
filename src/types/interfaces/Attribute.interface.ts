@@ -9,6 +9,7 @@ import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
 import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
 import { Field, InterfaceBlueprint, ReturnPormise } from './InterfacesPrtl.interface';
+import { included_in_voice_list } from '../../libraries/guild.library';
 
 export const attribute_prefix: string = '&';
 
@@ -43,7 +44,7 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
@@ -51,7 +52,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object_list.id, attr, true)
+					update_portal(guild_object.id, portal_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -68,7 +69,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object_list.id, attr, false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -86,7 +87,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -110,7 +111,7 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_object.ann_announce;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
@@ -118,7 +119,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -135,7 +136,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, false)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -153,7 +154,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -190,7 +191,7 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
@@ -198,7 +199,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object_list.id, attr, true)
+					update_portal(guild_object.id, portal_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -215,7 +216,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object_list.id, attr, false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -233,7 +234,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -257,7 +258,7 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_object.no_bots;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
@@ -265,7 +266,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -282,7 +283,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, false)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -300,7 +301,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -337,7 +338,7 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
@@ -345,7 +346,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object_list.id, attr, true)
+					update_portal(guild_object.id, portal_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -362,7 +363,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object_list.id, attr, false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -380,7 +381,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -405,7 +406,7 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_object.render;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
@@ -413,7 +414,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -430,7 +431,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, false)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -448,7 +449,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -485,7 +486,7 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
@@ -493,7 +494,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object_list.id, attr, true)
+					update_portal(guild_object.id, portal_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -510,7 +511,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object_list.id, attr, false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -528,7 +529,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -552,7 +553,7 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_object.ann_user;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
@@ -560,7 +561,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, true)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -577,7 +578,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, false)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -595,7 +596,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -614,7 +615,7 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_channel.bitrate;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
@@ -625,7 +626,7 @@ const attributes: InterfaceBlueprint[] = [
 				if (isNaN(new_bitrate)) {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be a number`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number**`
 					});
 				}
 
@@ -668,7 +669,7 @@ const attributes: InterfaceBlueprint[] = [
 			return guild_object.prefix;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['g'];
@@ -695,7 +696,7 @@ const attributes: InterfaceBlueprint[] = [
 		auth: 'admin'
 	},
 	{
-		name: 'g.rank_speed', // rank_speed
+		name: 'g.rank_speed',
 		description: 'returns/sets leveling speed of your server',
 		super_description: '**g.rank_speed**, returns/sets leveling speed of your server,' +
 			'Basically how fast or slow members will reach levels that will give them roles.',
@@ -708,7 +709,7 @@ const attributes: InterfaceBlueprint[] = [
 			return RankSpeedEnum[guild_object.rank_speed];
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['g'];
@@ -737,7 +738,7 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${RankSpeedList.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${RankSpeedList.join(', ')}**`
 					});
 				}
 
@@ -746,7 +747,7 @@ const attributes: InterfaceBlueprint[] = [
 		auth: 'admin'
 	},
 	{
-		name: 'g.profanity_level', // rank_speed
+		name: 'g.profanity_level',
 		description: 'returns/sets the level of Profanity check strictness',
 		super_description: '**g.profanity_level**, returns/sets the level of Profanity check strictness,' +
 			'For example fuckshit would not be flagged in `default` level but would in `strict`.',
@@ -759,14 +760,14 @@ const attributes: InterfaceBlueprint[] = [
 			return ProfanityLevelEnum[guild_object.profanity_level];
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['g'];
 			const attr = 'profanity_level';
 
 			return new Promise((resolve) => {
-				const level = get_key_from_enum(value, LocaleEnum);
+				const level = get_key_from_enum(value, ProfanityLevelEnum);
 
 				if (level !== undefined) {
 					update_guild(guild_object.id, attr, level)
@@ -788,7 +789,7 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${ProfanityLevelList.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${ProfanityLevelList.join(', ')}**`
 					});
 				}
 
@@ -810,7 +811,7 @@ const attributes: InterfaceBlueprint[] = [
 			return LocaleEnum[guild_object.locale];
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['g'];
@@ -839,7 +840,7 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${LocaleList.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${LocaleList.join(', ')}**`
 					});
 				}
 			});
@@ -875,7 +876,7 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
@@ -885,7 +886,7 @@ const attributes: InterfaceBlueprint[] = [
 				const locale = get_key_from_enum(value, LocaleEnum);
 
 				if (locale !== undefined) {
-					update_portal(guild_object.id, portal_object_list.id, attr, locale)
+					update_portal(guild_object.id, portal_object.id, attr, locale)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -904,7 +905,7 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${LocaleList.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${LocaleList.join(', ')}**`
 					});
 				}
 			});
@@ -928,7 +929,7 @@ const attributes: InterfaceBlueprint[] = [
 			return LocaleEnum[voice_object.locale];
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
@@ -938,7 +939,7 @@ const attributes: InterfaceBlueprint[] = [
 				const locale = get_key_from_enum(value, LocaleEnum);
 
 				if (locale !== undefined) {
-					update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, locale)
+					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, locale)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -957,7 +958,7 @@ const attributes: InterfaceBlueprint[] = [
 				else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be ${LocaleList.join(', ')}`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${LocaleList.join(', ')}**`
 					});
 				}
 
@@ -982,7 +983,7 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_channel.position;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
@@ -992,7 +993,7 @@ const attributes: InterfaceBlueprint[] = [
 				if (isNaN(Number(value))) {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be a number`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number**`
 					});
 				}
 
@@ -1044,7 +1045,7 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
@@ -1052,7 +1053,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			return new Promise((resolve) => {
 				if (value === 'true') {
-					update_portal(guild_object.id, portal_object_list.id, attr, true)
+					update_portal(guild_object.id, portal_object.id, attr, true)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -1069,7 +1070,7 @@ const attributes: InterfaceBlueprint[] = [
 						});
 				}
 				else if (value === 'false') {
-					update_portal(guild_object.id, portal_object_list.id, attr, false)
+					update_portal(guild_object.id, portal_object.id, attr, false)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -1087,7 +1088,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be true or false`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
 					});
 				}
 			});
@@ -1123,14 +1124,14 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
 			const attr = 'regex_portal';
 
 			return new Promise((resolve) => {
-				update_portal(guild_object.id, portal_object_list.id, attr, value)
+				update_portal(guild_object.id, portal_object.id, attr, value)
 					.then(r => {
 						return resolve({
 							result: r,
@@ -1178,14 +1179,14 @@ const attributes: InterfaceBlueprint[] = [
 			return 'ERROR';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p', 'v'];
 			const attr = 'regex_voice';
 
 			return new Promise((resolve) => {
-				update_portal(guild_object.id, portal_object_list.id, attr, value)
+				update_portal(guild_object.id, portal_object.id, attr, value)
 					.then(r => {
 						return resolve({
 							result: r,
@@ -1221,14 +1222,14 @@ const attributes: InterfaceBlueprint[] = [
 			return voice_object.regex;
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
 			const attr = 'regex';
 
 			return new Promise((resolve) => {
-				update_voice(guild_object.id, portal_object_list.id, voice_object.id, attr, value)
+				update_voice(guild_object.id, portal_object.id, voice_object.id, attr, value)
 					.then(r => {
 						return resolve({
 							result: r,
@@ -1263,7 +1264,7 @@ const attributes: InterfaceBlueprint[] = [
 				: 'not-set';
 		},
 		set: (
-			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
 		): Promise<ReturnPormise> => {
 			const ctgr = ['m'];
@@ -1294,7 +1295,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'admin'
+		auth: 'none'
 	},
 	{
 		name: 'p.user_limit',
@@ -1326,7 +1327,7 @@ const attributes: InterfaceBlueprint[] = [
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object_list: PortalChannelPrtl, guild_object: GuildPrtl, value: number
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
 		): Promise<ReturnPormise> => {
 			const ctgr = ['p'];
 			const attr = 'user_limit_portal';
@@ -1336,12 +1337,12 @@ const attributes: InterfaceBlueprint[] = [
 				if (isNaN(new_user_limit)) {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be a number from 0-n (0 means unlimited)`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number from 0-n (0 means unlimited)**`
 					});
 				}
 
 				if (value >= 0) {
-					update_portal(guild_object.id, portal_object_list.id, 'user_limit_portal', new_user_limit)
+					update_portal(guild_object.id, portal_object.id, 'user_limit_portal', new_user_limit)
 						.then(r => {
 							return resolve({
 								result: r,
@@ -1384,7 +1385,7 @@ const attributes: InterfaceBlueprint[] = [
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-			portal_object_list: PortalChannelPrtl, guild_object: GuildPrtl, value: number
+			portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
 		): Promise<ReturnPormise> => {
 			const ctgr = ['v'];
 			const attr = 'user_limit';
@@ -1410,7 +1411,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be a number from 0-n (0 means unlimited)`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number from 0-n (0 means unlimited)**`
 					});
 				}
 			});
@@ -1536,7 +1537,8 @@ export function get_attribute_help_super(
 				null,
 				null,
 				null,
-				null);
+				null
+			);
 		}
 	}
 	return false;
@@ -1559,7 +1561,7 @@ export function get_attribute(
 };
 
 // export function get_attribute(
-// 	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
+// 	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
 // 	guild_object: GuildPrtl, candidate: string, member_object: MemberPrtl | undefined | undefined
 // ): string | number | boolean {
 // 	for (let l = 0; l < attributes.length; l++) {
@@ -1571,10 +1573,13 @@ export function get_attribute(
 // };
 
 export function set_attribute(
-	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object_list: PortalChannelPrtl,
-	guild_object: GuildPrtl, candidate: string, value: any, member: GuildMember
+	voice_channel: VoiceChannel | undefined | null, guild_object: GuildPrtl,
+	candidate: string, value: any, member: GuildMember
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
+		let voice_object: VoiceChannelPrtl | undefined = undefined;
+		let portal_object: PortalChannelPrtl | undefined = undefined;
+
 		for (let l = 0; l < attributes.length; l++) {
 			if (candidate === attributes[l].name) {
 				switch (attributes[l].auth) {
@@ -1582,32 +1587,62 @@ export function set_attribute(
 						if (!is_authorised(member)) {
 							return resolve({
 								result: false,
-								value: `attribute ${candidate} can only be set by an administrator`
+								value: `attribute ${candidate} can only be **set by an administrator**`
 							});
 						}
+
 						break;
-					case 'portal':
-						if (portal_object_list.creator_id !== member.id) {
-							return resolve({
-								result: false,
-								value: `attribute ${candidate} can only be set by the portal creator`
-							});
-						}
-						break;
-					case 'voice':
-						if (voice_object.creator_id !== member.id) {
-							return resolve({
-								result: false,
-								value: `attribute ${candidate} can only be set by the voice creator`
-							});
-						}
+					case 'none':
+						// passes through no checks needed
 						break;
 					default:
+						if (!voice_channel) {
+							return resolve({
+								result: false,
+								value: 'you must be in a channel handled by Portal'
+							});
+						}
+
+						for (let i = 0; i < guild_object.portal_list.length; i++) {
+							for (let j = 0; j < guild_object.portal_list[i].voice_list.length; j++) {
+								if (guild_object.portal_list[i].voice_list[j].id === voice_channel.id) {
+									portal_object = guild_object.portal_list[i];
+									voice_object = guild_object.portal_list[i].voice_list[j];
+
+									break;
+								}
+							}
+						}
+
+						if (!portal_object || !voice_object) {
+							return resolve({
+								result: false,
+								value: 'you must be in a channel handled by Portal'
+							});
+						}
+
+						if (attributes[l].auth === 'admin') {
+							if (portal_object.creator_id !== member.id) {
+								return resolve({
+									result: false,
+									value: `attribute ${candidate} can only be **set by the portal creator**`
+								});
+							}
+						} else if (attributes[l].auth === 'admin') {
+							if (voice_object.creator_id !== member.id) {
+								return resolve({
+									result: false,
+									value: `attribute ${candidate} can only be **set by the voice creator**`
+								});
+							}
+						}
+
 						break;
 				}
 
 				const member_object = guild_object.member_list.find(m => m.id === member.id);
-				attributes[l].set(voice_channel, voice_object, portal_object_list, guild_object, value, member_object)
+
+				attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value, member_object)
 					.then((r: ReturnPormise) => {
 						return resolve(r);
 					})
@@ -1617,9 +1652,9 @@ export function set_attribute(
 							value: `attribute ${candidate} failed to be set`
 						});
 					});
+
 				break;
-			}
-			else if (l + 1 === attributes.length) {
+			} else if (l + 1 === attributes.length) {
 				return resolve({
 					result: false,
 					value: `${candidate} is not an attribute`
