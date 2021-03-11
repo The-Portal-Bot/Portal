@@ -53,6 +53,42 @@ export async function fetch_guild(
     });
 };
 
+export async function fetch_guild_channel_delete(
+    guild_id: string
+): Promise<GuildPrtl | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                id: 1,
+                portal_list: 1,
+                announcement: 1,
+                music_data: 1,
+                url_list: 1,
+                ignore_list: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<GuildPrtl>{
+                        id: r.id,
+                        portal_list: r.portal_list,
+                        announcement: r.announcement,
+                        music_data: r.music_data,
+                        url_list: r.url_list,
+                        ignore_list: r.ignore_lis
+                    });
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
 export async function fetch_guild_announcement(
     guild_id: string
 ): Promise<string | undefined> {
@@ -905,10 +941,10 @@ export async function deleted_channel_sync(
     channel_to_remove: VoiceChannel | TextChannel
 ): Promise<number> {
     return new Promise((resolve) => {
-        fetch_guild(channel_to_remove.guild.id)
+        fetch_guild_channel_delete(channel_to_remove.guild.id)
             .then(guild_object => {
                 if (guild_object) {
-                    // check if it is a Portal or a Voice channel
+                    // check if it is a portal or portal-voice channel
                     if (!channel_to_remove.isText()) {
                         const current_voice = <VoiceChannel>channel_to_remove;
                         guild_object.portal_list.some(p => {

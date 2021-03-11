@@ -9,11 +9,12 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!message.guild)
+		if (!message.guild) {
 			return resolve({
 				result: false,
 				value: 'message guild could not be fetched'
 			});
+		}
 
 		if (args.length === 0) {
 			if (is_announcement_channel(message.channel.id, guild_object)) {

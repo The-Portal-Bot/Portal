@@ -2,27 +2,18 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import config from '../../../config.json';
-import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { NYTCategories } from '../../../data/lists/profane_words.static copy';
+import { create_rich_embed, getJSON, max256 } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
 import { News } from '../../../types/classes/NewYorkTime.class';
 import { Field, ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
-const categories = ['arts', 'automobiles', 'books', 'business', 'fashion', 'food', 'health', 'home', 'insider',
-	'magazine', 'movies', 'nyregion', 'obituaries', 'opinion', 'politics', 'realestate', 'science', 'sports',
-	'sundayreview', 'technology', 'theater', 'magazine', 'travel', 'upshot', 'world', 'us'];
-
-function max256(abstract: string): string {
-	return abstract.length < 256
-		? abstract
-		: abstract.substring(0, 253) + '...';
-}
-
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const category = categories.find(c => c === args[0]);
+		const category = NYTCategories.find(c => c === args[0]);
 		let count = 4;
 
 		if (args.length === 1) {

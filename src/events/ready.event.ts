@@ -51,7 +51,7 @@ module.exports = async (
 
 		let index = 0;
 		args.client.guilds.cache.forEach((guild: Guild) => {
-			console.log(`> ${index++}. ${guild} (${guild.id})`);
+			console.log(`├─ ${index++}.\t${guild} (${guild.id})`);
 
 			add_guild_again(guild.id, args.client);
 			// remove_deleted_channels(guild);

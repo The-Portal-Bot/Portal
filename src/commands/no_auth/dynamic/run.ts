@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import { regex_interpreter } from "../../../libraries/guild.library";
+import { create_rich_embed, max256 } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
@@ -25,20 +26,45 @@ module.exports = async (
 		const current_voice_channel = current_voice.channel;
 
 		if (!current_voice_channel) {
-			message.channel.send('executing: ' + args.join(' '))
+			message.channel.send(
+				create_rich_embed(
+					'executing: ' + args.join(' '),
+					args.join(' '),
+					'#00ffb3',
+					null,
+					null,
+					null,
+					false,
+					null,
+					null,
+					undefined,
+					undefined
+				)
+			)
 				.then(sent_message => {
 					if (message.guild) {
 						sent_message.edit(
-							regex_interpreter(
+							create_rich_embed(
+								max256(regex_interpreter(
+									args.join(' '),
+									null,
+									null,
+									guild_object.portal_list,
+									guild_object,
+									message.guild,
+									message.author.id
+								)),
 								args.join(' '),
+								'#00ffb3',
 								null,
 								null,
-								guild_object.portal_list,
-								guild_object,
-								message.guild,
-								message.author.id
-							)
-						);
+								null,
+								false,
+								null,
+								null,
+								undefined,
+								undefined
+							));
 					} else {
 						sent_message.edit('could not fetch guild of message');
 					}
