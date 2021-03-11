@@ -44,7 +44,7 @@ function spawn_dispatcher(
 
 	const stream_options = <StreamOptions>{
 		type: 'opus',
-		bitrate: 96000
+		bitrate: 64000
 	}
 
 	const dispatcher = voice_connection.play(stream, stream_options);

@@ -39,19 +39,20 @@ module.exports = async (
 					value: `${args[0]} is not a news category, you can run \`./help news\` for help`
 				});
 			} else {
-				if (isNaN(+args[1])) {
+				count = +args[1];
+				if (isNaN(count)) {
 					return resolve({
 						result: false,
 						value: `${args[1]} is not a number, you can run \`./help news\` for help`
 					});
 				}
-				if (+args[1] > 15) {
+				if (count > 15) {
 					return resolve({
 						result: false,
 						value: `can display up to 15 articles, you can run \`./help news\` for help`
 					});
 				}
-				count = +args[1];
+				--count;
 			}
 		} else {
 			return resolve({

@@ -66,7 +66,7 @@ module.exports = async (
 				message.channel.send(
 					create_rich_embed(
 						`${args[1]} from ${args[0]} | ${moment(last.drawTime).format('DD/MM/YY')}`,
-						'powered by ${args[0]}',
+						`powered by ${args[0]}`,
 						'#0384fc',
 						[
 							{

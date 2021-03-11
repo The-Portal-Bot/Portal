@@ -63,6 +63,11 @@ module.exports = async (
 					role: 'If you want to get a complete description of any property\n' +
 						'_(lets say you want to learn more about variables year, just type `./help year`)_',
 					inline: false
+				},
+				{
+					emote: null,
+					role: '[FAQ](https://portal-bot.xyz/help#faq)',
+					inline: false
 				}
 			];
 
@@ -72,7 +77,7 @@ module.exports = async (
 					'> To make a member a **dj**, give him role with name `p.dj`\n' +
 					'> To make a member an **admin**, give him role with name `p.admin`\n' +
 					'> To make **ignore** a member, give him role with name `p.ignore`\n' +
-					'> for more click [here](https://portal-bot.xyz/help#q-how-to-give-member-authority)',
+					'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority-)',
 					'#05d1ff', func_array, null, null, true, null, null
 				))
 				.catch(console.error);

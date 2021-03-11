@@ -73,7 +73,7 @@ export function update_music_message(
 				? guild_object.music_queue
 					.map((v, i) => {
 						if (i !== 0) {
-							return (`${i}. **${v.title}**`);
+							return (`${i}. ${v.title}`);
 						}
 					})
 					.filter(v => !!v)
