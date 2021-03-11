@@ -10,15 +10,18 @@ export class MusicData {
 	public channel_id: string | undefined;
 	public message_id: string | undefined;
 	public votes: string[] | undefined;
+	public pinned: boolean;
 
 	constructor(
 		channel_id: string,
 		message_id: string,
-		votes: string[]
+		votes: string[],
+		pinned: boolean
 	) {
 		this.channel_id = channel_id;
 		this.message_id = message_id;
 		this.votes = votes;
+		this.pinned = pinned;
 	}
 }
 

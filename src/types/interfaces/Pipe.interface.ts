@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
+import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
 
@@ -13,7 +14,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.camelCase(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'capitalize',
@@ -23,7 +24,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.capitalize(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'decapitalize',
@@ -33,7 +34,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.decapitalize(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'lowerCase',
@@ -43,7 +44,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.lowerCase(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'upperCase',
@@ -53,7 +54,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.upperCase(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'populous',
@@ -63,7 +64,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: () => { return 'not yet implemented'; },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'populous_count',
@@ -73,7 +74,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: () => { return 'not yet implemented'; },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'snakeCase',
@@ -83,7 +84,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.snakeCase(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'souvlakiCase',
@@ -93,7 +94,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.kebabCase(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'summary_count',
@@ -103,7 +104,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.words(str).length; },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'titleCase',
@@ -113,7 +114,7 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string) => { return voca.titleCase(str); },
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 ];
 

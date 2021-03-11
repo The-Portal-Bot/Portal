@@ -53,7 +53,8 @@ const MusicData = new Schema(
 	{
 		message_id: { type: String, required: true },
 		channel_id: { type: String, required: true },
-		votes: { type: [String], required: true }
+		votes: { type: [String], required: true },
+		pinned: { type: Boolean, required: true }
 	},
 	{
 		collection: 'guild_list'

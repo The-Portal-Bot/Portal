@@ -1,15 +1,15 @@
 import { Guild, GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
+import { AuthEnum } from '../../data/enums/Admin.enum';
+import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
+import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
+import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
 import { create_rich_embed, get_key_from_enum, is_authorised } from '../../libraries/help.library';
 import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongo.library';
 import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { MemberPrtl } from '../classes/MemberPrtl.class';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
-import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
-import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
-import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
 import { Field, InterfaceBlueprint, ReturnPormise } from './InterfacesPrtl.interface';
-import { included_in_voice_list } from '../../libraries/guild.library';
 
 export const attribute_prefix: string = '&';
 
@@ -92,7 +92,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'v.ann_announce',
@@ -159,7 +159,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'p.no_bots',
@@ -239,7 +239,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'v.no_bots',
@@ -306,7 +306,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'p.render',
@@ -386,7 +386,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'v.render',
@@ -454,7 +454,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'p.ann_user',
@@ -534,7 +534,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'v.ann_user',
@@ -601,7 +601,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'v.bitrate',
@@ -654,7 +654,7 @@ const attributes: InterfaceBlueprint[] = [
 					});
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'g.prefix',
@@ -693,7 +693,7 @@ const attributes: InterfaceBlueprint[] = [
 					});
 			});
 		},
-		auth: 'admin'
+		auth: AuthEnum.admin
 	},
 	{
 		name: 'g.rank_speed',
@@ -744,7 +744,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			});
 		},
-		auth: 'admin'
+		auth: AuthEnum.admin
 	},
 	{
 		name: 'g.profanity_level',
@@ -795,7 +795,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			});
 		},
-		auth: 'admin'
+		auth: AuthEnum.admin
 	},
 	{
 		name: 'g.locale',
@@ -845,7 +845,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'admin'
+		auth: AuthEnum.admin
 	},
 	{
 		name: 'p.locale',
@@ -910,7 +910,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'v.locale',
@@ -964,7 +964,7 @@ const attributes: InterfaceBlueprint[] = [
 
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'v.position',
@@ -1014,7 +1014,7 @@ const attributes: InterfaceBlueprint[] = [
 					});
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'p.regex_overwrite',
@@ -1093,7 +1093,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'p.regex',
@@ -1148,7 +1148,7 @@ const attributes: InterfaceBlueprint[] = [
 					});
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'p.v.regex',
@@ -1203,7 +1203,7 @@ const attributes: InterfaceBlueprint[] = [
 					});
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'v.regex',
@@ -1246,7 +1246,7 @@ const attributes: InterfaceBlueprint[] = [
 					});
 			});
 		},
-		auth: 'voice'
+		auth: AuthEnum.voice
 	},
 	{
 		name: 'm.regex',
@@ -1295,7 +1295,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'p.user_limit',
@@ -1365,7 +1365,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'portal'
+		auth: AuthEnum.portal
 	},
 	{
 		name: 'v.user_limit',
@@ -1416,7 +1416,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			});
 		},
-		auth: 'voice',
+		auth: AuthEnum.voice,
 	}
 ];
 
@@ -1583,7 +1583,7 @@ export function set_attribute(
 		for (let l = 0; l < attributes.length; l++) {
 			if (candidate === attributes[l].name) {
 				switch (attributes[l].auth) {
-					case 'admin':
+					case AuthEnum.admin:
 						if (!is_authorised(member)) {
 							return resolve({
 								result: false,
@@ -1592,7 +1592,7 @@ export function set_attribute(
 						}
 
 						break;
-					case 'none':
+					case AuthEnum.none:
 						// passes through no checks needed
 						break;
 					default:
@@ -1621,14 +1621,14 @@ export function set_attribute(
 							});
 						}
 
-						if (attributes[l].auth === 'admin') {
+						if (attributes[l].auth === AuthEnum.portal) {
 							if (portal_object.creator_id !== member.id) {
 								return resolve({
 									result: false,
 									value: `attribute ${candidate} can only be **set by the portal creator**`
 								});
 							}
-						} else if (attributes[l].auth === 'admin') {
+						} else if (attributes[l].auth === AuthEnum.voice) {
 							if (voice_object.creator_id !== member.id) {
 								return resolve({
 									result: false,

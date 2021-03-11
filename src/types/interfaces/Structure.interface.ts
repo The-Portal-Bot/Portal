@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
 
@@ -20,7 +21,7 @@ const structures: InterfaceBlueprint[] = [
 		args: 'JSON with: if, is, with, yes, no',
 		get: null,
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	}
 ];
 

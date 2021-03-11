@@ -1,5 +1,4 @@
-import { GuildEmoji, ReactionEmoji } from "discord.js";
-import { Client, Collection, MessageReaction, User } from "discord.js";
+import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
 import { create_rich_embed, is_authorised, is_dj, update_music_message } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongo.library";
@@ -144,9 +143,6 @@ async function reaction_music_manager(
 			});
 		}
 
-		const member_object = guild_object.member_list
-			.find(m => m.id === user.id);
-
 		const portal_voice_connection = client.voice?.connections
 			.find(c => c.channel.guild.id === messageReaction.message?.guild?.id);
 
@@ -286,6 +282,8 @@ async function reaction_music_manager(
 					reason = 'DJ'
 				}
 
+				guild_object.music_data.pinned = false;
+
 				skip(
 					portal_voice_connection, user, client,
 					messageReaction.message.guild, guild_object
@@ -352,6 +350,21 @@ async function reaction_music_manager(
 							animated: false
 						});
 					});
+
+				break;
+			}
+			case '📌': {
+				guild_object.music_data.pinned = !guild_object.music_data.pinned;
+
+				return resolve({
+					promise: {
+						result: true,
+						value: guild_object.music_data.pinned
+							? 'song has been pinned'
+							: 'song not pinned anymore'
+					},
+					animated: true
+				});
 
 				break;
 			}

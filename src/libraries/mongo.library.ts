@@ -336,7 +336,12 @@ export async function insert_guild(
     const url_list: string[] = [];
     const role_list: GiveRolePrtl[] = [];
     const ranks: Rank[] = [];
-    const music_data: MusicData = { channel_id: 'null', message_id: 'null', votes: [] };
+    const music_data: MusicData = {
+        channel_id: 'null',
+        message_id: 'null',
+        votes: [],
+        pinned: false
+    };
     const music_queue: VideoSearchResult[] = [];
     const announcement: string | null = 'null';
     const locale: string = 'en';
@@ -990,7 +995,7 @@ export async function deleted_channel_sync(
                                     return resolve(PortalChannelTypes.unknown);
                                 });
                         } else if (guild_object.music_data.channel_id === current_text.id) {
-                            const music_data = new MusicData('null', 'null', []);
+                            const music_data = new MusicData('null', 'null', [], false);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {
                                     return r

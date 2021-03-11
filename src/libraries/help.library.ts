@@ -37,7 +37,7 @@ export function create_music_message(
 		[
 			{ emote: 'Duration', role: '-', inline: true },
 			{ emote: 'Views', role: '-', inline: true },
-			{ emote: 'Uploaded', role: '-', inline: true },
+			{ emote: 'Pinned', role: guild_object.music_data.pinned ? 'yes' : 'no', inline: true },
 			{ emote: 'Queue', role: 'empty', inline: false },
 			{ emote: 'Latest Action', role: '```music message created```', inline: false }
 		],
@@ -57,10 +57,11 @@ export function create_music_message(
 			sent_message.react('⏭');
 			sent_message.react('➖');
 			sent_message.react('➕');
+			sent_message.react('📌');
 			sent_message.react('🧹');
 			sent_message.react('🚪');
 
-			const music_data = new MusicData(channel.id, sent_message.id, []);
+			const music_data = new MusicData(channel.id, sent_message.id, [], false);
 			set_music_data(guild_object.id, music_data);
 		});
 };
@@ -69,7 +70,6 @@ export function update_music_message(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
-	console.log('Animating :>> ', animated);
 	return new Promise((resolve) => {
 		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 			'Portal/master/src/assets/img/music_empty.png';
@@ -78,8 +78,10 @@ export function update_music_message(
 			guild_object.music_queue.length > 1
 				? guild_object.music_queue
 					.map((v, i) => {
-						if (i !== 0) {
+						if (i !== 0 && i < 6) {
 							return (`${i}. ${v.title}`);
+						} else if (i === 6) {
+							return '...';
 						}
 					})
 					.filter(v => !!v)
@@ -94,7 +96,7 @@ export function update_music_message(
 			[
 				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
 				{ emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
-				{ emote: 'Uploaded', role: yts ? yts.ago : '-', inline: true },
+				{ emote: 'Pinned', role: guild_object.music_data.pinned ? 'yes' : 'no', inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
 				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],

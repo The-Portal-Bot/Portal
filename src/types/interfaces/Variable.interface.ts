@@ -1,5 +1,6 @@
 import { Guild, MessageEmbed, VoiceChannel } from 'discord.js';
 import moment from 'moment';
+import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { get_status_list } from '../../libraries/status.library';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
@@ -44,7 +45,7 @@ const variables: InterfaceBlueprint[] = [
 			return '#-';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: '#',
@@ -80,7 +81,7 @@ const variables: InterfaceBlueprint[] = [
 			return '-';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'creator_portal',
@@ -111,7 +112,7 @@ const variables: InterfaceBlueprint[] = [
 			return '?';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'creator_voice',
@@ -130,7 +131,7 @@ const variables: InterfaceBlueprint[] = [
 			return voice_object.creator_id;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'date',
@@ -153,7 +154,7 @@ const variables: InterfaceBlueprint[] = [
 				.calendar();
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'day_number',
@@ -174,7 +175,7 @@ const variables: InterfaceBlueprint[] = [
 				.date();
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'day_name',
@@ -194,7 +195,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('dddd');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'month_number',
@@ -214,7 +215,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('M');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'month_name',
@@ -236,7 +237,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('MMMM');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'year',
@@ -256,7 +257,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('yyyy');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'time',
@@ -276,7 +277,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('hh:mm:ss');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'hour',
@@ -296,7 +297,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('hh');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'minute',
@@ -316,7 +317,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('mm');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'second',
@@ -336,7 +337,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('ss');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_active_count',
@@ -359,7 +360,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_count',
@@ -382,7 +383,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_history',
@@ -397,7 +398,7 @@ const variables: InterfaceBlueprint[] = [
 			return 'no_yet_implemented';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_list',
@@ -418,7 +419,7 @@ const variables: InterfaceBlueprint[] = [
 			return mmbr_lst;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_with_status',
@@ -441,7 +442,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'status_count',
@@ -465,7 +466,7 @@ const variables: InterfaceBlueprint[] = [
 			return status_list.length;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'status_history',
@@ -480,7 +481,7 @@ const variables: InterfaceBlueprint[] = [
 			return 'no_yet_implemented';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'status_list',
@@ -502,7 +503,7 @@ const variables: InterfaceBlueprint[] = [
 			return get_status_list(voice_channel, voice_object);
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	// {
 	// 	name: 'last_update',
@@ -519,7 +520,7 @@ const variables: InterfaceBlueprint[] = [
 	// 			`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`;
 	// 	},
 	// 	set: null,
-	// 	auth: 'none'
+	// 	auth: AuthEnum.none
 	// }
 ];
 

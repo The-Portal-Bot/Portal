@@ -18,7 +18,7 @@ module.exports = async (
 
 		if (args.length === 0) {
 			if (is_music_channel(message.channel.id, guild_object)) {
-				const music_data = new MusicData('null', 'null', []);
+				const music_data = new MusicData('null', 'null', [], false);
 				set_music_data(guild_object.id, music_data)
 					.then(r => {
 						return resolve({

@@ -17,6 +17,14 @@ async function pop_music_queue(
 					return resolve(undefined);
 				}
 
+				if (guild_object.music_data.pinned) {
+					if (music_queue.length > 0) {
+						return resolve(music_queue[0]);
+					} else {
+						return resolve(undefined);
+					}
+				}
+				
 				if (music_queue.length > 0) {
 					music_queue.shift();
 					update_guild(guild_object.id, 'music_queue', music_queue);
@@ -48,7 +56,7 @@ function spawn_dispatcher(
 	}
 
 	const dispatcher = voice_connection.play(stream, stream_options);
-	dispatcher.setMaxListeners(20); // check
+	// dispatcher.setMaxListeners(20); // check
 
 	return dispatcher;
 }
@@ -102,6 +110,7 @@ async function start_playback(
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -392,8 +401,8 @@ export async function skip(
 						voice_connection.dispatcher.resume();
 						setTimeout(() => {
 							voice_connection.dispatcher.end();
-						}, 0.5 * 1000);
-					}, 0.5 * 1000);
+						}, 0.2 * 1000);
+					}, 0.2 * 1000);
 					voice_connection.dispatcher.resume();
 				} else {
 					voice_connection.dispatcher.end();
