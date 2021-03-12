@@ -54,6 +54,9 @@ module.exports = async (
             null)
         );
 
-        return resolve({ result: true, value: '' });
+        return resolve({
+            result: true,
+            value: ''
+        });
     });
 };

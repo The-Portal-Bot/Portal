@@ -106,7 +106,7 @@ module.exports = async (
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'stock', `could not access the server\nerror: ${error}`,)
+					value: message_help('commands', 'stock', `could not access the server\nerror: ${error}`)
 				});
 			});
 	});

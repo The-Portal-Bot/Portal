@@ -151,18 +151,22 @@ export async function fetch_guild_reaction_data(
 
 export async function fetch_guild_music_queue(
     guild_id: string
-): Promise<VideoSearchResult[] | undefined> {
+): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
     return new Promise((resolve) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
             },
             {
+                music_data: 1,
                 music_queue: 1
             })
             .then((r: any) => {
                 if (!!r) {
-                    return resolve(<VideoSearchResult[]>r.music_queue);
+                    return resolve(<{ queue: VideoSearchResult[], data: MusicData }>{
+                        data: r.music_data,
+                        queue: r.music_queue
+                    });
                 } else {
                     return undefined;
                 }
@@ -936,7 +940,9 @@ export async function set_music_data(
             .then((r: MongoPromise) => {
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
-            .catch(e => { return resolve(false);; });
+            .catch(e => {
+                return resolve(false);
+            });
     });
 }
 

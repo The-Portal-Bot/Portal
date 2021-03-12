@@ -8,34 +8,33 @@ import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_g
 // const ytdl = require('ytdl-core');
 
 async function pop_music_queue(
-	guild_object: GuildPrtl
+	guild_object: GuildPrtl, force_skip: boolean = false
 ): Promise<yts.VideoSearchResult | undefined> {
 	return new Promise((resolve) => {
 		fetch_guild_music_queue(guild_object.id)
-			.then(music_queue => {
-				if (!music_queue) {
+			.then(music => {
+				if (!music) {
 					return resolve(undefined);
 				}
-
-				if (guild_object.music_data.pinned) {
-					if (music_queue.length > 0) {
-						return resolve(music_queue[0]);
-					} else {
-						return resolve(undefined);
-					}
+				console.log('force_skip :>> ', force_skip);
+				if (force_skip === true) {
+					music.data.pinned = false;
 				}
-				
-				if (music_queue.length > 0) {
-					music_queue.shift();
-					update_guild(guild_object.id, 'music_queue', music_queue);
-					guild_object.music_queue = music_queue;
-
-					return resolve(music_queue[0]);
+				console.log('music.data.pinned :>> ', music.data.pinned);
+				if (!music.data.pinned && music.queue.length > 0) {
+					console.log(`shifting to next song`);
+					music.queue.shift();
+					update_guild(guild_object.id, 'music.queue', music.queue);
 				}
 
-				return resolve(undefined);
+				update_guild(guild_object.id, 'music.data', music.data);
+
+				guild_object.music_queue = music.queue;
+				guild_object.music_data = music.data;
+
+				return resolve(music.queue.length > 0 ? music.queue[0] : undefined);
 			})
-			.catch(e => {
+			.catch(() => {
 				return resolve(undefined);
 			});
 	})
@@ -259,7 +258,7 @@ export async function play(
 					});
 				}
 			} else {
-				pop_music_queue(guild_object)
+				pop_music_queue(guild_object) // chekc if force needed
 					.then(next_video => {
 						if (!next_video) {
 							return resolve({
@@ -273,6 +272,7 @@ export async function play(
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -390,8 +390,8 @@ export async function pause(
 };
 
 export async function skip(
-	voice_connection: VoiceConnection | undefined, user: User,
-	client: Client, guild: Guild, guild_object: GuildPrtl
+	voice_connection: VoiceConnection | undefined, user: User, client: Client,
+	guild: Guild, guild_object: GuildPrtl, force_skip: boolean = false
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (voice_connection) {
@@ -413,7 +413,8 @@ export async function skip(
 					value: 'skipped to queued song'
 				});
 			} else {
-				pop_music_queue(guild_object)
+				console.log(`pop_music_queue(guild_object, ${force_skip})`);
+				pop_music_queue(guild_object, force_skip)
 					.then(next_video => {
 						if (!next_video) {
 							return resolve({
@@ -427,6 +428,7 @@ export async function skip(
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -452,7 +454,6 @@ export async function skip(
 		} else {
 			pop_music_queue(guild_object)
 				.then(next_video => {
-
 					if (!next_video) {
 						return resolve({
 							result: false,

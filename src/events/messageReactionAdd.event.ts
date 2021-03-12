@@ -1,7 +1,7 @@
 import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
 import { create_rich_embed, is_authorised, is_dj, update_music_message } from "../libraries/help.library";
-import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, update_guild } from "../libraries/mongo.library";
+import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
 import { pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
@@ -167,7 +167,7 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({ promise: r, animated: false });
+						return resolve({ promise: r, animated: true });
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
@@ -282,11 +282,9 @@ async function reaction_music_manager(
 					reason = 'DJ'
 				}
 
-				guild_object.music_data.pinned = false;
-
 				skip(
 					portal_voice_connection, user, client,
-					messageReaction.message.guild, guild_object
+					messageReaction.message.guild, guild_object, true
 				)
 					.then(r => {
 						clear_music_vote(guild_object.id);
@@ -356,15 +354,39 @@ async function reaction_music_manager(
 			case '📌': {
 				guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
-				return resolve({
-					promise: {
-						result: true,
-						value: guild_object.music_data.pinned
-							? 'song has been pinned'
-							: 'song not pinned anymore'
-					},
-					animated: true
-				});
+				set_music_data(guild_object.id, guild_object.music_data)
+					.then(r => {
+						if (!r) {
+							guild_object.music_data.pinned = !guild_object.music_data.pinned;
+						}
+
+						return resolve({
+							promise: {
+								result: r,
+								value: r
+									? guild_object.music_data.pinned
+										? 'pinned song'
+										: 'failed to pin song'
+									: !guild_object.music_data.pinned
+										? 'unpinned song'
+										: 'failed to unpin song'
+							},
+							animated: true
+						});
+					})
+					.catch(e => {
+						guild_object.music_data.pinned = !guild_object.music_data.pinned;
+
+						return resolve({
+							promise: {
+								result: false,
+								value: !guild_object.music_data.pinned
+									? `error occured while pinning song (${e})`
+									: `error occured while unpinning song (${e})`
+							},
+							animated: true
+						});
+					});
 
 				break;
 			}

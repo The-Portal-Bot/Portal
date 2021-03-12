@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import { included_in_ignore_list } from "../../../libraries/guild.library";
+import { message_help } from "../../../libraries/help.library";
 import { insert_ignore, remove_ignore } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -46,7 +47,7 @@ module.exports = async (
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: 'failed to set as an ignore channel: ' + e
+							value: `failed to set as an ignore channel (${e})`
 						});
 					});
 			}
@@ -54,7 +55,7 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: 'you can run `./help ignore` for help'
+				value: message_help('commands', 'ignore')
 			});
 		}
 	});

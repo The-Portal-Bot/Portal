@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { create_rich_embed } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -8,20 +8,20 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
-		if (!member_object)
+		if (!member_object) {
 			return resolve({ result: true, value: 'portal member could not be fetched' });
-		const member_info = member_object;
+		}
 
 		message.channel.send(create_rich_embed(
 			null,
 			null,
 			'#00FFFF',
 			[
-				{ emote: 'Level', role: `${member_info.level}`, inline: true },
-				{ emote: 'Points', role: `${Math.round(member_info.points)}`, inline: true },
+				{ emote: 'Level', role: `${member_object.level}`, inline: true },
+				{ emote: 'Points', role: `${Math.round(member_object.points)}`, inline: true },
 				{ emote: '', role: '', inline: false },
-				{ emote: 'Rank', role: `${member_info.rank}`, inline: true },
-				{ emote: 'Tier', role: `${member_info.tier}`, inline: true },
+				{ emote: 'Rank', role: `${member_object.rank}`, inline: true },
+				{ emote: 'Tier', role: `${member_object.tier}`, inline: true },
 			],
 			null,
 			message.member,
@@ -30,6 +30,9 @@ module.exports = async (
 			null)
 		);
 
-		return resolve({ result: true, value: '' });
+		return resolve({
+			result: true,
+			value: ''
+		});
 	});
 };

@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../../libraries/guild.library";
-import { create_rich_embed, getJSON } from "../../../libraries/help.library";
+import { create_rich_embed, getJSON, message_help } from "../../../libraries/help.library";
 import { insert_role_assigner } from "../../../libraries/mongo.library";
 import { GiveRole, GiveRolePrtl } from "../../../types/classes/GiveRolePrtl.class";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
@@ -72,30 +72,30 @@ module.exports = async (
 		if (args.length <= 0)
 			return resolve({
 				result: false,
-				value: 'you can run `./help role_assigner` for help'
+				value: message_help('commands', 'role_assigner')
 			});
 
 		const role_map_json = getJSON(args.join(' '));
 		if (!role_map_json)
 			return resolve({
 				result: false,
-				value: 'roles must be in JSON format for more info `./help role_assigner`'
+				value: message_help('commands', 'role_assigner', 'must be an array in JSON format (even for one role)')
 			});
 		const role_map = <GiveRole[]>role_map_json;
 		if (!Array.isArray(role_map))
 			return resolve({
 				result: false,
-				value: 'must be array even for one role'
+				value: message_help('commands', 'role_assigner', 'must be an array in JSON format (even for one role)')
 			});
 		if (multiple_same_emote(role_map))
 			return resolve({
 				result: false,
-				value: 'emotes should differ `./help role_assigner`'
+				value: message_help('commands', 'role_assigner', 'can not have the same emote for multiple actions')
 			});
 		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id))
 			return resolve({
 				result: false,
-				value: 'json misspelled `./help role_assigner`'
+				value: message_help('commands', 'role_assigner', 'JSON syntax has spelling errors')
 			});
 
 		role_map.forEach(r => { r.give = r.give.trim(); r.strip = r.strip.trim(); });
@@ -128,7 +128,7 @@ module.exports = async (
 
 		if (failed) return resolve({
 			result: false,
-			value: return_value
+			value: message_help('commands', 'role_assigner', return_value)
 		});
 
 		create_role_message(
@@ -146,7 +146,7 @@ module.exports = async (
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: e
+					value: `an error occured while creating role message (${e})`
 				})
 			});
 	});

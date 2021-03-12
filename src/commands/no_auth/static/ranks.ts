@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_rich_embed } from "../../../libraries/help.library";
+import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
@@ -7,11 +7,10 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const ranks = guild_object.ranks;
-		if (ranks && ranks.length > 0) {
+		if (guild_object.ranks && guild_object.ranks.length > 0) {
 			const ranks_msg: Field[] = [];
 
-			ranks.forEach(rank => {
+			guild_object.ranks.forEach(rank => {
 				const role = message.guild?.roles.cache.find(r => r.id === rank.role);
 				ranks_msg.push({
 					emote: `At level ${rank.level}, you get role`,
@@ -48,7 +47,7 @@ module.exports = async (
 
 		resolve({
 			result: true,
-			value: 'there is no ranking yet'
+			value: message_help('commands', 'ranks', 'could not fetch ranks')
 		});
 	});
 };

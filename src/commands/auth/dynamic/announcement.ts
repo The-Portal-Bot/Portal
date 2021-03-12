@@ -4,6 +4,7 @@ import { update_guild } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { message_help } from "../../../libraries/help.library";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -37,13 +38,13 @@ module.exports = async (
 			if (is_music_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: 'this can\'t be set as an announcemennt channel for it is the music channel'
+					value: message_help('commands', 'announcement', 'this can\'t be set as an announcemennt channel for it is the music channel')
 				});
 			}
 			if (is_url_only_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: 'this can\'t be set as the announcemennt channel for it is an url channel'
+					value: message_help('commands', 'announcement', 'this can\'t be set as the announcemennt channel for it is an url channel')
 				});
 			}
 		}
@@ -59,14 +60,16 @@ module.exports = async (
 				update_guild(guild_object.id, 'announcement', message.channel.id)
 					.then(r => {
 						return resolve({
-							result: r, value: r
+							result: r,
+							value: r
 								? 'set as the anouncement channel successfully'
 								: 'failed to set as the anouncement channel'
 						});
 					})
 					.catch(e => {
 						return resolve({
-							result: false, value: 'failed to set as the anouncement channel'
+							result: false,
+							value: `an error occured while setting channel (${e})`
 						});
 					});
 
@@ -115,7 +118,7 @@ module.exports = async (
 			} else {
 				return resolve({
 					result: false,
-					value: 'you can run `./help announcement` for help'
+					value: message_help('commands', 'announcement')
 				});
 			}
 		}

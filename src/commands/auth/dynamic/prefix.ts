@@ -1,4 +1,5 @@
-import { Client, Message, ActivityOptions, PresenceData } from "discord.js";
+import { Message } from "discord.js";
+import { message_help } from "../../../libraries/help.library";
 import { update_guild } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -17,7 +18,7 @@ module.exports = async (
 		if (args.length > 1) {
 			return resolve({
 				result: false,
-				value: `prefix can only be one word`
+				value: message_help('commands', 'prefix', `prefix can only be one word`)
 			});
 		}
 

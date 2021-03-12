@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import { join_user_voice } from "../../../libraries/help.library";
+import { join_user_voice, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
@@ -8,7 +8,16 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		join_user_voice(client, message, guild_object, true)
-			.then(response => { return resolve(response); })
-			.catch(error => { return resolve({ result: false, value: error }) });
+			.then(r => {
+				return resolve(
+					r
+				);
+			})
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: message_help('commands', 'join', e)
+				})
+			});
 	});
 };

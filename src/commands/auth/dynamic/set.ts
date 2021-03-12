@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import { message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { set_attribute } from "../../../types/interfaces/Attribute.interface";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -35,13 +36,13 @@ module.exports = async (
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `something went wrong in set function`
+						value: message_help('commands', 'set', 'something went wrong in set function')
 					});
 				});
 		} else {
 			return resolve({
 				result: false,
-				value: `arguments are set by name and value, run \`./help set\` for help`
+				value: message_help('commands', 'set', 'arguments are set by name and value')
 			});
 		}
 	});

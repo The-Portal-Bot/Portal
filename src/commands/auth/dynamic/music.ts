@@ -1,7 +1,7 @@
 import { Message, TextChannel } from "discord.js";
 import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { create_music_channel, delete_channel, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../../libraries/guild.library";
-import { create_music_message } from "../../../libraries/help.library";
+import { create_music_message, message_help } from "../../../libraries/help.library";
 import { set_music_data } from "../../../libraries/mongo.library";
 import { GuildPrtl, MusicData } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -38,13 +38,13 @@ module.exports = async (
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: 'this can\'t be set as the music channel for it is the announcement channel'
+					value: message_help('commands', 'music', 'this can\'t be set as the music channel for it is the announcement channel')
 				});
 			}
 			if (is_url_only_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: 'this can\'t be set as the Music channel for it is an url channel'
+					value: message_help('commands', 'music', 'this can\'t be set as the Music channel for it is an url channel')
 				});
 			}
 		}
@@ -97,7 +97,7 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: 'you can run `./help music` for help'
+					value: message_help('commands', 'music')
 				});
 			}
 

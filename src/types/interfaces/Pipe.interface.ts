@@ -17,20 +17,20 @@ const pipes: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'capitalize',
-		description: 'returns an capitalize of the input',
-		super_description: '**capitalize**, makes the first character upper-case',
-		example: '(variable, string)|capitalize',
+		name: 'capitalise',
+		description: 'returns an capitalise of the input',
+		super_description: '**capitalise**, makes the first character upper-case',
+		example: '(variable, string)|capitalise',
 		args: 'none',
 		get: (str: string) => { return voca.capitalize(str); },
 		set: null,
 		auth: AuthEnum.none
 	},
 	{
-		name: 'decapitalize',
-		description: 'returns an decapitalize of the input',
-		super_description: '**decapitalize**, makes the first character lower-case',
-		example: '(variable, string)|decapitalize',
+		name: 'decapitalise',
+		description: 'returns an decapitalise of the input',
+		super_description: '**decapitalise**, makes the first character lower-case',
+		example: '(variable, string)|decapitalise',
 		args: 'none',
 		get: (str: string) => { return voca.decapitalize(str); },
 		set: null,
@@ -138,36 +138,26 @@ export function get_pipe_guide(): MessageEmbed {
 			inline: true
 		},
 		{
-			emote: '1. Go to any channel',
-			role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
+			emote: '1.\tIn any text channel execute command `./run`',
+			role: './run just like channel name generation uses the text interpreter',
 			inline: false
 		},
 		{
-			emote: '2-1. `./run &locale | upperCase`',
-			role: '*run command, processes given text and returns processed text*',
+			emote: '2.\t`./run My locale in caps is = &g.locale | upperCase`',
+			role: './run executes the given text and replies with the processed output',
 			inline: false
 		},
 		{
-			emote: '2-2. Wait for portal response which will be either GR OR EN OR DE',
-			role: '*it will reply with your string until it edits it with processed info*',
-			inline: false
-		},
-		{
-			emote: '3-1. `./set regex_voice &locale | upperCase` (note that when setting you do not need prefix &)',
-			role: '*set command, updates the data of an attribute in this case **regex_voice** to **&locale | upperCase***',
-			inline: false
-		},
-		{
-			emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
-			role: '*portal will either confirm update or inform you of the error it faced*',
+			emote: '3.\tAwait a reply from portal which will be gr, de or en',
+			role: '*The replied string will look like this: `My locale in caps is = GR`*',
 			inline: false
 		}
 	];
 
 	return create_rich_embed(
 		'Pipe Guide',
-		'go to https://portal-bot.xyz/docs/regex/interpreter/pipes\n\n' +
-		'how to use pipes with regex interpreter',
+		'go to https://portal-bot.xyz/docs/interpreter/objects/pipes/description\n\n' +
+		'How to use pipes with the Text Interpreter',
 		'#6EEB83',
 		pipe_array,
 		null,
@@ -197,7 +187,7 @@ export function get_pipe_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Pipes',
-				'go to https://portal-bot.xyz/docs/regex/interpreter/pipes\n\n' +
+				'go to https://portal-bot.xyz/docs/interpreter/objects/pipes/description\n\n' +
 				'Prefix: ' + pipe_prefix + '\n' +
 				'Mini functions you can pass text or Variables to manipulate their outcome\n' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',

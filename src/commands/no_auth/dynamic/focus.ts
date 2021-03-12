@@ -55,21 +55,21 @@ module.exports = async (
 		if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'focus', 'you must be in a channel handled by Portal',)
+				value: message_help('commands', 'focus', 'you must be in a channel handled by Portal')
 			});
 		}
 
 		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'focus', 'the channel you are in is not handled by Portal',)
+				value: message_help('commands', 'focus', 'the channel you are in is not handled by Portal')
 			});
 		}
 
 		if (message.member.voice.channel.members.size <= 2) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'focus', 'you can *only* use focus in channels with *more* than 2 members',)
+				value: message_help('commands', 'focus', 'you can *only* use focus in channels with *more* than 2 members')
 			});
 		}
 

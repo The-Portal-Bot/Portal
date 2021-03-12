@@ -1,5 +1,6 @@
 import { GuildCreateChannelOptions, Message } from "discord.js";
 import { create_channel } from "../../../libraries/guild.library";
+import { message_help } from "../../../libraries/help.library";
 import { insert_portal } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl.class";
@@ -9,9 +10,26 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (args.length === 0) return resolve({ result: false, value: 'you can run `./help portal` for help' });
-		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
-		if (!message.member) return resolve({ result: true, value: 'member could not be fetched' });
+		if (args.length === 0) {
+			return resolve({
+				result: false,
+				value: message_help('commands', 'portal')
+			});
+		}
+
+		if (!message.guild) {
+			return resolve({
+				result: true,
+				value: 'guild could not be fetched'
+			});
+		}
+
+		if (!message.member) {
+			return resolve({
+				result: true,
+				value: 'member could not be fetched'
+			});
+		}
 
 		const current_guild = message.guild;
 		const current_member = message.member;
@@ -59,13 +77,21 @@ module.exports = async (
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: 'portal channel failed to be created, ' + e
+								value: `portal channel failed to be created (${e})`
 							});
 						});
 				} else {
-					return resolve(r_channel);
+					return resolve({
+						result: r_channel.result,
+						value: message_help('commands', 'portal', r_channel.value)
+					});
 				}
 			})
-			.catch(e => { return resolve(e); });
+			.catch(e => {
+				return resolve({
+					result: false,
+					value: `an error occured while creating channel (${e})`
+				});
+			});
 	});
 };

@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import { create_rich_embed } from "../../../libraries/help.library";
+import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
@@ -8,7 +8,12 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         const guild = client.guilds.cache.find(g => g.id === message?.guild?.id);
-        if (!guild) return resolve({ result: false, value: 'could not fetch guild' });
+        if (!guild) {
+            return resolve({
+                result: false,
+                value: message_help('commands', 'state', 'could not fetch guild')
+            });
+        }
 
         let portal_state = [<Field>{
             emote: 'Portal Channels',
@@ -45,6 +50,7 @@ module.exports = async (
 
         const music = guild.channels.cache.find(c =>
             c.id === guild_object.music_data.channel_id);
+
         if (music) {
             portal_state.push(<Field>{
                 emote: `Music channel`,
@@ -61,6 +67,7 @@ module.exports = async (
 
         const announcement = guild.channels.cache.find(c =>
             c.id === guild_object.announcement);
+
         if (announcement) {
             portal_state.push(<Field>{
                 emote: 'Announcement channel',
@@ -104,7 +111,7 @@ module.exports = async (
         }
 
         const ignore = guild_object.ignore_list.map((u_id, index_u) => {
-            const channel = guild.channels.cache.find(c => 
+            const channel = guild.channels.cache.find(c =>
                 c.id === u_id);
             return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
         });

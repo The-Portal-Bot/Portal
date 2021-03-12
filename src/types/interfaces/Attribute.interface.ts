@@ -28,6 +28,7 @@ const attributes: InterfaceBlueprint[] = [
 			if (!voice_object) {
 				return 'must be in voice channel';
 			}
+
 			if (!portal_object_list) {
 				return 'must be in portal channel';
 			}
@@ -1442,27 +1443,27 @@ export function get_attribute_guide(): MessageEmbed {
 			inline: true
 		},
 		{
-			emote: '1. Go to any channel',
-			role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
+			emote: '1.\tIn any text channel execute command `./run`',
+			role: './run just like channel name generation uses the text interpreter',
 			inline: false
 		},
 		{
-			emote: '2-1.`./run &locale`',
-			role: '*run command, processes given text and returns processed text*',
+			emote: '2.\t`./run My set locale is = &g.locale`',
+			role: './run executes the given text and replies with the processed output',
 			inline: false
 		},
 		{
-			emote: '2-2. Wait for portal response which will be either gr OR en OR de',
-			role: '*it will reply with your string until it edits it with processed info*',
+			emote: '3.\tAwait a reply from portal which will be gr, de or en',
+			role: '*The replied string will look like this: `My set locale is = gr`*',
 			inline: false
 		},
 		{
-			emote: '3-1. `./set` locale de (note that when setting you do not need prefix &)',
+			emote: '4.\t`./set g.locale de` (no prefix & needed)',
 			role: '*set command, updates the data of an attribute in this case **locale** to **de***',
 			inline: false
 		},
 		{
-			emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
+			emote: '5.\tWait for portal response which will be inform you if it was executed without issues',
 			role: '*portal will either confirm update or inform you of the error it faced*',
 			inline: false
 		}
@@ -1470,8 +1471,8 @@ export function get_attribute_guide(): MessageEmbed {
 
 	return create_rich_embed(
 		'Attribute Guide',
-		'go to https://portal-bot.xyz/docs/regex/interpreter/atributes\n\n' +
-		'how to use attributes with regex interpreter',
+		'go to https://portal-bot.xyz/docs/interpreter/objects/attributes/description\n\n' +
+		'How to use attributes with the Text Interpreter',
 		'#FF5714',
 		attr_array,
 		null,
@@ -1501,7 +1502,7 @@ export function get_attribute_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Attributes',
-				'go to https://portal-bot.xyz/docs/regex/interpreter/attributes\n\n' +
+				'go to https://portal-bot.xyz/docs/interpreter/objects/attributes/description\n\n' +
 				'Prefix: ' + attribute_prefix + '\n' +
 				'are Portal\'s, portal or voice channel options ' +
 				'that can be manipulated by whomever has clearance.\n' +

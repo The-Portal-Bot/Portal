@@ -546,37 +546,27 @@ export function get_variable_guide(): MessageEmbed {
 			inline: true
 		},
 		{
-			emote: '1. Go to any channel',
-			role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
+			emote: '1.\tIn any text channel execute command `./run`',
+			role: './run just like channel name generation uses the text interpreter',
 			inline: false
 		},
 		{
-			emote: '2-1. `./run year is: $year`',
-			role: '*run command, processes given text and returns processed text (note it is JSON format)*',
+			emote: '2.\t`./run The year is $year`',
+			role: './run executes the given text and replies with the processed output',
 			inline: false
 		},
 		{
-			emote: '2-2. Wait for portal response which will be `year is: 2021` (as it currently is 2021)',
-			role: '*it will reply with your string until it edits it with processed info*',
-			inline: false
-		},
-		{
-			emote: '3-1. `./set regex_voice year is: $year` (note that when setting you do not need prefix &)',
-			role: '*set command, updates the data of an attribute in this case **regex_voice** to ***year is: $year***',
-			inline: false
-		},
-		{
-			emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
-			role: '*portal will either confirm update or inform you of the error it faced*',
+			emote: '3.\tAwait a reply from portal which will be `The year is 2021',
+			role: '*note that at the time of writting it is 2021*',
 			inline: false
 		}
 	];
 
 	return create_rich_embed(
 		'Variable Guide',
-		'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
-		'how to use variables with regex interpreter',
-		'#EEB902',
+		'go to https://portal-bot.xyz/docs/interpreter/objects/variables/description\n\n' +
+		'how to use variables with text interpreter',
+		'#1BE7FF',
 		strc_array,
 		null,
 		null,
@@ -605,7 +595,7 @@ export function get_variable_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Variables',
-				'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
+				'go to https://portal-bot.xyz/docs/interpreter/objects/variables/description\n\n' +
 				'Prefix: ' + variable_prefix + '\n' +
 				'Immutable and live data that return information\n' +
 				'about your current voice channel' +
