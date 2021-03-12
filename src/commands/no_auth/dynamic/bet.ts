@@ -1,11 +1,10 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
-import { isNumber } from 'lodash';
 import moment from 'moment';
-import { create_rich_embed, getJSON, get_key_from_enum } from '../../../libraries/help.library';
+import { OpapGameIdEnum } from '../../../data/enums/OpapGames.enum';
+import { create_rich_embed, getJSON, get_key_from_enum, message_help } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
-import { OpapGameIdEnum } from '../../../data/enums/OpapGames.enum';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
 module.exports = async (
@@ -18,7 +17,7 @@ module.exports = async (
 			if (args[0].toLocaleLowerCase() !== 'opap') {
 				return resolve({
 					result: false,
-					value: `${args[0]} is not a provider, you can run \`./help bet\` for help`
+					value: message_help('commands', 'bet', `${args[0]} is not a provider`)
 				});
 			} else {
 				if (isNaN(+args[1])) {
@@ -28,14 +27,14 @@ module.exports = async (
 				if (!game_code) {
 					return resolve({
 						result: false,
-						value: `${args[1]} does not exist in ${args[0]}, you can run \`./help bet\` for help`
+						value: message_help('commands', 'bet', `${args[1]} does not exist in ${args[0]}`)
 					});
 				}
 			}
 		} else {
 			return resolve({
 				result: false,
-				value: 'you can run `./help bet` for help'
+				value: message_help('commands', 'bet', '')
 			});
 		}
 
@@ -57,7 +56,7 @@ module.exports = async (
 				if (json === null) {
 					return resolve({
 						result: false,
-						value: 'data from source was corrupted'
+						value: message_help('commands', 'bet', 'data from source was corrupted')
 					});
 				}
 
@@ -66,7 +65,7 @@ module.exports = async (
 				message.channel.send(
 					create_rich_embed(
 						`${args[1]} from ${args[0]} | ${moment(last.drawTime).format('DD/MM/YY')}`,
-						'powered by ${args[0]}',
+						`powered by ${args[0]}`,
 						'#0384fc',
 						[
 							{
@@ -116,7 +115,7 @@ module.exports = async (
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server\nerror: ${error}`
+					value: message_help('commands', 'bet', `could not access the server\nerror: ${error}`)
 				});
 			});
 	});

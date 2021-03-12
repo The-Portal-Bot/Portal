@@ -18,6 +18,15 @@ export const GameNames = {
             }
         },
         {
+            "status": "EA SPORTS™ FIFA 21 ",
+            "type": "game",
+            "locale": {
+                "en": "FIFA 21",
+                "de": "FIFA 21",
+                "gr": "FIFA 21"
+            }
+        },
+        {
             "status": "STAR WARS™ Battlefront™ II",
             "type": "game",
             "locale": {

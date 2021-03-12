@@ -44,7 +44,7 @@ module.exports = async (
             },
             {
                 emote: 'Github',
-                role: 'https://www.github.com/keybraker/portal',
+                role: 'https://www.github.com/keybraker/Portal',
                 inline: false
             }],
             null,
@@ -54,6 +54,9 @@ module.exports = async (
             null)
         );
 
-        return resolve({ result: true, value: '' });
+        return resolve({
+            result: true,
+            value: ''
+        });
     });
 };

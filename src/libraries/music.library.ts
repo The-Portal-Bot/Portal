@@ -12,22 +12,22 @@ async function pop_music_queue(
 ): Promise<yts.VideoSearchResult | undefined> {
 	return new Promise((resolve) => {
 		fetch_guild_music_queue(guild_object.id)
-			.then(music_queue => {
-				if (!music_queue) {
+			.then(music => {
+				if (!music) {
 					return resolve(undefined);
 				}
 
-				if (music_queue.length > 0) {
-					music_queue.shift();
-					update_guild(guild_object.id, 'music_queue', music_queue);
-					guild_object.music_queue = music_queue;
-
-					return resolve(music_queue[0]);
+				if (!music.data.pinned && music.queue.length > 0) {
+					music.queue.shift();
+					update_guild(guild_object.id, 'music_queue', music.queue);
 				}
 
-				return resolve(undefined);
+				guild_object.music_queue = music.queue;
+				guild_object.music_data = music.data;
+
+				return resolve(music.queue.length > 0 ? music.queue[0] : undefined);
 			})
-			.catch(e => {
+			.catch(() => {
 				return resolve(undefined);
 			});
 	})
@@ -44,11 +44,11 @@ function spawn_dispatcher(
 
 	const stream_options = <StreamOptions>{
 		type: 'opus',
-		bitrate: 96000
+		bitrate: 64000
 	}
 
 	const dispatcher = voice_connection.play(stream, stream_options);
-	dispatcher.setMaxListeners(20); // check
+	// dispatcher.setMaxListeners(20); // check
 
 	return dispatcher;
 }
@@ -102,6 +102,7 @@ async function start_playback(
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -264,6 +265,7 @@ export async function play(
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -381,8 +383,8 @@ export async function pause(
 };
 
 export async function skip(
-	voice_connection: VoiceConnection | undefined, user: User,
-	client: Client, guild: Guild, guild_object: GuildPrtl
+	voice_connection: VoiceConnection | undefined, user: User, client: Client,
+	guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (voice_connection) {
@@ -392,8 +394,8 @@ export async function skip(
 						voice_connection.dispatcher.resume();
 						setTimeout(() => {
 							voice_connection.dispatcher.end();
-						}, 0.5 * 1000);
-					}, 0.5 * 1000);
+						}, 0.2 * 1000);
+					}, 0.2 * 1000);
 					voice_connection.dispatcher.resume();
 				} else {
 					voice_connection.dispatcher.end();
@@ -418,6 +420,7 @@ export async function skip(
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -443,7 +446,6 @@ export async function skip(
 		} else {
 			pop_music_queue(guild_object)
 				.then(next_video => {
-
 					if (!next_video) {
 						return resolve({
 							result: false,

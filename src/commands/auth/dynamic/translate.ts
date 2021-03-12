@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import config from '../../../config.json';
+import { message_help } from '../../../libraries/help.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
 
@@ -13,13 +14,13 @@ module.exports = async (
 	return new Promise((resolve) => {
 		return resolve({
 			result: true,
-			value: 'work in progress'
+			value: message_help('commands', 'translate', 'work in progress')
 		});
 
 		if (args.length <= 1)
 			return resolve({
 				result: false,
-				value: '1 you can run `./help translate` for help'
+				value: message_help('commands', 'translate', '1 you can run `./help translate` for help')
 			});
 
 		const language_options = args.join(' ').substr(0, args.join(' ').indexOf('|'));
@@ -28,7 +29,7 @@ module.exports = async (
 		if (!language_options || !string_to_tranlate)
 			return resolve({
 				result: false,
-				value: '2 you can run `./help translate` for help'
+				value: message_help('commands', 'translate', '2 you can run `./help translate` for help')
 			});
 
 		const language_duplet = language_options.split(',');
@@ -43,7 +44,7 @@ module.exports = async (
 				.catch((error: any) => {
 					return resolve({
 						result: false,
-						value: `server responded with error: ${error}`
+						value: message_help('commands', 'translate', `server responded with error: ${error}`)
 					});
 				});
 		} else if (language_duplet.length === 1) {
@@ -57,13 +58,13 @@ module.exports = async (
 				.catch((error: any) => {
 					return resolve({
 						result: false,
-						value: `server responded with error: ${error}`
+						value: message_help('commands', 'translate', `server responded with error: ${error}`)
 					});
 				});
 		} else {
 			return resolve({
 				result: false,
-				value: '3 you can run `./help translate` for help'
+				value: message_help('commands', 'translate', '3 you can run `./help translate` for help')
 			});
 		}
 	});

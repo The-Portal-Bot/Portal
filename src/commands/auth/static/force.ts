@@ -1,8 +1,9 @@
 import { Message } from "discord.js";
+import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { delete_channel, included_in_voice_list, regex_interpreter } from "../../../libraries/guild.library";
+import { message_help } from "../../../libraries/help.library";
 import { update_voice } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
 // NEEDS FIXING
@@ -13,21 +14,21 @@ module.exports = async (
 		if (!message.member) {
 			return resolve({
 				result: false,
-				value: 'member could not be fetched'
+				value: message_help('commands', 'force', 'member could not be fetched')
 			});
 		}
 
 		if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
-				value: 'you must be in a channel handled by Portal'
+				value: message_help('commands', 'force', 'you must be in a channel handled by Portal')
 			});
 		}
 
 		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
-				value: 'the channel you are in is not handled by Portal'
+				value: message_help('commands', 'force', 'the channel you are in is not handled by Portal')
 			});
 		}
 
@@ -45,7 +46,7 @@ module.exports = async (
 								v,
 								guild_object.portal_list,
 								guild_object,
-								message.guild, 
+								message.guild,
 								message.author.id
 							);
 
@@ -61,13 +62,13 @@ module.exports = async (
 													result: r,
 													value: r
 														? 'force updated voice'
-														: 'failed to force update'
+														: message_help('commands', 'force', 'failed to force update')
 												});
 											})
 											.catch(e => {
 												return resolve({
 													result: false,
-													value: `failed to force update channel ${e}`
+													value: message_help('commands', 'force', `failed to force update channel ${e}`)
 												});
 											});
 									}
@@ -75,19 +76,19 @@ module.exports = async (
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: `error while cloning channel ${e}`
+										value: message_help('commands', 'force', `error while cloning channel ${e}`)
 									});
 								});
 						} else {
 							return resolve({
 								result: false,
-								value: 'could not fetch message\'s guild'
+								value: message_help('commands', 'force', 'could not fetch message\'s guild')
 							});
 						}
 					} else {
 						return resolve({
 							result: false,
-							value: 'you are not the creator of the channel'
+							value: message_help('commands', 'force', 'you are not the creator of the channel')
 						});
 					}
 				}

@@ -1,5 +1,6 @@
 import { Guild, MessageEmbed, VoiceChannel } from 'discord.js';
 import moment from 'moment';
+import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { get_status_list } from '../../libraries/status.library';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
@@ -44,7 +45,7 @@ const variables: InterfaceBlueprint[] = [
 			return '#-';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: '#',
@@ -80,7 +81,7 @@ const variables: InterfaceBlueprint[] = [
 			return '-';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'creator_portal',
@@ -111,7 +112,7 @@ const variables: InterfaceBlueprint[] = [
 			return '?';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'creator_voice',
@@ -130,7 +131,7 @@ const variables: InterfaceBlueprint[] = [
 			return voice_object.creator_id;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'date',
@@ -153,7 +154,7 @@ const variables: InterfaceBlueprint[] = [
 				.calendar();
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'day_number',
@@ -174,7 +175,7 @@ const variables: InterfaceBlueprint[] = [
 				.date();
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'day_name',
@@ -194,7 +195,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('dddd');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'month_number',
@@ -214,7 +215,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('M');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'month_name',
@@ -236,7 +237,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('MMMM');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'year',
@@ -256,7 +257,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('yyyy');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'time',
@@ -276,7 +277,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('hh:mm:ss');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'hour',
@@ -296,7 +297,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('hh');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'minute',
@@ -316,7 +317,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('mm');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'second',
@@ -336,7 +337,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('ss');
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_active_count',
@@ -359,7 +360,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_count',
@@ -382,7 +383,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_history',
@@ -397,7 +398,7 @@ const variables: InterfaceBlueprint[] = [
 			return 'no_yet_implemented';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_list',
@@ -418,7 +419,7 @@ const variables: InterfaceBlueprint[] = [
 			return mmbr_lst;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'member_with_status',
@@ -441,7 +442,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'status_count',
@@ -465,7 +466,7 @@ const variables: InterfaceBlueprint[] = [
 			return status_list.length;
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'status_history',
@@ -480,7 +481,7 @@ const variables: InterfaceBlueprint[] = [
 			return 'no_yet_implemented';
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	{
 		name: 'status_list',
@@ -502,7 +503,7 @@ const variables: InterfaceBlueprint[] = [
 			return get_status_list(voice_channel, voice_object);
 		},
 		set: null,
-		auth: 'none'
+		auth: AuthEnum.none
 	},
 	// {
 	// 	name: 'last_update',
@@ -519,7 +520,7 @@ const variables: InterfaceBlueprint[] = [
 	// 			`${Math.round(((Date.now() - voice_object.last_update) / 1000) % 60)}s`;
 	// 	},
 	// 	set: null,
-	// 	auth: 'none'
+	// 	auth: AuthEnum.none
 	// }
 ];
 
@@ -545,37 +546,27 @@ export function get_variable_guide(): MessageEmbed {
 			inline: true
 		},
 		{
-			emote: '1. Go to any channel',
-			role: '*you can run commands ./run OR ./set in any channel and Portal will see them*',
+			emote: '1.\tIn any text channel execute command `./run`',
+			role: './run just like channel name generation uses the text interpreter',
 			inline: false
 		},
 		{
-			emote: '2-1. `./run year is: $year`',
-			role: '*run command, processes given text and returns processed text (note it is JSON format)*',
+			emote: '2.\t`./run The year is $year`',
+			role: './run executes the given text and replies with the processed output',
 			inline: false
 		},
 		{
-			emote: '2-2. Wait for portal response which will be `year is: 2021` (as it currently is 2021)',
-			role: '*it will reply with your string until it edits it with processed info*',
-			inline: false
-		},
-		{
-			emote: '3-1. `./set regex_voice year is: $year` (note that when setting you do not need prefix &)',
-			role: '*set command, updates the data of an attribute in this case **regex_voice** to ***year is: $year***',
-			inline: false
-		},
-		{
-			emote: '3-2. Wait for portal response which will be inform you if it was executed without issues',
-			role: '*portal will either confirm update or inform you of the error it faced*',
+			emote: '3.\tAwait a reply from portal which will be `The year is 2021',
+			role: '*note that at the time of writting it is 2021*',
 			inline: false
 		}
 	];
 
 	return create_rich_embed(
 		'Variable Guide',
-		'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
-		'how to use variables with regex interpreter',
-		'#EEB902',
+		'go to https://portal-bot.xyz/docs/interpreter/objects/variables/description\n\n' +
+		'how to use variables with text interpreter',
+		'#1BE7FF',
 		strc_array,
 		null,
 		null,
@@ -604,7 +595,7 @@ export function get_variable_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Variables',
-				'go to https://portal-bot.xyz/docs/regex/interpreter/variables\n\n' +
+				'go to https://portal-bot.xyz/docs/interpreter/objects/variables/description\n\n' +
 				'Prefix: ' + variable_prefix + '\n' +
 				'Immutable and live data that return information\n' +
 				'about your current voice channel' +

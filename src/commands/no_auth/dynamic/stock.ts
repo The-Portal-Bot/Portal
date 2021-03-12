@@ -3,7 +3,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
 import config from '../../../config.json';
-import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { create_rich_embed, getJSON, message_help } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
 import { CountryCodes } from '../../../data/lists/country_codes_iso.static';
@@ -30,7 +30,7 @@ module.exports = async (
 		if (args.length === 0 || args.length > 1) {
 			return resolve({
 				result: false,
-				value: 'you can run `./help stock` for help'
+				value: message_help('commands', 'stock')
 			});
 		}
 
@@ -52,7 +52,7 @@ module.exports = async (
 				if (json === null)
 					return resolve({
 						result: false,
-						value: 'data from source was corrupted'
+						value: message_help('commands', 'stock', 'data from source was corrupted')
 					});
 
 				const chart = json.chart;
@@ -60,7 +60,7 @@ module.exports = async (
 				if (chart === null)
 					return resolve({
 						result: false,
-						value: 'could not find any stock'
+						value: message_help('commands', 'stock', 'could not find any stock')
 					});
 
 				const result = chart.result;
@@ -68,7 +68,7 @@ module.exports = async (
 				if (result === null)
 					return resolve({
 						result: false,
-						value: 'there were no results'
+						value: message_help('commands', 'stock', 'there were no results')
 					});
 
 				const meta = result[0];
@@ -76,7 +76,7 @@ module.exports = async (
 				if (meta === null)
 					return resolve({
 						result: false,
-						value: 'there were no meta data'
+						value: message_help('commands', 'stock', 'there were no meta data')
 					});
 
 				message.channel.send(
@@ -100,13 +100,13 @@ module.exports = async (
 
 				return resolve({
 					result: true,
-					value: `${json} crypto stats`
+					value: message_help('commands', 'stock', `${json} crypto stats`)
 				});
 			})
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server\nerror: ${error}`,
+					value: message_help('commands', 'stock', `could not access the server\nerror: ${error}`)
 				});
 			});
 	});

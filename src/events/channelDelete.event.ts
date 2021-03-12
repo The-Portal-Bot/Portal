@@ -1,17 +1,18 @@
-import { Channel, PartialDMChannel, TextChannel, VoiceChannel, StreamDispatcher } from "discord.js";
-import { deleted_channel_sync } from "../libraries/mongo.library";
+import { Channel, PartialDMChannel, TextChannel, VoiceChannel } from "discord.js";
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
+import { deleted_channel_sync } from "../libraries/mongo.library";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
 	args: { channel: Channel | PartialDMChannel }
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (args.channel.type !== 'text' && args.channel.type !== 'voice')
+		if (args.channel.type !== 'text' && args.channel.type !== 'voice') {
 			return resolve({
 				result: false,
 				value: `only voice and text channels are handled by Portal`
 			});
+		}
 
 		const current_channel = (typeof args.channel === typeof VoiceChannel)
 			? <VoiceChannel>args.channel
@@ -23,7 +24,7 @@ module.exports = async (
 					return resolve({
 						result: true,
 						value: `${PortalChannelTypes[r].toString()} channel, has been removed from database ` +
-							`guild: ${current_channel.guild.name} [${current_channel.guild.id}]`,
+							`guild: ${current_channel.guild.name} [${current_channel.guild.id}]`
 					});
 				} else {
 					return resolve({

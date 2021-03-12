@@ -5,22 +5,30 @@ import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl.class";
 import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { message_help } from "../../../libraries/help.library";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!message.guild) return resolve({ result: true, value: 'guild could not be fetched' });
+		if (!message.guild) {
+			return resolve({
+				result: true,
+				value: message_help('commands', 'setup', 'guild could not be fetched')
+			});
+		}
 		const current_guild = message.guild;
 
 		current_guild.channels
 			.create('portal-hub', { type: 'category' })
 			.then(cat_channel => {
 				current_guild.channels.cache.forEach(channel => {
-					if (channel.id === guild_object.announcement)
+					if (channel.id === guild_object.announcement) {
 						delete_channel(PortalChannelTypes.announcement, <TextChannel>channel, message);
-					if (channel.id === guild_object.music_data.channel_id)
+					}
+					if (channel.id === guild_object.music_data.channel_id) {
 						delete_channel(PortalChannelTypes.music, <TextChannel>channel, message);
+					}
 				});
 
 				if (message.member) {
@@ -45,14 +53,16 @@ module.exports = async (
 								} else {
 									return resolve({
 										result: false,
-										value: 'could not fetch member from message'
+										value: message_help('commands', 'setup', 'could not fetch member from message')
 									});
 								}
 							} else {
 								return resolve(response);
 							}
 						})
-						.catch(error => { return resolve(error); });
+						.catch(error => {
+							return resolve(error);
+						});
 				}
 
 				const spotify_options = getOptions(current_guild, 'displays song from spotify users in portal channels are listening to', false);
@@ -68,13 +78,13 @@ module.exports = async (
 										result: r,
 										value: r
 											? 'successfully inserted spotify channel'
-											: 'failed to insert spotify channel'
+											: message_help('commands', 'setup', 'failed to insert spotify channel')
 									});
 								})
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: 'failed to insert spotify channel'
+										value: message_help('commands', 'setup', 'failed to insert spotify channel')
 									});
 								});
 						} else {
@@ -91,13 +101,13 @@ module.exports = async (
 										result: r,
 										value: r
 											? 'successfully removed announcement channel'
-											: 'failed to remove announcement channel'
+											: message_help('commands', 'setup', 'failed to remove announcement channel')
 									});
 								})
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: 'failed to remove announcement channel'
+										value: message_help('commands', 'setup', 'failed to remove announcement channel')
 									});
 								});
 						} else {
@@ -118,6 +128,9 @@ module.exports = async (
 			})
 			.catch(console.error);
 
-		return resolve({ result: true, value: 'setup has ran succesfully' });
+		return resolve({
+			result: true,
+			value: message_help('commands', 'setup', 'setup has ran succesfully')
+		});
 	});
 };

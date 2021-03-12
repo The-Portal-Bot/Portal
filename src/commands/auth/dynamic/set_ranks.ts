@@ -1,5 +1,5 @@
 import { Client, Message, Role } from "discord.js";
-import { getJSON } from "../../../libraries/help.library";
+import { getJSON, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { Rank, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 import { set_ranks } from "../../../libraries/mongo.library";
@@ -33,13 +33,13 @@ module.exports = async (
 			if (!new_ranks_json) {
 				return resolve({
 					result: false,
-					value: 'ranking must be in Array JSON format, for more info `./help set_ranks`'
+					value: message_help('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')
 				});
 			}
 			if (!Array.isArray(new_ranks_json)) {
 				return resolve({
 					result: false,
-					value: 'ranking must be in Array JSON format, for more info `./help set_ranks`'
+					value: message_help('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')
 				});
 			}
 
@@ -48,19 +48,19 @@ module.exports = async (
 			if (!new_ranks.every(r => r.level && r.role)) {
 				return resolve({
 					result: false,
-					value: 'json misspelled `./help set_ranks`'
+					value: message_help('commands', 'set_ranks', 'JSON syntax has spelling errors`')
 				});
 			}
 			if (!new_ranks.every(is_rank)) {
 				return resolve({
 					result: false,
-					value: 'rankings must be an object of level and role, for more info `./help set_ranks`'
+					value: message_help('commands', 'set_ranks', 'rankings must be a key-pair from level and role')
 				});
 			}
 			if (!new_ranks.every(r => is_role(r, roles))) {
 				return resolve({
 					result: false,
-					value: 'a role given does not exist in server, for more info `./help set_ranks`'
+					value: message_help('commands', 'set_ranks', 'a role given does not exist in server')
 				});
 			}
 
@@ -89,13 +89,13 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: 'you can run `./help set_ranks` for help',
+				value: message_help('commands', 'set_ranks')
 			});
 		}
 
 		return resolve({
 			result: true,
-			value: 'new rankings have been set',
+			value: 'new rankings have been set'
 		});
 	});
 };

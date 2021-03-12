@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
-import { create_rich_embed } from '../../libraries/help.library';
+import { AuthEnum } from '../../data/enums/Admin.enum';
 import { OpapGameIdList } from '../../data/enums/OpapGames.enum';
+import { create_rich_embed, get_key_from_enum } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
 
 export const command_prefix: string = './';
@@ -12,7 +13,7 @@ const commands: InterfaceBlueprint[] = [
 			'Links for features and premium upgrade path is also given',
 		example: './about',
 		args: 'none',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -25,7 +26,7 @@ const commands: InterfaceBlueprint[] = [
 			' title and the the rest it the body your message',
 		example: './announce body | title',
 		args: '<@title> | <@description>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -38,7 +39,7 @@ const commands: InterfaceBlueprint[] = [
 			' given as argument, a new channel is created and set as announcements channel',
 		example: './announcement announcement_name | announcement_category, ./announcement announcement_name, ./announcement',
 		args: '<@channel_name> | <@category_name>',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -50,7 +51,7 @@ const commands: InterfaceBlueprint[] = [
 			'proveders: opap with games: ' + OpapGameIdList.join(', '),
 		example: './bet opap tzoker',
 		args: '<!provider> <!game>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -61,7 +62,7 @@ const commands: InterfaceBlueprint[] = [
 			'You can give input lower or upper case ex: gr or GR if none is given global stats are displayed',
 		example: './corona gr',
 		args: '<!country code> or <!country name>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -71,7 +72,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**crypto**, replys with todays latest prices of crypto currencies',
 		example: './crypto bitcoin | usd',
 		args: '<!crypto currency> | <!authority currency>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -82,7 +83,7 @@ const commands: InterfaceBlueprint[] = [
 			'n+1 messages because portal deletes the command delete you send and n more messages',
 		example: './delete 5',
 		args: '<!number of messages>',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -96,7 +97,7 @@ const commands: InterfaceBlueprint[] = [
 			'time elapses they will be moved back to the channel they where before focus (2min default time)',
 		example: './focus user_name',
 		args: '<!username> | <@time_to_focus>',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -107,7 +108,7 @@ const commands: InterfaceBlueprint[] = [
 			' in order to get a new channel name if cooldown is still in effect',
 		example: './force',
 		args: 'none',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -120,7 +121,7 @@ const commands: InterfaceBlueprint[] = [
 			'In order to get a more descriptive definition of the property chosen',
 		example: './help, ./help attr, ./help portal',
 		args: '@specific_command OR @vrbl/@cmmd/@pipe/@attr',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -131,7 +132,7 @@ const commands: InterfaceBlueprint[] = [
 			' left and people that joined, and talks loudly every response',
 		example: './join',
 		args: 'none',
-		auth: 'voice',
+		auth: AuthEnum.voice,
 		get: null,
 		set: null
 	},
@@ -143,7 +144,7 @@ const commands: InterfaceBlueprint[] = [
 			' By default it is about you',
 		example: './joke',
 		args: '<@category>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -153,7 +154,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**leaderboard**, returns the leaderboard',
 		example: './leaderboard 5',
 		args: '<@number_of_ranks>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -163,7 +164,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**leave**, leaves the voice channel portal is currently in',
 		example: './leave',
 		args: 'none',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -173,7 +174,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**level**, returns your level card with all member stats',
 		example: './level',
 		args: 'none',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -186,7 +187,7 @@ const commands: InterfaceBlueprint[] = [
 			' nothing else. Users can request songs write there and play/pause/stop/skip the current song',
 		example: './music music_name | music_category, ./music music_name, ./music',
 		args: '<@channel_name> | <@category_name>',
-		auth: 'voice',
+		auth: AuthEnum.voice,
 		get: null,
 		set: null
 	},
@@ -200,7 +201,7 @@ const commands: InterfaceBlueprint[] = [
 			'sundayreview, technology, theater, t-magazine, travel, upshot, us, world',
 		example: './news world',
 		args: '<!category>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -212,7 +213,7 @@ const commands: InterfaceBlueprint[] = [
 			' Portal will not respond to anything that is written in it.',
 		example: './ignore`',
 		args: '<@member_id>',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -222,7 +223,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**ping**, returns the latency of portal bot',
 		example: './ping',
 		args: 'none',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -235,7 +236,7 @@ const commands: InterfaceBlueprint[] = [
 			'\n\t">299$"' +
 			']',
 		args: '[JSON type]```json\n[ ... ]```',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -248,7 +249,7 @@ const commands: InterfaceBlueprint[] = [
 			'the owner of. When everyone leaves the channel will be destroyed.\n',
 		example: './portal portal_name | portal_category, ./portal portal_name',
 		args: '<!channel_name> | <@category_name>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -258,7 +259,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**ranks**, returns your Ranking system of current server (if one is set)',
 		example: './ranks',
 		args: 'none',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -272,7 +273,7 @@ const commands: InterfaceBlueprint[] = [
 			'\n\t{\n\t\t"give": ":rofl:",\n\t\t"strip": ":dog:",\n\t\t"role_id": "fps"\n\t}\n]\n' +
 			'\n// will create a message giving/stripping\n// moba role with :thumbsup:/:thumbsdown:\n// fps role with :rofl:/:dog:',
 		args: '[JSON type]```json\n[\n\t{\n\t\t"give": ":thumbsup:",\n\t\t"strip": ":thumbsdown:",\n\t\t"role_id": "moba"\n\t}\n]```',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -283,7 +284,7 @@ const commands: InterfaceBlueprint[] = [
 			'Rolls are following the same philosophy as roll20 does',
 		example: './roll 3d12+5',
 		args: '<!roll configuration>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -295,7 +296,7 @@ const commands: InterfaceBlueprint[] = [
 			'If regex is empty string it will return a dot (.)',
 		example: './run $member_count &g.locale\n\nwill return 4 and gr if member count and locale are that',
 		args: '<!exec_command>',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -305,7 +306,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**save**, saves the current state of portal', // should not be spammed
 		example: './save',
 		args: 'none',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -319,7 +320,7 @@ const commands: InterfaceBlueprint[] = [
 			'[\n\t{\n\t\t"level": "2",\n\t\t"role": "Alpha"\n\t},' +
 			'\n\t{\n\t\t"level": "5",\n\t\t"role": "Beta"\n\t}\n]\n',
 		args: '[JSON type]```json\n[\n\t{\n\t\t"level": "2", \n\t\t"role": "Alpha"\n\t}\n]```',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -330,7 +331,7 @@ const commands: InterfaceBlueprint[] = [
 			'or the portal channel if you are the owner of that.\n',
 		example: './set locale gr',
 		args: '<!attribute> <!value>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -341,7 +342,7 @@ const commands: InterfaceBlueprint[] = [
 			'at once, removing the hustle of setting up the server.\n',
 		example: './setup',
 		args: 'none',
-		auth: 'admin',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
@@ -353,7 +354,7 @@ const commands: InterfaceBlueprint[] = [
 			'announcement, ignored and url channels',
 		example: './state',
 		args: 'none',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -364,7 +365,7 @@ const commands: InterfaceBlueprint[] = [
 	// 		'will always attempt to translate even if language given does not match from argument',
 	// 	example: './translate en,gr | What is the weather like, ./translate gr | What is the weather like',
 	// 	args: '<!from>,<!to> | <!text>, <!to> | <!text>',
-	// 	auth: 'none',
+	// 	auth: AuthEnum.none,
 	// 	get: null,
 	// 	set: null
 	// },
@@ -377,7 +378,7 @@ const commands: InterfaceBlueprint[] = [
 			'argument, a new channel is created and set as url channel',
 		example: './url url_name | url_category, ./url url_name, ./url',
 		args: '<@channel_name> | <@category_name>',
-		auth: 'voice',
+		auth: AuthEnum.voice,
 		get: null,
 		set: null
 	},
@@ -388,7 +389,7 @@ const commands: InterfaceBlueprint[] = [
 			'location can be specified in detail, but most always be a location',
 		example: './weather Athens, Greece, ./weather athens',
 		args: '<!location_name>',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
@@ -398,7 +399,7 @@ const commands: InterfaceBlueprint[] = [
 		super_description: '**whoami**, returns information about you',
 		example: './whoami',
 		args: 'none',
-		auth: 'none',
+		auth: AuthEnum.none,
 		get: null,
 		set: null
 	}
@@ -492,7 +493,7 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 					{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },
 					{ emote: 'Arguments', role: '*' + cmmd.args + '*', inline: false },
 					{ emote: 'Example', role: '```' + cmmd.example + '```', inline: false },
-					{ emote: 'Clearance', role: '' + cmmd.auth + '', inline: false }
+					{ emote: 'Clearance', role: '' + AuthEnum[cmmd.auth] + '', inline: false }
 				],
 				null,
 				null,

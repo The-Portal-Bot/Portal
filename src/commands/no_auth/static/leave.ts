@@ -1,4 +1,5 @@
 import { Message, Client } from "discord.js";
+import { message_help } from "../../../libraries/help.library";
 import { client_talk, client_write } from "../../../libraries/localisation.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -20,10 +21,9 @@ module.exports = async (
 			);
 		}
 
-		return resolve(
-			{
+		return resolve({
 				result: true,
-				value: client_write(message, guild_object, 'leave')
+				value: message_help('commands', 'leave', client_write(message, guild_object, 'leave'))
 			});
 	});
 };

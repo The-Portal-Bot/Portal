@@ -94,7 +94,7 @@ export class InterfaceBlueprint {
 	public args: string = '';
 	public get!: any;
 	public set!: any;
-	public auth!: string;
+	public auth!: number;
 
 	constructor(
 		name: string,
@@ -102,7 +102,7 @@ export class InterfaceBlueprint {
 		super_description: string,
 		example: string,
 		args: string,
-		auth: string,
+		auth: number,
 		get: any,
 		set: any
 	) {

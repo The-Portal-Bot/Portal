@@ -8,8 +8,14 @@ import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } 
 import { client_talk, client_write } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
+export function max256(abstract: string): string {
+	return abstract.length < 256
+		? abstract
+		: abstract.substring(0, 253) + '...';
+}
+
 export function get_key_from_enum(value: string, enumeration: any): string | number | undefined {
-	for (var e in enumeration) {
+	for (let e in enumeration) {
 		if (e === value) {
 			return enumeration[e];
 		}
@@ -31,7 +37,7 @@ export function create_music_message(
 		[
 			{ emote: 'Duration', role: '-', inline: true },
 			{ emote: 'Views', role: '-', inline: true },
-			{ emote: 'Uploaded', role: '-', inline: true },
+			{ emote: 'Pinned', role: guild_object.music_data.pinned ? 'yes' : 'no', inline: true },
 			{ emote: 'Queue', role: 'empty', inline: false },
 			{ emote: 'Latest Action', role: '```music message created```', inline: false }
 		],
@@ -51,10 +57,11 @@ export function create_music_message(
 			sent_message.react('⏭');
 			sent_message.react('➖');
 			sent_message.react('➕');
+			sent_message.react('📌');
 			sent_message.react('🧹');
 			sent_message.react('🚪');
 
-			const music_data = new MusicData(channel.id, sent_message.id, []);
+			const music_data = new MusicData(channel.id, sent_message.id, [], false);
 			set_music_data(guild_object.id, music_data);
 		});
 };
@@ -63,7 +70,6 @@ export function update_music_message(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
-	console.log('Animating :>> ', animated);
 	return new Promise((resolve) => {
 		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 			'Portal/master/src/assets/img/music_empty.png';
@@ -72,8 +78,10 @@ export function update_music_message(
 			guild_object.music_queue.length > 1
 				? guild_object.music_queue
 					.map((v, i) => {
-						if (i !== 0) {
-							return (`${i}. **${v.title}**`);
+						if (i !== 0 && i < 6) {
+							return (`${i}. ${v.title}`);
+						} else if (i === 6) {
+							return `_...${guild_object.music_queue.length - 6} more_`;
 						}
 					})
 					.filter(v => !!v)
@@ -88,7 +96,7 @@ export function update_music_message(
 			[
 				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
 				{ emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
-				{ emote: 'Uploaded', role: yts ? yts.ago : '-', inline: true },
+				{ emote: 'Pinned', role: guild_object.music_data.pinned ? 'yes' : 'no', inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
 				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
@@ -350,7 +358,6 @@ export function create_rich_embed(
 	author?: { name: string, icon: string }
 ): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spinr.gif';
-	const portal_url: string = 'https://www.portal-bot.xyz';
 
 	const rich_message: MessageEmbed = new MessageEmbed();
 
@@ -436,23 +443,34 @@ export function is_ignored(
 	return false;
 };
 
+
+export function message_help(
+	type: string, argument: string, info: string = ``
+): string {
+	return `${(info === ``) ? `` : `` + `${info}\n`}` +
+		`get help by typing \`./help ${argument}\`\n` +
+		`*https://portal-bot.xyz/docs/${type}/${argument}*`;
+}
+
 export function message_reply(
 	status: boolean, message: Message, user: User, str: string,
 	to_delete: boolean = config.delete_msg,
 	emote_pass: string = '✔️', emote_fail: string = '❌'
 ): void {
-	if (!message.channel.deleted && str !== null) {
+	if (message && !message.channel.deleted && str !== null) {
 		message.channel
 			.send(`${user}, ${str}`)
 			.then(msg => {
-				if (msg.deletable)
-					msg.delete({
-						timeout: config.delete_msg_after * 1000
-					}).catch(console.log)
+				if (msg.deletable) {
+					msg
+						.delete({ timeout: config.delete_msg_after * 1000 })
+						.catch(console.log);
+				}
 			})
 			.catch(console.log);
 	}
-	if (!message.deleted) {
+
+	if (message && !message.deleted) {
 		if (status === true) {
 			message
 				.react(emote_pass)
@@ -464,7 +482,7 @@ export function message_reply(
 				.catch(console.log);
 		}
 
-		if (to_delete && message.deletable) {
+		if (message && to_delete && message.deletable) {
 			message
 				.delete({ timeout: 5000 })
 				.catch(console.log);

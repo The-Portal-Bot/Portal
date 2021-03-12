@@ -3,7 +3,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
 import config from '../../../config.json';
-import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { create_rich_embed, getJSON, message_help } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
@@ -17,13 +17,13 @@ module.exports = async (
 		if (args.length === 0) {
 			return resolve({
 				result: false,
-				value: 'must add currency to search, you can run `./help crypto` for help'
+				value: message_help('commands', 'crypto', 'must add currency to search')
 			});
 		}
 		else if (args.length > 3) {
 			return resolve({
 				result: false,
-				value: 'you can run `./help crypto` for help'
+				value: message_help('commands', 'crypto')
 			});
 		}
 
@@ -33,7 +33,7 @@ module.exports = async (
 		if (crypto_name === '') {
 			return resolve({
 				result: false,
-				value: 'you must give a authority currency like usd'
+				value: message_help('commands', 'crypto', 'you must give an authority currency like usd')
 			});
 		}
 
@@ -55,7 +55,7 @@ module.exports = async (
 				if (json === null)
 					return resolve({
 						result: false,
-						value: 'data from source was corrupted'
+						value: message_help('commands', 'crypto', 'data from source was corrupted')
 					});
 
 				message.channel.send(
@@ -78,13 +78,13 @@ module.exports = async (
 
 				return resolve({
 					result: true,
-					value: `${json} crypto stats`
+					value: ''
 				});
 			})
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server\nerror: ${error}`,
+					value: message_help('commands', 'crypto', `could not access the server\nerror: ${error}`)
 				});
 			});
 	});

@@ -1,5 +1,5 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { create_rich_embed } from "../../../libraries/help.library";
+import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { client_talk } from "../../../libraries/localisation.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -11,14 +11,14 @@ module.exports = async (
         if (args.length === 0) {
             return resolve({
                 result: false,
-                value: 'you can run `./help announce for help'
+                value: message_help('commands', 'announce')
             });
         }
 
         if (guild_object.announcement === '') {
             return resolve({
                 result: false,
-                value: 'there is no announcement channel'
+                value: message_help('commands', 'announce', 'there is no announcement channel')
             });
         }
 
@@ -36,7 +36,7 @@ module.exports = async (
         if (!announcement_channel) {
             return resolve({
                 result: false,
-                value: 'announcements channel could not be fetched'
+                value: message_help('commands', 'announce', 'announcements channel could not be fetched')
             });
         }
 
@@ -47,7 +47,7 @@ module.exports = async (
 
         return resolve({
             result: true,
-            value: 'announcement was sent successfully'
+            value: message_help('commands', 'announce', 'announcement was sent successfully')
         });
     });
 };

@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_rich_embed } from "../../../libraries/help.library";
+import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
@@ -8,7 +8,12 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
-        if (!member_object) return resolve({ result: false, value: 'could not find guild, please contact portal support' });
+        if (!member_object) {
+            return resolve({
+                result: false,
+                value: message_help('commands', 'state', 'could not find guild, please contact portal support')
+            });
+        }
 
         message.channel.send(create_rich_embed(
             message.member ? message.member?.displayName : 'could not fetch name',
@@ -38,6 +43,9 @@ module.exports = async (
             null)
         );
 
-        return resolve({ result: true, value: '' });
+        return resolve({
+            result: true,
+            value: ''
+        });
     });
 };

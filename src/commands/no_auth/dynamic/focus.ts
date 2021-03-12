@@ -1,5 +1,6 @@
 import { GuildMember, Message } from "discord.js";
 import { create_focus_channel, included_in_voice_list } from "../../../libraries/guild.library";
+import { message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
@@ -48,27 +49,27 @@ module.exports = async (
 		if (!message.member)
 			return resolve({
 				result: true,
-				value: 'message author could not be fetched'
+				value: message_help('commands', 'focus', 'message author could not be fetched')
 			});
 
 		if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
-				value: 'you must be in a channel handled by Portal',
+				value: message_help('commands', 'focus', 'you must be in a channel handled by Portal')
 			});
 		}
 
 		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
-				value: 'the channel you are in is not handled by Portal',
+				value: message_help('commands', 'focus', 'the channel you are in is not handled by Portal')
 			});
 		}
 
 		if (message.member.voice.channel.members.size <= 2) {
 			return resolve({
 				result: false,
-				value: 'you can *only* use focus in channels with *more* than 2 members',
+				value: message_help('commands', 'focus', 'you can *only* use focus in channels with *more* than 2 members')
 			});
 		}
 
@@ -81,21 +82,21 @@ module.exports = async (
 		if (focus_name === '') {
 			return resolve({
 				result: false,
-				value: 'you must give a member name'
+				value: message_help('commands', 'focus', 'you must give a member name')
 			});
 		}
 
 		if (isNaN(focus_time)) {
 			return resolve({
 				result: false,
-				value: 'focus time must be a number'
+				value: message_help('commands', 'focus', 'focus time must be a number')
 			});
 		}
 
 		if (message.member.id === focus_name || message.member.displayName === focus_name) {
 			return resolve({
 				result: false,
-				value: `you can't focus on yourself`
+				value: message_help('commands', 'focus', `you can't focus on yourself`)
 			});
 		}
 
@@ -109,14 +110,14 @@ module.exports = async (
 						if (!message.guild) {
 							return resolve({
 								result: false,
-								value: 'could not fetch message\'s guild'
+								value: message_help('commands', 'focus', 'could not fetch message\'s guild')
 							});
 						}
 
 						if (!message.member) {
 							return resolve({
 								result: false,
-								value: 'could not fetch message\'s member'
+								value: message_help('commands', 'focus', 'could not fetch message\'s member')
 							});
 						}
 
@@ -127,7 +128,7 @@ module.exports = async (
 						if (!portal_object) {
 							return resolve({
 								result: false,
-								value: 'could not find member\'s portal channel'
+								value: message_help('commands', 'focus', 'could not find member\'s portal channel')
 							});
 						}
 
@@ -138,13 +139,13 @@ module.exports = async (
 							.catch(e => {
 								return resolve({
 									result: false,
-									value: `error while creating focus channel ${e}`
+									value: message_help('commands', 'focus', `error while creating focus channel ${e}`)
 								});
 							});
 					} else {
 						return resolve({
 							result: false,
-							value: 'user declined the request'
+							value: message_help('commands', 'focus', 'user declined the request')
 						});
 					}
 				});
@@ -152,7 +153,7 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: `could not find "**${focus_name}**" in current voice channel`
+				value: message_help('commands', 'focus', `could not find "**${focus_name}**" in current voice channel`)
 			});
 		}
 	});

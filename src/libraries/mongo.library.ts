@@ -53,6 +53,42 @@ export async function fetch_guild(
     });
 };
 
+export async function fetch_guild_channel_delete(
+    guild_id: string
+): Promise<GuildPrtl | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                id: 1,
+                portal_list: 1,
+                announcement: 1,
+                music_data: 1,
+                url_list: 1,
+                ignore_list: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<GuildPrtl>{
+                        id: r.id,
+                        portal_list: r.portal_list,
+                        announcement: r.announcement,
+                        music_data: r.music_data,
+                        url_list: r.url_list,
+                        ignore_list: r.ignore_lis
+                    });
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                return resolve(undefined);
+            });
+    });
+};
+
 export async function fetch_guild_announcement(
     guild_id: string
 ): Promise<string | undefined> {
@@ -115,18 +151,22 @@ export async function fetch_guild_reaction_data(
 
 export async function fetch_guild_music_queue(
     guild_id: string
-): Promise<VideoSearchResult[] | undefined> {
+): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
     return new Promise((resolve) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
             },
             {
+                music_data: 1,
                 music_queue: 1
             })
             .then((r: any) => {
                 if (!!r) {
-                    return resolve(<VideoSearchResult[]>r.music_queue);
+                    return resolve(<{ queue: VideoSearchResult[], data: MusicData }>{
+                        data: r.music_data,
+                        queue: r.music_queue
+                    });
                 } else {
                     return undefined;
                 }
@@ -300,7 +340,12 @@ export async function insert_guild(
     const url_list: string[] = [];
     const role_list: GiveRolePrtl[] = [];
     const ranks: Rank[] = [];
-    const music_data: MusicData = { channel_id: 'null', message_id: 'null', votes: [] };
+    const music_data: MusicData = {
+        channel_id: 'null',
+        message_id: 'null',
+        votes: [],
+        pinned: false
+    };
     const music_queue: VideoSearchResult[] = [];
     const announcement: string | null = 'null';
     const locale: string = 'en';
@@ -895,7 +940,9 @@ export async function set_music_data(
             .then((r: MongoPromise) => {
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
-            .catch(e => { return resolve(false);; });
+            .catch(e => {
+                return resolve(false);
+            });
     });
 }
 
@@ -905,10 +952,10 @@ export async function deleted_channel_sync(
     channel_to_remove: VoiceChannel | TextChannel
 ): Promise<number> {
     return new Promise((resolve) => {
-        fetch_guild(channel_to_remove.guild.id)
+        fetch_guild_channel_delete(channel_to_remove.guild.id)
             .then(guild_object => {
                 if (guild_object) {
-                    // check if it is a Portal or a Voice channel
+                    // check if it is a portal or portal-voice channel
                     if (!channel_to_remove.isText()) {
                         const current_voice = <VoiceChannel>channel_to_remove;
                         guild_object.portal_list.some(p => {
@@ -954,7 +1001,7 @@ export async function deleted_channel_sync(
                                     return resolve(PortalChannelTypes.unknown);
                                 });
                         } else if (guild_object.music_data.channel_id === current_text.id) {
-                            const music_data = new MusicData('null', 'null', []);
+                            const music_data = new MusicData('null', 'null', [], false);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {
                                     return r

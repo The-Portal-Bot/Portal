@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { create_rich_embed, getJSON } from "../../../libraries/help.library";
+import { create_rich_embed, getJSON, message_help } from "../../../libraries/help.library";
 import { insert_poll } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -39,14 +39,14 @@ function create_role_message(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: 'failed to set new ranks'
+							value: `failed to set new ranks (${e})`
 						});
 					});
 			})
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: 'failed to create role assigner message'
+					value: `failed to create role assigner message (${e})`
 				})
 			});
 	});
@@ -59,13 +59,13 @@ module.exports = async (
 		if (!message.guild) {
 			return resolve({
 				result: true,
-				value: 'guild could not be fetched'
+				value: message_help('commands', 'poll', 'guild could not be fetched')
 			});
 		}
 		if (args.length <= 1) {
 			return resolve({
 				result: false,
-				value: 'you can run `./help poll` for help'
+				value: message_help('commands', 'poll')
 			});
 		}
 
@@ -75,7 +75,7 @@ module.exports = async (
 		if (title === '' && poll_json_string !== '') {
 			return resolve({
 				result: false,
-				value: 'you can run `./help poll` for help'
+				value: message_help('commands', 'poll')
 			});
 		}
 
@@ -83,7 +83,7 @@ module.exports = async (
 		if (!poll_json) {
 			return resolve({
 				result: false,
-				value: 'poll must be in JSON array format `./help poll`'
+				value: message_help('commands', 'poll', 'poll must be in JSON array format `./help poll`')
 			});
 		}
 
@@ -91,21 +91,21 @@ module.exports = async (
 		if (poll_map.length > 9) {
 			return resolve({
 				result: false,
-				value: 'polls can have maximum 9 options'
+				value: message_help('commands', 'poll', 'polls can have maximum 9 options')
 			});
 		}
 
 		if (poll_map.length < 2) {
 			return resolve({
 				result: false,
-				value: 'polls must have minimum 2 options'
+				value: message_help('commands', 'poll', 'polls must have minimum 2 options')
 			});
 		}
 
 		if (!Array.isArray(poll_map)) {
 			return resolve({
 				result: false,
-				value: 'must be array even for one role'
+				value: message_help('commands', 'poll', 'must be array even for one role')
 			});
 		}
 
@@ -128,7 +128,10 @@ module.exports = async (
 			message.author.id
 		)
 			.then(r => {
-				return resolve(r);
+				return resolve({
+					result: r.result,
+					value: message_help('commands', 'poll', r.value)
+				});
 			})
 			.catch(e => {
 				return resolve({
