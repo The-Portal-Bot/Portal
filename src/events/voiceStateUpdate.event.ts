@@ -86,7 +86,7 @@ async function channel_empty_check(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `an error occured while deleting voice (${e})`
+							value: `an error occurred while deleting voice (${e})`
 						});
 					});
 			} else {
@@ -114,7 +114,7 @@ async function channel_empty_check(
 							.catch(e => {
 								return resolve({
 									result: false,
-									value: `an error occured while deleting voice (${e})`
+									value: `an error occurred while deleting voice (${e})`
 								})
 							});
 					} else {
@@ -169,7 +169,7 @@ async function from_null(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `an error occured while creating voice channel (${e})`
+							value: `an error occurred while creating voice channel (${e})`
 						});
 					});
 
@@ -269,7 +269,7 @@ async function from_existing(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `an error occured while creating voice channel (${e})`
+								value: `an error occurred while creating voice channel (${e})`
 							});
 						});
 				}
@@ -332,7 +332,7 @@ async function from_existing(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `an error occured while creating voice channel (${e})`
+								value: `an error occurred while creating voice channel (${e})`
 							});
 						});
 				}
@@ -418,7 +418,7 @@ module.exports = async (
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: `an error occured while handling user (${e})`
+										value: `an error occurred while handling user (${e})`
 									});
 								})
 						}
@@ -430,7 +430,7 @@ module.exports = async (
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: `an error occured while handling user (${e})`
+										value: `an error occurred while handling user (${e})`
 									});
 								});
 						}

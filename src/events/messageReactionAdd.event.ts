@@ -356,8 +356,8 @@ async function reaction_music_manager(
 								promise: {
 									result: false,
 									value: !guild_object.music_data.pinned
-										? `error occured while pinning song (${e})`
-										: `error occured while unpinning song (${e})`
+										? `error occurred while pinning song (${e})`
+										: `error occurred while unpinning song (${e})`
 								},
 								animated: true
 							});
@@ -439,8 +439,8 @@ async function reaction_music_manager(
 							promise: {
 								result: false,
 								value: !guild_object.music_data.pinned
-									? `error occured while pinning song (${e})`
-									: `error occured while unpinning song (${e})`
+									? `error occurred while pinning song (${e})`
+									: `error occurred while unpinning song (${e})`
 							},
 							animated: true
 						});

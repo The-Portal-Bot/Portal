@@ -146,7 +146,7 @@ module.exports = async (
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: `an error occured while creating role message (${e})`
+					value: `an error occurred while creating role message (${e})`
 				})
 			});
 	});

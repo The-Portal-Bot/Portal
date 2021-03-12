@@ -69,7 +69,7 @@ module.exports = async (
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `an error occured while setting channel (${e})`
+							value: `an error occurred while setting channel (${e})`
 						});
 					});
 
