@@ -27,10 +27,14 @@ const structures: InterfaceBlueprint[] = [
 
 export function is_structure(candidate: string): string {
 	for (let i = 0; i < structures.length; i++) {
-		if (String(candidate).substring(1, (String(structures[i].name).length + 1)) == structures[i].name) {
+		const sub_str = String(candidate)
+			.substring(1, (String(structures[i].name).length + 1));
+
+		if (sub_str == structures[i].name) {
 			return structures[i].name;
 		}
 	}
+
 	return '';
 };
 

@@ -26,7 +26,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			if (!portal_object_list) {
@@ -106,7 +106,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return voice_object.ann_announce;
@@ -174,7 +174,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -253,7 +253,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return voice_object.no_bots;
@@ -321,7 +321,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -401,7 +401,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return voice_object.render;
@@ -469,7 +469,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -548,7 +548,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return voice_object.ann_user;
@@ -859,7 +859,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -924,7 +924,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return LocaleEnum[voice_object.locale];
@@ -978,7 +978,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): number | string => {
 			if (!voice_channel) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return voice_channel.position;
@@ -1028,7 +1028,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): boolean | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -1107,7 +1107,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -1162,7 +1162,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -1217,7 +1217,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return voice_object.regex;
@@ -1309,7 +1309,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): number | string => {
 			if (!voice_object) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 			if (!portal_object_list) {
 				return 'must be in portal channel';
@@ -1379,7 +1379,7 @@ const attributes: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
 		): number | string => {
 			if (!voice_channel) {
-				return 'must be in voice channel';
+				return 'must be in Portal channel';
 			}
 
 			return voice_channel.userLimit;
@@ -1423,10 +1423,14 @@ const attributes: InterfaceBlueprint[] = [
 
 export function is_attribute(candidate: string): string {
 	for (let i = 0; i < attributes.length; i++) {
-		if (String(candidate).substring(1, (String(attributes[i].name).length + 1)) == attributes[i].name) {
+		const sub_str = String(candidate)
+			.substring(1, (String(attributes[i].name).length + 1));
+
+		if (sub_str == attributes[i].name) {
 			return attributes[i].name;
 		}
 	}
+
 	return '';
 }
 

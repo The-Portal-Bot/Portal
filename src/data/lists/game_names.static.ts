@@ -57,9 +57,9 @@ export const GameNames = {
             "status": "Heroes of the Storm",
             "type": "game",
             "locale": {
-                "en": "Heroes of the Storm",
-                "de": "Heroes of the Storm",
-                "gr": "Ήρωες της Καταιγίδας"
+                "en": "HOTS",
+                "de": "HOTS",
+                "gr": "ΧΟΤΣ"
             }
         },
         {
@@ -68,7 +68,7 @@ export const GameNames = {
             "locale": {
                 "en": "Hearthstone",
                 "de": "Hearthstone",
-                "gr": "Πέτρινη Εστίας"
+                "gr": "ΠέτρινηΚαρδιά"
             }
         },
         {
@@ -77,7 +77,7 @@ export const GameNames = {
             "locale": {
                 "en": "Apex",
                 "de": "Apex",
-                "gr": "Κορυφαίοι"
+                "gr": "Apex"
             }
         },
         {

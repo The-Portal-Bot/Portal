@@ -228,8 +228,6 @@ client.on('message', async (message: Message) => {
 							return false;
 						}
 
-						guild_object.id = guild_object_rest.id;
-						guild_object.portal_list = guild_object_rest.portal_list;
 						guild_object.poll_list = guild_object_rest.poll_list;
 						guild_object.ranks = guild_object_rest.ranks;
 						guild_object.music_queue = guild_object_rest.music_queue;

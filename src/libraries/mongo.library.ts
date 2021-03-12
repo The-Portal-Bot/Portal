@@ -234,9 +234,10 @@ export async function fetch_guild_rest(
                 id: guild_id
             },
             {
+                id: 0,
                 prefix: 0,
-                member_list: 0,
                 portal_list: 0,
+                member_list: 0,
                 ignore_list: 0,
                 url_list: 0,
                 music_data: 0,

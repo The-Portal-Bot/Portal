@@ -116,12 +116,28 @@ const pipes: InterfaceBlueprint[] = [
 		set: null,
 		auth: AuthEnum.none
 	},
+	{
+		name: 'length',
+		description: 'returns the length of the input',
+		super_description: '**length**, returns the length in number of input',
+		example: '(variable, string)|length',
+		args: 'none',
+		get: (str: string) => { return str.length },
+		set: null,
+		auth: AuthEnum.none
+	},
 ];
 
 export function is_pipe(candidate: string): string {
 	for (let i = 0; i < pipes.length; i++) {
-		if (String(candidate).substring(1, (String(pipes[i].name).length + 1)) == pipes[i].name) { return pipes[i].name; }
+		const sub_str = String(candidate)
+			.substring(1, (String(pipes[i].name).length + 1));
+
+		if (sub_str == pipes[i].name) {
+			return pipes[i].name;
+		}
 	}
+
 	return '';
 };
 
@@ -195,7 +211,15 @@ export function get_pipe_help(): MessageEmbed[] {
 			)
 		} else {
 			return create_rich_embed(
-				null, null, '#6EEB83', pipe_array[index], null, null, null, null, null
+				null,
+				null,
+				'#6EEB83',
+				pipe_array[index],
+				null,
+				null,
+				null,
+				null,
+				null
 			)
 		}
 	});

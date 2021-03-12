@@ -526,10 +526,14 @@ const variables: InterfaceBlueprint[] = [
 
 export function is_variable(candidate: string): string {
 	for (let i = 0; i < variables.length; i++) {
-		if (String(candidate).substring(1, (String(variables[i].name).length + 1)) == variables[i].name) {
+		const sub_str = String(candidate)
+			.substring(1, (String(variables[i].name).length + 1));
+
+		if (sub_str === variables[i].name) {
 			return variables[i].name;
 		}
 	}
+
 	return '';
 };
 

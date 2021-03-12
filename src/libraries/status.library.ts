@@ -16,7 +16,7 @@ function status_aliases(activities: Activity[], locale: number): string[] {
 
 		if (!found) {
 			for (let l = 0; l < GameNames.game_attributes.length; l++) {
-				if (activity.name == GameNames.game_attributes[l].status) {
+				if (activity.name.trim() == GameNames.game_attributes[l].status) {
 					if (locale === LocaleEnum.gr) {
 						new_status.push(GameNames.game_attributes[l].locale.gr);
 					}
@@ -34,7 +34,7 @@ function status_aliases(activities: Activity[], locale: number): string[] {
 
 		if (!found) {
 			for (let l = 0; l < ProgramNames.program_attributes.length; l++) {
-				if (activity.name == ProgramNames.program_attributes[l].status) {
+				if (activity.name.trim() == ProgramNames.program_attributes[l].status) {
 					if (locale === LocaleEnum.gr) {
 						new_status.push(ProgramNames.program_attributes[l].locale.gr);
 					}
