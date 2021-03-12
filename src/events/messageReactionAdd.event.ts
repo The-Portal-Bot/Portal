@@ -225,8 +225,9 @@ async function reaction_music_manager(
 					})
 				}
 
-				const guild = client.guilds.cache
-					.find(g => g.id === guild_object.id);
+				const guild = messageReaction.message.guild;
+				// const guild = client.guilds.cache
+				// 	.find(g => g.id === guild_object.id);
 
 				if (!guild) {
 					return resolve({
@@ -282,30 +283,87 @@ async function reaction_music_manager(
 					reason = 'DJ'
 				}
 
-				skip(
-					portal_voice_connection, user, client,
-					messageReaction.message.guild, guild_object, true
-				)
-					.then(r => {
-						clear_music_vote(guild_object.id);
-						guild_object.music_queue.shift();
-						return resolve({
-							promise: {
-								result: r.result,
-								value: r.value + ` (by ${reason})`
-							},
-							animated: r.result
-						});
-					})
-					.catch(e => {
-						return resolve({
-							promise: {
-								result: false,
-								value: `error while skipping (${e})`
-							},
-							animated: false
+				if (!guild_object.music_data.pinned) {
+					skip(
+						portal_voice_connection, user, client,
+						messageReaction.message.guild, guild_object
+					)
+						.then(r => {
+							clear_music_vote(guild_object.id);
+							guild_object.music_queue.shift();
+							return resolve({
+								promise: {
+									result: r.result,
+									value: r.value + ` (by ${reason})`
+								},
+								animated: r.result
+							});
 						})
-					});
+						.catch(e => {
+							return resolve({
+								promise: {
+									result: false,
+									value: `error while skipping (${e})`
+								},
+								animated: false
+							})
+						});
+				} else {
+					guild_object.music_data.pinned = false;
+					set_music_data(guild_object.id, guild_object.music_data)
+						.then(r => {
+							if (!r) {
+								return resolve({
+									promise: {
+										result: false,
+										value: guild_object.music_data.pinned
+											? 'failed to pin song'
+											: 'failed to unpin song'
+									},
+									animated: true
+								});
+							} else {
+								skip(
+									portal_voice_connection, user, client,
+									guild, guild_object
+								)
+									.then(r => {
+										clear_music_vote(guild_object.id);
+										guild_object.music_queue.shift();
+										return resolve({
+											promise: {
+												result: r.result,
+												value: r.value + ` (by ${reason})`
+											},
+											animated: r.result
+										});
+									})
+									.catch(e => {
+										return resolve({
+											promise: {
+												result: false,
+												value: `error while skipping (${e})`
+											},
+											animated: false
+										})
+									});
+							}
+						})
+						.catch(e => {
+							guild_object.music_data.pinned = !guild_object.music_data.pinned;
+
+							return resolve({
+								promise: {
+									result: false,
+									value: !guild_object.music_data.pinned
+										? `error occured while pinning song (${e})`
+										: `error occured while unpinning song (${e})`
+								},
+								animated: true
+							});
+						});
+				}
+
 
 				break;
 			}
@@ -366,9 +424,9 @@ async function reaction_music_manager(
 								value: r
 									? guild_object.music_data.pinned
 										? 'pinned song'
-										: 'failed to pin song'
+										: 'unpinned song'
 									: !guild_object.music_data.pinned
-										? 'unpinned song'
+										? 'failed to pin song'
 										: 'failed to unpin song'
 							},
 							animated: true

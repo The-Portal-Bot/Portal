@@ -81,7 +81,7 @@ export function update_music_message(
 						if (i !== 0 && i < 6) {
 							return (`${i}. ${v.title}`);
 						} else if (i === 6) {
-							return `_...${guild_object.music_queue.length - 1} more_`;
+							return `_...${guild_object.music_queue.length - 6} more_`;
 						}
 					})
 					.filter(v => !!v)

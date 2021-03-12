@@ -8,7 +8,7 @@ import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_g
 // const ytdl = require('ytdl-core');
 
 async function pop_music_queue(
-	guild_object: GuildPrtl, force_skip: boolean = false
+	guild_object: GuildPrtl
 ): Promise<yts.VideoSearchResult | undefined> {
 	return new Promise((resolve) => {
 		fetch_guild_music_queue(guild_object.id)
@@ -16,18 +16,11 @@ async function pop_music_queue(
 				if (!music) {
 					return resolve(undefined);
 				}
-				console.log('force_skip :>> ', force_skip);
-				if (force_skip === true) {
-					music.data.pinned = false;
-				}
-				console.log('music.data.pinned :>> ', music.data.pinned);
-				if (!music.data.pinned && music.queue.length > 0) {
-					console.log(`shifting to next song`);
-					music.queue.shift();
-					update_guild(guild_object.id, 'music.queue', music.queue);
-				}
 
-				update_guild(guild_object.id, 'music.data', music.data);
+				if (!music.data.pinned && music.queue.length > 0) {
+					music.queue.shift();
+					update_guild(guild_object.id, 'music_queue', music.queue);
+				}
 
 				guild_object.music_queue = music.queue;
 				guild_object.music_data = music.data;
@@ -258,7 +251,7 @@ export async function play(
 					});
 				}
 			} else {
-				pop_music_queue(guild_object) // chekc if force needed
+				pop_music_queue(guild_object)
 					.then(next_video => {
 						if (!next_video) {
 							return resolve({
@@ -391,7 +384,7 @@ export async function pause(
 
 export async function skip(
 	voice_connection: VoiceConnection | undefined, user: User, client: Client,
-	guild: Guild, guild_object: GuildPrtl, force_skip: boolean = false
+	guild: Guild, guild_object: GuildPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (voice_connection) {
@@ -413,8 +406,7 @@ export async function skip(
 					value: 'skipped to queued song'
 				});
 			} else {
-				console.log(`pop_music_queue(guild_object, ${force_skip})`);
-				pop_music_queue(guild_object, force_skip)
+				pop_music_queue(guild_object)
 					.then(next_video => {
 						if (!next_video) {
 							return resolve({
