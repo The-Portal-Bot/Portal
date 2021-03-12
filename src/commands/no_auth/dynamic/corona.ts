@@ -4,7 +4,7 @@ import moment from 'moment';
 import voca from 'voca';
 import config from '../../../config.json';
 import { CountryCodes } from '../../../data/lists/country_codes_iso.static';
-import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { create_rich_embed, getJSON, message_help } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
@@ -33,18 +33,18 @@ module.exports = async (
 			if (code === null) {
 				return resolve({
 					result: false,
-					value: `${args[0]} is neither a country name nor a country code`
+					value: message_help('commands', 'corona', `${args[0]} is neither a country name nor code`)
 				});
 			}
 		} else if (args.length > 1) {
 			return resolve({
 				result: false,
-				value: 'you can run `./help corona` for help'
+				value: message_help('commands', 'corona')
 			});
 		} else {
 			return resolve({
 				result: false,
-				value: 'global stats are not unavailable, you can run `./help corona` for help'
+				value: message_help('commands', 'corona')
 			});
 		}
 
@@ -67,7 +67,7 @@ module.exports = async (
 				if (json === null) {
 					return resolve({
 						result: false,
-						value: 'data from source was corrupted'
+						value: message_help('commands', 'corona', 'data from source was corrupted')
 					});
 				}
 				
@@ -77,7 +77,7 @@ module.exports = async (
 					if (!country_data) {
 						return resolve({
 							result: false,
-							value: `${args[0]} is neither a country name nor a country code`,
+							value: message_help('commands', 'corona', `${args[0]} is neither a country name nor code`)
 						});
 					}
 
@@ -150,14 +150,14 @@ module.exports = async (
 				else {
 					return resolve({
 						result: false,
-						value: `fetched data had errors`
+						value: message_help('commands', 'corona', `fetched data had errors`)
 					});
 				}
 			})
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server\nerror: ${error}`
+					value: message_help('commands', 'corona', `could not access the server\nerror: ${error}`)
 				});
 			});
 	});

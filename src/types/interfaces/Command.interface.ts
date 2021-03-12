@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { OpapGameIdList } from '../../data/enums/OpapGames.enum';
-import { create_rich_embed } from '../../libraries/help.library';
+import { create_rich_embed, get_key_from_enum } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
 
 export const command_prefix: string = './';
@@ -493,7 +493,7 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 					{ emote: 'Description', role: '*' + cmmd.super_description + '*', inline: false },
 					{ emote: 'Arguments', role: '*' + cmmd.args + '*', inline: false },
 					{ emote: 'Example', role: '```' + cmmd.example + '```', inline: false },
-					{ emote: 'Clearance', role: '' + cmmd.auth + '', inline: false }
+					{ emote: 'Clearance', role: '' + AuthEnum[cmmd.auth] + '', inline: false }
 				],
 				null,
 				null,

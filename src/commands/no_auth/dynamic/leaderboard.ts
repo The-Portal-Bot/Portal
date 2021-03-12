@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_rich_embed } from "../../../libraries/help.library";
+import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../../../types/classes/MemberPrtl.class";
 import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -18,7 +18,7 @@ module.exports = async (
 		if (!member_list) {
 			return resolve({
 				result: false,
-				value: 'server has no members please contact portal support'
+				value: message_help('commands', 'leaderboard', 'server has no members please contact portal support')
 			});
 		}
 
@@ -26,7 +26,7 @@ module.exports = async (
 		if (args.length > 0 && isNaN(requested_number)) {
 			return resolve({
 				result: false,
-				value: args[0] + ' is not a number'
+				value: message_help('commands', 'leaderboard', args[0] + ' is not a number')
 			});
 		}
 
@@ -39,7 +39,7 @@ module.exports = async (
 		if (entries <= 0) {
 			return resolve({
 				result: false,
-				value: 'leaderboard entries must be at least one'
+				value: message_help('commands', 'leaderboard', 'leaderboard entries must be at least one')
 			});
 		}
 
@@ -65,7 +65,7 @@ module.exports = async (
 						else {
 							resolve({
 								result: false,
-								value: 'a member has been stored incorrectly please contact Portal maintainter',
+								value: message_help('commands', 'leaderboard', 'a member has been stored incorrectly please contact Portal maintainter')
 							});
 						}
 					}
@@ -85,13 +85,13 @@ module.exports = async (
 
 			return resolve({
 				result: true,
-				value: ''
+				value: message_help('commands', 'leaderboard', '')
 			});
 		}
 		else {
 			resolve({
 				result: false,
-				value: 'there are no members for this server, please contact Portal Bot maintainer',
+				value: message_help('commands', 'leaderboard', 'there are no members for this server, please contact Portal Bot maintainer')
 			});
 		}
 	});

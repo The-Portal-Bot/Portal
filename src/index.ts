@@ -198,7 +198,7 @@ client.on('message', async (message: Message) => {
 				let command = command_cypher(message, guild_object);
 
 				if (!command.command_options) {
-					message_reply(false, message, message.author, 'is not a Portal command');
+					message_reply(false, message, message.author, 'not a Portal command');
 
 					return false;
 				}
@@ -239,7 +239,7 @@ client.on('message', async (message: Message) => {
 						guild_object.premium = guild_object_rest.premium;
 
 						if (!command.command_options) {
-							message_reply(false, message, message.author, 'is not a Portal command');
+							message_reply(false, message, message.author, 'not a Portal command');
 
 							return false;
 						}

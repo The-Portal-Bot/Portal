@@ -1532,6 +1532,7 @@ export function get_attribute_help_super(
 					{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },
 					{ emote: 'Arguments', role: '*' + attr.args + '*', inline: false },
 					{ emote: 'Example', role: '*' + attr.example + '*', inline: false },
+					{ emote: 'Clearance', role: '' + AuthEnum[attr.auth] + '', inline: false }
 				],
 				null,
 				null,

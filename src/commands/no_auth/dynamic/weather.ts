@@ -2,7 +2,7 @@ import { Client, Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import config from '../../../config.json';
-import { create_rich_embed, getJSON } from '../../../libraries/help.library';
+import { create_rich_embed, getJSON, message_help } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
@@ -30,7 +30,7 @@ module.exports = async (
 		if (args.length < 1)
 			return resolve({
 				result: false,
-				value: 'you can run `./help weather` for help',
+				value: message_help('commands', 'weather')
 			});
 
 		const location = args.join('%2C%20');
@@ -47,14 +47,14 @@ module.exports = async (
 				if (json === null) {
 					return resolve({
 						result: false,
-						value: 'data from source was corrupted'
+						value: message_help('commands', 'weather', 'data from source was corrupted')
 					});
 				}
 
 				if (json.cod === '404') {
 					return resolve({
 						result: false,
-						value: 'city not found'
+						value: message_help('commands', 'weather', 'city not found')
 					});
 				}
 
@@ -109,19 +109,22 @@ module.exports = async (
 							null,
 							null
 						));
-					return resolve({ result: true, value: `${json.name} weather` });
+					return resolve({
+						result: true,
+						value: message_help('commands', 'weather', `${json.name} weather`)
+					});
 				}
 				else {
 					return resolve({
 						result: false,
-						value: `could not access the server\nerror: ${json.cod}`
+						value: message_help('commands', 'weather', `could not access the server\nerror: ${json.cod}`)
 					});
 				}
 			})
 			.catch((error: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server\nerror: ${error}`
+					value: message_help('commands', 'weather', `could not access the server\nerror: ${error}`)
 				});
 			});
 	});

@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import Roll from 'roll';
-import { create_rich_embed, max256 } from "../../../libraries/help.library";
+import { create_rich_embed, max256, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
 
@@ -52,13 +52,13 @@ module.exports = async (
 			} catch (err) {
 				return resolve({
 					result: false,
-					value: 'you can run `./help roll` for help'
+					value: message_help('commands', 'roll')
 				});
 			}
 		} else {
 			return resolve({
 				result: false,
-				value: 'you can run `./help roll` for help'
+				value: message_help('commands', 'roll')
 			});
 		}
 	});

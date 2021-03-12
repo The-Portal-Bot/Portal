@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_rich_embed } from "../../../libraries/help.library";
+import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../../types/interfaces/Attribute.interface";
 import { get_command_guide, get_command_help, get_command_help_super } from "../../../types/interfaces/Command.interface";
@@ -116,9 +116,7 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: `*${args[0]} ${args[1]}* does not exist in portal' + 
-					'go to https://portal-bot.xyz/docs\n' +
-					'or type \`./help help\` for help`,
+					value: message_help('commands', 'bet', `*${args[0]} ${args[1]}* does not exist in portal`)
 				});
 			}
 		}
@@ -185,10 +183,10 @@ module.exports = async (
 						.catch(console.error)
 				);
 			} else {
-				const func_detailed = get_command_help_super(args[0]);
-				if (func_detailed) {
+				const cmmd_detailed = get_command_help_super(args[0]);
+				if (cmmd_detailed) {
 					message.author
-						.send(func_detailed)
+						.send(cmmd_detailed)
 						.catch(console.error);
 				}
 				const vrbl_detailed = get_variable_help_super(args[0]);
@@ -216,17 +214,17 @@ module.exports = async (
 						.catch(console.error);
 				}
 
-				if (!func_detailed && !vrbl_detailed && !pipe_detailed && !attr_detailed && !strc_detailed) {
+				if (!cmmd_detailed && !vrbl_detailed && !pipe_detailed && !attr_detailed && !strc_detailed) {
 					return resolve({
 						result: false,
-						value: `*${args[0]}* does not exist in portal, you can run \`./help help\` for help`,
+						value: message_help('commands', 'help', `*${args[0]}* does not exist in portal`)
 					});
 				}
 			}
 
 			return resolve({
 				result: true,
-				value: 'I sent you a private message'
+				value: message_help('commands', 'help', 'I sent you a private message')
 			});
 		}
 	});
