@@ -571,13 +571,21 @@ function handle_music_channels(
 			)
 				.then(r => {
 					if (message.guild) {
+						const portal_voice_connection = client.voice?.connections
+							.find(c => c.channel.guild.id === message.guild?.id);
+
+						const animate = portal_voice_connection?.dispatcher
+							? !portal_voice_connection?.dispatcher.paused
+							: false;
+
 						update_music_message(
 							message.guild,
 							guild_object,
 							guild_object.music_queue.length > 0
 								? guild_object.music_queue[0]
 								: undefined,
-							r.value
+							r.value,
+							animate
 						);
 					}
 

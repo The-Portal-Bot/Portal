@@ -30,7 +30,7 @@ module.exports = async (
 					giveMeAJoke.getRandomJokeOfTheDay('animal', (joke: string) => message.channel.send(joke));
 					break;
 				default:
-					giveMeAJoke.getCustomJoke('', message.author.username, (joke: string) => message.channel.send(joke));
+					giveMeAJoke.getCustomJoke('', args[0], (joke: string) => message.channel.send(joke));
 			}
 		} else {
 			giveMeAJoke.getCustomJoke('', message.author.username, (joke: string) => message.channel.send(joke));
