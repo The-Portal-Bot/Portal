@@ -15,7 +15,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.camelCase(str)
-				: voca.camelCase(str.join(','));
+				: str.map(s => voca.camelCase(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -29,7 +29,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.capitalize(str)
-				: voca.capitalize(str.join(','));
+				: str.map(s => voca.capitalize(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -43,7 +43,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.decapitalize(str)
-				: voca.decapitalize(str.join(','));
+				: str.map(s => voca.decapitalize(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -57,7 +57,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.lowerCase(str)
-				: voca.lowerCase(str.join(','));
+				: str.map(s => voca.lowerCase(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -71,7 +71,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.upperCase(str)
-				: voca.upperCase(str.join(','));
+				: str.map(s => voca.upperCase(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -113,7 +113,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.snakeCase(str)
-				: voca.snakeCase(str.join(','));
+				: str.map(s => voca.snakeCase(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -127,21 +127,21 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.kebabCase(str)
-				: voca.kebabCase(str.join(','));
+				: str.map(s => voca.kebabCase(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
 	},
 	{
-		name: 'summary_count',
-		description: 'returns the count of members having a status',
-		super_description: '**summary_count**, returns the count of members having a status',
-		example: '(array)|summary_count',
+		name: 'words',
+		description: 'returns the number of words, of the input',
+		super_description: '**words**, returns the number of words, of the input',
+		example: '(array)|words',
 		args: 'none',
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.words(str).length
-				: voca.words(str.join(',')).length;
+				: voca.words(str.join(' ')).length;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -155,7 +155,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.titleCase(str)
-				: voca.titleCase(str.join(','));
+				: str.map(s => voca.titleCase(s)).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none

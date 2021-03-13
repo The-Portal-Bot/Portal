@@ -114,7 +114,7 @@ async function channel_empty_check(
 						guild_object.music_queue.length > 0
 							? guild_object.music_queue[0]
 							: undefined,
-						'left the channel',
+						'left last',
 						false
 					);
 
