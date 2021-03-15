@@ -261,8 +261,8 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'time',
-		description: 'full time: hh/mm/ss',
-		super_description: '**time**, full time: hh/mm/ss',
+		description: 'full time: hh:mm:ss',
+		super_description: '**time**, full time: hh:mm:ss',
 		example: '$time',
 		args: 'none',
 		get: (

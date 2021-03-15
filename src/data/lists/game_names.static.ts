@@ -954,6 +954,15 @@ export const GameNames = {
             }
         },
         {
+            "status": "The Witcher 3: Wild Hunt",
+            "type": "game",
+            "locale": {
+                "en": "Witcher 3",
+                "de": "Witcher 3",
+                "gr": "Γητευτής 3"
+            }
+        },
+        {
             "status": "The Witcher® 3: Wild Hunt",
             "type": "game",
             "locale": {

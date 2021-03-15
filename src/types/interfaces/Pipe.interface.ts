@@ -7,9 +7,23 @@ import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
 export const pipe_prefix: string = '|';
 const pipes: InterfaceBlueprint[] = [
 	{
+		name: 'acronym',
+		description: 'returns the acronym of the input',
+		super_description: '**camelCase**, returns the first character of the input',
+		example: '(variable, string)|camelCase',
+		args: 'none',
+		get: (str: string | string[]) => {
+			return (typeof str === 'string')
+				? str.split(' ').map(s => s[0]).join('')
+				: str.map(s => s.split(' ').map(sm => sm[0]).join('')).join(',');
+		},
+		set: null,
+		auth: AuthEnum.none
+	},
+	{
 		name: 'camelCase',
 		description: 'returns an camelCase of the input',
-		super_description: '**camelCase**, connects words and makes the first character upper-case',
+		super_description: '**camelCase**, makes the first character upper-case',
 		example: '(variable, string)|camelCase',
 		args: 'none',
 		get: (str: string | string[]) => {

@@ -73,12 +73,18 @@ module.exports = async (
 
 			message.reply(
 				create_rich_embed(
-					'Documentation: https://portal-bot.xyz/docs',
+					'Detailed Documentation at https://portal-bot.xyz/docs',
 					'> To make a member a **dj**, give him role with name `p.dj`\n' +
 					'> To make a member an **admin**, give him role with name `p.admin`\n' +
 					'> To make **ignore** a member, give him role with name `p.ignore`\n' +
 					'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority-)',
-					'#05d1ff', func_array, null, null, true, null, null
+					'#05d1ff',
+					func_array,
+					null,
+					null,
+					true,
+					null,
+					null
 				))
 				.catch(console.error);
 

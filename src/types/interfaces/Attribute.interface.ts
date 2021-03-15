@@ -1338,7 +1338,7 @@ const attributes: InterfaceBlueprint[] = [
 				if (isNaN(new_user_limit)) {
 					return resolve({
 						result: false,
-						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number from 0-n (0 means unlimited)**`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number from 0-99 (0 means unlimited)**`
 					});
 				}
 

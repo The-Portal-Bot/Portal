@@ -28,7 +28,7 @@
 
 <br>
 
-<p align="center">A full Documentation with everything you may need can be found at https://portal-bot.xyz.</p>
+<p align="center">A full Documentation with everything you may need can be found at **[www.portal-bot.xyz](https://portal-bot.xyz)**.</p>
 
 * **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
 * **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name. It has four types of data _(used by run command and naming portal channels)_:
