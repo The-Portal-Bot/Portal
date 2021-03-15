@@ -111,35 +111,26 @@ async function reaction_role_manager(
 
 async function reaction_music_manager(
 	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
-): Promise<{ promise: ReturnPormise, animated: boolean }> {
+): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (!messageReaction.message.guild) {
 			return resolve({
-				promise: {
-					result: false,
-					value: 'could not fetch message\'s guild'
-				},
-				animated: false
+				result: false,
+				value: 'could not fetch message\'s guild'
 			});
 		}
 
 		if (!guild_object.music_data) {
 			return resolve({
-				promise: {
-					result: false,
-					value: 'guild has no music channel'
-				},
-				animated: false
+				result: false,
+				value: 'guild has no music channel'
 			});
 		}
 
 		if (guild_object.music_data.message_id !== messageReaction.message.id) {
 			return resolve({
-				promise: {
-					result: false,
-					value: 'message is not music player'
-				},
-				animated: false
+				result: false,
+				value: 'message is not music player'
 			});
 		}
 
@@ -149,11 +140,8 @@ async function reaction_music_manager(
 		if (portal_voice_connection) {
 			if (!portal_voice_connection.channel.members.has(user.id)) {
 				return resolve({
-					promise: {
-						result: false,
-						value: 'you must be in the same channel as Portal'
-					},
-					animated: false
+					result: false,
+					value: 'you must be in the same channel as Portal'
 				});
 			}
 		}
@@ -167,17 +155,14 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({ promise: r, animated: true });
+						return resolve(r);
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
 						return resolve({
-							promise: {
-								result: false,
-								value: `error while playing (${e})`
-							},
-							animated: true
+							result: false,
+							value: `error while playing (${e})`
 						});
 					});
 
@@ -188,17 +173,14 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({ promise: r, animated: false });
+						return resolve(r);
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
 						return resolve({
-							promise: {
-								result: false,
-								value: `error while pausing (${e})`
-							},
-							animated: false
+							result: false,
+							value: `error while pausing (${e})`
 						});
 					});
 
@@ -207,21 +189,15 @@ async function reaction_music_manager(
 			case '⏭': {
 				if (!portal_voice_connection) {
 					return resolve({
-						promise: {
-							result: false,
-							value: 'nothing to skip, player is idle'
-						},
-						animated: false
+						result: false,
+						value: 'nothing to skip, player is idle'
 					})
 				}
 
 				if (!guild_object.music_data.votes) {
 					return resolve({
-						promise: {
-							result: false,
-							value: 'could not fetch music votes'
-						},
-						animated: false
+						result: false,
+						value: 'could not fetch music votes'
 					})
 				}
 
@@ -231,11 +207,8 @@ async function reaction_music_manager(
 
 				if (!guild) {
 					return resolve({
-						promise: {
-							result: false,
-							value: `could not fetch guild`
-						},
-						animated: false
+						result: false,
+						value: `could not fetch guild`
 					});
 				}
 
@@ -244,11 +217,8 @@ async function reaction_music_manager(
 
 				if (!member) {
 					return resolve({
-						promise: {
-							result: false,
-							value: `could not fetch memeber`
-						},
-						animated: false
+						result: false,
+						value: `could not fetch memeber`
 					});
 				}
 
@@ -267,11 +237,8 @@ async function reaction_music_manager(
 
 						if (!(votes < users / 2)) {
 							return resolve({
-								promise: {
-									result: false,
-									value: `${votes}/${Math.round(users / 2)} votes required`
-								},
-								animated: false
+								result: false,
+								value: `${votes}/${Math.round(users / 2)} votes required`
 							});
 						} else {
 							reason = 'vote'
@@ -292,20 +259,14 @@ async function reaction_music_manager(
 							clear_music_vote(guild_object.id);
 							guild_object.music_queue.shift();
 							return resolve({
-								promise: {
-									result: r.result,
-									value: r.value + ` (by ${reason})`
-								},
-								animated: r.result
+								result: r.result,
+								value: r.value + ` (by ${reason})`
 							});
 						})
 						.catch(e => {
 							return resolve({
-								promise: {
-									result: false,
-									value: `error while skipping (${e})`
-								},
-								animated: false
+								result: false,
+								value: `error while skipping (${e})`
 							})
 						});
 				} else {
@@ -314,13 +275,10 @@ async function reaction_music_manager(
 						.then(r => {
 							if (!r) {
 								return resolve({
-									promise: {
-										result: false,
-										value: guild_object.music_data.pinned
-											? 'failed to pin song'
-											: 'failed to unpin song'
-									},
-									animated: true
+									result: false,
+									value: guild_object.music_data.pinned
+										? 'failed to pin song'
+										: 'failed to unpin song'
 								});
 							} else {
 								skip(
@@ -331,20 +289,14 @@ async function reaction_music_manager(
 										clear_music_vote(guild_object.id);
 										guild_object.music_queue.shift();
 										return resolve({
-											promise: {
-												result: r.result,
-												value: r.value + ` (by ${reason})`
-											},
-											animated: r.result
+											result: r.result,
+											value: r.value + ` (by ${reason})`
 										});
 									})
 									.catch(e => {
 										return resolve({
-											promise: {
-												result: false,
-												value: `error while skipping (${e})`
-											},
-											animated: false
+											result: false,
+											value: `error while skipping (${e})`
 										})
 									});
 							}
@@ -353,13 +305,10 @@ async function reaction_music_manager(
 							guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
 							return resolve({
-								promise: {
-									result: false,
-									value: !guild_object.music_data.pinned
-										? `error occured while pinning song (${e})`
-										: `error occured while unpinning song (${e})`
-								},
-								animated: true
+								result: false,
+								value: !guild_object.music_data.pinned
+									? `error occurred while pinning song (${e})`
+									: `error occurred while unpinning song (${e})`
 							});
 						});
 				}
@@ -372,17 +321,14 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({ promise: r, animated: r.result });
+						return resolve(r);
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
 						return resolve({
-							promise: {
-								result: false,
-								value: `error while decreasing volume (${e})`
-							},
-							animated: false
+							result: false,
+							value: `error while decreasing volume (${e})`
 						});
 					});
 
@@ -393,17 +339,14 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({ promise: r, animated: r.result });
+						return resolve(r);
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
 						return resolve({
-							promise: {
-								result: false,
-								value: `error while increasing volume (${e})`
-							},
-							animated: false
+							result: false,
+							value: `error while increasing volume (${e})`
 						});
 					});
 
@@ -419,30 +362,24 @@ async function reaction_music_manager(
 						}
 
 						return resolve({
-							promise: {
-								result: r,
-								value: r
-									? guild_object.music_data.pinned
-										? 'pinned song'
-										: 'unpinned song'
-									: !guild_object.music_data.pinned
-										? 'failed to pin song'
-										: 'failed to unpin song'
-							},
-							animated: true
+							result: r,
+							value: r
+								? guild_object.music_data.pinned
+									? 'pinned song'
+									: 'unpinned song'
+								: !guild_object.music_data.pinned
+									? 'failed to pin song'
+									: 'failed to unpin song'
 						});
 					})
 					.catch(e => {
 						guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
 						return resolve({
-							promise: {
-								result: false,
-								value: !guild_object.music_data.pinned
-									? `error occured while pinning song (${e})`
-									: `error occured while unpinning song (${e})`
-							},
-							animated: true
+							result: false,
+							value: !guild_object.music_data.pinned
+								? `error occurred while pinning song (${e})`
+								: `error occurred while unpinning song (${e})`
 						});
 					});
 
@@ -460,11 +397,8 @@ async function reaction_music_manager(
 						clear_music_vote(guild_object.id);
 
 						return resolve({
-							promise: {
-								result: false,
-								value: 'could fetch guild from client'
-							},
-							animated: false
+							result: false,
+							value: 'could fetch guild from client'
 						});
 					}
 				}
@@ -472,11 +406,8 @@ async function reaction_music_manager(
 				clear_music_vote(guild_object.id);
 
 				return resolve({
-					promise: {
-						result: true,
-						value: 'queue has been cleared'
-					},
-					animated: false
+					result: true,
+					value: 'queue has been cleared'
 				});
 
 				break;
@@ -493,22 +424,16 @@ async function reaction_music_manager(
 						clear_music_vote(guild_object.id);
 
 						return resolve({
-							promise: {
-								result: true,
-								value: 'Portal has been disconnected'
-							},
-							animated: false
+							result: true,
+							value: 'Portal has been disconnected'
 						});
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
 						return resolve({
-							promise: {
-								result: false,
-								value: `Portal failed to get disconnected (${e})`
-							},
-							animated: false
+							result: false,
+							value: `Portal failed to get disconnected (${e})`
 						})
 					});
 
@@ -560,20 +485,27 @@ module.exports = async (
 							reaction_music_manager(args.client, guild_object, args.messageReaction, args.user)
 								.then(r => {
 									if (args.messageReaction.message.guild) {
+										const portal_voice_connection = args.client.voice?.connections
+											.find(c => c.channel.guild.id === args.messageReaction.message.guild?.id);
+
+										const animate = portal_voice_connection?.dispatcher
+											? !portal_voice_connection?.dispatcher.paused
+											: false;
+
 										update_music_message(
 											args.messageReaction.message.guild,
 											guild_object,
 											guild_object.music_queue.length > 0
 												? guild_object.music_queue[0]
 												: undefined,
-											r.promise.value,
-											r.animated
+											r.value,
+											animate
 										);
 									}
 
 									clear_user_reactions(args.messageReaction, args.user);
 
-									return resolve(r.promise);
+									return resolve(r);
 								})
 								.catch(e => {
 									if (args.messageReaction.message.guild) {

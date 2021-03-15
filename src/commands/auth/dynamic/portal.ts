@@ -49,7 +49,11 @@ module.exports = async (
 			userLimit: 1
 		};
 		const voice_regex = guild_object.premium
-			? 'G$#-P$member_count | $status_list'
+			// ? 'G$#-P$member_count | $status_list'
+			? `$#. ($member_count) | {{
+				"if": "$status_count", "is": "===", "with": "1",
+				"yes": "$status_list|titleCase", "no": "$status_list|acronym"
+			}}`
 			: 'Channel $#';
 
 		create_channel(current_guild, portal_channel, portal_options, portal_category)
@@ -90,7 +94,7 @@ module.exports = async (
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: `an error occured while creating channel (${e})`
+					value: `an error occurred while creating channel (${e})`
 				});
 			});
 	});

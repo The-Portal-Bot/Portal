@@ -27,10 +27,14 @@ const structures: InterfaceBlueprint[] = [
 
 export function is_structure(candidate: string): string {
 	for (let i = 0; i < structures.length; i++) {
-		if (String(candidate).substring(1, (String(structures[i].name).length + 1)) == structures[i].name) {
+		const sub_str = String(candidate)
+			.substring(1, (String(structures[i].name).length + 1));
+
+		if (sub_str == structures[i].name) {
 			return structures[i].name;
 		}
 	}
+
 	return '';
 };
 
@@ -102,11 +106,11 @@ export function get_structure_help(): MessageEmbed[] {
 				'(if this do that, or if that do this).\n' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#EEB902', strc_array[0], null, null, null, null, null
-			)
+			);
 		} else {
 			return create_rich_embed(
 				null, null, '#EEB902', strc_array[index], null, null, null, null, null
-			)
+			);
 		}
 	});
 };
@@ -124,13 +128,14 @@ export function get_structure_help_super(candidate: string): MessageEmbed | bool
 				[
 					{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
 					{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false },
-					{ emote: 'Example', role: '*' + strc.example + '*', inline: false },
+					{ emote: 'Example', role: '*' + strc.example + '*', inline: false }
 				],
 				null,
 				null,
 				null,
 				null,
-				null);
+				null
+			);
 		}
 	}
 	return false;

@@ -9,7 +9,7 @@ function add_guild_again(
 	return new Promise((resolve) => {
 		guild_exists(guild_id)
 			.then(exists => {
-				if (!exists)
+				if (!exists) {
 					insert_guild(guild_id, client)
 						.then(resposne => {
 							return resolve(resposne);
@@ -17,6 +17,9 @@ function add_guild_again(
 						.catch(() => {
 							return resolve(false);
 						});
+				} else {
+					// check and add members
+				}
 			})
 			.catch(() => {
 				return resolve(false);

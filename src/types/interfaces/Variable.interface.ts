@@ -23,10 +23,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 			if (!portal_object_list) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 
 			const portal_object = portal_object_list.find(portal =>
@@ -59,10 +59,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 			if (!portal_object_list) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 
 			const portal_object = portal_object_list.find(portal =>
@@ -94,10 +94,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 			if (!portal_object_list) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 
 			const portal_object = portal_object_list.find(portal =>
@@ -125,7 +125,7 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 
 			return voice_object.creator_id;
@@ -144,14 +144,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.subtract(10, 'days')
-					.calendar();
+				return moment().subtract(10, 'days').calendar();
 			}
 
-			return moment()
-				.subtract(10, 'days')
-				.calendar();
+			return moment().subtract(10, 'days').calendar();
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -167,12 +163,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.date();
+				return moment().date();
 			}
 
-			return moment()
-				.date();
+			return moment().date();
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -188,11 +182,9 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.format('dddd');
+				return moment().format('dddd');
 			}
-			return moment()
-				.format('dddd');
+			return moment().format('dddd');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -208,11 +200,9 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.format('M');
+				return moment().format('M');
 			}
-			return moment()
-				.format('M');
+			return moment().format('M');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -228,12 +218,9 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.startOf('month')
-					.format('MMMM');
+				return moment().startOf('month').format('MMMM');
 			}
-			return moment()
-				.startOf('month')
+			return moment().startOf('month')
 				.format('MMMM');
 		},
 		set: null,
@@ -250,19 +237,17 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.format('yyyy');
+				return moment().format('yyyy');
 			}
-			return moment()
-				.format('yyyy');
+			return moment().format('yyyy');
 		},
 		set: null,
 		auth: AuthEnum.none
 	},
 	{
 		name: 'time',
-		description: 'full time: hh/mm/ss',
-		super_description: '**time**, full time: hh/mm/ss',
+		description: 'full time: hh:mm:ss',
+		super_description: '**time**, full time: hh:mm:ss',
 		example: '$time',
 		args: 'none',
 		get: (
@@ -270,11 +255,9 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.format('hh:mm:ss');
+				return moment().format('hh:mm:ss');
 			}
-			return moment()
-				.format('hh:mm:ss');
+			return moment().format('hh:mm:ss');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -290,11 +273,9 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.format('hh');
+				return moment().format('hh');
 			}
-			return moment()
-				.format('hh');
+			return moment().format('hh');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -310,11 +291,9 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.format('mm');
+				return moment().format('mm');
 			}
-			return moment()
-				.format('mm');
+			return moment().format('mm');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -330,11 +309,9 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return moment()
-					.format('ss');
+				return moment().format('ss');
 			}
-			return moment()
-				.format('ss');
+			return moment().format('ss');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -458,7 +435,7 @@ const variables: InterfaceBlueprint[] = [
 				return 'must be in voice channel';
 			}
 			if (!voice_object) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 
 			const status_list: string[] = get_status_list(voice_channel, voice_object);
@@ -497,7 +474,7 @@ const variables: InterfaceBlueprint[] = [
 				return 'must be in voice channel';
 			}
 			if (!voice_object) {
-				return 'must be in portal channel';
+				return 'NiP';
 			}
 
 			return get_status_list(voice_channel, voice_object);
@@ -526,10 +503,14 @@ const variables: InterfaceBlueprint[] = [
 
 export function is_variable(candidate: string): string {
 	for (let i = 0; i < variables.length; i++) {
-		if (String(candidate).substring(1, (String(variables[i].name).length + 1)) == variables[i].name) {
+		const sub_str = String(candidate)
+			.substring(1, (String(variables[i].name).length + 1));
+
+		if (sub_str === variables[i].name) {
 			return variables[i].name;
 		}
 	}
+
 	return '';
 };
 
@@ -601,11 +582,11 @@ export function get_variable_help(): MessageEmbed[] {
 				'about your current voice channel' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#1BE7FF', vrbl_array[0], null, null, null, null, null
-			)
+			);
 		} else {
 			return create_rich_embed(
 				null, null, '#1BE7FF', vrbl_array[index], null, null, null, null, null
-			)
+			);
 		}
 	});
 };
@@ -629,7 +610,8 @@ export function get_variable_help_super(candidate: string): MessageEmbed | boole
 				null,
 				null,
 				null,
-				null);
+				null
+			);
 		}
 	}
 	return false;

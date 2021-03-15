@@ -57,9 +57,9 @@ export const GameNames = {
             "status": "Heroes of the Storm",
             "type": "game",
             "locale": {
-                "en": "Heroes of the Storm",
-                "de": "Heroes of the Storm",
-                "gr": "Ήρωες της Καταιγίδας"
+                "en": "HOTS",
+                "de": "HOTS",
+                "gr": "ΧΟΤΣ"
             }
         },
         {
@@ -68,7 +68,7 @@ export const GameNames = {
             "locale": {
                 "en": "Hearthstone",
                 "de": "Hearthstone",
-                "gr": "Πέτρινη Εστίας"
+                "gr": "ΠέτρινηΚαρδιά"
             }
         },
         {
@@ -77,7 +77,7 @@ export const GameNames = {
             "locale": {
                 "en": "Apex",
                 "de": "Apex",
-                "gr": "Κορυφαίοι"
+                "gr": "Apex"
             }
         },
         {
@@ -951,6 +951,15 @@ export const GameNames = {
                 "en": "War Thunder",
                 "de": "War Thunder",
                 "gr": "Κεραυνός του πολέμου"
+            }
+        },
+        {
+            "status": "The Witcher 3: Wild Hunt",
+            "type": "game",
+            "locale": {
+                "en": "Witcher 3",
+                "de": "Witcher 3",
+                "gr": "Γητευτής 3"
             }
         },
         {

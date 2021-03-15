@@ -1,10 +1,9 @@
 import { Guild, GuildMember, Message, VoiceState } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
-import { RankSpeedEnum } from "../data/enums/RankSpeed.enum";
+import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
 import { time_elapsed } from './help.library';
-
-const rank_speed = { none: 0.00, slow: 0.05, normal: 0.1, fast: 0.15 };
+import { update_member } from "./mongo.library";
 
 export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild): boolean {
 	if (ranks) return false;
@@ -23,47 +22,51 @@ export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMemb
 	return false;
 };
 
-export function calculate_rank(member: MemberPrtl): number | null {
-	if (member.tier === 0) member.tier = 1; // must be removed
+export function calculate_rank(member: MemberPrtl): number | boolean {
+	if (member.tier === 0) {
+		member.tier = 1; // must be removed
+	}
+
 	if (member.points >= member.tier * 1000) {
 		member.points -= member.tier * 1000;
-		
+
 		member.level++;
-		if (member.level % 5 === 0) member.tier++;
+		if (member.level % 5 === 0) {
+			member.tier++;
+		}
 
 		return member.level;
 	}
 
-	return null;
+	return false;
 };
 
-export function add_points_time(member_prtl: MemberPrtl, speed: number): boolean {
-	if (!member_prtl.timestamp) return false;
-	
-	const voice_time = time_elapsed(member_prtl.timestamp, 0);
-
-	let speed_num: number = rank_speed.normal;
-	switch (speed) {
-		case RankSpeedEnum.none: speed_num = rank_speed.none;
-		case RankSpeedEnum.slow: speed_num = rank_speed.slow;
-		case RankSpeedEnum.default: speed_num = rank_speed.normal;
-		case RankSpeedEnum.fast: speed_num = rank_speed.fast;
+export function add_points_time(
+	member_prtl: MemberPrtl, rank_speed: number
+): number | boolean {
+	if (!member_prtl.timestamp) {
+		return member_prtl.points;
 	}
 
-	member_prtl.points += Math.round(voice_time.remaining_sec * speed_num);
-	member_prtl.points += Math.round(voice_time.remaining_min * speed_num * 60 * 1.15);
-	member_prtl.points += Math.round(voice_time.remaining_hrs * speed_num * 60 * 60 * 1.25);
+	const voice_time = time_elapsed(member_prtl.timestamp, 0);
+
+	member_prtl.points += Math.round(voice_time.remaining_sec * RankSpeedValueList[rank_speed]);
+	member_prtl.points += Math.round(voice_time.remaining_min * RankSpeedValueList[rank_speed] * 60 * 1.15);
+	member_prtl.points += Math.round(voice_time.remaining_hrs * RankSpeedValueList[rank_speed] * 60 * 60 * 1.25);
 
 	member_prtl.timestamp = null;
 
-	return true;
+	return member_prtl.points;
 };
 
-export function update_timestamp(voiceState: VoiceState, guild_object: GuildPrtl): number | boolean {
+export function update_timestamp(
+	voiceState: VoiceState, guild_object: GuildPrtl
+): number | boolean {
 	if (voiceState.member && voiceState.member.user.bot) {
 		const member_prtl = guild_object.member_list.find(m => {
-			if (voiceState && voiceState.member)
+			if (voiceState && voiceState.member) {
 				return m.id === voiceState.member.id;
+			}
 		});
 
 		if (member_prtl === undefined) {
@@ -77,35 +80,67 @@ export function update_timestamp(voiceState: VoiceState, guild_object: GuildPrtl
 
 		if (member_prtl.timestamp === null) {
 			member_prtl.timestamp = new Date();
+			update_member(voiceState.guild.id, member.id, 'timestamp', member_prtl.timestamp)
+				.then(console.log)
+				.catch(console.log);
+
 			return false;
 		}
 
-		add_points_time(member_prtl, speed);
-		calculate_rank(member_prtl);
+		const points = add_points_time(member_prtl, speed);
+
+		update_member(voiceState.guild.id, member.id, 'points', points)
+			.then(console.log)
+			.catch(console.log);
+
+		update_member(voiceState.guild.id, member.id, 'timestamp', null)
+			.then(console.log)
+			.catch(console.log);
+
+		const level = calculate_rank(member_prtl);
+
+		if (level) {
+			update_member(voiceState.guild.id, member.id, 'level', level)
+				.then(console.log)
+				.catch(console.log);
+		}
+
 		give_role_from_rankup(member_prtl, member, ranks, voiceState.guild);
 
 		if (member_prtl.level > cached_level) {
 			return member_prtl.level;
 		}
 	}
+
 	return false;
 };
 
 export function add_points_message(
-	message: Message, member: MemberPrtl, speed: number
+	message: Message, member: MemberPrtl, rank_speed: number
 ): number | boolean {
-	let speed_num: number = rank_speed.normal;
-	switch (speed) {
-		case RankSpeedEnum.none: speed_num = rank_speed.none;
-		case RankSpeedEnum.slow: speed_num = rank_speed.slow;
-		case RankSpeedEnum.default: speed_num = rank_speed.normal;
-		case RankSpeedEnum.fast: speed_num = rank_speed.fast;
+	if (rank_speed === RankSpeedEnum.none) {
+		return false
 	}
 
-	const points = message.content.length * speed_num;
+	if (!message.guild) {
+		return false
+	}
+
+	const points = message.content.length * RankSpeedValueList[rank_speed];
 	member.points += points > 5 ? 5 : points;
 
+	update_member(message.guild.id, member.id, 'points', member.points)
+		.then(console.log)
+		.catch(console.log);
+
 	const level = calculate_rank(member);
+
+	if (level) {
+		update_member(message.guild.id, member.id, 'level', level)
+			.then(console.log)
+			.catch(console.log);
+	}
+
 	return level ? level : false;
 };
 

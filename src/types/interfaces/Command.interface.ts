@@ -407,7 +407,12 @@ const commands: InterfaceBlueprint[] = [
 
 export function is_command(candidate: string): string {
 	for (let i = 0; i < commands.length; i++) {
-		if (String(candidate).substring(1, (String(commands[i].name).length + 1)) == commands[i].name) { return commands[i].name; }
+		const sub_str = String(candidate)
+			.substring(1, (String(commands[i].name).length + 1));
+
+		if (sub_str == commands[i].name) {
+			return commands[i].name;
+		}
 	}
 
 	return '';

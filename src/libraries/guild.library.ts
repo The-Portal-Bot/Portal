@@ -149,7 +149,11 @@ export function create_portal_channel(
 	guild_object: GuildPrtl, creator_id: string): void {
 
 	const voice_name = guild_object.premium
-		? 'G$#-P$member_count | $status_list'
+		// ? 'G$#-P$member_count | $status_list'
+		? `$#. ($member_count) | {{
+			"if": "$status_count", "is": "===", "with": "1",
+			"yes": "$status_list|titleCase", "no": "$status_list|acronym"
+		}}`
 		: 'Channel $#'
 
 	if (portal_category && typeof portal_category === 'string') { // with category
