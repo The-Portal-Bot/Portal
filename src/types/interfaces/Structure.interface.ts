@@ -106,11 +106,11 @@ export function get_structure_help(): MessageEmbed[] {
 				'(if this do that, or if that do this).\n' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#EEB902', strc_array[0], null, null, null, null, null
-			)
+			);
 		} else {
 			return create_rich_embed(
 				null, null, '#EEB902', strc_array[index], null, null, null, null, null
-			)
+			);
 		}
 	});
 };
@@ -128,13 +128,14 @@ export function get_structure_help_super(candidate: string): MessageEmbed | bool
 				[
 					{ emote: 'Description', role: '*' + strc.super_description + '*', inline: false },
 					{ emote: 'Arguments', role: '*' + strc.args + '*', inline: false },
-					{ emote: 'Example', role: '*' + strc.example + '*', inline: false },
+					{ emote: 'Example', role: '*' + strc.example + '*', inline: false }
 				],
 				null,
 				null,
 				null,
 				null,
-				null);
+				null
+			);
 		}
 	}
 	return false;

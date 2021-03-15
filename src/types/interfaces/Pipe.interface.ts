@@ -99,7 +99,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? str
-				: most_frequent_number(str);
+				: most_frequent(str, true);
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -113,7 +113,7 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? str
-				: most_frequent(str);
+				: most_frequent(str, false);
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -270,7 +270,7 @@ export function get_pipe_help(): MessageEmbed[] {
 				'Mini functions you can pass text or Variables to manipulate their outcome\n' +
 				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
 				'#6EEB83', pipe_array[0], null, null, null, null, null
-			)
+			);
 		} else {
 			return create_rich_embed(
 				null,
@@ -282,7 +282,7 @@ export function get_pipe_help(): MessageEmbed[] {
 				null,
 				null,
 				null
-			)
+			);
 		}
 	});
 };
@@ -306,7 +306,8 @@ export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 				null,
 				null,
 				null,
-				null);
+				null
+			);
 		}
 	}
 
@@ -323,7 +324,7 @@ export function get_pipe(str: string | string[], pipe: string): any {
 	return -1;
 };
 
-function most_frequent(array: string[]): string {
+function most_frequent(array: string[], return_number: boolean): string | number {
 	if (array.length == 0) {
 		return 'no statuses';
 	}
@@ -334,39 +335,18 @@ function most_frequent(array: string[]): string {
 
 	for (let i = 0; i < array.length; i++) {
 		let el = array[i];
-		if (modeMap[el] == null)
+
+		if (modeMap[el] == null) {
 			modeMap[el] = 1;
-		else
+		} else {
 			modeMap[el]++;
+		}
+
 		if (modeMap[el] > maxCount) {
 			maxEl = el;
 			maxCount = modeMap[el];
 		}
 	}
 
-	return maxEl;
-}
-
-function most_frequent_number(array: string[]): number {
-	if (array.length == 0) {
-		return 0;
-	}
-
-	let modeMap: any = {};
-	let maxEl: string = array[0]
-	let maxCount: number = 1;
-
-	for (let i = 0; i < array.length; i++) {
-		let el = array[i];
-		if (modeMap[el] == null)
-			modeMap[el] = 1;
-		else
-			modeMap[el]++;
-		if (modeMap[el] > maxCount) {
-			maxEl = el;
-			maxCount = modeMap[el];
-		}
-	}
-
-	return maxCount;
+	return return_number ? maxCount : maxEl;
 }

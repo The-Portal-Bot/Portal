@@ -39,7 +39,7 @@ module.exports = async (
 		} else if (args.length > 1) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'corona')
+				value: message_help('commands', 'corona', 'you must give only one argument')
 			});
 		} else {
 			return resolve({
@@ -83,7 +83,7 @@ module.exports = async (
 
 					message.channel.send(
 						create_rich_embed(
-							`${country_data.country} | ${moment().format('DD/MM/YY')}`,
+							`${country_data.country} | ${moment(country_data.time).format('DD/MM/YY')}`,
 							'Covid19 stats by covid-193',
 							'#FF0000',
 							[
