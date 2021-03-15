@@ -1,6 +1,6 @@
-import { Client, Message, User, StreamDispatcher } from "discord.js";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { Client, Message, User } from "discord.js";
 import { LocaleEnum } from "../data/enums/Locales.enum";
+import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { LocalisationOption } from "../types/interfaces/InterfacesPrtl.interface";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
@@ -142,7 +142,9 @@ export const console_text: LocalisationOption[] = [
 	}
 ]
 
-export function client_talk(client: Client, guild_object: GuildPrtl, context: string): boolean {
+export function client_talk(
+	client: Client, guild_object: GuildPrtl, context: string
+): boolean {
 	const voice_connection = client?.voice?.connections
 		.find(connection => connection.channel.guild.id === guild_object.id);
 
@@ -150,7 +152,7 @@ export function client_talk(client: Client, guild_object: GuildPrtl, context: st
 		if (!voice_connection.dispatcher) {
 			return guild_object.portal_list.some(p =>
 				p.voice_list.some(v => {
-					// if (!voice_connection.speaking) {
+
 					if (type_of_announcement.includes(context) && v.ann_announce) {
 						const locale = v.locale;
 						const random = Math.floor(Math.random() * Math.floor(3));
@@ -165,7 +167,7 @@ export function client_talk(client: Client, guild_object: GuildPrtl, context: st
 						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
 						return true;
 					}
-					// }
+
 					return v.id === voice_connection.channel.id;
 				})
 			);
@@ -176,32 +178,39 @@ export function client_talk(client: Client, guild_object: GuildPrtl, context: st
 };
 
 export function get_function(
-	output: string, language: string, context: string
+	output: string, locale: number, context: string
 ): any {
 	let func: any = null;
+
 	if (output === 'portal') {
 		portal.some(ct => {
 			if (ct.name === context) {
-				if (language === 'gr') {
-					func = ct.lang.gr;
-				} else if (language === 'en') {
-					func = ct.lang.en;
-				} else if (language === 'de') {
-					func = ct.lang.de;
+				switch (locale) {
+					case LocaleEnum.gr:
+						func = ct.lang.gr;
+						return true;
+					case LocaleEnum.en:
+						func = ct.lang.en;
+						return true;
+					case LocaleEnum.de:
+						func = ct.lang.de;
+						return true;
 				}
 			}
 		});
 	}
 	else if (output === 'console') {
 		console_text.some(ct => {
-			if (ct.name === context) {
-				if (language === 'gr') {
+			switch (locale) {
+				case LocaleEnum.gr:
 					func = ct.lang.gr;
-				} else if (language === 'en') {
+					return true;
+				case LocaleEnum.en:
 					func = ct.lang.en;
-				} else if (language === 'de') {
+					return true;
+				case LocaleEnum.de:
 					func = ct.lang.de;
-				}
+					return true;
 			}
 		});
 	}
@@ -209,11 +218,13 @@ export function get_function(
 	return func;
 };
 
-export function client_write(message: Message, guild_object: GuildPrtl, context: string): string {
-	if (message === null) return 'could not fetch message';
-	if (message.member === null) return 'could not fetch member';
-	if (message.member.voice === undefined) return 'coud not fetch voice';
-	if (message.member.voice === null) return 'coud not fetch voice';
+export function client_write(
+	message: Message, guild_object: GuildPrtl, context: string
+): string {
+	if (!message) return 'could not fetch message';
+	if (!message.member) return 'could not fetch member';
+	if (!message.member.voice) return 'coud not fetch voice';
+	if (!message.member.voice) return 'coud not fetch voice';
 
 	let return_value = 'could not find data';
 
@@ -226,23 +237,32 @@ export function client_write(message: Message, guild_object: GuildPrtl, context:
 						case LocaleEnum.en: return_value = portal.find(p => p.name === context)?.lang.en(); break;
 						case LocaleEnum.de: return_value = portal.find(p => p.name === context)?.lang.de(); break;
 					}
+
 					return true;
 				}
 			}
+
 			return false;
 		})
 	);
 
-	if (found)
+	if (found) {
 		return return_value
-	else
+	} else {
 		return portal.find(p => p.name === context)?.lang.en();
+	}
 };
 
 export function client_log(
-	message: Message | null, guild_list: GuildPrtl[], context: string, args: any): string {
-	if (message === null || message.member === null) return 'there was an error';
-	if (message.member.voice === undefined || message.member.voice === null) return 'there was an error';
+	message: Message | null, guild_list: GuildPrtl[], context: string, args: any
+): string {
+	if (message === null || message.member === null) {
+		return 'there was an error';
+	}
+
+	if (!message.member.voice) {
+		return 'there was an error';
+	}
 
 	guild_list.some(g =>
 		g.portal_list.some(p =>
@@ -250,9 +270,12 @@ export function client_log(
 				if (message.member && message.member.voice.channel) {
 					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 						switch (v.locale) {
-							case LocaleEnum.gr: return console_text.find(c => c.name === context)?.lang.gr(args);
-							case LocaleEnum.en: return console_text.find(c => c.name === context)?.lang.en(args);
-							case LocaleEnum.de: return console_text.find(c => c.name === context)?.lang.de(args);
+							case LocaleEnum.gr:
+								return console_text.find(c => c.name === context)?.lang.gr(args);
+							case LocaleEnum.en:
+								return console_text.find(c => c.name === context)?.lang.en(args);
+							case LocaleEnum.de:
+								return console_text.find(c => c.name === context)?.lang.de(args);
 						}
 					}
 				}

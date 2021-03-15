@@ -61,7 +61,7 @@ module.exports = async (
 			// remove_empty_voice_channels(guild);
 		});
 
-		const func = get_function('console', 'en', 'ready');
+		const func = get_function('console', 1, 'ready');
 		return resolve({
 			result: true,
 			value: func
