@@ -26,6 +26,7 @@ export async function fetch_guild_list(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -48,6 +49,7 @@ export async function fetch_guild(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -84,6 +86,7 @@ export async function fetch_guild_channel_delete(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -108,6 +111,7 @@ export async function fetch_guild_announcement(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -144,6 +148,7 @@ export async function fetch_guild_reaction_data(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -172,6 +177,7 @@ export async function fetch_guild_music_queue(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -220,6 +226,7 @@ export async function fetch_guild_predata(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -261,6 +268,7 @@ export async function fetch_guild_rest(
                 }
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(undefined);
             });
     });
@@ -279,6 +287,7 @@ export async function guild_exists(
                 return resolve(count > 0);
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);;
             });
     });
@@ -305,6 +314,7 @@ export async function update_guild(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -316,13 +326,42 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
     const member_list: MemberPrtl[] = [];
 
     const guild = client.guilds.cache.find(guild => guild.id === guild_id);
-    if (!guild) return member_list;
+    if (!guild) {
+        return member_list;
+    }
+
+    // const member_array = guild.members.cache.array();
+    // for(let i = 0; i < member_array.length; i++) {
+    //     if (!member_array[i].user.bot) {
+    //         if (client.user && member_array[i].id !== client.user.id) {
+    //             member_list.push(
+    //                 new MemberPrtl(
+    //                     member_array[i].id,
+    //                     1,
+    //                     0,
+    //                     1,
+    //                     0,
+    //                     new Date('1 January, 1970, 00:00:00 UTC'),
+    //                     'null'
+    //                 )
+    //             );
+    //         }
+    //     }
+    // }
 
     guild.members.cache.forEach(member => {
         if (!member.user.bot) {
             if (client.user && member.id !== client.user.id) {
                 member_list.push(
-                    new MemberPrtl(member.id, 1, 0, 1, 0, new Date('1 January, 1970, 00:00:00 UTC'), 'null')
+                    new MemberPrtl(
+                        member.id,
+                        1,
+                        0,
+                        1,
+                        0,
+                        new Date('1 January, 1970, 00:00:00 UTC'),
+                        'null'
+                    )
                 );
             }
         }
@@ -336,10 +375,10 @@ export async function insert_guild(
 ): Promise<boolean> {
     const id: string = guild_id;
     const portal_list: PortalChannelPrtl[] = [];
-    const member_list = create_member_list(guild_id, client);
-    const ignore_list: string[] = [];
+    const member_list: MemberPrtl[] = create_member_list(guild_id, client);
     const url_list: string[] = [];
     const role_list: GiveRolePrtl[] = [];
+    const poll_list: string[] = [];
     const ranks: Rank[] = [];
     const music_data: MusicData = {
         channel_id: 'null',
@@ -349,7 +388,7 @@ export async function insert_guild(
     };
     const music_queue: VideoSearchResult[] = [];
     const announcement: string | null = 'null';
-    const locale: string = 'en';
+    const locale: number = 1;
     const announce: boolean = true;
     const rank_speed: number = RankSpeedEnum.default;
     const profanity_level: number = ProfanityLevelEnum.default;
@@ -361,9 +400,9 @@ export async function insert_guild(
             id: id,
             portal_list: portal_list,
             member_list: member_list,
-            ignore_list: ignore_list,
             url_list: url_list,
             role_list: role_list,
+            poll_list: poll_list,
             ranks: ranks,
             music_data: music_data,
             music_queue: music_queue,
@@ -379,6 +418,7 @@ export async function insert_guild(
                 return resolve(!!r);
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);;
             });
     });
@@ -395,6 +435,7 @@ export async function remove_guild(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -419,7 +460,9 @@ export async function update_member(
             {
                 'new': true,
                 'arrayFilters': [
-                    { 'm.id': member_id }
+                    {
+                        'm.id': member_id
+                    }
                 ]
             }
         )
@@ -427,6 +470,7 @@ export async function update_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -449,6 +493,7 @@ export async function insert_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -473,6 +518,7 @@ export async function remove_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -505,6 +551,7 @@ export async function update_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -528,6 +575,7 @@ export async function insert_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -553,6 +601,7 @@ export async function remove_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -586,6 +635,7 @@ export async function update_voice(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -612,7 +662,8 @@ export async function insert_voice(
             }
         )
             .then((r: MongoPromise) => { resolve(!!r) })
-            .catch(e => { resolve(false) });
+            .catch(e => {
+                console.log('e :>> ', e); resolve(false) });
     });
 };
 
@@ -637,7 +688,8 @@ export async function remove_voice(
             }
         )
             .then((r: MongoPromise) => { resolve(!!r) })
-            .catch(e => { resolve(false) });
+            .catch(e => {
+                console.log('e :>> ', e); resolve(false) });
     });
 };
 
@@ -661,6 +713,7 @@ export async function insert_url(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -683,6 +736,7 @@ export async function remove_url(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -708,6 +762,7 @@ export async function insert_ignore( // channel
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -730,6 +785,7 @@ export async function remove_ignore( // channel
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -752,6 +808,7 @@ export async function set_ranks(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -777,6 +834,7 @@ export async function insert_poll(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -800,6 +858,7 @@ export async function remove_poll(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -825,6 +884,7 @@ export async function insert_role_assigner(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -848,6 +908,7 @@ export async function remove_role_assigner(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -873,6 +934,7 @@ export async function insert_music_video(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -896,6 +958,7 @@ export async function clear_music_vote(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -919,6 +982,7 @@ export async function insert_music_vote(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });
@@ -942,6 +1006,7 @@ export async function set_music_data(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
+                console.log('e :>> ', e);
                 return resolve(false);
             });
     });

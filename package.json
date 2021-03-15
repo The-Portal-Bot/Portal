@@ -1,7 +1,7 @@
 {
     "name": "portal",
     "author": "Ioannis Tsiakkas",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "private": true,
     "main": "src/index.ts",
     "scripts": {

@@ -26,7 +26,7 @@ module.exports = async (
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `portal failed to joined guild ${args.guild.name} [${args.guild.id}]`
+								value: `portal failed to join guild ${args.guild.name} [${args.guild.id}] (${e})`
 							});
 						});
 				}

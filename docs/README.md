@@ -4,13 +4,13 @@
 <p align="center">A fully fledged and feature rich bot for Discord</p>
 
 <p align="center">
-    Voice channels on demand (with auto-name update)<br>
+    Automatic voice channel generation with live name update<br>
+    Music player that is clean and clutter free, all from one channel<br>
     Assigns and strips roles from users with a single reaction<br>
-    Creates temporary "focus" channels for private conversations<br>
-    Music player that is clean and clutter free<br>
+    Create temporary "focus" channels for private conversations<br>
     Portal will keep you up to speed, with voice announcements<br>
-    Get the latest on the corona virus and current weather<br>
-    Spotify / Announcement / URL-only channels<br>
+    Get the latest on many topics, from weather to corona to news<br>
+    You can create URL-only text channels<br>
 </p>
 
 <p align="center">
@@ -51,6 +51,7 @@
 
 | Version | Date       | Argument                                                                                        |
 | :------ | :--------- | :---------------------------------------------------------------------------------------------- |
+| 0.6.5   | 15-03-2021 | _text interpreter refactoring, code restructure and minor fixes_                                |
 | 0.6.4   | 10-03-2021 | _implemented bet and news commands, updated music player design other minor updates_            |
 | 0.6.3   | 05-03-2021 | _increased responsed time by 70% and updated music player_                                      |
 | 0.6.2   | 03-03-2021 | _major refactoring and updates to code throughout, a lot of performance improvements_           |
@@ -72,7 +73,7 @@
 <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
 
 <p align="center">
-   <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPal Me</a>
+   <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPalMe</a>
 </p>
    
 <p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>

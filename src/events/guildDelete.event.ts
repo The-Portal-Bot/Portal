@@ -18,7 +18,7 @@ module.exports = async (
 				return resolve({
 					result: false,
 					value: `guild ${args.guild.name} [${args.guild.id}] ` +
-						`failed to be removed from portal`
+						`failed to be removed from portal (${e})`
 				});
 			});
 	});
