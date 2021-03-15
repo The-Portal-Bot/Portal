@@ -28,10 +28,11 @@
 
 <br>
 
-<p align="center">A full Documentation with everything you may need can be found at **[www.portal-bot.xyz](https://portal-bot.xyz)**.</p>
+<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz">portal-bot.xyz</b></p>
 
 * **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
-* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name. It has four types of data _(used by run command and naming portal channels)_:
+* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name.<br>
+    It has four types of data _(used by run command and naming portal channels)_:
 
     1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data that return information.
     2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
