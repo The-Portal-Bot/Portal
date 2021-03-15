@@ -24,16 +24,13 @@
     <a href="https://discord.gg/nuKXgFXr5y"><img src="https://img.shields.io/badge/Discord-Portal%20Official-green" alt="Add to Discord" /></a>
 </p>
 
----
-
-<br>
-
 <p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz">portal-bot.xyz</b></p>
+
+## Infrastructure
 
 * **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
 * **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name.<br>
     It has four types of data _(used by run command and naming portal channels)_:
-
     1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data that return information.
     2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
     3. **[Pipes](https://portal-bot.xyz/docs/regex/interpreter/pipes)**, are mini functions you can pass text or Variables to manipulate their outcome.
