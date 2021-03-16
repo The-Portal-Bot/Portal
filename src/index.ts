@@ -3,6 +3,7 @@ import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
+import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { client_talk } from './libraries/localisation.library';
@@ -11,7 +12,6 @@ import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_m
 import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
-import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
 const AntiSpam = require('discord-anti-spam');
 
@@ -41,7 +41,7 @@ const anti_spam = new AntiSpam({
 	maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
 	maxDuplicatesKick: 50, // Amount of duplicate messages that trigger a warning.
 	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.
-	exemptPermissions: [], // Bypass users with any of these permissions. ('ADMINISTRATOR')
+	exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions. ('ADMINISTRATOR')
 	ignoreBots: true, // Ignore bot messages.
 	debug: false,
 	verbose: true, // Extended Logs from module.

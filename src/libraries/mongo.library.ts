@@ -154,6 +154,31 @@ export async function fetch_guild_reaction_data(
     });
 };
 
+export async function fetch_guild_members(
+    guild_id: string
+): Promise<MemberPrtl[] | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                member_list: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<MemberPrtl[]>r.member_list);
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                console.log('e :>> ', e);
+                return resolve(undefined);
+            });
+    });
+};
+
 export async function fetch_guild_music_queue(
     guild_id: string
 ): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
@@ -477,12 +502,12 @@ export async function update_member(
 };
 
 export async function insert_member(
-    new_member: GuildMember
+    member_id: string, guild_id: string
 ): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, 'null');
+    const new_member_portal = new MemberPrtl(member_id, 1, 0, 1, 0, null, 'null');
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
-            { id: new_member.guild.id },
+            { id: guild_id },
             {
                 $push: {
                     member_list: new_member_portal
@@ -500,17 +525,17 @@ export async function insert_member(
 };
 
 export async function remove_member(
-    member_to_remove: GuildMember
+    member_id: string, guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             {
-                id: member_to_remove.guild.id
+                id: guild_id
             },
             {
                 $pull: {
                     member_list: {
-                        id: member_to_remove.id
+                        id: member_id
                     }
                 }
             })
