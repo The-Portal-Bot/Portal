@@ -448,7 +448,7 @@ export function message_help(
 ): string {
 	return `${(info === ``) ? `` : `` + `${info}\n`}` +
 		`get help by typing \`./help ${argument}\`\n` +
-		`*https://portal-bot.xyz/docs/${type}/${argument}*`;
+		`*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`;
 }
 
 export function message_reply(

@@ -15,32 +15,38 @@ module.exports = async (
             });
         }
 
-        message.channel.send(create_rich_embed(
-            message.member ? message.member?.displayName : 'could not fetch name',
-            'Portal member card',
-            '#ffffff',
-            [
-                {
-                    emote: 'Id',
-                    role: member_object.id,
-                    inline: false
-                },
-                {
-                    emote: 'Level',
-                    role: member_object.level,
-                    inline: false
-                },
-                {
-                    emote: 'Regex',
-                    role: member_object.regex ? 'not set' : member_object.regex,
-                    inline: false
-                }
-            ],
-            message.member?.user.avatarURL(),
-            null,
-            true,
-            null,
-            null)
+        message.channel.send(
+            create_rich_embed(
+                message.member
+                    ? message.member?.displayName
+                    : 'could not fetch name',
+                'Portal member card',
+                '#ddff00',
+                [
+                    {
+                        emote: 'Id',
+                        role: member_object.id,
+                        inline: false
+                    },
+                    {
+                        emote: 'Level',
+                        role: member_object.level,
+                        inline: true
+                    },
+                    {
+                        emote: 'Regex',
+                        role: (!member_object.regex || member_object.regex === 'null')
+                            ? 'not set'
+                            : member_object.regex,
+                        inline: true
+                    }
+                ],
+                message.member?.user.avatarURL(),
+                null,
+                true,
+                null,
+                null
+            )
         );
 
         return resolve({

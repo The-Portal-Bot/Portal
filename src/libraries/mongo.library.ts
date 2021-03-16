@@ -244,7 +244,6 @@ export async function fetch_guild_rest(
                 id: 0,
                 prefix: 0,
                 portal_list: 0,
-                member_list: 0,
                 ignore_list: 0,
                 url_list: 0,
                 music_data: 0,
@@ -255,6 +254,7 @@ export async function fetch_guild_rest(
                 if (!!r) {
                     return resolve(<GuildPrtl>{
                         id: r.id,
+                        member_list: r.member_list,
                         poll_list: r.poll_list,
                         ranks: r.ranks,
                         music_queue: r.music_queue,
@@ -755,6 +755,8 @@ export async function remove_url(
 export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
+    console.log('guild_id :>> ', guild_id);
+    console.log('new_ignore :>> ', new_ignore);
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             {
@@ -767,6 +769,7 @@ export async function insert_ignore( // channel
             }
         )
             .then((r: MongoPromise) => {
+                console.log('r :>> ', r);
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {

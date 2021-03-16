@@ -280,10 +280,11 @@ const commands: InterfaceBlueprint[] = [
 	{
 		name: 'roll',
 		description: 'rolls requested dice',
-		super_description: '**roll**, rolls requested dice you can also combine rolls' +
-			'Rolls are following the same philosophy as roll20 does',
-		example: './roll 3d12+5',
-		args: '<!roll configuration>',
+		super_description: '**roll**, rolls requested dice you can also combine rolls. ' +
+			'Rolls are following the same philosophy as roll20 does.\n' +
+			'If you want to see the dice you threw, don\'t forget to add `| show` at the end.',
+		example: './roll 3d12+5 or ./roll 3d12+5 | show',
+		args: '<!roll configuration> | show',
 		auth: AuthEnum.none,
 		get: null,
 		set: null

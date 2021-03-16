@@ -36,18 +36,29 @@ module.exports = async (
         if (!announcement_channel) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'announce', 'announcements channel could not be fetched')
+                value: message_help('commands', 'announce', 'announcements channel does not exist')
             });
         }
 
-        const rich_message = create_rich_embed(title, `@here ${body}`, '#022E4E', [], null, message.member, null, null, null)
+        const rich_message = create_rich_embed(
+            title,
+            `@here ${body}`,
+            '#022E4E',
+            [],
+            null,
+            message.member,
+            null,
+            null,
+            null
+        );
+
         announcement_channel.send(rich_message);
 
         client_talk(client, guild_object, 'announce');
 
         return resolve({
             result: true,
-            value: message_help('commands', 'announce', 'announcement was sent successfully')
+            value: 'announcement was sent successfully'
         });
     });
 };

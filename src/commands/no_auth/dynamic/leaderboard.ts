@@ -4,10 +4,8 @@ import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../../../types/classes/MemberPrtl.class";
 import { Field, ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
-const compare = function (member_a: MemberPrtl, member_b: MemberPrtl) {
-	if (member_b.points > member_a.points) return 1;
-	if (member_a.points > member_b.points) return -1;
-	return 0;
+function compare (member_a: MemberPrtl, member_b: MemberPrtl) {
+	return (member_b.points > member_a.points) ? 1 : -1;
 };
 
 module.exports = async (
@@ -26,7 +24,7 @@ module.exports = async (
 		if (args.length > 0 && isNaN(requested_number)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'leaderboard', args[0] + ' is not a number')
+				value: message_help('commands', 'leaderboard', `${args[0]} is not a number`)
 			});
 		}
 
@@ -35,7 +33,6 @@ module.exports = async (
 				? 24
 				: requested_number
 			: 9;
-
 		if (entries <= 0) {
 			return resolve({
 				result: false,
@@ -45,10 +42,11 @@ module.exports = async (
 
 		if (guild_object.member_list) {
 			const member_levels: Field[] = [];
-			member_list.sort(compare)
-				.filter((m, j) => entries > j)
+			member_list
+				.sort(compare)
+				// .filter((m, j) => entries > j)
 				.forEach((member_object, i) => {
-					if (message.guild) {
+					if (message.guild && entries > i) {
 						const this_member = message.guild.members.cache
 							.find(member => member.id === member_object.id);
 
@@ -80,12 +78,12 @@ module.exports = async (
 				null,
 				true,
 				null,
-				null),
+				null)
 			);
 
 			return resolve({
 				result: true,
-				value: message_help('commands', 'leaderboard', '')
+				value: ''
 			});
 		}
 		else {

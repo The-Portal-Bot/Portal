@@ -52,12 +52,21 @@ function create_role_message(
 function multiple_same_emote(emote_map: GiveRole[]) {
 	for (let i = 0; i < emote_map.length; i++) {
 		for (let j = i + 1; j < emote_map.length; j++) {
-			if (emote_map[i].give === emote_map[j].give) { return true; }
-			else if (emote_map[i].give === emote_map[j].strip) { return true; }
-			else if (emote_map[i].strip === emote_map[j].give) { return true; }
-			else if (emote_map[i].strip === emote_map[j].strip) { return true; }
+			if (emote_map[i].give === emote_map[j].give) {
+				return true;
+			}
+			else if (emote_map[i].give === emote_map[j].strip) {
+				return true;
+			}
+			else if (emote_map[i].strip === emote_map[j].give) {
+				return true;
+			}
+			else if (emote_map[i].strip === emote_map[j].strip) {
+				return true;
+			}
 		}
 	}
+
 	return false;
 };
 
@@ -124,14 +133,16 @@ module.exports = async (
 			if (message.guild) {
 				const role_fetched = get_role(message.guild, r.role_id);
 				if (!role_fetched) {
-					return_value = `${index + 1}. ${r.role_id} is not a role in ${message.guild}`;
+					return_value = `${r.role_id} is not a role`;
 					return true;
 				}
+
 				role_emb_display_give.push(new Field(r.give, role_fetched.name, true));
 				role_emb_display_strip.push(new Field(r.strip, role_fetched.name, true));
 				role_emb_value.push(new GiveRole(role_fetched.id, r.give, r.strip));
 			} else {
 				return_value = `could not fetch guild of message`;
+
 				return true;
 			}
 		});
