@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { regex_interpreter } from "../../../libraries/guild.library";
-import { create_rich_embed, max256 } from "../../../libraries/help.library";
+import { create_rich_embed, max_string } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { VoiceChannelPrtl } from "../../../types/classes/VoiceChannelPrtl.class";
 import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
@@ -58,15 +58,18 @@ module.exports = async (
 				if (message.guild) {
 					sent_message.edit(
 						create_rich_embed(
-							max256(regex_interpreter(
-								args.join(' '),
-								current_voice_channel,
-								voice_object,
-								guild_object.portal_list,
-								guild_object,
-								message.guild,
-								message.author.id
-							)),
+							max_string(
+								regex_interpreter(
+									args.join(' '),
+									current_voice_channel,
+									voice_object,
+									guild_object.portal_list,
+									guild_object,
+									message.guild,
+									message.author.id
+								),
+								256
+							),
 							args.join(' '),
 							'#00ffb3',
 							null,

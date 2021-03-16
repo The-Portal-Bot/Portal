@@ -29,8 +29,7 @@
 ## Infrastructure
 
 * **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
-* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name.<br>
-    It has four types of data _(used by run command and naming portal channels)_:
+* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)**, is a program used by Portal when asked to generate a channel's name. It has four types of data _(used by run command and naming portal channels)_:
     1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data that return information.
     2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
     3. **[Pipes](https://portal-bot.xyz/docs/regex/interpreter/pipes)**, are mini functions you can pass text or Variables to manipulate their outcome.
@@ -41,9 +40,9 @@
 
 ## More
 
-1. For frequently asked questions (FAQ) with their answers click [here](https://portal-bot.xyz/help/).
-2. If you want to host Portal on your own system you can follow the guide [here](https://github.com/keybraker/portal/blob/master/docs/Hosting.md).
-3. Portal is an open source project you can contribute too. There are guidelines for how to properly contribute [here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md).
+1. For frequently asked questions (FAQ) with their answers click _[here](https://portal-bot.xyz/help/#faq)_.
+2. If you want to host Portal on your own system you can follow the guide _[here](https://github.com/keybraker/portal/blob/master/docs/Hosting.md)_.
+3. Portal is an open source project you can contribute too. There are guidelines for how to properly contribute _[here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)_.
 
 ## Release History
 
@@ -60,18 +59,24 @@
 | 0.1.0   | 18-05-2020 | _beta testing with a small set of commands on one server_                                       |
 | 0.0.1   | 05-05-2020 | _alpha version with initial features more of a test phase to test viability_                    |
 
+<br>
+
 > **Disclaimers**
 > 
-> * Portal will never record conversations or store anything you type<br>
-> * Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel [more here](https://github.com/discordjs/discord.js/issues/4327)<br>
+> * Portal will never record conversations or store anything you type
+> * Discord update their server rate limit to twice per 10 minutes. The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
 > * Runs on nodejs 14.x
-> * As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at [Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)
+> * As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at _[Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)_
 > * Portal is made using _[Discord.js](https://discord.js.org/#/)_
 
+<br>
+
 <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
+
+<br>
 
 <p align="center">
    <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPalMe</a>
 </p>
-   
+
 <p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>

@@ -31,7 +31,7 @@ module.exports = async (
 							.then(r => {
 								return resolve({
 									result: r,
-									value: r ? 'member removed to guild' : 'member could not be removed'
+									value: r ? 'member has been removed' : 'member could not be removed'
 								});
 							})
 							.catch(e => {

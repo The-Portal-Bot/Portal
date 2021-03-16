@@ -22,6 +22,7 @@ function create_role_message(
 					sent_message.react(role_map[i].give);
 					sent_message.react(role_map[i].strip);
 				}
+
 				insert_role_assigner(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
 					.then(r => {
 						return resolve({
@@ -64,41 +65,50 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!message.guild)
+		if (!message.guild) {
 			return resolve({
 				result: true,
 				value: 'guild could not be fetched'
 			});
-		if (args.length <= 0)
+		}
+		if (args.length <= 0) {
 			return resolve({
 				result: false,
 				value: message_help('commands', 'role_assigner')
 			});
+		}
 
 		const role_map_json = getJSON(args.join(' '));
-		if (!role_map_json)
+		if (!role_map_json) {
 			return resolve({
 				result: false,
 				value: message_help('commands', 'role_assigner', 'must be an array in JSON format (even for one role)')
 			});
+		}
 		const role_map = <GiveRole[]>role_map_json;
-		if (!Array.isArray(role_map))
+		if (!Array.isArray(role_map)) {
 			return resolve({
 				result: false,
 				value: message_help('commands', 'role_assigner', 'must be an array in JSON format (even for one role)')
 			});
-		if (multiple_same_emote(role_map))
+		}
+		if (multiple_same_emote(role_map)) {
 			return resolve({
 				result: false,
 				value: message_help('commands', 'role_assigner', 'can not have the same emote for multiple actions')
 			});
-		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id))
+		}
+		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id)) {
 			return resolve({
 				result: false,
 				value: message_help('commands', 'role_assigner', 'JSON syntax has spelling errors')
 			});
+		}
 
-		role_map.forEach(r => { r.give = r.give.trim(); r.strip = r.strip.trim(); });
+		role_map.forEach(r => {
+			r.give = r.give.trim();
+			r.strip = r.strip.trim();
+		});
 		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
 
 		const role_emb_value: GiveRole[] = [];
@@ -126,10 +136,12 @@ module.exports = async (
 			}
 		});
 
-		if (failed) return resolve({
-			result: false,
-			value: message_help('commands', 'role_assigner', return_value)
-		});
+		if (failed) {
+			return resolve({
+				result: false,
+				value: message_help('commands', 'role_assigner', return_value)
+			});
+		}
 
 		create_role_message(
 			<TextChannel>message.channel,

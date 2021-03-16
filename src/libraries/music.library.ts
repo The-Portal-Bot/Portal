@@ -1,9 +1,9 @@
 import ytdl from 'discord-ytdl-core';
 import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
-import yts from 'yt-search';
+import yts, { PlaylistMetadataResult, SearchResult, VideoSearchResult } from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
-import { join_by_reaction, join_user_voice, update_music_message } from './help.library';
+import { is_url, join_by_reaction, join_user_voice, update_music_message } from './help.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
@@ -54,7 +54,7 @@ function spawn_dispatcher(
 }
 
 async function push_video_to_queue(
-	guild_object: GuildPrtl, video: yts.VideoSearchResult
+	guild_object: GuildPrtl, video: VideoSearchResult
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
 		if (!guild_object.music_queue) {
@@ -84,7 +84,7 @@ async function push_video_to_queue(
 
 async function start_playback(
 	voice_connection: VoiceConnection | undefined, client: Client, user: User, message: Message,
-	guild: Guild, guild_object: GuildPrtl, video: yts.VideoSearchResult
+	guild: Guild, guild_object: GuildPrtl, video: VideoSearchResult
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
 		push_video_to_queue(guild_object, video)
@@ -200,38 +200,120 @@ export async function start(
 	guild: Guild, guild_object: GuildPrtl, search_term: string
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
-		yts(search_term)
-			.then(yts_attempt => {
-				if (yts_attempt.videos.length <= 0) {
-					return resolve({
-						result: false,
-						value: `could not find something matching ${search_term}, on youtube`
-					});
-				}
+		if (is_url(search_term)) {
+			const videoId = search_term.substr(search_term.indexOf('v=') + 2, 11);
+			const listId = search_term.substr(search_term.indexOf('list=') + 5, 34);
+			const index = search_term.substr(search_term.indexOf('index=') + 6);
 
-				start_playback(
-					voice_connection, client, user, message,
-					guild, guild_object, yts_attempt.videos[0]
-				)
-					.then(r => {
-						return resolve(
-							r
-						);
-					})
-					.catch(e => {
-						return resolve({
-							result: false,
-							value: `error while starting music player (${e})`
-						});
-					});
-
-			})
-			.catch(e => {
+			if (!listId) {
 				return resolve({
 					result: false,
-					value: `error while searching youtube (${e})`
+					value: `the url is not of a youtube playlist`
 				});
-			});
+			}
+
+			yts({ listId: listId })
+				.then((yts_attempt: PlaylistMetadataResult) => {
+					if (yts_attempt.videos.length <= 0) {
+						return resolve({
+							result: false,
+							value: `could not find the playlist on youtube`
+						});
+					}
+
+					const yt_url = 'https://www.youtube.com/watch';
+					const initial_video = yts_attempt.videos[index ? +index : 0];
+
+					start_playback(
+						voice_connection, client, user, message,
+						guild, guild_object, <VideoSearchResult>{
+							type: 'video',
+							videoId: initial_video.videoId,
+							url: `${yt_url}?v=${initial_video.videoId}&list=${yts_attempt.listId}&index=${index ? index : 1}`,
+							title: initial_video.title,
+							description: '',
+							image: '',
+							thumbnail: initial_video.thumbnail,
+							seconds: 0,
+							timestamp: '',
+							duration: (<any>initial_video).duration,
+							ago: '',
+							views: 0,
+							author: initial_video.author,
+						}
+					)
+						.then(r => {
+							yts_attempt.videos.forEach((v, i) => {
+								if (i > 0 && i > +index)
+									push_video_to_queue(guild_object, <VideoSearchResult>{
+										type: 'video',
+										videoId: v.videoId,
+										url: `${yt_url}?v=${v.videoId}&list=${yts_attempt.listId}&index=${i + 1}`,
+										title: v.title,
+										description: '',
+										image: '',
+										thumbnail: v.thumbnail,
+										seconds: 0,
+										timestamp: '',
+										duration: (<any>v).duration,
+										ago: '',
+										views: 0,
+										author: v.author,
+									})
+							});
+
+							return resolve(
+								r
+							);
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: `error while starting music player (${e})`
+							});
+						});
+
+				})
+				.catch(e => {
+					return resolve({
+						result: false,
+						value: `error while searching youtube (${e})`
+					});
+				});
+		} else {
+			yts(search_term)
+				.then((yts_attempt: SearchResult) => {
+					if (yts_attempt.videos.length <= 0) {
+						return resolve({
+							result: false,
+							value: `could not find something matching ${search_term}, on youtube`
+						});
+					}
+
+					start_playback(
+						voice_connection, client, user, message,
+						guild, guild_object, yts_attempt.videos[0]
+					)
+						.then(r => {
+							return resolve(
+								r
+							);
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: `error while starting music player (${e})`
+							});
+						});
+
+				})
+				.catch(e => {
+					return resolve({
+						result: false,
+						value: `error while searching youtube (${e})`
+					});
+				});
+		}
 	});
 };
 

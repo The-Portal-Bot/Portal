@@ -70,7 +70,7 @@ module.exports = async (
 					value: 'channel could not be fetched'
 				});
 
-			create_music_message(<TextChannel>new_music, portal_icon_url, guild_object);
+			create_music_message(<TextChannel>new_music, guild_object);
 
 			return resolve({
 				result: true,

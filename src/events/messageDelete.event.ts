@@ -1,6 +1,6 @@
-import { Client, Message, TextChannel, MessageReaction } from "discord.js";
+import { Client, Message, TextChannel } from "discord.js";
 import { create_music_message } from "../libraries/help.library";
-import { fetch_guild, remove_role_assigner, remove_poll } from "../libraries/mongo.library";
+import { fetch_guild, remove_poll, remove_role_assigner } from "../libraries/mongo.library";
 import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
 
 module.exports = async (
@@ -22,7 +22,7 @@ module.exports = async (
 							);
 
 							if (current_channel) {
-								create_music_message(<TextChannel>current_channel, portal_icon_url, guild_object);
+								create_music_message(<TextChannel>current_channel, guild_object);
 
 								return resolve({
 									result: true,

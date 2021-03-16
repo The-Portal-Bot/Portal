@@ -293,7 +293,7 @@ export async function create_music_channel(
 						.create(music_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(error => resolve(error));
-					create_music_message(channel, portal_icon_url, guild_object);
+					create_music_message(channel, guild_object);
 				})
 				.catch(error => resolve(error));
 		}
@@ -310,7 +310,7 @@ export async function create_music_channel(
 				.then(channel => {
 					channel.setParent(music_category);
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, portal_icon_url, guild_object);
+					create_music_message(channel, guild_object);
 				})
 				.catch(error => resolve(error));
 		}
@@ -325,7 +325,7 @@ export async function create_music_channel(
 				)
 				.then(channel => {
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, portal_icon_url, guild_object);
+					create_music_message(channel, guild_object);
 				})
 				.catch(error => resolve(error));
 		}

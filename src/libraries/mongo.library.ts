@@ -661,9 +661,13 @@ export async function insert_voice(
                 ]
             }
         )
-            .then((r: MongoPromise) => { resolve(!!r) })
+            .then((r: MongoPromise) => {
+                resolve(!!r)
+            })
             .catch(e => {
-                console.log('e :>> ', e); resolve(false) });
+                console.log('e :>> ', e);
+                resolve(false)
+            });
     });
 };
 
@@ -687,9 +691,13 @@ export async function remove_voice(
                 ]
             }
         )
-            .then((r: MongoPromise) => { resolve(!!r) })
+            .then((r: MongoPromise) => {
+                resolve(!!r)
+            })
             .catch(e => {
-                console.log('e :>> ', e); resolve(false) });
+                console.log('e :>> ', e);
+                resolve(false)
+            });
     });
 };
 
