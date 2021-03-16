@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../../../types/classes/MemberPrtl.class";
-import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { Field, ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 const compare = function (member_a: MemberPrtl, member_b: MemberPrtl) {
 	if (member_b.points > member_a.points) return 1;

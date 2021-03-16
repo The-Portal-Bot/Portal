@@ -1,6 +1,6 @@
 import { Client, Guild } from "discord.js";
 import { guild_exists, insert_guild } from "../libraries/mongo.library";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	args: { client: Client, guild: Guild }

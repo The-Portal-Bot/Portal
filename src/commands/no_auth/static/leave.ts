@@ -2,7 +2,7 @@ import { Message, Client } from "discord.js";
 import { message_help } from "../../../libraries/help.library";
 import { client_talk, client_write } from "../../../libraries/localisation.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl, client: Client

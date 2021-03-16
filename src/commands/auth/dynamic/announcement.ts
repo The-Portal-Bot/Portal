@@ -3,7 +3,7 @@ import { create_channel, delete_channel, getOptions, is_announcement_channel, is
 import { update_guild } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 import { message_help } from "../../../libraries/help.library";
 
 module.exports = async (

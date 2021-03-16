@@ -5,7 +5,7 @@ import config from '../../../config.json';
 import { create_rich_embed, getJSON } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
-import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
+import { ReturnPormise } from '../../../types/classes/TypesPrtl.interface';
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

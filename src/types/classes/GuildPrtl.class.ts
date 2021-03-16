@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 import { VideoSearchResult } from "yt-search";
-import { Rank } from "../interfaces/InterfacesPrtl.interface";
+import { Rank } from "./TypesPrtl.interface";
 import { GiveRolePrtl } from "./GiveRolePrtl.class";
 import { MemberPrtl } from "./MemberPrtl.class";
 import { PollPrtl } from "./PollPrtl.class";

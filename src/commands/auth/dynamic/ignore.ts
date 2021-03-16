@@ -3,7 +3,7 @@ import { included_in_ignore_list } from "../../../libraries/guild.library";
 import { message_help } from "../../../libraries/help.library";
 import { insert_ignore, remove_ignore } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

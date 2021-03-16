@@ -10,7 +10,7 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
-import { MongoPromise, Rank } from '../types/interfaces/InterfacesPrtl.interface';
+import { MongoPromise, Rank } from '../types/classes/TypesPrtl.interface';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
 
 // fetch guilds

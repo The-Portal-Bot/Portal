@@ -2,7 +2,7 @@ import { Client, Message, TextChannel } from "discord.js";
 import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { client_talk } from "../../../libraries/localisation.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
     message: Message, args: string[], guild_object: GuildPrtl, client: Client

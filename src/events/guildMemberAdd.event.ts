@@ -1,7 +1,7 @@
 import { GuildMember, TextChannel } from "discord.js";
 import { create_rich_embed } from "../libraries/help.library";
 import { fetch_guild_announcement, insert_member } from "../libraries/mongo.library";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	args: { member: GuildMember }

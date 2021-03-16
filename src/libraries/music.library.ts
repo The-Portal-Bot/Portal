@@ -2,7 +2,7 @@ import ytdl from 'discord-ytdl-core';
 import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
 import yts, { PlaylistMetadataResult, SearchResult, VideoSearchResult } from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 import { is_url, join_by_reaction, join_user_voice, update_music_message } from './help.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');

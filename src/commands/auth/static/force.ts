@@ -4,7 +4,7 @@ import { delete_channel, included_in_voice_list, regex_interpreter } from "../..
 import { message_help } from "../../../libraries/help.library";
 import { update_voice } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 // NEEDS FIXING
 module.exports = async (

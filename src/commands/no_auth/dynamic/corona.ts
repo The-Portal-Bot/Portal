@@ -7,7 +7,7 @@ import { CountryCodes } from '../../../data/lists/country_codes_iso.static';
 import { create_rich_embed, getJSON, message_help } from '../../../libraries/help.library';
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
-import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
+import { ReturnPormise } from '../../../types/classes/TypesPrtl.interface';
 
 const country_codes: { name: string; code: string; }[] = CountryCodes;
 

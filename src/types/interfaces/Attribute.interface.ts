@@ -9,7 +9,7 @@ import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { MemberPrtl } from '../classes/MemberPrtl.class';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
-import { Field, InterfaceBlueprint, ReturnPormise } from './InterfacesPrtl.interface';
+import { Field, InterfaceBlueprint, ReturnPormise } from '../classes/TypesPrtl.interface';
 
 export const attribute_prefix: string = '&';
 

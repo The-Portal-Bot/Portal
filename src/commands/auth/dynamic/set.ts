@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { set_attribute } from "../../../types/interfaces/Attribute.interface";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 const locales = ['gr', 'en', 'de'];
 

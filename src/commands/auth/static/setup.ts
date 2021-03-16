@@ -4,7 +4,7 @@ import { insert_portal, update_guild, insert_url } from "../../../libraries/mong
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl.class";
 import { PortalChannelTypes } from "../../../data/enums/PortalChannel.enum";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 import { message_help } from "../../../libraries/help.library";
 
 module.exports = async (

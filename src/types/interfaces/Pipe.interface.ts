@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
+import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
 export const pipe_prefix: string = '|';
 const pipes: InterfaceBlueprint[] = [

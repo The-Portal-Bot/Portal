@@ -3,7 +3,7 @@ import { create_channel, getOptions, is_announcement_channel, is_music_channel, 
 import { message_help } from "../../../libraries/help.library";
 import { insert_url, remove_url } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

@@ -4,7 +4,7 @@ import { create_music_channel, delete_channel, is_announcement_channel, is_music
 import { create_music_message, message_help } from "../../../libraries/help.library";
 import { set_music_data } from "../../../libraries/mongo.library";
 import { GuildPrtl, MusicData } from "../../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

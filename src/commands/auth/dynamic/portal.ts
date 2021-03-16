@@ -4,7 +4,7 @@ import { message_help } from "../../../libraries/help.library";
 import { insert_portal } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../../../types/classes/PortalChannelPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

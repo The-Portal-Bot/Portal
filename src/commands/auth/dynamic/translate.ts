@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import config from '../../../config.json';
 import { message_help } from '../../../libraries/help.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
-import { ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
+import { ReturnPormise } from '../../../types/classes/TypesPrtl.interface';
 
 const translate = require('translate')
 translate.engine = config.api_keys.translate.engine;

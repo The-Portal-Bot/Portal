@@ -1,7 +1,7 @@
 import { Client, Message, User } from "discord.js";
 import { LocaleEnum } from "../data/enums/Locales.enum";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { LocalisationOption } from "../types/interfaces/InterfacesPrtl.interface";
+import { LocalisationOption } from "../types/classes/TypesPrtl.interface";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
 const type_of_action = ['user_connected', 'user_disconnected'];

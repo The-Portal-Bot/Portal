@@ -3,7 +3,7 @@ import { regex_interpreter } from "../../../libraries/guild.library";
 import { create_rich_embed, max_string } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { VoiceChannelPrtl } from "../../../types/classes/VoiceChannelPrtl.class";
-import { ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl

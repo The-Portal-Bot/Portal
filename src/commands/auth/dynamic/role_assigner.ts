@@ -4,7 +4,7 @@ import { create_rich_embed, getJSON, message_help } from "../../../libraries/hel
 import { insert_role_assigner } from "../../../libraries/mongo.library";
 import { GiveRole, GiveRolePrtl } from "../../../types/classes/GiveRolePrtl.class";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { Field, ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 function create_role_message(
 	channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,

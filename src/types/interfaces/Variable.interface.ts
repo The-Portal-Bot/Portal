@@ -5,7 +5,7 @@ import { create_rich_embed } from '../../libraries/help.library';
 import { get_status_list } from '../../libraries/status.library';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
-import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
+import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
 
 export const variable_prefix: string = '$';

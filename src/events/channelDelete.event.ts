@@ -1,7 +1,7 @@
 import { Channel, PartialDMChannel, TextChannel, VoiceChannel } from "discord.js";
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { deleted_channel_sync } from "../libraries/mongo.library";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	args: { channel: Channel | PartialDMChannel }

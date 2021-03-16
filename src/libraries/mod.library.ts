@@ -1,6 +1,6 @@
 import { ProfaneWords } from '../data/lists/profane_words.static';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
-import { Language } from '../types/interfaces/InterfacesPrtl.interface';
+import { Language } from '../types/classes/TypesPrtl.interface';
 
 const profane_words: Language = <Language>ProfaneWords;
 

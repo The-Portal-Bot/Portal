@@ -3,7 +3,7 @@ import { create_rich_embed, message_help } from "../../../libraries/help.library
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../../types/interfaces/Attribute.interface";
 import { get_command_guide, get_command_help, get_command_help_super } from "../../../types/interfaces/Command.interface";
-import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { Field, ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../../types/interfaces/Pipe.interface";
 import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../../types/interfaces/Structure.interface";
 import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../../types/interfaces/Variable.interface";
@@ -13,7 +13,7 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.length === 0) {
-			const func_array: Field[] = [
+			const help_array: Field[] = [
 				{
 					emote: null,
 					role: '[Commands](https://portal-bot.xyz/docs/commands)',
@@ -26,31 +26,31 @@ module.exports = async (
 				},
 				{
 					emote: null,
-					role: '[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter/)',
+					role: '[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)',
 					inline: false
 				},
 				{
 					emote: '`./help variables` or `./help variables guide`',
 					role: 'Variables are live data about the current state of things\n' +
-						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/variables/)_',
+						'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/variables/description)_',
 					inline: false
 				},
 				{
 					emote: '`./help pipes` or `./help pipes guide`',
-					role: 'Pipes are mini-programs that manipulate text or even variables\n' +
-						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/pipes/)_',
+					role: 'Pipes are mini-programs that manipulate text or even variables and attributes\n' +
+						'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)_',
 					inline: false
 				},
 				{
 					emote: '`./help attributes` or `./help attributes guide`',
 					role: 'Attributes are options that can be altered with command `set`\n' +
-						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/attributes/)_',
+						'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)_',
 					inline: false
 				},
 				{
 					emote: '`./help structures` or `./help structures guide`',
 					role: 'Structures are rules to further manipulate the text outcome\n' +
-						'_for more click [here](https://portal-bot.xyz/docs/regex/interpreter/structures/)_',
+						'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/structures/description)_',
 					inline: false
 				},
 				{
@@ -66,7 +66,7 @@ module.exports = async (
 				},
 				{
 					emote: null,
-					role: '[FAQ](https://portal-bot.xyz/help#faq)',
+					role: '[FAQ](https://portal-bot.xyz/help#faq) _frequently asked questioned_',
 					inline: false
 				}
 			];
@@ -79,7 +79,7 @@ module.exports = async (
 					'> To make **ignore** a member, give him role with name `p.ignore`\n' +
 					'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority-)',
 					'#05d1ff',
-					func_array,
+					help_array,
 					null,
 					null,
 					true,

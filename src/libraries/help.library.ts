@@ -4,7 +4,7 @@ import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl.interface";
+import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/classes/TypesPrtl.interface";
 import { client_talk, client_write } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 

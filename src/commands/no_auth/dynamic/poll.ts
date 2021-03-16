@@ -2,7 +2,7 @@ import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { create_rich_embed, getJSON, message_help } from "../../../libraries/help.library";
 import { insert_poll } from "../../../libraries/mongo.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { Field, ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 import { PollPrtl } from "../../../types/classes/PollPrtl.class";
 
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];

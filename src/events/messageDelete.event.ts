@@ -1,7 +1,7 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { create_music_message } from "../libraries/help.library";
 import { fetch_guild, remove_poll, remove_role_assigner } from "../libraries/mongo.library";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	args: { client: Client, message: Message }

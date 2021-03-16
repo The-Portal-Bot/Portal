@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { OpapGameIdList } from '../../data/enums/OpapGames.enum';
 import { create_rich_embed, get_key_from_enum } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
+import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
 export const command_prefix: string = './';
 const commands: InterfaceBlueprint[] = [

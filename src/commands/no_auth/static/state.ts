@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 import { create_rich_embed, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { Field, ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
     message: Message, args: string[], guild_object: GuildPrtl, client: Client

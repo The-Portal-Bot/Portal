@@ -12,7 +12,7 @@ import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
-import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl.interface";
+import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
 const AntiSpam = require('discord-anti-spam');
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };

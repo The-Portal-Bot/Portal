@@ -1,7 +1,7 @@
 import { Client, Message, Role } from "discord.js";
 import { getJSON, message_help } from "../../../libraries/help.library";
 import { GuildPrtl } from "../../../types/classes/GuildPrtl.class";
-import { Rank, ReturnPormise } from "../../../types/interfaces/InterfacesPrtl.interface";
+import { Rank, ReturnPormise } from "../../../types/classes/TypesPrtl.interface";
 import { set_ranks } from "../../../libraries/mongo.library";
 
 function is_rank(rank: Rank) {

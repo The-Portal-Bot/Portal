@@ -7,7 +7,7 @@ import { create_rich_embed, getJSON, max_string, message_help } from '../../../l
 import { https_fetch } from '../../../libraries/http.library';
 import { GuildPrtl } from '../../../types/classes/GuildPrtl.class';
 import { News } from '../../../types/classes/NewYorkTime.class';
-import { Field, ReturnPormise } from '../../../types/interfaces/InterfacesPrtl.interface';
+import { Field, ReturnPormise } from '../../../types/classes/TypesPrtl.interface';
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
