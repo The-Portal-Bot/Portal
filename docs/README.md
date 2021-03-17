@@ -1,6 +1,6 @@
 <h1 align="center">
     <a href="https://portal-bot.xyz" target="_blank">
-        Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="alt text" width="25" height="25">
+        Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="Portal logo" width="25" height="25">
     </a>
 </h1>
 
@@ -32,8 +32,7 @@
 ## Documentation
 
 * **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
-* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name.
-    It has four types of data _(used by run command and naming portal channels)_:
+* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal to generate a channel's name _with four types of data_
     1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data that return information.
     2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
     3. **[Pipes](https://portal-bot.xyz/docs/regex/interpreter/pipes)**, are mini functions you can pass text or Variables to manipulate their outcome.
