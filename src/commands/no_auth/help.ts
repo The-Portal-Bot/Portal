@@ -16,7 +16,7 @@ module.exports = async (
 			const help_array: Field[] = [
 				{
 					emote: null,
-					role: '[Commands](https://portal-bot.xyz/docs/commands)',
+					role: '**[Commands](https://portal-bot.xyz/docs/commands/description)**',
 					inline: false
 				},
 				{
@@ -26,7 +26,7 @@ module.exports = async (
 				},
 				{
 					emote: null,
-					role: '[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)',
+					role: '**[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)**',
 					inline: false
 				},
 				{
@@ -43,7 +43,7 @@ module.exports = async (
 				},
 				{
 					emote: '`./help attributes` or `./help attributes guide`',
-					role: 'Attributes are options that can be altered with command `set`\n' +
+					role: 'Attributes are options that can be altered with **[set](https://portal-bot.xyz/docs/commands/detailed/set)** command\n' +
 						'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)_',
 					inline: false
 				},
@@ -61,12 +61,12 @@ module.exports = async (
 				{
 					emote: '`./help <specific_property_name>`',
 					role: 'If you want to get a complete description of any property\n' +
-						'_(lets say you want to learn more about variables year, just type `./help year`)_',
+						'_(lets say you want to learn more about variables year, just type **./help year**)_',
 					inline: false
 				},
 				{
 					emote: null,
-					role: '[FAQ](https://portal-bot.xyz/help#faq) _frequently asked questioned_',
+					role: '**[FAQ](https://portal-bot.xyz/help#faq)** _frequently asked questioned_',
 					inline: false
 				}
 			];
@@ -76,8 +76,8 @@ module.exports = async (
 					'Detailed Documentation at https://portal-bot.xyz/docs',
 					'> To make a member a **dj**, give him role with name `p.dj`\n' +
 					'> To make a member an **admin**, give him role with name `p.admin`\n' +
-					'> To make **ignore** a member, give him role with name `p.ignore`\n' +
-					'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority-)',
+					'> To **ignore** a member, give him role with name `p.ignore`\n' +
+					'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
 					'#05d1ff',
 					help_array,
 					null,

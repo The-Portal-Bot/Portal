@@ -1,9 +1,12 @@
-<h1 align="center">Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="alt text" width="25" height="25">
+<h1 align="center">
+    <a href="https://portal-bot.xyz">
+        Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="alt text" width="25" height="25">
+    </a>
 </h1>
 
 <p align="center">A fully fledged and feature rich bot for Discord</p>
 
-<p align="center">
+<!-- <p align="center">
     Automatic voice channel generation with live name update<br>
     Music player that is clean and clutter free, all from one channel<br>
     Assigns and strips roles from users with a single reaction<br>
@@ -11,7 +14,7 @@
     Portal will keep you up to speed, with voice announcements<br>
     Get the latest on many topics, from weather to corona to news<br>
     You can create URL-only text channels<br>
-</p>
+</p> -->
 
 <p align="center">
     <a href="https://top.gg/bot/704400876860735569">
@@ -29,7 +32,8 @@
 ## Infrastructure
 
 * **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
-* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)**, is a program used by Portal when asked to generate a channel's name. It has four types of data _(used by run command and naming portal channels)_:
+* **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal when asked to generate a channel's name.
+    It has four types of data _(used by run command and naming portal channels)_:
     1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data that return information.
     2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
     3. **[Pipes](https://portal-bot.xyz/docs/regex/interpreter/pipes)**, are mini functions you can pass text or Variables to manipulate their outcome.
@@ -59,8 +63,6 @@
 | 0.1.0   | 18-05-2020 | _beta testing with a small set of commands on one server_                                       |
 | 0.0.1   | 05-05-2020 | _alpha version with initial features more of a test phase to test viability_                    |
 
-<br>
-
 > **Disclaimers**
 > 
 > * Portal will never record conversations or store anything you type
@@ -69,14 +71,10 @@
 > * As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at _[Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)_
 > * Portal is made using _[Discord.js](https://discord.js.org/#/)_
 
-<br>
-
 <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
-
-<br>
 
 <p align="center">
    <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPalMe</a>
 </p>
-
+   
 <p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>
