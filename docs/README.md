@@ -28,7 +28,7 @@
     <a href="https://portal-bot.xyz"><img src="https://img.shields.io/badge/Portal-Website%20Official-red" alt="Portal Website" /></a>
 </p>
 
-<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz/docs/">portal-bot.xyz/docs/</b></p>
+<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz/docs">portal-bot.xyz/docs/</b></p>
 
 ## Documentation
 
@@ -66,7 +66,6 @@
 > * Portal will never record conversations or store anything you type
 > * Discord update their server rate limit to twice per 10 minutes.<br>
     The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
-> * As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at _[Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)_
 > * Portal is made using _[Discord.js](https://discord.js.org/#/)_
 > * Runs on nodejs 12.x or later
 
