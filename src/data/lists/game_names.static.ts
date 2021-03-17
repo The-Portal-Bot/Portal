@@ -30,36 +30,36 @@ export const GameNames = {
             "status": "STAR WARS™ Battlefront™ II",
             "type": "game",
             "locale": {
-                "en": "SWB II",
-                "de": "SWB II",
-                "gr": "ΠΑΠ ΙΙ"
+                "en": "STAR WARS BTLF II",
+                "de": "STAR WARS BTLF II",
+                "gr": "STAR WARS BTLF II"
             }
         },
         {
             "status": "StarCraft II",
             "type": "game",
             "locale": {
-                "en": "SC2",
-                "de": "SC2",
-                "gr": "SC2"
+                "en": "StarCraft II",
+                "de": "StarCraft II",
+                "gr": "StarCraft II"
             }
         },
         {
             "status": "League of Legends",
             "type": "game",
             "locale": {
-                "en": "LoL",
-                "de": "LoL",
-                "gr": "LoL"
+                "en": "League of Legends",
+                "de": "League of Legends",
+                "gr": "League of Legends"
             }
         },
         {
             "status": "Heroes of the Storm",
             "type": "game",
             "locale": {
-                "en": "HOTS",
-                "de": "HOTS",
-                "gr": "ΧΟΤΣ"
+                "en": "Heroes of the Storm",
+                "de": "Heroes of the Storm",
+                "gr": "Heroes of the Storm"
             }
         },
         {
@@ -68,16 +68,16 @@ export const GameNames = {
             "locale": {
                 "en": "Hearthstone",
                 "de": "Hearthstone",
-                "gr": "ΠέτρινηΚαρδιά"
+                "gr": "Hearthstone"
             }
         },
         {
             "status": "Apex Legends",
             "type": "game",
             "locale": {
-                "en": "Apex",
-                "de": "Apex",
-                "gr": "Apex"
+                "en": "Apex Legends",
+                "de": "Apex Legends",
+                "gr": "Apex Legends"
             }
         },
         {
@@ -104,7 +104,7 @@ export const GameNames = {
             "locale": {
                 "en": "Don't Starve Together",
                 "de": "Don't Starve Together",
-                "gr": "Μην Πεθάνετε Μαζί"
+                "gr": "Don't Starve Together"
             }
         },
         {
@@ -113,16 +113,16 @@ export const GameNames = {
             "locale": {
                 "en": "Overwatch",
                 "de": "Overwatch",
-                "gr": "Παρακολούθηση"
+                "gr": "Overwatch"
             }
         },
         {
             "status": "The Mean Greens - Plastic Warfare",
             "type": "game",
             "locale": {
-                "en": "The Mean Greens - Plastic Warfare",
-                "de": "The Mean Greens - Plastic Warfare",
-                "gr": "Οι Κακοί Πράσινο - Πλαστικό Πόλεμο"
+                "en": "The Mean Greens",
+                "de": "The Mean Greens",
+                "gr": "Οι Κακοί Πράσινο"
             }
         },
         {
@@ -131,7 +131,7 @@ export const GameNames = {
             "locale": {
                 "en": "Valorant",
                 "de": "Valorant",
-                "gr": "Γενναίος"
+                "gr": "Valorant"
             }
         },
         {
@@ -147,8 +147,8 @@ export const GameNames = {
             "status": "A Plague Tale: Innocence",
             "type": "game",
             "locale": {
-                "en": "Plague Tale",
-                "de": "Plague Tale",
+                "en": "A Plague Tale",
+                "de": "A Plague Tale",
                 "gr": "Ιστορία Πανούκλας"
             }
         },
@@ -156,27 +156,27 @@ export const GameNames = {
             "status": "Age of Empires II: Definitive Edition",
             "type": "game",
             "locale": {
-                "en": "AoE 2",
-                "de": "AoE 2",
-                "gr": "AoE 2"
+                "en": "Age of Empires II",
+                "de": "Age of Empires II",
+                "gr": "Age of Empires II"
             }
         },
         {
             "status": "Age of Empires II: HD Edition",
             "type": "game",
             "locale": {
-                "en": "AoE 2",
-                "de": "AoE 2",
-                "gr": "AoE 2"
+                "en": "Age of Empires II",
+                "de": "Age of Empires II",
+                "gr": "Age of Empires II"
             }
         },
         {
             "status": "Age of Empires II (2013)",
             "type": "game",
             "locale": {
-                "en": "AoE 2",
-                "de": "AoE 2",
-                "gr": "AoE 2"
+                "en": "Age of Empires II",
+                "de": "Age of Empires II",
+                "gr": "Age of Empires II"
             }
         },
         {
@@ -201,8 +201,8 @@ export const GameNames = {
             "status": "Assassin's Creed® Odyssey",
             "type": "game",
             "locale": {
-                "en": "AC Odyssey",
-                "de": "AC Odyssey",
+                "en": "Assassin's Creed Odyssey",
+                "de": "Assassin's Creed Odyssey",
                 "gr": "Δολοφονικό Θρήσκευμα: Οδύσσεια"
             }
         },
@@ -246,8 +246,8 @@ export const GameNames = {
             "status": "Call of Duty®: Black Ops II",
             "type": "game",
             "locale": {
-                "en": "CoD: Black Ops 2",
-                "de": "CoD: Black Ops 2",
+                "en": "Call of Duty: Black Ops 2",
+                "de": "Call of Duty: Black Ops 2",
                 "gr": "Κάλεσμα του Καθήκοντος: Μαύρος Χειριστής 2"
             }
         },
@@ -255,8 +255,8 @@ export const GameNames = {
             "status": "Call of Duty®: Black Ops III",
             "type": "game",
             "locale": {
-                "en": "CoD: Black Ops 3",
-                "de": "CoD: Black Ops 3",
+                "en": "Call of Duty: Black Ops 3",
+                "de": "Call of Duty: Black Ops 3",
                 "gr": "Κάλεσμα του Καθήκοντος Μαύρος Χειριστής 3"
             }
         },
@@ -327,8 +327,8 @@ export const GameNames = {
             "status": "DayZ",
             "type": "game",
             "locale": {
-                "en": "Day",
-                "de": "Day",
+                "en": "DayZ",
+                "de": "DayZ",
                 "gr": "ΜέρεςΖ"
             }
         },
@@ -462,17 +462,17 @@ export const GameNames = {
             "status": "FINAL FANTASY XIV Online",
             "type": "game",
             "locale": {
-                "en": "FINAL FANTASY XIV Online",
-                "de": "FINAL FANTASY XIV Online",
-                "gr": "Τελική Φαντασία στο διαδίκτυο"
+                "en": "FINAL FANTASY XIV",
+                "de": "FINAL FANTASY XIV",
+                "gr": "Τελική Φαντασία"
             }
         },
         {
             "status": "The Forest",
             "type": "game",
             "locale": {
-                "en": "The Fores",
-                "de": "The Fores",
+                "en": "The Forest",
+                "de": "The Forest",
                 "gr": "Το Δάσος"
             }
         },
@@ -516,8 +516,8 @@ export const GameNames = {
             "status": "GTFO",
             "type": "game",
             "locale": {
-                "en": "GTFO",
-                "de": "GTFO",
+                "en": "Get The Fuck Out",
+                "de": "Get The Fuck Out",
                 "gr": "ΒΓΑΕ"
             }
         },
@@ -534,81 +534,90 @@ export const GameNames = {
             "status": "Rocket League",
             "type": "game",
             "locale": {
-                "en": "RL",
-                "de": "RL",
-                "gr": "Ρουκετάμαξα"
+                "en": "Rocket League",
+                "de": "Rocket League",
+                "gr": "Rocket League"
+            }
+        },
+        {
+            "status": "Rocket League®",
+            "type": "game",
+            "locale": {
+                "en": "Rocket League",
+                "de": "Rocket League",
+                "gr": "Rocket League"
             }
         },
         {
             "status": "Halo: The Master Chief Collection",
             "type": "game",
             "locale": {
-                "en": "Halo: The Master Chief Collection",
-                "de": "Halo: The Master Chief Collection",
-                "gr": "Φωτοστέφανο: Η κύρια συλλογή"
+                "en": "Halo: Master Chief",
+                "de": "Halo: Master Chief",
+                "gr": "Halo: Master Chief",
             }
         },
         {
             "status": "Half-Life",
             "type": "game",
             "locale": {
-                "en": "Half-Life",
-                "de": "Half-Life",
-                "gr": "Μισή-Ζωή"
+                "en": "Half Life",
+                "de": "Half Life",
+                "gr": "Μισή Ζωή"
             }
         },
         {
             "status": "Half-Life 2",
             "type": "game",
             "locale": {
-                "en": "Half-Life 2",
-                "de": "Half-Life 2",
-                "gr": "Μισή-Ζωή 2"
+                "en": "Half Life 2",
+                "de": "Half Life 2",
+                "gr": "Μισή Ζωή 2"
             }
         },
         {
             "status": "Half-Life 2: Episode One",
             "type": "game",
             "locale": {
-                "en": "Half-Life 2: Episode On",
-                "de": "Half-Life 2: Episode On",
-                "gr": "Μισή-Ζωή 2: Επεισόδιο Ένα"
+                "en": "Half Life 2: Episode On",
+                "de": "Half Life 2: Episode On",
+                "gr": "Μισή Ζωή 2: Επεισόδιο Ένα"
             }
         },
         {
             "status": "Half-Life 2: Episode Two",
             "type": "game",
             "locale": {
-                "en": "Half-Life 2: Episode Two",
-                "de": "Half-Life 2: Episode Two",
-                "gr": "Μισή-Ζωή 2: Επεισόδιο Δύο"
+                "en": "Half Life 2: Episode Two",
+                "de": "Half Life 2: Episode Two",
+                "gr": "Μισή Ζωή 2: Επεισόδιο Δύο"
             }
         },
         {
             "status": "Half-Life 2: Lost Coast",
             "type": "game",
             "locale": {
-                "en": "Half-Life 2: Lost Coast",
-                "de": "Half-Life 2: Lost Coast",
-                "gr": "Μισή-Ζωή 2: Χαμένη Ακτή"
+                "en": "Half Life 2: Lost Coast",
+                "de": "Half Life 2: Lost Coast",
+                "gr": "Μισή Ζωή 2: Χαμένη Ακτή"
             }
         },
         {
             "status": "Half-Life: Blue Shift",
             "type": "game",
             "locale": {
-                "en": "Half-Life: Blue Shif",
-                "de": "Half-Life: Blue Shif",
-                "gr": "Μισή-Ζωή: Μπλε Μετατόπιση"
+                "en": "Half Life: Blue Shif",
+                "de": "Half Life: Blue Shif",
+                "gr": "Μισή Ζωή: Μπλε Μετατόπιση"
             }
         },
         {
             "status": "Half-Life: Opposing Force",
             "type": "game",
             "locale": {
-                "en": "Half-Life: Opposing Force",
-                "de": "Half-Life: Opposing Force",
-                "gr": "Μισή-Ζωή: Αντίθετη Δύναμη"
+                "en": "Half Life: Opposing Force",
+                "de": "Half Life: Opposing Force",
+                "gr": "Μισή Ζωή: Αντίθετη Δύναμη"
             }
         },
         {
@@ -678,9 +687,9 @@ export const GameNames = {
             "status": "Middle-earth™: Shadow of War™",
             "type": "game",
             "locale": {
-                "en": "Middle-earth™: Shadow of War",
-                "de": "Middle-earth™: Shadow of War",
-                "gr": "Μέση-Γη: Σκιά του Πολέμου"
+                "en": "Middle Earth: Shadow of War",
+                "de": "Middle Earth: Shadow of War",
+                "gr": "Μέση Γη: Σκιά του Πολέμου"
             }
         },
         {
@@ -696,9 +705,9 @@ export const GameNames = {
             "status": "MORDHAU",
             "type": "game",
             "locale": {
-                "en": "MORDHA",
-                "de": "MORDHA",
-                "gr": "ΜΟΡΝΧΑ"
+                "en": "MORDHAU",
+                "de": "MORDHAU",
+                "gr": "MORDHAU"
             }
         },
         {
@@ -761,7 +770,7 @@ export const GameNames = {
             "locale": {
                 "en": "Pummel Party",
                 "de": "Pummel Party",
-                "gr": "Πάρτι Γρονθοκοπήματος"
+                "gr": "Pummel Party"
             }
         },
         {
@@ -801,15 +810,6 @@ export const GameNames = {
             }
         },
         {
-            "status": "Rocket League®",
-            "type": "game",
-            "locale": {
-                "en": "Rocket League",
-                "de": "Rocket League",
-                "gr": "Λίγκα Ρουκετών"
-            }
-        },
-        {
             "status": "Rust",
             "type": "game",
             "locale": {
@@ -833,7 +833,7 @@ export const GameNames = {
             "locale": {
                 "en": "Shadow of the Tomb Raider",
                 "de": "Shadow of the Tomb Raider",
-                "gr": "Σκιά του Επιδρομέα Ταφών"
+                "gr": "Shadow of the Tomb Raider"
             }
         },
         {
@@ -842,7 +842,7 @@ export const GameNames = {
             "locale": {
                 "en": "SMITΕ",
                 "de": "SMITΕ",
-                "gr": "ΧΤΥΠΩ"
+                "gr": "SMITΕ"
             }
         },
         {
@@ -851,7 +851,7 @@ export const GameNames = {
             "locale": {
                 "en": "STAR WARS: Fallen Order",
                 "de": "STAR WARS: Fallen Order",
-                "gr": "ΠΟΛΕΜΟΣ ΤΩΝ ΑΣΤΡΩΝ: Πεσμένη παραγγελία"
+                "gr": "STAR WARS: Fallen Order",
             }
         },
         {
@@ -860,7 +860,7 @@ export const GameNames = {
             "locale": {
                 "en": "Team Fortress 2",
                 "de": "Team Fortress 2",
-                "gr": "Ομαδικό φρούριο 2"
+                "gr": "Ομαδικό Φρούριο 2"
             }
         },
         {
@@ -887,7 +887,7 @@ export const GameNames = {
             "locale": {
                 "en": "Rainbow Six Siege",
                 "de": "Rainbow Six Siege",
-                "gr": "Ουράνιο-Τόξο Έξι Πολιορκία"
+                "gr": "ΟυράνιοΤόξο Έξι Πολιορκία"
             }
         },
         {

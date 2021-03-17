@@ -14,8 +14,8 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
-				? str.split(' ').map(s => s[0]).join('')
-				: str.map(s => s.split(' ').map(sm => sm[0]).join('')).join(',');
+				? is_acronym(str) ? str : str.split(' ').map(s => s[0]).join('')
+				: str.map(s => s.split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -349,4 +349,9 @@ function most_frequent(array: string[], return_number: boolean): string | number
 	}
 
 	return return_number ? maxCount : maxEl;
+}
+
+function is_acronym(candidate: string): boolean {
+	const word_exp = new RegExp(`\\b[A-Z]*[a-z]*[A-Z]s?\\d*[A-Z]*[\\-\\w+]\\b`);
+	return word_exp.test(candidate);
 }
