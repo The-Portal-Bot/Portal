@@ -1,21 +1,21 @@
-const modOps = require('../../build/libraries/modOps');
+const mod_library = require('../../build/libraries/mod.library');
 
 test('fuck must return true', () => {
-    expect(modOps.isProfane('fuck').length > 0 || false).toBe(true);
+    expect(mod_library.isProfane('fuck').length > 0 || false).toBe(true);
 });
 
 test('sample must return false', () => {
-    expect(modOps.isProfane('sample').length > 0 || false).toBe(false);
+    expect(mod_library.isProfane('sample').length > 0 || false).toBe(false);
 });
 
 test('fuckshit must return true', () => {
-    expect(modOps.isProfane('fuckshit').length > 0 || false).toBe(true);
+    expect(mod_library.isProfane('fuckshit').length > 0 || false).toBe(true);
 });
 
 test('πούτσα must return true', () => {
-    expect(modOps.isProfane('πούτσα').length > 0 || false).toBe(true);
+    expect(mod_library.isProfane('πούτσα').length > 0 || false).toBe(true);
 });
 
 test('καλημέρα must return false', () => {
-    expect(modOps.isProfane('καλημέρα').length > 0 || false).toBe(false);
+    expect(mod_library.isProfane('καλημέρα').length > 0 || false).toBe(false);
 });
