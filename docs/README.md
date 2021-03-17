@@ -28,7 +28,7 @@
     <a href="https://portal-bot.xyz"><img src="https://img.shields.io/badge/Portal-Website%20Official-red" alt="Portal Website" /></a>
 </p>
 
-<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz/docs/">portal-bot.xyz</b></p>
+<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz/docs/">portal-bot.xyz/docs/</b></p>
 
 ## Documentation
 
