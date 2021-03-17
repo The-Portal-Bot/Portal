@@ -25,9 +25,10 @@
     </a>
     <a href="https://discord.com/api/oauth2/authorize?client_id=704400876860735569&permissions=8&redirect_uri=http%3A%2F%2Fwww.localhost%3A4000%2Fpremium%2F&scope=bot"><img src="https://img.shields.io/badge/📥-Add%20to%20Discord-blue" alt="Add to Discord" /></a>
     <a href="https://discord.gg/nuKXgFXr5y"><img src="https://img.shields.io/badge/Discord-Portal%20Official-green" alt="Add to Discord" /></a>
+    <a href="https://portal-bot.xyz"><img src="https://img.shields.io/badge/Portal-Website%20Official-red" alt="Portal Website" /></a>
 </p>
 
-<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz">portal-bot.xyz</b></p>
+<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz/docs/">portal-bot.xyz</b></p>
 
 ## Documentation
 
@@ -60,14 +61,14 @@
 | 0.0.1   | 05-05-2020 | _alpha version with initial features more of a test phase to test viability_                    |
 -->
 
-> **Disclaimers**
+#### Disclaimers
 > 
 > * Portal will never record conversations or store anything you type
 > * Discord update their server rate limit to twice per 10 minutes.<br>
     The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
-> * Runs on nodejs 14.x
 > * As this is a work-in-progress and new features are added weekly, if you want to give input or request a feature you can always do that at _[Portal's Official Discord server](https://discord.gg/nuKXgFXr5y)_
 > * Portal is made using _[Discord.js](https://discord.js.org/#/)_
+> * Runs on nodejs 12.x or later
 
 <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
 
