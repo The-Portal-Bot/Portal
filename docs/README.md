@@ -43,9 +43,9 @@
 1. For frequently asked questions (FAQ) with their answers click _[here](https://portal-bot.xyz/help/#faq)_.
 2. If you want to host Portal on your own system you can follow the guide _[here](https://github.com/keybraker/portal/blob/master/docs/Hosting.md)_.
 3. Portal is an open source project you can contribute too. There are guidelines for how to properly do it _[here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)_.
+4. To read the realease history, click _[here](https://portal-bot.xyz/blog)_
 
-## Release History
-
+<!--## Release History
 | Version | Date       | Argument                                                                                        |
 | :------ | :--------- | :---------------------------------------------------------------------------------------------- |
 | 0.6.5   | 15-03-2021 | _text interpreter refactoring, code restructure and minor fixes_                                |
@@ -58,6 +58,7 @@
 | 0.2.1   | 16-06-2020 | _first version with more commands and feature with full test is now on two servers_             |
 | 0.1.0   | 18-05-2020 | _beta testing with a small set of commands on one server_                                       |
 | 0.0.1   | 05-05-2020 | _alpha version with initial features more of a test phase to test viability_                    |
+-->
 
 > **Disclaimers**
 > 
