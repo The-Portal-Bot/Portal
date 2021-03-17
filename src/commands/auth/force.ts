@@ -53,7 +53,12 @@ module.exports = async (
 							current_voice.clone({ name: updated_name })
 								.then(clone => {
 									if (current_voice) {
-										current_voice.members.forEach(member => member.voice.setChannel(clone));
+										current_voice.members.forEach(member => {
+											if (member.voice) {
+												member.voice.setChannel(clone, 'portal force update');
+											}
+										});
+
 										update_voice(guild_object.id, p.id, current_voice.id, 'id', clone.id)
 											.then(r => {
 												delete_channel(PortalChannelTypes.voice, current_voice, message, true);
@@ -62,13 +67,13 @@ module.exports = async (
 													result: r,
 													value: r
 														? 'force updated voice'
-														: message_help('commands', 'force', 'failed to force update')
+														: 'failed to force update'
 												});
 											})
 											.catch(e => {
 												return resolve({
 													result: false,
-													value: message_help('commands', 'force', `failed to force update channel ${e}`)
+													value: `failed to force update channel ${e}`
 												});
 											});
 									}
@@ -76,19 +81,19 @@ module.exports = async (
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: message_help('commands', 'force', `error while cloning channel ${e}`)
+										value: `error while cloning channel ${e}`
 									});
 								});
 						} else {
 							return resolve({
 								result: false,
-								value: message_help('commands', 'force', 'could not fetch message\'s guild')
+								value: 'could not fetch message\'s guild'
 							});
 						}
 					} else {
 						return resolve({
 							result: false,
-							value: message_help('commands', 'force', 'you are not the creator of the channel')
+							value: 'you are not the creator of the channel'
 						});
 					}
 				}
