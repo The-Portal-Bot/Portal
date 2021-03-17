@@ -67,7 +67,7 @@
 > * Discord update their server rate limit to twice per 10 minutes.<br>
     The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
 > * Portal is made using _[Discord.js](https://discord.js.org/#/)_
-> * Runs on nodejs 12.x or later
+> * Runs on nodejs 14.x or later
 
 <img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
 
