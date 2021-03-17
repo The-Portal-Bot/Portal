@@ -9,7 +9,7 @@ import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
 import { create_music_message, getJSON } from './help.library';
@@ -293,7 +293,7 @@ export async function create_music_channel(
 						.create(music_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(error => resolve(error));
-					create_music_message(channel, portal_icon_url, guild_object);
+					create_music_message(channel, guild_object);
 				})
 				.catch(error => resolve(error));
 		}
@@ -310,7 +310,7 @@ export async function create_music_channel(
 				.then(channel => {
 					channel.setParent(music_category);
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, portal_icon_url, guild_object);
+					create_music_message(channel, guild_object);
 				})
 				.catch(error => resolve(error));
 		}
@@ -325,7 +325,7 @@ export async function create_music_channel(
 				)
 				.then(channel => {
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, portal_icon_url, guild_object);
+					create_music_message(channel, guild_object);
 				})
 				.catch(error => resolve(error));
 		}

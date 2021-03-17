@@ -4,14 +4,14 @@ import { cloneDeep } from "lodash";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/interfaces/InterfacesPrtl.interface";
+import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/classes/TypesPrtl.interface";
 import { client_talk, client_write } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
-export function max256(abstract: string): string {
-	return abstract.length < 256
+export function max_string(abstract: string, max: number): string {
+	return abstract.length < max
 		? abstract
-		: abstract.substring(0, 253) + '...';
+		: abstract.substring(0, max - 3) + '...';
 }
 
 export function get_key_from_enum(value: string, enumeration: any): string | number | undefined {
@@ -25,7 +25,7 @@ export function get_key_from_enum(value: string, enumeration: any): string | num
 }
 
 export function create_music_message(
-	channel: TextChannel, thumbnail: string, guild_object: GuildPrtl
+	channel: TextChannel, guild_object: GuildPrtl
 ): void {
 	const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 		'Portal/master/src/assets/img/music_empty.png';
@@ -79,7 +79,7 @@ export function update_music_message(
 				? guild_object.music_queue
 					.map((v, i) => {
 						if (i !== 0 && i < 6) {
-							return (`${i}. ${v.title}`);
+							return (`${i}. ${max_string(v.title, 61)}`);
 						} else if (i === 6) {
 							return `_...${guild_object.music_queue.length - 6} more_`;
 						}
@@ -224,10 +224,9 @@ export async function join_by_reaction(
 					});
 				})
 				.catch(e => {
-					console.log('e :>> ', e);
 					return resolve({
 						result: false,
-						value: `failed to join voice channel 1 (${e})`,
+						value: `failed to join voice channel (${e})`,
 						voice_connection: undefined,
 					});
 				});
@@ -449,7 +448,7 @@ export function message_help(
 ): string {
 	return `${(info === ``) ? `` : `` + `${info}\n`}` +
 		`get help by typing \`./help ${argument}\`\n` +
-		`*https://portal-bot.xyz/docs/${type}/${argument}*`;
+		`*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`;
 }
 
 export function message_reply(

@@ -4,7 +4,7 @@ import { create_rich_embed, is_authorised, is_dj, update_music_message } from ".
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
 import { pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User

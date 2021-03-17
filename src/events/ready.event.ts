@@ -1,16 +1,51 @@
-import { ActivityOptions, Client, Guild, PresenceData } from "discord.js";
+import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "discord.js";
 import { get_function } from "../libraries/localisation.library";
-import { guild_exists, insert_guild } from "../libraries/mongo.library";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { fetch_guild_members, guild_exists, insert_guild, insert_member, remove_member } from "../libraries/mongo.library";
+import { MemberPrtl } from "../types/classes/MemberPrtl.class";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
+
+function added_when_down(guild: Guild, member_list: MemberPrtl[]): void {
+	const guild_members: GuildMember[] = guild.members.cache.array();
+
+	for (let j = 0; j < guild_members.length; j++) {
+		if (!guild_members[j].user.bot) {
+			const already_in_db = member_list.find(m => m.id === guild_members[j].id);
+
+			if (!already_in_db) { // if inside guild but not in portal db, add member
+				insert_member(guild_members[j].id, guild.id)
+					.then(r => {
+						console.log(`member ${guild_members[j].id} has been ` +
+							`late-inserted in guild ${guild.name} [${guild.id}]`);
+					})
+					.catch(console.log);
+			}
+		}
+	}
+}
+
+function removed_when_down(guild: Guild, member_list: MemberPrtl[]): void {
+	for (let j = 0; j < member_list.length; j++) {
+
+		const member_in_guild = guild.members.cache.array().find(m => m.id === member_list[j].id);
+		if (!member_in_guild) {
+			remove_member(member_list[j].id, guild.id)
+				.then(r => {
+					console.log(`member ${member_list[j].id} has been ` +
+					`late-removed from guild ${guild.name} [${guild.id}]`);
+				})
+				.catch(console.log);
+		}
+	}
+}
 
 function add_guild_again(
-	guild_id: string, client: Client
+	guild: Guild, client: Client
 ): Promise<boolean> {
 	return new Promise((resolve) => {
-		guild_exists(guild_id)
+		guild_exists(guild.id)
 			.then(exists => {
 				if (!exists) {
-					insert_guild(guild_id, client)
+					insert_guild(guild.id, client)
 						.then(resposne => {
 							return resolve(resposne);
 						})
@@ -18,7 +53,18 @@ function add_guild_again(
 							return resolve(false);
 						});
 				} else {
-					// check and add members
+					fetch_guild_members(guild.id)
+						.then(member_list => {
+							if (member_list) {
+								added_when_down(guild, member_list);
+								removed_when_down(guild, member_list);
+							} else {
+								return resolve(false);
+							}
+						})
+						.catch(() => {
+							return resolve(false);
+						});
 				}
 			})
 			.catch(() => {
@@ -56,12 +102,12 @@ module.exports = async (
 		args.client.guilds.cache.forEach((guild: Guild) => {
 			console.log(`├─ ${index++}.\t${guild} (${guild.id})`);
 
-			add_guild_again(guild.id, args.client);
+			add_guild_again(guild, args.client);
 			// remove_deleted_channels(guild);
 			// remove_empty_voice_channels(guild);
 		});
 
-		const func = get_function('console', 'en', 'ready');
+		const func = get_function('console', 1, 'ready');
 		return resolve({
 			result: true,
 			value: func

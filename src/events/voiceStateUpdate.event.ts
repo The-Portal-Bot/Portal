@@ -6,7 +6,7 @@ import { fetch_guild, remove_voice, update_guild } from "../libraries/mongo.libr
 import { update_timestamp } from "../libraries/user.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl.class";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 // delete portal's voice channel
 async function delete_voice_channel(

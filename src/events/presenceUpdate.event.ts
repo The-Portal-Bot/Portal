@@ -5,7 +5,7 @@ import { fetch_guild } from "../libraries/mongo.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl.class";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
-import { ReturnPormise } from "../types/interfaces/InterfacesPrtl.interface";
+import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 function update_channel_name(
 	current_guild: Guild, current_channel: VoiceChannel, current_portal_list: PortalChannelPrtl[], guild_object: GuildPrtl

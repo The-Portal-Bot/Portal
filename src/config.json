@@ -1,5 +1,5 @@
 {
-  "version": "0.6.4",
+  "version": "0.6.5",
   "token": "add-your-token-here",
   "prefix": "./",
   "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
@@ -9,7 +9,7 @@
       "OpenWeatherMap": "add-open-weather-map-api-key",
       "covid_193": "add-covid-193-api-key",
       "coingecko": "add-coingecko-api-key",
-      "footbal_data": "add-football-data-api-key",
+      "football_data": "add-football-data-api-key",
       "yahoo_finance": "add-yahoo-finance-api-key",
       "new_york_times": "add-new-york-time-api-key",
       "translate": {

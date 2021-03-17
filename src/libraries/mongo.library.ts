@@ -10,7 +10,7 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
-import { MongoPromise, Rank } from '../types/interfaces/InterfacesPrtl.interface';
+import { MongoPromise, Rank } from '../types/classes/TypesPrtl.interface';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
 
 // fetch guilds
@@ -154,6 +154,31 @@ export async function fetch_guild_reaction_data(
     });
 };
 
+export async function fetch_guild_members(
+    guild_id: string
+): Promise<MemberPrtl[] | undefined> {
+    return new Promise((resolve) => {
+        GuildPrtlMdl.findOne(
+            {
+                id: guild_id
+            },
+            {
+                member_list: 1
+            })
+            .then((r: any) => {
+                if (!!r) {
+                    return resolve(<MemberPrtl[]>r.member_list);
+                } else {
+                    return undefined;
+                }
+            })
+            .catch(e => {
+                console.log('e :>> ', e);
+                return resolve(undefined);
+            });
+    });
+};
+
 export async function fetch_guild_music_queue(
     guild_id: string
 ): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
@@ -244,7 +269,6 @@ export async function fetch_guild_rest(
                 id: 0,
                 prefix: 0,
                 portal_list: 0,
-                member_list: 0,
                 ignore_list: 0,
                 url_list: 0,
                 music_data: 0,
@@ -255,6 +279,7 @@ export async function fetch_guild_rest(
                 if (!!r) {
                     return resolve(<GuildPrtl>{
                         id: r.id,
+                        member_list: r.member_list,
                         poll_list: r.poll_list,
                         ranks: r.ranks,
                         music_queue: r.music_queue,
@@ -477,12 +502,12 @@ export async function update_member(
 };
 
 export async function insert_member(
-    new_member: GuildMember
+    member_id: string, guild_id: string
 ): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(new_member.id, 1, 0, 1, 0, null, 'null');
+    const new_member_portal = new MemberPrtl(member_id, 1, 0, 1, 0, null, 'null');
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
-            { id: new_member.guild.id },
+            { id: guild_id },
             {
                 $push: {
                     member_list: new_member_portal
@@ -500,17 +525,17 @@ export async function insert_member(
 };
 
 export async function remove_member(
-    member_to_remove: GuildMember
+    member_id: string, guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             {
-                id: member_to_remove.guild.id
+                id: guild_id
             },
             {
                 $pull: {
                     member_list: {
-                        id: member_to_remove.id
+                        id: member_id
                     }
                 }
             })
@@ -661,9 +686,13 @@ export async function insert_voice(
                 ]
             }
         )
-            .then((r: MongoPromise) => { resolve(!!r) })
+            .then((r: MongoPromise) => {
+                resolve(!!r)
+            })
             .catch(e => {
-                console.log('e :>> ', e); resolve(false) });
+                console.log('e :>> ', e);
+                resolve(false)
+            });
     });
 };
 
@@ -687,9 +716,13 @@ export async function remove_voice(
                 ]
             }
         )
-            .then((r: MongoPromise) => { resolve(!!r) })
+            .then((r: MongoPromise) => {
+                resolve(!!r)
+            })
             .catch(e => {
-                console.log('e :>> ', e); resolve(false) });
+                console.log('e :>> ', e);
+                resolve(false)
+            });
     });
 };
 
@@ -747,6 +780,8 @@ export async function remove_url(
 export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
+    console.log('guild_id :>> ', guild_id);
+    console.log('new_ignore :>> ', new_ignore);
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             {
@@ -759,6 +794,7 @@ export async function insert_ignore( // channel
             }
         )
             .then((r: MongoPromise) => {
+                console.log('r :>> ', r);
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {

@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from './InterfacesPrtl.interface';
+import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
 export const structure_prefix: string = '{{';
 const structures: InterfaceBlueprint[] = [

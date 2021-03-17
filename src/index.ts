@@ -3,6 +3,7 @@ import mongoose from 'mongoose'; // we want to load an object not only functions
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
+import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { client_talk } from './libraries/localisation.library';
@@ -11,8 +12,7 @@ import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_m
 import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
-import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
-import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/interfaces/InterfacesPrtl.interface";
+import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
 const AntiSpam = require('discord-anti-spam');
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
@@ -41,7 +41,7 @@ const anti_spam = new AntiSpam({
 	maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
 	maxDuplicatesKick: 50, // Amount of duplicate messages that trigger a warning.
 	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.
-	exemptPermissions: [], // Bypass users with any of these permissions. ('ADMINISTRATOR')
+	exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions. ('ADMINISTRATOR')
 	ignoreBots: true, // Ignore bot messages.
 	debug: false,
 	verbose: true, // Extended Logs from module.
@@ -195,7 +195,7 @@ client.on('message', async (message: Message) => {
 					return false;
 				}
 
-				let command = command_cypher(message, guild_object);
+				let command = command_decypher(message, guild_object);
 
 				if (!command.command_options) {
 					message_reply(false, message, message.author, 'not a Portal command');
@@ -228,6 +228,7 @@ client.on('message', async (message: Message) => {
 							return false;
 						}
 
+						guild_object.member_list = guild_object_rest.member_list;
 						guild_object.poll_list = guild_object_rest.poll_list;
 						guild_object.ranks = guild_object_rest.ranks;
 						guild_object.music_queue = guild_object_rest.music_queue;
@@ -565,6 +566,38 @@ function handle_music_channels(
 				return false;
 			}
 
+			const portal_voice_connection = client.voice?.connections
+				.find(c => c.channel.guild.id === message.guild?.id);
+
+			if (portal_voice_connection) {
+				if (!portal_voice_connection.channel.members.has(message.member.id)) {
+					if (message.guild) {
+						const portal_voice_connection = client.voice?.connections
+							.find(c => c.channel.guild.id === message.guild?.id);
+
+						const animate = portal_voice_connection?.dispatcher
+							? !portal_voice_connection?.dispatcher.paused
+							: false;
+
+						update_music_message(
+							message.guild,
+							guild_object,
+							guild_object.music_queue.length > 0
+								? guild_object.music_queue[0]
+								: undefined,
+							'you must be in the same channel as Portal',
+							animate
+						);
+					}
+
+					if (message.deletable) {
+						message.delete();
+					}
+
+					return false;
+				}
+			}
+
 			start(
 				voice_connection, client, message.member.user, message,
 				message.guild, guild_object, message.content
@@ -617,7 +650,7 @@ function handle_music_channels(
 	return false;
 }
 
-function command_cypher(
+function command_decypher(
 	message: Message, guild_object: GuildPrtl
 ): {
 	args: string[],
@@ -626,7 +659,7 @@ function command_cypher(
 	command_options: CommandOptions | undefined,
 	type: string
 } {
-	// Separate command name and arguments
+	// separate command name and arguments
 	const args = message.content.slice(guild_object.prefix.length).trim().split(/ +/g);
 
 	const cmd_only = args.shift();
