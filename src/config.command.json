@@ -1,6 +1,8 @@
-[{
-        "path": "no_auth/static",
-        "commands": [{
+[
+    {
+        "path": "no_auth",
+        "commands": [
+            {
                 "name": "about",
                 "range": "none",
                 "time": 0,
@@ -10,73 +12,6 @@
                 "reply": false
             },
             {
-                "name": "join",
-                "range": "none",
-                "time": 1,
-                "auth": false,
-                "premium": true,
-                "auto_delete": true,
-                "reply": false
-            },
-            {
-                "name": "leave",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "auto_delete": true,
-                "reply": false
-            },
-            {
-                "name": "level",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "auto_delete": true,
-                "reply": false
-            },
-            {
-                "name": "ping",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "auto_delete": true,
-                "reply": false
-            },
-            {
-                "name": "ranks",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "auto_delete": true,
-                "reply": true
-            },
-            {
-                "name": "state",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "auto_delete": true,
-                "reply": false
-            },
-            {
-                "name": "whoami",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "auto_delete": true,
-                "reply": false
-            }
-        ]
-    },
-    {
-        "path": "no_auth/dynamic",
-        "commands": [{
                 "name": "announce",
                 "range": "member",
                 "time": 2,
@@ -114,8 +49,8 @@
             },
             {
                 "name": "focus",
-                "range": "none",
-                "time": 0,
+                "range": "member",
+                "time": 1,
                 "auth": false,
                 "premium": true,
                 "auto_delete": true,
@@ -140,6 +75,15 @@
                 "reply": false
             },
             {
+                "name": "join",
+                "range": "none",
+                "time": 1,
+                "auth": false,
+                "premium": true,
+                "auto_delete": true,
+                "reply": false
+            },
+            {
                 "name": "joke",
                 "range": "none",
                 "time": 0,
@@ -158,12 +102,39 @@
                 "reply": true
             },
             {
+                "name": "leave",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": true,
+                "auto_delete": true,
+                "reply": false
+            },
+            {
+                "name": "level",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "auto_delete": true,
+                "reply": false
+            },
+            {
                 "name": "news",
                 "range": "none",
                 "time": 0,
                 "auth": false,
                 "premium": false,
                 "auto_delete": false,
+                "reply": false
+            },
+            {
+                "name": "ping",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "auto_delete": true,
                 "reply": false
             },
             {
@@ -174,6 +145,15 @@
                 "premium": false,
                 "auto_delete": true,
                 "reply": false
+            },
+            {
+                "name": "ranks",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": true,
+                "auto_delete": true,
+                "reply": true
             },
             {
                 "name": "roll",
@@ -194,6 +174,15 @@
                 "reply": false
             },
             {
+                "name": "state",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": true,
+                "auto_delete": true,
+                "reply": false
+            },
+            {
                 "name": "weather",
                 "range": "none",
                 "time": 0,
@@ -201,34 +190,22 @@
                 "premium": false,
                 "auto_delete": false,
                 "reply": false
-            }
-        ]
-    },
-    {
-        "path": "auth/static",
-        "commands": [{
-                "name": "force",
-                "range": "member",
-                "time": 5,
-                "auth": true,
-                "premium": true,
-                "auto_delete": false,
-                "reply": false
             },
             {
-                "name": "setup",
-                "range": "guild",
-                "time": 10,
-                "auth": true,
-                "premium": true,
+                "name": "whoami",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
                 "auto_delete": true,
-                "reply": true
+                "reply": false
             }
         ]
     },
     {
-        "path": "auth/dynamic",
-        "commands": [{
+        "path": "auth",
+        "commands": [
+            {
                 "name": "announcement",
                 "range": "none",
                 "time": 0,
@@ -247,7 +224,16 @@
                 "reply": false
             },
             {
-                "name": "music",
+                "name": "force",
+                "range": "member",
+                "time": 5,
+                "auth": true,
+                "premium": true,
+                "auto_delete": false,
+                "reply": false
+            },
+            {
+                "name": "ignore",
                 "range": "none",
                 "time": 0,
                 "auth": true,
@@ -256,7 +242,7 @@
                 "reply": true
             },
             {
-                "name": "ignore",
+                "name": "music",
                 "range": "none",
                 "time": 0,
                 "auth": true,
@@ -274,6 +260,15 @@
                 "reply": true
             },
             {
+                "name": "prefix",
+                "range": "none",
+                "time": 0,
+                "auth": true,
+                "premium": false,
+                "auto_delete": false,
+                "reply": true
+            },
+            {
                 "name": "role_assigner",
                 "range": "none",
                 "time": 0,
@@ -285,7 +280,7 @@
             {
                 "name": "set_ranks",
                 "range": "none",
-                "time": 10,
+                "time": 0,
                 "auth": true,
                 "premium": true,
                 "auto_delete": true,
@@ -298,6 +293,15 @@
                 "auth": false,
                 "premium": true,
                 "auto_delete": false,
+                "reply": true
+            },
+            {
+                "name": "setup",
+                "range": "guild",
+                "time": 10,
+                "auth": true,
+                "premium": true,
+                "auto_delete": true,
                 "reply": true
             },
             {

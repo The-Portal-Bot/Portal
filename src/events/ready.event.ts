@@ -44,7 +44,6 @@ function add_guild_again(
 	return new Promise((resolve) => {
 		guild_exists(guild.id)
 			.then(exists => {
-				console.log('exists :>> ', exists);
 				if (!exists) {
 					insert_guild(guild.id, client)
 						.then(resposne => {

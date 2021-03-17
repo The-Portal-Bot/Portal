@@ -195,7 +195,7 @@ client.on('message', async (message: Message) => {
 					return false;
 				}
 
-				let command = command_cypher(message, guild_object);
+				let command = command_decypher(message, guild_object);
 
 				if (!command.command_options) {
 					message_reply(false, message, message.author, 'not a Portal command');
@@ -566,6 +566,38 @@ function handle_music_channels(
 				return false;
 			}
 
+			const portal_voice_connection = client.voice?.connections
+				.find(c => c.channel.guild.id === message.guild?.id);
+
+			if (portal_voice_connection) {
+				if (!portal_voice_connection.channel.members.has(message.member.id)) {
+					if (message.guild) {
+						const portal_voice_connection = client.voice?.connections
+							.find(c => c.channel.guild.id === message.guild?.id);
+
+						const animate = portal_voice_connection?.dispatcher
+							? !portal_voice_connection?.dispatcher.paused
+							: false;
+
+						update_music_message(
+							message.guild,
+							guild_object,
+							guild_object.music_queue.length > 0
+								? guild_object.music_queue[0]
+								: undefined,
+							'you must be in the same channel as Portal',
+							animate
+						);
+					}
+
+					if (message.deletable) {
+						message.delete();
+					}
+
+					return false;
+				}
+			}
+
 			start(
 				voice_connection, client, message.member.user, message,
 				message.guild, guild_object, message.content
@@ -618,7 +650,7 @@ function handle_music_channels(
 	return false;
 }
 
-function command_cypher(
+function command_decypher(
 	message: Message, guild_object: GuildPrtl
 ): {
 	args: string[],
@@ -627,7 +659,7 @@ function command_cypher(
 	command_options: CommandOptions | undefined,
 	type: string
 } {
-	// Separate command name and arguments
+	// separate command name and arguments
 	const args = message.content.slice(guild_object.prefix.length).trim().split(/ +/g);
 
 	const cmd_only = args.shift();
