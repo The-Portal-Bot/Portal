@@ -116,9 +116,3 @@ dist
 
 #build
 build/*
-
-#guild status
-src/database/guild_list.json
-
-#config
-src/config.json
