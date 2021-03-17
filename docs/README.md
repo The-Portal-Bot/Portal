@@ -1,5 +1,5 @@
 <h1 align="center">
-    <a href="https://portal-bot.xyz" target="_blank>
+    <a href="https://portal-bot.xyz" target="_blank">
         Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="alt text" width="25" height="25">
     </a>
 </h1>
