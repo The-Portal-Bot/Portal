@@ -9,14 +9,14 @@ const profane_words: Language = <Language>ProfaneWords;
    * @param {string} string - String to evaluate for profanity
    */
 export function isProfane(
-	string: string, profanity_level: number
+	canditate: string, profanity_level: number
 ): string[] {
-	if (string.includes('role_assigner')) {
+	if (canditate.includes('role_assigner')) {
 		return [];
 	}
 
 	const gr = profane_words.gr.filter((word: string) => {
-		return string.toLowerCase() === word.toLowerCase();
+		return canditate.toLowerCase() === word.toLowerCase();
 	});
 
 	const en = profane_words.en.filter((word: string) => {
@@ -25,7 +25,7 @@ export function isProfane(
 			: `\\b(\\w*${word}\\w*)\\b`, 'gi'
 		);
 
-		return word_exp.test(string);
+		return word_exp.test(canditate);
 	});
 
 	const de = profane_words.de.filter((word: string) => {
@@ -34,7 +34,7 @@ export function isProfane(
 			: `\\b(\\w*${word}\\w*)\\b`, 'gi'
 		);
 
-		return word_exp.test(string);
+		return word_exp.test(canditate);
 	});
 
 	return (gr.length > 0 || false) || (en.length > 0 || false) || (de.length > 0 || false)

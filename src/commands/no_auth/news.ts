@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import config from '../../config.json';
-import { NYTCategories } from '../../data/lists/profane_words.static copy';
+import { NYTCategories } from '../../data/lists/news_categories.static';
 import { create_rich_embed, getJSON, max_string, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
