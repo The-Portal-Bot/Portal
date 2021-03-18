@@ -12,6 +12,7 @@ import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
 import { MongoPromise, Rank } from '../types/classes/TypesPrtl.interface';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
+import { Document } from 'mongoose';
 
 // fetch guilds
 export async function fetch_guild_list(
@@ -439,7 +440,7 @@ export async function insert_guild(
             premium: premium,
             prefix: prefix
         })
-            .then(r => {
+            .then((r: Document<any>) => {
                 return resolve(!!r);
             })
             .catch(e => {
@@ -687,7 +688,7 @@ export async function insert_voice(
             }
         )
             .then((r: MongoPromise) => {
-                resolve(!!r)
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 console.log('e :>> ', e);
@@ -717,7 +718,7 @@ export async function remove_voice(
             }
         )
             .then((r: MongoPromise) => {
-                resolve(!!r)
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
                 console.log('e :>> ', e);
@@ -794,7 +795,6 @@ export async function insert_ignore( // channel
             }
         )
             .then((r: MongoPromise) => {
-                console.log('r :>> ', r);
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {

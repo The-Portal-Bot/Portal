@@ -1,13 +1,12 @@
 version: "3.2"
 
 services:
-
   portal:
     container_name: portal
     image: keybraker/portal:latest
-    build: 
+    build:
       context: .
-      dockerfile: ./docker/Dockerfile 
+      dockerfile: ./docker/Dockerfile
     depends_on:
       - mongo
 
@@ -16,7 +15,7 @@ services:
     restart: always
     image: mongo:4.4.3
     ports:
-     - '29017:27017'
+      - "29017:27017"
     volumes:
       - type: bind
         source: ../mongo/data/db
