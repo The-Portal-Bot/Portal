@@ -1,12 +1,12 @@
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
-import { createLogger, format, transports } from 'winston';
+import { transports } from "winston";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
 import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
-import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
+import { is_authorised, is_ignored, is_url, get_logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { client_talk } from './libraries/localisation.library';
 import { isProfane } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
@@ -15,28 +15,18 @@ import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
 
+if (config.debug) {
+	get_logger().add(new transports.Console());
+}
+if (config.log) {
+	get_logger().add(new transports.File({ filename: './logs/portal-error.log.json', level: 'error' }));
+	get_logger().add(new transports.File({ filename: './logs/portal-info.log.json', level: 'info' }));
+	get_logger().add(new transports.File({ filename: './logs/portal-all.log.json' }));
+}
+
 // const AntiSpam = require('discord-anti-spam');
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
-
-const logger = createLogger({
-	format: format.combine(
-		format.timestamp({
-			format: 'DD-MM-YY HH:mm:ss'
-		}),
-		format.errors({ stack: true }),
-		format.splat(),
-		format.json()
-	),
-	defaultMeta: { service: 'portal-index' },
-	transports: [
-		// you can also add a mongo transport to store logs in the database (there is a performance penalty)
-		new transports.Console(),
-		// new transports.File({ filename: './logs/portal-error.log.json', level: 'error' }),
-		// new transports.File({ filename: './logs/portal-info.log.json', level: 'info' }),
-		// new transports.File({ filename: './logs/portal-all.log.json' })
-	]
-});
 
 // Connect to mongoose database
 mongoose.connect(config.mongo_url, {
@@ -45,9 +35,9 @@ mongoose.connect(config.mongo_url, {
 	useCreateIndex: true
 })
 	.then(r => {
-		logger.log({ level: 'info', type: 'none', message: `connected to the database` });
+		get_logger().log({ level: 'info', type: 'none', message: `connected to the database` });
 	}).catch(e => {
-		logger.log({ level: 'error', type: 'none', message: new Error(`unable to connect to database | ${e}`).message });
+		get_logger().log({ level: 'error', type: 'none', message: new Error(`unable to connect to database | ${e}`).message });
 		process.exit(1);
 	});
 
@@ -199,11 +189,11 @@ client.on('message', async (message: Message) => {
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {
 			if (!guild_object) {
-				logger.log({ level: 'error', type: 'none', message: new Error(`guild does not exist in Portal`).message });
+				get_logger().log({ level: 'error', type: 'none', message: new Error(`guild does not exist in Portal`).message });
 				return false;
 			}
 
-			if (false){ // || portal_preprocessor(message, guild_object)) {
+			if (false) { // || portal_preprocessor(message, guild_object)) {
 				// preprocessor has handled the message
 				return true;
 			} else {
@@ -237,7 +227,7 @@ client.on('message', async (message: Message) => {
 				}
 
 				if (!message.guild) {
-					logger.log({ level: 'error', type: 'none', message: new Error('could not fetch guild of message').message });
+					get_logger().log({ level: 'error', type: 'none', message: new Error('could not fetch guild of message').message });
 
 					return false;
 				}
@@ -245,7 +235,7 @@ client.on('message', async (message: Message) => {
 				fetch_guild_rest(message.guild.id)
 					.then(guild_object_rest => {
 						if (!guild_object_rest) {
-							logger.log({ level: 'error', type: 'none', message: new Error('server is not in database').message });
+							get_logger().log({ level: 'error', type: 'none', message: new Error('server is not in database').message });
 							message_reply(false, message, message.author,
 								'server is not in database, please contact portal support');
 
@@ -276,13 +266,13 @@ client.on('message', async (message: Message) => {
 						);
 					})
 					.catch(e => {
-						logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild restdata').message });
+						get_logger().log({ level: 'error', type: 'none', message: new Error('error while fetch guild restdata').message });
 						return false;
 					});
 			}
 		})
 		.catch(e => {
-			logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild predata').message });
+			get_logger().log({ level: 'error', type: 'none', message: new Error('error while fetch guild predata').message });
 			return false;
 		});
 });
@@ -292,7 +282,7 @@ function command_loader(
 	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
 	if (config.debug === true) {
-		logger.log({ level: 'info', type: 'command', message: cmd });
+		get_logger().log({ level: 'info', type: 'command', message: cmd });
 	}
 
 	if (type === 'none' && command_options.time === 0) {
@@ -307,11 +297,11 @@ function command_loader(
 						);
 					}
 				} else {
-					logger.log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
+					get_logger().log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
 				}
 			})
 			.catch((error: any) => {
-				logger.log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
+				get_logger().log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
 			});
 
 		return true;
@@ -369,11 +359,11 @@ function command_loader(
 					message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
 				}
 			} else {
-				logger.log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
+				get_logger().log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
 			}
 		})
 		.catch((error: any) => {
-			logger.log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
+			get_logger().log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
 		});
 
 	return false;
@@ -385,27 +375,27 @@ function event_loader(event: string, args: any): void {
 			if (config.debug || (event_config_json.find(e => e.name === event) && (response && !response.result))) {
 				if (!response.value || response.value === '') {
 					response.result
-						? logger.log({ level: 'info', type: 'event', message: `${event} / nothing` })
-						: logger.log({ level: 'warn', type: 'event', message: `${event} / nothing` });
+						? get_logger().log({ level: 'info', type: 'event', message: `${event} / nothing` })
+						: get_logger().log({ level: 'warn', type: 'event', message: `${event} / nothing` });
 				} else {
 					response.result
-						? logger.log({ level: 'info', type: 'event', message: `${event} / ${response.value}` })
-						: logger.log({ level: 'warn', type: 'event', message: `${event} / ${response.value}` });
+						? get_logger().log({ level: 'info', type: 'event', message: `${event} / ${response.value}` })
+						: get_logger().log({ level: 'warn', type: 'event', message: `${event} / ${response.value}` });
 				}
 			}
 		})
 		.catch((e: any) => {
-			logger.log({ level: 'error', type: 'none', message: new Error(`EVNT|${event} / ${e}`).message })
+			get_logger().log({ level: 'error', type: 'none', message: new Error(`EVNT|${event} / ${e}`).message })
 		});
 }
 
 function connect_to_discord() {
 	client.login(config.token)
 		.then(r => {
-			logger.log({ level: 'info', type: 'none', message: `login to discord successful / ${r}` })
+			get_logger().log({ level: 'info', type: 'none', message: `login to discord successful / ${r}` })
 		})
 		.catch(e => {
-			logger.log({ level: 'error', type: 'none', message: new Error(`could not login to discord / ${e}`).message })
+			get_logger().log({ level: 'error', type: 'none', message: new Error(`could not login to discord / ${e}`).message })
 			process.exit(1);
 		});
 }
@@ -419,7 +409,7 @@ function portal_preprocessor(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
 	if (!message.member) {
-		logger.log({ level: 'error', type: 'none', message: new Error('could not get member').message });
+		get_logger().log({ level: 'error', type: 'none', message: new Error('could not get member').message });
 		return true;
 	}
 
@@ -464,7 +454,7 @@ function portal_preprocessor(
 					message.author
 						.send(`try not to use profanities (${profanities.join(',')})`)
 						.catch(error => {
-							logger.log({ level: 'error', type: 'none', message: new Error(error).message });
+							get_logger().log({ level: 'error', type: 'none', message: new Error(error).message });
 						});
 				}
 			}
@@ -503,7 +493,7 @@ function handle_url_channels(
 					);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${e}`).message });
+					get_logger().log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${e}`).message });
 				});
 		}
 		else if (is_url(message.content)) {
@@ -514,7 +504,7 @@ function handle_url_channels(
 			message.author
 				.send(`${message.channel} is a url-only channel`)
 				.catch(error => {
-					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${error}`).message });
+					get_logger().log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${error}`).message });
 				});
 			if (message.deletable) {
 				message.delete();
@@ -541,7 +531,7 @@ function handle_ignored_channels(
 					message_reply(true, message, message.author, reply_message);
 				})
 				.catch(error => {
-					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove ignored channel: ${error}`).message });
+					get_logger().log({ level: 'error', type: 'none', message: new Error(`failed to remove ignored channel: ${error}`).message });
 				});
 		}
 
@@ -557,7 +547,7 @@ function handle_music_channels(
 	if (guild_object.music_data.channel_id === message.channel.id) {
 		if (message.content === './music') {
 			if (!message.guild) {
-				logger.log({ level: 'error', type: 'none', message: new Error(`failed to get guild from message`).message });
+				get_logger().log({ level: 'error', type: 'none', message: new Error(`failed to get guild from message`).message });
 				return true;
 			}
 
@@ -570,7 +560,7 @@ function handle_music_channels(
 							: 'failed to remove music channel');
 				})
 				.catch(error => {
-					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove music channel: ${error}`).message });
+					get_logger().log({ level: 'error', type: 'none', message: new Error(`failed to remove music channel: ${error}`).message });
 				});
 		} else {
 			const voice_connection = client.voice
@@ -662,7 +652,7 @@ function handle_music_channels(
 						message.delete();
 					}
 
-					logger.log({ level: 'error', type: 'none', message: new Error(`error while starting playback: ${e}`).message });
+					get_logger().log({ level: 'error', type: 'none', message: new Error(`error while starting playback: ${e}`).message });
 				});
 		}
 

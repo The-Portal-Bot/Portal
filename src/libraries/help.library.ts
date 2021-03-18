@@ -1,6 +1,7 @@
 import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
+import winston, { createLogger, format, Logger, transports } from "winston";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
@@ -8,13 +9,35 @@ import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } 
 import { client_talk, client_write } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
-export function max_string(abstract: string, max: number): string {
+const logger = createLogger({
+	format: format.combine(
+		format.timestamp({
+			format: 'DD-MM-YY HH:mm:ss'
+		}),
+		format.errors({ stack: true }),
+		format.splat(),
+		format.json()
+	),
+	defaultMeta: { service: 'portal' },
+	// you can also add a mongo transport to store logs in the database (there is a performance penalty)
+	transports: []
+});
+
+export function get_logger(): winston.Logger {
+	return logger;
+}
+
+export function max_string(
+	abstract: string, max: number
+): string {
 	return abstract.length < max
 		? abstract
 		: abstract.substring(0, max - 3) + '...';
 }
 
-export function get_key_from_enum(value: string, enumeration: any): string | number | undefined {
+export function get_key_from_enum(
+	value: string, enumeration: any
+): string | number | undefined {
 	for (let e in enumeration) {
 		if (e === value) {
 			return enumeration[e];
@@ -463,28 +486,38 @@ export function message_reply(
 				if (msg.deletable) {
 					msg
 						.delete({ timeout: config.delete_msg_after * 1000 })
-						.catch(console.log);
+						.catch(e => {
+							get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+						});
 				}
 			})
-			.catch(console.log);
+			.catch(e => {
+				get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+			});
 	}
 
 	if (message && !message.deleted) {
 		if (status === true) {
 			message
 				.react(emote_pass)
-				.catch(console.log);
+				.catch(e => {
+					get_logger().log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
+				});
 		}
 		else if (status === false) {
 			message
 				.react(emote_fail)
-				.catch(console.log);
+				.catch(e => {
+					get_logger().log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
+				});
 		}
 
 		if (message && to_delete && message.deletable) {
 			message
 				.delete({ timeout: 5000 })
-				.catch(console.log);
+				.catch(e => {
+					get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+				});
 		}
 	}
 };
@@ -654,10 +687,14 @@ export function remove_empty_voice_channels(
 												.delete()
 												.then(g => {
 													p.voice_list.splice(index, 1);
-													console.log(`deleted empty channel: ${channel.name} ` +
-														`(${channel.id}) from ${channel.guild.name}`);
+													get_logger().log({
+														level: 'info', type: 'none', message: `deleted empty channel: ${channel.name} ` +
+															`(${channel.id}) from ${channel.guild.name}`
+													});
 												})
-												.catch(console.log);
+												.catch(e => {
+													get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+												});
 										}
 										return true;
 									}

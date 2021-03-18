@@ -4,7 +4,6 @@ import {
 } from "discord.js";
 import moment from "moment";
 import voca from 'voca';
-import { createLogger, format, transports } from "winston";
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { GuildPrtl } from '../types/classes/GuildPrtl.class';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
@@ -13,27 +12,8 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
-import { create_music_message, getJSON } from './help.library';
+import { create_music_message, getJSON, get_logger } from './help.library';
 import { insert_voice } from "./mongo.library";
-
-const logger = createLogger({
-	format: format.combine(
-		format.timestamp({
-			format: 'DD-MM-YY HH:mm:ss'
-		}),
-		format.errors({ stack: true }),
-		format.splat(),
-		format.json()
-	),
-	defaultMeta: { service: 'portal-guild-library' },
-	transports: [
-		// you can also add a mongo transport to store logs in the database (there is a performance penalty)
-		new transports.Console(),
-		// new transports.File({ filename: './logs/portal-error.log.json', level: 'error' }),
-		// new transports.File({ filename: './logs/portal-info.log.json', level: 'info' }),
-		// new transports.File({ filename: './logs/portal-all.log.json' })
-	]
-});
 
 function inline_operator(str: string): any {
 	switch (str) {
@@ -199,11 +179,11 @@ export function create_portal_channel(
 					.create(portal_category, { type: 'category' })
 					.then(cat_channel => channel.setParent(cat_channel))
 					.catch(e => {
-						logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+						get_logger().log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
 					});
 			})
 			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+				get_logger().log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
 			});
 	}
 	else if (portal_category) { // with category given
@@ -227,7 +207,7 @@ export function create_portal_channel(
 				));
 			})
 			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+				get_logger().log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
 			});
 	}
 	else { // without category
@@ -250,7 +230,7 @@ export function create_portal_channel(
 				));
 			})
 			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+				get_logger().log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
 			});
 	}
 };
@@ -323,7 +303,7 @@ export async function create_music_channel(
 					resolve(true);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
+					get_logger().log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
 					resolve(false)
 				});
 		}
@@ -344,7 +324,7 @@ export async function create_music_channel(
 					resolve(true);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
+					get_logger().log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
 					resolve(false)
 				});
 		}
@@ -363,7 +343,7 @@ export async function create_music_channel(
 					resolve(true);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
+					get_logger().log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
 					resolve(false)
 				});
 		}
@@ -486,19 +466,19 @@ export function delete_channel(
 													sent_message
 														.delete({ timeout: 7000 })
 														.then(r => {
-															logger.log({ level: 'info', type: 'none', message: `deleted message` });
+															get_logger().log({ level: 'info', type: 'none', message: `deleted message` });
 														})
 														.catch(e => {
-															logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+															get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 														});
 												})
 												.catch(e => {
-													logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+													get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
 												});
 										}
 									})
 									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
+										get_logger().log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
 									});
 
 								channel_deleted = true;
@@ -509,14 +489,14 @@ export function delete_channel(
 									.then(msg => {
 										msg.delete({ timeout: 5000 })
 											.then(r => {
-												logger.log({ level: 'info', type: 'none', message: `deleted message` });
+												get_logger().log({ level: 'info', type: 'none', message: `deleted message` });
 											})
 											.catch(e => {
-												logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+												get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 											});
 									})
 									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+										get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
 									});
 							}
 							collector.stop();
@@ -532,10 +512,10 @@ export function delete_channel(
 								reply_message
 									.delete()
 									.then(r => {
-										logger.log({ level: 'info', type: 'none', message: `deleted message` });
+										get_logger().log({ level: 'info', type: 'none', message: `deleted message` });
 									})
 									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+										get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 									});
 							}
 						});
@@ -547,28 +527,28 @@ export function delete_channel(
 									msg
 										.delete({ timeout: 5000 })
 										.then(r => {
-											logger.log({ level: 'info', type: 'none', message: `deleted message` });
+											get_logger().log({ level: 'info', type: 'none', message: `deleted message` });
 										})
 										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+											get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 										});
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+									get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
 								});
 						}
 						question_msg
 							.delete({ timeout: 5000 })
 							.then(r => {
-								logger.log({ level: 'info', type: 'none', message: `deleted message` });
+								get_logger().log({ level: 'info', type: 'none', message: `deleted message` });
 							})
 							.catch(e => {
-								logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+								get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 							});
 					});
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+					get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
 				});
 		}
 	}
@@ -576,10 +556,10 @@ export function delete_channel(
 		channel_to_delete
 			.delete()
 			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `deleted channel with id \ ${r}` });
+				get_logger().log({ level: 'info', type: 'none', message: `deleted channel with id \ ${r}` });
 			})
 			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
+				get_logger().log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
 			});
 	}
 };
@@ -673,11 +653,14 @@ export function generate_channel_name(
 
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
-						voice_channel.edit({ name: new_name.substring(0, 99) })
-							.then(newChannel => {
-								// console.log(`voice's new name from promise is ${newChannel.name}`)
+						voice_channel
+							.edit({ name: new_name.substring(0, 99) })
+							.then(new_channel => {
+								get_logger().log({ level: 'info', type: 'none', message: `new channel ${new_channel.name} spawned` });
 							})
-							.catch(console.log);
+							.catch(e => {
+								get_logger().log({ level: 'error', type: 'none', message: `failed to edit voice channel / ${e}` });
+							});
 						return_value = 1;
 					}
 					else {
@@ -852,7 +835,7 @@ export function regex_interpreter(
 				}
 			}
 			catch (e) {
-				console.log(`error in JSON parse (${e})`);
+				get_logger().log({ level: 'info', type: 'none', message: `failed to parse json / ${e}` });
 				new_channel_name += regex[i];
 			}
 

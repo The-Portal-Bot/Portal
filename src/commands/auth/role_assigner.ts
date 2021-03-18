@@ -118,7 +118,6 @@ module.exports = async (
 			r.give = r.give.trim();
 			r.strip = r.strip.trim();
 		});
-		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
 
 		const role_emb_value: GiveRole[] = [];
 		const role_emb_display_give: Field[] = [];
