@@ -1,5 +1,5 @@
 import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "discord.js";
-import { get_logger } from "../libraries/help.library";
+import { logger } from "../libraries/help.library";
 import { get_function } from "../libraries/localisation.library";
 import { fetch_guild_members, guild_exists, insert_guild, insert_member, remove_member } from "../libraries/mongo.library";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
@@ -15,13 +15,13 @@ function added_when_down(guild: Guild, member_list: MemberPrtl[]): void {
 			if (!already_in_db) { // if inside guild but not in portal db, add member
 				insert_member(guild_members[j].id, guild.id)
 					.then(r => {
-						get_logger().log({
+						logger.log({
 							level: 'info', type: 'none', message: (`member ${guild_members[j].id} has been ` +
 								`late-inserted in guild ${guild.name} [${guild.id}]`)
 						});
 					})
 					.catch(e => {
-						get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+						logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
 					});
 			}
 		}
@@ -35,13 +35,13 @@ function removed_when_down(guild: Guild, member_list: MemberPrtl[]): void {
 		if (!member_in_guild) {
 			remove_member(member_list[j].id, guild.id)
 				.then(r => {
-					get_logger().log({
+					logger.log({
 						level: 'info', type: 'none', message: (`member ${member_list[j].id} has been ` +
 							`late-removed from guild ${guild.name} [${guild.id}]`)
 					});
 				})
 				.catch(e => {
-					get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+					logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
 				});
 		}
 	}
@@ -108,7 +108,7 @@ module.exports = async (
 		args.client.user.setPresence(data);
 
 		args.client.guilds.cache.forEach((guild: Guild) => {
-			get_logger().log({ level: 'info', type: 'none', message: `${guild} | ${guild.id}` });
+			logger.log({ level: 'info', type: 'none', message: `${guild} | ${guild.id}` });
 
 			add_guild_again(guild, args.client);
 			// remove_deleted_channels(guild);

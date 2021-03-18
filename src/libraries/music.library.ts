@@ -3,7 +3,7 @@ import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, VoiceCon
 import yts, { PlaylistMetadataResult, SearchResult, VideoSearchResult } from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
-import { is_url, join_by_reaction, join_user_voice, get_logger, update_music_message } from './help.library';
+import { is_url, join_by_reaction, join_user_voice, logger, update_music_message } from './help.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
@@ -117,7 +117,7 @@ async function start_playback(
 									);
 								})
 								.catch(e => {
-									get_logger().log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
 								});
 						});
 
@@ -167,7 +167,7 @@ async function start_playback(
 											);
 										})
 										.catch(e => {
-											get_logger().log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+											logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
 										});
 								});
 
@@ -366,7 +366,7 @@ export async function play(
 									);
 								})
 								.catch(e => {
-									get_logger().log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
 								});
 						});
 
@@ -414,7 +414,7 @@ export async function play(
 									);
 								})
 								.catch(e => {
-									get_logger().log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
 								});
 						});
 
@@ -525,7 +525,7 @@ export async function skip(
 									);
 								})
 								.catch(e => {
-									get_logger().log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
 								});
 						});
 
@@ -575,7 +575,7 @@ export async function skip(
 											);
 										})
 										.catch(e => {
-											get_logger().log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+											logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
 										});
 								});
 

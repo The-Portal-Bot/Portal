@@ -90,7 +90,7 @@ async function channel_empty_check(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `an error occurred while deleting voice (${e})`
+							value: `an error occurred while deleting voice / ${e}`
 						});
 					});
 			} else {
@@ -129,7 +129,7 @@ async function channel_empty_check(
 							.catch(e => {
 								return resolve({
 									result: false,
-									value: `an error occurred while deleting voice (${e})`
+									value: `an error occurred while deleting voice / ${e}`
 								})
 							});
 					} else {
@@ -166,7 +166,7 @@ async function from_null(
 				if (!portal_object) {
 					return resolve({
 						result: false,
-						value: 'could not find portal'
+						value: 'null->existing (source: null / dest: portal_list) / could not find portal_object'
 					});
 				}
 
@@ -179,37 +179,40 @@ async function from_null(
 						}
 
 						five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
-						// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 
 						return resolve({
 							result: true,
-							value: `created new voice channel`
+							value: 'null->existing (source: null / dest: portal_list)'
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `an error occurred while creating voice channel (${e})`
+							value: `null->existing (source: null / dest: portal_list) / ${e}`
 						});
 					});
 			}
 			else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // joined voice channel
 				five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
-				// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 				update_timestamp(newState, guild_object); // points for voice
+
+				return resolve({
+					result: true,
+					value: 'null->existing (source: null / dest: voice_list)'
+				});
 			}
 			else { // joined other channel
 				update_timestamp(newState, guild_object); // points for other
-			}
 
-			return resolve({
-				result: true,
-				value: 'null->existing'
-			});
+				return resolve({
+					result: true,
+					value: 'null->existing (source: null / dest: other channel)'
+				});
+			}
 		} else {
 			return resolve({
 				result: false,
-				value: 'odd from null to null'
+				value: 'strange, from null to null'
 			});
 		}
 	});
@@ -237,7 +240,7 @@ async function from_existing(
 
 					return resolve({
 						result: true,
-						value: 'existing->existing (source: portal_list / dest: voice_list) has been handled before'
+						value: 'existing->existing (source: portal_list / dest: voice_list) / has been handled before'
 					});
 				} else {
 					return resolve({
@@ -268,7 +271,6 @@ async function from_existing(
 							}
 
 							five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
-							// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 
 							return resolve({
 								result: true,
@@ -278,14 +280,13 @@ async function from_existing(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `an error occurred while creating voice channel (${e})`
+								value: `an error occurred while creating voice channel / ${e}`
 							});
 						});
 				}
 				else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // moved from voice to voice
 					update_timestamp(newState, guild_object); // points calculation from any channel
 					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
-					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 
 					return resolve({
 						result: true,
@@ -295,7 +296,6 @@ async function from_existing(
 				else { // moved from voice to other
 					update_timestamp(newState, guild_object); // points calculation from any channel
 					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
-					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 
 					return resolve({
 						result: true,
@@ -312,7 +312,7 @@ async function from_existing(
 					if (!portal_object) {
 						return resolve({
 							result: false,
-							value: 'could not find portal in DB, contact Portal support'
+							value: 'existing->existing (source: other voice / dest: portal_list) / could not find portal in DB, contact Portal support'
 						});
 					}
 
@@ -323,7 +323,6 @@ async function from_existing(
 							}
 
 							five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
-							// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 
 							return resolve({
 								result: true,
@@ -333,7 +332,7 @@ async function from_existing(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `an error occurred while creating voice channel (${e})`
+								value: `existing->existing (source: other voice / dest: portal_list ) / ${e}`
 							});
 						});
 				}
@@ -341,7 +340,6 @@ async function from_existing(
 					new_channel.id, guild_object.portal_list)) { // left created channel and joins another created
 
 					five_min_refresher(new_channel, guild_object.portal_list, guild_object, newState.guild, 5);
-					// generate_channel_name(new_channel, guild_object.portal_list, guild_object, newState.guild);
 
 					return resolve({
 						result: true,

@@ -76,7 +76,7 @@
             },
             {
                 "name": "join",
-                "range": "none",
+                "range": "member",
                 "time": 1,
                 "auth": false,
                 "premium": true,

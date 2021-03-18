@@ -2,7 +2,7 @@ import { Guild, GuildMember, Message, VoiceState } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
 import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
-import { get_logger, time_elapsed } from './help.library';
+import { logger, time_elapsed } from './help.library';
 import { update_member } from "./mongo.library";
 
 export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild): boolean {
@@ -82,10 +82,10 @@ export function update_timestamp(
 			member_prtl.timestamp = new Date();
 			update_member(voiceState.guild.id, member.id, 'timestamp', member_prtl.timestamp)
 				.then(r => {
-					get_logger().log({ level: 'info', type: 'none', message: `updated member` });
+					logger.log({ level: 'info', type: 'none', message: `updated member` });
 				})
 				.catch(e => {
-					get_logger().log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 				});
 
 			return false;
@@ -95,18 +95,18 @@ export function update_timestamp(
 
 		update_member(voiceState.guild.id, member.id, 'points', points)
 			.then(r => {
-				get_logger().log({ level: 'info', type: 'none', message: `updated member` });
+				logger.log({ level: 'info', type: 'none', message: `updated member` });
 			})
 			.catch(e => {
-				get_logger().log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
 
 		update_member(voiceState.guild.id, member.id, 'timestamp', null)
 			.then(r => {
-				get_logger().log({ level: 'info', type: 'none', message: `updated member` });
+				logger.log({ level: 'info', type: 'none', message: `updated member` });
 			})
 			.catch(e => {
-				get_logger().log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
 
 		const level = calculate_rank(member_prtl);
@@ -114,10 +114,10 @@ export function update_timestamp(
 		if (level) {
 			update_member(voiceState.guild.id, member.id, 'level', level)
 				.then(r => {
-					get_logger().log({ level: 'info', type: 'none', message: `updated member` });
+					logger.log({ level: 'info', type: 'none', message: `updated member` });
 				})
 				.catch(e => {
-					get_logger().log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 				});
 		}
 
@@ -147,10 +147,10 @@ export function add_points_message(
 
 	update_member(message.guild.id, member.id, 'points', member.points)
 		.then(r => {
-			get_logger().log({ level: 'info', type: 'none', message: `updated member` });
+			logger.log({ level: 'info', type: 'none', message: `updated member` });
 		})
 		.catch(e => {
-			get_logger().log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+			logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 		});
 
 	const level = calculate_rank(member);
@@ -158,10 +158,10 @@ export function add_points_message(
 	if (level) {
 		update_member(message.guild.id, member.id, 'level', level)
 			.then(r => {
-				get_logger().log({ level: 'info', type: 'none', message: `updated member` });
+				logger.log({ level: 'info', type: 'none', message: `updated member` });
 			})
 			.catch(e => {
-				get_logger().log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
 	}
 

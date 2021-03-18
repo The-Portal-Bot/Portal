@@ -450,7 +450,7 @@ module.exports = async (
 		if (args.user.bot) {
 			return resolve({
 				result: false,
-				value: 'not handling bot reactions'
+				value: '' // 'not handling bot reactions'
 			});
 		}
 		else if (args.messageReaction?.message?.guild) {
@@ -588,7 +588,7 @@ module.exports = async (
 							}
 						} else {
 							return resolve({
-								result: false,
+								result: true,
 								value: 'message is not controlled by Portal'
 							});
 						}

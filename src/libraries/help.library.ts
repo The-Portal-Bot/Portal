@@ -1,7 +1,8 @@
 import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
-import winston, { createLogger, format, Logger, transports } from "winston";
+import moment from "moment";
+import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
@@ -9,7 +10,7 @@ import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } 
 import { client_talk, client_write } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
-const logger = createLogger({
+export const logger = createLogger({
 	format: format.combine(
 		format.timestamp({
 			format: 'DD-MM-YY HH:mm:ss'
@@ -23,9 +24,9 @@ const logger = createLogger({
 	transports: []
 });
 
-export function get_logger(): winston.Logger {
-	return logger;
-}
+// export function get_logger(): winston.Logger {
+// 	return logger;
+// }
 
 export function max_string(
 	abstract: string, max: number
@@ -458,11 +459,8 @@ export function is_dj(
 export function is_ignored(
 	member: GuildMember
 ): boolean {
-	if (member.roles.cache) {
-		return member.roles.cache.some(r => r.name.toLocaleLowerCase() === 'p.ignore');
-	}
-
-	return false;
+	return member.roles.cache.some(r =>
+		r.name.toLocaleLowerCase() === 'p.ignore');
 };
 
 
@@ -487,12 +485,12 @@ export function message_reply(
 					msg
 						.delete({ timeout: config.delete_msg_after * 1000 })
 						.catch(e => {
-							get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+							logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 						});
 				}
 			})
 			.catch(e => {
-				get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+				logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
 			});
 	}
 
@@ -501,14 +499,14 @@ export function message_reply(
 			message
 				.react(emote_pass)
 				.catch(e => {
-					get_logger().log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
+					logger.log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
 				});
 		}
 		else if (status === false) {
 			message
 				.react(emote_fail)
 				.catch(e => {
-					get_logger().log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
+					logger.log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
 				});
 		}
 
@@ -516,7 +514,7 @@ export function message_reply(
 			message
 				.delete({ timeout: 5000 })
 				.catch(e => {
-					get_logger().log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+					logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 				});
 		}
 	}
@@ -549,50 +547,20 @@ export function pad(
 export function time_elapsed(
 	timestamp: Date | number, timeout: number
 ): TimeElapsed {
-	const time_elapsed = Date.now() - (typeof timestamp === 'number' ? timestamp : timestamp.getTime());
 	const timeout_time = timeout * 60 * 1000;
+	const el = moment
+		.duration(moment()
+			.diff(moment(typeof timestamp === 'number'
+				? timestamp
+				: timestamp.getTime())));
 
-	const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0
-		? Math.round((timeout_time / 1000 / 60))
-		: 0;
-	const timeout_sec = Math.round((timeout_time / 1000) % 60);
-
-	const remaining_hrs = Math.round(
-		(time_elapsed / 1000 / 60 / 60)) > 0
-		? Math.round((time_elapsed / 1000 / 60 / 60))
-		: 0;
-	const remaining_min = Math.round(
-		(time_elapsed / 1000 / 60) - 1) > 0
-		? Math.round((time_elapsed / 1000 / 60) - 1)
-		: 0;
-	const remaining_sec = Math.round(
-		(time_elapsed / 1000) % 60) > 0
-		? Math.round((time_elapsed / 1000) % 60)
-		: 0;
+	const timeout_min = moment(timeout_time).minutes();
+	const timeout_sec = moment(timeout_time).seconds();
+	const remaining_hrs = el.hours();
+	const remaining_min = el.minutes();
+	const remaining_sec = el.seconds();
 
 	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
-};
-
-export function time_remaining(
-	timestamp: number, timeout: number
-): TimeRemaining {
-	const time_elapsed = Date.now() - timestamp;
-	const timeout_time = timeout * 60 * 1000;
-	const time_remaining = timeout_time - time_elapsed;
-
-	const timeout_min = Math.round((timeout_time / 1000 / 60)) > 0
-		? Math.round((timeout_time / 1000 / 60))
-		: 0;
-	const timeout_sec = Math.round((timeout_time / 1000) % 60)
-		? Math.round((timeout_time / 1000) % 60)
-		: 0;
-	const remaining_min = Math.round((time_remaining / 1000 / 60) - 1) > 0
-		? Math.round((time_remaining / 1000 / 60) - 1)
-		: 0;
-
-	const remaining_sec = Math.round((time_remaining / 1000) % 60);
-
-	return { timeout_min, timeout_sec, remaining_min, remaining_sec };
 };
 
 export function remove_deleted_channels(
@@ -687,13 +655,13 @@ export function remove_empty_voice_channels(
 												.delete()
 												.then(g => {
 													p.voice_list.splice(index, 1);
-													get_logger().log({
+													logger.log({
 														level: 'info', type: 'none', message: `deleted empty channel: ${channel.name} ` +
 															`(${channel.id}) from ${channel.guild.name}`
 													});
 												})
 												.catch(e => {
-													get_logger().log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+													logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
 												});
 										}
 										return true;

@@ -13,7 +13,7 @@ import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
 import { MongoPromise, Rank } from '../types/classes/TypesPrtl.interface';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
-import { get_logger } from './help.library';
+import { logger } from './help.library';
 
 // fetch guilds
 export async function fetch_guild_list(
@@ -28,7 +28,7 @@ export async function fetch_guild_list(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -51,7 +51,7 @@ export async function fetch_guild(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -88,7 +88,7 @@ export async function fetch_guild_channel_delete(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -113,7 +113,7 @@ export async function fetch_guild_announcement(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -150,7 +150,7 @@ export async function fetch_guild_reaction_data(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -175,7 +175,7 @@ export async function fetch_guild_members(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -204,7 +204,7 @@ export async function fetch_guild_music_queue(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -253,7 +253,7 @@ export async function fetch_guild_predata(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -295,7 +295,7 @@ export async function fetch_guild_rest(
                 }
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -314,7 +314,7 @@ export async function guild_exists(
                 return resolve(count > 0);
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);;
             });
     });
@@ -341,7 +341,7 @@ export async function update_guild(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -445,7 +445,7 @@ export async function insert_guild(
                 return resolve(!!r);
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);;
             });
     });
@@ -462,7 +462,7 @@ export async function remove_guild(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -497,7 +497,7 @@ export async function update_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -520,7 +520,7 @@ export async function insert_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -545,7 +545,7 @@ export async function remove_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -578,7 +578,7 @@ export async function update_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -602,7 +602,7 @@ export async function insert_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -628,7 +628,7 @@ export async function remove_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -662,7 +662,7 @@ export async function update_voice(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -692,7 +692,7 @@ export async function insert_voice(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 resolve(false)
             });
     });
@@ -722,7 +722,7 @@ export async function remove_voice(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 resolve(false)
             });
     });
@@ -748,7 +748,7 @@ export async function insert_url(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -771,7 +771,7 @@ export async function remove_url(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -797,7 +797,7 @@ export async function insert_ignore( // channel
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -820,7 +820,7 @@ export async function remove_ignore( // channel
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -843,7 +843,7 @@ export async function set_ranks(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -869,7 +869,7 @@ export async function insert_poll(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -893,7 +893,7 @@ export async function remove_poll(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -919,7 +919,7 @@ export async function insert_role_assigner(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -943,7 +943,7 @@ export async function remove_role_assigner(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -969,7 +969,7 @@ export async function insert_music_video(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -993,7 +993,7 @@ export async function clear_music_vote(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -1017,7 +1017,7 @@ export async function insert_music_vote(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -1041,7 +1041,7 @@ export async function set_music_data(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                get_logger().log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
