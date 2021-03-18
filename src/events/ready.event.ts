@@ -1,8 +1,28 @@
 import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "discord.js";
+import { createLogger, format, transports } from 'winston';
 import { get_function } from "../libraries/localisation.library";
 import { fetch_guild_members, guild_exists, insert_guild, insert_member, remove_member } from "../libraries/mongo.library";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
+
+const logger = createLogger({
+	format: format.combine(
+		format.timestamp({
+			format: 'DD-MM-YY HH:mm:ss'
+		}),
+		format.errors({ stack: true }),
+		format.splat(),
+		format.json()
+	),
+	defaultMeta: { service: 'portal-ready' },
+	transports: [
+		// you can also add a mongo transport to store logs in the database (there is a performance penalty)
+		new transports.Console(),
+		// new transports.File({ filename: './logs/portal-error.log.json', level: 'error' }),
+		// new transports.File({ filename: './logs/portal-info.log.json', level: 'info' }),
+		// new transports.File({ filename: './logs/portal-all.log.json' })
+	]
+});
 
 function added_when_down(guild: Guild, member_list: MemberPrtl[]): void {
 	const guild_members: GuildMember[] = guild.members.cache.array();
@@ -14,10 +34,14 @@ function added_when_down(guild: Guild, member_list: MemberPrtl[]): void {
 			if (!already_in_db) { // if inside guild but not in portal db, add member
 				insert_member(guild_members[j].id, guild.id)
 					.then(r => {
-						console.log(`member ${guild_members[j].id} has been ` +
-							`late-inserted in guild ${guild.name} [${guild.id}]`);
+						logger.log({
+							level: 'info', type: 'none', message: (`member ${guild_members[j].id} has been ` +
+								`late-inserted in guild ${guild.name} [${guild.id}]`)
+						});
 					})
-					.catch(console.log);
+					.catch(e => {
+						logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+					});
 			}
 		}
 	}
@@ -30,10 +54,14 @@ function removed_when_down(guild: Guild, member_list: MemberPrtl[]): void {
 		if (!member_in_guild) {
 			remove_member(member_list[j].id, guild.id)
 				.then(r => {
-					console.log(`member ${member_list[j].id} has been ` +
-					`late-removed from guild ${guild.name} [${guild.id}]`);
+					logger.log({
+						level: 'info', type: 'none', message: (`member ${member_list[j].id} has been ` +
+							`late-removed from guild ${guild.name} [${guild.id}]`)
+					});
 				})
-				.catch(console.log);
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+				});
 		}
 	}
 }
@@ -98,9 +126,8 @@ module.exports = async (
 
 		args.client.user.setPresence(data);
 
-		let index = 0;
 		args.client.guilds.cache.forEach((guild: Guild) => {
-			console.log(`├─ ${index++}.\t${guild} (${guild.id})`);
+			logger.log({ level: 'info', type: 'none', message: `${guild} | ${guild.id}` });
 
 			add_guild_again(guild, args.client);
 			// remove_deleted_channels(guild);

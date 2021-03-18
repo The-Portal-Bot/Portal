@@ -45,12 +45,12 @@ module.exports = async (
 		const portal_options: GuildCreateChannelOptions = {
 			topic: `by Portal, channels on demand`,
 			type: 'voice',
-			bitrate: 64000,
+			bitrate: 32000,
 			userLimit: 1
 		};
 		const voice_regex = guild_object.premium
 			// ? 'G$#-P$member_count | $status_list'
-			? `$#. ($member_count) | {{
+			? `$#:$member_count {{
 				"if": "$status_count", "is": "===", "with": "1",
 				"yes": "$status_list|titleCase", "no": "$status_list|acronym"
 			}}`

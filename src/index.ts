@@ -20,32 +20,23 @@ import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
 const logger = createLogger({
-	level: 'info',
 	format: format.combine(
 		format.timestamp({
-			format: 'DD-MM HH:mm:ss'
+			format: 'DD-MM-YY HH:mm:ss'
 		}),
 		format.errors({ stack: true }),
 		format.splat(),
 		format.json()
 	),
-	defaultMeta: { service: 'Portal' },
+	defaultMeta: { service: 'portal-index' },
 	transports: [
 		// you can also add a mongo transport to store logs in the database (there is a performance penalty)
+		new transports.Console(),
 		// new transports.File({ filename: './logs/portal-error.log.json', level: 'error' }),
 		// new transports.File({ filename: './logs/portal-info.log.json', level: 'info' }),
 		// new transports.File({ filename: './logs/portal-all.log.json' })
 	]
 });
-
-if (process.env.NODE_ENV !== 'production') {
-	logger.add(new transports.Console({
-		format: format.combine(
-			format.colorize(),
-			format.simple()
-		)
-	}));
-}
 
 // Connect to mongoose database
 mongoose.connect(config.mongo_url, {
@@ -54,9 +45,9 @@ mongoose.connect(config.mongo_url, {
 	useCreateIndex: true
 })
 	.then(r => {
-		logger.info(`connected to the database`);
+		logger.log({ level: 'info', type: 'none', message: `connected to the database` });
 	}).catch(e => {
-		logger.error(new Error(`unable to connect to database | ${e}`));
+		logger.log({ level: 'error', type: 'none', message: new Error(`unable to connect to database | ${e}`).message });
 		process.exit(1);
 	});
 
@@ -208,13 +199,11 @@ client.on('message', async (message: Message) => {
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {
 			if (!guild_object) {
-				logger.error(new Error(`guild does not exist in Portal`));
-				message_reply(false, message, message.author, `guild does not exist in Portal`);
-
+				logger.log({ level: 'error', type: 'none', message: new Error(`guild does not exist in Portal`).message });
 				return false;
 			}
 
-			if (portal_preprocessor(message, guild_object)) {
+			if (false){ // || portal_preprocessor(message, guild_object)) {
 				// preprocessor has handled the message
 				return true;
 			} else {
@@ -235,8 +224,6 @@ client.on('message', async (message: Message) => {
 				let command = command_decypher(message, guild_object);
 
 				if (!command.command_options) {
-					logger.error(new Error('Portal prefix, but not command'));
-
 					return false;
 				}
 
@@ -250,7 +237,7 @@ client.on('message', async (message: Message) => {
 				}
 
 				if (!message.guild) {
-					logger.error(new Error('could not fetch guild of message'));
+					logger.log({ level: 'error', type: 'none', message: new Error('could not fetch guild of message').message });
 
 					return false;
 				}
@@ -258,7 +245,7 @@ client.on('message', async (message: Message) => {
 				fetch_guild_rest(message.guild.id)
 					.then(guild_object_rest => {
 						if (!guild_object_rest) {
-							logger.error(new Error('server is not in database'));
+							logger.log({ level: 'error', type: 'none', message: new Error('server is not in database').message });
 							message_reply(false, message, message.author,
 								'server is not in database, please contact portal support');
 
@@ -289,13 +276,13 @@ client.on('message', async (message: Message) => {
 						);
 					})
 					.catch(e => {
-						logger.error(new Error('error while fetch guild restdata'));
+						logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild restdata').message });
 						return false;
 					});
 			}
 		})
 		.catch(e => {
-			logger.error(new Error('error while fetch guild predata'));
+			logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild predata').message });
 			return false;
 		});
 });
@@ -305,7 +292,7 @@ function command_loader(
 	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
 	if (config.debug === true) {
-		logger.info(`comnd: ${cmd}`);
+		logger.log({ level: 'info', type: 'command', message: cmd });
 	}
 
 	if (type === 'none' && command_options.time === 0) {
@@ -320,11 +307,11 @@ function command_loader(
 						);
 					}
 				} else {
-					logger.error(new Error(`did not get response from command: ${cmd}`));
+					logger.log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
 				}
 			})
 			.catch((error: any) => {
-				logger.error(new Error(`in ${cmd} got error ${error}`));
+				logger.log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
 			});
 
 		return true;
@@ -382,11 +369,11 @@ function command_loader(
 					message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
 				}
 			} else {
-				logger.error(new Error(`did not get response from command: ${cmd}`));
+				logger.log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
 			}
 		})
 		.catch((error: any) => {
-			logger.error(new Error(`in ${cmd} got error ${error}`));
+			logger.log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
 		});
 
 	return false;
@@ -398,25 +385,27 @@ function event_loader(event: string, args: any): void {
 			if (config.debug || (event_config_json.find(e => e.name === event) && (response && !response.result))) {
 				if (!response.value || response.value === '') {
 					response.result
-						? logger.info(`event: ${event} returned nothing`)
-						: logger.warn(`event: ${event} returned nothing`);
+						? logger.log({ level: 'info', type: 'event', message: `${event} / nothing` })
+						: logger.log({ level: 'warn', type: 'event', message: `${event} / nothing` });
 				} else {
 					response.result
-						? logger.info(`event: ${event} returned ${response.value}`)
-						: logger.warn(`event: ${event} returned ${response.value}`);
+						? logger.log({ level: 'info', type: 'event', message: `${event} / ${response.value}` })
+						: logger.log({ level: 'warn', type: 'event', message: `${event} / ${response.value}` });
 				}
 			}
 		})
-		.catch(console.log);
+		.catch((e: any) => {
+			logger.log({ level: 'error', type: 'none', message: new Error(`EVNT|${event} / ${e}`).message })
+		});
 }
 
 function connect_to_discord() {
 	client.login(config.token)
 		.then(r => {
-			logger.info(`login to discord successful: ${r}`)
+			logger.log({ level: 'info', type: 'none', message: `login to discord successful / ${r}` })
 		})
 		.catch(e => {
-			logger.error(new Error(`could not login to discord: ${e}`))
+			logger.log({ level: 'error', type: 'none', message: new Error(`could not login to discord / ${e}`).message })
 			process.exit(1);
 		});
 }
@@ -430,7 +419,7 @@ function portal_preprocessor(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
 	if (!message.member) {
-		logger.error(new Error('could not get member'));
+		logger.log({ level: 'error', type: 'none', message: new Error('could not get member').message });
 		return true;
 	}
 
@@ -475,7 +464,7 @@ function portal_preprocessor(
 					message.author
 						.send(`try not to use profanities (${profanities.join(',')})`)
 						.catch(error => {
-							logger.error(new Error(error));
+							logger.log({ level: 'error', type: 'none', message: new Error(error).message });
 						});
 				}
 			}
@@ -514,7 +503,7 @@ function handle_url_channels(
 					);
 				})
 				.catch(e => {
-					logger.error(new Error(`failed to remove url channel: ${e}`));
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${e}`).message });
 				});
 		}
 		else if (is_url(message.content)) {
@@ -525,7 +514,7 @@ function handle_url_channels(
 			message.author
 				.send(`${message.channel} is a url-only channel`)
 				.catch(error => {
-					logger.error(new Error(`failed to remove url channel: ${e}`));
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${error}`).message });
 				});
 			if (message.deletable) {
 				message.delete();
@@ -549,12 +538,10 @@ function handle_ignored_channels(
 						? 'successfully removed from ignored channels'
 						: 'failed to remove from ignored channels';
 
-					message_reply(true, message, message.author,
-						reply_message);
+					message_reply(true, message, message.author, reply_message);
 				})
-				.catch(e => {
-					message_reply(false, message, message.author,
-						'failed to remove from ignored channels');
+				.catch(error => {
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove ignored channel: ${error}`).message });
 				});
 		}
 
@@ -570,6 +557,7 @@ function handle_music_channels(
 	if (guild_object.music_data.channel_id === message.channel.id) {
 		if (message.content === './music') {
 			if (!message.guild) {
+				logger.log({ level: 'error', type: 'none', message: new Error(`failed to get guild from message`).message });
 				return true;
 			}
 
@@ -581,9 +569,8 @@ function handle_music_channels(
 							? 'successfully removed music channel'
 							: 'failed to remove music channel');
 				})
-				.catch(e => {
-					message_reply(false, message, message.author,
-						`failed to remove music channel (${e})`);
+				.catch(error => {
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove music channel: ${error}`).message });
 				});
 		} else {
 			const voice_connection = client.voice
@@ -674,6 +661,8 @@ function handle_music_channels(
 					if (message.deletable) {
 						message.delete();
 					}
+
+					logger.log({ level: 'error', type: 'none', message: new Error(`error while starting playback: ${e}`).message });
 				});
 		}
 
