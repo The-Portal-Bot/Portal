@@ -44,7 +44,9 @@ function spawn_dispatcher(
 
 	const stream_options = <StreamOptions>{
 		type: 'opus',
-		bitrate: 64000
+		bitrate: voice_connection.channel.bitrate < 64000
+			? voice_connection.channel.bitrate
+			: 64000
 	}
 
 	const dispatcher = voice_connection.play(stream, stream_options);
@@ -205,11 +207,12 @@ export async function start(
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
 		if (is_url(search_term)) {
-			const videoId = search_term.substr(search_term.indexOf('v=') + 2, 11);
+			const videoId = search_term.substr(search_term.indexOf('?v=') + 3, 11);
 			const listId = search_term.substr(search_term.indexOf('list=') + 5, 34);
-			const index = search_term.substr(search_term.indexOf('index=') + 6);
+			const index_str = search_term.substr(search_term.indexOf('index=') + 6);
+			const index = isNaN(+index_str) ? 0 : +index_str;
 
-			if (!listId) {
+			if (!videoId || !listId) {
 				return resolve({
 					result: false,
 					value: `the url is not of a youtube playlist`
@@ -226,14 +229,17 @@ export async function start(
 					}
 
 					const yt_url = 'https://www.youtube.com/watch';
-					const initial_video = yts_attempt.videos[index ? +index : 0];
+					const initial_video = yts_attempt.videos[index];
 
 					start_playback(
 						voice_connection, client, user, message,
 						guild, guild_object, <VideoSearchResult>{
 							type: 'video',
 							videoId: initial_video.videoId,
-							url: `${yt_url}?v=${initial_video.videoId}&list=${yts_attempt.listId}&index=${index ? index : 1}`,
+							url: `${yt_url}` +
+								`?v=${initial_video.videoId}` +
+								`&list=${yts_attempt.listId}` +
+								`&index=${index ? index : 1}`,
 							title: initial_video.title,
 							description: '',
 							image: '',

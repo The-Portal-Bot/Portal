@@ -52,7 +52,7 @@ module.exports = async (
 			// ? 'G$#-P$member_count | $status_list'
 			? `$#:$member_count {{
 				"if": "$status_count", "is": "===", "with": "1",
-				"yes": "$status_list|titleCase", "no": "$status_list|acronym"
+				"yes": "$status_list", "no": "$status_list|acronym"
 			}}`
 			: 'Channel $#';
 
