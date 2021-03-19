@@ -46,13 +46,12 @@
 
    ```json
    {
-     "version": "0.6.5",
-     "token": "add-your-token-here",
-     "prefix": "./",
-     "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
-     "owner_id": "add-your-id-(optional)",
-     "portal_id": "add-bots-id-(optional)",
-     "api_keys": {
+     "version": "0.6.5", // current version
+     "token": "add-your-token-here", // your Discord-API-Token
+     "prefix": "./", // default prefix
+     "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal", // mongoDB url
+     "owner_id": "add-your-id-(optional)", // owner ID maybe used throughout Portal
+     "api_keys": { // Api keys for Portal services
        "OpenWeatherMap": "add-open-weather-map-api-key",
        "covid_193": "add-covid-193-api-key",
        "coingecko": "add-coingecko-api-key",
@@ -64,10 +63,11 @@
          "key": "add-yeandex-api-key"
        }
      },
-     "delete_msg": false,
-     "delete_msg_after": 5,
-     "always_reply": true,
-     "debug": false
+     "delete_msg": false, // wheather or not Portal will delete messages
+     "delete_msg_after": 5, // how long after message sent, will it be deleted
+     "always_reply": true, // wheather or not Portal will reply to messages
+     "debug": false, // display run time information in console
+     "log": false // log files in ../logs directory on host
    }
    ```
 

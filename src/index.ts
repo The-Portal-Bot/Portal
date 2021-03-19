@@ -19,9 +19,9 @@ if (config.debug) {
 	logger.add(new transports.Console());
 }
 if (config.log) {
-	logger.add(new transports.File({ filename: `${config.log_path}/portal-error.log.json`, level: 'error' }));
-	logger.add(new transports.File({ filename: `${config.log_path}/portal-info.log.json`, level: 'info' }));
-	logger.add(new transports.File({ filename: `${config.log_path}/portal-all.log.json` }));
+	logger.add(new transports.File({ filename: '/logs/portal-error.log.json', level: 'error' }));
+	logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info' }));
+	logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
 
 // const AntiSpam = require('discord-anti-spam');
