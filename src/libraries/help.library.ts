@@ -20,13 +20,10 @@ export const logger = createLogger({
 		format.json()
 	),
 	defaultMeta: { service: 'portal' },
-	// you can also add a mongo transport to store logs in the database (there is a performance penalty)
+	// you can also add a mongo transport to store logs
+	// in the database (there is a performance penalty)
 	transports: []
 });
-
-// export function get_logger(): winston.Logger {
-// 	return logger;
-// }
 
 export function max_string(
 	abstract: string, max: number
@@ -50,44 +47,96 @@ export function get_key_from_enum(
 
 export function create_music_message(
 	channel: TextChannel, guild_object: GuildPrtl
-): void {
-	const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
-		'Portal/master/src/assets/img/music_empty.png';
+): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
+			'Portal/master/src/assets/img/music_empty.png';
 
-	const music_message_emb = create_rich_embed(
-		'Music Player',
-		'Type and Portal will play',
-		'#e60026',
-		[
-			{ emote: 'Duration', role: '-', inline: true },
-			{ emote: 'Views', role: '-', inline: true },
-			{ emote: 'Pinned', role: guild_object.music_data.pinned ? 'yes' : 'no', inline: true },
-			{ emote: 'Queue', role: 'empty', inline: false },
-			{ emote: 'Latest Action', role: '```music message created```', inline: false }
-		],
-		null,
-		null,
-		true,
-		null,
-		idle_thumbnail,
-		'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
-	);
+		const music_message_emb = create_rich_embed(
+			'Music Player',
+			'Type and Portal will play',
+			'#e60026',
+			[
+				{ emote: 'Duration', role: '-', inline: true },
+				{ emote: 'Views', role: '-', inline: true },
+				{ emote: 'Pinned', role: guild_object.music_data.pinned ? 'yes' : 'no', inline: true },
+				{ emote: 'Queue', role: 'empty', inline: false },
+				{ emote: 'Latest Action', role: '```music message created```', inline: false }
+			],
+			null,
+			null,
+			true,
+			null,
+			idle_thumbnail,
+			'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
+		);
 
-	channel
-		.send(music_message_emb)
-		.then(sent_message => {
-			sent_message.react('▶️');
-			sent_message.react('⏸');
-			sent_message.react('⏭');
-			sent_message.react('➖');
-			sent_message.react('➕');
-			sent_message.react('📌');
-			sent_message.react('🧹');
-			sent_message.react('🚪');
+		channel
+			.send(music_message_emb)
+			.then(sent_message => {
+				sent_message.react('▶️');
+				sent_message.react('⏸');
+				sent_message.react('⏭');
+				sent_message.react('➖');
+				sent_message.react('➕');
+				sent_message.react('📌');
+				sent_message.react('📄');
+				sent_message.react('🧹');
+				sent_message.react('🚪');
 
-			const music_data = new MusicData(channel.id, sent_message.id, [], false);
-			set_music_data(guild_object.id, music_data);
-		});
+				const music_data = new MusicData(
+					channel.id,
+					sent_message.id,
+					guild_object.music_data.message_lyrics_id
+						? guild_object.music_data.message_lyrics_id
+						: 'null',
+					[],
+					false
+				);
+
+				set_music_data(guild_object.id, music_data);
+				return resolve(sent_message.id);
+			})
+			.catch(() => {
+				return reject('failed to send message to channel');
+			});
+	});
+};
+
+export function create_lyrics_message(
+	channel: TextChannel, guild_object: GuildPrtl, message_id: string
+): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const music_lyrics_message_emb = create_rich_embed(
+			'Lyrics 📄',
+			'',
+			'#e60026',
+			null,
+			null,
+			null,
+			false,
+			null,
+			null
+		);
+
+		channel
+			.send(music_lyrics_message_emb)
+			.then(sent_message_lyrics => {
+				const music_data = new MusicData(
+					channel.id,
+					message_id,
+					sent_message_lyrics.id,
+					[],
+					false
+				);
+
+				set_music_data(guild_object.id, music_data);
+				return resolve(sent_message_lyrics.id);
+			})
+			.catch(() => {
+				return reject('failed to send message to channel');
+			});
+	});
 };
 
 export function update_music_message(
@@ -95,6 +144,19 @@ export function update_music_message(
 	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve) => {
+		const guild_channel: GuildChannel | undefined = guild.channels.cache
+			.find(c => c.id === guild_object.music_data.channel_id);
+
+		if (!guild_channel) {
+			return resolve(false);
+		}
+
+		const channel: TextChannel = <TextChannel>guild_channel;
+
+		if (!channel || !guild_object.music_data.message_id) {
+			return resolve(false);
+		}
+
 		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 			'Portal/master/src/assets/img/music_empty.png';
 
@@ -134,23 +196,6 @@ export function update_music_message(
 				: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
 		);
 
-		const guild_channel: GuildChannel | undefined = guild.channels.cache
-			.find(c => c.id === guild_object.music_data.channel_id);
-
-		if (!guild_channel) {
-			return resolve(false);
-		}
-
-		const channel: TextChannel = <TextChannel>guild_channel;
-
-		if (!channel) {
-			return resolve(false);
-		}
-
-		if (!guild_object.music_data.message_id) {
-			return resolve(false);
-		}
-
 		if (guild_object.music_data.message_id) {
 			if (channel) {
 				channel.messages
@@ -172,9 +217,59 @@ export function update_music_message(
 	});
 };
 
+export function update_music_lyrics_message(
+	guild: Guild, guild_object: GuildPrtl, lyrics: string
+): Promise<boolean> {
+	return new Promise((resolve) => {
+		const guild_channel: GuildChannel | undefined = guild.channels.cache
+			.find(c => c.id === guild_object.music_data.channel_id);
+
+		if (!guild_channel) {
+			return resolve(false);
+		}
+
+		const channel: TextChannel = <TextChannel>guild_channel;
+
+		if (!channel || !guild_object.music_data.message_id) {
+			return resolve(false);
+		}
+
+		const music_message_emb = create_rich_embed(
+			'Lyrics 📄',
+			lyrics,
+			'#e60026',
+			null,
+			null,
+			null,
+			false,
+			null,
+			null
+		);
+
+		if (guild_object.music_data.message_lyrics_id) {
+			if (channel) {
+				channel.messages
+					.fetch(guild_object.music_data.message_lyrics_id)
+					.then((message: Message) => {
+						message.edit(music_message_emb)
+							.then(() => {
+								return resolve(true);
+							})
+							.catch(() => {
+								return resolve(false);
+							});
+					})
+					.catch(() => {
+						return resolve(false);
+					});
+			}
+		}
+	});
+};
+
 export async function join_by_reaction(
 	client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
-): Promise<ReturnPormiseVoice> { // localize
+): Promise<ReturnPormiseVoice> {
 	return new Promise((resolve) => {
 		if (!user.presence) {
 			return resolve({

@@ -3,7 +3,7 @@ import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, VoiceCon
 import yts, { PlaylistMetadataResult, SearchResult, VideoSearchResult } from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
-import { is_url, join_by_reaction, join_user_voice, logger, update_music_message } from './help.library';
+import { is_url, join_by_reaction, join_user_voice, logger, update_music_lyrics_message, update_music_message } from './help.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
@@ -661,6 +661,40 @@ export async function volume_down(
 			return resolve({
 				result: false,
 				value: 'Portal is not connected'
+			});
+		}
+	});
+};
+
+export async function get_lyrics(
+	guild: Guild, guild_object: GuildPrtl
+): Promise<ReturnPormise> {
+	return new Promise((resolve) => {
+		if (guild_object.music_queue.length > 0) {
+			update_music_lyrics_message(
+				guild,
+				guild_object,
+				'Detailed Documentation at https://portal-bot.xyz/docs\n' +
+				'To make a member a dj, give him role with name p.dj\n' +
+				'To make a member an admin, give him role with name p.admin\n' +
+				'To ignore a member, give him role with name p.ignore\n' +
+				'for more click here'
+			);
+
+			return resolve({
+				result: true,
+				value: `fetched lyrics for ${guild_object.music_queue[0].title}`
+			});
+		} else {
+			update_music_lyrics_message(
+				guild,
+				guild_object,
+				''
+			);
+
+			return resolve({
+				result: false,
+				value: 'no song in queue'
 			});
 		}
 	});

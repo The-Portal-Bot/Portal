@@ -1,8 +1,8 @@
 import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
-import { create_rich_embed, is_authorised, is_dj, update_music_message } from "../libraries/help.library";
+import { create_rich_embed, is_authorised, is_dj, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
-import { pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
+import { get_lyrics, pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
@@ -256,6 +256,16 @@ async function reaction_music_manager(
 						messageReaction.message.guild, guild_object
 					)
 						.then(r => {
+							update_music_lyrics_message(
+								guild,
+								guild_object,
+								'Detailed Documentation at https://portal-bot.xyz/docs\n' +
+								'To make a member a dj, give him role with name p.dj\n' +
+								'To make a member an admin, give him role with name p.admin\n' +
+								'To ignore a member, give him role with name p.ignore\n' +
+								'for more click here'
+							);
+							
 							clear_music_vote(guild_object.id);
 							guild_object.music_queue.shift();
 							return resolve({
@@ -380,6 +390,20 @@ async function reaction_music_manager(
 							value: !guild_object.music_data.pinned
 								? `error occurred while pinning song (${e})`
 								: `error occurred while unpinning song (${e})`
+						});
+					});
+
+				break;
+			}
+			case '📄': {
+				get_lyrics(messageReaction.message.guild, guild_object)
+					.then(r => {
+						return resolve(r);
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `error occurred while fetching lyrics (${e})`
 						});
 					});
 

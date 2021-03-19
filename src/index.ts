@@ -551,7 +551,7 @@ function handle_music_channels(
 				return true;
 			}
 
-			const music_data = new MusicData('null', 'null', [], false);
+			const music_data = new MusicData('null', 'null', 'null', [], false);
 			set_music_data(guild_object.id, music_data)
 				.then(r => {
 					message_reply(true, message, message.author,

@@ -12,7 +12,7 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
-import { create_music_message, getJSON, logger } from './help.library';
+import { create_lyrics_message, create_music_message, getJSON, logger } from './help.library';
 import { insert_voice } from "./mongo.library";
 
 function inline_operator(str: string): any {
@@ -290,7 +290,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, clear queue:🧹, leave:🚪'
+						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪'
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -299,12 +299,29 @@ export async function create_music_channel(
 						.create(music_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(error => resolve(error));
-					create_music_message(channel, guild_object);
+					create_music_message(channel, guild_object)
+						.then(music_message_id => {
+							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
+							if (guild_object.music_data.message_id) {
+								create_lyrics_message(channel, guild_object, music_message_id)
+									.then(lyrics_message_id => {
+										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
+										resolve(false);
+									});
+							}
+						})
+						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
+							resolve(false);
+						});
 					resolve(true);
 				})
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
-					resolve(false)
+					resolve(false);
 				});
 		}
 		else if (music_category) { // with category object given
@@ -313,19 +330,36 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, clear queue:🧹, leave:🚪',
+						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪',
 						parent: music_category
 					},
 				)
 				.then(channel => {
 					channel.setParent(music_category);
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, guild_object);
+					create_music_message(channel, guild_object)
+						.then(music_message_id => {
+							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
+							if (guild_object.music_data.message_id) {
+								create_lyrics_message(channel, guild_object, music_message_id)
+									.then(lyrics_message_id => {
+										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
+										resolve(false);
+									});
+							}
+						})
+						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
+							resolve(false);
+						});
 					resolve(true);
 				})
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
-					resolve(false)
+					resolve(false);
 				});
 		}
 		else { // without category
@@ -334,17 +368,34 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, clear queue:🧹, leave:🚪'
+						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪'
 					},
 				)
 				.then(channel => {
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, guild_object);
+					create_music_message(channel, guild_object)
+						.then(music_message_id => {
+							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
+							if (guild_object.music_data.message_id) {
+								create_lyrics_message(channel, guild_object, music_message_id)
+									.then(lyrics_message_id => {
+										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
+										resolve(false);
+									});
+							}
+						})
+						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
+							resolve(false);
+						});
 					resolve(true);
 				})
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
-					resolve(false)
+					resolve(false);
 				});
 		}
 	});

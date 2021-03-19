@@ -410,6 +410,7 @@ export async function insert_guild(
     const music_data: MusicData = {
         channel_id: 'null',
         message_id: 'null',
+        message_lyrics_id: 'null',
         votes: [],
         pinned: false
     };
@@ -885,7 +886,9 @@ export async function remove_poll(
             },
             {
                 $pull: {
-                    poll_list: { message_id: message_id }
+                    poll_list: {
+                        message_id: message_id
+                    }
                 }
             }
         )
@@ -935,7 +938,9 @@ export async function remove_role_assigner(
             },
             {
                 $pull: {
-                    role_list: { message_id: message_id }
+                    role_list: {
+                        message_id: message_id
+                    }
                 }
             }
         )
@@ -1102,7 +1107,7 @@ export async function deleted_channel_sync(
                                     return resolve(PortalChannelTypes.unknown);
                                 });
                         } else if (guild_object.music_data.channel_id === current_text.id) {
-                            const music_data = new MusicData('null', 'null', [], false);
+                            const music_data = new MusicData('null', 'null', 'null', [], false);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {
                                     return r

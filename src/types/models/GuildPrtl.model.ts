@@ -52,6 +52,7 @@ const Rank = new Schema(
 const MusicData = new Schema(
 	{
 		message_id: { type: String, required: true },
+		message_lyrics_id: { type: String, required: true },
 		channel_id: { type: String, required: true },
 		votes: { type: [String], required: true },
 		pinned: { type: Boolean, required: true }
