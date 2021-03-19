@@ -67,17 +67,17 @@ module.exports = async (
 				if (json === null) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'corona', 'data from source was corrupted')
+						value: 'data from source was corrupted'
 					});
 				}
-				
+
 				if (json.errors.length === 0) {
 					const country_data = json.response.find((data: any) => data.country === code);
 
 					if (!country_data) {
 						return resolve({
 							result: false,
-							value: message_help('commands', 'corona', `${args[0]} is neither a country name nor code`)
+							value: `${args[0]} is neither a country name nor code`
 						});
 					}
 
@@ -150,14 +150,14 @@ module.exports = async (
 				else {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'corona', `fetched data had errors`)
+						value: `fetched data had errors`
 					});
 				}
 			})
-			.catch((error: any) => {
+			.catch(e => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'corona', `could not access the server\nerror: ${error}`)
+					value: `could not access the server / ${e}`
 				});
 			});
 	});

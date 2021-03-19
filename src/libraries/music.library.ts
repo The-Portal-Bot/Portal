@@ -1,9 +1,12 @@
 import ytdl from 'discord-ytdl-core';
 import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
+import { RequestOptions } from 'https';
 import yts, { PlaylistMetadataResult, SearchResult, VideoSearchResult } from 'yt-search';
+import config from '../config.json';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
-import { is_url, join_by_reaction, join_user_voice, logger, update_music_lyrics_message, update_music_message } from './help.library';
+import { getJSON, is_url, join_by_reaction, join_user_voice, logger, update_music_lyrics_message, update_music_message } from './help.library';
+import { https_fetch } from './http.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
@@ -671,20 +674,60 @@ export async function get_lyrics(
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (guild_object.music_queue.length > 0) {
-			update_music_lyrics_message(
-				guild,
-				guild_object,
-				'Detailed Documentation at https://portal-bot.xyz/docs\n' +
-				'To make a member a dj, give him role with name p.dj\n' +
-				'To make a member an admin, give him role with name p.admin\n' +
-				'To ignore a member, give him role with name p.ignore\n' +
-				'for more click here'
-			);
+			const options: RequestOptions = {
+				'method': 'GET',
+				"hostname": "genius.p.rapidapi.com",
+				'port': undefined,
+				"path": `/search?q=${guild_object.music_queue[0].title.split(' ').join('%20')}`,
+				'headers': {
+					"x-rapidapi-host": "genius.p.rapidapi.com",
+					'x-rapidapi-key': config.api_keys.lyrics,
+					'useQueryString': 1
+				},
+			};
 
-			return resolve({
-				result: true,
-				value: `fetched lyrics for ${guild_object.music_queue[0].title}`
-			});
+			https_fetch(options)
+				.then((response: Buffer) => {
+					const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
+
+					if (!json) {
+						return resolve({
+							result: false,
+							value: 'data from source was corrupted'
+						});
+					}
+
+					if (json.meta.status !== 200) {
+						return resolve({
+							result: false,
+							value: 'could not fetch lyrics'
+						});
+					}
+
+					if (json.hits[0].type !== 'song') {
+						return resolve({
+							result: false,
+							value: 'could not find song'
+						});
+					}
+
+					update_music_lyrics_message(
+						guild,
+						guild_object,
+						json.hits[0]
+					);
+
+					return resolve({
+						result: true,
+						value: `fetched lyrics for ${guild_object.music_queue[0].title}`
+					});
+				})
+				.catch((e: any) => {
+					return resolve({
+						result: false,
+						value: `could not access the server / ${e}`
+					});
+				});
 		} else {
 			update_music_lyrics_message(
 				guild,

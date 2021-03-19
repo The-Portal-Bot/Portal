@@ -259,11 +259,7 @@ async function reaction_music_manager(
 							update_music_lyrics_message(
 								guild,
 								guild_object,
-								'Detailed Documentation at https://portal-bot.xyz/docs\n' +
-								'To make a member a dj, give him role with name p.dj\n' +
-								'To make a member an admin, give him role with name p.admin\n' +
-								'To ignore a member, give him role with name p.ignore\n' +
-								'for more click here'
+								''
 							);
 							
 							clear_music_vote(guild_object.id);
