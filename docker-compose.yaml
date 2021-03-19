@@ -9,6 +9,10 @@ services:
       dockerfile: ./docker/Dockerfile
     depends_on:
       - mongo
+    volumes:
+      - type: bind
+        source: ../logs
+        target: /logs
 
   mongo:
     container_name: mongo
