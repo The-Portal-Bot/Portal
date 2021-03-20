@@ -40,9 +40,9 @@ module.exports = async (
 					};
 					const voice_regex = guild_object.premium
 						// ? 'G$#-P$member_count | $status_list'
-						? `$#. ($member_count) | {{
+						? `$#:$member_count {{
 							"if": "$status_count", "is": "===", "with": "1",
-							"yes": "$status_list|titleCase", "no": "$status_list|acronym"
+							"yes": "$status_list", "no": "$status_list|acronym"
 						}}`
 						: 'Channel $#'
 
@@ -69,33 +69,9 @@ module.exports = async (
 						});
 				}
 
-				const spotify_options = getOptions(current_guild, 'displays song from spotify users in portal channels are listening to', false);
 				const announcement_options = getOptions(current_guild, 'announcements channel (Portal/Users/Admins)', false);
 				const url_options = getOptions(current_guild, 'url only channel', true);
 
-				create_channel(current_guild, 'spotify', spotify_options, cat_channel)
-					.then(response => {
-						if (response.result) {
-							update_guild(guild_object.id, 'spotify', response.value)
-								.then(r => {
-									return resolve({
-										result: r,
-										value: r
-											? 'successfully inserted spotify channel'
-											: message_help('commands', 'setup', 'failed to insert spotify channel')
-									});
-								})
-								.catch(e => {
-									return resolve({
-										result: false,
-										value: message_help('commands', 'setup', 'failed to insert spotify channel')
-									});
-								});
-						} else {
-							return resolve(response);
-						}
-					})
-					.catch(error => { return resolve(error); });
 				create_channel(current_guild, 'announcement', announcement_options, cat_channel)
 					.then(response => {
 						if (response.result) {

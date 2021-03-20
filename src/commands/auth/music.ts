@@ -1,7 +1,7 @@
 import { Message, TextChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { create_music_channel, delete_channel, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
-import { create_music_message, message_help } from "../../libraries/help.library";
+import { create_lyrics_message, create_music_message, logger, message_help } from "../../libraries/help.library";
 import { set_music_data } from "../../libraries/mongo.library";
 import { GuildPrtl, MusicData } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -18,7 +18,7 @@ module.exports = async (
 
 		if (args.length === 0) {
 			if (is_music_channel(message.channel.id, guild_object)) {
-				const music_data = new MusicData('null', 'null', [], false);
+				const music_data = new MusicData('null', 'null', 'null', [], false);
 				set_music_data(guild_object.id, music_data)
 					.then(r => {
 						return resolve({
@@ -61,7 +61,7 @@ module.exports = async (
 
 		if (args.length === 0) {
 			guild_object.music_data.channel_id = message.channel.id;
-			const new_music = message.guild.channels.cache.find(channel =>
+			const new_music = <TextChannel>message.guild.channels.cache.find(channel =>
 				channel.id == guild_object.music_data.channel_id);
 
 			if (!new_music)
@@ -70,7 +70,32 @@ module.exports = async (
 					value: 'channel could not be fetched'
 				});
 
-			create_music_message(<TextChannel>new_music, guild_object);
+			create_music_message(new_music, guild_object)
+				.then(music_message_id => {
+					logger.log({ level: 'info', type: 'none', message: `created music message ${music_message_id}` });
+					create_lyrics_message(new_music, guild_object, music_message_id)
+						.then(lyrics_message_id => {
+							logger.log({ level: 'info', type: 'none', message: `created lyrics message ${lyrics_message_id}` });
+							return resolve({
+								result: false,
+								value: `created lyrics message`,
+							});
+						})
+						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: new Error(`error creating lyrics message / ${e}`).message });
+							return resolve({
+								result: false,
+								value: `error creating lyrics message / ${e}`,
+							});
+						});
+				})
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
+					return resolve({
+						result: false,
+						value: `failed to send music message / ${e}`,
+					});
+				});
 
 			return resolve({
 				result: true,

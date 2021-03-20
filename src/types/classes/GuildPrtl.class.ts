@@ -1,25 +1,28 @@
 import { Document } from "mongoose";
 import { VideoSearchResult } from "yt-search";
-import { Rank } from "./TypesPrtl.interface";
 import { GiveRolePrtl } from "./GiveRolePrtl.class";
 import { MemberPrtl } from "./MemberPrtl.class";
 import { PollPrtl } from "./PollPrtl.class";
 import { PortalChannelPrtl } from "./PortalChannelPrtl.class";
+import { Rank } from "./TypesPrtl.interface";
 
 export class MusicData {
 	public channel_id: string | undefined;
 	public message_id: string | undefined;
+	public message_lyrics_id: string | undefined;
 	public votes: string[] | undefined;
 	public pinned: boolean;
 
 	constructor(
 		channel_id: string,
 		message_id: string,
+		message_lyrics_id: string,
 		votes: string[],
 		pinned: boolean
 	) {
 		this.channel_id = channel_id;
 		this.message_id = message_id;
+		this.message_lyrics_id = message_lyrics_id;
 		this.votes = votes;
 		this.pinned = pinned;
 	}

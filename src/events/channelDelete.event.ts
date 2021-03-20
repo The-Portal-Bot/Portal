@@ -23,8 +23,8 @@ module.exports = async (
 				if (r > 0) {
 					return resolve({
 						result: true,
-						value: `${PortalChannelTypes[r].toString()} channel, has been removed from database ` +
-							`guild: ${current_channel.guild.name} [${current_channel.guild.id}]`
+						value: `${PortalChannelTypes[r].toString()} channel removed from ` +
+							`${current_channel.guild.name}|${current_channel.guild.id}`
 					});
 				} else {
 					return resolve({

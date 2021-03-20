@@ -1,17 +1,19 @@
-import { Client, GuildMember, TextChannel, VoiceChannel } from 'discord.js';
+import { Client, TextChannel, VoiceChannel } from 'discord.js';
+import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
 import config from '../config.json';
+import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
+import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
+import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
 import { GiveRolePrtl } from '../types/classes/GiveRolePrtl.class';
 import { GuildPrtl, MusicData } from '../types/classes/GuildPrtl.class';
 import { MemberPrtl } from '../types/classes/MemberPrtl.class';
 import { PollPrtl } from '../types/classes/PollPrtl.class';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
-import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
-import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
-import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
-import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
 import { MongoPromise, Rank } from '../types/classes/TypesPrtl.interface';
+import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
+import { logger } from './help.library';
 
 // fetch guilds
 export async function fetch_guild_list(
@@ -26,7 +28,7 @@ export async function fetch_guild_list(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -49,7 +51,7 @@ export async function fetch_guild(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -86,7 +88,7 @@ export async function fetch_guild_channel_delete(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -111,7 +113,7 @@ export async function fetch_guild_announcement(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -148,7 +150,7 @@ export async function fetch_guild_reaction_data(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -173,7 +175,7 @@ export async function fetch_guild_members(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -202,7 +204,7 @@ export async function fetch_guild_music_queue(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -251,7 +253,7 @@ export async function fetch_guild_predata(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -293,7 +295,7 @@ export async function fetch_guild_rest(
                 }
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(undefined);
             });
     });
@@ -312,7 +314,7 @@ export async function guild_exists(
                 return resolve(count > 0);
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);;
             });
     });
@@ -339,7 +341,7 @@ export async function update_guild(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -408,6 +410,7 @@ export async function insert_guild(
     const music_data: MusicData = {
         channel_id: 'null',
         message_id: 'null',
+        message_lyrics_id: 'null',
         votes: [],
         pinned: false
     };
@@ -439,11 +442,11 @@ export async function insert_guild(
             premium: premium,
             prefix: prefix
         })
-            .then(r => {
+            .then((r: Document<any>) => {
                 return resolve(!!r);
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);;
             });
     });
@@ -460,7 +463,7 @@ export async function remove_guild(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -495,7 +498,7 @@ export async function update_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -518,7 +521,7 @@ export async function insert_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -543,7 +546,7 @@ export async function remove_member(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -576,7 +579,7 @@ export async function update_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -600,7 +603,7 @@ export async function insert_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -626,7 +629,7 @@ export async function remove_portal(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -660,7 +663,7 @@ export async function update_voice(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -687,10 +690,10 @@ export async function insert_voice(
             }
         )
             .then((r: MongoPromise) => {
-                resolve(!!r)
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 resolve(false)
             });
     });
@@ -717,10 +720,10 @@ export async function remove_voice(
             }
         )
             .then((r: MongoPromise) => {
-                resolve(!!r)
+                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 resolve(false)
             });
     });
@@ -746,7 +749,7 @@ export async function insert_url(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -769,7 +772,7 @@ export async function remove_url(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -780,8 +783,6 @@ export async function remove_url(
 export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
-    console.log('guild_id :>> ', guild_id);
-    console.log('new_ignore :>> ', new_ignore);
     return new Promise((resolve) => {
         GuildPrtlMdl.updateOne(
             {
@@ -794,11 +795,10 @@ export async function insert_ignore( // channel
             }
         )
             .then((r: MongoPromise) => {
-                console.log('r :>> ', r);
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -821,7 +821,7 @@ export async function remove_ignore( // channel
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -844,7 +844,7 @@ export async function set_ranks(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -870,7 +870,7 @@ export async function insert_poll(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -886,7 +886,9 @@ export async function remove_poll(
             },
             {
                 $pull: {
-                    poll_list: { message_id: message_id }
+                    poll_list: {
+                        message_id: message_id
+                    }
                 }
             }
         )
@@ -894,7 +896,7 @@ export async function remove_poll(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -920,7 +922,7 @@ export async function insert_role_assigner(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -936,7 +938,9 @@ export async function remove_role_assigner(
             },
             {
                 $pull: {
-                    role_list: { message_id: message_id }
+                    role_list: {
+                        message_id: message_id
+                    }
                 }
             }
         )
@@ -944,7 +948,7 @@ export async function remove_role_assigner(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -970,7 +974,7 @@ export async function insert_music_video(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -994,7 +998,7 @@ export async function clear_music_vote(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -1018,7 +1022,7 @@ export async function insert_music_vote(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -1042,7 +1046,7 @@ export async function set_music_data(
                 return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
             })
             .catch(e => {
-                console.log('e :>> ', e);
+                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
                 return resolve(false);
             });
     });
@@ -1103,7 +1107,7 @@ export async function deleted_channel_sync(
                                     return resolve(PortalChannelTypes.unknown);
                                 });
                         } else if (guild_object.music_data.channel_id === current_text.id) {
-                            const music_data = new MusicData('null', 'null', [], false);
+                            const music_data = new MusicData('null', 'null', 'null', [], false);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {
                                     return r

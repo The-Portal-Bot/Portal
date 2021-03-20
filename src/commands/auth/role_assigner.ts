@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../libraries/guild.library";
-import { create_rich_embed, getJSON, message_help } from "../../libraries/help.library";
+import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
 import { insert_role_assigner } from "../../libraries/mongo.library";
 import { GiveRole, GiveRolePrtl } from "../../types/classes/GiveRolePrtl.class";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
@@ -87,7 +87,7 @@ module.exports = async (
 			});
 		}
 
-		const role_map_json = getJSON(args.join(' '));
+		const role_map_json = get_json(args.join(' '));
 		if (!role_map_json) {
 			return resolve({
 				result: false,
@@ -118,7 +118,6 @@ module.exports = async (
 			r.give = r.give.trim();
 			r.strip = r.strip.trim();
 		});
-		// client.emojis.cache.forEach(emoji => console.log('emoji: ', emoji));
 
 		const role_emb_value: GiveRole[] = [];
 		const role_emb_display_give: Field[] = [];

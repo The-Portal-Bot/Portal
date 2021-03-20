@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import voca from 'voca';
 import config from '../../config.json';
-import { create_rich_embed, getJSON, message_help } from '../../libraries/help.library';
+import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
@@ -50,7 +50,7 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
-				const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
+				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
 				if (json === null)
 					return resolve({
 						result: false,

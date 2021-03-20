@@ -4,15 +4,15 @@ import {
 } from "discord.js";
 import moment from "moment";
 import voca from 'voca';
+import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { GuildPrtl } from '../types/classes/GuildPrtl.class';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
-import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
-import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
-import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
+import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
+import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
-import { create_music_message, getJSON } from './help.library';
+import { create_lyrics_message, create_music_message, get_json, logger } from './help.library';
 import { insert_voice } from "./mongo.library";
 
 function inline_operator(str: string): any {
@@ -150,9 +150,9 @@ export function create_portal_channel(
 
 	const voice_name = guild_object.premium
 		// ? 'G$#-P$member_count | $status_list'
-		? `$#. ($member_count) | {{
+		? `$#:$member_count {{
 			"if": "$status_count", "is": "===", "with": "1",
-			"yes": "$status_list|titleCase", "no": "$status_list|acronym"
+			"yes": "$status_list", "no": "$status_list|acronym"
 		}}`
 		: 'Channel $#'
 
@@ -174,12 +174,17 @@ export function create_portal_channel(
 					0,
 					false
 				));
+
 				guild.channels
 					.create(portal_category, { type: 'category' })
 					.then(cat_channel => channel.setParent(cat_channel))
-					.catch(console.error);
+					.catch(e => {
+						logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+					});
 			})
-			.catch(console.error);
+			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+			});
 	}
 	else if (portal_category) { // with category given
 		guild.channels
@@ -201,7 +206,9 @@ export function create_portal_channel(
 					false
 				));
 			})
-			.catch(console.error);
+			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+			});
 	}
 	else { // without category
 		guild.channels
@@ -222,7 +229,9 @@ export function create_portal_channel(
 					false
 				));
 			})
-			.catch(console.error);
+			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
+			});
 	}
 };
 
@@ -273,10 +282,7 @@ export function create_voice_channel(
 export async function create_music_channel(
 	guild: Guild, music_channel: string,
 	music_category: string | CategoryChannel | null, guild_object: GuildPrtl
-): Promise<void> {
-	const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-		'.github.io/master/assets/img/logo.png';
-
+): Promise<boolean> {
 	return new Promise((resolve) => {
 		if (music_category && typeof music_category === 'string') { // with category
 			guild.channels
@@ -284,7 +290,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, clear queue:🧹, leave:🚪'
+						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪'
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -293,9 +299,30 @@ export async function create_music_channel(
 						.create(music_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
 						.catch(error => resolve(error));
-					create_music_message(channel, guild_object);
+					create_music_message(channel, guild_object)
+						.then(music_message_id => {
+							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
+							if (guild_object.music_data.message_id) {
+								create_lyrics_message(channel, guild_object, music_message_id)
+									.then(lyrics_message_id => {
+										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
+										resolve(false);
+									});
+							}
+						})
+						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
+							resolve(false);
+						});
+					resolve(true);
 				})
-				.catch(error => resolve(error));
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
+					resolve(false);
+				});
 		}
 		else if (music_category) { // with category object given
 			guild.channels
@@ -303,16 +330,37 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, clear queue:🧹, leave:🚪',
+						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪',
 						parent: music_category
 					},
 				)
 				.then(channel => {
 					channel.setParent(music_category);
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, guild_object);
+					create_music_message(channel, guild_object)
+						.then(music_message_id => {
+							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
+							if (guild_object.music_data.message_id) {
+								create_lyrics_message(channel, guild_object, music_message_id)
+									.then(lyrics_message_id => {
+										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
+										resolve(false);
+									});
+							}
+						})
+						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
+							resolve(false);
+						});
+					resolve(true);
 				})
-				.catch(error => resolve(error));
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
+					resolve(false);
+				});
 		}
 		else { // without category
 			guild.channels
@@ -320,14 +368,35 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, clear queue:🧹, leave:🚪'
+						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪'
 					},
 				)
 				.then(channel => {
 					guild_object.music_data.channel_id = channel.id;
-					create_music_message(channel, guild_object);
+					create_music_message(channel, guild_object)
+						.then(music_message_id => {
+							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
+							if (guild_object.music_data.message_id) {
+								create_lyrics_message(channel, guild_object, music_message_id)
+									.then(lyrics_message_id => {
+										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
+										resolve(false);
+									});
+							}
+						})
+						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
+							resolve(false);
+						});
+					resolve(true);
 				})
-				.catch(error => resolve(error));
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
+					resolve(false);
+				});
 		}
 	});
 };
@@ -427,8 +496,10 @@ export function delete_channel(
 			let channel_deleted = false;
 
 			message.channel
-				.send(`${message.author}, do you wish to delete old ` +
-					`${PortalChannelTypes[type].toString()} channel **${channel_to_delete}** (yes / no) ?`)
+				.send(
+					`${message.author}, do you wish to delete old ` +
+					`${PortalChannelTypes[type].toString()} channel **${channel_to_delete}** (yes / no) ?`
+				)
 				.then((question_msg: Message) => {
 					const filter: CollectorFilter = m => m.author.id === author.id;
 					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
@@ -440,19 +511,44 @@ export function delete_channel(
 									.delete()
 									.then(g => {
 										if (g.id !== m.channel.id && !m.deleted) {
-											m.channel.send(`deleted channel **"${channel_to_delete_name}"**`)
-												.then(msg => { msg.delete({ timeout: 7000 }); })
-												.catch(error => console.log(error));
+											m.channel
+												.send(`deleted channel **"${channel_to_delete_name}"**`)
+												.then(sent_message => {
+													sent_message
+														.delete({ timeout: 7000 })
+														.then(r => {
+															logger.log({ level: 'info', type: 'none', message: `deleted message` });
+														})
+														.catch(e => {
+															logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+														});
+												})
+												.catch(e => {
+													logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+												});
 										}
 									})
-									.catch(console.error);
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
+									});
 
 								channel_deleted = true;
 							}
 							else {
-								message.channel.send(`channel **"${channel_to_delete}"** is not deletable`)
-									.then(msg => { msg.delete({ timeout: 5000 }); })
-									.catch(error => console.log(error));
+								message.channel
+									.send(`channel **"${channel_to_delete}"** is not deletable`)
+									.then(msg => {
+										msg.delete({ timeout: 5000 })
+											.then(r => {
+												logger.log({ level: 'info', type: 'none', message: `deleted message` });
+											})
+											.catch(e => {
+												logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+											});
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+									});
 							}
 							collector.stop();
 						}
@@ -466,26 +562,56 @@ export function delete_channel(
 							if (reply_message.deletable) {
 								reply_message
 									.delete()
-									.catch(console.error);
+									.then(r => {
+										logger.log({ level: 'info', type: 'none', message: `deleted message` });
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+									});
 							}
 						});
 
 						if (!channel_deleted) {
-							message.channel.send(`Channel **"${channel_to_delete}"** will not be deleted`)
-								.then(msg => { msg.delete({ timeout: 5000 }); })
-								.catch(error => console.log(error));
+							message.channel
+								.send(`Channel **"${channel_to_delete}"** will not be deleted`)
+								.then(msg => {
+									msg
+										.delete({ timeout: 5000 })
+										.then(r => {
+											logger.log({ level: 'info', type: 'none', message: `deleted message` });
+										})
+										.catch(e => {
+											logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+										});
+								})
+								.catch(e => {
+									logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+								});
 						}
-						question_msg.delete({ timeout: 5000 });
+						question_msg
+							.delete({ timeout: 5000 })
+							.then(r => {
+								logger.log({ level: 'info', type: 'none', message: `deleted message` });
+							})
+							.catch(e => {
+								logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+							});
 					});
 				})
-				.catch(error => console.log(error));
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+				});
 		}
 	}
 	else if (channel_to_delete.deletable) {
 		channel_to_delete
 			.delete()
-			.then(g => console.log(`deleted channel with id: ${g}`))
-			.catch(console.error);
+			.then(r => {
+				logger.log({ level: 'info', type: 'none', message: `deleted channel with id \ ${r}` });
+			})
+			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
+			});
 	}
 };
 
@@ -578,11 +704,14 @@ export function generate_channel_name(
 
 				if (new_name.length >= 1) {
 					if (voice_channel.name !== new_name.substring(0, 99)) {
-						voice_channel.edit({ name: new_name.substring(0, 99) })
-							.then(newChannel => {
-								// console.log(`voice's new name from promise is ${newChannel.name}`)
+						voice_channel
+							.edit({ name: new_name.substring(0, 99) })
+							.then(new_channel => {
+								logger.log({ level: 'info', type: 'none', message: `new channel ${new_channel.name} spawned` });
 							})
-							.catch(console.log);
+							.catch(e => {
+								logger.log({ level: 'error', type: 'none', message: `failed to edit voice channel / ${e}` });
+							});
 						return_value = 1;
 					}
 					else {
@@ -660,12 +789,10 @@ export function regex_interpreter(
 			}
 		}
 		else if (regex[i] === pipe_prefix) {
-
 			const pipe = is_pipe(regex.substring(i));
 
 			if (pipe.length !== 0) {
 				if (last_vatiable_end_index + 1 === i) {
-
 					const return_value = get_pipe(last_variable, pipe);
 
 					if (return_value !== null) {
@@ -677,10 +804,8 @@ export function regex_interpreter(
 					else {
 						new_channel_name += regex[i];
 					}
-
 				}
 				else if (last_attribute_end_index + 1 === i) {
-
 					const return_value = get_pipe(last_attribute, pipe);
 
 					if (return_value !== null) {
@@ -692,10 +817,8 @@ export function regex_interpreter(
 					else {
 						new_channel_name += regex[i];
 					}
-
 				}
 				else {
-
 					const return_value = get_pipe(new_channel_name.substring(last_space_index, new_channel_name.length), pipe);
 
 					if (return_value !== null) {
@@ -707,7 +830,6 @@ export function regex_interpreter(
 					else {
 						new_channel_name += regex[i];
 					}
-
 				}
 			}
 			else {
@@ -719,7 +841,7 @@ export function regex_interpreter(
 			try {
 				// did not put into structure_list due to many unnecessary function calls
 				let is_valid = false;
-				const statement = getJSON(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
+				const statement = get_json(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 
 				if (!statement) return 'error';
 
@@ -764,7 +886,7 @@ export function regex_interpreter(
 				}
 			}
 			catch (e) {
-				console.log(`error in JSON parse (${e})`);
+				logger.log({ level: 'info', type: 'none', message: `failed to parse json / ${e}` });
 				new_channel_name += regex[i];
 			}
 
@@ -778,5 +900,6 @@ export function regex_interpreter(
 	if (new_channel_name === '') {
 		return '';
 	}
+
 	return new_channel_name;
 };

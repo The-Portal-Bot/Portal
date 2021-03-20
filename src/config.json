@@ -4,7 +4,6 @@
   "prefix": "./",
   "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
   "owner_id": "add-your-id-(optional)",
-  "portal_id": "add-bots-id-(optional)",
   "api_keys": {
       "OpenWeatherMap": "add-open-weather-map-api-key",
       "covid_193": "add-covid-193-api-key",
@@ -20,5 +19,6 @@
   "delete_msg": false,
   "delete_msg_after": 5,
   "always_reply": true,
-  "debug": false
+  "debug": false,
+  "log": true
 }

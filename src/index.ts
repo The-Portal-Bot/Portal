@@ -1,11 +1,12 @@
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, Presence, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose'; // we want to load an object not only functions
+import { transports } from "winston";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
 import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
-import { is_authorised, is_ignored, is_url, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
+import { is_authorised, is_ignored, is_url, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { client_talk } from './libraries/localisation.library';
 import { isProfane } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
@@ -13,7 +14,17 @@ import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
-const AntiSpam = require('discord-anti-spam');
+
+if (config.debug) {
+	logger.add(new transports.Console());
+}
+if (config.log) {
+	logger.add(new transports.File({ filename: '/logs/portal-error.log.json', level: 'error' }));
+	logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info' }));
+	logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
+}
+
+// const AntiSpam = require('discord-anti-spam');
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
@@ -24,32 +35,30 @@ mongoose.connect(config.mongo_url, {
 	useCreateIndex: true
 })
 	.then(r => {
-		console.log('> connected to the database');
+		logger.log({ level: 'info', type: 'none', message: `connected to the database` });
 	}).catch(e => {
-		console.log('> unable to connect to database: ', e);
+		logger.log({ level: 'error', type: 'none', message: new Error(`unable to connect to database | ${e}`).message });
 		process.exit(1);
 	});
 
-const anti_spam = new AntiSpam({
-	warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
-	kickThreshold: 50, // Amount of messages sent in a row that will cause a ban.
-	banThreshold: 70, // Amount of messages sent in a row that will cause a ban.
-	maxInterval: 2000, // Amount of time (in milliseconds) in which messages are considered spam.
-	warnMessage: '{@user}, please stop spamming', // Message that will be sent in chat upon warning a user.
-	kickMessage: '**{user_tag}** has been kicked for spamming', // Message that will be sent in chat upon kicking a user.
-	banMessage: '**{user_tag}** has been banned for spamming', // Message that will be sent in chat upon banning a user.
-	maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
-	maxDuplicatesKick: 50, // Amount of duplicate messages that trigger a warning.
-	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.
-	exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions. ('ADMINISTRATOR')
-	ignoreBots: true, // Ignore bot messages.
-	debug: false,
-	verbose: true, // Extended Logs from module.
-	ignoredUsers: [], // Array of User IDs that get ignored.
-});
+// const anti_spam = new AntiSpam({
+// 	warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
+// 	kickThreshold: 50, // Amount of messages sent in a row that will cause a ban.
+// 	banThreshold: 70, // Amount of messages sent in a row that will cause a ban.
+// 	maxInterval: 2000, // Amount of time (in milliseconds) in which messages are considered spam.
+// 	warnMessage: '{@user}, please stop spamming', // Message that will be sent in chat upon warning a user.
+// 	kickMessage: '**{user_tag}** has been kicked for spamming', // Message that will be sent in chat upon kicking a user.
+// 	banMessage: '**{user_tag}** has been banned for spamming', // Message that will be sent in chat upon banning a user.
+// 	maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
+// 	maxDuplicatesKick: 50, // Amount of duplicate messages that trigger a warning.
+// 	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.
+// 	exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions. ('ADMINISTRATOR')
+// 	ignoreBots: true, // Ignore bot messages.
+// 	debug: false,
+// 	verbose: true, // Extended Logs from module.
+// 	ignoredUsers: [], // Array of User IDs that get ignored.
+// });
 
-// this is the client the Portal Bot. Some people call it bot, some people call
-// it 'self', client.user is actually the presence of portal bot in the server
 const client = new Client(
 	{
 		partials: [
@@ -60,18 +69,24 @@ const client = new Client(
 			'REACTION'
 		],
 		ws: {
-			intents: Intents.ALL
-			// [
-			// 	'GUILDS',
-			// 	'GUILD_MEMBERS',
-			// 	'GUILD_BANS',
-			// 	'GUILD_INVITES',
-			// 	'GUILD_VOICE_STATES',
-			// 	'GUILD_PRESENCES',
-			// 	'GUILD_MESSAGES',
-			// 	'GUILD_MESSAGE_REACTIONS',
-			// 	'GUILD_MESSAGE_TYPING'
-			// ]
+			intents: // Intents.ALL
+				[
+					Intents.FLAGS.GUILDS,
+					Intents.FLAGS.GUILD_MEMBERS,
+					// Intents.FLAGS.GUILD_BANS,
+					// Intents.FLAGS.GUILD_EMOJIS,
+					// Intents.FLAGS.GUILD_INTEGRATIONS,
+					// Intents.FLAGS.GUILD_WEBHOOKS,
+					// Intents.FLAGS.GUILD_INVITES,
+					Intents.FLAGS.GUILD_VOICE_STATES,
+					Intents.FLAGS.GUILD_PRESENCES,
+					Intents.FLAGS.GUILD_MESSAGES,
+					Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+					// Intents.FLAGS.GUILD_MESSAGE_TYPING,
+					Intents.FLAGS.DIRECT_MESSAGES,
+					Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+					// Intents.FLAGS.DIRECT_MESSAGE_TYPING
+				]
 		}
 	}
 );
@@ -131,10 +146,11 @@ client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | 
 
 // This event triggers when the status of a guild member has changed
 client.on('presenceUpdate', (oldPresence: Presence | undefined, newPresence: Presence | undefined) =>
-	event_loader('presenceUpdate', {
-		'client': client,
-		'newPresence': newPresence
-	})
+	// event_loader('presenceUpdate', {
+	// 	'client': client,
+	// 	'newPresence': newPresence
+	// })
+	null
 );
 
 // This event will run if the bot starts, and logs in, successfully.
@@ -149,6 +165,7 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
 	const new_channel = newState.channel; // join channel
 	const old_channel = oldState.channel; // left channel
 
+	// mute / unmute  defean user are ignored
 	if ((old_channel && new_channel) &&
 		(new_channel.id === old_channel.id)) {
 		return;
@@ -166,15 +183,13 @@ client.on('message', async (message: Message) => {
 	if (!message) return;
 	if (!message.member) return;
 	if (!message.guild) return;
-	if (message.author.bot) return; // Ignore other bots and also itself ('botception')
-	if (message.channel.type === 'dm') return; // Ignore any direct message
+	if (message.author.bot) return; // ignore bots 'botception'
+	if (message.channel.type === 'dm') return; // ignore DMs
 
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {
 			if (!guild_object) {
-				message_reply(false, message, message.author,
-					'error with Portal');
-
+				logger.log({ level: 'error', type: 'none', message: new Error(`guild does not exist in Portal`).message });
 				return false;
 			}
 
@@ -187,6 +202,7 @@ client.on('message', async (message: Message) => {
 					if (message.content === 'prefix') {
 						message_reply(true, message, message.author,
 							`portal's prefix is \`${guild_object.prefix}\``, false);
+
 						if (message.deletable) {
 							message.delete();
 						}
@@ -198,8 +214,6 @@ client.on('message', async (message: Message) => {
 				let command = command_decypher(message, guild_object);
 
 				if (!command.command_options) {
-					message_reply(false, message, message.author, 'not a Portal command');
-
 					return false;
 				}
 
@@ -213,8 +227,7 @@ client.on('message', async (message: Message) => {
 				}
 
 				if (!message.guild) {
-					message_reply(false, message, message.author,
-						'could not fetch guild of message');
+					logger.log({ level: 'error', type: 'none', message: new Error('could not fetch guild of message').message });
 
 					return false;
 				}
@@ -222,6 +235,7 @@ client.on('message', async (message: Message) => {
 				fetch_guild_rest(message.guild.id)
 					.then(guild_object_rest => {
 						if (!guild_object_rest) {
+							logger.log({ level: 'error', type: 'none', message: new Error('server is not in database').message });
 							message_reply(false, message, message.author,
 								'server is not in database, please contact portal support');
 
@@ -238,8 +252,6 @@ client.on('message', async (message: Message) => {
 						guild_object.premium = guild_object_rest.premium;
 
 						if (!command.command_options) {
-							message_reply(false, message, message.author, 'not a Portal command');
-
 							return false;
 						}
 
@@ -254,17 +266,13 @@ client.on('message', async (message: Message) => {
 						);
 					})
 					.catch(e => {
-						message_reply(false, message, message.author,
-							`1 could not find server [rst] (${e})`);
-
+						logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild restdata').message });
 						return false;
 					});
 			}
 		})
 		.catch(e => {
-			message_reply(false, message, message.author,
-				`could not find server [pre] (${e})`);
-
+			logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild predata').message });
 			return false;
 		});
 });
@@ -274,7 +282,7 @@ function command_loader(
 	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
 	if (config.debug === true) {
-		console.log(`├─ cmd (${cmd})`);
+		logger.log({ level: 'info', type: 'command', message: cmd });
 	}
 
 	if (type === 'none' && command_options.time === 0) {
@@ -288,8 +296,14 @@ function command_loader(
 							command_options ? command_options.auto_delete : true
 						);
 					}
+				} else {
+					logger.log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
 				}
+			})
+			.catch((error: any) => {
+				logger.log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
 			});
+
 		return true;
 	}
 
@@ -299,17 +313,19 @@ function command_loader(
 				if (type === 'member' && active_current.member === message.author.id) {
 					return true;
 				}
+
 				if (type === 'guild') {
 					return true;
 				}
 			}
+
 			return false;
 		});
 
 	if (active) {
 		const time = time_elapsed(active.timestamp, command_options.time);
 		const type_for_msg = (type === 'member')
-			? '.*'
+			? `.*`
 			: `, as it was used again in* **${message.guild?.name}**`;
 
 		message_reply(false, message, message.author,
@@ -322,77 +338,69 @@ function command_loader(
 
 	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
 		.then((response: ReturnPormise) => {
-			if (response && response.result) {
-				active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
-					member: message.author.id,
-					command: cmd,
-					timestamp: Date.now()
-				});
+			if (response) {
+				if (response.result) {
+					active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
+						member: message.author.id,
+						command: cmd,
+						timestamp: Date.now()
+					});
 
-				if (command_options) {
-					setTimeout(() => {
-						active_cooldowns[type === 'guild' ? 'guild' : 'member'] =
-							active_cooldowns[type === 'guild' ? 'guild' : 'member']
-								.filter(active => active.command !== cmd);
-					}, command_options.time * 60 * 1000);
+					if (command_options) {
+						setTimeout(() => {
+							active_cooldowns[type === 'guild' ? 'guild' : 'member'] =
+								active_cooldowns[type === 'guild' ? 'guild' : 'member']
+									.filter(active => active.command !== cmd);
+						}, command_options.time * 60 * 1000);
+					}
 				}
-			}
 
-			if ((command_options && response.value && response.value !== '') && (command_options.reply || response.result === false)) {
-				message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
+				if ((command_options && response.value && response.value !== '') && (command_options.reply || response.result === false)) {
+					message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
+				}
+			} else {
+				logger.log({ level: 'error', type: 'none', message: new Error(`did not get response from command: ${cmd}`).message });
 			}
+		})
+		.catch((error: any) => {
+			logger.log({ level: 'error', type: 'none', message: new Error(`in ${cmd} got error ${error}`).message });
 		});
 
 	return false;
 }
 
 function event_loader(event: string, args: any): void {
-	if (event === 'presenceUpdate') {
-		return;
-	}
-
-	if (config.debug === true) {
-		console.log(`├─ event (${event})`);
-	}
-
 	require(`./events/${event}.event.js`)(args)
 		.then((response: ReturnPormise) => {
-			const shouldReply = event_config_json.find(e => e.name === event);
-			if ((config.debug) || (shouldReply && shouldReply.reply) &&
-				(response && response.result === false)
-			) {
-				const colour = response.result ? '\x1b[32m' : '\x1b[31m';
-				const reset = '\x1b[0m';
-
-				if (!response.value) {
-					console.log(`${colour}├── (empty)${reset}`);
-				}
-				else if (response.value === '') {
-					console.log(`${colour}├── (empty)${reset}`);
+			if (config.debug || (event_config_json.find(e => e.name === event) && (response && !response.result))) {
+				if (!response.value || response.value === '') {
+					response.result
+						? logger.log({ level: 'info', type: 'event', message: `${event} / nothing` })
+						: logger.log({ level: 'warn', type: 'event', message: `${event} / nothing` });
 				} else {
-					const value_arr = response.value.split('\n') ? response.value.split('\n') : [];
-					console.log(value_arr.map((s, i) => `${colour}├── ${s}${reset}`).join('\n'));
+					response.result
+						? logger.log({ level: 'info', type: 'event', message: `${event} / ${response.value}` })
+						: logger.log({ level: 'warn', type: 'event', message: `${event} / ${response.value}` });
 				}
 			}
 		})
-		.catch(console.log);
+		.catch((e: any) => {
+			logger.log({ level: 'error', type: 'none', message: new Error(`EVNT|${event} / ${e}`).message })
+		});
 }
 
-function log_portal() {
+function connect_to_discord() {
 	client.login(config.token)
 		.then(r => {
-			console.log(`> logged into discord (${r})`)
+			logger.log({ level: 'info', type: 'none', message: `login to discord successful / ${r}` })
 		})
 		.catch(e => {
-			console.log(`> could not login to discord (${e})`)
+			logger.log({ level: 'error', type: 'none', message: new Error(`could not login to discord / ${e}`).message })
 			process.exit(1);
 		});
 }
 
-log_portal();
-
-exports.client = client;
-exports.log_portal = log_portal;
+connect_to_discord();
 
 /*
 * Returns: true/false if processing must continue
@@ -401,12 +409,13 @@ function portal_preprocessor(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
 	if (!message.member) {
+		logger.log({ level: 'error', type: 'none', message: new Error('could not get member').message });
 		return true;
 	}
 
 	if (is_ignored(message.member)) {
 		if (!handle_url_channels(message, guild_object)) {
-			anti_spam.message(message);
+			// anti_spam.message(message);
 			if (guild_object.music_data.channel_id === message.channel.id) {
 				message.member.send('you can\'t play music when ignored');
 				if (message.deletable) {
@@ -418,24 +427,24 @@ function portal_preprocessor(
 		return true;
 	} else {
 		if (handle_url_channels(message, guild_object)) {
-			anti_spam.message(message);
+			// anti_spam.message(message);
 
 			return true;
 		}
 		else if (handle_ignored_channels(message, guild_object)) {
 			handle_ranking_system(message, guild_object);
-			anti_spam.message(message);
+			// anti_spam.message(message);
 
 			return true;
 		}
 		else if (handle_music_channels(message, guild_object)) {
 			handle_ranking_system(message, guild_object);
-			anti_spam.message(message);
+			// anti_spam.message(message);
 
 			return true;
 		} else {
 			handle_ranking_system(message, guild_object);
-			anti_spam.message(message);
+			// anti_spam.message(message);
 
 			if (guild_object.profanity_level !== ProfanityLevelEnum.none) {
 				// profanity check
@@ -444,7 +453,9 @@ function portal_preprocessor(
 					message.react('🚩');
 					message.author
 						.send(`try not to use profanities (${profanities.join(',')})`)
-						.catch(console.error);
+						.catch(error => {
+							logger.log({ level: 'error', type: 'none', message: new Error(error).message });
+						});
 				}
 			}
 
@@ -482,8 +493,7 @@ function handle_url_channels(
 					);
 				})
 				.catch(e => {
-					message_reply(false, message, message.author,
-						'failed to remove url channel');
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${e}`).message });
 				});
 		}
 		else if (is_url(message.content)) {
@@ -493,7 +503,9 @@ function handle_url_channels(
 			// client_talk(client, guild_object, 'read_only');
 			message.author
 				.send(`${message.channel} is a url-only channel`)
-				.catch(console.error);
+				.catch(error => {
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove url channel: ${error}`).message });
+				});
 			if (message.deletable) {
 				message.delete();
 			}
@@ -516,12 +528,10 @@ function handle_ignored_channels(
 						? 'successfully removed from ignored channels'
 						: 'failed to remove from ignored channels';
 
-					message_reply(true, message, message.author,
-						reply_message);
+					message_reply(true, message, message.author, reply_message);
 				})
-				.catch(e => {
-					message_reply(false, message, message.author,
-						'failed to remove from ignored channels');
+				.catch(error => {
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove ignored channel: ${error}`).message });
 				});
 		}
 
@@ -537,10 +547,11 @@ function handle_music_channels(
 	if (guild_object.music_data.channel_id === message.channel.id) {
 		if (message.content === './music') {
 			if (!message.guild) {
+				logger.log({ level: 'error', type: 'none', message: new Error(`failed to get guild from message`).message });
 				return true;
 			}
 
-			const music_data = new MusicData('null', 'null', [], false);
+			const music_data = new MusicData('null', 'null', 'null', [], false);
 			set_music_data(guild_object.id, music_data)
 				.then(r => {
 					message_reply(true, message, message.author,
@@ -548,9 +559,8 @@ function handle_music_channels(
 							? 'successfully removed music channel'
 							: 'failed to remove music channel');
 				})
-				.catch(e => {
-					message_reply(false, message, message.author,
-						`failed to remove music channel (${e})`);
+				.catch(error => {
+					logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove music channel: ${error}`).message });
 				});
 		} else {
 			const voice_connection = client.voice
@@ -641,6 +651,8 @@ function handle_music_channels(
 					if (message.deletable) {
 						message.delete();
 					}
+
+					logger.log({ level: 'error', type: 'none', message: new Error(`error while starting playback: ${e}`).message });
 				});
 		}
 

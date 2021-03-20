@@ -2,28 +2,9 @@ import { Client, Guild, Presence, TextChannel, VoiceChannel } from "discord.js";
 import { generate_channel_name } from "../libraries/guild.library";
 import { create_rich_embed } from "../libraries/help.library";
 import { fetch_guild } from "../libraries/mongo.library";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl.class";
-import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
-
-function update_channel_name(
-	current_guild: Guild, current_channel: VoiceChannel, current_portal_list: PortalChannelPrtl[], guild_object: GuildPrtl
-) {
-	switch (generate_channel_name(current_channel, current_portal_list, guild_object, current_guild)) {
-		case 1:
-			// current_voice_channel.last_update = Date.now();
-			break;
-		case 2:
-			// console.log('new name channel is the same as old');
-			break;
-		case 3:
-			// console.log('new channel name is empty');
-			break;
-		default:
-			break;
-	}
-};
+import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
 
 function time_out_repeat(
 	current_voice_channel: VoiceChannelPrtl, current_guild: Guild, current_channel: VoiceChannel,
@@ -34,7 +15,7 @@ function time_out_repeat(
 			if (guild_object) {
 				setTimeout(() => {
 					if (!current_guild.deleted && !current_channel.deleted) {
-						update_channel_name(current_guild, current_channel, current_portal_list, guild_object);
+						generate_channel_name(current_channel, current_portal_list, guild_object, current_guild)
 						time_out_repeat(current_voice_channel, current_guild, current_channel, current_portal_list, minutes);
 					}
 				}, minutes * 60 * 1000);

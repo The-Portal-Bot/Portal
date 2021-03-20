@@ -2,7 +2,7 @@ import { Guild, GuildMember, Message, VoiceState } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
 import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
-import { time_elapsed } from './help.library';
+import { logger, time_elapsed } from './help.library';
 import { update_member } from "./mongo.library";
 
 export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild): boolean {
@@ -81,8 +81,12 @@ export function update_timestamp(
 		if (member_prtl.timestamp === null) {
 			member_prtl.timestamp = new Date();
 			update_member(voiceState.guild.id, member.id, 'timestamp', member_prtl.timestamp)
-				.then(console.log)
-				.catch(console.log);
+				.then(r => {
+					logger.log({ level: 'info', type: 'none', message: `updated member` });
+				})
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+				});
 
 			return false;
 		}
@@ -90,19 +94,31 @@ export function update_timestamp(
 		const points = add_points_time(member_prtl, speed);
 
 		update_member(voiceState.guild.id, member.id, 'points', points)
-			.then(console.log)
-			.catch(console.log);
+			.then(r => {
+				logger.log({ level: 'info', type: 'none', message: `updated member` });
+			})
+			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+			});
 
 		update_member(voiceState.guild.id, member.id, 'timestamp', null)
-			.then(console.log)
-			.catch(console.log);
+			.then(r => {
+				logger.log({ level: 'info', type: 'none', message: `updated member` });
+			})
+			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+			});
 
 		const level = calculate_rank(member_prtl);
 
 		if (level) {
 			update_member(voiceState.guild.id, member.id, 'level', level)
-				.then(console.log)
-				.catch(console.log);
+				.then(r => {
+					logger.log({ level: 'info', type: 'none', message: `updated member` });
+				})
+				.catch(e => {
+					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+				});
 		}
 
 		give_role_from_rankup(member_prtl, member, ranks, voiceState.guild);
@@ -130,15 +146,23 @@ export function add_points_message(
 	member.points += points > 5 ? 5 : points;
 
 	update_member(message.guild.id, member.id, 'points', member.points)
-		.then(console.log)
-		.catch(console.log);
+		.then(r => {
+			logger.log({ level: 'info', type: 'none', message: `updated member` });
+		})
+		.catch(e => {
+			logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+		});
 
 	const level = calculate_rank(member);
 
 	if (level) {
 		update_member(message.guild.id, member.id, 'level', level)
-			.then(console.log)
-			.catch(console.log);
+			.then(r => {
+				logger.log({ level: 'info', type: 'none', message: `updated member` });
+			})
+			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
+			});
 	}
 
 	return level ? level : false;

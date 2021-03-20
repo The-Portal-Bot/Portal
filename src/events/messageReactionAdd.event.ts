@@ -1,8 +1,8 @@
 import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
-import { create_rich_embed, is_authorised, is_dj, update_music_message } from "../libraries/help.library";
+import { create_rich_embed, is_authorised, is_dj, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
-import { pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
+import { get_lyrics, pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
@@ -188,6 +188,8 @@ async function reaction_music_manager(
 			}
 			case '⏭': {
 				if (!portal_voice_connection) {
+					update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
+
 					return resolve({
 						result: false,
 						value: 'nothing to skip, player is idle'
@@ -385,6 +387,20 @@ async function reaction_music_manager(
 
 				break;
 			}
+			case '📄': {
+				get_lyrics(messageReaction.message.guild, guild_object)
+					.then(r => {
+						return resolve(r);
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `error occurred while fetching lyrics (${e})`
+						});
+					});
+
+				break;
+			}
 			case '🧹': {
 				if (guild_object.music_queue.length > 1) {
 					guild_object.music_queue.splice(1, guild_object.music_queue.length);
@@ -418,15 +434,22 @@ async function reaction_music_manager(
 						if (portal_voice_connection) {
 							guild_object.music_queue = [];
 							update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
+							if (messageReaction.message.guild) {
+								update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
+							}
+							clear_music_vote(guild_object.id);
 							portal_voice_connection.disconnect();
+
+							return resolve({
+								result: true,
+								value: 'Portal has been disconnected'
+							});
+						} else {
+							return resolve({
+								result: false,
+								value: 'Portal is not connected to a voice channel'
+							});
 						}
-
-						clear_music_vote(guild_object.id);
-
-						return resolve({
-							result: true,
-							value: 'Portal has been disconnected'
-						});
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
@@ -450,7 +473,7 @@ module.exports = async (
 		if (args.user.bot) {
 			return resolve({
 				result: false,
-				value: 'not handling bot reactions'
+				value: '' // 'not handling bot reactions'
 			});
 		}
 		else if (args.messageReaction?.message?.guild) {
@@ -588,7 +611,7 @@ module.exports = async (
 							}
 						} else {
 							return resolve({
-								result: false,
+								result: true,
 								value: 'message is not controlled by Portal'
 							});
 						}

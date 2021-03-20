@@ -3,7 +3,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import config from '../../config.json';
 import { NYTCategories } from '../../data/lists/news_categories.static';
-import { create_rich_embed, getJSON, max_string, message_help } from '../../libraries/help.library';
+import { create_rich_embed, get_json, max_string, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { News } from '../../types/classes/NewYorkTime.class';
@@ -67,7 +67,7 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
-				const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
+				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
 
 				if (json === null) {
 					return resolve({
