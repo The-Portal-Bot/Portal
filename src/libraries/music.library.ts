@@ -782,7 +782,7 @@ export async function get_lyrics(
 							value: 'could not find song'
 						});
 					}
-					
+
 					scrape_lyrics(`https://genius.com${json.response.hits[0].result.path}`)
 						.then((text: string) => {
 							update_music_lyrics_message(guild, guild_object, text, `https://genius.com${json.response.hits[0].result.path}`)
