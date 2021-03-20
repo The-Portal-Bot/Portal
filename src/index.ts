@@ -644,7 +644,7 @@ function handle_music_channels(
 							guild_object.music_queue.length > 0
 								? guild_object.music_queue[0]
 								: undefined,
-							`error while starting playback (${e})`
+							`error while starting playback / ${e}`
 						);
 					}
 

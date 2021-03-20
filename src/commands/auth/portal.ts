@@ -81,7 +81,7 @@ module.exports = async (
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `portal channel failed to be created (${e})`
+								value: `portal channel failed to be created / ${e}`
 							});
 						});
 				} else {
@@ -94,7 +94,7 @@ module.exports = async (
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: `an error occurred while creating channel (${e})`
+					value: `an error occurred while creating channel / ${e}`
 				});
 			});
 	});

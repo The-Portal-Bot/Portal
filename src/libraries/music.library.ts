@@ -190,7 +190,7 @@ async function start_playback(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `error while joining channel (${e})`
+								value: `error while joining channel / ${e}`
 							});
 						});
 				}
@@ -291,7 +291,7 @@ export async function start(
 							.catch(e => {
 								return resolve({
 									result: false,
-									value: `error while starting music player (${e})`
+									value: `error while starting music player / ${e}`
 								});
 							});
 
@@ -299,7 +299,7 @@ export async function start(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `error while searching youtube playlist (${e})`
+							value: `error while searching youtube playlist / ${e}`
 						});
 					});
 			} else if (video_index > 0) {
@@ -333,7 +333,7 @@ export async function start(
 							.catch(e => {
 								return resolve({
 									result: false,
-									value: `error while starting music player (${e})`
+									value: `error while starting music player / ${e}`
 								});
 							});
 
@@ -341,7 +341,7 @@ export async function start(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `error while searching youtube video (${e})`
+							value: `error while searching youtube video / ${e}`
 						});
 					});
 			} else {
@@ -372,14 +372,14 @@ export async function start(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `error while starting music player (${e})`
+								value: `error while starting music player / ${e}`
 							});
 						});
 				})
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `error while searching youtube (${e})`
+						value: `error while searching youtube / ${e}`
 					});
 				});
 		}
@@ -465,6 +465,7 @@ export async function play(
 							if (!dispatcher.destroyed) {
 								dispatcher.destroy();
 							}
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -497,7 +498,7 @@ export async function play(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `could not to join voice channel (${e})`
+						value: `could not to join voice channel / ${e}`
 					});
 				});
 		}
@@ -660,7 +661,7 @@ export async function skip(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `failed to join voice channel (${e})`
+								value: `failed to join voice channel / ${e}`
 							});
 						});
 				});

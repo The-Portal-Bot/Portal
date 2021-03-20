@@ -454,14 +454,14 @@ export async function create_focus_channel(
 										.catch(e => {
 											return resolve({
 												result: false,
-												value: `focus did not end properly (${e})`
+												value: `focus did not end properly / ${e}`
 											});
 										});
 								})
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: `focus did not end properly (${e})`
+										value: `focus did not end properly / ${e}`
 									});
 								});
 						}
@@ -477,7 +477,7 @@ export async function create_focus_channel(
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: `failed to create focus channel (${e})`
+					value: `failed to create focus channel / ${e}`
 				});
 			});
 	});

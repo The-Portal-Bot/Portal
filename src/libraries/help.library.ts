@@ -345,7 +345,7 @@ export async function join_by_reaction(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `failed to join voice channel (${e})`,
+						value: `failed to join voice channel / ${e}`,
 						voice_connection: undefined,
 					});
 				});
@@ -441,7 +441,7 @@ export async function join_user_voice(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `error while joining voice connection (${e})`,
+						value: `error while joining voice connection / ${e}`,
 						voice_connection: undefined,
 					});
 				});
