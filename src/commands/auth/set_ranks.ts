@@ -1,5 +1,5 @@
 import { Client, Message, Role } from "discord.js";
-import { getJSON, message_help } from "../../libraries/help.library";
+import { get_json, message_help } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Rank, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { set_ranks } from "../../libraries/mongo.library";
@@ -29,7 +29,7 @@ module.exports = async (
 		const roles = message.guild.roles.cache.map(cr => cr);
 
 		if (args.length > 0) {
-			const new_ranks_json = getJSON(args.join(' '));
+			const new_ranks_json = get_json(args.join(' '));
 			if (!new_ranks_json) {
 				return resolve({
 					result: false,

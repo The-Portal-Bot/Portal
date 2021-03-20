@@ -188,6 +188,8 @@ async function reaction_music_manager(
 			}
 			case '⏭': {
 				if (!portal_voice_connection) {
+					update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
+
 					return resolve({
 						result: false,
 						value: 'nothing to skip, player is idle'
@@ -256,12 +258,6 @@ async function reaction_music_manager(
 						messageReaction.message.guild, guild_object
 					)
 						.then(r => {
-							update_music_lyrics_message(
-								guild,
-								guild_object,
-								''
-							);
-							
 							clear_music_vote(guild_object.id);
 							guild_object.music_queue.shift();
 							return resolve({
@@ -438,15 +434,22 @@ async function reaction_music_manager(
 						if (portal_voice_connection) {
 							guild_object.music_queue = [];
 							update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
+							if (messageReaction.message.guild) {
+								update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
+							}
+							clear_music_vote(guild_object.id);
 							portal_voice_connection.disconnect();
+
+							return resolve({
+								result: true,
+								value: 'Portal has been disconnected'
+							});
+						} else {
+							return resolve({
+								result: false,
+								value: 'Portal is not connected to a voice channel'
+							});
 						}
-
-						clear_music_vote(guild_object.id);
-
-						return resolve({
-							result: true,
-							value: 'Portal has been disconnected'
-						});
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);

@@ -218,7 +218,7 @@ export function update_music_message(
 };
 
 export function update_music_lyrics_message(
-	guild: Guild, guild_object: GuildPrtl, lyrics: string
+	guild: Guild, guild_object: GuildPrtl, lyrics: string, url?: string
 ): Promise<boolean> {
 	return new Promise((resolve) => {
 		const guild_channel: GuildChannel | undefined = guild.channels.cache
@@ -235,8 +235,8 @@ export function update_music_lyrics_message(
 		}
 
 		const music_message_emb = create_rich_embed(
-			'Lyrics 📄',
-			lyrics,
+			`Lyrics 📄 ${url ? `at ${url}` : ''}`,
+			max_string(lyrics, 2000),
 			'#e60026',
 			null,
 			null,
@@ -449,7 +449,7 @@ export async function join_user_voice(
 	});
 };
 
-export function getJSON(
+export function get_json(
 	str: string
 ): any | null {
 	let data = null;

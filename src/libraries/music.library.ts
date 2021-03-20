@@ -1,12 +1,12 @@
 import ytdl from 'discord-ytdl-core';
 import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
 import { RequestOptions } from 'https';
-import yts, { PlaylistMetadataResult, SearchResult, VideoSearchResult } from 'yt-search';
+import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
 import config from '../config.json';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
-import { getJSON, is_url, join_by_reaction, join_user_voice, logger, update_music_lyrics_message, update_music_message } from './help.library';
-import { https_fetch } from './http.library';
+import { get_json, is_url, join_by_reaction, join_user_voice, logger, update_music_lyrics_message, update_music_message } from './help.library';
+import { https_fetch, scrape_lyrics } from './http.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 // const ytdl = require('ytdl-core');
 
@@ -210,89 +210,146 @@ export async function start(
 ): Promise<ReturnPormise> {
 	return new Promise(resolve => {
 		if (is_url(search_term)) {
-			const videoId = search_term.substr(search_term.indexOf('?v=') + 3, 11);
-			const listId = search_term.substr(search_term.indexOf('list=') + 5, 34);
-			const index_str = search_term.substr(search_term.indexOf('index=') + 6);
-			const index = isNaN(+index_str) ? 0 : +index_str;
+			const plist_index = search_term.indexOf('list=');
+			const pindx_index = search_term.indexOf('index=');
+			const video_index = search_term.indexOf('?v=');
 
-			if (!videoId || !listId) {
-				return resolve({
-					result: false,
-					value: `the url is not of a youtube playlist`
-				});
-			}
+			if (plist_index > 0) {
+				const listId = search_term.substr(plist_index + 5, 34);
+				const index_str = pindx_index > 0
+					? search_term.substr(pindx_index + 6)
+					: '0';
+				const index = isNaN(+index_str)
+					? 0
+					: +index_str;
 
-			yts({ listId: listId })
-				.then((yts_attempt: PlaylistMetadataResult) => {
-					if (yts_attempt.videos.length <= 0) {
-						return resolve({
-							result: false,
-							value: `could not find the playlist on youtube`
-						});
-					}
-
-					const yt_url = 'https://www.youtube.com/watch';
-					const initial_video = yts_attempt.videos[index];
-
-					start_playback(
-						voice_connection, client, user, message,
-						guild, guild_object, <VideoSearchResult>{
-							type: 'video',
-							videoId: initial_video.videoId,
-							url: `${yt_url}` +
-								`?v=${initial_video.videoId}` +
-								`&list=${yts_attempt.listId}` +
-								`&index=${index ? index : 1}`,
-							title: initial_video.title,
-							description: '',
-							image: '',
-							thumbnail: initial_video.thumbnail,
-							seconds: 0,
-							timestamp: '',
-							duration: (<any>initial_video).duration,
-							ago: '',
-							views: 0,
-							author: initial_video.author,
-						}
-					)
-						.then(r => {
-							yts_attempt.videos.forEach((v, i) => {
-								if (i > 0 && i > +index)
-									push_video_to_queue(guild_object, <VideoSearchResult>{
-										type: 'video',
-										videoId: v.videoId,
-										url: `${yt_url}?v=${v.videoId}&list=${yts_attempt.listId}&index=${i + 1}`,
-										title: v.title,
-										description: '',
-										image: '',
-										thumbnail: v.thumbnail,
-										seconds: 0,
-										timestamp: '',
-										duration: (<any>v).duration,
-										ago: '',
-										views: 0,
-										author: v.author,
-									})
-							});
-
-							return resolve(
-								r
-							);
-						})
-						.catch(e => {
+				yts({ listId: listId })
+					.then((yts_attempt: PlaylistMetadataResult) => {
+						if (yts_attempt.videos.length <= 0) {
 							return resolve({
 								result: false,
-								value: `error while starting music player (${e})`
+								value: `could not find the playlist on youtube`
 							});
-						});
+						}
 
-				})
-				.catch(e => {
-					return resolve({
-						result: false,
-						value: `error while searching youtube (${e})`
+						const yt_url = 'https://www.youtube.com/watch';
+						const initial_video = yts_attempt.videos[index];
+
+						update_music_lyrics_message(guild, guild_object, '');
+
+						start_playback(
+							voice_connection, client, user, message,
+							guild, guild_object, <VideoSearchResult>{
+								type: 'video',
+								videoId: initial_video.videoId,
+								url: `${yt_url}` +
+									`?v=${initial_video.videoId}` +
+									`&list=${yts_attempt.listId}` +
+									`&index=${index ? index : 1}`,
+								title: initial_video.title,
+								description: '',
+								image: '',
+								thumbnail: initial_video.thumbnail,
+								seconds: 0,
+								timestamp: '',
+								duration: <Duration>{
+									seconds: 0,
+									timestamp: '-'
+								},
+								ago: '',
+								views: 0,
+								author: initial_video.author,
+							}
+						)
+							.then(r => {
+								yts_attempt.videos.forEach((v, i) => {
+									if (i > 0 && i > +index)
+										push_video_to_queue(guild_object, <VideoSearchResult>{
+											type: 'video',
+											videoId: v.videoId,
+											url: `${yt_url}` +
+												`?v=${v.videoId}` +
+												`&list=${yts_attempt.listId}` +
+												`&index=${i + 1}`,
+											title: v.title,
+											description: '',
+											image: '',
+											thumbnail: v.thumbnail,
+											seconds: 0,
+											timestamp: '',
+											duration: (<any>v).duration,
+											ago: '',
+											views: 0,
+											author: v.author,
+										})
+								});
+
+								return resolve(
+									r
+								);
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `error while starting music player (${e})`
+								});
+							});
+
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `error while searching youtube playlist (${e})`
+						});
 					});
+			} else if (video_index > 0) {
+				const videoId = search_term.substr(video_index + 3, 11);
+
+				yts({ videoId: videoId })
+					.then((yts_attempt: VideoMetadataResult) => {
+						start_playback(
+							voice_connection, client, user, message,
+							guild, guild_object, <VideoSearchResult>{
+								type: 'video',
+								videoId: yts_attempt.videoId,
+								url: yts_attempt.url,
+								title: yts_attempt.title,
+								description: yts_attempt.description,
+								image: yts_attempt.image,
+								thumbnail: yts_attempt.thumbnail,
+								seconds: yts_attempt.seconds,
+								timestamp: yts_attempt.timestamp,
+								duration: yts_attempt.duration,
+								ago: yts_attempt.ago,
+								views: yts_attempt.views,
+								author: yts_attempt.author
+							}
+						)
+							.then(r => {
+								return resolve(
+									r
+								);
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `error while starting music player (${e})`
+								});
+							});
+
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `error while searching youtube video (${e})`
+						});
+					});
+			} else {
+				return resolve({
+					result: false,
+					value: `the url is not of a youtube video or playlist`
 				});
+			}
 		} else {
 			yts(search_term)
 				.then((yts_attempt: SearchResult) => {
@@ -318,7 +375,6 @@ export async function start(
 								value: `error while starting music player (${e})`
 							});
 						});
-
 				})
 				.catch(e => {
 					return resolve({
@@ -507,6 +563,8 @@ export async function skip(
 			} else {
 				pop_music_queue(guild_object)
 					.then(next_video => {
+						update_music_lyrics_message(guild, guild_object, '');
+
 						if (!next_video) {
 							return resolve({
 								result: false,
@@ -674,11 +732,25 @@ export async function get_lyrics(
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		if (guild_object.music_queue.length > 0) {
+			const uselessWordsArray = ["official", "music", "video", "ft."];
+			const expStr = uselessWordsArray.join("|");
+
+			const search_term_init = guild_object.music_queue[0].title
+				.replace(new RegExp('\\b(' + expStr + ')\\b', 'gi'), ' ')
+				.replace(/\s{2,}/g, ' ');
+			const search_term_without = search_term_init
+				.replace(/[&\/\\#,+()$~%.'"-:*?<>{}]/g, '')
+			const search_term = search_term_without
+				.split(' ')
+				.filter((s, i) => i < 6)
+				.filter(s => !null && s !== '')
+				.join('%20');
+
 			const options: RequestOptions = {
 				'method': 'GET',
 				"hostname": "genius.p.rapidapi.com",
 				'port': undefined,
-				"path": `/search?q=${guild_object.music_queue[0].title.split(' ').join('%20')}`,
+				"path": `/search?q=${search_term}`,
 				'headers': {
 					"x-rapidapi-host": "genius.p.rapidapi.com",
 					'x-rapidapi-key': config.api_keys.lyrics,
@@ -688,7 +760,7 @@ export async function get_lyrics(
 
 			https_fetch(options)
 				.then((response: Buffer) => {
-					const json = getJSON(response.toString().substring(response.toString().indexOf('{')));
+					const json = get_json(response.toString().substring(response.toString().indexOf('{')));
 
 					if (!json) {
 						return resolve({
@@ -704,23 +776,37 @@ export async function get_lyrics(
 						});
 					}
 
-					if (json.hits[0].type !== 'song') {
+					if (json.response.hits.length === 0 || json.response.hits[0].type !== 'song') {
 						return resolve({
 							result: false,
 							value: 'could not find song'
 						});
 					}
-
-					update_music_lyrics_message(
-						guild,
-						guild_object,
-						json.hits[0]
-					);
-
-					return resolve({
-						result: true,
-						value: `fetched lyrics for ${guild_object.music_queue[0].title}`
-					});
+					
+					scrape_lyrics(`https://genius.com${json.response.hits[0].result.path}`)
+						.then((text: string) => {
+							update_music_lyrics_message(guild, guild_object, text, `https://genius.com${json.response.hits[0].result.path}`)
+								.then(r => {
+									return resolve({
+										result: true,
+										value: `displayed lyrics`
+									});
+								})
+								.catch((e: any) => {
+									logger.log({ level: 'error', type: 'none', message: `failed to update lyrics message / ${e}` });
+									return resolve({
+										result: false,
+										value: `failed to update lyrics message / ${e}`
+									});
+								});
+						})
+						.catch((e: any) => {
+							logger.log({ level: 'error', type: 'none', message: `failed to scrap genius page / ${e}` });
+							return resolve({
+								result: false,
+								value: `failed to scrap genius page / ${e}`
+							});
+						});
 				})
 				.catch((e: any) => {
 					return resolve({
@@ -729,11 +815,7 @@ export async function get_lyrics(
 					});
 				});
 		} else {
-			update_music_lyrics_message(
-				guild,
-				guild_object,
-				''
-			);
+			update_music_lyrics_message(guild, guild_object, '');
 
 			return resolve({
 				result: false,

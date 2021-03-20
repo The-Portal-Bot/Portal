@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { create_rich_embed, getJSON, message_help } from "../../libraries/help.library";
+import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
 import { insert_poll } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -79,7 +79,7 @@ module.exports = async (
 			});
 		}
 
-		const poll_json = getJSON(poll_json_string);
+		const poll_json = get_json(poll_json_string);
 		if (!poll_json) {
 			return resolve({
 				result: false,

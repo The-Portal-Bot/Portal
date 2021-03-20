@@ -12,7 +12,7 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
-import { create_lyrics_message, create_music_message, getJSON, logger } from './help.library';
+import { create_lyrics_message, create_music_message, get_json, logger } from './help.library';
 import { insert_voice } from "./mongo.library";
 
 function inline_operator(str: string): any {
@@ -841,7 +841,7 @@ export function regex_interpreter(
 			try {
 				// did not put into structure_list due to many unnecessary function calls
 				let is_valid = false;
-				const statement = getJSON(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
+				const statement = get_json(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 
 				if (!statement) return 'error';
 
