@@ -1,4 +1,5 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
+import { IGuildPrtl } from '../classes/GuildPrtl.class';
 import GiveRolePrtlSchm from './schemas/GiveRolePrtl.schema';
 import MemberPrtlSchm from './schemas/MemberPrtl.schema';
 import PollPrtlSchm from './schemas/PollPrtl.schema';
@@ -87,4 +88,4 @@ const GuildPrtlSchm = new Schema(
 	}
 );
 
-export default model('GuildPrtlSchm', GuildPrtlSchm);
+export default model<IGuildPrtl>('GuildPrtlSchm', GuildPrtlSchm);

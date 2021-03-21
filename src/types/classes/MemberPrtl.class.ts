@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export class MemberPrtl {
 	public id: string;
 	public level: number;
@@ -25,3 +27,13 @@ export class MemberPrtl {
 		this.regex = regex;
 	}
 };
+
+export interface IMemberPrtl extends Document {
+	id: string;
+	level: number;
+	rank: number;
+	tier: number;
+	points: number;
+	timestamp: Date | null;
+	regex: string | null;
+}
