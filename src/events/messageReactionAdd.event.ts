@@ -514,12 +514,30 @@ module.exports = async (
 							reaction_role_manager(guild_object, args.messageReaction, args.user)
 								.then(r => {
 									clear_user_reactions(args.messageReaction, args.user);
-									args.messageReaction.message.channel.send(`${args.user}, ${r.value}`);
+									args.messageReaction.message.channel
+										.send(`${args.user}, ${r.value}`)
+										.then(sent_message => {
+											sent_message.delete({ timeout: 7500 });
+										})
+										.catch(e => {
+											logger.log({
+												level: 'error', type: 'none', message: new Error(`failed to delete message / ${e}`).message
+											});
+										});
 									return resolve(r);
 								})
 								.catch(e => {
 									clear_user_reactions(args.messageReaction, args.user);
-									args.messageReaction.message.channel.send(`${args.user}, ${e}`);
+									args.messageReaction.message.channel
+										.send(`${args.user}, ${e}`)
+										.then(sent_message => {
+											sent_message.delete({ timeout: 7500 });
+										})
+										.catch(e => {
+											logger.log({
+												level: 'error', type: 'none', message: new Error(`failed to delete message / ${e}`).message
+											});
+										});
 									return resolve(e);
 								});
 						} else if (guild_object.music_data.message_id === args.messageReaction.message.id) {
