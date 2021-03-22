@@ -7,6 +7,20 @@ import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 export const pipe_prefix: string = '|';
 const pipes: InterfaceBlueprint[] = [
 	{
+		name: 'acronym',
+		description: 'returns the acronym of the input',
+		super_description: '**acronym**, returns the acronym of the input',
+		example: '(variable, string)|acronym',
+		args: 'none',
+		get: (str: string | string[]) => {
+			return (typeof str === 'string')
+				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
+				: str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',');
+		},
+		set: null,
+		auth: AuthEnum.none
+	},
+	{
 		name: 'vowels',
 		description: 'returns the vowels of the input',
 		super_description: '**vowels**, returns the vowels of the input',
@@ -14,8 +28,8 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
-				? get_vowels(str).join('').toUpperCase()
-				: str.map(s => get_vowels(s).join('').toUpperCase()).join(',');
+				? get_vowels(str).join('')
+				: str.map(s => get_vowels(s).join('')).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -28,22 +42,8 @@ const pipes: InterfaceBlueprint[] = [
 		args: 'none',
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
-				? get_constants(str).join('').toUpperCase()
-				: str.map(s => get_constants(s).join('').toUpperCase()).join(',');
-		},
-		set: null,
-		auth: AuthEnum.none
-	},
-	{
-		name: 'acronym',
-		description: 'returns the acronym of the input',
-		super_description: '**acronym**, returns the acronym of the input',
-		example: '(variable, string)|acronym',
-		args: 'none',
-		get: (str: string | string[]) => {
-			return (typeof str === 'string')
-				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
-				: str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',');
+				? get_constants(str).join('')
+				: str.map(s => get_constants(s).join('')).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
