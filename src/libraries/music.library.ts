@@ -128,7 +128,7 @@ async function start_playback(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -177,7 +177,7 @@ async function start_playback(
 											);
 										})
 										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+											logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 										});
 								});
 
@@ -435,7 +435,7 @@ export async function play(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -482,7 +482,7 @@ export async function play(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -566,7 +566,9 @@ export async function skip(
 			} else {
 				pop_music_queue(guild_object)
 					.then(next_video => {
-						update_music_lyrics_message(guild, guild_object, '');
+						if (!guild_object.music_data.pinned) {
+							update_music_lyrics_message(guild, guild_object, '');
+						}
 
 						if (!next_video) {
 							return resolve({
@@ -594,7 +596,7 @@ export async function skip(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -643,7 +645,7 @@ export async function skip(
 											);
 										})
 										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+											logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 										});
 								});
 
@@ -794,7 +796,7 @@ export async function get_lyrics(
 									});
 								})
 								.catch((e: any) => {
-									logger.log({ level: 'error', type: 'none', message: `failed to update lyrics message / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to update lyrics message / ${e}`).toString() });
 									return resolve({
 										result: false,
 										value: `failed to update lyrics message / ${e}`
@@ -802,7 +804,7 @@ export async function get_lyrics(
 								});
 						})
 						.catch((e: any) => {
-							logger.log({ level: 'error', type: 'none', message: `failed to scrap genius page / ${e}` });
+							logger.log({ level: 'error', type: 'none', message: new Error(`failed to scrap genius page / ${e}`).toString() });
 							return resolve({
 								result: false,
 								value: `failed to scrap genius page / ${e}`
