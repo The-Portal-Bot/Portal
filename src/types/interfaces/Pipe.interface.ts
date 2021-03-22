@@ -7,15 +7,43 @@ import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 export const pipe_prefix: string = '|';
 const pipes: InterfaceBlueprint[] = [
 	{
-		name: 'acronym',
-		description: 'returns the acronym of the input',
-		super_description: '**camelCase**, returns the first character of the input',
-		example: '(variable, string)|camelCase',
+		name: 'vowels',
+		description: 'returns the vowels of the input',
+		super_description: '**vowels**, returns the vowels of the input',
+		example: '(variable, string)|vowels',
 		args: 'none',
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
-				? is_acronym(str) ? str : str.split(' ').map(s => s[0]).join('')
-				: str.map(s => s.split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',');
+				? get_vowels(str).join('').toUpperCase()
+				: str.map(s => get_vowels(s).join('').toUpperCase()).join(',');
+		},
+		set: null,
+		auth: AuthEnum.none
+	},
+	{
+		name: 'consonants',
+		description: 'returns the consonants of the input',
+		super_description: '**consonants**, returns the first character of the input',
+		example: '(variable, string)|consonants',
+		args: 'none',
+		get: (str: string | string[]) => {
+			return (typeof str === 'string')
+				? get_constants(str).join('').toUpperCase()
+				: str.map(s => get_constants(s).join('').toUpperCase()).join(',');
+		},
+		set: null,
+		auth: AuthEnum.none
+	},
+	{
+		name: 'acronym',
+		description: 'returns the acronym of the input',
+		super_description: '**acronym**, returns the acronym of the input',
+		example: '(variable, string)|acronym',
+		args: 'none',
+		get: (str: string | string[]) => {
+			return (typeof str === 'string')
+				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
+				: str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',');
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -354,4 +382,14 @@ function most_frequent(array: string[], return_number: boolean): string | number
 function is_acronym(candidate: string): boolean {
 	const word_exp = new RegExp(`\\b[A-Z]*[a-z]*[A-Z]s?\\d*[A-Z]*[\\-\\w+]\\b`);
 	return word_exp.test(candidate);
+}
+
+function get_vowels(str: string): string[] {
+	const new_str = str.toLowerCase().match(/[aeiouy]/gi);
+	return new_str ? new_str : [];
+}
+
+function get_constants(str: string): string[] {
+	const new_str = str.toLowerCase().match(/[bcdfghjklmnpqrstvwxz]/gi);
+	return new_str ? new_str : [];
 }
