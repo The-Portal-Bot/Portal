@@ -41,6 +41,7 @@ function delete_dispatcher(
 ): boolean {
 	if (!dispatcher.destroyed) {
 		dispatcher.destroy();
+
 		return true;
 	}
 
@@ -58,15 +59,11 @@ function spawn_dispatcher(
 
 	const stream_options = <StreamOptions>{
 		type: 'opus',
-		bitrate: voice_connection.channel.bitrate < 64000
-			? voice_connection.channel.bitrate
-			: 64000
+		volume: false
+		// bitrate: not added as dispatcher does not auto destroy
 	}
 
-	const dispatcher = voice_connection.play(stream, stream_options);
-	// dispatcher.setMaxListeners(20); // check
-
-	return dispatcher;
+	return voice_connection.play(stream, stream_options);;
 }
 
 async function push_video_to_queue(
@@ -420,6 +417,7 @@ export async function play(
 						}
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
+
 						dispatcher.once('finish', () => {
 							delete_dispatcher(dispatcher);
 
@@ -578,6 +576,7 @@ export async function skip(
 						}
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
+
 						dispatcher.once('finish', () => {
 							delete_dispatcher(dispatcher);
 

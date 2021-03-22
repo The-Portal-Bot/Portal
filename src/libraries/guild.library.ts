@@ -290,7 +290,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪'
+						topic: 'play:▶️, pause:⏸, skip:⏭, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪' // , vol dwn ➖, vol up ➕
 					},
 				)
 				.then((channel: TextChannel) => {
@@ -330,7 +330,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪',
+						topic: 'play:▶️, pause:⏸, skip:⏭, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪', // , vol dwn ➖, vol up ➕
 						parent: music_category
 					},
 				)
@@ -368,7 +368,7 @@ export async function create_music_channel(
 					`${music_channel}`,
 					{
 						type: 'text',
-						topic: 'play:▶️, pause:⏸, skip:⏭, vol dwn ➖, vol up ➕, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪'
+						topic: 'play:▶️, pause:⏸, skip:⏭, pin last:📌, lyrics:📄, clear queue:🧹, leave:🚪' // , vol dwn ➖, vol up ➕
 					},
 				)
 				.then(channel => {

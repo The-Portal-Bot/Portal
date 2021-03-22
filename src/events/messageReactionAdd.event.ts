@@ -336,42 +336,42 @@ async function reaction_music_manager(
 
 				break;
 			}
-			case '➖': {
-				volume_down(portal_voice_connection)
-					.then(r => {
-						clear_music_vote(guild_object.id);
+			// case '➖': {
+			// 	volume_down(portal_voice_connection)
+			// 		.then(r => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve(r);
-					})
-					.catch(e => {
-						clear_music_vote(guild_object.id);
+			// 			return resolve(r);
+			// 		})
+			// 		.catch(e => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: `error while decreasing volume / ${e}`
-						});
-					});
+			// 			return resolve({
+			// 				result: false,
+			// 				value: `error while decreasing volume / ${e}`
+			// 			});
+			// 		});
 
-				break;
-			}
-			case '➕': {
-				volume_up(portal_voice_connection)
-					.then(r => {
-						clear_music_vote(guild_object.id);
+			// 	break;
+			// }
+			// case '➕': {
+			// 	volume_up(portal_voice_connection)
+			// 		.then(r => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve(r);
-					})
-					.catch(e => {
-						clear_music_vote(guild_object.id);
+			// 			return resolve(r);
+			// 		})
+			// 		.catch(e => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: `error while increasing volume / ${e}`
-						});
-					});
+			// 			return resolve({
+			// 				result: false,
+			// 				value: `error while increasing volume / ${e}`
+			// 			});
+			// 		});
 
-				break;
-			}
+			// 	break;
+			// }
 			case '📌': {
 				guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
