@@ -36,6 +36,18 @@ async function pop_music_queue(
 	})
 }
 
+function delete_dispatcher(
+	dispatcher: StreamDispatcher
+): boolean {
+	if (!dispatcher.destroyed) {
+		dispatcher.destroy();
+
+		return true;
+	}
+
+	return false;
+}
+
 function spawn_dispatcher(
 	video_options: yts.VideoSearchResult, voice_connection: VoiceConnection
 ): StreamDispatcher {
@@ -47,15 +59,11 @@ function spawn_dispatcher(
 
 	const stream_options = <StreamOptions>{
 		type: 'opus',
-		bitrate: voice_connection.channel.bitrate < 64000
-			? voice_connection.channel.bitrate
-			: 64000
+		volume: false
+		// bitrate: not added as dispatcher does not auto destroy
 	}
 
-	const dispatcher = voice_connection.play(stream, stream_options);
-	// dispatcher.setMaxListeners(20); // check
-
-	return dispatcher;
+	return voice_connection.play(stream, stream_options);;
 }
 
 async function push_video_to_queue(
@@ -104,9 +112,7 @@ async function start_playback(
 						);
 
 						dispatcher.once('finish', () => {
-							if (!dispatcher.destroyed) {
-								dispatcher.destroy();
-							}
+							delete_dispatcher(dispatcher);
 
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
@@ -122,7 +128,7 @@ async function start_playback(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -155,9 +161,8 @@ async function start_playback(
 								);
 
 								dispatcher.once('finish', () => {
-									if (!dispatcher.destroyed) {
-										dispatcher.destroy();
-									}
+									delete_dispatcher(dispatcher);
+
 									skip(r.voice_connection, user, client, guild, guild_object)
 										.then(r => {
 											clear_music_vote(guild_object.id);
@@ -172,7 +177,7 @@ async function start_playback(
 											);
 										})
 										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+											logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 										});
 								});
 
@@ -190,7 +195,7 @@ async function start_playback(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `error while joining channel (${e})`
+								value: `error while joining channel / ${e}`
 							});
 						});
 				}
@@ -291,7 +296,7 @@ export async function start(
 							.catch(e => {
 								return resolve({
 									result: false,
-									value: `error while starting music player (${e})`
+									value: `error while starting music player / ${e}`
 								});
 							});
 
@@ -299,7 +304,7 @@ export async function start(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `error while searching youtube playlist (${e})`
+							value: `error while searching youtube playlist / ${e}`
 						});
 					});
 			} else if (video_index > 0) {
@@ -333,7 +338,7 @@ export async function start(
 							.catch(e => {
 								return resolve({
 									result: false,
-									value: `error while starting music player (${e})`
+									value: `error while starting music player / ${e}`
 								});
 							});
 
@@ -341,7 +346,7 @@ export async function start(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `error while searching youtube video (${e})`
+							value: `error while searching youtube video / ${e}`
 						});
 					});
 			} else {
@@ -372,14 +377,14 @@ export async function start(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `error while starting music player (${e})`
+								value: `error while starting music player / ${e}`
 							});
 						});
 				})
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `error while searching youtube (${e})`
+						value: `error while searching youtube / ${e}`
 					});
 				});
 		}
@@ -412,10 +417,9 @@ export async function play(
 						}
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
+
 						dispatcher.once('finish', () => {
-							if (!dispatcher.destroyed) {
-								dispatcher.destroy();
-							}
+							delete_dispatcher(dispatcher);
 
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
@@ -431,7 +435,7 @@ export async function play(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -462,9 +466,8 @@ export async function play(
 						const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r.voice_connection);
 
 						dispatcher.once('finish', () => {
-							if (!dispatcher.destroyed) {
-								dispatcher.destroy();
-							}
+							delete_dispatcher(dispatcher);
+
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
 									clear_music_vote(guild_object.id);
@@ -479,7 +482,7 @@ export async function play(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -497,7 +500,7 @@ export async function play(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `could not to join voice channel (${e})`
+						value: `could not to join voice channel / ${e}`
 					});
 				});
 		}
@@ -563,7 +566,9 @@ export async function skip(
 			} else {
 				pop_music_queue(guild_object)
 					.then(next_video => {
-						update_music_lyrics_message(guild, guild_object, '');
+						if (!guild_object.music_data.pinned) {
+							update_music_lyrics_message(guild, guild_object, '');
+						}
 
 						if (!next_video) {
 							return resolve({
@@ -573,10 +578,9 @@ export async function skip(
 						}
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
+
 						dispatcher.once('finish', () => {
-							if (!dispatcher.destroyed) {
-								dispatcher.destroy();
-							}
+							delete_dispatcher(dispatcher);
 
 							skip(voice_connection, user, client, guild, guild_object)
 								.then(r => {
@@ -592,7 +596,7 @@ export async function skip(
 									);
 								})
 								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 								});
 						});
 
@@ -625,9 +629,8 @@ export async function skip(
 								const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
 
 								dispatcher.once('finish', () => {
-									if (!dispatcher.destroyed) {
-										dispatcher.destroy();
-									}
+									delete_dispatcher(dispatcher);
+
 									skip(voice_connection, user, client, guild, guild_object)
 										.then(r => {
 											clear_music_vote(guild_object.id);
@@ -642,7 +645,7 @@ export async function skip(
 											);
 										})
 										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: `failed to skip video / ${e}` });
+											logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
 										});
 								});
 
@@ -660,7 +663,7 @@ export async function skip(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `failed to join voice channel (${e})`
+								value: `failed to join voice channel / ${e}`
 							});
 						});
 				});
@@ -793,7 +796,7 @@ export async function get_lyrics(
 									});
 								})
 								.catch((e: any) => {
-									logger.log({ level: 'error', type: 'none', message: `failed to update lyrics message / ${e}` });
+									logger.log({ level: 'error', type: 'none', message: new Error(`failed to update lyrics message / ${e}`).toString() });
 									return resolve({
 										result: false,
 										value: `failed to update lyrics message / ${e}`
@@ -801,7 +804,7 @@ export async function get_lyrics(
 								});
 						})
 						.catch((e: any) => {
-							logger.log({ level: 'error', type: 'none', message: `failed to scrap genius page / ${e}` });
+							logger.log({ level: 'error', type: 'none', message: new Error(`failed to scrap genius page / ${e}`).toString() });
 							return resolve({
 								result: false,
 								value: `failed to scrap genius page / ${e}`

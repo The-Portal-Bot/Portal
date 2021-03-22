@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export class GiveRole {
 	public role_id: string;
 	public give: string;
@@ -26,3 +28,8 @@ export class GiveRolePrtl {
 		this.role_emote_map = role_emote_map;
 	}
 };
+
+export interface IGiveRolePrtl extends Document {
+	message_id: string;
+	role_emote_map: GiveRole[];
+}

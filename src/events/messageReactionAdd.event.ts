@@ -1,8 +1,8 @@
 import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
-import { create_rich_embed, is_authorised, is_dj, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
+import { create_rich_embed, is_authorised, is_dj, logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
-import { get_lyrics, pause, play, skip, volume_down, volume_up } from "../libraries/music.library";
+import { get_lyrics, pause, play, skip } from "../libraries/music.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
@@ -17,18 +17,22 @@ async function reaction_role_manager(
 	guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		if (!messageReaction.message.guild) return resolve({
-			result: false,
-			value: 'message has no guild'
-		});
+		if (!messageReaction.message.guild) {
+			return resolve({
+				result: false,
+				value: 'message has no guild'
+			});
+		}
 
 		const role_list_object = guild_object.role_list
 			.find(r => r.message_id === messageReaction.message.id);
 
-		if (!role_list_object) return resolve({
-			result: false,
-			value: 'message is not role assigner'
-		});
+		if (!role_list_object) {
+			return resolve({
+				result: false,
+				value: 'message is not role assigner'
+			});
+		}
 
 		const current_member = messageReaction.message.guild.members.cache
 			.find(member => member.id === user.id);
@@ -53,18 +57,25 @@ async function reaction_role_manager(
 									} else {
 										resolve({
 											result: false,
-											value: `portal role must be higher than given role, contact server admin`
+											value: `Portal's role must be higher than role you ` +
+												`want to get, contact server admin`
 										});
 									}
 								})
 								.catch(e => {
+									logger.log({
+										level: 'error', type: 'none', message: new Error(`Portal's role must be higher than role you ` +
+											`want to get, contact server admin / ${e}`).message
+									});
 									resolve({
 										result: false,
-										value: `portal role must be higher than given role, contact server admin`
+										value: `Portal's role must be higher than role you ` +
+											`want to get, contact server admin`
 									});
 								});
 						}
 						catch (e) {
+							logger.log({ level: 'error', type: 'none', message: new Error(`failed to assign role ${role_map.role_id} / ${e}`).message });
 							resolve({
 								result: false,
 								value: `failed to assign you, to role ${role_map.role_id}`
@@ -85,18 +96,25 @@ async function reaction_role_manager(
 									} else {
 										resolve({
 											result: false,
-											value: `portal role must be higher than role to remove, contact server admin`
+											value: `Portal's role must be higher than role you ` +
+												`want to be removed from, contact server admin`
 										});
 									}
 								})
 								.catch(e => {
+									logger.log({
+										level: 'error', type: 'none', message: new Error(`Portal's role must be higher than role you ` +
+											`want to be removed from, contact server admin / ${e}`).message
+									});
 									resolve({
 										result: false,
-										value: `portal role must be higher than role to remove, contact server admin`
+										value: `Portal's role must be higher than role you ` +
+											`want to be removed from, contact server admin`
 									});
 								});
 						}
 						catch (e) {
+							logger.log({ level: 'error', type: 'none', message: new Error(`failed to strip role ${role_map.role_id} / ${e}`).message });
 							resolve({
 								result: false,
 								value: `failed to strip role ${role_map.role_id}`
@@ -162,7 +180,7 @@ async function reaction_music_manager(
 
 						return resolve({
 							result: false,
-							value: `error while playing (${e})`
+							value: `error while playing / ${e}`
 						});
 					});
 
@@ -180,7 +198,7 @@ async function reaction_music_manager(
 
 						return resolve({
 							result: false,
-							value: `error while pausing (${e})`
+							value: `error while pausing / ${e}`
 						});
 					});
 
@@ -268,7 +286,7 @@ async function reaction_music_manager(
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `error while skipping (${e})`
+								value: `error while skipping / ${e}`
 							})
 						});
 				} else {
@@ -298,7 +316,7 @@ async function reaction_music_manager(
 									.catch(e => {
 										return resolve({
 											result: false,
-											value: `error while skipping (${e})`
+											value: `error while skipping / ${e}`
 										})
 									});
 							}
@@ -309,8 +327,8 @@ async function reaction_music_manager(
 							return resolve({
 								result: false,
 								value: !guild_object.music_data.pinned
-									? `error occurred while pinning song (${e})`
-									: `error occurred while unpinning song (${e})`
+									? `error occurred while pinning song / ${e}`
+									: `error occurred while unpinning song / ${e}`
 							});
 						});
 				}
@@ -318,42 +336,42 @@ async function reaction_music_manager(
 
 				break;
 			}
-			case '➖': {
-				volume_down(portal_voice_connection)
-					.then(r => {
-						clear_music_vote(guild_object.id);
+			// case '➖': {
+			// 	volume_down(portal_voice_connection)
+			// 		.then(r => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve(r);
-					})
-					.catch(e => {
-						clear_music_vote(guild_object.id);
+			// 			return resolve(r);
+			// 		})
+			// 		.catch(e => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: `error while decreasing volume (${e})`
-						});
-					});
+			// 			return resolve({
+			// 				result: false,
+			// 				value: `error while decreasing volume / ${e}`
+			// 			});
+			// 		});
 
-				break;
-			}
-			case '➕': {
-				volume_up(portal_voice_connection)
-					.then(r => {
-						clear_music_vote(guild_object.id);
+			// 	break;
+			// }
+			// case '➕': {
+			// 	volume_up(portal_voice_connection)
+			// 		.then(r => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve(r);
-					})
-					.catch(e => {
-						clear_music_vote(guild_object.id);
+			// 			return resolve(r);
+			// 		})
+			// 		.catch(e => {
+			// 			clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: `error while increasing volume (${e})`
-						});
-					});
+			// 			return resolve({
+			// 				result: false,
+			// 				value: `error while increasing volume / ${e}`
+			// 			});
+			// 		});
 
-				break;
-			}
+			// 	break;
+			// }
 			case '📌': {
 				guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
@@ -380,8 +398,8 @@ async function reaction_music_manager(
 						return resolve({
 							result: false,
 							value: !guild_object.music_data.pinned
-								? `error occurred while pinning song (${e})`
-								: `error occurred while unpinning song (${e})`
+								? `error occurred while pinning song / ${e}`
+								: `error occurred while unpinning song / ${e}`
 						});
 					});
 
@@ -395,7 +413,7 @@ async function reaction_music_manager(
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `error occurred while fetching lyrics (${e})`
+							value: `error occurred while fetching lyrics / ${e}`
 						});
 					});
 
@@ -456,7 +474,7 @@ async function reaction_music_manager(
 
 						return resolve({
 							result: false,
-							value: `Portal failed to get disconnected (${e})`
+							value: `Portal failed to get disconnected / ${e}`
 						})
 					});
 
@@ -496,12 +514,30 @@ module.exports = async (
 							reaction_role_manager(guild_object, args.messageReaction, args.user)
 								.then(r => {
 									clear_user_reactions(args.messageReaction, args.user);
-
+									args.messageReaction.message.channel
+										.send(`${args.user}, ${r.value}`)
+										.then(sent_message => {
+											sent_message.delete({ timeout: 7500 });
+										})
+										.catch(e => {
+											logger.log({
+												level: 'error', type: 'none', message: new Error(`failed to delete message / ${e}`).message
+											});
+										});
 									return resolve(r);
 								})
 								.catch(e => {
 									clear_user_reactions(args.messageReaction, args.user);
-
+									args.messageReaction.message.channel
+										.send(`${args.user}, ${e}`)
+										.then(sent_message => {
+											sent_message.delete({ timeout: 7500 });
+										})
+										.catch(e => {
+											logger.log({
+												level: 'error', type: 'none', message: new Error(`failed to delete message / ${e}`).message
+											});
+										});
 									return resolve(e);
 								});
 						} else if (guild_object.music_data.message_id === args.messageReaction.message.id) {
@@ -538,7 +574,7 @@ module.exports = async (
 											guild_object.music_queue.length > 0
 												? guild_object.music_queue[0]
 												: undefined,
-											`error while handling music reaction (${e})`
+											`error while handling music reaction / ${e}`
 										);
 									}
 
@@ -605,7 +641,7 @@ module.exports = async (
 									.catch(e => {
 										return resolve({
 											result: false,
-											value: `error while removing poll (${e})`
+											value: `error while removing poll / ${e}`
 										});
 									});
 							}
@@ -626,7 +662,7 @@ module.exports = async (
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `failed to fetch message reaction (${e})`
+						value: `failed to fetch message reaction / ${e}`
 					});
 				});
 		} else {

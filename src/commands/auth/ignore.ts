@@ -47,7 +47,7 @@ module.exports = async (
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `failed to set as an ignore channel (${e})`
+							value: `failed to set as an ignore channel / ${e}`
 						});
 					});
 			}

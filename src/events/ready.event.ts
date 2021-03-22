@@ -16,8 +16,7 @@ function added_when_down(guild: Guild, member_list: MemberPrtl[]): void {
 				insert_member(guild_members[j].id, guild.id)
 					.then(r => {
 						logger.log({
-							level: 'info', type: 'none', message: (`member ${guild_members[j].id} has been ` +
-								`late-inserted in guild ${guild.name} [${guild.id}]`)
+							level: 'info', type: 'none', message: (`late-insert ${guild_members[j].id} to ${guild.name} [${guild.id}]`)
 						});
 					})
 					.catch(e => {
@@ -36,8 +35,7 @@ function removed_when_down(guild: Guild, member_list: MemberPrtl[]): void {
 			remove_member(member_list[j].id, guild.id)
 				.then(r => {
 					logger.log({
-						level: 'info', type: 'none', message: (`member ${member_list[j].id} has been ` +
-							`late-removed from guild ${guild.name} [${guild.id}]`)
+						level: 'info', type: 'none', message: (`late-remove ${member_list[j].id} from ${guild.name} [${guild.id}]`)
 					});
 				})
 				.catch(e => {

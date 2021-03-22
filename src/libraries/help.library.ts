@@ -6,7 +6,7 @@ import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed, TimeRemaining } from "../types/classes/TypesPrtl.interface";
+import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed } from "../types/classes/TypesPrtl.interface";
 import { client_talk, client_write } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
@@ -77,8 +77,8 @@ export function create_music_message(
 				sent_message.react('▶️');
 				sent_message.react('⏸');
 				sent_message.react('⏭');
-				sent_message.react('➖');
-				sent_message.react('➕');
+				// sent_message.react('➖');
+				// sent_message.react('➕');
 				sent_message.react('📌');
 				sent_message.react('📄');
 				sent_message.react('🧹');
@@ -345,7 +345,7 @@ export async function join_by_reaction(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `failed to join voice channel (${e})`,
+						value: `failed to join voice channel / ${e}`,
 						voice_connection: undefined,
 					});
 				});
@@ -441,7 +441,7 @@ export async function join_user_voice(
 				.catch(e => {
 					return resolve({
 						result: false,
-						value: `error while joining voice connection (${e})`,
+						value: `error while joining voice connection / ${e}`,
 						voice_connection: undefined,
 					});
 				});
@@ -453,12 +453,14 @@ export function get_json(
 	str: string
 ): any | null {
 	let data = null;
+
 	try {
 		data = JSON.parse(str);
 	}
 	catch (error) {
 		return null;
 	}
+
 	return data;
 };
 
@@ -475,7 +477,8 @@ export function create_rich_embed(
 	custom_gif?: string,
 	author?: { name: string, icon: string }
 ): MessageEmbed {
-	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/portal_logo_spinr.gif';
+	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker' +
+		'/Portal/master/src/assets/img/portal_logo_spinr.gif';
 
 	const rich_message: MessageEmbed = new MessageEmbed();
 
@@ -520,6 +523,7 @@ export async function update_portal_managed_guilds(
 			const guild_list_no_voice = cloneDeep(guild_list);
 			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);
 		}, 1000);
+
 		return resolve({ result: true, value: '> saved guild_list.json\n' });
 	});
 };
@@ -535,7 +539,8 @@ export function is_authorised(
 	}
 
 	if (member.roles.cache) {
-		return member.roles.cache.some(r => r.name.toLocaleLowerCase() === 'p.admin');
+		return member.roles.cache.some(r => 
+			r.name.toLocaleLowerCase() === 'p.admin');
 	}
 
 	return false;
@@ -545,7 +550,8 @@ export function is_dj(
 	member: GuildMember
 ): boolean {
 	if (member.roles.cache) {
-		return member.roles.cache.some(r => r.name.toLocaleLowerCase() === 'p.dj');
+		return member.roles.cache.some(r => 
+			r.name.toLocaleLowerCase() === 'p.dj');
 	}
 
 	return false;
@@ -607,7 +613,7 @@ export function message_reply(
 
 		if (message && to_delete && message.deletable) {
 			message
-				.delete({ timeout: 5000 })
+				.delete({ timeout: 7500 })
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
 				});

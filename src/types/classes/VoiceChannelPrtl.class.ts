@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export class VoiceChannelPrtl {
 	public id: string;
 	public creator_id: string;
@@ -28,3 +30,14 @@ export class VoiceChannelPrtl {
 		this.ann_user = ann_user;
 	}
 };
+
+export interface IVoiceChannelPrtl extends Document {
+	id: string;
+	creator_id: string;
+	render: boolean;
+	regex: string;
+	no_bots: boolean;
+	locale: number;
+	ann_announce: boolean;
+	ann_user: boolean;
+}

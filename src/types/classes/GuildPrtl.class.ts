@@ -3,7 +3,7 @@ import { VideoSearchResult } from "yt-search";
 import { GiveRolePrtl } from "./GiveRolePrtl.class";
 import { MemberPrtl } from "./MemberPrtl.class";
 import { PollPrtl } from "./PollPrtl.class";
-import { PortalChannelPrtl } from "./PortalChannelPrtl.class";
+import { IPortalChannelPrtl, PortalChannelPrtl } from "./PortalChannelPrtl.class";
 import { Rank } from "./TypesPrtl.interface";
 
 export class MusicData {
@@ -87,21 +87,21 @@ export class GuildPrtl {
 };
 
 export interface IGuildPrtl extends Document {
-	id: string,
-	portal_list: PortalChannelPrtl[],
-	member_list: MemberPrtl[],
-	ignore_list: string[],
-	url_list: string[],
-	role_list: GiveRolePrtl[],
-	poll_list: PollPrtl[],
-	ranks: Rank[],
-	music_data: MusicData,
-	music_queue: VideoSearchResult[],
-	announcement: string | null,
-	locale: number,
-	announce: boolean,
-	rank_speed: string,
-	profanity_level: string,
-	premium: boolean,
-	prefix: string
+	id: string;
+	portal_list: [IPortalChannelPrtl];
+	member_list: MemberPrtl[];
+	ignore_list: string[];
+	url_list: string[];
+	role_list: GiveRolePrtl[];
+	poll_list: PollPrtl[];
+	ranks: Rank[];
+	music_data: MusicData;
+	music_queue: VideoSearchResult[];
+	announcement: string | null;
+	locale: number;
+	announce: boolean;
+	rank_speed: number;
+	profanity_level: number;
+	premium: boolean;
+	prefix: string;
 }

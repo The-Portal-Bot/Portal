@@ -22,14 +22,14 @@ module.exports = async (
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: message_help('commands', 'ping', `error while editing pong message (${e})`)
+							value: message_help('commands', 'ping', `error while editing pong message / ${e}`)
 						})
 					});
 			})
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'ping', `error while sending pong message (${e})`)
+					value: message_help('commands', 'ping', `error while sending pong message / ${e}`)
 				})
 			});
 	});

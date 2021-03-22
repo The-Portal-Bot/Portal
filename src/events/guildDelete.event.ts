@@ -1,4 +1,5 @@
 import { Guild } from "discord.js";
+import { logger } from "../libraries/help.library";
 import { remove_guild } from "../libraries/mongo.library";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
@@ -10,15 +11,16 @@ module.exports = async (
 			.then(r => {
 				return resolve({
 					result: r,
-					value: `guild ${args.guild.name} [${args.guild.id}] ` +
-						`${r ? 'removed from portal' : 'failed to be removed from portal'}`
+					value: r
+						? `removed guild ${args.guild.name} [${args.guild.id}]`
+						: `failed to remove guild ${args.guild.name} [${args.guild.id}]`
 				});
 			})
 			.catch(e => {
+				logger.log({ level: 'error', type: 'none', message: new Error(`failed to remove guild ${args.guild.name} [${args.guild.id}] / ${e}`).message });
 				return resolve({
 					result: false,
-					value: `guild ${args.guild.name} [${args.guild.id}] ` +
-						`failed to be removed from portal (${e})`
+					value: `failed to remove guild ${args.guild.name} [${args.guild.id}]`
 				});
 			});
 	});

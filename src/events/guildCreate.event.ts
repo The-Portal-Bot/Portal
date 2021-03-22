@@ -1,4 +1,5 @@
 import { Client, Guild } from "discord.js";
+import { logger } from "../libraries/help.library";
 import { guild_exists, insert_guild } from "../libraries/mongo.library";
 import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
@@ -11,22 +12,23 @@ module.exports = async (
 				if (exists) {
 					return resolve({
 						result: false,
-						value: `guild ${args.guild.name} [${args.guild.id}] already in portal`
+						value: `guild ${args.guild.name} [${args.guild.id}] already in database`
 					});
 				} else {
 					insert_guild(args.guild.id, args.client)
 						.then(r => {
 							return resolve({
-								result: !!r,
-								value: `Portal ` + !!r 
+								result: r,
+								value: r 
 									? `joined guild ${args.guild.name} [${args.guild.id}]`
 									: `failed to join ${args.guild.name} [${args.guild.id}]`
 							});
 						})
 						.catch(e => {
+							logger.log({ level: 'error', type: 'none', message: new Error(`failed to join guild ${args.guild.name} [${args.guild.id}] / ${e}`).message });
 							return resolve({
 								result: false,
-								value: `portal failed to join guild ${args.guild.name} [${args.guild.id}] (${e})`
+								value: `failed to join guild ${args.guild.name} [${args.guild.id}]`
 							});
 						});
 				}

@@ -5,16 +5,17 @@
   "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal",
   "owner_id": "add-your-id-(optional)",
   "api_keys": {
-      "OpenWeatherMap": "add-open-weather-map-api-key",
-      "covid_193": "add-covid-193-api-key",
-      "coingecko": "add-coingecko-api-key",
-      "football_data": "add-football-data-api-key",
-      "yahoo_finance": "add-yahoo-finance-api-key",
-      "new_york_times": "add-new-york-time-api-key",
-      "translate": {
-          "engine": "yandex",
-          "key": "add-yeandex-api-key"
-      }
+    "OpenWeatherMap": "add-open-weather-map-api-key",
+    "covid_193": "add-covid-193-api-key",
+    "lyrics": "add-genius-api-key",
+    "coingecko": "add-coingecko-api-key",
+    "football_data": "add-football-data-api-key",
+    "yahoo_finance": "add-yahoo-finance-api-key",
+    "new_york_times": "add-new-york-time-api-key",
+    "translate": {
+      "engine": "yandex",
+      "key": "add-yeandex-api-key"
+    }
   },
   "delete_msg": false,
   "delete_msg_after": 5,

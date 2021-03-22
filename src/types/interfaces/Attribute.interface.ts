@@ -64,7 +64,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -81,7 +81,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -131,7 +131,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -148,7 +148,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -211,7 +211,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -228,7 +228,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -278,7 +278,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -295,7 +295,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -358,7 +358,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -375,7 +375,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -426,7 +426,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -443,7 +443,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -506,7 +506,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -523,7 +523,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -573,7 +573,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -590,7 +590,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				} else {
@@ -649,7 +649,7 @@ const attributes: InterfaceBlueprint[] = [
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 						});
 					});
 			});
@@ -688,7 +688,7 @@ const attributes: InterfaceBlueprint[] = [
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 						});
 					});
 			});
@@ -731,7 +731,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -782,7 +782,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -833,7 +833,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -898,7 +898,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}
@@ -951,7 +951,7 @@ const attributes: InterfaceBlueprint[] = [
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set (${e})`
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 							});
 						});
 				}

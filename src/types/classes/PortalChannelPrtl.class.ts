@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { VoiceChannelPrtl } from "./VoiceChannelPrtl.class";
 
 export class PortalChannelPrtl {
@@ -42,3 +43,18 @@ export class PortalChannelPrtl {
 		this.regex_overwrite = regex_overwrite;
 	}
 };
+
+export interface IPortalChannelPrtl extends Document {
+	id: string;
+	creator_id: string;
+	render: boolean;
+	regex_portal: string;
+	regex_voice: string;
+	voice_list: [VoiceChannelPrtl];
+	no_bots: boolean;
+	locale: number;
+	ann_announce: boolean;
+	ann_user: boolean;
+	user_limit_portal: number;
+	regex_overwrite: boolean;
+}
