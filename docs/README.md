@@ -46,21 +46,6 @@
 3. Portal is an open source project you can contribute too. There are guidelines for how to properly do it _[here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)_.
 4. To read the realease history, click _[here](https://portal-bot.xyz/blog)_
 
-<!--## Release History
-| Version | Date       | Argument                                                                                        |
-| :------ | :--------- | :---------------------------------------------------------------------------------------------- |
-| 0.6.5   | 15-03-2021 | _text interpreter refactoring, code restructure and minor fixes_                                |
-| 0.6.4   | 10-03-2021 | _implemented bet and news commands, updated music player design other minor updates_            |
-| 0.6.3   | 05-03-2021 | _increased responsed time by 70% and updated music player_                                      |
-| 0.6.2   | 03-03-2021 | _major refactoring and updates to code throughout, a lot of performance improvements_           |
-| 0.6.0   | 15-02-2021 | _transition to MongoDB from plain JSON file with many improvements, especially on music player_ |
-| 0.5.7   | 18-01-2021 | _updates throughout the app to fix bugs and small problems_                                     |
-| 0.5.0   | 08-01-2021 | _transition to Typescript from Javascript, a lot of errors have been fixed and is more robust_  |
-| 0.2.1   | 16-06-2020 | _first version with more commands and feature with full test is now on two servers_             |
-| 0.1.0   | 18-05-2020 | _beta testing with a small set of commands on one server_                                       |
-| 0.0.1   | 05-05-2020 | _alpha version with initial features more of a test phase to test viability_                    |
--->
-
 #### Disclaimers
 > 
 > * Portal will never record conversations or store anything you type
