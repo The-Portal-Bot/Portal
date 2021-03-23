@@ -192,7 +192,7 @@ async function from_existing(
 			channel_empty_check(old_channel, guild_object, client);
 			update_timestamp(newState, guild_object);
 
-			return reject('existing->null');
+			return resolve('existing->null');
 		}
 		else if (new_channel !== null) { // Moved from channel to channel
 			if (included_in_portal_list(old_channel.id, guild_object.portal_list)) {

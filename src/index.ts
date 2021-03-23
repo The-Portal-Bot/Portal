@@ -262,15 +262,15 @@ client.on('message', async (message: Message) => {
 });
 
 function command_loader(
-	message: Message, cmd: string, args: string[], type: string, command_options: CommandOptions,
+	message: Message, command: string, args: string[], type: string, command_options: CommandOptions,
 	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
 	if (config.debug === true) {
-		logger.info(`DEBUG: [command] ${cmd}`);
+		logger.info(`DEBUG: [command] ${command}`);
 	}
 
 	if (type === 'none' && command_options.time === 0) {
-		require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
+		require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
 				if (response) {
 					if ((command_options && response.value && response.value !== '') &&
@@ -281,11 +281,11 @@ function command_loader(
 						);
 					}
 				} else {
-					logger.error(new Error(`did not get response from command: ${cmd}`));
+					logger.error(new Error(`did not get response from command: ${command}`));
 				}
 			})
 			.catch((e: any) => {
-				logger.error(new Error(`error in ${cmd} / ${e}`));
+				logger.error(new Error(`error in ${command} / ${e}`));
 			});
 
 		return true;
@@ -293,7 +293,7 @@ function command_loader(
 
 	const active = active_cooldowns[type === 'guild' ? 'guild' : 'member']
 		.find(active_current => {
-			if (active_current.command === cmd) {
+			if (active_current.command === command) {
 				if (type === 'member' && active_current.member === message.author.id) {
 					return true;
 				}
@@ -315,18 +315,18 @@ function command_loader(
 		message_reply(false, message, message.author,
 			`you need to wait **${pad(time.remaining_min)}:` +
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
-			`${pad(time.timeout_sec)}** *to use* **${cmd}** *again${type_for_msg}`);
+			`${pad(time.timeout_sec)}** *to use* **${command}** *again${type_for_msg}`);
 
 		return false;
 	}
 
-	require(`./commands/${path_to_command}/${cmd}.js`)(message, args, guild_object, client)
+	require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
 		.then((response: ReturnPormise) => {
 			if (response) {
 				if (response.result) {
 					active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
 						member: message.author.id,
-						command: cmd,
+						command: command,
 						timestamp: Date.now()
 					});
 
@@ -334,7 +334,7 @@ function command_loader(
 						setTimeout(() => {
 							active_cooldowns[type === 'guild' ? 'guild' : 'member'] =
 								active_cooldowns[type === 'guild' ? 'guild' : 'member']
-									.filter(active => active.command !== cmd);
+									.filter(active => active.command !== command);
 						}, command_options.time * 60 * 1000);
 					}
 				}
@@ -343,11 +343,11 @@ function command_loader(
 					message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
 				}
 			} else {
-				logger.error(new Error(`did not get response from command: ${cmd}`));
+				logger.error(new Error(`did not get response from command: ${command}`));
 			}
 		})
 		.catch((e: any) => {
-			logger.error(new Error(`in ${cmd} got error ${e}`));
+			logger.error(new Error(`in ${command} got error ${e}`));
 		});
 
 	return false;
@@ -357,13 +357,13 @@ function event_loader(event: string, args: any): void {
 	require(`./events/${event}.event.js`)(args)
 		.then((response: string) => {
 			if (config.debug || (event_config_json.find(e => e.name === event))) {
-				logger.info(`[event] ${event} | ${response ? response : 'nothing'}`);
+				logger.info(`[event-accepted] ${event} | ${response ? response : 'nothing'}`);
 			} else if (config.debug) {
-				logger.info(`DEBUG: [event] ${event} | ${response ? response : 'nothing'}`);
+				logger.info(`DEBUG: [event-accepted] ${event} | ${response ? response : 'nothing'}`);
 			}
 		})
 		.catch((e: string) => {
-			logger.error(`[event]  ${event} | ${e}`);
+			logger.error(`[event-rejected] ${event} | ${e}`);
 		});
 }
 

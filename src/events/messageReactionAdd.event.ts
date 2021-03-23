@@ -255,7 +255,6 @@ async function reaction_music_manager(
 						});
 				}
 
-
 				break;
 			}
 			// case '➖': {
@@ -376,7 +375,7 @@ async function reaction_music_manager(
 
 							return resolve('Portal has been disconnected');
 						} else {
-							return reject('Portal is not connected to a voice channel');
+							return resolve('Portal is not connected to a voice channel');
 						}
 					})
 					.catch(e => {
