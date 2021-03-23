@@ -3,46 +3,51 @@ import { logger } from "../libraries/help.library";
 import { get_function } from "../libraries/localisation.library";
 import { fetch_guild_members, guild_exists, insert_guild, insert_member, remove_member } from "../libraries/mongo.library";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
-import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
-function added_when_down(guild: Guild, member_list: MemberPrtl[]): void {
+function added_when_down(
+	guild: Guild, member_list: MemberPrtl[]
+): void {
 	const guild_members: GuildMember[] = guild.members.cache.array();
 
 	for (let j = 0; j < guild_members.length; j++) {
 		if (!guild_members[j].user.bot) {
-			const already_in_db = member_list.find(m => m.id === guild_members[j].id);
+			const already_in_db = member_list
+				.find(m => m.id === guild_members[j].id);
 
 			if (!already_in_db) { // if inside guild but not in portal db, add member
 				insert_member(guild_members[j].id, guild.id)
 					.then(r => {
-						logger.log({
-							level: 'info', type: 'none', message: (`late-insert ${guild_members[j].id} to ${guild.name} [${guild.id}]`)
-						});
+						logger.info(`late-insert ${guild_members[j].id} to ${guild.name} [${guild.id}]`);
 					})
 					.catch(e => {
-						logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
+						logger.error(new Error(`failed to late-insert member / ${e}`));
 					});
 			}
 		}
 	}
 }
 
-function removed_when_down(guild: Guild, member_list: MemberPrtl[]): void {
-	for (let j = 0; j < member_list.length; j++) {
+function removed_when_down(
+	guild: Guild, member_list: MemberPrtl[]
+): Promise<boolean> {
+	return new Promise((resolve) => {
+		for (let j = 0; j < member_list.length; j++) {
+			const member_in_guild = guild.members.cache.array()
+				.find(m => m.id === member_list[j].id);
 
-		const member_in_guild = guild.members.cache.array().find(m => m.id === member_list[j].id);
-		if (!member_in_guild) {
-			remove_member(member_list[j].id, guild.id)
-				.then(r => {
-					logger.log({
-						level: 'info', type: 'none', message: (`late-remove ${member_list[j].id} from ${guild.name} [${guild.id}]`)
+			if (!member_in_guild) {
+				remove_member(member_list[j].id, guild.id)
+					.then(r => {
+						logger.info(`late-remove ${member_list[j].id} to ${guild.name} [${guild.id}]`);
+						return resolve(true);
+					})
+					.catch(e => {
+						logger.error(new Error(`failed to late-remove member / ${e}`));
+						return resolve(false);
 					});
-				})
-				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-				});
+			}
 		}
-	}
+	});
 }
 
 function add_guild_again(
@@ -65,6 +70,8 @@ function add_guild_again(
 							if (member_list) {
 								added_when_down(guild, member_list);
 								removed_when_down(guild, member_list);
+
+								return resolve(true);
 							} else {
 								return resolve(false);
 							}
@@ -82,13 +89,10 @@ function add_guild_again(
 
 module.exports = async (
 	args: { client: Client }
-): Promise<ReturnPormise> => {
-	return new Promise((resolve) => {
+): Promise<string> => {
+	return new Promise((resolve, reject) => {
 		if (!args.client.user) {
-			return resolve({
-				result: false,
-				value: 'could not fetch user from client'
-			});
+			return reject('could not fetch user from client');
 		}
 
 		const options: ActivityOptions = {
@@ -106,7 +110,7 @@ module.exports = async (
 		args.client.user.setPresence(data);
 
 		args.client.guilds.cache.forEach((guild: Guild) => {
-			logger.log({ level: 'info', type: 'none', message: `${guild} | ${guild.id}` });
+			logger.info(`${guild} | ${guild.id}`);
 
 			add_guild_again(guild, args.client);
 			// remove_deleted_channels(guild);
@@ -114,11 +118,10 @@ module.exports = async (
 		});
 
 		const func = get_function('console', 1, 'ready');
-		return resolve({
-			result: true,
-			value: func
-				? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
-				: 'error with localisation'
-		});
+
+		return resolve(func
+			? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
+			: 'error with localisation'
+		);
 	});
 };

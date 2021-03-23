@@ -13,12 +13,11 @@ import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
 import { MongoPromise, Rank } from '../types/classes/TypesPrtl.interface';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
-import { logger } from './help.library';
 
 // fetch guilds
 export async function fetch_guild_list(
 ): Promise<GuildPrtl[] | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.find({})
             .then((guilds: IGuildPrtl[]) => {
                 if (!!guilds) {
@@ -28,8 +27,7 @@ export async function fetch_guild_list(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -37,7 +35,7 @@ export async function fetch_guild_list(
 export async function fetch_guild(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -51,8 +49,7 @@ export async function fetch_guild(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -60,7 +57,7 @@ export async function fetch_guild(
 export async function fetch_guild_channel_delete(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -88,8 +85,7 @@ export async function fetch_guild_channel_delete(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -97,7 +93,7 @@ export async function fetch_guild_channel_delete(
 export async function fetch_guild_announcement(
     guild_id: string
 ): Promise<string | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -113,8 +109,7 @@ export async function fetch_guild_announcement(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -122,7 +117,7 @@ export async function fetch_guild_announcement(
 export async function fetch_guild_reaction_data(
     guild_id: string, member_id: string
 ): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -150,8 +145,7 @@ export async function fetch_guild_reaction_data(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -159,7 +153,7 @@ export async function fetch_guild_reaction_data(
 export async function fetch_guild_members(
     guild_id: string
 ): Promise<MemberPrtl[] | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -175,8 +169,7 @@ export async function fetch_guild_members(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -184,7 +177,7 @@ export async function fetch_guild_members(
 export async function fetch_guild_music_queue(
     guild_id: string
 ): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -204,8 +197,7 @@ export async function fetch_guild_music_queue(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -213,7 +205,7 @@ export async function fetch_guild_music_queue(
 export async function fetch_guild_predata(
     guild_id: string, member_id: string
 ): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -253,8 +245,7 @@ export async function fetch_guild_predata(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -262,7 +253,7 @@ export async function fetch_guild_predata(
 export async function fetch_guild_rest(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
@@ -295,8 +286,7 @@ export async function fetch_guild_rest(
                 }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(undefined);
+                return reject(e);
             });
     });
 };
@@ -304,7 +294,7 @@ export async function fetch_guild_rest(
 export async function guild_exists(
     guild_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.countDocuments(
             {
                 id: guild_id
@@ -314,8 +304,7 @@ export async function guild_exists(
                 return resolve(count > 0);
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);;
+                return reject(e);
             });
     });
 };
@@ -323,7 +312,7 @@ export async function guild_exists(
 export async function update_guild(
     guild_id: string, key: string, value: any
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const placeholder: any = {};
         placeholder[key] = value;
         GuildPrtlMdl.updateOne(
@@ -338,11 +327,14 @@ export async function update_guild(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -423,7 +415,7 @@ export async function insert_guild(
     const premium: boolean = true; // as it is not a paid service anymore
     const prefix: string = config.prefix;
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.create({
             id: id,
             portal_list: portal_list,
@@ -446,8 +438,7 @@ export async function insert_guild(
                 return resolve(!!r);
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);;
+                return reject(e);
             });
     });
 };
@@ -455,16 +446,19 @@ export async function insert_guild(
 export async function remove_guild(
     guild_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.deleteOne({
             id: guild_id
         })
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -474,7 +468,7 @@ export async function remove_guild(
 export async function update_member(
     guild_id: string, member_id: string, key: string, value: any
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const placeholder: any = {};
         placeholder['member_list.$[m].' + key] = value;
 
@@ -495,11 +489,14 @@ export async function update_member(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -508,7 +505,7 @@ export async function insert_member(
     member_id: string, guild_id: string
 ): Promise<boolean> {
     const new_member_portal = new MemberPrtl(member_id, 1, 0, 1, 0, null, 'null');
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             { id: guild_id },
             {
@@ -518,11 +515,14 @@ export async function insert_member(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -530,7 +530,7 @@ export async function insert_member(
 export async function remove_member(
     member_id: string, guild_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -543,11 +543,14 @@ export async function remove_member(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -557,7 +560,7 @@ export async function remove_member(
 export async function update_portal(
     guild_id: string, portal_id: string, key: string, value: any
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const placeholder: any = {};
         placeholder['portal_list.$[p].' + key] = value;
 
@@ -576,11 +579,14 @@ export async function update_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -588,7 +594,7 @@ export async function update_portal(
 export async function insert_portal(
     guild_id: string, new_portal: PortalChannelPrtl
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -600,11 +606,14 @@ export async function insert_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -612,7 +621,7 @@ export async function insert_portal(
 export async function remove_portal(
     guild_id: string, portal_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -626,11 +635,14 @@ export async function remove_portal(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -640,7 +652,7 @@ export async function remove_portal(
 export async function update_voice(
     guild_id: string, portal_id: string, voice_id: string, key: string, value: any
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const placeholder: any = {};
         placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
 
@@ -660,11 +672,14 @@ export async function update_voice(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -672,7 +687,7 @@ export async function update_voice(
 export async function insert_voice(
     guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -690,11 +705,14 @@ export async function insert_voice(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                resolve(false)
+                reject(e);
             });
     });
 };
@@ -702,7 +720,7 @@ export async function insert_voice(
 export async function remove_voice(
     guild_id: string, portal_id: string, voice_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -725,11 +743,14 @@ export async function remove_voice(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                resolve(false)
+                reject(e);
             });
     });
 };
@@ -739,7 +760,7 @@ export async function remove_voice(
 export async function insert_url(
     guild_id: string, new_url: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -751,11 +772,14 @@ export async function insert_url(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -763,7 +787,7 @@ export async function insert_url(
 export async function remove_url(
     guild_id: string, remove_url: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -774,11 +798,14 @@ export async function remove_url(
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -788,7 +815,7 @@ export async function remove_url(
 export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -800,11 +827,14 @@ export async function insert_ignore( // channel
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -812,7 +842,7 @@ export async function insert_ignore( // channel
 export async function remove_ignore( // channel
     guild_id: string, remove_ignore: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -823,11 +853,14 @@ export async function remove_ignore( // channel
                 }
             })
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -836,7 +869,7 @@ export async function remove_ignore( // channel
 
 export async function set_ranks(
     guild_id: string, new_ranks: Rank[]): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -846,11 +879,14 @@ export async function set_ranks(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -860,7 +896,7 @@ export async function set_ranks(
 export async function insert_poll(
     guild_id: string, poll: PollPrtl
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -872,11 +908,14 @@ export async function insert_poll(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -884,7 +923,7 @@ export async function insert_poll(
 export async function remove_poll(
     guild_id: string, message_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -898,11 +937,14 @@ export async function remove_poll(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -912,7 +954,7 @@ export async function remove_poll(
 export async function insert_role_assigner(
     guild_id: string, new_role_assigner: GiveRolePrtl
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -924,11 +966,14 @@ export async function insert_role_assigner(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -936,7 +981,7 @@ export async function insert_role_assigner(
 export async function remove_role_assigner(
     guild_id: string, message_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -950,11 +995,14 @@ export async function remove_role_assigner(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -964,7 +1012,7 @@ export async function remove_role_assigner(
 export async function insert_music_video(
     guild_id: string, video: VideoSearchResult
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -976,11 +1024,14 @@ export async function insert_music_video(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -988,7 +1039,7 @@ export async function insert_music_video(
 export async function clear_music_vote(
     guild_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -1000,11 +1051,14 @@ export async function clear_music_vote(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -1012,7 +1066,7 @@ export async function clear_music_vote(
 export async function insert_music_vote(
     guild_id: string, user_id: string
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -1024,11 +1078,14 @@ export async function insert_music_vote(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 };
@@ -1036,7 +1093,7 @@ export async function insert_music_vote(
 export async function set_music_data(
     guild_id: string, new_music_data: MusicData
 ): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         GuildPrtlMdl.updateOne(
             {
                 id: guild_id
@@ -1048,11 +1105,14 @@ export async function set_music_data(
             }
         )
             .then((r: MongoPromise) => {
-                return resolve((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0));
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('failed to execute database transaction');
+                }
             })
             .catch((e: any) => {
-                logger.log({ level: 'error', type: 'none', message: (new Error(e)).toString() });
-                return resolve(false);
+                return reject(e);
             });
     });
 }
@@ -1062,7 +1122,7 @@ export async function set_music_data(
 export async function deleted_channel_sync(
     channel_to_remove: VoiceChannel | TextChannel
 ): Promise<number> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         fetch_guild_channel_delete(channel_to_remove.guild.id)
             .then(guild_object => {
                 if (guild_object) {

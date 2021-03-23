@@ -4,42 +4,35 @@ import { create_rich_embed, is_authorised, is_dj, logger, update_music_lyrics_me
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
 import { get_lyrics, pause, play, skip } from "../libraries/music.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
-) {
+): void {
 	messageReaction.message.reactions.cache
 		.forEach(reaction => reaction.users.remove(user.id));
 };
 
 async function reaction_role_manager(
 	guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
-): Promise<ReturnPormise> {
-	return new Promise((resolve) => {
+): Promise<string> {
+	return new Promise((resolve, reject) => {
 		if (!messageReaction.message.guild) {
-			return resolve({
-				result: false,
-				value: 'message has no guild'
-			});
+			return resolve('message has no guild');
 		}
 
 		const role_list_object = guild_object.role_list
 			.find(r => r.message_id === messageReaction.message.id);
 
 		if (!role_list_object) {
-			return resolve({
-				result: false,
-				value: 'message is not role assigner'
-			});
+			return resolve('message is not role assigner');
 		}
 
 		const current_member = messageReaction.message.guild.members.cache
 			.find(member => member.id === user.id);
-		if (!current_member) return resolve({
-			result: false,
-			value: 'could not fetch member'
-		});
+
+		if (!current_member) {
+			return reject('could not fetch member');
+		}
 
 		role_list_object.role_emote_map.some(role_map => {
 			if (messageReaction.message.guild) {
@@ -50,36 +43,17 @@ async function reaction_role_manager(
 							current_member.roles.add(role_to_give)
 								.then(member => {
 									if (!!member) {
-										resolve({
-											result: true,
-											value: `you have been assigned to ${role_map.role_id}`
-										});
+										return resolve(`you have been assigned to ${role_map.role_id}`);
 									} else {
-										resolve({
-											result: false,
-											value: `Portal's role must be higher than role you ` +
-												`want to get, contact server admin`
-										});
+										return reject(`Portal's role must be higher than role you want to get, contact server admin`);
 									}
 								})
 								.catch(e => {
-									logger.log({
-										level: 'error', type: 'none', message: new Error(`Portal's role must be higher than role you ` +
-											`want to get, contact server admin / ${e}`).message
-									});
-									resolve({
-										result: false,
-										value: `Portal's role must be higher than role you ` +
-											`want to get, contact server admin`
-									});
+									return reject(`Portal's role must be higher than role you want to get, contact server admin / ${e}`);
 								});
 						}
 						catch (e) {
-							logger.log({ level: 'error', type: 'none', message: new Error(`failed to assign role ${role_map.role_id} / ${e}`).message });
-							resolve({
-								result: false,
-								value: `failed to assign you, to role ${role_map.role_id}`
-							});
+							return reject(`failed to assign role ${role_map.role_id}`);
 						}
 					}
 				} else if (role_map.strip === messageReaction.emoji.name) {
@@ -89,36 +63,17 @@ async function reaction_role_manager(
 							current_member.roles.remove(role_to_strip)
 								.then(member => {
 									if (!!member) {
-										resolve({
-											result: true,
-											value: `you have been removed from ${role_map.role_id}`
-										});
+										return resolve(`you have been removed from ${role_map.role_id}`);
 									} else {
-										resolve({
-											result: false,
-											value: `Portal's role must be higher than role you ` +
-												`want to be removed from, contact server admin`
-										});
+										return reject(`Portal's role must be higher than role you want to be removed from, contact server admin`);
 									}
 								})
 								.catch(e => {
-									logger.log({
-										level: 'error', type: 'none', message: new Error(`Portal's role must be higher than role you ` +
-											`want to be removed from, contact server admin / ${e}`).message
-									});
-									resolve({
-										result: false,
-										value: `Portal's role must be higher than role you ` +
-											`want to be removed from, contact server admin`
-									});
+									return reject(`Portal's role must be higher than role you want to be removed from, contact server admin`);
 								});
 						}
 						catch (e) {
-							logger.log({ level: 'error', type: 'none', message: new Error(`failed to strip role ${role_map.role_id} / ${e}`).message });
-							resolve({
-								result: false,
-								value: `failed to strip role ${role_map.role_id}`
-							});
+							return reject(`failed to strip role ${role_map.role_id} / ${e}`);
 						}
 					}
 				}
@@ -129,27 +84,18 @@ async function reaction_role_manager(
 
 async function reaction_music_manager(
 	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
-): Promise<ReturnPormise> {
-	return new Promise((resolve) => {
+): Promise<string> {
+	return new Promise((resolve, reject) => {
 		if (!messageReaction.message.guild) {
-			return resolve({
-				result: false,
-				value: 'could not fetch message\'s guild'
-			});
+			return reject(`could not fetch message\'s guild`);
 		}
 
 		if (!guild_object.music_data) {
-			return resolve({
-				result: false,
-				value: 'guild has no music channel'
-			});
+			return resolve('guild has no music channel');
 		}
 
 		if (guild_object.music_data.message_id !== messageReaction.message.id) {
-			return resolve({
-				result: false,
-				value: 'message is not music player'
-			});
+			return resolve('message is not music player');
 		}
 
 		const portal_voice_connection = client.voice?.connections
@@ -157,10 +103,7 @@ async function reaction_music_manager(
 
 		if (portal_voice_connection) {
 			if (!portal_voice_connection.channel.members.has(user.id)) {
-				return resolve({
-					result: false,
-					value: 'you must be in the same channel as Portal'
-				});
+				return resolve('you must be in the same channel as Portal');
 			}
 		}
 
@@ -173,15 +116,16 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						return resolve(r);
+						if (r.result) {
+							return resolve(r.value);
+						} else {
+							return reject(r.value);
+						}
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: `error while playing / ${e}`
-						});
+						return reject(`failed to play video / ${e}`);
 					});
 
 				break;
@@ -191,15 +135,16 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						return resolve(r);
+						if (r.result) {
+							return resolve(r.value);
+						} else {
+							return reject(r.value);
+						}
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: `error while pausing / ${e}`
-						});
+						return reject(`failed to pause video / ${e}`);
 					});
 
 				break;
@@ -208,17 +153,11 @@ async function reaction_music_manager(
 				if (!portal_voice_connection) {
 					update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
 
-					return resolve({
-						result: false,
-						value: 'nothing to skip, player is idle'
-					})
+					return resolve('nothing to skip, player is idle');
 				}
 
 				if (!guild_object.music_data.votes) {
-					return resolve({
-						result: false,
-						value: 'could not fetch music votes'
-					})
+					return resolve('could not fetch music votes');
 				}
 
 				const guild = messageReaction.message.guild;
@@ -226,20 +165,14 @@ async function reaction_music_manager(
 				// 	.find(g => g.id === guild_object.id);
 
 				if (!guild) {
-					return resolve({
-						result: false,
-						value: `could not fetch guild`
-					});
+					return reject(`could not fetch guild`);
 				}
 
 				const member = guild.members.cache
 					.find(m => m.id === user.id);
 
 				if (!member) {
-					return resolve({
-						result: false,
-						value: `could not fetch memeber`
-					});
+					return reject(`could not fetch memeber`);
 				}
 
 				let reason = 'none';
@@ -256,10 +189,7 @@ async function reaction_music_manager(
 							.filter(member => !member.user.bot).size;
 
 						if (!(votes < users / 2)) {
-							return resolve({
-								result: false,
-								value: `${votes}/${Math.round(users / 2)} votes required`
-							});
+							return resolve(`${votes}/${Math.round(users / 2)} votes required`);
 						} else {
 							reason = 'vote'
 						}
@@ -278,28 +208,24 @@ async function reaction_music_manager(
 						.then(r => {
 							clear_music_vote(guild_object.id);
 							guild_object.music_queue.shift();
-							return resolve({
-								result: r.result,
-								value: r.value + ` (by ${reason})`
-							});
+
+							if (r.result) {
+								return resolve(`${r.value} (by ${reason})`);
+							} else {
+								return reject(`${r.value} (by ${reason})`);
+							}
 						})
 						.catch(e => {
-							return resolve({
-								result: false,
-								value: `error while skipping / ${e}`
-							})
+							return reject(`error while skipping / ${e}`);
 						});
 				} else {
 					guild_object.music_data.pinned = false;
 					set_music_data(guild_object.id, guild_object.music_data)
 						.then(r => {
 							if (!r) {
-								return resolve({
-									result: false,
-									value: guild_object.music_data.pinned
-										? 'failed to pin song'
-										: 'failed to unpin song'
-								});
+								return reject(guild_object.music_data.pinned
+									? 'failed to pin song'
+									: 'failed to unpin song');
 							} else {
 								skip(
 									portal_voice_connection, user, client,
@@ -308,28 +234,24 @@ async function reaction_music_manager(
 									.then(r => {
 										clear_music_vote(guild_object.id);
 										guild_object.music_queue.shift();
-										return resolve({
-											result: r.result,
-											value: r.value + ` (by ${reason})`
-										});
+
+										if (r.result) {
+											return resolve(`${r.value} (by ${reason})`);
+										} else {
+											return reject(`${r.value} (by ${reason})`);
+										}
 									})
 									.catch(e => {
-										return resolve({
-											result: false,
-											value: `error while skipping / ${e}`
-										})
+										return reject(`error while skipping / ${e}`);
 									});
 							}
 						})
 						.catch(e => {
 							guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
-							return resolve({
-								result: false,
-								value: !guild_object.music_data.pinned
-									? `error occurred while pinning song / ${e}`
-									: `error occurred while unpinning song / ${e}`
-							});
+							return reject(!guild_object.music_data.pinned
+								? `error occurred while pinning song / ${e}`
+								: `error occurred while unpinning song / ${e}`);
 						});
 				}
 
@@ -381,26 +303,24 @@ async function reaction_music_manager(
 							guild_object.music_data.pinned = !guild_object.music_data.pinned;
 						}
 
-						return resolve({
-							result: r,
-							value: r
-								? guild_object.music_data.pinned
-									? 'pinned song'
-									: 'unpinned song'
-								: !guild_object.music_data.pinned
-									? 'failed to pin song'
-									: 'failed to unpin song'
-						});
+						if (r) {
+							return resolve(guild_object.music_data.pinned
+								? 'pinned song'
+								: 'unpinned song');
+						} else {
+							return reject(!guild_object.music_data.pinned
+								? 'failed to pin song'
+								: 'failed to unpin song');
+						}
 					})
 					.catch(e => {
 						guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
-						return resolve({
-							result: false,
-							value: !guild_object.music_data.pinned
-								? `error occurred while pinning song / ${e}`
-								: `error occurred while unpinning song / ${e}`
-						});
+						const reply_message = !guild_object.music_data.pinned
+							? `error occurred while pinning song`
+							: `error occurred while unpinning song`;
+
+						return reject(`${reply_message} / ${e}`);
 					});
 
 				break;
@@ -408,13 +328,14 @@ async function reaction_music_manager(
 			case '📄': {
 				get_lyrics(messageReaction.message.guild, guild_object)
 					.then(r => {
-						return resolve(r);
+						if (r.result) {
+							return resolve(r.value);
+						} else {
+							return reject(r.value);
+						}
 					})
 					.catch(e => {
-						return resolve({
-							result: false,
-							value: `error occurred while fetching lyrics / ${e}`
-						});
+						return reject(`error occurred while fetching lyrics / ${e}`);
 					});
 
 				break;
@@ -430,19 +351,12 @@ async function reaction_music_manager(
 					if (!guild) {
 						clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: 'could fetch guild from client'
-						});
+						return reject('could fetch guild from client');
 					}
 				}
 
 				clear_music_vote(guild_object.id);
-
-				return resolve({
-					result: true,
-					value: 'queue has been cleared'
-				});
+				return resolve('queue has been cleared');
 
 				break;
 			}
@@ -452,30 +366,23 @@ async function reaction_music_manager(
 						if (portal_voice_connection) {
 							guild_object.music_queue = [];
 							update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
+
 							if (messageReaction.message.guild) {
 								update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
 							}
+
 							clear_music_vote(guild_object.id);
 							portal_voice_connection.disconnect();
 
-							return resolve({
-								result: true,
-								value: 'Portal has been disconnected'
-							});
+							return resolve('Portal has been disconnected');
 						} else {
-							return resolve({
-								result: false,
-								value: 'Portal is not connected to a voice channel'
-							});
+							return reject('Portal is not connected to a voice channel');
 						}
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
 
-						return resolve({
-							result: false,
-							value: `Portal failed to get disconnected / ${e}`
-						})
+						return reject(`Portal failed to get disconnected / ${e}`);
 					});
 
 				break;
@@ -486,15 +393,12 @@ async function reaction_music_manager(
 
 module.exports = async (
 	args: { client: Client, messageReaction: MessageReaction, user: User }
-): Promise<ReturnPormise> => {
-	return new Promise((resolve) => {
+): Promise<string> => {
+	return new Promise((resolve, reject) => {
 		if (args.user.bot) {
-			return resolve({
-				result: false,
-				value: '' // 'not handling bot reactions'
-			});
+			return reject(``); // 'not handling bot reactions'
 		}
-		else if (args.messageReaction?.message?.guild) {
+		else if (args.messageReaction.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;
 			fetch_guild_reaction_data(current_guild.id, args.user.id)
 				.then(guild_object => {
@@ -503,10 +407,7 @@ module.exports = async (
 							try {
 								args.messageReaction.fetch();
 							} catch (e) {
-								return resolve({
-									result: false,
-									value: 'something went wrong when fetching the message'
-								});
+								return reject(`something went wrong when fetching the message / ${e}`);
 							}
 						}
 
@@ -515,16 +416,14 @@ module.exports = async (
 								.then(r => {
 									clear_user_reactions(args.messageReaction, args.user);
 									args.messageReaction.message.channel
-										.send(`${args.user}, ${r.value}`)
+										.send(`${args.user}, ${r}`)
 										.then(sent_message => {
 											sent_message.delete({ timeout: 7500 });
+											return resolve('');
 										})
 										.catch(e => {
-											logger.log({
-												level: 'error', type: 'none', message: new Error(`failed to delete message / ${e}`).message
-											});
+											return reject(`failed to send message / ${e}`);
 										});
-									return resolve(r);
 								})
 								.catch(e => {
 									clear_user_reactions(args.messageReaction, args.user);
@@ -532,13 +431,11 @@ module.exports = async (
 										.send(`${args.user}, ${e}`)
 										.then(sent_message => {
 											sent_message.delete({ timeout: 7500 });
+											return resolve('');
 										})
 										.catch(e => {
-											logger.log({
-												level: 'error', type: 'none', message: new Error(`failed to delete message / ${e}`).message
-											});
+											return reject(`failed to send message / ${e}`);
 										});
-									return resolve(e);
 								});
 						} else if (guild_object.music_data.message_id === args.messageReaction.message.id) {
 							reaction_music_manager(args.client, guild_object, args.messageReaction, args.user)
@@ -557,7 +454,7 @@ module.exports = async (
 											guild_object.music_queue.length > 0
 												? guild_object.music_queue[0]
 												: undefined,
-											r.value,
+											r,
 											animate
 										);
 									}
@@ -580,7 +477,7 @@ module.exports = async (
 
 									clear_user_reactions(args.messageReaction, args.user);
 
-									return resolve(e);
+									return reject(e);
 								});
 						} else if (args.messageReaction.emoji.name === '🏁' &&
 							guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
@@ -631,45 +528,29 @@ module.exports = async (
 
 								remove_poll(current_guild.id, args.messageReaction.message.id)
 									.then(r => {
-										return resolve({
-											result: r,
-											value: r
-												? 'successfully removed poll'
-												: 'failed to remove poll'
-										});
+										if (r) {
+											return resolve('successfully removed poll');
+										} else {
+											return reject('failed to remove poll');
+										}
 									})
 									.catch(e => {
-										return resolve({
-											result: false,
-											value: `error while removing poll / ${e}`
-										});
+										return reject(`error while removing poll / ${e}`);
 									});
 							}
 						} else {
-							return resolve({
-								result: true,
-								value: 'message is not controlled by Portal'
-							});
+							return resolve('message is not controlled by Portal');
 						}
 					}
 					else {
-						return resolve({
-							result: false,
-							value: 'something went wrong with guild object'
-						});
+						return reject('something went wrong with guild object');
 					}
 				})
 				.catch(e => {
-					return resolve({
-						result: false,
-						value: `failed to fetch message reaction / ${e}`
-					});
+					return reject(`failed to fetch message reaction / ${e}`);
 				});
 		} else {
-			return resolve({
-				result: false,
-				value: `could not fetch guild`
-			});
+			return reject(`could not fetch guild`);
 		}
 	});
 };

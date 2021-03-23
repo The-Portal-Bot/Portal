@@ -1,15 +1,18 @@
 import { GuildMember, TextChannel } from "discord.js";
-import { create_rich_embed, logger } from "../libraries/help.library";
+import { create_rich_embed } from "../libraries/help.library";
 import { fetch_guild_announcement, insert_member } from "../libraries/mongo.library";
-import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 
 module.exports = async (
 	args: { member: GuildMember }
-): Promise<ReturnPormise> => {
-	return new Promise((resolve) => {
+): Promise<string> => {
+	return new Promise((resolve, reject) => {
 		if (!args.member.user.bot) {
 			insert_member(args.member.id, args.member.guild.id)
 				.then(r => {
+					if (!r) {
+						return reject(`failed to add member ${args.member.id} to ${args.member.guild.id}`);
+					}
+
 					fetch_guild_announcement(args.member.guild.id)
 						.then(announcement => {
 							if (announcement) {
@@ -33,46 +36,24 @@ module.exports = async (
 											null
 										)
 									);
+
+									return resolve(`added member ${args.member.id} to ${args.member.guild.id}`);
 								} else {
-									return resolve({
-										result: false,
-										value: `could not find announcement channel, it has been deleted`
-									});
+									return reject(`could not find announcement channel, it has been deleted`);
 								}
 							} else {
-								return resolve({
-									result: false,
-									value: `could not find announcement channel in database`
-								});
+								return reject(`could not find announcement channel in database`);
 							}
 						})
 						.catch(e => {
-							logger.log({ level: 'error', type: 'none', message: new Error(`failed to get announcement channel in database / ${e}`).message });
-							return resolve({
-								result: false,
-								value: `failed to get announcement channel in database`
-							});
+							return reject(`failed to get announcement channel in database / ${e}`);
 						});
-
-					return resolve({
-						result: r,
-						value: r
-							? `added member ${args.member.id} to ${args.member.guild.id}`
-							: `failed to add member ${args.member.id} to ${args.member.guild.id}`
-					});
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: new Error(`failed to add member ${args.member.id} to ${args.member.guild.id} / ${e}`).message });
-					return resolve({
-						result: false,
-						value: `failed to add member ${args.member.id} to ${args.member.guild.id}`
-					});
+					return reject(`failed to add member ${args.member.id} to ${args.member.guild.id} / ${e}`);
 				});
 		} else {
-			return resolve({
-				result: true,
-				value: 'new member is bot, bots are not handled'
-			});
+			return resolve('new member is a bot, bots are not handled');
 		}
 	});
 };

@@ -81,9 +81,6 @@ export function update_timestamp(
 		if (member_prtl.timestamp === null) {
 			member_prtl.timestamp = new Date();
 			update_member(voiceState.guild.id, member.id, 'timestamp', member_prtl.timestamp)
-				.then(r => {
-					logger.log({ level: 'info', type: 'none', message: `updated member` });
-				})
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 				});
@@ -94,17 +91,11 @@ export function update_timestamp(
 		const points = add_points_time(member_prtl, speed);
 
 		update_member(voiceState.guild.id, member.id, 'points', points)
-			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `updated member` });
-			})
 			.catch(e => {
 				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
 
 		update_member(voiceState.guild.id, member.id, 'timestamp', null)
-			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `updated member` });
-			})
 			.catch(e => {
 				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
@@ -113,9 +104,6 @@ export function update_timestamp(
 
 		if (level) {
 			update_member(voiceState.guild.id, member.id, 'level', level)
-				.then(r => {
-					logger.log({ level: 'info', type: 'none', message: `updated member` });
-				})
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 				});
@@ -146,9 +134,6 @@ export function add_points_message(
 	member.points += points > 5 ? 5 : points;
 
 	update_member(message.guild.id, member.id, 'points', member.points)
-		.then(r => {
-			logger.log({ level: 'info', type: 'none', message: `updated member` });
-		})
 		.catch(e => {
 			logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 		});
@@ -157,9 +142,6 @@ export function add_points_message(
 
 	if (level) {
 		update_member(message.guild.id, member.id, 'level', level)
-			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `updated member` });
-			})
 			.catch(e => {
 				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
