@@ -227,7 +227,7 @@ client.on('message', async (message: Message) => {
 				}
 
 				if (!message.guild) {
-					logger.log({ level: 'error', type: 'none', message: new Error('could not fetch guild of message').message });
+					logger.log({ level: 'error', type: 'none', message: new Error('could not fetch guild of message').toString() });
 
 					return false;
 				}
@@ -235,7 +235,7 @@ client.on('message', async (message: Message) => {
 				fetch_guild_rest(message.guild.id)
 					.then(guild_object_rest => {
 						if (!guild_object_rest) {
-							logger.log({ level: 'error', type: 'none', message: new Error('server is not in database').message });
+							logger.log({ level: 'error', type: 'none', message: new Error('server is not in database').toString() });
 							message_reply(false, message, message.author,
 								'server is not in database, please contact portal support');
 
@@ -266,13 +266,13 @@ client.on('message', async (message: Message) => {
 						);
 					})
 					.catch(e => {
-						logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild restdata').message });
+						logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild restdata').toString() });
 						return false;
 					});
 			}
 		})
 		.catch(e => {
-			logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild predata').message });
+			logger.log({ level: 'error', type: 'none', message: new Error('error while fetch guild predata').toString() });
 			return false;
 		});
 });
@@ -409,7 +409,7 @@ function portal_preprocessor(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
 	if (!message.member) {
-		logger.log({ level: 'error', type: 'none', message: new Error('could not get member').message });
+		logger.log({ level: 'error', type: 'none', message: new Error('could not get member').toString() });
 		return true;
 	}
 

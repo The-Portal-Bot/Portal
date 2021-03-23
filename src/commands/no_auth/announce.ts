@@ -1,5 +1,5 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { create_rich_embed, message_help } from "../../libraries/help.library";
+import { create_rich_embed, logger, message_help } from "../../libraries/help.library";
 import { client_talk } from "../../libraries/localisation.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -52,13 +52,23 @@ module.exports = async (
             null
         );
 
-        announcement_channel.send(rich_message);
+        announcement_channel.send(rich_message)
+            .then(message => {
+                logger.log({ level: 'info', type: 'none', message: `announcement message [${message.id}] sent` });
+                client_talk(client, guild_object, 'announce');
 
-        client_talk(client, guild_object, 'announce');
+                return resolve({
+                    result: true,
+                    value: 'announcement was sent successfully'
+                });
+            })
+            .catch(error => {
+                logger.log({ level: 'error', type: 'none', message: new Error(`could not send message / ${error}`).toString() });
 
-        return resolve({
-            result: true,
-            value: 'announcement was sent successfully'
-        });
+                return resolve({
+                    result: false,
+                    value: 'could not send message (missing permissions)'
+                });
+            });
     });
 };

@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.9"
 
 services:
   portal:
@@ -24,3 +24,8 @@ services:
       - type: bind
         source: ../mongo/data/db
         target: /data/db
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 512M
