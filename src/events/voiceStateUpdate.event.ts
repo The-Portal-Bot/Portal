@@ -1,8 +1,8 @@
 import { Client, Guild, TextChannel, VoiceChannel, VoiceConnection, VoiceState } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guild.library";
-import { update_music_message } from "../libraries/help.library";
+import { update_music_lyrics_message, update_music_message } from "../libraries/help.library";
 import { client_talk } from "../libraries/localisation.library";
-import { fetch_guild, remove_voice, update_guild } from "../libraries/mongo.library";
+import { fetch_guild, remove_voice, set_music_data, update_guild } from "../libraries/mongo.library";
 import { update_timestamp } from "../libraries/user.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl.class";
@@ -111,6 +111,11 @@ async function channel_empty_check(
 					update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
 					voice_connection.disconnect();
 
+					if (guild_object.music_data.pinned) {
+						guild_object.music_data.pinned = false;
+						set_music_data(guild_object.id, guild_object.music_data);
+					}
+
 					update_music_message(
 						old_channel.guild,
 						guild_object,
@@ -120,6 +125,8 @@ async function channel_empty_check(
 						'left last',
 						false
 					);
+
+					update_music_lyrics_message(old_channel.guild, guild_object, '');
 
 					if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
 						delete_voice_channel(old_channel, guild_object)

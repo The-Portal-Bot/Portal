@@ -100,7 +100,7 @@ module.exports = async (
 									return resolve({
 										result: r_announcement,
 										value: r_announcement
-											? 'created announcement channel and category successfully'
+											? 'created announcement channel successfully'
 											: 'failed to create a announcement channel'
 									});
 								})
