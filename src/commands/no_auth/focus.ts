@@ -79,13 +79,6 @@ module.exports = async (
 		const focus_name = (arg_a === '' ? arg_b : arg_a).trim();
 		const focus_time = arg_a === '' ? 0 : parseFloat(arg_b);
 
-		if (focus_name === '') {
-			return resolve({
-				result: false,
-				value: message_help('commands', 'focus', 'you must give a member name')
-			});
-		}
-
 		if (isNaN(focus_time)) {
 			return resolve({
 				result: false,
@@ -96,6 +89,13 @@ module.exports = async (
 		if (message.mentions) {
 			if (message.mentions.members) {
 				if (message.guild) {
+					if (message.mentions.members.array().length === 0) {
+						return resolve({
+							result: false,
+							value: message_help('commands', 'focus', `you must tag a member`)
+						});
+					}
+
 					const member_to_focus = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
 					if (member_to_focus) {
