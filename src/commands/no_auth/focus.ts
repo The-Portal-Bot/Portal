@@ -36,7 +36,7 @@ async function ask_for_focus(message: Message, requester: GuildMember, focus_tim
 					return resolve(reply);
 				});
 			})
-			.catch((error: any) => {
+			.catch(() => {
 				return resolve(false);
 			});
 	});
@@ -93,67 +93,87 @@ module.exports = async (
 			});
 		}
 
-		if (message.member.id === focus_name || message.member.displayName === focus_name) {
-			return resolve({
-				result: false,
-				value: message_help('commands', 'focus', `you can't focus on yourself`)
-			});
-		}
+		if (message.mentions) {
+			if (message.mentions.members) {
+				if (message.guild) {
+					const member_to_focus = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
-		const member_object = message.member.voice.channel.members.find(member =>
-			member.displayName === focus_name || member.id === focus_name);
-
-		if (member_object) {
-			ask_for_focus(message, member_object, focus_time)
-				.then(result => {
-					if (result) {
-						if (!message.guild) {
+					if (member_to_focus) {
+						if (message.member === member_to_focus) {
 							return resolve({
 								result: false,
-								value: message_help('commands', 'focus', 'could not fetch message\'s guild')
+								value: message_help('commands', 'focus', `you can't focus on yourself`)
 							});
 						}
 
-						if (!message.member) {
-							return resolve({
-								result: false,
-								value: message_help('commands', 'focus', 'could not fetch message\'s member')
-							});
-						}
+						ask_for_focus(message, member_to_focus, focus_time)
+							.then(result => {
+								if (result) {
+									if (!message.guild) {
+										return resolve({
+											result: false,
+											value: message_help('commands', 'focus', 'could not fetch message\'s guild')
+										});
+									}
 
-						const portal_object = guild_object.portal_list.find(p => {
-							return p.voice_list.some(v => v.id === message.member?.voice.channel?.id);
-						});
+									if (!message.member) {
+										return resolve({
+											result: false,
+											value: message_help('commands', 'focus', 'could not fetch message\'s member')
+										});
+									}
 
-						if (!portal_object) {
-							return resolve({
-								result: false,
-								value: message_help('commands', 'focus', 'could not find member\'s portal channel')
-							});
-						}
+									const portal_object = guild_object.portal_list.find(p => {
+										return p.voice_list.some(v => v.id === message.member?.voice.channel?.id);
+									});
 
-						create_focus_channel(message.guild, message.member, member_object, focus_time, portal_object)
-							.then(return_value => {
-								return resolve(return_value);
-							})
-							.catch(e => {
-								return resolve({
-									result: false,
-									value: message_help('commands', 'focus', `error while creating focus channel ${e}`)
-								});
+									if (!portal_object) {
+										return resolve({
+											result: false,
+											value: message_help('commands', 'focus', 'could not find member\'s portal channel')
+										});
+									}
+
+									create_focus_channel(message.guild, message.member, member_to_focus, focus_time, portal_object)
+										.then(return_value => {
+											return resolve(return_value);
+										})
+										.catch(e => {
+											return resolve({
+												result: false,
+												value: message_help('commands', 'focus', `error while creating focus channel ${e}`)
+											});
+										});
+								} else {
+									return resolve({
+										result: false,
+										value: message_help('commands', 'focus', 'user declined the request')
+									});
+								}
 							});
-					} else {
+					}
+					else {
 						return resolve({
 							result: false,
-							value: message_help('commands', 'focus', 'user declined the request')
+							value: message_help('commands', 'focus', `could not find "**${focus_name}**" in current voice channel`)
 						});
 					}
+				} else {
+					return resolve({
+						result: false,
+						value: `user guild could not be fetched`
+					});
+				}
+			} else {
+				return resolve({
+					result: false,
+					value: `no user mentioned to focus`
 				});
-		}
-		else {
+			}
+		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'focus', `could not find "**${focus_name}**" in current voice channel`)
+				value: `no user mentioned to focus`
 			});
 		}
 	});
