@@ -12,7 +12,7 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
-import { create_lyrics_message, create_music_message, get_json, logger } from './help.library';
+import { create_lyrics_message, create_music_message, get_json, logger, max_string } from './help.library';
 import { insert_voice } from "./mongo.library";
 
 function inline_operator(
@@ -525,9 +525,10 @@ export function generate_channel_name(
 						: regex;
 
 					if (new_name.length >= 1) {
-						if (voice_channel.name !== new_name.substring(0, 99)) {
+						const capped_new_name = max_string(new_name, 99);
+						if (voice_channel.name !== capped_new_name) {
 							voice_channel
-								.edit({ name: new_name.substring(0, 99) })
+								.edit({ name: capped_new_name })
 								.catch(e => {
 									return reject(`failed to eddit voice channel / ${e}`);
 								});

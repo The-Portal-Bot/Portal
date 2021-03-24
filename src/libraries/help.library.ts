@@ -1,13 +1,11 @@
 import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User, VoiceConnection } from "discord.js";
-import { writeFileSync } from "jsonfile";
-import { cloneDeep } from "lodash";
 import moment from "moment";
 import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
 import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise, ReturnPormiseVoice, TimeElapsed } from "../types/classes/TypesPrtl.interface";
-import { client_talk, client_write } from "./localisation.library";
+import { Field, TimeElapsed } from "../types/classes/TypesPrtl.interface";
+import { client_talk } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
 export const logger = createLogger({
@@ -24,6 +22,21 @@ export const logger = createLogger({
 	// in the database (there is a performance penalty)
 	transports: []
 });
+
+export function get_json(
+	str: string
+): any | null {
+	let data = null;
+
+	try {
+		data = JSON.parse(str);
+	}
+	catch (error) {
+		return null;
+	}
+
+	return data;
+};
 
 export function max_string(
 	abstract: string, max: number
@@ -383,21 +396,6 @@ export async function join_user_voice(
 	});
 };
 
-export function get_json(
-	str: string
-): any | null {
-	let data = null;
-
-	try {
-		data = JSON.parse(str);
-	}
-	catch (error) {
-		return null;
-	}
-
-	return data;
-};
-
 export function create_rich_embed(
 	title: string | null | undefined,
 	description: string | null | undefined,
@@ -423,6 +421,7 @@ export function create_rich_embed(
 	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url).setTimestamp();
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
+	if (author) rich_message.setAuthor(author.name, author.icon);
 	if (field_array) {
 		field_array.forEach(row => {
 			rich_message
@@ -437,29 +436,15 @@ export function create_rich_embed(
 				);
 		});
 	}
-	if (member) {
+	if (member && !author) {
 		const url = member.user.avatarURL() !== null
 			? member.user.avatarURL()
 			: undefined;
-		rich_message
-			.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
+
+		rich_message.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
 	}
-	if (author) rich_message.setAuthor(author.name, author.icon);
 
 	return rich_message;
-};
-
-export async function update_portal_managed_guilds(
-	portal_managed_guilds_path: string, guild_list: GuildPrtl[]
-): Promise<ReturnPormise> {
-	return new Promise((resolve) => { // , reject) => {
-		setTimeout(() => {
-			const guild_list_no_voice = cloneDeep(guild_list);
-			writeFileSync(portal_managed_guilds_path, guild_list_no_voice);
-		}, 1000);
-
-		return resolve({ result: true, value: '> saved guild_list.json\n' });
-	});
 };
 
 export function is_authorised(
@@ -498,7 +483,6 @@ export function is_ignored(
 		r.name.toLocaleLowerCase() === 'p.ignore');
 };
 
-
 export function message_help(
 	type: string, argument: string, info: string = ``
 ): string {
@@ -511,48 +495,52 @@ export function message_reply(
 	status: boolean, message: Message, user: User, str: string,
 	to_delete: boolean = config.delete_msg,
 	emote_pass: string = '✔️', emote_fail: string = '❌'
-): void {
-	if (message && !message.channel.deleted && str !== null) {
-		message.channel
-			.send(`${user}, ${str}`)
-			.then(msg => {
-				if (msg.deletable) {
-					msg
-						.delete({ timeout: config.delete_msg_after * 1000 })
-						.catch(e => {
-							logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
-						});
-				}
-			})
-			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
-			});
-	}
-
-	if (message && !message.deleted) {
-		if (status === true) {
-			message
-				.react(emote_pass)
+): Promise<boolean> {
+	return new Promise((resolve, reject) => {
+		if (message && !message.channel.deleted && str !== null) {
+			message.channel
+				.send(`${user}, ${str}`)
+				.then(sent_message => {
+					if (sent_message.deletable) {
+						sent_message
+							.delete({ timeout: config.delete_msg_after * 1000 })
+							.catch(e => {
+								return reject(`failed to delete message / ${e}`);
+							});
+					}
+				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
-				});
-		}
-		else if (status === false) {
-			message
-				.react(emote_fail)
-				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to react to message / ${e}` });
+					return reject(`failed to send message / ${e}`);
 				});
 		}
 
-		if (message && to_delete && message.deletable) {
-			message
-				.delete({ timeout: 7500 })
-				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
-				});
+		if (message && !message.deleted) {
+			if (status === true) {
+				message
+					.react(emote_pass)
+					.catch(e => {
+						return reject(`failed to react to message / ${e}`);
+					});
+			}
+			else if (status === false) {
+				message
+					.react(emote_fail)
+					.catch(e => {
+						return reject(`failed to react to message / ${e}`);
+					});
+			}
+
+			if (message && to_delete && message.deletable) {
+				message
+					.delete({ timeout: 7500 })
+					.catch(e => {
+						return reject(`failed to delete message / ${e}`);
+					});
+			}
+
+			return resolve(true);
 		}
-	}
+	});
 };
 
 export function is_url(
@@ -571,12 +559,9 @@ export function is_url(
 export function pad(
 	num: number
 ): string {
-	if (num.toString().length >= 2) {
-		return '' + num;
-	}
-	else {
-		return '0' + num;
-	}
+	return num.toString().length >= 2
+		? '' + num
+		: '0' + num;
 };
 
 export function time_elapsed(
@@ -598,6 +583,7 @@ export function time_elapsed(
 	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
 };
 
+// must get updated
 export function remove_deleted_channels(
 	guild: Guild
 ): Promise<boolean> {
@@ -624,6 +610,7 @@ export function remove_deleted_channels(
 							guild_object.url_list.splice(index_u, 1);
 							return true;
 						}
+
 						return false;
 					});
 
@@ -641,8 +628,10 @@ export function remove_deleted_channels(
 										guild_object.role_list.splice(index_r, 1);
 									});
 								removed_channel = found;
+
 								return found;
 							}
+
 							return false;
 						});
 					});
@@ -668,11 +657,13 @@ export function remove_deleted_channels(
 
 					return resolve(true);
 				}
+
 				return resolve(false);
 			})
 	});
 }
 
+// must get updated
 export function remove_empty_voice_channels(
 	guild: Guild
 ): Promise<boolean> {
