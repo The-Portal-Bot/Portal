@@ -116,11 +116,7 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						if (r.result) {
-							return resolve(r.value);
-						} else {
-							return reject(r.value);
-						}
+						return resolve(r);
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
@@ -135,11 +131,7 @@ async function reaction_music_manager(
 					.then(r => {
 						clear_music_vote(guild_object.id);
 
-						if (r.result) {
-							return resolve(r.value);
-						} else {
-							return reject(r.value);
-						}
+						return resolve(r);
 					})
 					.catch(e => {
 						clear_music_vote(guild_object.id);
@@ -209,11 +201,7 @@ async function reaction_music_manager(
 							clear_music_vote(guild_object.id);
 							guild_object.music_queue.shift();
 
-							if (r.result) {
-								return resolve(`${r.value} (by ${reason})`);
-							} else {
-								return reject(`${r.value} (by ${reason})`);
-							}
+							return resolve(`${r} (by ${reason})`);
 						})
 						.catch(e => {
 							return reject(`error while skipping / ${e}`);
@@ -235,11 +223,7 @@ async function reaction_music_manager(
 										clear_music_vote(guild_object.id);
 										guild_object.music_queue.shift();
 
-										if (r.result) {
-											return resolve(`${r.value} (by ${reason})`);
-										} else {
-											return reject(`${r.value} (by ${reason})`);
-										}
+										return resolve(`${r} (by ${reason})`);
 									})
 									.catch(e => {
 										return reject(`error while skipping / ${e}`);
@@ -327,11 +311,7 @@ async function reaction_music_manager(
 			case '📄': {
 				get_lyrics(messageReaction.message.guild, guild_object)
 					.then(r => {
-						if (r.result) {
-							return resolve(r.value);
-						} else {
-							return reject(r.value);
-						}
+						return resolve(r);
 					})
 					.catch(e => {
 						return reject(`error occurred while fetching lyrics / ${e}`);
@@ -395,7 +375,7 @@ module.exports = async (
 ): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		if (args.user.bot) {
-			return reject(``); // 'not handling bot reactions'
+			return resolve(``); // 'not handling bot reactions'
 		}
 		else if (args.messageReaction.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;

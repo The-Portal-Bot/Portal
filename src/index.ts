@@ -356,10 +356,12 @@ function command_loader(
 function event_loader(event: string, args: any): void {
 	require(`./events/${event}.event.js`)(args)
 		.then((response: string) => {
-			if (config.debug || (event_config_json.find(e => e.name === event))) {
-				logger.info(`[event-accepted] ${event} | ${response ? response : 'nothing'}`);
-			} else if (config.debug) {
-				logger.info(`DEBUG: [event-accepted] ${event} | ${response ? response : 'nothing'}`);
+			if (response) {
+				if (config.debug || (event_config_json.find(e => e.name === event))) {
+					logger.info(`[event-accepted] ${event} | ${response}`);
+				} else if (config.debug) {
+					logger.info(`DEBUG: [event-accepted] ${event} | ${response}`);
+				}
 			}
 		})
 		.catch((e: string) => {
@@ -605,7 +607,7 @@ function handle_music_channels(
 							guild_object.music_queue.length > 0
 								? guild_object.music_queue[0]
 								: undefined,
-							r.value,
+							r,
 							animate
 						);
 					}

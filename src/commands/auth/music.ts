@@ -22,10 +22,8 @@ module.exports = async (
 				set_music_data(guild_object.id, music_data)
 					.then(r => {
 						return resolve({
-							result: r,
-							value: r
-								? 'successfully removed music channel'
-								: 'failed to remove music channel'
+							result: true,
+							value: 'successfully removed music channel'
 						});
 					})
 					.catch(e => {
