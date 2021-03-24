@@ -74,9 +74,9 @@ module.exports = async (
 			message.reply(
 				create_rich_embed(
 					'Detailed Documentation at https://portal-bot.xyz/docs',
-					'> To make a member a **dj**, give him role with name `p.dj`\n' +
-					'> To make a member an **admin**, give him role with name `p.admin`\n' +
-					'> To **ignore** a member, give him role with name `p.ignore`\n' +
+					'> make a member a **dj**, give him role with name `p.dj`\n' +
+					'> make a member an **admin**, give him role with name `p.admin`\n' +
+					'> **ignore** a member, give him role with name `p.ignore`\n' +
 					'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
 					'#05d1ff',
 					help_array,
