@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { OpapGameIdList } from '../../data/enums/OpapGames.enum';
-import { create_rich_embed, get_key_from_enum } from '../../libraries/help.library';
+import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
 export const command_prefix: string = './';
@@ -336,17 +336,17 @@ const commands: InterfaceBlueprint[] = [
 		get: null,
 		set: null
 	},
-	{
-		name: 'setup',
-		description: 'creates a portal, url-only and announcement channel automatically',
-		super_description: '**setup**, will autogenerate a portal, url-only and announcement channels ' +
-			'at once, removing the hustle of setting up the server.\n',
-		example: './setup',
-		args: 'none',
-		auth: AuthEnum.admin,
-		get: null,
-		set: null
-	},
+	// {
+	// 	name: 'setup',
+	// 	description: 'creates a portal, url-only and announcement channel automatically',
+	// 	super_description: '**setup**, will autogenerate a portal, url-only and announcement channels ' +
+	// 		'at once, removing the hustle of setting up the server.\n',
+	// 	example: './setup',
+	// 	args: 'none',
+	// 	auth: AuthEnum.admin,
+	// 	get: null,
+	// 	set: null
+	// },
 	{
 		name: 'state',
 		description: 'returns a visualisation of Portal\'s current state',

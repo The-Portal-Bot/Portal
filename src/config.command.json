@@ -287,15 +287,6 @@
                 "reply": true
             },
             {
-                "name": "setup",
-                "range": "guild",
-                "time": 10,
-                "auth": true,
-                "premium": true,
-                "auto_delete": true,
-                "reply": true
-            },
-            {
                 "name": "url",
                 "range": "none",
                 "time": 0,
