@@ -71,32 +71,27 @@ module.exports = async (
 				url_category = null;
 			}
 
-			const spotify_options = getOptions(message.guild, 'url only channel', true);
+			const url_options = getOptions(message.guild, 'url only channel', true);
 
 			create_channel(
-				message.guild, url_channel,
-				spotify_options, url_category
+				message.guild, url_channel, url_options, url_category
 			)
 				.then(r_create => {
-					if (r_create.result) {
-						insert_url(guild_object.id, r_create.value)
-							.then(r_url => {
-								return resolve({
-									result: r_url,
-									value: r_url
-										? 'created url channel and category successfully'
-										: message_help('commands', 'url', 'failed to create a url channel')
-								});
-							})
-							.catch(e => {
-								return resolve({
-									result: false,
-									value: message_help('commands', 'url', 'failed to create a url channel')
-								});
+					insert_url(guild_object.id, r_create)
+						.then(r_url => {
+							return resolve({
+								result: r_url,
+								value: r_url
+									? 'created url channel and category successfully'
+									: message_help('commands', 'url', 'failed to create a url channel')
 							});
-					} else {
-						return resolve(r_create);
-					}
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: message_help('commands', 'url', 'failed to create a url channel')
+							});
+						});
 				})
 				.catch(e => {
 					return resolve(e);

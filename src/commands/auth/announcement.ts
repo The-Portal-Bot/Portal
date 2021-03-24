@@ -53,8 +53,9 @@ module.exports = async (
 			const announcement = <VoiceChannel>message.guild.channels.cache
 				.find(channel => channel.id == guild_object.announcement);
 
-			if (announcement)
+			if (announcement) {
 				delete_channel(PortalChannelTypes.announcement, announcement, message);
+			}
 
 			if (args.length === 0) {
 				update_guild(guild_object.id, 'announcement', message.channel.id)
@@ -94,27 +95,25 @@ module.exports = async (
 					announcement_options, announcement_category
 				)
 					.then(r_channel => {
-						if (r_channel.result) {
-							update_guild(guild_object.id, 'announcement', r_channel.value)
-								.then(r_announcement => {
-									return resolve({
-										result: r_announcement,
-										value: r_announcement
-											? 'created announcement channel successfully'
-											: 'failed to create a announcement channel'
-									});
-								})
-								.catch(e => {
-									return resolve({
-										result: false,
-										value: 'failed to create a announcement channel'
-									});
+						update_guild(guild_object.id, 'announcement', r_channel)
+							.then(r_announcement => {
+								return resolve({
+									result: r_announcement,
+									value: r_announcement
+										? 'created announcement channel successfully'
+										: 'failed to create a announcement channel'
 								});
-						} else {
-							return resolve(r_channel);
-						}
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `failed to create a announcement channel / ${e}`
+								});
+							});
 					})
-					.catch(e => { return resolve(e); });
+					.catch(e => {
+						return resolve(e);
+					});
 			} else {
 				return resolve({
 					result: false,

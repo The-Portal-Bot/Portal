@@ -58,38 +58,31 @@ module.exports = async (
 
 		create_channel(current_guild, portal_channel, portal_options, portal_category)
 			.then(r_channel => {
-				if (r_channel.result) {
-					insert_portal(guild_object.id, new PortalChannelPrtl(
-						r_channel.value, current_member.id, true, portal_channel, voice_regex,
-						[], false, guild_object.locale, true, true, 0, false
-					))
-						.then(r_portal => {
-							if (r_portal) {
-								return resolve({
-									result: true,
-									value: 'portal channel has been created.\n' +
-										'Keep in mind that due to Discord\'s limitations,\n' +
-										'channel names will be updated on a five minute interval'
-								});
-							} else {
-								return resolve({
-									result: false,
-									value: 'portal channel failed to be created'
-								});
-							}
-						})
-						.catch(e => {
+				const new_portal = new PortalChannelPrtl(r_channel, current_member.id,
+					true, portal_channel, voice_regex, [], false, guild_object.locale, true, true, 0, false);
+
+				insert_portal(guild_object.id, new_portal)
+					.then(r_portal => {
+						if (r_portal) {
+							return resolve({
+								result: true,
+								value: 'portal channel has been created.\n' +
+									'Keep in mind that due to Discord\'s limitations,\n' +
+									'channel names will be updated on a five minute interval'
+							});
+						} else {
 							return resolve({
 								result: false,
-								value: `portal channel failed to be created / ${e}`
+								value: 'portal channel failed to be created'
 							});
+						}
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `portal channel failed to be created / ${e}`
 						});
-				} else {
-					return resolve({
-						result: r_channel.result,
-						value: message_help('commands', 'portal', r_channel.value)
 					});
-				}
 			})
 			.catch(e => {
 				return resolve({

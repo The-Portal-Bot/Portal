@@ -15,7 +15,9 @@ import { get_variable, is_variable, variable_prefix } from '../types/interfaces/
 import { create_lyrics_message, create_music_message, get_json, logger } from './help.library';
 import { insert_voice } from "./mongo.library";
 
-function inline_operator(str: string): any {
+function inline_operator(
+	str: string
+): any {
 	switch (str) {
 		case '==':
 			return (a: string, b: string) => a == b;
@@ -36,26 +38,29 @@ function inline_operator(str: string): any {
 	};
 };
 
-export function getOptions(guild: Guild, topic: string, can_write: boolean): GuildCreateChannelOptions {
-	if (can_write)
+export function getOptions(
+	guild: Guild, topic: string, can_write: boolean
+): GuildCreateChannelOptions {
+	if (can_write) {
 		return {
 			topic: `by Portal, ${topic}`,
 			type: 'text',
 			nsfw: false
 		};
-	else
+	} else {
 		return {
-			permissionOverwrites: [
-				{
-					id: guild.id,
-					deny: ['SEND_MESSAGES'],
-				}
-			],
+			permissionOverwrites: [{
+				id: guild.id,
+				deny: ['SEND_MESSAGES'],
+			}],
 			topic: `by Portal, ${topic}`,
 			type: 'text',
 			nsfw: false
 		};
+	}
 };
+
+//
 
 export function included_in_portal_guilds(guild_id: string, guild_list: GuildPrtl[]): boolean {
 	return guild_list ? guild_list.some(g => g.id === guild_id) : false;
@@ -98,147 +103,40 @@ export function get_role(guild: Guild, role_name_or_name: string): Role | undefi
 export async function create_channel(
 	guild: Guild, channel_name: string, channel_options: GuildCreateChannelOptions,
 	channel_category: string | CategoryChannel | null
-): Promise<ReturnPormise> {
-	return new Promise((resolve) => {
+): Promise<string> {
+	return new Promise((resolve, reject) => {
 		guild.channels
 			.create(channel_name, channel_options)
 			.then(new_channel => {
 				if (channel_category === null) { // does not want category
-					return resolve({
-						result: true,
-						value: new_channel.id
-					});
+					return resolve(new_channel.id);
 				} else {
 					if (typeof channel_category === "string") { // create category
 						guild.channels
 							.create(channel_category, { type: 'category' })
 							.then(category => {
 								new_channel.setParent(category);
-								return resolve({
-									result: true,
-									value: new_channel.id
-								});
+								return resolve(new_channel.id);
 							})
-							.catch(error => {
-								return resolve({
-									result: false,
-									value: `CH/CR/000: ${error}`
-								});
+							.catch(e => {
+								return reject(`failed to create category channel / ${e}`);
 							});
 					} else {
 						new_channel.setParent(channel_category);
-						return resolve({
-							result: true,
-							value: new_channel.id
-						});
+						return resolve(new_channel.id);
 					}
 				}
 			})
-			.catch(error => {
-				return resolve({
-					result: false,
-					value: `CH/CR/001: ${error}`
-				});
+			.catch(e => {
+				return reject(`failed to create voice channel / ${e}`);
 			});
 	});
 }
 
-export function create_portal_channel(
-	guild: Guild, portal_channel: string,
-	portal_category: string | CategoryChannel | null, portal_object: any,
-	guild_object: GuildPrtl, creator_id: string): void {
-
-	const voice_name = guild_object.premium
-		// ? 'G$#-P$member_count | $status_list'
-		? `$#:$member_count {{
-			"if": "$status_count", "is": "===", "with": "1",
-			"yes": "$status_list", "no": "$status_list|acronym"
-		}}`
-		: 'Channel $#'
-
-	if (portal_category && typeof portal_category === 'string') { // with category
-		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1 })
-			.then(channel => {
-				portal_object.push(new PortalChannelPrtl(
-					channel.id,
-					creator_id,
-					true,
-					portal_channel,
-					voice_name,
-					[],
-					false,
-					guild_object.locale,
-					true,
-					true,
-					0,
-					false
-				));
-
-				guild.channels
-					.create(portal_category, { type: 'category' })
-					.then(cat_channel => channel.setParent(cat_channel))
-					.catch(e => {
-						logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
-					});
-			})
-			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
-			});
-	}
-	else if (portal_category) { // with category given
-		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1, parent: portal_category })
-			.then(channel => {
-				channel.setParent(portal_category);
-				portal_object.push(new PortalChannelPrtl(
-					channel.id,
-					creator_id,
-					true,
-					portal_channel,
-					voice_name,
-					[],
-					false,
-					guild_object.locale,
-					true,
-					true,
-					0,
-					false
-				));
-			})
-			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
-			});
-	}
-	else { // without category
-		guild.channels
-			.create(portal_channel, { type: 'voice', bitrate: 32000, userLimit: 1 })
-			.then(channel => {
-				portal_object.push(new PortalChannelPrtl(
-					channel.id,
-					creator_id,
-					true,
-					portal_channel,
-					voice_name,
-					[],
-					false,
-					guild_object.locale,
-					true,
-					true,
-					0,
-					false
-				));
-			})
-			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to create channel / ${e}` });
-			});
-	}
-};
-
 export function create_voice_channel(
-	state: VoiceState, portal_object: PortalChannelPrtl, portal_channel: GuildChannel, creator_id: string
-): Promise<ReturnPormise> {
-	return new Promise((resolve) => {
+	state: VoiceState, portal_object: PortalChannelPrtl
+): Promise<string> {
+	return new Promise((resolve, reject) => {
 		if (state && state.channel) {
 			const voice_options: GuildCreateChannelOptions = {
 				type: 'voice',
@@ -251,28 +149,21 @@ export function create_voice_channel(
 				.create('loading..', voice_options)
 				.then(channel => {
 					if (state.member) {
-						insert_voice(state.member.guild.id, portal_object.id, new VoiceChannelPrtl(
-							channel.id, creator_id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
-							portal_object.locale, portal_object.ann_announce, portal_object.ann_user
-						));
+						const new_voice = new VoiceChannelPrtl(
+							channel.id, state.member?.id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
+							portal_object.locale, portal_object.ann_announce, portal_object.ann_user);
+
+						insert_voice(state.member.guild.id, portal_object.id, new_voice);
 
 						state.member.voice.setChannel(channel);
-						return resolve({
-							result: true,
-							value: `created channel and moved member to new voice`
-						});
+
+						return resolve(`created channel and moved member to new voice`);
 					} else {
-						return resolve({
-							result: false,
-							value: `VC/CR/000: could not fetch member`
-						});
+						return reject(`could not fetch member`);
 					}
 				})
-				.catch(error => {
-					return resolve({
-						result: false,
-						value: `VC/CR/001: ${error}`
-					});
+				.catch(e => {
+					return reject(`failed to create voice channel / ${e}`);
 				});
 		}
 	});
@@ -280,10 +171,9 @@ export function create_voice_channel(
 
 // must be fixed
 export async function create_music_channel(
-	guild: Guild, music_channel: string,
-	music_category: string | CategoryChannel | null, guild_object: GuildPrtl
+	guild: Guild, music_channel: string, music_category: string | CategoryChannel | null, guild_object: GuildPrtl
 ): Promise<boolean> {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		if (music_category && typeof music_category === 'string') { // with category
 			guild.channels
 				.create(
@@ -298,30 +188,29 @@ export async function create_music_channel(
 					guild.channels
 						.create(music_category, { type: 'category' })
 						.then(cat_channel => channel.setParent(cat_channel))
-						.catch(error => resolve(error));
+						.catch(e => {
+							return reject(`faild to create music category / ${e}`);
+						});
+
 					create_music_message(channel, guild_object)
 						.then(music_message_id => {
 							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
 							if (guild_object.music_data.message_id) {
 								create_lyrics_message(channel, guild_object, music_message_id)
-									.then(lyrics_message_id => {
-										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									.then(() => {
+										resolve(true);
 									})
 									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
-										resolve(false);
+										return reject(`failed to send music lyrics message / ${e}`);
 									});
 							}
 						})
 						.catch(e => {
-							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
-							resolve(false);
+							return reject(`failed to send music message / ${e}`);
 						});
-					resolve(true);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
-					resolve(false);
+					return reject(`failed to create focus channel / ${e}`);
 				});
 		}
 		else if (music_category) { // with category object given
@@ -342,24 +231,20 @@ export async function create_music_channel(
 							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
 							if (guild_object.music_data.message_id) {
 								create_lyrics_message(channel, guild_object, music_message_id)
-									.then(lyrics_message_id => {
-										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									.then(() => {
+										return resolve(true);
 									})
 									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
-										resolve(false);
+										return reject(`failed to send music lyrics message / ${e}`);
 									});
 							}
 						})
 						.catch(e => {
-							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
-							resolve(false);
+							return reject(`failed to send music message / ${e}`);
 						});
-					resolve(true);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
-					resolve(false);
+					return reject(`failed to create focus channel / ${e}`);
 				});
 		}
 		else { // without category
@@ -378,24 +263,20 @@ export async function create_music_channel(
 							logger.log({ level: 'info', type: 'none', message: `send music message ${music_message_id}` });
 							if (guild_object.music_data.message_id) {
 								create_lyrics_message(channel, guild_object, music_message_id)
-									.then(lyrics_message_id => {
-										logger.log({ level: 'info', type: 'none', message: `send lyrics message ${lyrics_message_id}` });
+									.then(() => {
+										return resolve(true);
 									})
 									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to send music lyrics message / ${e}` });
-										resolve(false);
+										return reject(`failed to send music lyrics message / ${e}`);
 									});
 							}
 						})
 						.catch(e => {
-							logger.log({ level: 'error', type: 'none', message: `failed to send music message / ${e}` });
-							resolve(false);
+							return reject(`failed to send music message / ${e}`);
 						});
-					resolve(true);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to create focus channel / ${e}` });
-					resolve(false);
+					return reject(`failed to create focus channel / ${e}`);
 				});
 		}
 	});
@@ -488,131 +369,123 @@ export async function create_focus_channel(
 export function delete_channel(
 	type: PortalChannelTypes, channel_to_delete: VoiceChannel | TextChannel,
 	message: Message | null, isPortal: boolean = false
-): void {
-	if (!isPortal) {
-		if (message) {
-			const author = message.author;
-			const channel_to_delete_name = channel_to_delete.name;
-			let channel_deleted = false;
+): Promise<boolean> {
+	return new Promise((resolve, reject) => {
+		if (!isPortal) {
+			if (message) {
+				const author = message.author;
+				const channel_to_delete_name = channel_to_delete.name;
+				let replied_with_yes = false;
 
-			message.channel
-				.send(
-					`${message.author}, do you wish to delete old ` +
-					`${PortalChannelTypes[type].toString()} channel **${channel_to_delete}** (yes / no) ?`
-				)
-				.then((question_msg: Message) => {
-					const filter: CollectorFilter = m => m.author.id === author.id;
-					const collector: MessageCollector = message.channel.createMessageCollector(filter, { time: 10000 });
+				message.channel
+					.send(
+						`${message.author}, do you wish to delete old ` +
+						`${PortalChannelTypes[type].toString()} channel **${channel_to_delete}** (yes / no) ?`
+					)
+					.then((question_msg: Message) => {
+						const filter: CollectorFilter = m => m.author.id === author.id;
+						const collector: MessageCollector = message.channel
+							.createMessageCollector(
+								filter,
+								{
+									time: 10000
+								}
+							);
 
-					collector.on('collect', (m: Message) => {
-						if (m.content === 'yes') {
-							if (channel_to_delete.deletable) {
-								channel_to_delete
-									.delete()
-									.then(g => {
-										if (g.id !== m.channel.id && !m.deleted) {
-											m.channel
-												.send(`deleted channel **"${channel_to_delete_name}"**`)
-												.then(sent_message => {
-													sent_message
-														.delete({ timeout: 7000 })
-														.then(r => {
-															logger.log({ level: 'info', type: 'none', message: `deleted message` });
-														})
-														.catch(e => {
-															logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
-														});
-												})
-												.catch(e => {
-													logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
-												});
-										}
-									})
-									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
-									});
-
-								channel_deleted = true;
+						collector.on('collect', (m: Message) => {
+							if (m.content === 'yes') {
+								replied_with_yes = true;
+								collector.stop();
 							}
-							else {
-								message.channel
-									.send(`channel **"${channel_to_delete}"** is not deletable`)
-									.then(msg => {
-										msg.delete({ timeout: 5000 })
-											.then(r => {
-												logger.log({ level: 'info', type: 'none', message: `deleted message` });
-											})
-											.catch(e => {
-												logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
-											});
-									})
-									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
-									});
-							}
-							collector.stop();
-						}
-						else if (m.content === 'no') {
-							collector.stop();
-						}
-					});
-
-					collector.on('end', (collected: Collection<string, Message>) => {
-						collected.forEach((reply_message: Message) => {
-							if (reply_message.deletable) {
-								reply_message
-									.delete()
-									.then(r => {
-										logger.log({ level: 'info', type: 'none', message: `deleted message` });
-									})
-									.catch(e => {
-										logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
-									});
+							else if (m.content === 'no') {
+								replied_with_yes = false;
+								collector.stop();
 							}
 						});
 
-						if (!channel_deleted) {
-							message.channel
-								.send(`Channel **"${channel_to_delete}"** will not be deleted`)
-								.then(msg => {
-									msg
-										.delete({ timeout: 5000 })
-										.then(r => {
-											logger.log({ level: 'info', type: 'none', message: `deleted message` });
+						collector.on('end', (collected: Collection<string, Message>) => {
+							console.log('collection has ended');
+							collected.forEach((reply_message: Message) => {
+								if (reply_message.deletable) {
+									reply_message
+										.delete()
+										.catch(e => {
+											return reject(`failed to delete message / ${e}`);
+										});
+								}
+							});
+
+							if (!replied_with_yes) {
+								question_msg
+									.edit(`channel **"${channel_to_delete}"** will not be deleted`)
+									.then(msg => {
+										msg
+											.delete({ timeout: 5000 })
+											.catch(e => {
+												return reject(`failed to delete message / ${e}`);
+											});
+									})
+									.catch(e => {
+										return reject(`failed to send message / ${e}`);
+									});
+							} else {
+								if (channel_to_delete.deletable) {
+									channel_to_delete
+										.delete()
+										.then(g => {
+											question_msg
+												.edit(`channel **"${channel_to_delete_name}"** deleted`)
+												.then(edit_message => {
+													edit_message
+														.delete({ timeout: 7000 })
+														.then(r => {
+															return resolve(true);
+														})
+														.catch(e => {
+															return reject(`failed to delete message / ${e}`);
+														});
+												})
+												.catch(e => {
+													return reject(`failed to send message / ${e}`);
+												});
 										})
 										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
+											return reject(`failed to delete channel / ${e}`);
 										});
-								})
-								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
-								});
-						}
-						question_msg
-							.delete({ timeout: 5000 })
-							.then(r => {
-								logger.log({ level: 'info', type: 'none', message: `deleted message` });
-							})
-							.catch(e => {
-								logger.log({ level: 'error', type: 'none', message: `failed to delete message / ${e}` });
-							});
+								}
+								else {
+									question_msg
+										.edit(`channel **"${channel_to_delete}"** is not deletable`)
+										.then(edit_message => {
+											edit_message
+												.delete({ timeout: 5000 })
+												.catch(e => {
+													return reject(`failed to delete message / ${e}`);
+												});
+										})
+										.catch(e => {
+											return reject(`failed to send message / ${e}`);
+										});
+								}
+							}
+						});
+					})
+					.catch(e => {
+						return reject(`failed to send message / ${e}`);
 					});
+			}
+		}
+		else if (channel_to_delete.deletable) {
+			channel_to_delete
+				.delete()
+				.then(r => {
+					return resolve(true);
 				})
 				.catch(e => {
-					logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+					return reject(`failed to delete channel / ${e}`);
 				});
 		}
-	}
-	else if (channel_to_delete.deletable) {
-		channel_to_delete
-			.delete()
-			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `deleted channel with id \ ${r}` });
-			})
-			.catch(e => {
-				logger.log({ level: 'error', type: 'none', message: `failed to delete channel / ${e}` });
-			});
-	}
+	});
 };
 
 export function channel_deleted_update_state(
