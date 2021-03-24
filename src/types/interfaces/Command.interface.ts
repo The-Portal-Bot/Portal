@@ -90,13 +90,14 @@ const commands: InterfaceBlueprint[] = [
 	{
 		name: 'focus',
 		description: 'focus creates a channel with the people you selected and auto deletes on set time',
-		super_description: '**focus**, solves the problem that people have when in a channel with ' +
-			'a lot of people, but want to talk to another person and can over the other voices. ' +
+		super_description: '**focus**, creates a channel with the people you selected and auto deletes on set time.\n' +
+			'solves the problem that people have when in a channel with a lot of people, but want to talk to ' +
+			'another person and can over the other voices. ' +
 			'With focus when both users have requested a focus on a person, they will be automatically moved ' +
 			'moved to a new channel where they can speak for the average of the times they requested and when ' +
-			'time elapses they will be moved back to the channel they where before focus (2min default time)',
+			'time elapses they will be moved back to the channel they where before focus (infinite if not specified)',
 		example: './focus user_name',
-		args: '<!username> | <@time_to_focus>',
+		args: '<!user_tag> | <@time_to_focus>',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
