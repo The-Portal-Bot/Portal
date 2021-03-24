@@ -1,5 +1,5 @@
 // import { GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
-// import { create_channel, create_music_channel, delete_channel, getOptions } from "../../libraries/guild.library";
+// import { create_channel, create_music_channel, delete_channel, get_options } from "../../libraries/guild.library";
 // import { insert_portal, update_guild, insert_url } from "../../libraries/mongo.library";
 // import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 // import { PortalChannelPrtl } from "../../types/classes/PortalChannelPrtl.class";
@@ -69,8 +69,8 @@
 // 						});
 // 				}
 
-// 				const announcement_options = getOptions(current_guild, 'announcements channel (Portal/Users/Admins)', false);
-// 				const url_options = getOptions(current_guild, 'url only channel', true);
+// 				const announcement_options = get_options(current_guild, 'announcements channel (Portal/Users/Admins)', false);
+// 				const url_options = get_options(current_guild, 'url only channel', true);
 
 // 				create_channel(current_guild, 'announcement', announcement_options, cat_channel)
 // 					.then(response => {

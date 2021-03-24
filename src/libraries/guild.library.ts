@@ -1,5 +1,5 @@
 import {
-	CategoryChannel, Collection, CollectorFilter, Guild, GuildChannel, GuildCreateChannelOptions,
+	CategoryChannel, Collection, CollectorFilter, Guild, GuildCreateChannelOptions,
 	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState
 } from "discord.js";
 import moment from "moment";
@@ -38,7 +38,7 @@ function inline_operator(
 	};
 };
 
-export function getOptions(
+export function get_options(
 	guild: Guild, topic: string, can_write: boolean
 ): GuildCreateChannelOptions {
 	if (can_write) {
@@ -404,7 +404,6 @@ export function delete_channel(
 						});
 
 						collector.on('end', (collected: Collection<string, Message>) => {
-							console.log('collection has ended');
 							collected.forEach((reply_message: Message) => {
 								if (reply_message.deletable) {
 									reply_message
@@ -488,117 +487,64 @@ export function delete_channel(
 	});
 };
 
-export function channel_deleted_update_state(
-	channel_to_remove: GuildChannel, guild_list: GuildPrtl[]
-): number {
-	const TypesOfChannel = { Unknown: 0, Portal: 1, Voice: 2, Url: 3, Spotify: 4, Announcement: 5, Music: 6 };
-	const guild_object = guild_list.find(g => g.id === channel_to_remove.guild.id);
-
-	if (!guild_object) {
-		return -1;
-	}
-
-	let type_of_channel = TypesOfChannel.Unknown;
-
-	guild_object.portal_list.some((p, index) => {
-		if (p.id === channel_to_remove.id) {
-			guild_object.portal_list.splice(index, 1);
-			type_of_channel = TypesOfChannel.Portal;
-			return true;
-		}
-
-		return p.voice_list.some((v, index_v) => {
-			if (v.id === channel_to_remove.id) {
-				p.voice_list.splice(index_v, 1);
-				type_of_channel = TypesOfChannel.Voice;
-				return true;
-			}
-		});
-	});
-
-	for (let i = 0; i < guild_object.url_list.length; i++) {
-		if (guild_object.url_list[i] === channel_to_remove.id) {
-			guild_object.url_list.splice(i, 1);
-			type_of_channel = TypesOfChannel.Url;
-			break;
-		}
-	}
-
-	if (guild_object.announcement === channel_to_remove.id) {
-		guild_object.announcement = null;
-		type_of_channel = TypesOfChannel.Announcement;
-	}
-
-	if (guild_object.music_data.channel_id === channel_to_remove.id) {
-		guild_object.music_data.channel_id = undefined;
-		guild_object.music_data.message_id = undefined;
-		guild_object.music_data.votes = [];
-		type_of_channel = TypesOfChannel.Music;
-	}
-
-	return type_of_channel;
-};
-
 //
 
 export function generate_channel_name(
-	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[], guild_object: GuildPrtl, guild: Guild
-): number {
-	let return_value: number = 0;
-	portal_list.some(p => {
-		p.voice_list.some(v => {
-			if (v.id === voice_channel.id) {
-				let regex = v.regex;
-				if (p.regex_overwrite) {
-					const member = voice_channel.members
-						.find(m => m.id === v.creator_id);
+	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
+	guild_object: GuildPrtl, guild: Guild
+): Promise<boolean> {
+	return new Promise((resolve, reject) => {
+		for (let i = 0; i < portal_list.length; i++) {
+			for (let j = 0; j < portal_list[i].voice_list.length; j++) {
+				if (portal_list[i].voice_list[j].id === voice_channel.id) {
+					let regex = portal_list[i].voice_list[j].regex;
+					if (portal_list[i].regex_overwrite) {
+						const member = voice_channel.members
+							.find(m => m.id === portal_list[i].voice_list[j].creator_id);
 
-					if (member) {
-						const member_object = guild_object.member_list
-							.find(m => m.id === member.id);
+						if (member) {
+							const member_object = guild_object.member_list
+								.find(m => m.id === member.id);
 
-						if (member_object?.regex && member_object.regex !== 'null') {
-							regex = member_object.regex;
+							if (member_object?.regex && member_object.regex !== 'null') {
+								regex = member_object.regex;
+							}
 						}
 					}
-				}
 
-				const new_name = v.render
-					? regex_interpreter(
-						regex,
-						voice_channel,
-						v,
-						portal_list,
-						guild_object,
-						guild,
-						v.creator_id
-					)
-					: regex;
+					const new_name = portal_list[i].voice_list[j].render
+						? regex_interpreter(
+							regex,
+							voice_channel,
+							portal_list[i].voice_list[j],
+							portal_list,
+							guild_object,
+							guild,
+							portal_list[i].voice_list[j].creator_id
+						)
+						: regex;
 
-				if (new_name.length >= 1) {
-					if (voice_channel.name !== new_name.substring(0, 99)) {
-						voice_channel
-							.edit({ name: new_name.substring(0, 99) })
-							.then(new_channel => {
-								logger.log({ level: 'info', type: 'none', message: `new channel ${new_channel.name} spawned` });
-							})
-							.catch(e => {
-								logger.log({ level: 'error', type: 'none', message: `failed to edit voice channel / ${e}` });
-							});
-						return_value = 1;
+					if (new_name.length >= 1) {
+						if (voice_channel.name !== new_name.substring(0, 99)) {
+							voice_channel
+								.edit({ name: new_name.substring(0, 99) })
+								.catch(e => {
+									return reject(`failed to eddit voice channel / ${e}`);
+								});
+
+							return resolve(true);
+						}
+						else {
+							return resolve(false);
+						}
 					}
 					else {
-						return_value = 2;
+						return resolve(true);
 					}
 				}
-				else {
-					return_value = 3;
-				}
 			}
-		});
+		}
 	});
-
-	return return_value;
 };
 
 export function regex_interpreter(

@@ -1,5 +1,5 @@
 import { Message, VoiceChannel } from "discord.js";
-import { create_channel, delete_channel, getOptions, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
+import { create_channel, delete_channel, get_options, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
 import { update_guild } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
@@ -88,7 +88,7 @@ module.exports = async (
 					announcement_category = null;
 				}
 
-				const announcement_options = getOptions(message.guild, 'announcements channel (Portal/Users/Admins)', false);
+				const announcement_options = get_options(message.guild, 'announcements channel (Portal/Users/Admins)', false);
 
 				create_channel(
 					message.guild, announcement_channel,

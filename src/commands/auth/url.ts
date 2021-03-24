@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_channel, getOptions, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
+import { create_channel, get_options, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
 import { message_help } from "../../libraries/help.library";
 import { insert_url, remove_url } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
@@ -71,7 +71,7 @@ module.exports = async (
 				url_category = null;
 			}
 
-			const url_options = getOptions(message.guild, 'url only channel', true);
+			const url_options = get_options(message.guild, 'url only channel', true);
 
 			create_channel(
 				message.guild, url_channel, url_options, url_category
