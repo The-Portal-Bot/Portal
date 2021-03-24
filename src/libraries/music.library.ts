@@ -145,52 +145,45 @@ async function start_playback(
 				} else {
 					join_user_voice(client, message, guild_object, false)
 						.then(r => {
-							if (r.result) {
-								if (!r.voice_connection) {
-									return resolve({
-										result: false,
-										value: `could not join your voice channel`
-									});
-								}
-
-								const dispatcher = spawn_dispatcher(
-									guild_object.music_queue
-										? guild_object.music_queue[0]
-										: video,
-									r.voice_connection
-								);
-
-								dispatcher.once('finish', () => {
-									delete_dispatcher(dispatcher);
-
-									skip(r.voice_connection, user, client, guild, guild_object)
-										.then(r => {
-											clear_music_vote(guild_object.id);
-											update_music_message(
-												guild,
-												guild_object,
-												guild_object.music_queue.length > 0
-													? guild_object.music_queue[0]
-													: undefined,
-												r.value,
-												r.result
-											);
-										})
-										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
-										});
-								});
-
-								return resolve({
-									result: true,
-									value: 'playback started'
-								});
-							} else {
+							if (!r) {
 								return resolve({
 									result: false,
-									value: r.value
+									value: `could not join your voice channel`
 								});
 							}
+
+							const dispatcher = spawn_dispatcher(
+								guild_object.music_queue
+									? guild_object.music_queue[0]
+									: video,
+								r
+							);
+
+							dispatcher.once('finish', () => {
+								delete_dispatcher(dispatcher);
+
+								skip(r, user, client, guild, guild_object)
+									.then(r => {
+										clear_music_vote(guild_object.id);
+										update_music_message(
+											guild,
+											guild_object,
+											guild_object.music_queue.length > 0
+												? guild_object.music_queue[0]
+												: undefined,
+											r.value,
+											r.result
+										);
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
+									});
+							});
+
+							return resolve({
+								result: true,
+								value: 'playback started'
+							});
 						})
 						.catch(e => {
 							return resolve({
@@ -455,47 +448,40 @@ export async function play(
 
 			join_by_reaction(client, guild_object, user, false)
 				.then(r => {
-					if (r.result) {
-						if (!r.voice_connection) {
-							return resolve({
-								result: false,
-								value: 'could not join voice channel'
-							});
-						}
-
-						const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r.voice_connection);
-
-						dispatcher.once('finish', () => {
-							delete_dispatcher(dispatcher);
-
-							skip(voice_connection, user, client, guild, guild_object)
-								.then(r => {
-									clear_music_vote(guild_object.id);
-									update_music_message(
-										guild,
-										guild_object,
-										guild_object.music_queue.length > 0
-											? guild_object.music_queue[0]
-											: undefined,
-										r.value,
-										r.result
-									);
-								})
-								.catch(e => {
-									logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
-								});
-						});
-
-						return resolve({
-							result: true,
-							value: 'playing video from queue'
-						});
-					} else {
+					if (!r) {
 						return resolve({
 							result: false,
-							value: r.value
+							value: 'could not join voice channel'
 						});
 					}
+
+					const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r);
+
+					dispatcher.once('finish', () => {
+						delete_dispatcher(dispatcher);
+
+						skip(voice_connection, user, client, guild, guild_object)
+							.then(r => {
+								clear_music_vote(guild_object.id);
+								update_music_message(
+									guild,
+									guild_object,
+									guild_object.music_queue.length > 0
+										? guild_object.music_queue[0]
+										: undefined,
+									r.value,
+									r.result
+								);
+							})
+							.catch(e => {
+								logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
+							});
+					});
+
+					return resolve({
+						result: true,
+						value: 'playing video from queue'
+					});
 				})
 				.catch(e => {
 					return resolve({
@@ -618,47 +604,40 @@ export async function skip(
 
 					join_by_reaction(client, guild_object, user, false)
 						.then(r => {
-							if (r.result) {
-								if (!r.voice_connection) {
-									return resolve({
-										result: false,
-										value: 'could not join voice channel'
-									});
-								}
-
-								const dispatcher = spawn_dispatcher(next_video, r.voice_connection);
-
-								dispatcher.once('finish', () => {
-									delete_dispatcher(dispatcher);
-
-									skip(voice_connection, user, client, guild, guild_object)
-										.then(r => {
-											clear_music_vote(guild_object.id);
-											update_music_message(
-												guild,
-												guild_object,
-												guild_object.music_queue.length > 0
-													? guild_object.music_queue[0]
-													: undefined,
-												r.value,
-												r.result
-											);
-										})
-										.catch(e => {
-											logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
-										});
-								});
-
-								return resolve({
-									result: true,
-									value: 'playing video from queue'
-								});
-							} else {
+							if (!r) {
 								return resolve({
 									result: false,
-									value: r.value
+									value: 'could not join voice channel'
 								});
 							}
+
+							const dispatcher = spawn_dispatcher(next_video, r);
+
+							dispatcher.once('finish', () => {
+								delete_dispatcher(dispatcher);
+
+								skip(voice_connection, user, client, guild, guild_object)
+									.then(r => {
+										clear_music_vote(guild_object.id);
+										update_music_message(
+											guild,
+											guild_object,
+											guild_object.music_queue.length > 0
+												? guild_object.music_queue[0]
+												: undefined,
+											r.value,
+											r.result
+										);
+									})
+									.catch(e => {
+										logger.log({ level: 'error', type: 'none', message: new Error(`failed to skip video / ${e}`).toString() });
+									});
+							});
+
+							return resolve({
+								result: true,
+								value: 'playing video from queue'
+							});
 						})
 						.catch(e => {
 							return resolve({

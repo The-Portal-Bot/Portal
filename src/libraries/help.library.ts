@@ -1,4 +1,4 @@
-import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User } from "discord.js";
+import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User, VoiceConnection } from "discord.js";
 import { writeFileSync } from "jsonfile";
 import { cloneDeep } from "lodash";
 import moment from "moment";
@@ -143,18 +143,18 @@ export function update_music_message(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		const guild_channel: GuildChannel | undefined = guild.channels.cache
 			.find(c => c.id === guild_object.music_data.channel_id);
 
 		if (!guild_channel) {
-			return resolve(false);
+			return reject(`could not fetch channel`);
 		}
 
 		const channel: TextChannel = <TextChannel>guild_channel;
 
 		if (!channel || !guild_object.music_data.message_id) {
-			return resolve(false);
+			return reject(`could not find channel`);
 		}
 
 		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
@@ -201,16 +201,17 @@ export function update_music_message(
 				channel.messages
 					.fetch(guild_object.music_data.message_id)
 					.then((message: Message) => {
-						message.edit(music_message_emb)
+						message
+							.edit(music_message_emb)
 							.then(() => {
 								return resolve(true);
 							})
-							.catch(() => {
-								return resolve(false);
+							.catch(e => {
+								return reject(`failed to edit messages / ${e}`);
 							});
 					})
-					.catch(() => {
-						return resolve(false);
+					.catch(e => {
+						return reject(`failed to fetch messages / ${e}`);
 					});
 			}
 		}
@@ -220,18 +221,18 @@ export function update_music_message(
 export function update_music_lyrics_message(
 	guild: Guild, guild_object: GuildPrtl, lyrics: string, url?: string
 ): Promise<boolean> {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		const guild_channel: GuildChannel | undefined = guild.channels.cache
 			.find(c => c.id === guild_object.music_data.channel_id);
 
 		if (!guild_channel) {
-			return resolve(false);
+			return reject(`could not fetch channel`);
 		}
 
 		const channel: TextChannel = <TextChannel>guild_channel;
 
 		if (!channel || !guild_object.music_data.message_id) {
-			return resolve(false);
+			return reject(`could not find channel`);
 		}
 
 		const music_message_emb = create_rich_embed(
@@ -255,12 +256,12 @@ export function update_music_lyrics_message(
 							.then(() => {
 								return resolve(true);
 							})
-							.catch(() => {
-								return resolve(false);
+							.catch(e => {
+								return reject(`failed to edit messages / ${e}`);
 							});
 					})
-					.catch(() => {
-						return resolve(false);
+					.catch(e => {
+						return reject(`failed to fetch messages / ${e}`);
 					});
 			}
 		}
@@ -269,38 +270,22 @@ export function update_music_lyrics_message(
 
 export async function join_by_reaction(
 	client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
-): Promise<ReturnPormiseVoice> {
-	return new Promise((resolve) => {
+): Promise<VoiceConnection> {
+	return new Promise((resolve, reject) => {
 		if (!user.presence) {
-			return resolve({
-				result: false,
-				value: 'no user presence',
-				voice_connection: undefined
-			});
+			return reject('no user presence');
 		}
 
 		if (!user.presence.member) {
-			return resolve({
-				result: false,
-				value: 'no user presence member',
-				voice_connection: undefined
-			});
+			return reject('no user presence member');
 		}
 
 		if (!user.presence.member.voice) {
-			return resolve({
-				result: false,
-				value: 'you must be connected to a voice channel',
-				voice_connection: undefined
-			});
+			return reject('you must be connected to a voice channel');
 		}
 
 		if (!user.presence.member.voice.channel) {
-			return resolve({
-				result: false,
-				value: 'you must be connected to a voice channel',
-				voice_connection: undefined
-			});
+			return reject('you must be connected to a voice channel');
 		}
 
 		const voice_connection_in_guild = client.voice?.connections
@@ -310,22 +295,15 @@ export async function join_by_reaction(
 			voice_connection_in_guild.channel.id === user.presence.member.voice.channel?.id
 		) {
 			voice_connection_in_guild?.voice?.setSelfDeaf(true);
-			return resolve({
-				result: true,
-				value: 'already in voice channel',
-				voice_connection: voice_connection_in_guild
-			});
-		} else if (!voice_connection_in_guild ||
-			(voice_connection_in_guild && !voice_connection_in_guild.channel.members.some(m => !m.user.bot))
+
+			return resolve(voice_connection_in_guild);
+		} else if (!voice_connection_in_guild || (voice_connection_in_guild &&
+			!voice_connection_in_guild.channel.members.some(m => !m.user.bot))
 		) {
 			const current_voice = user.presence.member?.voice.channel;
 
 			if (!current_voice) {
-				return resolve({
-					result: false,
-					value: `could not find your voice channel`,
-					voice_connection: undefined,
-				});
+				return reject(`could not find your voice channel`);
 			}
 
 			current_voice.join()
@@ -336,18 +314,10 @@ export async function join_by_reaction(
 
 					response.voice?.setDeaf(true); // setSelfDeaf(true);
 
-					return resolve({
-						result: true,
-						value: 'join',
-						voice_connection: response,
-					});
+					return resolve(response);
 				})
 				.catch(e => {
-					return resolve({
-						result: false,
-						value: `failed to join voice channel / ${e}`,
-						voice_connection: undefined,
-					});
+					return reject(`failed to join voice channel / ${e}`);
 				});
 		}
 	});
@@ -355,38 +325,22 @@ export async function join_by_reaction(
 
 export async function join_user_voice(
 	client: Client, message: Message, guild_object: GuildPrtl, join: boolean = false
-): Promise<ReturnPormiseVoice> {
-	return new Promise((resolve) => {
+): Promise<VoiceConnection> {
+	return new Promise((resolve, reject) => {
 		if (!message.member) {
-			return resolve({
-				result: false,
-				value: 'message has no member',
-				voice_connection: undefined
-			});
+			return reject('message has no member');
 		}
 
 		if (!message.guild) {
-			return resolve({
-				result: false,
-				value: 'message has no guild',
-				voice_connection: undefined
-			});
+			return reject('message has no guild');
 		}
 
 		if (!guild_object) {
-			return resolve({
-				result: false,
-				value: 'could not find guild of message',
-				voice_connection: undefined
-			});
+			return reject('could not find guild of message');
 		}
 
 		if (!client.voice) {
-			return resolve({
-				result: false,
-				value: 'could not fetch portal\'s voice connections',
-				voice_connection: undefined
-			});
+			return reject('could not fetch portal\'s voice connections');
 		}
 
 		const voice_connection_in_guild = client.voice.connections
@@ -397,31 +351,19 @@ export async function join_user_voice(
 			voice_connection_in_guild.channel.id === message.member.voice.channel?.id
 		) {
 			voice_connection_in_guild?.voice?.setSelfDeaf(true);
-			return resolve({
-				result: true,
-				value: 'already in voice channel',
-				voice_connection: voice_connection_in_guild
-			});
+			return resolve(voice_connection_in_guild);
 		} else if (
-			!voice_connection_in_guild ||
-			(voice_connection_in_guild && !voice_connection_in_guild.channel.members.some(m => !m.user.bot))
+			!voice_connection_in_guild || (voice_connection_in_guild &&
+				!voice_connection_in_guild.channel.members.some(m => !m.user.bot))
 		) {
 			const current_voice = message.member.voice.channel;
 
 			if (!current_voice) {
-				return resolve({
-					result: false,
-					value: 'you are not connected to any channel',
-					voice_connection: undefined
-				});
+				return reject('you are not connected to any channel');
 			}
 
 			if (current_voice.guild.id !== message.guild.id) {
-				return resolve({
-					result: false,
-					value: 'your current channel is on another guild',
-					voice_connection: undefined
-				});
+				return reject('your current channel is on another guild');
 			}
 
 			current_voice.join()
@@ -432,18 +374,10 @@ export async function join_user_voice(
 
 					response.voice?.setSelfDeaf(true);
 
-					return resolve({
-						result: true,
-						value: client_write(message, guild_object, 'join'),
-						voice_connection: response,
-					});
+					return resolve(response,);
 				})
 				.catch(e => {
-					return resolve({
-						result: false,
-						value: `error while joining voice connection / ${e}`,
-						voice_connection: undefined,
-					});
+					return reject(`error while joining voice connection / ${e}`);
 				});
 		}
 	});
@@ -539,7 +473,7 @@ export function is_authorised(
 	}
 
 	if (member.roles.cache) {
-		return member.roles.cache.some(r => 
+		return member.roles.cache.some(r =>
 			r.name.toLocaleLowerCase() === 'p.admin');
 	}
 
@@ -550,7 +484,7 @@ export function is_dj(
 	member: GuildMember
 ): boolean {
 	if (member.roles.cache) {
-		return member.roles.cache.some(r => 
+		return member.roles.cache.some(r =>
 			r.name.toLocaleLowerCase() === 'p.dj');
 	}
 
