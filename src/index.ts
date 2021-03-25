@@ -1,6 +1,6 @@
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, User, VoiceState } from "discord.js";
-import mongoose from 'mongoose'; // we want to load an object not only functions
-import { format, transports } from "winston";
+import mongoose from 'mongoose';
+import { transports } from "winston";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
@@ -535,9 +535,7 @@ function handle_music_channels(
 			set_music_data(guild_object.id, music_data)
 				.then(r => {
 					message_reply(true, message, message.author,
-						r
-							? 'successfully removed music channel'
-							: 'failed to remove music channel');
+						`removed music channel ${r ? 'successfully' : 'unsuccessfully'}`);
 				})
 				.catch(e => {
 					logger.error(new Error(`failed to remove music channel / ${e}`));
@@ -624,15 +622,13 @@ function handle_music_channels(
 							guild_object.music_queue.length > 0
 								? guild_object.music_queue[0]
 								: undefined,
-							`error while starting playback`
+							`error while starting playback / ${e}`
 						);
 					}
 
 					if (message.deletable) {
 						message.delete();
 					}
-
-					logger.error(new Error(`error while starting playback / ${e}`));
 				});
 		}
 

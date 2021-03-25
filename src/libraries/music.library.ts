@@ -1,13 +1,14 @@
 import ytdl from 'discord-ytdl-core';
-import { Client, Guild, Message, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
+import { Client, Guild, Message, MessageAttachment, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
+import fs from 'fs';
 import { RequestOptions } from 'https';
 import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
 import config from '../config.json';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
-import { get_json, is_url, join_by_reaction, join_user_voice, logger, update_music_lyrics_message, update_music_message } from './help.library';
+import { get_json, is_url, join_by_reaction, join_user_voice, update_music_lyrics_message, update_music_message } from './help.library';
 import { https_fetch, scrape_lyrics } from './http.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
+
 // const ytdl = require('ytdl-core');
 
 async function pop_music_queue(
@@ -188,7 +189,55 @@ export async function start(
 	guild: Guild, guild_object: GuildPrtl, search_term: string
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		if (is_url(search_term)) {
+		if (message.attachments.size > 0) {
+			const attachment = message.attachments.find(a => !!a);
+
+			if (attachment) {
+				const url_path = attachment.url.substr(26);
+
+				const options: RequestOptions = {
+					'method': 'GET',
+					"hostname": 'cdn.discordapp.com',
+					'port': undefined,
+					"path": url_path
+				};
+
+				https_fetch(options)
+					.then((response: Buffer) => {
+						const json = <VideoSearchResult[]>get_json(response.toString());
+
+						if (!json) {
+							return reject('data from source was corrupted');
+						}
+
+						if (json.length === 0) {
+							return reject('must give at least one');
+						}
+
+						start_playback(
+							voice_connection, client, user, message,
+							guild, guild_object, json[0]
+						)
+							.then(r => {
+								json.forEach((v, i) => {
+									if (i > 0) {
+										push_video_to_queue(guild_object, v);
+									}
+								});
+
+								return resolve(r);
+							})
+							.catch(e => {
+								return reject(`error while starting music player / ${e}`);
+							});
+					})
+					.catch((e: any) => {
+						return reject(`could not access the server / ${e}`);
+					});
+			} else {
+				return resolve('file is not a portal queue');
+			}
+		} else if (is_url(search_term)) {
 			const plist_index = search_term.indexOf('list=');
 			const pindx_index = search_term.indexOf('index=');
 			const video_index = search_term.indexOf('?v=');
@@ -239,7 +288,7 @@ export async function start(
 						)
 							.then(r => {
 								yts_attempt.videos.forEach((v, i) => {
-									if (i > 0 && i > +index)
+									if (i > 0 && i > +index) {
 										push_video_to_queue(guild_object, <VideoSearchResult>{
 											type: 'video',
 											videoId: v.videoId,
@@ -257,7 +306,8 @@ export async function start(
 											ago: '',
 											views: 0,
 											author: v.author,
-										})
+										});
+									}
 								});
 
 								return resolve(r);
@@ -265,7 +315,6 @@ export async function start(
 							.catch(e => {
 								return reject(`error while starting music player / ${e}`);
 							});
-
 					})
 					.catch(e => {
 						return reject(`error while searching youtube playlist / ${e}`);
@@ -663,6 +712,22 @@ export async function get_lyrics(
 			update_music_lyrics_message(guild, guild_object, '');
 
 			return reject('no song in queue');
+		}
+	});
+};
+
+export async function export_txt(
+	guild_object: GuildPrtl
+): Promise<MessageAttachment | null> {
+	return new Promise((resolve, reject) => {
+		if (guild_object.music_queue.length > 0) {
+			const stringData = JSON.stringify(guild_object.music_queue);
+			const buffer = Buffer.from(stringData, "utf-8");
+			const attachment = new MessageAttachment(buffer, "portal_music_queue.json");
+
+			return resolve(attachment);
+		} else {
+			return resolve(null);
 		}
 	});
 };

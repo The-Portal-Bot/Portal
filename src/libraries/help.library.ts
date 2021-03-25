@@ -94,6 +94,7 @@ export function create_music_message(
 				// sent_message.react('➕');
 				sent_message.react('📌');
 				sent_message.react('📄');
+				sent_message.react('⬇️');
 				sent_message.react('🧹');
 				sent_message.react('🚪');
 
