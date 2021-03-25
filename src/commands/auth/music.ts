@@ -10,11 +10,12 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		if (!message.guild)
+		if (!message.guild) {
 			return resolve({
 				result: false,
 				value: 'message\'s guild could not be fetched'
 			});
+		}
 
 		if (args.length === 0) {
 			if (is_music_channel(message.channel.id, guild_object)) {
@@ -22,10 +23,8 @@ module.exports = async (
 				set_music_data(guild_object.id, music_data)
 					.then(r => {
 						return resolve({
-							result: r,
-							value: r
-								? 'successfully removed music channel'
-								: 'failed to remove music channel'
+							result: true,
+							value: 'successfully removed music channel'
 						});
 					})
 					.catch(e => {
@@ -49,9 +48,6 @@ module.exports = async (
 			}
 		}
 
-		const portal_icon_url = 'https://raw.githubusercontent.com/keybraker/keybraker' +
-			'.github.io/master/assets/img/logo.png';
-
 		const music = message.guild.channels.cache.find(channel =>
 			channel.id == guild_object.music_data.channel_id);
 
@@ -64,11 +60,12 @@ module.exports = async (
 			const new_music = <TextChannel>message.guild.channels.cache.find(channel =>
 				channel.id == guild_object.music_data.channel_id);
 
-			if (!new_music)
+			if (!new_music) {
 				return resolve({
 					result: false,
 					value: 'channel could not be fetched'
 				});
+			}
 
 			create_music_message(new_music, guild_object)
 				.then(music_message_id => {

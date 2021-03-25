@@ -1,7 +1,7 @@
-import https, { RequestOptions } from 'https';
-import { URL } from 'url';
 import cheerio from 'cheerio';
-const fetch = require('node-fetch');
+import https, { RequestOptions } from 'https';
+import fetch from 'node-fetch';
+import { URL } from 'url';
 
 export async function https_fetch(
 	options: string | RequestOptions | URL
@@ -13,9 +13,11 @@ export async function https_fetch(
 			res.on('data', function (chunk: any) {
 				chunks.push(chunk);
 			});
+
 			res.on('end', function (chunk: any) {
 				return resolve(Buffer.concat(chunks));
 			});
+
 			res.on('error', function (error) {
 				return reject(false);
 			});

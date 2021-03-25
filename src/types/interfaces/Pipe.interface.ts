@@ -15,7 +15,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
-				: str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -29,7 +31,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? get_vowels(str).join('')
-				: str.map(s => get_vowels(s).join('')).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => get_vowels(s).join('')).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -43,7 +47,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? get_constants(str).join('')
-				: str.map(s => get_constants(s).join('')).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => get_constants(s).join('')).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -57,7 +63,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.camelCase(str)
-				: str.map(s => voca.camelCase(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.camelCase(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -71,7 +79,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.capitalize(str)
-				: str.map(s => voca.capitalize(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.capitalize(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -85,7 +95,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.decapitalize(str)
-				: str.map(s => voca.decapitalize(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.decapitalize(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -99,7 +111,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.lowerCase(str)
-				: str.map(s => voca.lowerCase(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.lowerCase(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -113,7 +127,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.upperCase(str)
-				: str.map(s => voca.upperCase(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.upperCase(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -127,7 +143,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? str
-				: most_frequent(str, true);
+				:  (typeof str === 'object') 
+					? most_frequent(str, true)
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -141,7 +159,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? str
-				: most_frequent(str, false);
+				:  (typeof str === 'object') 
+					? most_frequent(str, false)
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -155,7 +175,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.snakeCase(str)
-				: str.map(s => voca.snakeCase(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.snakeCase(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -169,7 +191,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.kebabCase(str)
-				: str.map(s => voca.kebabCase(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.kebabCase(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -183,7 +207,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.words(str).length
-				: voca.words(str.join(' ')).length;
+				:  (typeof str === 'object') 
+					? voca.words(str.join(' ')).length
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -197,7 +223,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? voca.titleCase(str)
-				: str.map(s => voca.titleCase(s)).join(',');
+				:  (typeof str === 'object') 
+					? str.map(s => voca.titleCase(s)).join(',')
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -211,7 +239,9 @@ const pipes: InterfaceBlueprint[] = [
 		get: (str: string | string[]) => {
 			return (typeof str === 'string')
 				? str.length
-				: str.join(',').length;
+				:  (typeof str === 'object') 
+					? str.join(',').length
+					: str;
 		},
 		set: null,
 		auth: AuthEnum.none

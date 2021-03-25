@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { OpapGameIdList } from '../../data/enums/OpapGames.enum';
-import { create_rich_embed, get_key_from_enum } from '../../libraries/help.library';
+import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
 export const command_prefix: string = './';
@@ -90,13 +90,14 @@ const commands: InterfaceBlueprint[] = [
 	{
 		name: 'focus',
 		description: 'focus creates a channel with the people you selected and auto deletes on set time',
-		super_description: '**focus**, solves the problem that people have when in a channel with ' +
-			'a lot of people, but want to talk to another person and can over the other voices. ' +
+		super_description: '**focus**, creates a channel with the people you selected and auto deletes on set time.\n' +
+			'solves the problem that people have when in a channel with a lot of people, but want to talk to ' +
+			'another person and can over the other voices. ' +
 			'With focus when both users have requested a focus on a person, they will be automatically moved ' +
 			'moved to a new channel where they can speak for the average of the times they requested and when ' +
-			'time elapses they will be moved back to the channel they where before focus (2min default time)',
+			'time elapses they will be moved back to the channel they where before focus (infinite if not specified)',
 		example: './focus user_name',
-		args: '<!username> | <@time_to_focus>',
+		args: '<!user_tag> | <@time_to_focus>',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
@@ -336,17 +337,17 @@ const commands: InterfaceBlueprint[] = [
 		get: null,
 		set: null
 	},
-	{
-		name: 'setup',
-		description: 'creates a portal, url-only and announcement channel automatically',
-		super_description: '**setup**, will autogenerate a portal, url-only and announcement channels ' +
-			'at once, removing the hustle of setting up the server.\n',
-		example: './setup',
-		args: 'none',
-		auth: AuthEnum.admin,
-		get: null,
-		set: null
-	},
+	// {
+	// 	name: 'setup',
+	// 	description: 'creates a portal, url-only and announcement channel automatically',
+	// 	super_description: '**setup**, will autogenerate a portal, url-only and announcement channels ' +
+	// 		'at once, removing the hustle of setting up the server.\n',
+	// 	example: './setup',
+	// 	args: 'none',
+	// 	auth: AuthEnum.admin,
+	// 	get: null,
+	// 	set: null
+	// },
 	{
 		name: 'state',
 		description: 'returns a visualisation of Portal\'s current state',

@@ -4,7 +4,9 @@ import { ProgramNames } from "../data/lists/program_names.static";
 import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
 import { LocaleEnum } from "../data/enums/Locales.enum";
 
-function status_aliases(activities: Activity[], locale: number): string[] {
+function status_aliases(
+	activities: Activity[], locale: number
+): string[] {
 	const new_status: string[] = [];
 
 	activities.forEach(activity => {
@@ -58,7 +60,9 @@ function status_aliases(activities: Activity[], locale: number): string[] {
 	return new_status;
 };
 
-export function get_status_list(voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl): string[] {
+export function get_status_list(
+	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl
+): string[] {
 	const array_of_statuses: string[] = [];
 
 	voice_channel.members.forEach((member: GuildMember) => {

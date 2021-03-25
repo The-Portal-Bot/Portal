@@ -1,28 +1,34 @@
-import { Guild, GuildMember, Message, VoiceState } from "discord.js";
+import { BanOptions, Guild, GuildMember, Message, PermissionString, VoiceState } from "discord.js";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
 import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
 import { logger, time_elapsed } from './help.library';
 import { update_member } from "./mongo.library";
 
-export function give_role_from_rankup(member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild): boolean {
-	if (ranks) return false;
+export function give_role_from_rankup(
+	member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild
+): Promise<boolean> {
+	return new Promise((resolve, reject) => {
+		if (ranks) return reject(false);
 
-	const new_rank = ranks.find((rank: { level: number }) => rank.level === member_prtl.level);
-	if (new_rank === null || new_rank === undefined) return false;
+		const new_rank = ranks.find((rank: { level: number }) => rank.level === member_prtl.level);
+		if (new_rank === null || new_rank === undefined) return reject(false);
 
-	const new_role = guild.roles.cache.find(role => role.id === new_rank.id);
-	if (new_role === null || new_role === undefined) return false;
+		const new_role = guild.roles.cache.find(role => role.id === new_rank.id);
+		if (new_role === null || new_role === undefined) return reject(false);
 
-	if (!member.roles.cache.some(role => role === new_role)) {
-		member.roles.add(new_role);
-		return true;
-	}
+		if (!member.roles.cache.some(role => role === new_role)) {
+			member.roles.add(new_role);
+			return resolve(true);
+		}
 
-	return false;
+		return reject(false);
+	});
 };
 
-export function calculate_rank(member: MemberPrtl): number | boolean {
+export function calculate_rank(
+	member: MemberPrtl
+): number | boolean {
 	if (member.tier === 0) {
 		member.tier = 1; // must be removed
 	}
@@ -69,7 +75,7 @@ export function update_timestamp(
 			}
 		});
 
-		if (member_prtl === undefined) {
+		if (!member_prtl) {
 			return false;
 		}
 
@@ -81,9 +87,6 @@ export function update_timestamp(
 		if (member_prtl.timestamp === null) {
 			member_prtl.timestamp = new Date();
 			update_member(voiceState.guild.id, member.id, 'timestamp', member_prtl.timestamp)
-				.then(r => {
-					logger.log({ level: 'info', type: 'none', message: `updated member` });
-				})
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 				});
@@ -94,17 +97,11 @@ export function update_timestamp(
 		const points = add_points_time(member_prtl, speed);
 
 		update_member(voiceState.guild.id, member.id, 'points', points)
-			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `updated member` });
-			})
 			.catch(e => {
 				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
 
 		update_member(voiceState.guild.id, member.id, 'timestamp', null)
-			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `updated member` });
-			})
 			.catch(e => {
 				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
@@ -113,9 +110,6 @@ export function update_timestamp(
 
 		if (level) {
 			update_member(voiceState.guild.id, member.id, 'level', level)
-				.then(r => {
-					logger.log({ level: 'info', type: 'none', message: `updated member` });
-				})
 				.catch(e => {
 					logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 				});
@@ -146,9 +140,6 @@ export function add_points_message(
 	member.points += points > 5 ? 5 : points;
 
 	update_member(message.guild.id, member.id, 'points', member.points)
-		.then(r => {
-			logger.log({ level: 'info', type: 'none', message: `updated member` });
-		})
 		.catch(e => {
 			logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 		});
@@ -157,9 +148,6 @@ export function add_points_message(
 
 	if (level) {
 		update_member(message.guild.id, member.id, 'level', level)
-			.then(r => {
-				logger.log({ level: 'info', type: 'none', message: `updated member` });
-			})
 			.catch(e => {
 				logger.log({ level: 'error', type: 'none', message: `failed to update member / ${e}` });
 			});
@@ -168,60 +156,127 @@ export function add_points_message(
 	return level ? level : false;
 };
 
-export function kick(message: Message, args: any): void {
-	// This command must be limited to mods and admins. In this example we just hardcode the role names.
-	// Please read on Array.some() to understand this bit:
-	// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
-	if (message.member && !message.member.roles.cache.some(r => ['Administrator', 'Moderator'].includes(r.name))) {
-		message.reply('Sorry, you don\'t have permissions to use this!');
-	}
+function is_authorised_to_kick(member: GuildMember): boolean {
+	const valid_perms: PermissionString[] = ['ADMINISTRATOR', 'KICK_MEMBERS'];
+	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
 
-	// Let's first check if we have a member and if we can kick them!
-	// message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
-	// We can also support getting the member by ID, which would be args[0]
-	if (message.mentions) {
-		if (message.mentions.members) {
-			if (message.guild) {
-				const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-				if (!member) { message.reply('Please mention a valid member of this server'); }
-				else {
-					if (!member.kickable) { message.reply('I cannot kick this user! Do they have a higher role? Do I have kick permissions?'); }
+	return valid_perms.some(permission => member.hasPermission(permission, options));
+}
 
-					// slice(1) removes the first part, which here should be the user mention or ID
-					// join(' ') takes all the various parts to make it a single string.
-					let reason = args.slice(1).join(' ');
-					if (!reason) reason = 'No reason provided';
-
-					// Now, time for a swift kick in the nuts!
-					// await member.kick(reason)
-					member.kick(reason).catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
-					message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
-				}
-			}
+export function kick(
+	message: Message, args: string[]
+): Promise<string> {
+	message.guild?.channels.cache.forEach(e => e);
+	return new Promise((resolve, reject) => {
+		if (message.member && !is_authorised_to_kick(message.member)) {
+			return reject(`sorry, you don't have permissions to kick members`);
 		}
-	}
 
+		if (message.mentions) {
+			if (message.mentions.members) {
+				if (message.guild) {
+					const member_to_kick = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+
+					if (!member_to_kick) {
+						message.reply('please mention a valid member of this server');
+					} else {
+						if (!member_to_kick.kickable) {
+							message.reply('unable to kick user, maybe they have a higher role, or Portal does not have kick permissions');
+						}
+
+						let kick_member: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+						let kick_reason: string = args.join(' ').substr(args.join(' ').indexOf('|') + 1)
+							? args.join(' ').substr(args.join(' ').indexOf('|') + 1)
+							: '';
+
+						if (kick_member === '' && kick_reason !== '') {
+							kick_member = kick_reason;
+							kick_reason = 'kicked by admin';
+						}
+
+						member_to_kick
+							.kick(kick_reason).catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`))
+							.then(r => {
+								message.reply(`${member_to_kick.user.tag} has been kicked by ${message.author.tag} because: ${kick_reason}`);
+							})
+							.catch(e => {
+								return reject(`failed to kick member / ${e}`);
+							});
+					}
+				} else {
+					message.reply(`user guild could not be fetched`);
+				}
+			} else {
+				message.reply(`no user mentioned to be kicked`);
+			}
+		} else {
+			message.reply(`no user mentioned to be kicked`);
+		}
+	});
 };
 
-export function ban(message: Message, args: any): void {
-	// Most of this command is identical to kick, except that here we'll only let admins do it.
-	// In the real world mods could ban too, but this is just an example, right? ;)
-	// if (message.member && !message.member.roles.some(r => ['Administrator'].includes(r.name))) {
-	// 	message.reply('Sorry, you don\'t have permissions to use this!');
-	// }
+function is_authorised_to_ban(member: GuildMember): boolean {
+	const valid_perms: PermissionString[] = ['ADMINISTRATOR', 'BAN_MEMBERS'];
+	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
 
-	// if (message) {
-	// 	if (message.mentions) {
-	// 		const member = message.mentions.members.first();
-	// 		if (!member) { message.reply('Please mention a valid member of this server'); }
-	// 		if (!member.bannable) { message.reply('I cannot ban this user! Do they have a higher role? Do I have ban permissions?'); }
+	return valid_perms.some(permission => member.hasPermission(permission, options));
+}
 
-	// 		let reason = args.slice(1).join(' ');
-	// 		if (!reason) reason = 'No reason provided';
+export function ban(
+	message: Message, args: string[]
+): Promise<string> {
+	return new Promise((resolve, reject) => {
+		if (message.member && !is_authorised_to_kick(message.member)) {
+			message.reply(`sorry, you don't have permissions to ban users`);
+		}
 
-	// 		// await member.ban(reason)
-	// 		member.ban(reason).catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
-	// 		message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
-	// 	}
-	// }
+		if (message) {
+			if (message.mentions) {
+				const member_to_ban = message.mentions.members?.first();
+
+				if (!member_to_ban) {
+					message.reply('please mention a valid member of this server');
+				}
+
+				if (!member_to_ban?.bannable) {
+					message.reply('unable to ban user, maybe they have a higher role, or Portal does not have kick permissions');
+				}
+
+				let ban_member: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+				let ban_reason: string = args.join(' ').substr(args.join(' ').indexOf('|') + 1)
+					? args.join(' ').substr(args.join(' ').indexOf('|') + 1)
+					: '';
+				let ban_days: number = args.join(' ').substr(args.join(' ').lastIndexOf('|') + 1)
+					? +args.join(' ').substr(args.join(' ').lastIndexOf('|') + 1)
+					: 0;
+
+				if (ban_member === '' && ban_reason !== '') {
+					ban_member = ban_reason;
+					ban_reason = 'banned by admin';
+				}
+
+				if (isNaN(ban_days)) {
+					message.reply(`no user mentioned to be banned`);
+				} else {
+					const ban_options: BanOptions = {
+						days: ban_days,
+						reason: ban_reason
+					};
+
+					member_to_ban
+						?.ban(ban_options)
+						.then(r => {
+							message.reply(`${r?.user.tag} has been banned by ${message.author.tag} for ${ban_days} days, because: ${ban_reason}`);
+							return resolve(`${r?.user.tag} has been banned by ${message.author.tag} for ${ban_days} days, because: ${ban_reason}`);
+						})
+						.catch(e => {
+							message.reply(`sorry ${message.author} Portal failed to ban user / ${e}`)
+							return reject(`failed to ban member / ${e}`);
+						});
+				}
+			} else {
+				message.reply(`no user mentioned to be banned`);
+			}
+		}
+	});
 };

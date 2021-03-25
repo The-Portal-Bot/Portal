@@ -9,14 +9,15 @@ module.exports = async (
 	return new Promise((resolve) => {
 		join_user_voice(client, message, guild_object, true)
 			.then(r => {
-				return resolve(
-					r
-				);
+				return resolve({
+					result: true,
+					value: 'successfully joined voice channel'
+				});
 			})
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'join', e)
+					value: `failed to join voice channel ${e}`
 				})
 			});
 	});

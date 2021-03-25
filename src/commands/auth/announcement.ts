@@ -1,5 +1,5 @@
 import { Message, VoiceChannel } from "discord.js";
-import { create_channel, delete_channel, getOptions, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
+import { create_channel, delete_channel, get_options, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
 import { update_guild } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
@@ -53,8 +53,9 @@ module.exports = async (
 			const announcement = <VoiceChannel>message.guild.channels.cache
 				.find(channel => channel.id == guild_object.announcement);
 
-			if (announcement)
+			if (announcement) {
 				delete_channel(PortalChannelTypes.announcement, announcement, message);
+			}
 
 			if (args.length === 0) {
 				update_guild(guild_object.id, 'announcement', message.channel.id)
@@ -87,34 +88,32 @@ module.exports = async (
 					announcement_category = null;
 				}
 
-				const announcement_options = getOptions(message.guild, 'announcements channel (Portal/Users/Admins)', false);
+				const announcement_options = get_options(message.guild, 'announcements channel (Portal/Users/Admins)', false);
 
 				create_channel(
 					message.guild, announcement_channel,
 					announcement_options, announcement_category
 				)
 					.then(r_channel => {
-						if (r_channel.result) {
-							update_guild(guild_object.id, 'announcement', r_channel.value)
-								.then(r_announcement => {
-									return resolve({
-										result: r_announcement,
-										value: r_announcement
-											? 'created announcement channel successfully'
-											: 'failed to create a announcement channel'
-									});
-								})
-								.catch(e => {
-									return resolve({
-										result: false,
-										value: 'failed to create a announcement channel'
-									});
+						update_guild(guild_object.id, 'announcement', r_channel)
+							.then(r_announcement => {
+								return resolve({
+									result: r_announcement,
+									value: r_announcement
+										? 'created announcement channel successfully'
+										: 'failed to create a announcement channel'
 								});
-						} else {
-							return resolve(r_channel);
-						}
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `failed to create a announcement channel / ${e}`
+								});
+							});
 					})
-					.catch(e => { return resolve(e); });
+					.catch(e => {
+						return resolve(e);
+					});
 			} else {
 				return resolve({
 					result: false,
