@@ -4,8 +4,16 @@ import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../../types/classes/MemberPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
-function compare (member_a: MemberPrtl, member_b: MemberPrtl) {
-	return (member_b.points > member_a.points) ? 1 : -1;
+function compare(
+	member_a: MemberPrtl, member_b: MemberPrtl
+) {
+	return member_b.level === member_a.level
+		? member_b.points > member_a.points
+			? 1
+			: -1
+		: member_b.level > member_a.level
+			? 1
+			: -1;
 };
 
 module.exports = async (
@@ -16,7 +24,11 @@ module.exports = async (
 		if (!member_list) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'leaderboard', 'server has no members please contact portal support')
+				value: message_help(
+					'commands',
+					'leaderboard',
+					'server has no members please contact portal support'
+				)
 			});
 		}
 
@@ -24,7 +36,10 @@ module.exports = async (
 		if (args.length > 0 && isNaN(requested_number)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'leaderboard', `${args[0]} is not a number`)
+				value: message_help('commands',
+					'leaderboard',
+					`${args[0]} is not a number`
+				)
 			});
 		}
 
@@ -33,10 +48,14 @@ module.exports = async (
 				? 24
 				: requested_number
 			: 9;
+
 		if (entries <= 0) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'leaderboard', 'leaderboard entries must be at least one')
+				value: message_help('commands',
+					'leaderboard',
+					'leaderboard entries must be at least one'
+				)
 			});
 		}
 
@@ -44,7 +63,6 @@ module.exports = async (
 			const member_levels: Field[] = [];
 			member_list
 				.sort(compare)
-				// .filter((m, j) => entries > j)
 				.forEach((member_object, i) => {
 					if (message.guild && entries > i) {
 						const this_member = message.guild.members.cache
@@ -53,17 +71,20 @@ module.exports = async (
 						if (this_member) {
 							member_levels.push(
 								{
-									emote: `${i + 1}. ${this_member.displayName}`,
+									emote: `${i + 1}. ${this_member.displayName} at level ${member_object.level}`,
 									role: `points: ${Math.round(member_object.points)}`,
 									inline: false
 								}
 							);
+
 							entries--;
-						}
-						else {
+						} else {
 							resolve({
 								result: false,
-								value: message_help('commands', 'leaderboard', 'a member has been stored incorrectly please contact Portal maintainter')
+								value: message_help('commands',
+									'leaderboard',
+									'a member has been stored incorrectly please contact Portal maintainter'
+								)
 							});
 						}
 					}
@@ -71,7 +92,7 @@ module.exports = async (
 
 			message.channel.send(create_rich_embed(
 				'LEADERBOARD',
-				null,
+				'[Ranking System](https://portal-bot.xyz/docs/ranking)',
 				'#00FFFF',
 				member_levels,
 				null,

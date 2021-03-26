@@ -63,9 +63,7 @@
          "key": "add-yeandex-api-key"
        }
      },
-     "delete_msg": false, // wheather or not Portal will delete messages
-     "delete_msg_after": 5, // how long after message sent, will it be deleted
-     "always_reply": true, // wheather or not Portal will reply to messages
+     "delete_delay": 7, // how long after message sent, will it be deleted
      "debug": false, // display run time information in console
      "log": false // log files in ../logs directory on host
    }

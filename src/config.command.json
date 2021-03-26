@@ -8,8 +8,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": false
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "announce",
@@ -17,8 +20,11 @@
                 "time": 2,
                 "auth": false,
                 "premium": true,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "bet",
@@ -26,8 +32,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": false,
+                    "reply": true
+                }
             },
             {
                 "name": "corona",
@@ -35,8 +44,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "crypto",
@@ -44,8 +56,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": true,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "focus",
@@ -53,8 +68,11 @@
                 "time": 1,
                 "auth": false,
                 "premium": true,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "football",
@@ -62,8 +80,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": true,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "help",
@@ -71,8 +92,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "join",
@@ -80,8 +104,11 @@
                 "time": 1,
                 "auth": false,
                 "premium": true,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "joke",
@@ -89,8 +116,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": false,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
             },
             {
                 "name": "leaderboard",
@@ -98,8 +128,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "leave",
@@ -107,8 +140,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": true,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "level",
@@ -116,8 +152,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "news",
@@ -125,8 +164,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
             },
             {
                 "name": "ping",
@@ -134,8 +176,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "poll",
@@ -143,8 +188,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "ranks",
@@ -152,8 +200,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": true,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "roll",
@@ -161,8 +212,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "run",
@@ -170,8 +224,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
             },
             {
                 "name": "state",
@@ -179,8 +236,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": true,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "weather",
@@ -188,8 +248,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
             },
             {
                 "name": "whoami",
@@ -197,8 +260,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             }
         ]
     },
@@ -211,8 +277,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "delete",
@@ -220,8 +289,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "force",
@@ -229,8 +301,11 @@
                 "time": 5,
                 "auth": true,
                 "premium": true,
-                "auto_delete": false,
-                "reply": false
+                "reply": false,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
             },
             {
                 "name": "ignore",
@@ -238,8 +313,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "music",
@@ -247,8 +325,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "portal",
@@ -256,8 +337,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": false,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "role_assigner",
@@ -265,8 +349,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": false,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
             },
             {
                 "name": "set_ranks",
@@ -274,8 +361,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             },
             {
                 "name": "set",
@@ -283,8 +373,11 @@
                 "time": 0,
                 "auth": false,
                 "premium": true,
-                "auto_delete": false,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
             },
             {
                 "name": "url",
@@ -292,8 +385,11 @@
                 "time": 0,
                 "auth": true,
                 "premium": true,
-                "auto_delete": true,
-                "reply": true
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
             }
         ]
     }

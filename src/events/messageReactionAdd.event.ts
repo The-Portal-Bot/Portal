@@ -1,4 +1,4 @@
-import { Client, DMChannel, MessageReaction, User } from "discord.js";
+import { Client, MessageReaction, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
 import { create_rich_embed, is_authorised, is_dj, logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
@@ -114,12 +114,12 @@ async function reaction_music_manager(
 					messageReaction.message.guild, guild_object
 				)
 					.then(r => {
-						clear_music_vote(guild_object.id);
+						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 						return resolve(r);
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id);
+						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 						return reject(`failed to play video / ${e}`);
 					});
@@ -129,12 +129,12 @@ async function reaction_music_manager(
 			case '⏸': {
 				pause(portal_voice_connection)
 					.then(r => {
-						clear_music_vote(guild_object.id);
+						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 						return resolve(r);
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id);
+						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 						return reject(`failed to pause video / ${e}`);
 					});
@@ -143,7 +143,8 @@ async function reaction_music_manager(
 			}
 			case '⏭': {
 				if (!portal_voice_connection) {
-					update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
+					update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
+						.catch(e => logger.error(new Error(e)));
 
 					return resolve('nothing to skip, player is idle');
 				}
@@ -173,7 +174,7 @@ async function reaction_music_manager(
 					if (!is_authorised(member)) {
 						if (!guild_object.music_data.votes.includes(user.id)) {
 							guild_object.music_data.votes.push(user.id);
-							insert_music_vote(guild_object.id, user.id);
+							insert_music_vote(guild_object.id, user.id).catch(e => logger.error(new Error(e)));
 						}
 
 						const votes = guild_object.music_data.votes.length;
@@ -198,7 +199,7 @@ async function reaction_music_manager(
 						messageReaction.message.guild, guild_object
 					)
 						.then(r => {
-							clear_music_vote(guild_object.id);
+							clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 							guild_object.music_queue.shift();
 
 							return resolve(`${r} (by ${reason})`);
@@ -220,7 +221,7 @@ async function reaction_music_manager(
 									guild, guild_object
 								)
 									.then(r => {
-										clear_music_vote(guild_object.id);
+										clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 										guild_object.music_queue.shift();
 
 										return resolve(`${r} (by ${reason})`);
@@ -244,12 +245,12 @@ async function reaction_music_manager(
 			// case '➖': {
 			// 	volume_down(portal_voice_connection)
 			// 		.then(r => {
-			// 			clear_music_vote(guild_object.id);
+			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 			// 			return resolve(r);
 			// 		})
 			// 		.catch(e => {
-			// 			clear_music_vote(guild_object.id);
+			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 			// 			return resolve({
 			// 				result: false,
@@ -262,12 +263,12 @@ async function reaction_music_manager(
 			// case '➕': {
 			// 	volume_up(portal_voice_connection)
 			// 		.then(r => {
-			// 			clear_music_vote(guild_object.id);
+			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 			// 			return resolve(r);
 			// 		})
 			// 		.catch(e => {
-			// 			clear_music_vote(guild_object.id);
+			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 			// 			return resolve({
 			// 				result: false,
@@ -350,13 +351,13 @@ async function reaction_music_manager(
 						.find(g => g.id === guild_object.id);
 
 					if (!guild) {
-						clear_music_vote(guild_object.id);
+						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 						return reject('could fetch guild from client');
 					}
 				}
 
-				clear_music_vote(guild_object.id);
+				clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 				return resolve('queue has been cleared');
 
 				break;
@@ -372,7 +373,7 @@ async function reaction_music_manager(
 								update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
 							}
 
-							clear_music_vote(guild_object.id);
+							clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 							portal_voice_connection.disconnect();
 
 							return resolve('Portal has been disconnected');
@@ -381,7 +382,7 @@ async function reaction_music_manager(
 						}
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id);
+						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
 
 						return reject(`Portal failed to get disconnected / ${e}`);
 					});

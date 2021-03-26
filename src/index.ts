@@ -184,8 +184,7 @@ client.on('message', async (message: Message) => {
 				// Ignore any message that does not start with prefix
 				if (message.content.indexOf(guild_object.prefix) !== 0) {
 					if (message.content === 'prefix') {
-						message_reply(true, message, message.author,
-							`portal's prefix is \`${guild_object.prefix}\``, false);
+						message_reply(true, message, `portal's prefix is \`${guild_object.prefix}\``);
 
 						if (message.deletable) {
 							message.delete();
@@ -203,8 +202,7 @@ client.on('message', async (message: Message) => {
 
 				if (command.command_options.auth && message.member) {
 					if (!is_authorised(message.member)) {
-						message_reply(false, message, message.author,
-							'you are not authorised to use this command');
+						message_reply(false, message, 'you are not authorised to use this command', true, true);
 
 						return false;
 					}
@@ -220,8 +218,7 @@ client.on('message', async (message: Message) => {
 					.then(guild_object_rest => {
 						if (!guild_object_rest) {
 							logger.error(new Error('server is not in database'));
-							message_reply(false, message, message.author,
-								'server is not in database, please contact portal support');
+							message_reply(false, message, 'server is not in database');
 
 							return false;
 						}
@@ -266,20 +263,15 @@ function command_loader(
 	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
 	if (config.debug === true) {
-		logger.info(`DEBUG: [command] ${command}`);
+		logger.info(`[command-debug] ${command}`);
 	}
 
 	if (type === 'none' && command_options.time === 0) {
 		require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
 			.then((response: ReturnPormise) => {
 				if (response) {
-					if ((command_options && response.value && response.value !== '') &&
-						(command_options.reply || response.result === false)) {
-						message_reply(
-							response.result, message, message.author, response.value,
-							command_options ? command_options.auto_delete : true
-						);
-					}
+					message_reply(response.result, message, response.value,
+						command_options.delete.source, command_options.delete.reply);
 				} else {
 					logger.error(new Error(`did not get response from command: ${command}`));
 				}
@@ -308,14 +300,16 @@ function command_loader(
 
 	if (active) {
 		const time = time_elapsed(active.timestamp, command_options.time);
-		const type_for_msg = (type === 'member')
-			? `.*`
-			: `, as it was used again in* **${message.guild?.name}**`;
 
-		message_reply(false, message, message.author,
-			`you need to wait **${pad(time.remaining_min)}:` +
+		const type_for_msg = (type !== 'member')
+			? `, as it was used again in* **${message.guild?.name}**`
+			: `.*`;
+
+		const must_wait_msg = `you need to wait **${pad(time.remaining_min)}:` +
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
-			`${pad(time.timeout_sec)}** *to use* **${command}** *again${type_for_msg}`);
+			`${pad(time.timeout_sec)}** *to use* **${command}** *again${type_for_msg}`;
+
+		message_reply(false, message, must_wait_msg, true, true);
 
 		return false;
 	}
@@ -339,9 +333,8 @@ function command_loader(
 					}
 				}
 
-				if ((command_options && response.value && response.value !== '') && (command_options.reply || response.result === false)) {
-					message_reply(response.result, message, message.author, response.value, command_options.auto_delete);
-				}
+				message_reply(response.result, message, response.value,
+					command_options.delete.source, command_options.delete.reply);
 			} else {
 				logger.error(new Error(`did not get response from command: ${command}`));
 			}
@@ -360,7 +353,7 @@ function event_loader(event: string, args: any): void {
 				if (config.debug || (event_config_json.find(e => e.name === event))) {
 					logger.info(`[event-accepted] ${event} | ${response}`);
 				} else if (config.debug) {
-					logger.info(`DEBUG: [event-accepted] ${event} | ${response}`);
+					logger.info(`[event-accepted-debug] ${event} | ${response}`);
 				}
 			}
 		})
@@ -368,19 +361,6 @@ function event_loader(event: string, args: any): void {
 			logger.error(`[event-rejected] ${event} | ${e}`);
 		});
 }
-
-function connect_to_discord() {
-	client.login(config.token)
-		.then(r => {
-			logger.info(`login to discord successful / ${r}`);
-		})
-		.catch(e => {
-			logger.error(new Error(`could not login to discord / ${e}`));
-			process.exit(1);
-		});
-}
-
-connect_to_discord();
 
 /*
 * Returns: true/false if processing must continue
@@ -454,8 +434,7 @@ function handle_ranking_system(
 	// store to db
 
 	if (level) {
-		message_reply(true, message, message.author,
-			`you reached level ${level}!`);
+		message_reply(true, message, `you reached level ${level}!`);
 	}
 }
 
@@ -466,11 +445,8 @@ function handle_url_channels(
 		if (message.content === './url') {
 			remove_url(guild_object.id, message.channel.id)
 				.then(r => {
-					message_reply(true, message, message.author,
-						r
-							? 'successfully removed url channel'
-							: 'failed to remove url channel'
-					);
+					message_reply(true, message, 'removed url channel ' +
+						r ? 'successfully' : 'unsuccessfully');
 				})
 				.catch(e => {
 					logger.error(new Error(`failed to remove url channel / ${e}`));
@@ -484,7 +460,7 @@ function handle_url_channels(
 			message.author
 				.send(`${message.channel} is a url-only channel`)
 				.catch(e => {
-					logger.error(new Error(`failed to remove url channel: ${e}`));
+					logger.error(new Error(`failed to remove url channel / ${e}`));
 				});
 			if (message.deletable) {
 				message.delete();
@@ -504,11 +480,8 @@ function handle_ignored_channels(
 		if (message.content === './ignore') {
 			remove_ignore(guild_object.id, message.channel.id)
 				.then(r => {
-					const reply_message = r
-						? 'successfully removed from ignored channels'
-						: 'failed to remove from ignored channels';
-
-					message_reply(true, message, message.author, reply_message);
+					message_reply(true, message, 'removed from ignored channels ' +
+						r ? 'successfully' : 'unsuccessfully');
 				})
 				.catch(e => {
 					logger.error(new Error(`failed to remove ignored channel / ${e}`));
@@ -534,8 +507,8 @@ function handle_music_channels(
 			const music_data = new MusicData('null', 'null', 'null', [], false);
 			set_music_data(guild_object.id, music_data)
 				.then(r => {
-					message_reply(true, message, message.author,
-						`removed music channel ${r ? 'successfully' : 'unsuccessfully'}`);
+					message_reply(true, message, 'removed music channel ' +
+						r ? 'successfully' : 'unsuccessfully');
 				})
 				.catch(e => {
 					logger.error(new Error(`failed to remove music channel / ${e}`));
@@ -575,7 +548,9 @@ function handle_music_channels(
 								: undefined,
 							'you must be in the same channel as Portal',
 							animate
-						);
+						).catch(e => {
+							logger.error(new Error(e));
+						});
 					}
 
 					if (message.deletable) {
@@ -607,7 +582,9 @@ function handle_music_channels(
 								: undefined,
 							r,
 							animate
-						);
+						).catch(e => {
+							logger.error(new Error(e));
+						});
 					}
 
 					if (message.deletable) {
@@ -623,7 +600,9 @@ function handle_music_channels(
 								? guild_object.music_queue[0]
 								: undefined,
 							`error while starting playback / ${e}`
-						);
+						).catch(e => {
+							logger.error(new Error(e));
+						});
 					}
 
 					if (message.deletable) {
@@ -688,3 +667,16 @@ function command_decypher(
 		type: type
 	};
 }
+
+function connect_to_discord() {
+	client.login(config.token)
+		.then(r => {
+			logger.info(`login to discord successful / ${r}`);
+		})
+		.catch(e => {
+			logger.error(new Error(`could not login to discord / ${e}`));
+			process.exit(1);
+		});
+}
+
+connect_to_discord();
