@@ -723,7 +723,7 @@ export async function export_txt(
 		if (guild_object.music_queue.length > 0) {
 			const stringData = JSON.stringify(guild_object.music_queue);
 			const buffer = Buffer.from(stringData, "utf-8");
-			const attachment = new MessageAttachment(buffer, "portal_music_queue.json");
+			const attachment = new MessageAttachment(buffer, "portal_video_queue.json");
 
 			return resolve(attachment);
 		} else {
