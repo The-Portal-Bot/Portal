@@ -419,7 +419,10 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal', custom_gif ? custom_gif : portal_icon_url).setTimestamp();
+	if (from_bot) rich_message.setFooter('Portal', custom_gif
+		? custom_gif
+		: portal_icon_url
+	).setTimestamp();
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
 	if (author) rich_message.setAuthor(author.name, author.icon);
@@ -427,22 +430,26 @@ export function create_rich_embed(
 		field_array.forEach(row => {
 			rich_message
 				.addField(
-					(row.emote === '' || row.emote === null || row.emote === false)
-						? '\u200b'
-						: '__' + row.emote + '__',
-					(row.role === '' || row.role === null || row.role === false)
-						? '\u200b'
-						: '' + row.role + '',
-					row.inline,
+					row.emote === '' || !row.emote
+						? `\u200b`
+						: `__${row.emote}__`,
+					row.role === '' || !row.role
+						? `\u200b`
+						: `${row.role}`,
+					row.inline
 				);
 		});
 	}
 	if (member && !author) {
-		const url = member.user.avatarURL() !== null
+		const url = !!member.user.avatarURL()
 			? member.user.avatarURL()
 			: undefined;
 
-		rich_message.setAuthor(member.displayName, url !== null ? url : undefined, undefined);
+		rich_message.setAuthor(
+			member.displayName,
+			!!url ? url : undefined,
+			undefined
+		);
 	}
 
 	return rich_message;
@@ -485,26 +492,36 @@ export function is_ignored(
 };
 
 export function message_help(
-	type: string, argument: string, info: string = ``
+	type: string, argument: string, info: string = ''
 ): string {
-	return `${(info === ``) ? `` : `` + `${info}\n`}` +
-		`get help by typing \`./help ${argument}\`\n` +
+	if (info !== '') info += '\n';
+	return `${info} get help by typing \`./help ${argument}\`\n` +
 		`*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`;
 }
 
 export function message_reply(
-	status: boolean, message: Message, user: User, str: string,
-	to_delete: boolean = config.delete_msg,
-	emote_pass: string = '✔️', emote_fail: string = '❌'
+	status: boolean,
+	message: Message,
+	reply_string: string,
+	delete_source: boolean = false,
+	delete_reply: boolean = false,
+	emote_pass: string = '✔️',
+	emote_fail: string = '❌'
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		if (message && !message.channel.deleted && str !== null) {
-			message.channel
-				.send(`${user}, ${str}`)
+		if (!message) {
+			return reject(`failed to find message`);
+		}
+
+		if (!message.channel.deleted && reply_string !== null && reply_string !== '') {
+			message
+				.reply(reply_string)
 				.then(sent_message => {
-					if (sent_message.deletable) {
+					if (delete_reply && sent_message.deletable) {
 						sent_message
-							.delete({ timeout: config.delete_msg_after * 1000 })
+							.delete({
+								timeout: config.delete_delay * 1000
+							})
 							.catch(e => {
 								return reject(`failed to delete message / ${e}`);
 							});
@@ -515,31 +532,23 @@ export function message_reply(
 				});
 		}
 
-		if (message && !message.deleted) {
-			if (status === true) {
-				message
-					.react(emote_pass)
-					.catch(e => {
-						return reject(`failed to react to message / ${e}`);
-					});
-			}
-			else if (status === false) {
-				message
-					.react(emote_fail)
-					.catch(e => {
-						return reject(`failed to react to message / ${e}`);
-					});
-			}
+		if (delete_source && !message.deleted && message.deletable) {
+			message
+				.react(status ? emote_pass : emote_fail)
+				.then(() => {
+					message
+						.delete({
+							timeout: config.delete_delay * 1000
+						})
+						.catch(e => {
+							return reject(`failed to delete message / ${e}`);
+						});
 
-			if (message && to_delete && message.deletable) {
-				message
-					.delete({ timeout: 7500 })
-					.catch(e => {
-						return reject(`failed to delete message / ${e}`);
-					});
-			}
-
-			return resolve(true);
+					return resolve(true);
+				})
+				.catch(e => {
+					return reject(`failed to react to message / ${e}`);
+				});
 		}
 	});
 };

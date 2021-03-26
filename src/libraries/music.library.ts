@@ -1,6 +1,5 @@
 import ytdl from 'discord-ytdl-core';
 import { Client, Guild, Message, MessageAttachment, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
-import fs from 'fs';
 import { RequestOptions } from 'https';
 import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
 import config from '../config.json';
@@ -18,12 +17,13 @@ async function pop_music_queue(
 		fetch_guild_music_queue(guild_object.id)
 			.then(music => {
 				if (!music) {
-					return reject(`queue is empty`);
+					return resolve(undefined);
 				}
 
 				if (!music.data.pinned && music.queue.length > 0) {
 					music.queue.shift();
-					update_guild(guild_object.id, 'music_queue', music.queue);
+					update_guild(guild_object.id, 'music_queue', music.queue)
+						.catch (() => {});
 				}
 
 				guild_object.music_queue = music.queue;
@@ -32,7 +32,7 @@ async function pop_music_queue(
 				if (music.queue.length > 0) {
 					return resolve(music.queue[0]);
 				} else {
-					return reject(`queue is empty`);
+					return resolve(undefined);
 				}
 			})
 			.catch(e => {
@@ -44,13 +44,8 @@ async function pop_music_queue(
 function delete_dispatcher(
 	dispatcher: StreamDispatcher
 ): boolean {
-	if (!dispatcher.destroyed) {
-		dispatcher.destroy();
-
-		return true;
-	}
-
-	return false;
+	if (!dispatcher.destroyed) dispatcher.destroy();
+	return !dispatcher.destroyed;
 }
 
 function spawn_dispatcher(
@@ -397,7 +392,7 @@ export async function play(
 				pop_music_queue(guild_object)
 					.then(next_video => {
 						if (!next_video) {
-							return reject('queue is empty');
+							return resolve('queue is empty');
 						}
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
@@ -433,7 +428,7 @@ export async function play(
 			}
 		} else {
 			if (guild_object.music_queue.length === 0) {
-				return reject('queue is empty');
+				return resolve('queue is empty');
 			}
 
 			join_by_reaction(client, guild_object, user, false)
@@ -523,7 +518,7 @@ export async function skip(
 						}
 
 						if (!next_video) {
-							return reject('queue is empty');
+							return resolve('queue is empty');
 						}
 
 						const dispatcher = spawn_dispatcher(next_video, voice_connection);
@@ -561,7 +556,7 @@ export async function skip(
 			pop_music_queue(guild_object)
 				.then(next_video => {
 					if (!next_video) {
-						return reject('queue is empty');
+						return resolve('queue is empty');
 					}
 
 					join_by_reaction(client, guild_object, user, false)

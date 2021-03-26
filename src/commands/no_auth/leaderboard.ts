@@ -63,7 +63,6 @@ module.exports = async (
 			const member_levels: Field[] = [];
 			member_list
 				.sort(compare)
-				// .filter((m, j) => entries > j)
 				.forEach((member_object, i) => {
 					if (message.guild && entries > i) {
 						const this_member = message.guild.members.cache
@@ -79,8 +78,7 @@ module.exports = async (
 							);
 
 							entries--;
-						}
-						else {
+						} else {
 							resolve({
 								result: false,
 								value: message_help('commands',
@@ -94,7 +92,7 @@ module.exports = async (
 
 			message.channel.send(create_rich_embed(
 				'LEADERBOARD',
-				'https://portal-bot.xyz/docs/ranking',
+				'[Ranking System](https://portal-bot.xyz/docs/ranking)',
 				'#00FFFF',
 				member_levels,
 				null,

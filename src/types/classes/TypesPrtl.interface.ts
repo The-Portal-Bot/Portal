@@ -56,8 +56,11 @@ export interface CommandOptions {
 	time: number;
 	auth: boolean;
 	premium: boolean;
-	auto_delete: boolean;
 	reply: boolean;
+	delete: {
+		source: boolean,
+		reply: boolean
+	}
 }
 
 export interface ActiveCooldown {
