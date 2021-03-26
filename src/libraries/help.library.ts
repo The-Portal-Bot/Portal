@@ -8,6 +8,9 @@ import { Field, TimeElapsed } from "../types/classes/TypesPrtl.interface";
 import { client_talk } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
+const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
+	'Portal/master/src/assets/img/empty_queue.png';
+
 export const logger = createLogger({
 	format: format.combine(
 		format.timestamp({
@@ -62,9 +65,6 @@ export function create_music_message(
 	channel: TextChannel, guild_object: GuildPrtl
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
-			'Portal/master/src/assets/img/music_empty.png';
-
 		const music_message_emb = create_rich_embed(
 			'Music Player',
 			'Type and Portal will play it !',
@@ -171,9 +171,6 @@ export function update_music_message(
 			return reject(`could not find channel`);
 		}
 
-		const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
-			'Portal/master/src/assets/img/music_empty.png';
-
 		const music_queue = guild_object.music_queue ?
 			guild_object.music_queue.length > 1
 				? guild_object.music_queue
@@ -197,7 +194,9 @@ export function update_music_message(
 				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
 				{ emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
 				{ emote: 'Pinned', role: guild_object.music_data.pinned ? 'yes' : 'no', inline: true },
+				// { emote: null, role: null, inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
+				// { emote: null, role: null, inline: true },
 				{ emote: 'Latest Action', role: '```' + status + '```', inline: false }
 			],
 			null,

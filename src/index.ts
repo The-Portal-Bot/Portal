@@ -283,7 +283,11 @@ function command_loader(
 		return true;
 	}
 
-	const active = active_cooldowns[type === 'guild' ? 'guild' : 'member']
+	const type_string = type === 'guild'
+		? 'guild'
+		: 'member';
+
+	const active = active_cooldowns[type_string]
 		.find(active_current => {
 			if (active_current.command === command) {
 				if (type === 'member' && active_current.member === message.author.id) {
@@ -318,7 +322,7 @@ function command_loader(
 		.then((response: ReturnPormise) => {
 			if (response) {
 				if (response.result) {
-					active_cooldowns[type === 'guild' ? 'guild' : 'member'].push({
+					active_cooldowns[type_string].push({
 						member: message.author.id,
 						command: command,
 						timestamp: Date.now()
@@ -326,8 +330,8 @@ function command_loader(
 
 					if (command_options) {
 						setTimeout(() => {
-							active_cooldowns[type === 'guild' ? 'guild' : 'member'] =
-								active_cooldowns[type === 'guild' ? 'guild' : 'member']
+							active_cooldowns[type_string] =
+								active_cooldowns[type_string]
 									.filter(active => active.command !== command);
 						}, command_options.time * 60 * 1000);
 					}
