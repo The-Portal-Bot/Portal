@@ -67,7 +67,7 @@ export function create_music_message(
 
 		const music_message_emb = create_rich_embed(
 			'Music Player',
-			'Type and Portal will play',
+			'Type and Portal will play it !',
 			'#e60026',
 			[
 				{ emote: 'Duration', role: '-', inline: true },

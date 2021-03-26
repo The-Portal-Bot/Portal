@@ -696,12 +696,10 @@ export async function get_lyrics(
 									return resolve(`displayed lyrics`);
 								})
 								.catch((e: any) => {
-									return resolve(`failed to update lyrics message / ${e}`);
 									return reject(`failed to update lyrics message / ${e}`);
 								});
 						})
 						.catch((e: any) => {
-							return resolve(`failed to scrap genius page / ${e}`);
 							return reject(`failed to scrap genius page / ${e}`);
 						});
 				})

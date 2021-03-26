@@ -93,8 +93,8 @@ module.exports = async (
 				});
 
 			message.channel.send(create_rich_embed(
-				'[LEADERBOARD](https://portal-bot.xyz/docs/ranking)',
-				null,
+				'LEADERBOARD',
+				'https://portal-bot.xyz/docs/ranking',
 				'#00FFFF',
 				member_levels,
 				null,
