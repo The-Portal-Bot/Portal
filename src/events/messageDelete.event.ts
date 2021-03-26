@@ -19,7 +19,7 @@ module.exports = async (
 
 							if (music_channel) {
 								create_music_message(<TextChannel>music_channel, guild_object)
-									.then(message_music_id => {
+									.then(() => {
 										if (guild_object.music_data.message_lyrics_id) {
 											if (music_channel) {
 												music_channel.messages
@@ -91,11 +91,10 @@ module.exports = async (
 										.catch(e => {
 											return reject(`failed to delete role message / ${e}`);
 										});
-									return true;
 								}
-
-								return false;
 							});
+
+							return reject('could not find role assigner message');
 						}
 					} else {
 						return reject('could not find guild');

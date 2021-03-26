@@ -57,7 +57,10 @@ function five_min_refresher(
 				generate_channel_name(voice_channel, portal_list, guild_object, guild);
 				setTimeout(() => {
 					if (!guild.deleted && !voice_channel.deleted) {
-						generate_channel_name(voice_channel, portal_list, guild_object, guild);
+						generate_channel_name(voice_channel, portal_list, guild_object, guild)
+							.catch(() => {
+								return;
+							});
 						five_min_refresher(voice_channel, portal_list, guild, minutes);
 					}
 				}, minutes * 60 * 1000);
@@ -98,7 +101,10 @@ async function channel_empty_check(
 
 					if (guild_object.music_data.pinned) {
 						guild_object.music_data.pinned = false;
-						set_music_data(guild_object.id, guild_object.music_data);
+						set_music_data(guild_object.id, guild_object.music_data)
+							.catch(e => {
+								return reject(`failed to set music data / ${e}`);
+							});
 					}
 
 					update_music_message(
@@ -109,9 +115,15 @@ async function channel_empty_check(
 							: undefined,
 						'left last',
 						false
-					);
+					)
+						.catch(e => {
+							return reject(`failed to update music message / ${e}`);
+						});
 
-					update_music_lyrics_message(old_channel.guild, guild_object, '');
+					update_music_lyrics_message(old_channel.guild, guild_object, '')
+						.catch(e => {
+							return reject(`failed to update music lyrics / ${e}`);
+						});
 
 					if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
 						delete_voice_channel(old_channel, guild_object)
@@ -122,14 +134,13 @@ async function channel_empty_check(
 								return reject(`an error occurred while deleting voice / ${e}`)
 							});
 					} else {
-
 						return resolve('Portal left voice channel');
 					}
 				} else {
-					return reject(`Portal is not connected`);
+					return resolve(`Portal is not connected`);
 				}
 			} else {
-				return reject(`Portal is not connected`);
+				return resolve(`Portal is not connected`);
 			}
 		}
 	});
@@ -183,8 +194,11 @@ async function from_existing(
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
 		if (new_channel === null) {
-			channel_empty_check(old_channel, guild_object, client);
 			update_timestamp(newState, guild_object);
+			channel_empty_check(old_channel, guild_object, client)
+				.catch(e => {
+					return resolve(`failed to check channel state / ${e}`);
+				});
 
 			return resolve('existing->null');
 		}
@@ -196,12 +210,14 @@ async function from_existing(
 
 					return resolve('existing->existing (source: portal_list / dest: voice_list) / has been handled before');
 				} else {
-
 					return resolve('not handled by portal');
 				}
 			}
 			else if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
-				channel_empty_check(old_channel, guild_object, client);
+				channel_empty_check(old_channel, guild_object, client)
+					.catch(e => {
+						return resolve(`failed to check channel state / ${e}`);
+					});
 
 				if (included_in_portal_list(new_channel.id, guild_object.portal_list)) { // moved from voice to portal
 					const portal_object = guild_object.portal_list
