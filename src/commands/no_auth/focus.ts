@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { create_focus_channel, included_in_voice_list } from "../../libraries/guild.library";
-import { ask_for_focus, message_help } from "../../libraries/help.library";
+import { ask_for_approval, message_help } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -10,7 +10,7 @@ module.exports = async (
 	return new Promise((resolve) => {
 		if (!message.member) {
 			return resolve({
-				result: true,
+				result: false,
 				value: 'message author could not be fetched'
 			});
 		}
@@ -76,7 +76,7 @@ module.exports = async (
 							});
 						}
 
-						ask_for_focus(
+						ask_for_approval(
 							message,
 							member_to_focus,
 							`*${member_to_focus.user}, member ${message.author}, would like to talk in ` +

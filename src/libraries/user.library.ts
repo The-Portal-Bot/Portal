@@ -156,127 +156,32 @@ export function add_points_message(
 	return level ? level : false;
 };
 
-function is_authorised_to_kick(member: GuildMember): boolean {
-	const valid_perms: PermissionString[] = ['ADMINISTRATOR', 'KICK_MEMBERS'];
-	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
-
-	return valid_perms.some(permission => member.hasPermission(permission, options));
-}
-
 export function kick(
-	message: Message, args: string[]
-): Promise<string> {
-	message.guild?.channels.cache.forEach(e => e);
+	member_to_kick: GuildMember, kick_reason: string
+): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		if (message.member && !is_authorised_to_kick(message.member)) {
-			return reject(`sorry, you don't have permissions to kick members`);
-		}
-
-		if (message.mentions) {
-			if (message.mentions.members) {
-				if (message.guild) {
-					const member_to_kick = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-
-					if (!member_to_kick) {
-						message.reply('please mention a valid member of this server');
-					} else {
-						if (!member_to_kick.kickable) {
-							message.reply('unable to kick user, maybe they have a higher role, or Portal does not have kick permissions');
-						}
-
-						let kick_member: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-						let kick_reason: string = args.join(' ').substr(args.join(' ').indexOf('|') + 1)
-							? args.join(' ').substr(args.join(' ').indexOf('|') + 1)
-							: '';
-
-						if (kick_member === '' && kick_reason !== '') {
-							kick_member = kick_reason;
-							kick_reason = 'kicked by admin';
-						}
-
-						member_to_kick
-							.kick(kick_reason).catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`))
-							.then(r => {
-								message.reply(`${member_to_kick.user.tag} has been kicked by ${message.author.tag} because: ${kick_reason}`);
-							})
-							.catch(e => {
-								return reject(`failed to kick member / ${e}`);
-							});
-					}
-				} else {
-					message.reply(`user guild could not be fetched`);
-				}
-			} else {
-				message.reply(`no user mentioned to be kicked`);
-			}
-		} else {
-			message.reply(`no user mentioned to be kicked`);
-		}
+		member_to_kick
+			.kick(kick_reason)
+			.then(r => {
+				return resolve(true);
+			})
+			.catch(e => {
+				return reject(e);
+			});
 	});
 };
 
-function is_authorised_to_ban(member: GuildMember): boolean {
-	const valid_perms: PermissionString[] = ['ADMINISTRATOR', 'BAN_MEMBERS'];
-	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
-
-	return valid_perms.some(permission => member.hasPermission(permission, options));
-}
-
 export function ban(
-	message: Message, args: string[]
-): Promise<string> {
+	member_to_ban: GuildMember, ban_options: BanOptions
+): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		if (message.member && !is_authorised_to_kick(message.member)) {
-			message.reply(`sorry, you don't have permissions to ban users`);
-		}
-
-		if (message) {
-			if (message.mentions) {
-				const member_to_ban = message.mentions.members?.first();
-
-				if (!member_to_ban) {
-					message.reply('please mention a valid member of this server');
-				}
-
-				if (!member_to_ban?.bannable) {
-					message.reply('unable to ban user, maybe they have a higher role, or Portal does not have kick permissions');
-				}
-
-				let ban_member: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-				let ban_reason: string = args.join(' ').substr(args.join(' ').indexOf('|') + 1)
-					? args.join(' ').substr(args.join(' ').indexOf('|') + 1)
-					: '';
-				let ban_days: number = args.join(' ').substr(args.join(' ').lastIndexOf('|') + 1)
-					? +args.join(' ').substr(args.join(' ').lastIndexOf('|') + 1)
-					: 0;
-
-				if (ban_member === '' && ban_reason !== '') {
-					ban_member = ban_reason;
-					ban_reason = 'banned by admin';
-				}
-
-				if (isNaN(ban_days)) {
-					message.reply(`no user mentioned to be banned`);
-				} else {
-					const ban_options: BanOptions = {
-						days: ban_days,
-						reason: ban_reason
-					};
-
-					member_to_ban
-						?.ban(ban_options)
-						.then(r => {
-							message.reply(`${r?.user.tag} has been banned by ${message.author.tag} for ${ban_days} days, because: ${ban_reason}`);
-							return resolve(`${r?.user.tag} has been banned by ${message.author.tag} for ${ban_days} days, because: ${ban_reason}`);
-						})
-						.catch(e => {
-							message.reply(`sorry ${message.author} Portal failed to ban user / ${e}`)
-							return reject(`failed to ban member / ${e}`);
-						});
-				}
-			} else {
-				message.reply(`no user mentioned to be banned`);
-			}
-		}
+		member_to_ban
+			.ban(ban_options)
+			.then(r => {
+				return resolve(true);
+			})
+			.catch(e => {
+				return reject(e);
+			});
 	});
 };

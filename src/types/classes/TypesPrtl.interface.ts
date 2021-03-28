@@ -65,6 +65,7 @@ export interface CommandOptions {
 
 export interface ActiveCooldown {
 	member: string;
+	guild: string;
 	command: string;
 	timestamp: number;
 }

@@ -1,5 +1,5 @@
 import { Message, TextChannel } from "discord.js";
-import { ask_for_focus, message_help } from "../../libraries/help.library";
+import { ask_for_approval, message_help } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -37,7 +37,7 @@ module.exports = async (
             });
         }
 
-        ask_for_focus(
+        ask_for_approval(
             message,
             message.member,
             `*${message.author}, are you sure you want to delete ` +

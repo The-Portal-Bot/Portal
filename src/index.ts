@@ -290,11 +290,15 @@ function command_loader(
 		.find(active_current => {
 			if (active_current.command === command) {
 				if (type === 'member' && active_current.member === message.author.id) {
-					return true;
+					if (message.guild && active_current.guild === message.guild.id) {
+						return true;
+					}
 				}
 
 				if (type === 'guild') {
-					return true;
+					if (message.guild && active_current.guild === message.guild.id) {
+						return true;
+					}
 				}
 			}
 
@@ -321,18 +325,21 @@ function command_loader(
 		.then((response: ReturnPormise) => {
 			if (response) {
 				if (response.result) {
-					active_cooldowns[type_string].push({
-						member: message.author.id,
-						command: command,
-						timestamp: Date.now()
-					});
+					if (message.guild) {
+						active_cooldowns[type_string].push({
+							member: message.author.id,
+							guild: message.guild.id,
+							command: command,
+							timestamp: Date.now()
+						});
 
-					if (command_options) {
-						setTimeout(() => {
-							active_cooldowns[type_string] =
-								active_cooldowns[type_string]
-									.filter(active => active.command !== command);
-						}, command_options.time * 60 * 1000);
+						if (command_options) {
+							setTimeout(() => {
+								active_cooldowns[type_string] =
+									active_cooldowns[type_string]
+										.filter(active => active.command !== command);
+							}, command_options.time * 60 * 1000);
+						}
 					}
 				}
 
@@ -433,8 +440,6 @@ function handle_ranking_system(
 	const level = add_points_message(
 		message, guild_object.member_list[0], guild_object.rank_speed
 	);
-
-	// store to db
 
 	if (level) {
 		message_reply(true, message, `you reached level ${level}!`);
@@ -613,7 +618,6 @@ function handle_music_channels(
 					}
 				});
 		}
-
 		return true;
 	}
 

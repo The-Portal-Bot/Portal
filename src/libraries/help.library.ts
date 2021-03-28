@@ -27,7 +27,7 @@ export const logger = createLogger({
 });
 
 
-export async function ask_for_focus(
+export async function ask_for_approval(
 	message: Message, requester: GuildMember, question: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
@@ -540,6 +540,17 @@ export function is_ignored(
 ): boolean {
 	return member.roles.cache.some(r =>
 		r.name.toLowerCase() === 'p.ignore');
+};
+
+export function is_mod(
+	member: GuildMember
+): boolean {
+	if (member.roles.cache) {
+		return member.roles.cache.some(r =>
+			r.name.toLowerCase() === 'p.mod');
+	}
+
+	return false;
 };
 
 export function message_help(

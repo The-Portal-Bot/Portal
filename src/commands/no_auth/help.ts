@@ -77,6 +77,7 @@ module.exports = async (
 						'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
 						'> make a member a **dj**, give him role with name `p.dj`\n' +
 						'> make a member an **admin**, give him role with name `p.admin`\n' +
+						'> make a member an **moderator**, give him role with name `p.mod`\n' +
 						'> **ignore** a member, give him role with name `p.ignore`\n' +
 						'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
 						'#05d1ff',
