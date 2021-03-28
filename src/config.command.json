@@ -291,8 +291,8 @@
                 "premium": true,
                 "reply": false,
                 "delete": {
-                    "source": true,
-                    "reply": true
+                    "source": false,
+                    "reply": false
                 }
             },
             {
@@ -376,7 +376,7 @@
                 "reply": true,
                 "delete": {
                     "source": false,
-                    "reply": false
+                    "reply": true
                 }
             },
             {

@@ -12,7 +12,7 @@ module.exports = async (
 		if (!message.guild)
 			return resolve({
 				result: false,
-				value: message_help('commands', 'url', 'guild could not be fetched')
+				value: 'guild could not be fetched'
 			});
 
 		if (args.length === 0) {
@@ -23,26 +23,26 @@ module.exports = async (
 							result: r,
 							value: r
 								? 'successfully removed url channel'
-								: message_help('commands', 'url', 'failed to remove url channel')
+								: 'failed to remove url channel'
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: message_help('commands', 'url', 'failed to remove url channel')
+							value: `failed to remove url channel / ${e}`
 						});
 					});
 			}
 			else if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'url', 'this can\'t be set as a URL channel for it is the Announcement channel')
+					value: 'this can\'t be set as a URL channel for it is the Announcement channel'
 				});
 			}
 			else if (is_music_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: true,
-					value: message_help('commands', 'url', 'this can\'t be set as a URL channel for it is the Music channel')
+					value: 'this can\'t be set as a URL channel for it is the Music channel'
 				});
 			}
 			else {
@@ -52,13 +52,13 @@ module.exports = async (
 							result: r,
 							value: r
 								? 'set as an url channel successfully'
-								: message_help('commands', 'url', 'failed to set as an url channel')
+								: 'failed to set as an url channel'
 						});
 					})
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: message_help('commands', 'url', 'failed to set as an url channel')
+							value: `failed to set as an url channel / ${e}`
 						});
 					});
 			}
@@ -83,13 +83,13 @@ module.exports = async (
 								result: r_url,
 								value: r_url
 									? 'created url channel and category successfully'
-									: message_help('commands', 'url', 'failed to create a url channel')
+									: 'failed to create a url channel'
 							});
 						})
 						.catch(e => {
 							return resolve({
 								result: false,
-								value: message_help('commands', 'url', 'failed to create a url channel')
+								value: `failed to create a url channel / ${e}`
 							});
 						});
 				})
@@ -100,7 +100,7 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'url', 'you can run `./help url` for help')
+				value: message_help('commands', 'url')
 			});
 		}
 	});

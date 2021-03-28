@@ -5,12 +5,11 @@ import config from '../../config.json';
 import { NYTCategories } from '../../data/lists/news_categories.static';
 import { create_rich_embed, get_json, max_string, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { News } from '../../types/classes/NewYorkTime.class';
 import { Field, ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		const category = NYTCategories.find(c => c === args[0]);
@@ -72,14 +71,14 @@ module.exports = async (
 				if (json === null) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'news', 'data from source was corrupted')
+						value: 'data from source was corrupted'
 					});
 				}
 
 				if (json.status !== 'OK') {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'news', 'NYTimes replied with an error')
+						value: 'NYTimes replied with an error'
 					});
 				}
 
@@ -108,18 +107,19 @@ module.exports = async (
 						true,
 						null,
 						null
-					));
+					)
+				);
 
 				return resolve({
 					result: true,
-					value: message_help('commands', 'news', '')
+					value: ''
 				});
 
 			})
-			.catch((error: any) => {
+			.catch((e: any) => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'news', `could not access the server\nerror: ${error}`)
+					value: `could not access the server / ${e}`
 				});
 			});
 	});

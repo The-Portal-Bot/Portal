@@ -149,7 +149,7 @@ module.exports = async (
 		if (failed) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'role_assigner', return_value)
+				value: return_value
 			});
 		}
 

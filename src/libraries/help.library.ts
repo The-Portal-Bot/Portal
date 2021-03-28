@@ -26,6 +26,51 @@ export const logger = createLogger({
 	transports: []
 });
 
+
+export async function ask_for_focus(
+	message: Message, requester: GuildMember, question: string
+): Promise<boolean> {
+	return new Promise((resolve, reject) => {
+		message.channel
+			.send(question)
+			.then(question_msg => {
+				let accepted = false;
+				const filter = (m: Message) => m.author.id === requester.user.id;
+				const collector = message.channel
+					.createMessageCollector(filter, { time: 10000 });
+
+				collector.on('collect', m => {
+					if (m.content === 'yes') {
+						accepted = true;
+						collector.stop();
+					}
+					else if (m.content === 'no') {
+						collector.stop();
+					}
+				});
+
+				collector.on('end', collected => {
+					for (const reply_message of collected.values()) {
+						if (reply_message.deletable) {
+							reply_message
+								.delete()
+								.catch();
+						}
+					}
+
+					if (question_msg.deletable) {
+						question_msg.delete();
+					}
+
+					return resolve(accepted);
+				});
+			})
+			.catch(e => {
+				return reject(e);
+			});
+	});
+};
+
 export function get_json(
 	str: string
 ): any | null {
@@ -407,7 +452,8 @@ export function create_rich_embed(
 	url: string | null | undefined,
 	image: string | null | undefined,
 	custom_gif?: string,
-	author?: { name: string, icon: string }
+	author?: { name: string, icon: string },
+	footer?: string,
 ): MessageEmbed {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker' +
 		'/Portal/master/src/assets/img/portal_logo_spinr.gif';
@@ -418,9 +464,13 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (from_bot) rich_message.setFooter('Portal', custom_gif
-		? custom_gif
-		: portal_icon_url
+	if (from_bot) rich_message.setFooter(
+		footer
+			? footer
+			: 'Portal',
+		custom_gif
+			? custom_gif
+			: portal_icon_url
 	).setTimestamp();
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
@@ -446,7 +496,9 @@ export function create_rich_embed(
 
 		rich_message.setAuthor(
 			member.displayName,
-			!!url ? url : undefined,
+			!!url
+				? url
+				: undefined,
 			undefined
 		);
 	}
@@ -466,7 +518,7 @@ export function is_authorised(
 
 	if (member.roles.cache) {
 		return member.roles.cache.some(r =>
-			r.name.toLocaleLowerCase() === 'p.admin');
+			r.name.toLowerCase() === 'p.admin');
 	}
 
 	return false;
@@ -477,7 +529,7 @@ export function is_dj(
 ): boolean {
 	if (member.roles.cache) {
 		return member.roles.cache.some(r =>
-			r.name.toLocaleLowerCase() === 'p.dj');
+			r.name.toLowerCase() === 'p.dj');
 	}
 
 	return false;
@@ -487,7 +539,7 @@ export function is_ignored(
 	member: GuildMember
 ): boolean {
 	return member.roles.cache.some(r =>
-		r.name.toLocaleLowerCase() === 'p.ignore');
+		r.name.toLowerCase() === 'p.ignore');
 };
 
 export function message_help(

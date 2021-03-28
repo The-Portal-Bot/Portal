@@ -14,7 +14,7 @@ module.exports = async (
 		if (!message.member) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'force', 'member could not be fetched')
+				value: 'member could not be fetched'
 			});
 		}
 
@@ -73,7 +73,7 @@ module.exports = async (
 											.catch(e => {
 												return resolve({
 													result: false,
-													value: `failed to force update channel ${e}`
+													value: `failed to force update channel / ${e}`
 												});
 											});
 									}
@@ -81,7 +81,7 @@ module.exports = async (
 								.catch(e => {
 									return resolve({
 										result: false,
-										value: `error while cloning channel ${e}`
+										value: `error while cloning channel / ${e}`
 									});
 								});
 						} else {

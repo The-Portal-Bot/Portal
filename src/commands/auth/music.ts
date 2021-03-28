@@ -37,13 +37,13 @@ module.exports = async (
 			if (is_announcement_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'music', 'this can\'t be set as the music channel for it is the announcement channel')
+					value: 'this can\'t be set as the music channel for it is the announcement channel'
 				});
 			}
 			if (is_url_only_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'music', 'this can\'t be set as the Music channel for it is an url channel')
+					value: 'this can\'t be set as the Music channel for it is an url channel'
 				});
 			}
 		}

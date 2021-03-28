@@ -14,6 +14,7 @@ import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
+// const AntiSpam = require('discord-anti-spam');
 
 if (config.debug) {
 	logger.add(new transports.Console());
@@ -24,8 +25,6 @@ if (config.log) {
 	logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info' }));
 	logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
-
-// const AntiSpam = require('discord-anti-spam');
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
@@ -56,7 +55,7 @@ mongoose.connect(config.mongo_url, {
 // 	exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions. ('ADMINISTRATOR')
 // 	ignoreBots: true, // Ignore bot messages.
 // 	debug: false,
-// 	verbose: true, // Extended Logs from module.
+// 	verbose: false, // Extended Logs from module.
 // 	ignoredUsers: [], // Array of User IDs that get ignored.
 // });
 

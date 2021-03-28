@@ -1,4 +1,4 @@
-import { Client, Message } from 'discord.js';
+import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import config from '../../config.json';
@@ -47,7 +47,7 @@ module.exports = async (
 				if (json === null) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'weather', 'data from source was corrupted')
+						value: 'data from source was corrupted'
 					});
 				}
 
@@ -109,22 +109,23 @@ module.exports = async (
 							null,
 							null
 						));
+
 					return resolve({
 						result: true,
-						value: message_help('commands', 'weather', `${json.name} weather`)
+						value: `${json.name} weather`
 					});
 				}
 				else {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'weather', `could not access the server\nerror: ${json.cod}`)
+						value: `could not access the server / ${json.cod}`
 					});
 				}
 			})
-			.catch((error: any) => {
+			.catch((e: any) => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'weather', `could not access the server\nerror: ${error}`)
+					value: `could not access the server / ${e}`
 				});
 			});
 	});

@@ -1,15 +1,14 @@
 import { Message } from "discord.js";
 import { create_rich_embed, message_help } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
+import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../types/interfaces/Attribute.interface";
 import { get_command_guide, get_command_help, get_command_help_super } from "../../types/interfaces/Command.interface";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../types/interfaces/Pipe.interface";
 import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../types/interfaces/Structure.interface";
 import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../types/interfaces/Variable.interface";
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.length === 0) {
@@ -71,21 +70,24 @@ module.exports = async (
 				}
 			];
 
-			message.reply(
-				create_rich_embed(
-					'Detailed Documentation at https://portal-bot.xyz/docs',
-					'> make a member a **dj**, give him role with name `p.dj`\n' +
-					'> make a member an **admin**, give him role with name `p.admin`\n' +
-					'> **ignore** a member, give him role with name `p.ignore`\n' +
-					'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
-					'#05d1ff',
-					help_array,
-					null,
-					null,
-					true,
-					null,
-					null
-				))
+			message
+				.reply(
+					create_rich_embed(
+						'Help Card',
+						'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
+						'> make a member a **dj**, give him role with name `p.dj`\n' +
+						'> make a member an **admin**, give him role with name `p.admin`\n' +
+						'> **ignore** a member, give him role with name `p.ignore`\n' +
+						'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
+						'#05d1ff',
+						help_array,
+						null,
+						null,
+						true,
+						null,
+						null
+					)
+				)
 				.catch(console.error);
 
 			return resolve({
@@ -230,7 +232,7 @@ module.exports = async (
 
 			return resolve({
 				result: true,
-				value: message_help('commands', 'help', 'I sent you a private message')
+				value: 'I sent you a private message'
 			});
 		}
 	});

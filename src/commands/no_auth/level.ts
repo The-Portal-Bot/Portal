@@ -9,25 +9,30 @@ module.exports = async (
 	return new Promise((resolve) => {
 		const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
 		if (!member_object) {
-			return resolve({ result: true, value: 'portal member could not be fetched' });
+			return resolve({
+				result: true,
+				value: 'could not find member'
+			});
 		}
 
-		message.channel.send(create_rich_embed(
-			null,
-			null,
-			'#00FFFF',
-			[
-				{ emote: 'Level', role: `${member_object.level}`, inline: true },
-				{ emote: 'Points', role: `${Math.round(member_object.points)}`, inline: true },
-				{ emote: '', role: '', inline: false },
-				{ emote: 'Rank', role: `${member_object.rank}`, inline: true },
-				{ emote: 'Tier', role: `${member_object.tier}`, inline: true },
-			],
-			null,
-			message.member,
-			true,
-			null,
-			null)
+		message.channel.send(
+			create_rich_embed(
+				null,
+				null,
+				'#00FFFF',
+				[
+					{ emote: 'Level', role: `${member_object.level}`, inline: true },
+					{ emote: 'Points', role: `${Math.round(member_object.points)}`, inline: true },
+					{ emote: '', role: '', inline: false },
+					{ emote: 'Rank', role: `${member_object.rank}`, inline: true },
+					{ emote: 'Tier', role: `${member_object.tier}`, inline: true },
+				],
+				null,
+				message.member,
+				true,
+				null,
+				null
+			)
 		);
 
 		return resolve({

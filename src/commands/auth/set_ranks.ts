@@ -1,8 +1,8 @@
-import { Client, Message, Role } from "discord.js";
+import { Message, Role } from "discord.js";
 import { get_json, message_help } from "../../libraries/help.library";
+import { set_ranks } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Rank, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
-import { set_ranks } from "../../libraries/mongo.library";
 
 function is_rank(rank: Rank) {
 	return !!rank.level && !!rank.role;
@@ -30,13 +30,7 @@ module.exports = async (
 
 		if (args.length > 0) {
 			const new_ranks_json = get_json(args.join(' '));
-			if (!new_ranks_json) {
-				return resolve({
-					result: false,
-					value: message_help('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')
-				});
-			}
-			if (!Array.isArray(new_ranks_json)) {
+			if (!new_ranks_json || !Array.isArray(new_ranks_json)) {
 				return resolve({
 					result: false,
 					value: message_help('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')

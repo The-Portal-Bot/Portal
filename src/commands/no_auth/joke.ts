@@ -15,25 +15,32 @@ module.exports = async (
 		if (args.length === 1) {
 			switch (category) {
 				case JokeEnum.dad:
-					giveMeAJoke.getRandomDadJoke((joke: string) => message.channel.send(joke));
+					giveMeAJoke.getRandomDadJoke((joke: string) =>
+						message.channel.send(joke));
 					break;
 				case JokeEnum.chuck:
-					giveMeAJoke.getRandomCNJoke((joke: string) => message.channel.send(joke));
+					giveMeAJoke.getRandomCNJoke((joke: string) =>
+						message.channel.send(joke));
 					break;
 				case JokeEnum.blonde:
-					giveMeAJoke.getRandomJokeOfTheDay('blonde', (joke: string) => message.channel.send(joke));
+					giveMeAJoke.getRandomJokeOfTheDay('blonde', (joke: string) =>
+						message.channel.send(joke));
 					break;
 				case JokeEnum.knock:
-					giveMeAJoke.getRandomJokeOfTheDay('knock-knock', (joke: string) => message.channel.send(joke));
+					giveMeAJoke.getRandomJokeOfTheDay('knock-knock', (joke: string) =>
+						message.channel.send(joke));
 					break;
 				case JokeEnum.animal:
-					giveMeAJoke.getRandomJokeOfTheDay('animal', (joke: string) => message.channel.send(joke));
+					giveMeAJoke.getRandomJokeOfTheDay('animal', (joke: string) =>
+						message.channel.send(joke));
 					break;
 				default:
-					giveMeAJoke.getCustomJoke('', args[0], (joke: string) => message.channel.send(joke));
+					giveMeAJoke.getCustomJoke('', args[0], (joke: string) =>
+						message.channel.send(joke));
 			}
 		} else {
-			giveMeAJoke.getCustomJoke('', message.author.username, (joke: string) => message.channel.send(joke));
+			giveMeAJoke.getCustomJoke('', message.author.username, (joke: string) =>
+				message.channel.send(joke));
 		}
 
 		return resolve({

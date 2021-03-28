@@ -2,8 +2,8 @@ import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
 import { insert_poll } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { PollPrtl } from "../../types/classes/PollPrtl.class";
+import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
@@ -59,7 +59,7 @@ module.exports = async (
 		if (!message.guild) {
 			return resolve({
 				result: true,
-				value: message_help('commands', 'poll', 'guild could not be fetched')
+				value: 'guild could not be fetched'
 			});
 		}
 		if (args.length <= 1) {
@@ -130,7 +130,7 @@ module.exports = async (
 			.then(r => {
 				return resolve({
 					result: r.result,
-					value: message_help('commands', 'poll', r.value)
+					value: r.value
 				});
 			})
 			.catch(e => {

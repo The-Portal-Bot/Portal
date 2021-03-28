@@ -54,7 +54,7 @@ module.exports = async (
 				if (json === null)
 					return resolve({
 						result: false,
-						value: message_help('commands', 'crypto', 'data from source was corrupted')
+						value: 'data from source was corrupted'
 					});
 
 				message.channel.send(
@@ -80,10 +80,10 @@ module.exports = async (
 					value: ''
 				});
 			})
-			.catch((error: any) => {
+			.catch((e: any) => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'crypto', `could not access the server\nerror: ${error}`)
+					value: `could not access the server / ${e}`
 				});
 			});
 	});

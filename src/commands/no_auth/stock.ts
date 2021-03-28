@@ -52,7 +52,7 @@ module.exports = async (
 				if (json === null)
 					return resolve({
 						result: false,
-						value: message_help('commands', 'stock', 'data from source was corrupted')
+						value: 'data from source was corrupted'
 					});
 
 				const chart = json.chart;
@@ -60,7 +60,7 @@ module.exports = async (
 				if (chart === null)
 					return resolve({
 						result: false,
-						value: message_help('commands', 'stock', 'could not find any stock')
+						value: 'could not find any stock'
 					});
 
 				const result = chart.result;
@@ -68,7 +68,7 @@ module.exports = async (
 				if (result === null)
 					return resolve({
 						result: false,
-						value: message_help('commands', 'stock', 'there were no results')
+						value: 'there were no results'
 					});
 
 				const meta = result[0];
@@ -76,7 +76,7 @@ module.exports = async (
 				if (meta === null)
 					return resolve({
 						result: false,
-						value: message_help('commands', 'stock', 'there were no meta data')
+						value: 'there were no meta data'
 					});
 
 				message.channel.send(
@@ -103,10 +103,10 @@ module.exports = async (
 					value: message_help('commands', 'stock', `${json} crypto stats`)
 				});
 			})
-			.catch((error: any) => {
+			.catch((e: any) => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'stock', `could not access the server\nerror: ${error}`)
+					value: `could not access the server / ${e}`
 				});
 			});
 	});

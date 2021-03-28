@@ -496,7 +496,11 @@ export function generate_channel_name(
 	return new Promise((resolve, reject) => {
 		for (let i = 0; i < portal_list.length; i++) {
 			for (let j = 0; j < portal_list[i].voice_list.length; j++) {
+
 				if (portal_list[i].voice_list[j].id === voice_channel.id) {
+					// I choose not to fetch the voice regex from database
+					// if it changed users can create a new one instead of
+					// me creating an database spam 
 					let regex = portal_list[i].voice_list[j].regex;
 					if (portal_list[i].regex_overwrite) {
 						const member = voice_channel.members
