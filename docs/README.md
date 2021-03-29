@@ -32,11 +32,11 @@
 
 ## Documentation
 
-* **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with description, arguments and how to use them.
+* **[Commands](https://portal-bot.xyz/docs/commands/)**, a list of all Portal commands with descriptions, arguments and how to use them.
 * **[Text Interpreter](https://portal-bot.xyz/docs/regex/interpreter)** is a program used by Portal to generate a channel's name _with four types of data_
-    1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data that return information.
-    2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are Portal's, portal or voice channel options that can be manipulated by whomever has clearance.
-    3. **[Pipes](https://portal-bot.xyz/docs/regex/interpreter/pipes)**, are mini functions you can pass text or Variables to manipulate their outcome.
+    1. **[Variables](https://portal-bot.xyz/docs/regex/interpreter/variables)**, are immutable and live data, that return information.
+    2. **[Attributes](https://portal-bot.xyz/docs/regex/interpreter/attributes)**, are mutable options that can be manipulated by whomever has clearance.
+    3. **[Pipes](https://portal-bot.xyz/docs/regex/interpreter/pipes)**, are mini functions you can pass text variables or attributes to, that manipulate their outcome.
     4. **[Structures](https://portal-bot.xyz/docs/regex/interpreter/structures)**, are conditional flow manipulators.
         
 ## More
@@ -49,14 +49,18 @@
 #### Disclaimers
 > 
 > * Portal will never record conversations or store anything you type
-> * Discord update their server rate limit to twice per 10 minutes.<br>
+> * Discord updated their server rate limit to twice per 10 minutes.<br>
     The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
-> * Portal is made using _[Discord.js](https://discord.js.org/#/)_
-> * Runs on nodejs 14.x or later
-
-<img src="https://github.com/keybraker/portal/workflows/compile%20test%20run/badge.svg" alt="CI" /> <img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="discord.js" /> <img src="https://img.shields.io/badge/npm-6.14.10-blue" alt="npm" /> <img src="https://img.shields.io/badge/node-14.15.4-blue" alt="node">
 
 <br>
+
+<p align="center">
+    <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-14.16.0-blue" alt="nodejs" /></a>
+    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-7.7.5-blue" alt="npm" /></a>
+    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="npm" /></a></br>
+    <a href="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml/badge.svg" alt="nodejs" /></a>
+    <a href="https://github.com/keybraker/Portal/actions/workflows/eslint.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/eslint.yml/badge.svg" alt="eslint" /></a>
+</p>
 
 <p align="center">
    <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPalMe</a>
