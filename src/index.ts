@@ -34,30 +34,12 @@ mongoose.connect(config.mongo_url, {
 	useUnifiedTopology: true,
 	useCreateIndex: true
 })
-	.then(r => {
+	.then(() => {
 		logger.info(`connected to the database`);
 	}).catch(e => {
 		logger.error(new Error(`unable to connect to database | ${e}`));
 		process.exit(1);
 	});
-
-// const anti_spam = new AntiSpam({
-// 	warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
-// 	kickThreshold: 50, // Amount of messages sent in a row that will cause a ban.
-// 	banThreshold: 70, // Amount of messages sent in a row that will cause a ban.
-// 	maxInterval: 2000, // Amount of time (in milliseconds) in which messages are considered spam.
-// 	warnMessage: '{@user}, please stop spamming', // Message that will be sent in chat upon warning a user.
-// 	kickMessage: '**{user_tag}** has been kicked for spamming', // Message that will be sent in chat upon kicking a user.
-// 	banMessage: '**{user_tag}** has been banned for spamming', // Message that will be sent in chat upon banning a user.
-// 	maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
-// 	maxDuplicatesKick: 50, // Amount of duplicate messages that trigger a warning.
-// 	maxDuplicatesBan: 70, // Amount of duplicate messages that trigger a warning.
-// 	exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions. ('ADMINISTRATOR')
-// 	ignoreBots: true, // Ignore bot messages.
-// 	debug: false,
-// 	verbose: false, // Extended Logs from module.
-// 	ignoredUsers: [], // Array of User IDs that get ignored.
-// });
 
 const client = new Client(
 	{
@@ -83,6 +65,25 @@ const client = new Client(
 		}
 	}
 );
+
+// const anti_spam = new AntiSpam({
+// 	warnThreshold: 5,
+// 	muteThreshold: 10,
+// 	maxInterval: 2000,
+// 	warnMessage: '{@user}, you will be muted if you continue spamming',
+// 	muteMessage: '{@user}, you are muted, contact an admin to unmute you',
+// 	maxDuplicatesWarning: 3,
+// 	warnEnabled: true,
+// 	muteEnabled: true,
+// 	kickEnabled: false,
+// 	banEnabled: false,
+// 	exemptPermissions: ['ADMINISTRATOR'],
+// 	muteRoleName: "p.ignore",
+// 	ignoreBots: true,
+// 	removeMessages: true,
+// 	debug: false,
+// 	verbose: false
+// });
 
 // This event triggers when the bot joins a guild.
 client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
@@ -166,8 +167,8 @@ client.on('message', async (message: Message) => {
 	if (!message) return;
 	if (!message.member) return;
 	if (!message.guild) return;
-	if (message.author.bot) return; // ignore bots 'botception'
 	if (message.channel.type === 'dm') return; // ignore DMs
+	if (message.author.bot) return; // ignore bots 'botception'
 
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {
@@ -178,8 +179,12 @@ client.on('message', async (message: Message) => {
 
 			if (portal_preprocessor(message, guild_object)) {
 				// preprocessor has handled the message
+				// anti_spam.message(message);
+
 				return true;
 			} else {
+				// anti_spam.message(message);
+				
 				// Ignore any message that does not start with prefix
 				if (message.content.indexOf(guild_object.prefix) !== 0) {
 					if (message.content === 'prefix') {
@@ -385,7 +390,6 @@ function portal_preprocessor(
 
 	if (is_ignored(message.member)) {
 		if (!handle_url_channels(message, guild_object)) {
-			// anti_spam.message(message);
 			if (guild_object.music_data.channel_id === message.channel.id) {
 				message.member.send('you can\'t play music when ignored');
 				if (message.deletable) {
@@ -397,24 +401,19 @@ function portal_preprocessor(
 		return true;
 	} else {
 		if (handle_url_channels(message, guild_object)) {
-			// anti_spam.message(message);
-
 			return true;
 		}
 		else if (handle_ignored_channels(message, guild_object)) {
 			handle_ranking_system(message, guild_object);
-			// anti_spam.message(message);
 
 			return true;
 		}
 		else if (handle_music_channels(message, guild_object)) {
 			handle_ranking_system(message, guild_object);
-			// anti_spam.message(message);
 
 			return true;
 		} else {
 			handle_ranking_system(message, guild_object);
-			// anti_spam.message(message);
 
 			if (guild_object.profanity_level !== ProfanityLevelEnum.none) {
 				// profanity check

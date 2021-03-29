@@ -23,10 +23,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'NiP';
+				return 'N/A';
 			}
 			if (!portal_object_list) {
-				return 'NiP';
+				return 'N/A';
 			}
 
 			const portal_object = portal_object_list.find(portal =>
@@ -59,10 +59,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'NiP';
+				return 'N/A';
 			}
 			if (!portal_object_list) {
-				return 'NiP';
+				return 'N/A';
 			}
 
 			const portal_object = portal_object_list.find(portal =>
@@ -94,10 +94,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'NiP';
+				return 'N/A';
 			}
 			if (!portal_object_list) {
-				return 'NiP';
+				return 'N/A';
 			}
 
 			const portal_object = portal_object_list.find(portal =>
@@ -125,7 +125,7 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
-				return 'NiP';
+				return 'N/A';
 			}
 
 			return voice_object.creator_id;
@@ -326,7 +326,7 @@ const variables: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'must be in voice channel'
+			if (!voice_channel) return 'N/A'
 			let cnt = 0;
 			voice_channel.members.forEach((member) => {
 				if (member.presence.activities !== null && !member.user.bot) {
@@ -349,7 +349,7 @@ const variables: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'must be in voice channel'
+			if (!voice_channel) return 'N/A'
 			let cnt = 0;
 			voice_channel.members.forEach((member) => {
 				if (!member.user.bot) {
@@ -387,7 +387,7 @@ const variables: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'must be in voice channel'
+			if (!voice_channel) return 'N/A'
 			const mmbr_lst: string[] = [];
 			voice_channel.members.forEach(member => {
 				mmbr_lst.push(member.displayName);
@@ -408,7 +408,7 @@ const variables: InterfaceBlueprint[] = [
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'must be in voice channel'
+			if (!voice_channel) return 'N/A'
 			let cnt = 0;
 			voice_channel.members.forEach((member) => {
 				if (member.presence.activities !== null) {
@@ -432,10 +432,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_channel) {
-				return 'must be in voice channel';
+				return 'N/A';
 			}
 			if (!voice_object) {
-				return 'NiP';
+				return 'N/A';
 			}
 
 			const status_list: string[] = get_status_list(voice_channel, voice_object);
@@ -471,10 +471,10 @@ const variables: InterfaceBlueprint[] = [
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_channel) {
-				return 'must be in voice channel';
+				return 'N/A';
 			}
 			if (!voice_object) {
-				return 'NiP';
+				return 'N/A';
 			}
 
 			return get_status_list(voice_channel, voice_object);
