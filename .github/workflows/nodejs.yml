@@ -1,4 +1,4 @@
-name: compile test run
+name: nodejs
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
     branches: [master]
 
 jobs:
-  compile_run_test:
+  node_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup node
+      - name: setup node
         uses: actions/setup-node@v1
         with:
           node-version: "14"
