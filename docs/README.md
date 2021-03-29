@@ -8,7 +8,7 @@
 
 <!-- <p align="center">
     Automatic voice channel generation with live name update<br>
-    Music player that is clean and clutter free, all from one channel<br>
+    Music player that is clean and clutter-free, all from one channel<br>
     Assigns and strips roles from users with a single reaction<br>
     Create temporary "focus" channels for private conversations<br>
     Portal will keep you up to speed, with voice announcements<br>
@@ -44,7 +44,7 @@
 1. For frequently asked questions (FAQ) with their answers click _[here](https://portal-bot.xyz/help/#faq)_.
 2. If you want to host Portal on your own system you can follow the guide _[here](https://github.com/keybraker/portal/blob/master/docs/Hosting.md)_.
 3. Portal is an open source project you can contribute too. There are guidelines for how to properly do it _[here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)_.
-4. To read the realease history, click _[here](https://portal-bot.xyz/blog)_
+4. To read the release history, click _[here](https://portal-bot.xyz/blog)_
 
 #### Disclaimers
 > 
@@ -67,3 +67,4 @@
 </p>
    
 <p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>
+
