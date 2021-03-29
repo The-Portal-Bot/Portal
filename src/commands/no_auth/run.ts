@@ -80,7 +80,8 @@ module.exports = async (
 							null,
 							undefined,
 							undefined
-						));
+						)
+					);
 				} else {
 					sent_message.edit('could not fetch guild of message');
 				}

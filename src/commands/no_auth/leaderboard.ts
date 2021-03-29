@@ -24,11 +24,7 @@ module.exports = async (
 		if (!member_list) {
 			return resolve({
 				result: false,
-				value: message_help(
-					'commands',
-					'leaderboard',
-					'server has no members please contact portal support'
-				)
+				value: 'server has no members'
 			});
 		}
 
@@ -36,14 +32,12 @@ module.exports = async (
 		if (args.length > 0 && isNaN(requested_number)) {
 			return resolve({
 				result: false,
-				value: message_help('commands',
-					'leaderboard',
-					`${args[0]} is not a number`
-				)
+				value: `${args[0]} is not a number`
 			});
 		}
 
-		let entries = (args.length > 0 && requested_number > 0 && member_list.length >= requested_number)
+		let entries = args.length > 0 &&
+			(requested_number > 0 && member_list.length >= requested_number)
 			? requested_number > 25
 				? 24
 				: requested_number
@@ -81,10 +75,7 @@ module.exports = async (
 						} else {
 							resolve({
 								result: false,
-								value: message_help('commands',
-									'leaderboard',
-									'a member has been stored incorrectly please contact Portal maintainter'
-								)
+								value: 'a member has been stored incorrectly'
 							});
 						}
 					}
@@ -110,7 +101,7 @@ module.exports = async (
 		else {
 			resolve({
 				result: false,
-				value: message_help('commands', 'leaderboard', 'there are no members for this server, please contact Portal Bot maintainer')
+				value: 'there are no members for this server'
 			});
 		}
 	});

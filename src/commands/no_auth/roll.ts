@@ -43,16 +43,17 @@ module.exports = async (
 							name: max_string(roll_msg, 256),
 							icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif'
 						}
-					));
+					)
+				);
 
 				return resolve({
 					result: true,
 					value: ''
 				});
-			} catch (err) {
+			} catch (e) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'roll')
+					value: `error while rolling / ${e}`
 				});
 			}
 		} else {

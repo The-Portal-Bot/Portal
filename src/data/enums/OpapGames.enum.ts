@@ -1,19 +1,19 @@
 export enum OpapGameIdEnum {
-    Kino = 1100,
-	Powerspin = 1110,
-	Super3 = 2100,
-	Proto = 2101,
-	Lotto = 5103,
-	Tzoker = 5104,
-	Extra5 = 5106
+    kino = 1100,
+	powerspin = 1110,
+	super3 = 2100,
+	proto = 2101,
+	lotto = 5103,
+	tzoker = 5104,
+	extra5 = 5106
 };
 
 export const OpapGameIdList = [
-    'Kino',
-	'Powerspin',
-	'Super3',
-	'Proto',
-	'Lotto',
-	'Tzoker',
-	'Extra5'
+    'kino',
+	'powerspin',
+	'super3',
+	'proto',
+	'lotto',
+	'tzoker',
+	'extra5'
 ];

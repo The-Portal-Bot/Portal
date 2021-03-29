@@ -1,5 +1,4 @@
 import { Client, Message } from "discord.js";
-import { message_help } from "../../libraries/help.library";
 import { client_talk, client_write } from "../../libraries/localisation.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -22,13 +21,13 @@ module.exports = async (
 		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'leave', 'Portal must be connected to a voice channel with you')
+				value: 'Portal must be connected to a voice channel with you'
 			});
 		}
 
 		return resolve({
 			result: true,
-			value: message_help('commands', 'leave', client_write(message, guild_object, 'leave'))
+			value: client_write(message, guild_object, 'leave')
 		});
 	});
 };

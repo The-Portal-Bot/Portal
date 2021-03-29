@@ -72,6 +72,7 @@ const GuildPrtlSchm = new Schema(
 		url_list: { type: [String], required: true },
 		role_list: { type: [GiveRolePrtlSchm], required: true },
 		poll_list: { type: [PollPrtlSchm], required: true },
+		initial_role: { type: String, required: true },
 		ranks: { type: [Rank], required: true },
 		music_data: { type: MusicData, required: true },
 		music_queue: { type: [VideoSearchResult], required: true },

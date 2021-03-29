@@ -1,5 +1,4 @@
 import { Client, Message } from "discord.js";
-import { message_help } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -13,7 +12,7 @@ module.exports = async (
 					`rtt    latency:\t**${message_sent.createdTimestamp - message.createdTimestamp}** *ms*.\n` +
 					`portal latency:\t**${client.ws.ping}** *ms*`
 				)
-					.then((message_edited: Message) => {
+					.then(() => {
 						return resolve({
 							result: true,
 							value: ''
@@ -22,14 +21,14 @@ module.exports = async (
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: message_help('commands', 'ping', `error while editing pong message / ${e}`)
+							value: `error while editing pong message / ${e}`
 						})
 					});
 			})
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'ping', `error while sending pong message / ${e}`)
+					value: `error while sending pong message / ${e}`
 				})
 			});
 	});

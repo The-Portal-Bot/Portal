@@ -36,6 +36,7 @@ export class GuildPrtl {
 	public url_list: string[];
 	public role_list: GiveRolePrtl[];
 	public poll_list: PollPrtl[];
+	public initial_role: string | null;
 	public ranks: Rank[];
 	public music_data: MusicData;
 	public music_queue: VideoSearchResult[];
@@ -55,6 +56,7 @@ export class GuildPrtl {
 		url_list: string[],
 		role_list: GiveRolePrtl[],
 		poll_list: PollPrtl[],
+		initial_role: string | null,
 		ranks: Rank[],
 		music_data: MusicData,
 		music_queue: VideoSearchResult[],
@@ -73,6 +75,7 @@ export class GuildPrtl {
 		this.url_list = url_list;
 		this.role_list = role_list;
 		this.poll_list = poll_list;
+		this.initial_role = initial_role;
 		this.ranks = ranks;
 		this.music_data = music_data;
 		this.music_queue = music_queue;
@@ -94,6 +97,7 @@ export interface IGuildPrtl extends Document {
 	url_list: string[];
 	role_list: GiveRolePrtl[];
 	poll_list: PollPrtl[];
+	initial_role: string | null;
 	ranks: Rank[];
 	music_data: MusicData;
 	music_queue: VideoSearchResult[];

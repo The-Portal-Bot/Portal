@@ -56,6 +56,18 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
+		name: 'ban',
+		description: 'bans member for said amount of time',
+		super_description: '**ban**, bans member for said amount of time. ' +
+			'You can give a reason if none given *"banned by admin" will be used*.\n' +
+			'Also if you don\'t specify the duration user will be banned for one day',
+		example: './ban @joe | because he was spamming | 2',
+		args: '<!user_tag> | <@reason> | <@days>',
+		auth: AuthEnum.admin,
+		get: null,
+		set: null
+	},
+	{
 		name: 'corona',
 		description: 'corona replys with todays latest figures on the novel corona virus',
 		super_description: '**corona**, replys with todays latest figures on the novel corona virus. ' +
@@ -146,6 +158,17 @@ const commands: InterfaceBlueprint[] = [
 		example: './joke',
 		args: '<@category>',
 		auth: AuthEnum.none,
+		get: null,
+		set: null
+	},
+	{
+		name: 'kick',
+		description: 'kicks member from server',
+		super_description: '**kick**, kicks member from server. ' +
+			'You can give a reason if none given *"kicked by admin" will be used*.\n',
+		example: './kick @joe | because he was spamming',
+		args: '<!user_tag> | <@reason>',
+		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},

@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_rich_embed, message_help } from "../../libraries/help.library";
+import { create_rich_embed } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -30,7 +30,7 @@ module.exports = async (
 					true,
 					null,
 					null
-				),
+				)
 			);
 
 			resolve({
@@ -47,7 +47,7 @@ module.exports = async (
 
 		resolve({
 			result: true,
-			value: message_help('commands', 'ranks', 'could not fetch ranks')
+			value: 'could not fetch ranks'
 		});
 	});
 };

@@ -14,6 +14,7 @@ import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
+// const AntiSpam = require('discord-anti-spam');
 
 if (config.debug) {
 	logger.add(new transports.Console());
@@ -24,8 +25,6 @@ if (config.log) {
 	logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info' }));
 	logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
-
-// const AntiSpam = require('discord-anti-spam');
 
 const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 
@@ -56,7 +55,7 @@ mongoose.connect(config.mongo_url, {
 // 	exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions. ('ADMINISTRATOR')
 // 	ignoreBots: true, // Ignore bot messages.
 // 	debug: false,
-// 	verbose: true, // Extended Logs from module.
+// 	verbose: false, // Extended Logs from module.
 // 	ignoredUsers: [], // Array of User IDs that get ignored.
 // });
 
@@ -291,11 +290,15 @@ function command_loader(
 		.find(active_current => {
 			if (active_current.command === command) {
 				if (type === 'member' && active_current.member === message.author.id) {
-					return true;
+					if (message.guild && active_current.guild === message.guild.id) {
+						return true;
+					}
 				}
 
 				if (type === 'guild') {
-					return true;
+					if (message.guild && active_current.guild === message.guild.id) {
+						return true;
+					}
 				}
 			}
 
@@ -322,18 +325,21 @@ function command_loader(
 		.then((response: ReturnPormise) => {
 			if (response) {
 				if (response.result) {
-					active_cooldowns[type_string].push({
-						member: message.author.id,
-						command: command,
-						timestamp: Date.now()
-					});
+					if (message.guild) {
+						active_cooldowns[type_string].push({
+							member: message.author.id,
+							guild: message.guild.id,
+							command: command,
+							timestamp: Date.now()
+						});
 
-					if (command_options) {
-						setTimeout(() => {
-							active_cooldowns[type_string] =
-								active_cooldowns[type_string]
-									.filter(active => active.command !== command);
-						}, command_options.time * 60 * 1000);
+						if (command_options) {
+							setTimeout(() => {
+								active_cooldowns[type_string] =
+									active_cooldowns[type_string]
+										.filter(active => active.command !== command);
+							}, command_options.time * 60 * 1000);
+						}
 					}
 				}
 
@@ -434,8 +440,6 @@ function handle_ranking_system(
 	const level = add_points_message(
 		message, guild_object.member_list[0], guild_object.rank_speed
 	);
-
-	// store to db
 
 	if (level) {
 		message_reply(true, message, `you reached level ${level}!`);
@@ -614,7 +618,6 @@ function handle_music_channels(
 					}
 				});
 		}
-
 		return true;
 	}
 

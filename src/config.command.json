@@ -284,15 +284,27 @@
                 }
             },
             {
+                "name": "ban",
+                "range": "member",
+                "time": 1,
+                "auth": true,
+                "premium": true,
+                "reply": true,
+                "delete": {
+                    "source": false,
+                    "reply": false
+                }
+            },
+            {
                 "name": "delete",
-                "range": "none",
-                "time": 0,
+                "range": "member",
+                "time": 1,
                 "auth": true,
                 "premium": true,
                 "reply": false,
                 "delete": {
-                    "source": true,
-                    "reply": true
+                    "source": false,
+                    "reply": false
                 }
             },
             {
@@ -317,6 +329,18 @@
                 "delete": {
                     "source": true,
                     "reply": true
+                }
+            },
+            {
+                "name": "kick",
+                "range": "member",
+                "time": 1,
+                "auth": true,
+                "premium": true,
+                "reply": true,
+                "delete": {
+                    "source": false,
+                    "reply": false
                 }
             },
             {
@@ -376,7 +400,7 @@
                 "reply": true,
                 "delete": {
                     "source": false,
-                    "reply": false
+                    "reply": true
                 }
             },
             {

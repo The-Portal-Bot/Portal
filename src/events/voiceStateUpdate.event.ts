@@ -54,21 +54,18 @@ function five_min_refresher(
 	fetch_guild(guild.id)
 		.then(guild_object => {
 			if (guild_object) {
-				generate_channel_name(voice_channel, portal_list, guild_object, guild);
+				generate_channel_name(voice_channel, portal_list, guild_object, guild)
+					.catch(() => { });
 				setTimeout(() => {
 					if (!guild.deleted && !voice_channel.deleted) {
 						generate_channel_name(voice_channel, portal_list, guild_object, guild)
-							.catch(() => {
-								return;
-							});
+							.catch(() => { });
 						five_min_refresher(voice_channel, portal_list, guild, minutes);
 					}
 				}, minutes * 60 * 1000);
 			}
 		})
-		.catch(() => {
-			return;
-		});
+		.catch(() => { });
 };
 
 async function channel_empty_check(

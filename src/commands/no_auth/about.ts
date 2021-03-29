@@ -5,53 +5,55 @@ import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import config from '../../config.json';
 
 module.exports = async (
-    message: Message, args: string[], guild_object: GuildPrtl
+    message: Message
 ): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
-        message.channel.send(create_rich_embed(
-            'About',
-            null,
-            '#1DB954',
-            [{
-                emote: 'Creator',
-                role: 'Keybraker',
-                inline: true
-            },
-            {
-                emote: 'Created',
-                role: '2020',
-                inline: true
-            },
-            {
-                emote: 'Version',
-                role: config.version,
-                inline: true
-            },
-            {
-                emote: 'Website',
-                role: 'https://portal-bot.xyz',
-                inline: false
-            },
-            {
-                emote: 'Upvote on top.gg',
-                role: 'https://top.gg/bot/704400876860735569',
-                inline: false
-            },
-            {
-                emote: 'Official Server',
-                role: 'https://discord.com/invite/nuKXgFXr5y',
-                inline: false
-            },
-            {
-                emote: 'Github',
-                role: 'https://www.github.com/keybraker/Portal',
-                inline: false
-            }],
-            null,
-            null,
-            true,
-            'https://portal-bot.xyz',
-            null)
+        message.channel.send(
+            create_rich_embed(
+                'About',
+                'A fully fledged and feature rich bot for Discord',
+                '#1DB954',
+                [
+                    {
+                        emote: 'Website',
+                        role: '[portal-bot.xyz](https://portal-bot.xyz)',
+                        inline: true
+                    },
+                    {
+                        emote: 'Creator',
+                        role: '[Keybraker](https://github.com/keybraker/Portal)',
+                        inline: true
+                    },
+                    {
+                        emote: 'Version',
+                        role: `[${config.version}](https://portal-bot.xyz/blog/${config.version})`,
+                        inline: true
+                    },
+                    {
+                        emote: 'Official Server',
+                        role: '[Portal Official](https://discord.gg/WrMUzJYyzJ)',
+                        inline: true
+                    },
+                    {
+                        emote: 'Github',
+                        role: '[keybraker/Portal](https://www.github.com/keybraker/Portal)',
+                        inline: true
+                    },
+                    {
+                        emote: 'Upvote',
+                        role: '[Top.gg](https://top.gg/bot/704400876860735569) | [Bot.gg](https://discord.bots.gg/bots/704400876860735569)',
+                        inline: true
+                    }
+                ],
+                null,
+                null,
+                true,
+                null,
+                null,
+                // undefined,
+                // undefined,
+                // 'since 2020'
+            )
         );
 
         return resolve({

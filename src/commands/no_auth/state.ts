@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import { create_rich_embed, message_help } from "../../libraries/help.library";
+import { create_rich_embed } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -11,7 +11,7 @@ module.exports = async (
         if (!guild) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'state', 'could not fetch guild')
+                value: 'could not fetch guild'
             });
         }
 

@@ -4,24 +4,23 @@ import moment from 'moment';
 import { OpapGameIdEnum } from '../../data/enums/OpapGames.enum';
 import { create_rich_embed, get_json, get_key_from_enum, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		let game_code: number | undefined = undefined;
 
 		if (args.length === 2) {
-			if (args[0].toLocaleLowerCase() !== 'opap') {
+			if (args[0].toLowerCase() !== 'opap') {
 				return resolve({
 					result: false,
 					value: message_help('commands', 'bet', `${args[0]} is not a provider`)
 				});
 			} else {
 				if (isNaN(+args[1])) {
-					game_code = <number>get_key_from_enum(args[1], OpapGameIdEnum);
+					game_code = <number>get_key_from_enum(args[1].toLowerCase(), OpapGameIdEnum);
 				}
 
 				if (!game_code) {
@@ -51,12 +50,13 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
-				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
+				const json = get_json(response.toString()
+					.substring(response.toString().indexOf('{')));
 
 				if (json === null) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'bet', 'data from source was corrupted')
+						value: 'data from source is corrupted'
 					});
 				}
 
@@ -112,10 +112,10 @@ module.exports = async (
 				});
 
 			})
-			.catch((error: any) => {
+			.catch((e: any) => {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'bet', `could not access the server\nerror: ${error}`)
+					value: `could not access the server / ${e}`
 				});
 			});
 	});

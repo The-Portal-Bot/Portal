@@ -38,13 +38,13 @@ module.exports = async (
 			if (is_music_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'announcement', 'this can\'t be set as an announcemennt channel for it is the music channel')
+					value: 'this can\'t be set as an announcemennt channel for it is the music channel'
 				});
 			}
 			if (is_url_only_channel(message.channel.id, guild_object)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'announcement', 'this can\'t be set as the announcemennt channel for it is an url channel')
+					value: 'this can\'t be set as the announcemennt channel for it is an url channel'
 				});
 			}
 		}
