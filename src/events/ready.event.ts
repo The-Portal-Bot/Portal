@@ -68,8 +68,8 @@ function add_guild_again(
 					fetch_guild_members(guild.id)
 						.then(member_list => {
 							if (member_list) {
-								added_when_down(guild, member_list);
-								removed_when_down(guild, member_list);
+								// added_when_down(guild, member_list);
+								// removed_when_down(guild, member_list);
 
 								return resolve(true);
 							} else {
