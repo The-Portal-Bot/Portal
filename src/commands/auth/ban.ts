@@ -84,7 +84,7 @@ module.exports = async (
 									return resolve({
 										result: true,
 										value: `${member_to_ban} has been banned by ${message.author} ` +
-											`for ${ban_days} days, because: *${ban_reason}*`
+											`for ${ban_days} ${ban_days > 1 ? 'days' : 'day'}, because: *${ban_reason}*`
 									});
 								})
 								.catch(e => {
