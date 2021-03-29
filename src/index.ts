@@ -72,7 +72,7 @@ const client = new Client(
 // 	maxInterval: 2000,
 // 	warnMessage: '{@user}, you will be muted if you continue spamming',
 // 	muteMessage: '{@user}, you are muted, contact an admin to unmute you',
-// 	maxDuplicatesWarning: 7,
+// 	maxDuplicatesWarning: 3,
 // 	warnEnabled: true,
 // 	muteEnabled: true,
 // 	kickEnabled: false,
@@ -80,8 +80,9 @@ const client = new Client(
 // 	exemptPermissions: ['ADMINISTRATOR'],
 // 	muteRoleName: "p.ignore",
 // 	ignoreBots: true,
-// 	debug: true,
-// 	verbose: true,
+// 	removeMessages: true,
+// 	debug: false,
+// 	verbose: false
 // });
 
 // This event triggers when the bot joins a guild.
