@@ -30,7 +30,7 @@ module.exports = async (
 				.filter(val => val !== '\n')
 				.join(' ');
 
-			set_attribute(message.member.voice.channel, guild_object, args[0], value, message.member)
+			set_attribute(message.member.voice.channel, guild_object, args[0], value, message.member, message)
 				.then(r => {
 					return resolve(r);
 				})

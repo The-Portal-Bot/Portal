@@ -40,7 +40,8 @@ async function reaction_role_manager(
 					const role_to_give = get_role(messageReaction?.message?.guild, role_map.role_id);
 					if (role_to_give) {
 						try {
-							current_member.roles.add(role_to_give)
+							current_member.roles
+								.add(role_to_give)
 								.then(member => {
 									if (!!member) {
 										return resolve(`you have been assigned to ${role_map.role_id}`);

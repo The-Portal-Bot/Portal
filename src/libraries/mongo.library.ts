@@ -23,7 +23,7 @@ export async function fetch_guild_list(
                 if (!!guilds) {
                     return resolve(<GuildPrtl[]>guilds);
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -45,7 +45,7 @@ export async function fetch_guild(
                 if (!!guild) {
                     return resolve(<GuildPrtl>guild);
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -81,7 +81,7 @@ export async function fetch_guild_channel_delete(
                         ignore_list: r.ignore_lis
                     });
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -92,20 +92,24 @@ export async function fetch_guild_channel_delete(
 
 export async function fetch_guild_announcement(
     guild_id: string
-): Promise<string | undefined> {
+): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
         GuildPrtlMdl.findOne(
             {
                 id: guild_id
             },
             {
-                announcement: 1
+                announcement: 1,
+                initial_role: 1
             })
             .then((r: any) => {
                 if (!!r) {
-                    return resolve(<string>r);
+                    return resolve(<GuildPrtl>{
+                        announcement: r.announcement,
+                        initial_role: r.initial_role
+                    });
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -141,7 +145,7 @@ export async function fetch_guild_reaction_data(
                         music_queue: r.music_queue
                     });
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -165,7 +169,7 @@ export async function fetch_guild_members(
                 if (!!r) {
                     return resolve(<MemberPrtl[]>r.member_list);
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -193,7 +197,7 @@ export async function fetch_guild_music_queue(
                         queue: r.music_queue
                     });
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -221,6 +225,7 @@ export async function fetch_guild_predata(
                 },
                 ignore_list: 1,
                 url_list: 1,
+                initial_role: 1,
                 music_data: 1,
                 music_queue: 1,
                 rank_speed: 1,
@@ -235,13 +240,14 @@ export async function fetch_guild_predata(
                         member_list: r.member_list,
                         ignore_list: r.ignore_list,
                         url_list: r.url_list,
+                        initial_role: r.initial_role,
                         music_data: r.music_data,
                         music_queue: r.music_queue,
                         rank_speed: r.rank_speed,
                         profanity_level: r.profanity_level
                     });
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -282,7 +288,7 @@ export async function fetch_guild_rest(
                         premium: r.premium
                     });
                 } else {
-                    return undefined;
+                    return resolve(undefined);
                 }
             })
             .catch((e: any) => {
@@ -327,10 +333,11 @@ export async function update_guild(
             }
         )
             .then((r: MongoPromise) => {
+                console.log('r :>> ', r);
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -399,6 +406,7 @@ export async function insert_guild(
     const role_list: GiveRolePrtl[] = [];
     const poll_list: string[] = [];
     const ranks: Rank[] = [];
+    const initial_role: string | null = 'null';
     const music_data: MusicData = {
         channel_id: 'null',
         message_id: 'null',
@@ -423,6 +431,7 @@ export async function insert_guild(
             url_list: url_list,
             role_list: role_list,
             poll_list: poll_list,
+            initial_role: initial_role,
             ranks: ranks,
             music_data: music_data,
             music_queue: music_queue,
@@ -454,7 +463,7 @@ export async function remove_guild(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -492,7 +501,7 @@ export async function update_member(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -518,7 +527,7 @@ export async function insert_member(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -546,7 +555,7 @@ export async function remove_member(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -582,7 +591,7 @@ export async function update_portal(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -609,7 +618,7 @@ export async function insert_portal(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -638,7 +647,7 @@ export async function remove_portal(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -675,7 +684,7 @@ export async function update_voice(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -708,7 +717,7 @@ export async function insert_voice(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -746,7 +755,7 @@ export async function remove_voice(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -775,7 +784,7 @@ export async function insert_url(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -801,7 +810,7 @@ export async function remove_url(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -830,7 +839,7 @@ export async function insert_ignore( // channel
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -856,7 +865,7 @@ export async function remove_ignore( // channel
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -882,7 +891,7 @@ export async function set_ranks(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -911,7 +920,7 @@ export async function insert_poll(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -940,7 +949,7 @@ export async function remove_poll(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -969,7 +978,7 @@ export async function insert_role_assigner(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -998,7 +1007,7 @@ export async function remove_role_assigner(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -1027,7 +1036,7 @@ export async function insert_music_video(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -1054,7 +1063,7 @@ export async function clear_music_vote(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -1081,7 +1090,7 @@ export async function insert_music_vote(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {
@@ -1108,7 +1117,7 @@ export async function set_music_data(
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
-                    return reject('failed to execute database transaction');
+                    return reject('did not execute database transaction');
                 }
             })
             .catch((e: any) => {

@@ -1,4 +1,4 @@
-import { Guild, GuildMember, MessageEmbed, VoiceChannel } from 'discord.js';
+import { Guild, GuildMember, Message, MessageEmbed, VoiceChannel } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
 import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
@@ -58,7 +58,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -75,7 +75,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -125,7 +125,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -142,7 +142,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -205,7 +205,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -222,7 +222,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -272,7 +272,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -289,7 +289,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -352,7 +352,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -369,7 +369,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -420,7 +420,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -437,7 +437,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -500,7 +500,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -517,7 +517,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -567,7 +567,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -584,7 +584,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -682,7 +682,7 @@ const attributes: InterfaceBlueprint[] = [
 							result: r,
 							value: r
 								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-								: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 						});
 					})
 					.catch(e => {
@@ -725,7 +725,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -776,7 +776,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -793,6 +793,99 @@ const attributes: InterfaceBlueprint[] = [
 					});
 				}
 
+			});
+		},
+		auth: AuthEnum.admin
+	},
+	{
+		name: 'g.initial_role',
+		description: 'returns/sets the level of Profanity check strictness',
+		super_description: '**g.initial_role**, returns/sets the level of Profanity check strictness,' +
+			'For example fuckshit would not be flagged in `default` level but would in `strict`.',
+		example: '&g.initial_role',
+		args: 'none/default/strict',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): string => {
+			if (!guild_object.initial_role || guild_object.initial_role === 'null') {
+				return 'initial role has not been set yet 1';
+			}
+
+			const role = guild.roles.cache
+				.find(r => r.id === guild_object.initial_role);
+
+			if (role) {
+				return `@${role.name}`;
+			} else {
+				return 'initial role has not been set yet 2';
+			}
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
+		): Promise<ReturnPormise> => {
+			const ctgr = ['g'];
+			const attr = 'initial_role';
+
+			return new Promise((resolve) => {
+				if (!message.guild) {
+					return resolve({
+						result: false,
+						value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set as user guild could not be fetched`
+					});
+				}
+
+				if (!message.mentions || !message.mentions.roles || message.mentions.roles.array().length === 0) {
+					console.log(`${value} === 'null' :>> `, value === 'null');
+					if (value === 'null') {
+						update_guild(guild_object.id, attr, 'null')
+							.then(r => {
+								return resolve({
+									result: r,
+									value: r
+										? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+								});
+							});
+					} else {
+						return resolve({
+							result: false,
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set as no role was given`
+						});
+					}
+				} else {
+					const new_role = message.mentions.roles.first() || message.guild.roles.cache.get(value);
+
+					if (new_role) {
+						update_guild(guild_object.id, attr, new_role.id)
+							.then(r => {
+								return resolve({
+									result: r,
+									value: r
+										? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+								});
+							});
+					} else {
+						return resolve({
+							result: false,
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set as role could not be found`
+						});
+					}
+				}
 			});
 		},
 		auth: AuthEnum.admin
@@ -827,7 +920,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -892,7 +985,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -945,7 +1038,7 @@ const attributes: InterfaceBlueprint[] = [
 								result: r,
 								value: r
 									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} can failed to be set`
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
 							});
 						})
 						.catch(e => {
@@ -1580,7 +1673,7 @@ export function get_attribute(
 
 export function set_attribute(
 	voice_channel: VoiceChannel | undefined | null, guild_object: GuildPrtl,
-	candidate: string, value: any, member: GuildMember
+	candidate: string, value: any, member: GuildMember, message: Message
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		let voice_object: VoiceChannelPrtl | undefined = undefined;
@@ -1648,14 +1741,14 @@ export function set_attribute(
 
 				const member_object = guild_object.member_list.find(m => m.id === member.id);
 
-				attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value, member_object)
+				attributes[l].set(voice_channel, voice_object, portal_object, guild_object, value, member_object, message)
 					.then((r: ReturnPormise) => {
 						return resolve(r);
 					})
 					.catch((e: any) => {
 						return resolve({
 							result: false,
-							value: `attribute ${candidate} failed to be set`
+							value: `attribute ${candidate} failed to be set / ${e}`
 						});
 					});
 

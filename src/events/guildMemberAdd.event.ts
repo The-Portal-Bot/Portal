@@ -14,30 +14,52 @@ module.exports = async (
 					}
 
 					fetch_guild_announcement(args.member.guild.id)
-						.then(announcement => {
-							if (announcement) {
+						.then(guild_object => {
+							if (guild_object) {
+								if (guild_object.initial_role && guild_object.initial_role !== 'null') {
+									const initial_role = args.member.guild.roles.cache
+										.find(r => r.id === guild_object.initial_role);
+
+									if (initial_role) {
+										try {
+											args.member.roles
+												.add(initial_role)
+												.catch(e => {
+													return reject(`failed to send join message / ${e}`);
+												});
+										}
+										catch (e) { }
+									}
+								}
+
 								const join_message = `member ${args.member.presence.user} ` +
 									`[${args.member.guild.id}]\n\thas joined ${args.member.guild}`;
 
 								const announcement_channel = <TextChannel>args.member.guild.channels.cache
-									.find(channel => channel.id === announcement);
+									.find(channel => channel.id === guild_object.announcement);
 
 								if (announcement_channel) {
-									announcement_channel.send(
-										create_rich_embed(
-											'member joined',
-											join_message,
-											'#00C70D',
-											[],
-											args.member.user.avatarURL(),
-											null,
-											true,
-											null,
-											null
+									announcement_channel
+										.send(
+											create_rich_embed(
+												'member joined',
+												join_message,
+												'#00C70D',
+												[],
+												args.member.user.avatarURL(),
+												null,
+												true,
+												null,
+												null
+											)
 										)
-									);
+										.then(() => {
+											return resolve(`added member ${args.member.id} to ${args.member.guild.id}`);
+										})
+										.catch(e => {
+											return reject(`failed to send join message / ${e}`);
+										});
 
-									return resolve(`added member ${args.member.id} to ${args.member.guild.id}`);
 								} else {
 									return reject(`could not find announcement channel, it has been deleted`);
 								}
