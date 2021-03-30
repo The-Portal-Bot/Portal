@@ -6,7 +6,7 @@ import { Rank, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 function is_rank(rank: Rank) {
 	return !!rank.level && !!rank.role;
-};
+}
 
 function is_role(rank: Rank, roles: Role[]) {
 	return roles.some(role => {
@@ -14,7 +14,7 @@ function is_role(rank: Rank, roles: Role[]) {
 		if (role.name === rank.role) return true;
 		return false;
 	});
-};
+}
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -29,6 +29,7 @@ module.exports = async (
 		const roles = message.guild.roles.cache.map(cr => cr);
 
 		if (args.length > 0) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			const new_ranks_json = get_json(args.join(' '));
 			if (!new_ranks_json || !Array.isArray(new_ranks_json)) {
 				return resolve({
@@ -37,7 +38,7 @@ module.exports = async (
 				});
 			}
 
-			const new_ranks: Rank[] = new_ranks_json;
+			const new_ranks = <Rank[]>new_ranks_json;
 
 			if (!new_ranks.every(r => r.level && r.role)) {
 				return resolve({
@@ -92,4 +93,4 @@ module.exports = async (
 			value: 'new rankings have been set'
 		});
 	});
-};
+}

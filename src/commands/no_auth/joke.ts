@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Message } from "discord.js";
 import { JokeEnum } from "../../data/enums/Joke.enum";
 import { get_key_from_enum } from "../../libraries/help.library";

@@ -19,14 +19,28 @@ function create_role_message(
 		channel
 			.send(role_message_emb)
 			.then(sent_message => {
-				sent_message.react('🏁');
+				sent_message
+					.react('🏁')
+					.catch(e => {
+						return resolve({
+							result: true,
+							value: `failed to react to message / ${e}`
+						});
+					});
 				for (let i = 0; i < poll_map.length; i++) {
 					if (typeof poll_map[i].emote === 'string') {
-						sent_message.react(<string>poll_map[i].emote);
+						sent_message
+							.react(<string>poll_map[i].emote)
+							.catch(e => {
+								return resolve({
+									result: true,
+									value: `failed to react to message / ${e}`
+								});
+							});
 					}
 				}
 
-				const poll: PollPrtl = { message_id: sent_message.id, member_id: member_id };
+				const poll: PollPrtl = { message_id: sent_message.id, member_id: member_id }
 				insert_poll(guild_object.id, poll)
 					.then(r => {
 						return resolve({
@@ -50,7 +64,7 @@ function create_role_message(
 				})
 			});
 	});
-};
+}
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -69,8 +83,8 @@ module.exports = async (
 			});
 		}
 
-		let title: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-		let poll_json_string: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+		const title = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+		const poll_json_string = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
 		if (title === '' && poll_json_string !== '') {
 			return resolve({
@@ -79,6 +93,7 @@ module.exports = async (
 			});
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const poll_json = get_json(poll_json_string);
 		if (!poll_json) {
 			return resolve({
@@ -136,8 +151,8 @@ module.exports = async (
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: e
+					value: `${e}`
 				})
 			});
 	});
-};
+}

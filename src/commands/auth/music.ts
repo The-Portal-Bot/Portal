@@ -52,7 +52,13 @@ module.exports = async (
 			channel.id == guild_object.music_data.channel_id);
 
 		if (music) {
-			delete_channel(PortalChannelTypes.music, <TextChannel>music, message);
+			delete_channel(PortalChannelTypes.music, <TextChannel>music, message)
+				.catch((e: any) => {
+					return resolve({
+						result: false,
+						value: `failed to delete channel / ${e}`
+					});
+				});
 		}
 
 		if (args.length === 0) {
@@ -107,12 +113,24 @@ module.exports = async (
 			let value = null;
 
 			if (music_channel !== '') {
-				create_music_channel(message.guild, music_channel, music_category, guild_object);
+				create_music_channel(message.guild, music_channel, music_category, guild_object)
+					.catch((e: any) => {
+						return resolve({
+							result: false,
+							value: `failed to create music channel / ${e}`
+						});
+					});
 				result = true;
 				value = 'music channel and category have been created';
 			}
 			else if (music_channel === '' && music_category !== '') {
-				create_music_channel(message.guild, music_category, null, guild_object);
+				create_music_channel(message.guild, music_category, null, guild_object)
+					.catch((e: any) => {
+						return resolve({
+							result: false,
+							value: `failed to create music channel / ${e}`
+						});
+					});
 				result = true;
 				value = 'music channel has been created';
 			}

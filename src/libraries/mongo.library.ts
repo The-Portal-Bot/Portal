@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Client, TextChannel, VoiceChannel } from 'discord.js';
 import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
@@ -20,7 +22,7 @@ export async function fetch_guild_list(
     return new Promise((resolve, reject) => {
         GuildPrtlMdl.find({})
             .then((guilds: IGuildPrtl[]) => {
-                if (!!guilds) {
+                if (guilds) {
                     return resolve(<GuildPrtl[]>guilds);
                 } else {
                     return resolve(undefined);
@@ -30,7 +32,7 @@ export async function fetch_guild_list(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild(
     guild_id: string
@@ -42,7 +44,7 @@ export async function fetch_guild(
             }
         )
             .then((guild: IGuildPrtl | null) => {
-                if (!!guild) {
+                if (guild) {
                     return resolve(<GuildPrtl>guild);
                 } else {
                     return resolve(undefined);
@@ -52,7 +54,7 @@ export async function fetch_guild(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild_channel_delete(
     guild_id: string
@@ -71,7 +73,7 @@ export async function fetch_guild_channel_delete(
                 ignore_list: 1
             })
             .then((r: any) => {
-                if (!!r) {
+                if (r) {
                     return resolve(<GuildPrtl>{
                         id: r.id,
                         portal_list: r.portal_list,
@@ -88,7 +90,7 @@ export async function fetch_guild_channel_delete(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild_announcement(
     guild_id: string
@@ -103,7 +105,7 @@ export async function fetch_guild_announcement(
                 initial_role: 1
             })
             .then((r: any) => {
-                if (!!r) {
+                if (r) {
                     return resolve(<GuildPrtl>{
                         announcement: r.announcement,
                         initial_role: r.initial_role
@@ -116,7 +118,7 @@ export async function fetch_guild_announcement(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild_reaction_data(
     guild_id: string, member_id: string
@@ -135,7 +137,7 @@ export async function fetch_guild_reaction_data(
                 music_queue: 1
             })
             .then((r: any) => {
-                if (!!r) {
+                if (r) {
                     return resolve(<GuildPrtl>{
                         id: r.id,
                         member_list: r.member_list,
@@ -152,7 +154,7 @@ export async function fetch_guild_reaction_data(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild_members(
     guild_id: string
@@ -166,7 +168,7 @@ export async function fetch_guild_members(
                 member_list: 1
             })
             .then((r: any) => {
-                if (!!r) {
+                if (r) {
                     return resolve(<MemberPrtl[]>r.member_list);
                 } else {
                     return resolve(undefined);
@@ -176,7 +178,7 @@ export async function fetch_guild_members(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild_music_queue(
     guild_id: string
@@ -191,7 +193,7 @@ export async function fetch_guild_music_queue(
                 music_queue: 1
             })
             .then((r: any) => {
-                if (!!r) {
+                if (r) {
                     return resolve(<{ queue: VideoSearchResult[], data: MusicData }>{
                         data: r.music_data,
                         queue: r.music_queue
@@ -204,7 +206,7 @@ export async function fetch_guild_music_queue(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild_predata(
     guild_id: string, member_id: string
@@ -232,7 +234,7 @@ export async function fetch_guild_predata(
                 profanity_level: 1
             })
             .then((r: any) => {
-                if (!!r) {
+                if (r) {
                     return resolve(<GuildPrtl>{
                         id: r.id,
                         prefix: r.prefix,
@@ -254,7 +256,7 @@ export async function fetch_guild_predata(
                 return reject(e);
             });
     });
-};
+}
 
 export async function fetch_guild_rest(
     guild_id: string
@@ -275,7 +277,7 @@ export async function fetch_guild_rest(
                 profanity_level: 0
             })
             .then((r: any) => {
-                if (!!r) {
+                if (r) {
                     return resolve(<GuildPrtl>{
                         id: r.id,
                         member_list: r.member_list,
@@ -295,7 +297,7 @@ export async function fetch_guild_rest(
                 return reject(e);
             });
     });
-};
+}
 
 export async function guild_exists(
     guild_id: string
@@ -313,13 +315,13 @@ export async function guild_exists(
                 return reject(e);
             });
     });
-};
+}
 
 export async function update_guild(
     guild_id: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const placeholder: any = {};
+        const placeholder: any = {}
         placeholder[key] = value;
         GuildPrtlMdl.updateOne(
             {
@@ -344,7 +346,7 @@ export async function update_guild(
                 return reject(e);
             });
     });
-};
+}
 
 // CRUD guilds
 
@@ -394,7 +396,7 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
     });
 
     return member_list;
-};
+}
 
 export async function insert_guild(
     guild_id: string, client: Client
@@ -413,14 +415,14 @@ export async function insert_guild(
         message_lyrics_id: 'null',
         votes: [],
         pinned: false
-    };
+    }
     const music_queue: VideoSearchResult[] = [];
     const announcement: string | null = 'null';
-    const locale: number = 1;
-    const announce: boolean = true;
+    const locale = 1;
+    const announce = true;
     const rank_speed: number = RankSpeedEnum.default;
     const profanity_level: number = ProfanityLevelEnum.default;
-    const premium: boolean = true; // as it is not a paid service anymore
+    const premium = true; // as it is not a paid service anymore
     const prefix: string = config.prefix;
 
     return new Promise((resolve, reject) => {
@@ -450,7 +452,7 @@ export async function insert_guild(
                 return reject(e);
             });
     });
-};
+}
 
 export async function remove_guild(
     guild_id: string
@@ -470,15 +472,16 @@ export async function remove_guild(
                 return reject(e);
             });
     });
-};
+}
 
 //
 
 export async function update_member(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, member_id: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const placeholder: any = {};
+        const placeholder: any = {}
         placeholder['member_list.$[m].' + key] = value;
 
         GuildPrtlMdl.updateOne(
@@ -508,7 +511,7 @@ export async function update_member(
                 return reject(e);
             });
     });
-};
+}
 
 export async function insert_member(
     member_id: string, guild_id: string
@@ -534,7 +537,7 @@ export async function insert_member(
                 return reject(e);
             });
     });
-};
+}
 
 export async function remove_member(
     member_id: string, guild_id: string
@@ -562,15 +565,16 @@ export async function remove_member(
                 return reject(e);
             });
     });
-};
+}
 
 //
 
 export async function update_portal(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, portal_id: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const placeholder: any = {};
+        const placeholder: any = {}
         placeholder['portal_list.$[p].' + key] = value;
 
         GuildPrtlMdl.updateOne(
@@ -598,7 +602,7 @@ export async function update_portal(
                 return reject(e);
             });
     });
-};
+}
 
 export async function insert_portal(
     guild_id: string, new_portal: PortalChannelPrtl
@@ -625,7 +629,7 @@ export async function insert_portal(
                 return reject(e);
             });
     });
-};
+}
 
 export async function remove_portal(
     guild_id: string, portal_id: string
@@ -654,7 +658,7 @@ export async function remove_portal(
                 return reject(e);
             });
     });
-};
+}
 
 //
 
@@ -662,7 +666,7 @@ export async function update_voice(
     guild_id: string, portal_id: string, voice_id: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const placeholder: any = {};
+        const placeholder: any = {}
         placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
 
         GuildPrtlMdl.updateOne(
@@ -691,7 +695,7 @@ export async function update_voice(
                 return reject(e);
             });
     });
-};
+}
 
 export async function insert_voice(
     guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl
@@ -724,7 +728,7 @@ export async function insert_voice(
                 reject(e);
             });
     });
-};
+}
 
 export async function remove_voice(
     guild_id: string, portal_id: string, voice_id: string
@@ -736,6 +740,7 @@ export async function remove_voice(
             },
             {
                 $pull: {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     'portal_list.$[p].voice_list': {
                         id: voice_id
@@ -762,7 +767,7 @@ export async function remove_voice(
                 reject(e);
             });
     });
-};
+}
 
 //
 
@@ -791,7 +796,7 @@ export async function insert_url(
                 return reject(e);
             });
     });
-};
+}
 
 export async function remove_url(
     guild_id: string, remove_url: string
@@ -817,7 +822,7 @@ export async function remove_url(
                 return reject(e);
             });
     });
-};
+}
 
 //
 
@@ -846,7 +851,7 @@ export async function insert_ignore( // channel
                 return reject(e);
             });
     });
-};
+}
 
 export async function remove_ignore( // channel
     guild_id: string, remove_ignore: string
@@ -872,7 +877,7 @@ export async function remove_ignore( // channel
                 return reject(e);
             });
     });
-};
+}
 
 //
 
@@ -898,7 +903,7 @@ export async function set_ranks(
                 return reject(e);
             });
     });
-};
+}
 
 //
 
@@ -927,7 +932,7 @@ export async function insert_poll(
                 return reject(e);
             });
     });
-};
+}
 
 export async function remove_poll(
     guild_id: string, message_id: string
@@ -956,7 +961,7 @@ export async function remove_poll(
                 return reject(e);
             });
     });
-};
+}
 
 //
 
@@ -985,7 +990,7 @@ export async function insert_role_assigner(
                 return reject(e);
             });
     });
-};
+}
 
 export async function remove_role_assigner(
     guild_id: string, message_id: string
@@ -1014,7 +1019,7 @@ export async function remove_role_assigner(
                 return reject(e);
             });
     });
-};
+}
 
 //
 
@@ -1043,7 +1048,7 @@ export async function insert_music_video(
                 return reject(e);
             });
     });
-};
+}
 
 export async function clear_music_vote(
     guild_id: string
@@ -1070,7 +1075,7 @@ export async function clear_music_vote(
                 return reject(e);
             });
     });
-};
+}
 
 export async function insert_music_vote(
     guild_id: string, user_id: string
@@ -1097,7 +1102,7 @@ export async function insert_music_vote(
                 return reject(e);
             });
     });
-};
+}
 
 export async function set_music_data(
     guild_id: string, new_music_data: MusicData
@@ -1131,13 +1136,13 @@ export async function set_music_data(
 export async function deleted_channel_sync(
     channel_to_remove: VoiceChannel | TextChannel
 ): Promise<number> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         fetch_guild_channel_delete(channel_to_remove.guild.id)
             .then(guild_object => {
                 if (guild_object) {
                     // check if it is a portal or portal-voice channel
                     if (!channel_to_remove.isText()) {
-                        const current_voice = <VoiceChannel>channel_to_remove;
+                        const current_voice = channel_to_remove;
                         guild_object.portal_list.some(p => {
                             if (p.id === current_voice.id) {
                                 remove_portal(current_voice.guild.id, p.id)
@@ -1149,6 +1154,7 @@ export async function deleted_channel_sync(
                                     .catch(() => {
                                         return resolve(PortalChannelTypes.unknown)
                                     });
+
                                 return true;
                             }
 
@@ -1169,7 +1175,7 @@ export async function deleted_channel_sync(
                             });
                         });
                     } else {
-                        const current_text = <TextChannel>channel_to_remove;
+                        const current_text = channel_to_remove;
 
                         if (guild_object.announcement === current_text.id) {
                             update_guild(current_text.guild.id, 'announcement', 'null')
@@ -1232,4 +1238,4 @@ export async function deleted_channel_sync(
                 return resolve(PortalChannelTypes.unknown);
             });
     });
-};
+}

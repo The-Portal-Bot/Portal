@@ -107,19 +107,28 @@ module.exports = async (
 			activity: options
 		};
 
-		args.client.user.setPresence(data);
+		args.client.user
+			.setPresence(data)
+			.catch(e => {
+				return reject(`failed to set precense / ${e}`);
+			});
 
 		args.client.guilds.cache.forEach((guild: Guild) => {
 			logger.info(`${guild} | ${guild.id}`);
 
-			add_guild_again(guild, args.client);
+			add_guild_again(guild, args.client)
+				.catch(e => {
+					return reject(`failed to add user again / ${e}`);
+				});
 			// remove_deleted_channels(guild);
 			// remove_empty_voice_channels(guild);
 		});
 
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const func = get_function('console', 1, 'ready');
 
 		return resolve(func
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 			? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
 			: 'error with localisation'
 		);

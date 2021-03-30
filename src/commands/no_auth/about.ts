@@ -1,8 +1,7 @@
 import { Message } from "discord.js";
-import { create_rich_embed } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import config from '../../config.json';
+import { create_rich_embed } from "../../libraries/help.library";
+import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
     message: Message
@@ -54,7 +53,13 @@ module.exports = async (
                 // undefined,
                 // 'since 2020'
             )
-        );
+        )
+        .catch(e => {
+            return resolve({
+                result: true,
+                value: `failed to send about message ${e}`
+            });
+        });
 
         return resolve({
             result: true,

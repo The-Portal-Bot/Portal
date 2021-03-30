@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
 	CategoryChannel, Collection, CollectorFilter, Guild, GuildCreateChannelOptions,
 	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState
@@ -35,8 +36,8 @@ function inline_operator(
 			return (a: string, b: string) => a >= b;
 		case '<=':
 			return (a: string, b: string) => a <= b;
-	};
-};
+	}
+}
 
 export function get_options(
 	guild: Guild, topic: string, can_write: boolean
@@ -58,37 +59,37 @@ export function get_options(
 			nsfw: false
 		};
 	}
-};
+}
 
 //
 
 export function included_in_portal_guilds(guild_id: string, guild_list: GuildPrtl[]): boolean {
 	return guild_list ? guild_list.some(g => g.id === guild_id) : false;
-};
+}
 
 export function included_in_portal_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
 	return portal_list ? portal_list.some(p => p.id === channel_id) : false;
-};
+}
 
 export function included_in_voice_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
 	return portal_list ? portal_list.some(p => p.voice_list.some(v => v.id === channel_id)) : false;
-};
+}
 
 export function included_in_ignore_list(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object.ignore_list ? guild_object.ignore_list.some(i => i === channel_id) : false;
-};
+}
 
 export function is_url_only_channel(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object.url_list ? guild_object.url_list.some(u => u === channel_id) : false;
-};
+}
 
 export function is_music_channel(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object ? guild_object.music_data.channel_id === channel_id : false;
-};
+}
 
 export function is_announcement_channel(channel_id: string, guild_object: GuildPrtl): boolean {
 	return guild_object ? guild_object.announcement === channel_id : false;
-};
+}
 
 //
 
@@ -96,7 +97,7 @@ export function get_role(guild: Guild, role_name_or_name: string): Role | undefi
 	return guild.roles.cache.find(cached_role =>
 		cached_role.id === role_name_or_name || cached_role.name === role_name_or_name
 	);
-};
+}
 
 //
 
@@ -115,14 +116,20 @@ export async function create_channel(
 						guild.channels
 							.create(channel_category, { type: 'category' })
 							.then(category => {
-								new_channel.setParent(category);
+								new_channel.setParent(category)
+									.catch(e => {
+										return reject(`failed to set parent to channel / ${e}`);
+									});
 								return resolve(new_channel.id);
 							})
 							.catch(e => {
 								return reject(`failed to create category channel / ${e}`);
 							});
 					} else {
-						new_channel.setParent(channel_category);
+						new_channel.setParent(channel_category)
+							.catch(e => {
+								return reject(`failed to set parent to channel / ${e}`);
+							});
 						return resolve(new_channel.id);
 					}
 				}
@@ -150,12 +157,18 @@ export function create_voice_channel(
 				.then(channel => {
 					if (state.member) {
 						const new_voice = new VoiceChannelPrtl(
-							channel.id, state.member?.id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
+							channel.id, state.member.id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
 							portal_object.locale, portal_object.ann_announce, portal_object.ann_user);
 
-						insert_voice(state.member.guild.id, portal_object.id, new_voice);
+						insert_voice(state.member.guild.id, portal_object.id, new_voice)
+							.catch(e => {
+								return reject(`failed to store voice channel / ${e}`);
+							});
 
-						state.member.voice.setChannel(channel);
+						state.member.voice.setChannel(channel)
+							.catch(e => {
+								return reject(`failed to set member to new voice channel / ${e}`);
+							});
 
 						return resolve(`created channel and moved member to new voice`);
 					} else {
@@ -224,7 +237,10 @@ export async function create_music_channel(
 					},
 				)
 				.then(channel => {
-					channel.setParent(music_category);
+					channel.setParent(music_category)
+						.catch(e => {
+							return reject(`failed to set parent to / ${e}`);
+						});
 					guild_object.music_data.channel_id = channel.id;
 					create_music_message(channel, guild_object)
 						.then(music_message_id => {
@@ -280,10 +296,11 @@ export async function create_music_channel(
 				});
 		}
 	});
-};
+}
 
 export async function create_focus_channel(
-	guild: Guild, member: GuildMember, member_found: GuildMember, focus_time: number, portal_object: PortalChannelPrtl
+	guild: Guild, member: GuildMember, member_found: GuildMember,
+	focus_time: number, portal_object: PortalChannelPrtl
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const return_value = {
@@ -312,13 +329,31 @@ export async function create_focus_channel(
 
 		guild.channels.create(chatroom_name, voice_options)
 			.then(channel => {
-				member.voice.setChannel(channel);
-				member_found.voice.setChannel(channel);
+				member.voice.setChannel(channel)
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `failed to set member to new channel / ${e}`
+						});
+					});
+				member_found.voice.setChannel(channel)
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `failed to set member to new channel / ${e}`
+						});
+					});
 
 				insert_voice(guild.id, portal_object.id, new VoiceChannelPrtl(
 					channel.id, member.id, portal_object.render, chatroom_name, portal_object.no_bots,
 					portal_object.locale, portal_object.ann_announce, portal_object.ann_user
-				));
+				))
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `failed to store voice channel / ${e}`
+						});
+					});
 
 				if (focus_time !== 0) {
 					setTimeout(() => {
@@ -362,13 +397,13 @@ export async function create_focus_channel(
 				});
 			});
 	});
-};
+}
 
 //
 
 export function delete_channel(
 	type: PortalChannelTypes, channel_to_delete: VoiceChannel | TextChannel,
-	message: Message | null, isPortal: boolean = false
+	message: Message | null, isPortal = false
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
 		if (!isPortal) {
@@ -383,7 +418,7 @@ export function delete_channel(
 						`${PortalChannelTypes[type].toString()} channel **${channel_to_delete}** (yes / no) ?`
 					)
 					.then((question_msg: Message) => {
-						const filter: CollectorFilter = m => m.author.id === author.id;
+						const filter: CollectorFilter = (m: Message) => (m.author.id === author.id);
 						const collector: MessageCollector = message.channel
 							.createMessageCollector(
 								filter,
@@ -485,7 +520,7 @@ export function delete_channel(
 				});
 		}
 	});
-};
+}
 
 //
 
@@ -550,7 +585,7 @@ export function generate_channel_name(
 			}
 		}
 	});
-};
+}
 
 export function regex_interpreter(
 	regex: string, voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
@@ -569,7 +604,7 @@ export function regex_interpreter(
 			const vrbl = is_variable(regex.substring(i));
 
 			if (vrbl.length !== 0) {
-				const return_value = get_variable(
+				const return_value: string | number = <string>get_variable( // maybe make any ?
 					voice_channel, voice_object, portal_list, guild_object, guild, vrbl
 				);
 
@@ -591,12 +626,13 @@ export function regex_interpreter(
 			const attr = is_attribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				const member_object = guild_object.member_list.find(m => m.id === member_id);
+				// const member_object = guild_object.member_list.find(m => m.id === member_id);
 
 				const return_value = get_attribute(
-					voice_channel, voice_object, portal_list, guild_object, guild, attr, member_object
+					voice_channel, voice_object, portal_list, guild_object, guild, attr //, member_object
 					// voice_channel, voice_object, p, guild_object, attr, member_object
 				);
+
 
 				if (return_value !== null) {
 					last_attribute = `${return_value}`;
@@ -665,6 +701,7 @@ export function regex_interpreter(
 			try {
 				// did not put into structure_list due to many unnecessary function calls
 				let is_valid = false;
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const statement = get_json(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 
 				if (!statement) return 'error';
@@ -688,6 +725,7 @@ export function regex_interpreter(
 				else {
 					if (statement.is === "==" || statement.is === "===" || statement.is === "!=" || statement.is === "!==" ||
 						statement.is === ">" || statement.is === "<" || statement.is === ">=" || statement.is === "<=") {
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 						if (inline_operator(statement.is)(
 							regex_interpreter(statement.if, voice_channel, voice_object, portal_list, guild_object, guild, member_id),
 							regex_interpreter(statement.with, voice_channel, voice_object, portal_list, guild_object, guild, member_id)
@@ -726,4 +764,4 @@ export function regex_interpreter(
 	}
 
 	return new_channel_name;
-};
+}

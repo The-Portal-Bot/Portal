@@ -1,30 +1,43 @@
-import { BanOptions, Guild, GuildMember, Message, PermissionString, VoiceState } from "discord.js";
+import { BanOptions, Guild, GuildMember, Message, VoiceState } from "discord.js";
+import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
-import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
+import { Rank } from "../types/classes/TypesPrtl.interface";
 import { logger, time_elapsed } from './help.library';
 import { update_member } from "./mongo.library";
 
 export function give_role_from_rankup(
-	member_prtl: MemberPrtl, member: GuildMember, ranks: any, guild: Guild
+	member_prtl: MemberPrtl, member: GuildMember, ranks: Rank[], guild: Guild
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		if (ranks) return reject(false);
-
-		const new_rank = ranks.find((rank: { level: number }) => rank.level === member_prtl.level);
-		if (new_rank === null || new_rank === undefined) return reject(false);
-
-		const new_role = guild.roles.cache.find(role => role.id === new_rank.id);
-		if (new_role === null || new_role === undefined) return reject(false);
-
-		if (!member.roles.cache.some(role => role === new_role)) {
-			member.roles.add(new_role);
-			return resolve(true);
+		if (!ranks) {
+			return resolve(false);
 		}
 
-		return reject(false);
+		const new_rank = ranks
+			.find(r => r.level === member_prtl.level);
+
+		if (!new_rank) {
+			return resolve(false);
+		}
+
+		const new_role = guild.roles.cache
+			.find(role => role.id === new_rank.role);
+
+		if (new_role === null || new_role === undefined) {
+			return resolve(false);
+		}
+
+		member.roles
+			.add(new_role)
+			.then(() => {
+				return resolve(true);
+			})
+			.catch(e => {
+				return reject(e);
+			});
 	});
-};
+}
 
 export function calculate_rank(
 	member: MemberPrtl
@@ -45,7 +58,7 @@ export function calculate_rank(
 	}
 
 	return false;
-};
+}
 
 export function add_points_time(
 	member_prtl: MemberPrtl, rank_speed: number
@@ -63,7 +76,7 @@ export function add_points_time(
 	member_prtl.timestamp = null;
 
 	return member_prtl.points;
-};
+}
 
 export function update_timestamp(
 	voiceState: VoiceState, guild_object: GuildPrtl
@@ -115,7 +128,10 @@ export function update_timestamp(
 				});
 		}
 
-		give_role_from_rankup(member_prtl, member, ranks, voiceState.guild);
+		give_role_from_rankup(member_prtl, member, ranks, voiceState.guild)
+			.catch(() => {
+				return false;
+			});
 
 		if (member_prtl.level > cached_level) {
 			return member_prtl.level;
@@ -123,7 +139,7 @@ export function update_timestamp(
 	}
 
 	return false;
-};
+}
 
 export function add_points_message(
 	message: Message, member: MemberPrtl, rank_speed: number
@@ -154,7 +170,7 @@ export function add_points_message(
 	}
 
 	return level ? level : false;
-};
+}
 
 export function kick(
 	member_to_kick: GuildMember, kick_reason: string
@@ -169,7 +185,7 @@ export function kick(
 				return reject(e);
 			});
 	});
-};
+}
 
 export function ban(
 	member_to_ban: GuildMember, ban_options: BanOptions
@@ -184,4 +200,4 @@ export function ban(
 				return reject(e);
 			});
 	});
-};
+}

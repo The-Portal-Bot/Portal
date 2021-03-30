@@ -132,17 +132,26 @@ module.exports = async (
             });
         }
 
-        message.channel.send(create_rich_embed(
-            'Portal state - current state of Portal',
-            null,
-            '#964B00',
-            portal_state,
-            null,
-            null,
-            true,
-            null,
-            null
-        ));
+        message.channel
+            .send(
+                create_rich_embed(
+                    'Portal state - current state of Portal',
+                    null,
+                    '#964B00',
+                    portal_state,
+                    null,
+                    null,
+                    true,
+                    null,
+                    null
+                )
+            )
+            .catch(e => {
+                return resolve({
+                    result: true,
+                    value: `failed to send message / ${e}`
+                });
+            });
 
         return resolve({
             result: true,

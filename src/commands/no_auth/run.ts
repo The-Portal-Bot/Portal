@@ -56,47 +56,68 @@ module.exports = async (
 		)
 			.then(sent_message => {
 				if (message.guild) {
-					sent_message.edit(
-						create_rich_embed(
-							'Text Interpreter',
-							null,
-							'#00ffb3',
-							<Field[]>[{
-								emote: 'input',
-								role: max_string(
-									`\`\`\`${args.join(' ')}\`\`\``,
-									256
-								),
-								inline: false
-							},
-							{
-								emote: 'output',
-								role: max_string(
-									`\`\`\`${regex_interpreter(
-										args.join(' '),
-										current_voice_channel,
-										voice_object,
-										guild_object.portal_list,
-										guild_object,
-										message.guild,
-										message.author.id
-									)}\`\`\``,
-									256
-								),
-								inline: false
-							}],
-							null,
-							null,
-							false,
-							null,
-							null,
-							undefined,
-							undefined
+					sent_message
+						.edit(
+							create_rich_embed(
+								'Text Interpreter',
+								null,
+								'#00ffb3',
+								<Field[]>[{
+									emote: 'input',
+									role: max_string(
+										`\`\`\`${args.join(' ')}\`\`\``,
+										256
+									),
+									inline: false
+								},
+								{
+									emote: 'output',
+									role: max_string(
+										`\`\`\`${regex_interpreter(
+											args.join(' '),
+											current_voice_channel,
+											voice_object,
+											guild_object.portal_list,
+											guild_object,
+											message.guild,
+											message.author.id
+										)}\`\`\``,
+										256
+									),
+									inline: false
+								}],
+								null,
+								null,
+								false,
+								null,
+								null,
+								undefined,
+								undefined
+							)
 						)
-					);
+						.catch(e => {
+							return resolve({
+								result: true,
+								value: `failed to edit message / ${e}`
+							});
+						});
 				} else {
-					sent_message.edit('could not fetch guild of message');
+					sent_message
+						.edit('could not fetch guild of message')
+						.catch(e => {
+							return resolve({
+								result: true,
+								value: `failed to edit message / ${e}`
+							});
+						});
 				}
+			}
+			)
+			.catch(e => {
+				return resolve({
+					result: true,
+					value: `failed to send message / ${e}`
+				});
 			});
 
 		return resolve({

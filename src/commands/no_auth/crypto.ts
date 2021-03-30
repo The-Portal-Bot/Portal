@@ -11,8 +11,6 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		let code: string | null = null;
-
 		if (args.length === 0) {
 			return resolve({
 				result: false,
@@ -50,6 +48,7 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
 				if (json === null)
 					return resolve({
@@ -57,23 +56,32 @@ module.exports = async (
 						value: 'data from source was corrupted'
 					});
 
-				message.channel.send(
-					create_rich_embed(
-						null,
-						null,
-						'#FFE600',
-						null,
-						null,
-						null,
-						false,
-						null,
-						null,
-						undefined,
-						{
-							name: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price is ${json[crypto_name][currnc_name]}`,
-							icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/coin.gif'
-						}						
-					));
+				message.channel
+					.send(
+						create_rich_embed(
+							null,
+							null,
+							'#FFE600',
+							null,
+							null,
+							null,
+							false,
+							null,
+							null,
+							undefined,
+							{
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+								name: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price is ${json[crypto_name][currnc_name]}`,
+								icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/coin.gif'
+							}
+						)
+					)
+					.catch((e: any) => {
+						return resolve({
+							result: false,
+							value: `failed to send message / ${e}`
+						});
+					});
 
 				return resolve({
 					result: true,

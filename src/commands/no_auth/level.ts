@@ -15,25 +15,32 @@ module.exports = async (
 			});
 		}
 
-		message.channel.send(
-			create_rich_embed(
-				null,
-				null,
-				'#00FFFF',
-				[
-					{ emote: 'Level', role: `${member_object.level}`, inline: true },
-					{ emote: 'Points', role: `${Math.round(member_object.points)}`, inline: true },
-					{ emote: '', role: '', inline: false },
-					{ emote: 'Rank', role: `${member_object.rank}`, inline: true },
-					{ emote: 'Tier', role: `${member_object.tier}`, inline: true },
-				],
-				null,
-				message.member,
-				true,
-				null,
-				null
+		message.channel
+			.send(
+				create_rich_embed(
+					null,
+					null,
+					'#00FFFF',
+					[
+						{ emote: 'Level', role: `${member_object.level}`, inline: true },
+						{ emote: 'Points', role: `${Math.round(member_object.points)}`, inline: true },
+						{ emote: '', role: '', inline: false },
+						{ emote: 'Rank', role: `${member_object.rank}`, inline: true },
+						{ emote: 'Tier', role: `${member_object.tier}`, inline: true },
+					],
+					null,
+					message.member,
+					true,
+					null,
+					null
+				)
 			)
-		);
+			.catch(e => {
+				return resolve({
+					result: true,
+					value: `failed to send message / ${e}`
+				});
+			});
 
 		return resolve({
 			result: true,

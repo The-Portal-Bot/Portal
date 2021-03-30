@@ -54,7 +54,13 @@ module.exports = async (
 				.find(channel => channel.id == guild_object.announcement);
 
 			if (announcement) {
-				delete_channel(PortalChannelTypes.announcement, announcement, message);
+				delete_channel(PortalChannelTypes.announcement, announcement, message)
+					.catch((e: any) => {
+						return resolve({
+							result: false,
+							value: `failed to delete channel / ${e}`
+						});
+					});
 			}
 
 			if (args.length === 0) {

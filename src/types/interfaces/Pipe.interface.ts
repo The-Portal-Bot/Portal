@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
-export const pipe_prefix: string = '|';
+export const pipe_prefix = '|';
 const pipes: InterfaceBlueprint[] = [
 	{
 		name: 'acronym',
@@ -12,10 +13,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**acronym**, returns the acronym of the input',
 		example: '(variable, string)|acronym',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',')
 					: str;
 		},
@@ -28,10 +29,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**vowels**, returns the vowels of the input',
 		example: '(variable, string)|vowels',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_vowels(str).join('')
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => get_vowels(s).join('')).join(',')
 					: str;
 		},
@@ -44,10 +45,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**consonants**, returns the first character of the input',
 		example: '(variable, string)|consonants',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_constants(str).join('')
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => get_constants(s).join('')).join(',')
 					: str;
 		},
@@ -60,10 +61,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**camelCase**, makes the first character upper-case',
 		example: '(variable, string)|camelCase',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.camelCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.camelCase(s)).join(',')
 					: str;
 		},
@@ -76,10 +77,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**capitalise**, makes the first character upper-case',
 		example: '(variable, string)|capitalise',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.capitalize(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.capitalize(s)).join(',')
 					: str;
 		},
@@ -92,10 +93,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**decapitalise**, makes the first character lower-case',
 		example: '(variable, string)|decapitalise',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.decapitalize(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.decapitalize(s)).join(',')
 					: str;
 		},
@@ -108,10 +109,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**lowerCase**, makes all characters lower-case',
 		example: '(variable, string)|lowerCase',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.lowerCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.lowerCase(s)).join(',')
 					: str;
 		},
@@ -124,10 +125,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**upperCase**, makes all characters upper-case',
 		example: '(variable, string)|upperCase',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.upperCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.upperCase(s)).join(',')
 					: str;
 		},
@@ -140,11 +141,11 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**populous_count**, returns the count of most common element in list',
 		example: '(array)|populous_count',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
-				? str
-				:  (typeof str === 'object') 
-					? most_frequent(str, true)
+				? 1
+				: (typeof str === 'object')
+					? <number>most_frequent(str, true)
 					: str;
 		},
 		set: null,
@@ -156,11 +157,11 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**populous**, returns the name of the most common element in list',
 		example: '(array)|populous',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? str
-				:  (typeof str === 'object') 
-					? most_frequent(str, false)
+				: (typeof str === 'object')
+					? <string>most_frequent(str, false)
 					: str;
 		},
 		set: null,
@@ -172,10 +173,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**snakeCase**, connects all words with \'_\', like a snake',
 		example: '(variable, string)|snakeCase',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.snakeCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.snakeCase(s)).join(',')
 					: str;
 		},
@@ -188,10 +189,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**souvlakiCase**, connects all words with \'-\', like a greek souvlaki',
 		example: '(variable, string)|souvlakiCase',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.kebabCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.kebabCase(s)).join(',')
 					: str;
 		},
@@ -204,10 +205,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**words**, returns the number of words, of the input',
 		example: '(array)|words',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? voca.words(str).length
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? voca.words(str.join(' ')).length
 					: str;
 		},
@@ -220,10 +221,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**titleCase**, makes every words first character upper-case',
 		example: '(variable, string)|titleCase',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.titleCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.titleCase(s)).join(',')
 					: str;
 		},
@@ -236,10 +237,10 @@ const pipes: InterfaceBlueprint[] = [
 		super_description: '**length**, returns the length in number of input',
 		example: '(variable, string)|length',
 		args: 'none',
-		get: (str: string | string[]) => {
+		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? str.length
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.join(',').length
 					: str;
 		},
@@ -259,7 +260,7 @@ export function is_pipe(candidate: string): string {
 	}
 
 	return '';
-};
+}
 
 export function get_pipe_guide(): MessageEmbed {
 	const pipe_array: Field[] = [
@@ -319,7 +320,7 @@ export function get_pipe_help(): MessageEmbed[] {
 		}
 	}
 
-	return pipe_array.map((cmmd, index) => {
+	return pipe_array.map((cmmd, index): MessageEmbed => {
 		if (index === 0) {
 			return create_rich_embed(
 				'Pipes',
@@ -343,7 +344,7 @@ export function get_pipe_help(): MessageEmbed[] {
 			);
 		}
 	});
-};
+}
 
 export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < pipes.length; i++) {
@@ -370,29 +371,30 @@ export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 	}
 
 	return false;
-};
+}
 
-export function get_pipe(str: string | string[], pipe: string): any {
+export function get_pipe(str: string | string[], pipe: string): string | number {
 	for (let l = 0; l < pipes.length; l++) {
 		if (pipe === pipes[l].name) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
 			return pipes[l].get(str);
 		}
 	}
 
 	return -1;
-};
+}
 
 function most_frequent(array: string[], return_number: boolean): string | number {
 	if (array.length == 0) {
 		return 'no statuses';
 	}
 
-	let modeMap: any = {};
+	const modeMap: any = {};
 	let maxEl: string = array[0]
-	let maxCount: number = 1;
+	let maxCount = 1;
 
 	for (let i = 0; i < array.length; i++) {
-		let el = array[i];
+		const el = array[i];
 
 		if (modeMap[el] == null) {
 			modeMap[el] = 1;
@@ -402,6 +404,7 @@ function most_frequent(array: string[], return_number: boolean): string | number
 
 		if (modeMap[el] > maxCount) {
 			maxEl = el;
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			maxCount = modeMap[el];
 		}
 	}

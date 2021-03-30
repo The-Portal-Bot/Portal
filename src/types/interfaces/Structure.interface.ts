@@ -3,7 +3,8 @@ import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
-export const structure_prefix: string = '{{';
+export const structure_prefix = '{{';
+
 const structures: InterfaceBlueprint[] = [
 	{
 		name: 'if',
@@ -36,7 +37,7 @@ export function is_structure(candidate: string): string {
 	}
 
 	return '';
-};
+}
 
 export function get_structure_guide(): MessageEmbed {
 	const strc_array: Field[] = [
@@ -113,7 +114,7 @@ export function get_structure_help(): MessageEmbed[] {
 			);
 		}
 	});
-};
+}
 
 export function get_structure_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < structures.length; i++) {
@@ -139,4 +140,4 @@ export function get_structure_help_super(candidate: string): MessageEmbed | bool
 		}
 	}
 	return false;
-};
+}

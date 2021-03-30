@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import cheerio from 'cheerio';
 import https, { RequestOptions } from 'https';
 import fetch from 'node-fetch';
@@ -14,11 +16,11 @@ export async function https_fetch(
 				chunks.push(chunk);
 			});
 
-			res.on('end', function (chunk: any) {
+			res.on('end', function () { // (chunk: any) {
 				return resolve(Buffer.concat(chunks));
 			});
 
-			res.on('error', function (error) {
+			res.on('error', function () { // (error) {
 				return reject(false);
 			});
 		});
@@ -33,7 +35,8 @@ export async function scrape_lyrics(
 	return new Promise((resolve, reject) => {
 		fetch(url)
 			.then((response: any) => {
-				response.text()
+				response
+					.text()
 					.then((text: any) => {
 						const $ = cheerio.load(text);
 						return resolve($('.lyrics').text().trim());
@@ -46,4 +49,4 @@ export async function scrape_lyrics(
 				return reject(e);
 			});
 	});
-};
+}

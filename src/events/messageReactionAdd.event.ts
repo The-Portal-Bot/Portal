@@ -7,10 +7,18 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 
 function clear_user_reactions(
 	messageReaction: MessageReaction, user: User
-): void {
-	messageReaction.message.reactions.cache
-		.forEach(reaction => reaction.users.remove(user.id));
-};
+): Promise<string> {
+	return new Promise((resolve, reject) => {
+		messageReaction.message.reactions.cache
+			.forEach(reaction => {
+				reaction.users
+					.remove(user.id)
+					.catch(e => {
+						return reject(`failed to create dm channel / ${e}`);
+					});
+			});
+	});
+}
 
 async function reaction_role_manager(
 	guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
@@ -43,7 +51,7 @@ async function reaction_role_manager(
 							current_member.roles
 								.add(role_to_give)
 								.then(member => {
-									if (!!member) {
+									if (member) {
 										return resolve(`you have been assigned to ${role_map.role_id}`);
 									} else {
 										return reject(`Portal's role must be higher than role you want to get, contact server admin`);
@@ -63,7 +71,7 @@ async function reaction_role_manager(
 						try {
 							current_member.roles.remove(role_to_strip)
 								.then(member => {
-									if (!!member) {
+									if (member) {
 										return resolve(`you have been removed from ${role_map.role_id}`);
 									} else {
 										return reject(`Portal's role must be higher than role you want to be removed from, contact server admin`);
@@ -81,14 +89,14 @@ async function reaction_role_manager(
 			}
 		});
 	});
-};
+}
 
 async function reaction_music_manager(
 	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
 		if (!messageReaction.message.guild) {
-			return reject(`could not fetch message\'s guild`);
+			return reject(`could not fetch message's guild`);
 		}
 
 		if (!guild_object.music_data) {
@@ -327,7 +335,11 @@ async function reaction_music_manager(
 						if (r) {
 							user.createDM()
 								.then(dm => {
-									dm.send(r);
+									dm
+										.send(r)
+										.catch(e => {
+											return reject(`failed to send a message / ${e}`);
+										});
 									return resolve(`sent '${user.presence.member?.displayName}' a list of the queue`);
 								})
 								.catch(e => {
@@ -346,7 +358,10 @@ async function reaction_music_manager(
 			case '🧹': {
 				if (guild_object.music_queue.length > 1) {
 					guild_object.music_queue.splice(1, guild_object.music_queue.length);
-					update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
+					update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+						.catch(e => {
+							return reject(`failed to update guild / ${e}`);
+						});
 
 					const guild = client.guilds.cache
 						.find(g => g.id === guild_object.id);
@@ -368,10 +383,16 @@ async function reaction_music_manager(
 					.then(r => {
 						if (portal_voice_connection) {
 							guild_object.music_queue = [];
-							update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
+							update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+								.catch(e => {
+									return reject(`failed to update guild / ${e}`);
+								});
 
 							if (messageReaction.message.guild) {
-								update_music_lyrics_message(messageReaction.message.guild, guild_object, '');
+								update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
+									.catch(e => {
+										return reject(`failed to update music lyric message / ${e}`);
+									});
 							}
 
 							clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
@@ -392,7 +413,7 @@ async function reaction_music_manager(
 			}
 		}
 	});
-};
+}
 
 module.exports = async (
 	args: { client: Client, messageReaction: MessageReaction, user: User }
@@ -408,7 +429,11 @@ module.exports = async (
 					if (guild_object) {
 						if (args.messageReaction.partial) {
 							try {
-								args.messageReaction.fetch();
+								args.messageReaction
+									.fetch()
+									.catch(e => {
+										return reject(`something went wrong when fetching the message / ${e}`);
+									});
 							} catch (e) {
 								return reject(`something went wrong when fetching the message / ${e}`);
 							}
@@ -417,11 +442,18 @@ module.exports = async (
 						if (guild_object.role_list.some(r => r.message_id === args.messageReaction.message.id)) {
 							reaction_role_manager(guild_object, args.messageReaction, args.user)
 								.then(r => {
-									clear_user_reactions(args.messageReaction, args.user);
+									clear_user_reactions(args.messageReaction, args.user)
+										.catch((e: any) => {
+											return reject(`failed to clear messages / ${e}`);
+										});
 									args.messageReaction.message.channel
 										.send(`${args.user}, ${r}`)
 										.then(sent_message => {
-											sent_message.delete({ timeout: 7500 });
+											sent_message
+												.delete({ timeout: 7500 })
+												.catch(e => {
+													return reject(`failed to delete message / ${e}`);
+												});
 											return resolve('');
 										})
 										.catch(e => {
@@ -429,11 +461,18 @@ module.exports = async (
 										});
 								})
 								.catch(e => {
-									clear_user_reactions(args.messageReaction, args.user);
+									clear_user_reactions(args.messageReaction, args.user)
+										.catch((e: any) => {
+											return reject(`failed to clear messages / ${e}`);
+										});
 									args.messageReaction.message.channel
 										.send(`${args.user}, ${e}`)
 										.then(sent_message => {
-											sent_message.delete({ timeout: 7500 });
+											sent_message
+												.delete({ timeout: 7500 })
+												.catch(e => {
+													return reject(`failed to delete message / ${e}`);
+												});
 											return resolve('');
 										})
 										.catch(e => {
@@ -459,10 +498,16 @@ module.exports = async (
 												: undefined,
 											r,
 											animate
-										);
+										)
+											.catch(e => {
+												return reject(`failed to update music message / ${e}`);
+											});
 									}
 
-									clear_user_reactions(args.messageReaction, args.user);
+									clear_user_reactions(args.messageReaction, args.user)
+										.catch((e: any) => {
+											return reject(`failed to clear messages / ${e}`);
+										});
 
 									return resolve(r);
 								})
@@ -475,10 +520,16 @@ module.exports = async (
 												? guild_object.music_queue[0]
 												: undefined,
 											`error while handling music reaction / ${e}`
-										);
+										)
+											.catch(e => {
+												return reject(`failed to update music message / ${e}`);
+											});
 									}
 
-									clear_user_reactions(args.messageReaction, args.user);
+									clear_user_reactions(args.messageReaction, args.user)
+										.catch((e: any) => {
+											return reject(`failed to clear messages / ${e}`);
+										});
 
 									return reject(e);
 								});
@@ -489,12 +540,12 @@ module.exports = async (
 
 							if (poll && args.user.id === poll.member_id) {
 								const winner: MessageReaction[] = [];
-								let count: number = 0;
+								let count = 0;
 
 								args.messageReaction.message.reactions.cache
 									.filter(r => r.emoji.name !== '🏁' && r.count !== 1)
 									.sort((a, b) => (b.count ? b.count : 0) - (a.count ? a.count : 0))
-									.forEach((value: MessageReaction, key: string, map: Map<string, MessageReaction>) => {
+									.forEach((value: MessageReaction) => { // , key: string, map: Map<string, MessageReaction>) => {
 										if (winner.length === 0) {
 											count = value.count ? value.count : 0;
 											winner.push(value);
@@ -511,23 +562,28 @@ module.exports = async (
 									`with ${(count) - 1} ${(count - 1 > 1 ? 'votes' : 'vote')}`
 									: `Noboody voted`;
 
-								args.messageReaction.message.channel.send(
-									create_rich_embed(
-										null,
-										null,
-										'#ffa500',
-										null,
-										null,
-										null,
-										false,
-										null,
-										null,
-										undefined,
-										{
-											name: message,
-											icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/firework.gif'
-										}
-									));
+								args.messageReaction.message.channel
+									.send(
+										create_rich_embed(
+											null,
+											null,
+											'#ffa500',
+											null,
+											null,
+											null,
+											false,
+											null,
+											null,
+											undefined,
+											{
+												name: message,
+												icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/firework.gif'
+											}
+										)
+									)
+									.catch(e => {
+										return reject(`failed to send message / ${e}`);
+									});
 
 								remove_poll(current_guild.id, args.messageReaction.message.id)
 									.then(r => {
@@ -556,4 +612,4 @@ module.exports = async (
 			return reject(`could not fetch guild`);
 		}
 	});
-};
+}

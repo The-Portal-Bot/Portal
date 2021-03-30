@@ -42,7 +42,7 @@ export class PortalChannelPrtl {
 		this.user_limit_portal = user_limit_portal;
 		this.regex_overwrite = regex_overwrite;
 	}
-};
+}
 
 export interface IPortalChannelPrtl extends Document {
 	id: string;

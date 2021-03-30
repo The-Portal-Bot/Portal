@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { VoiceConnection } from "discord.js";
 
 export interface MongoPromise { 
@@ -10,13 +12,13 @@ export interface MongoPromise {
 export interface ReturnPormise {
 	result: boolean;
 	value: string;
-};
+}
 
 export interface ReturnPormiseVoice {
 	result: boolean;
 	value: string;
 	voice_connection: VoiceConnection | undefined;
-};
+}
 
 export class Field {
 	emote: string | null | undefined | boolean;
@@ -91,11 +93,11 @@ export interface TimeRemaining {
 }
 
 export class InterfaceBlueprint {
-	public name: string = '';
-	public description: string = '';
-	public super_description: string = '';
-	public example: string = '';
-	public args: string = '';
+	public name = '';
+	public description = '';
+	public super_description = '';
+	public example = '';
+	public args = '';
 	public get!: any;
 	public set!: any;
 	public auth!: number;

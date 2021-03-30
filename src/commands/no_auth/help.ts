@@ -131,66 +131,76 @@ module.exports = async (
 		}
 		else if (args.length === 1) {
 			if (args[0] === 'all') {
-				get_command_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_variable_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_pipe_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_attribute_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_structure_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+				get_command_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
+				get_variable_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
+				get_pipe_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
+				get_attribute_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
+				get_structure_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
 			}
 			else if (args[0] === 'commands') {
-				get_command_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+				get_command_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
 			}
 			else if (args[0] === 'variables') {
-				get_variable_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+				get_variable_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
 			}
 			else if (args[0] === 'pipes') {
-				get_pipe_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+				get_pipe_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
 			}
 			else if (args[0] === 'attributes') {
-				get_attribute_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+				get_attribute_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
 			}
 			else if (args[0] === 'structures') {
-				get_structure_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+				get_structure_help()
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.catch(console.error)
+					});
 			} else {
 				const cmmd_detailed = get_command_help_super(args[0]);
 				if (cmmd_detailed) {

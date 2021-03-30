@@ -55,18 +55,18 @@ function five_min_refresher(
 		.then(guild_object => {
 			if (guild_object) {
 				generate_channel_name(voice_channel, portal_list, guild_object, guild)
-					.catch(() => { });
+					.catch(console.error);
 				setTimeout(() => {
 					if (!guild.deleted && !voice_channel.deleted) {
 						generate_channel_name(voice_channel, portal_list, guild_object, guild)
-							.catch(() => { });
+							.catch(console.error);
 						five_min_refresher(voice_channel, portal_list, guild, minutes);
 					}
 				}, minutes * 60 * 1000);
 			}
 		})
-		.catch(() => { });
-};
+		.catch(console.error);
+}
 
 async function channel_empty_check(
 	old_channel: VoiceChannel | TextChannel, guild_object: GuildPrtl, client: Client
@@ -93,7 +93,10 @@ async function channel_empty_check(
 
 				if (voice_connection) {
 					guild_object.music_queue = [];
-					update_guild(guild_object.id, 'music_queue', guild_object.music_queue);
+					update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+						.catch(e => {
+							return reject(`failed to update guild / ${e}`);
+						});
 					voice_connection.disconnect();
 
 					if (guild_object.music_data.pinned) {
@@ -290,7 +293,11 @@ module.exports = async (
 							guild_object.portal_list.find(p => {
 								if (p.id === new_channel.id) {
 									if (p.no_bots) {
-										args.newState.kick();
+										args.newState
+											.kick()
+											.catch(e => {
+												return reject(`failed to kick / ${e}`);
+											});
 
 										return reject(`no bots are allowed`);
 									}
@@ -299,7 +306,11 @@ module.exports = async (
 								p.voice_list.some(v => {
 									if (v.id === new_channel.id) {
 										if (v.no_bots) {
-											args.newState.kick();
+											args.newState
+												.kick()
+												.catch(e => {
+													return reject(`failed to kick / ${e}`);
+												});
 
 											return reject(`no bots are allowed`);
 										}
@@ -354,4 +365,4 @@ module.exports = async (
 			return reject('could fnot find guild in Portal');
 		}
 	});
-};
+}

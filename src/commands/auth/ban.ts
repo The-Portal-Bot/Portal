@@ -1,11 +1,10 @@
 import { BanOptions, Message } from "discord.js";
 import { ask_for_approval, is_mod, message_help } from "../../libraries/help.library";
 import { ban } from "../../libraries/user.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (!message.member) {
@@ -80,7 +79,7 @@ module.exports = async (
 							};
 
 							ban(member_to_ban, ban_options)
-								.then(r => {
+								.then(() => {
 									return resolve({
 										result: true,
 										value: `${member_to_ban} has been banned by ${message.author} ` +

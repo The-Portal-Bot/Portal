@@ -6,7 +6,7 @@ export enum OpapGameIdEnum {
 	lotto = 5103,
 	tzoker = 5104,
 	extra5 = 5106
-};
+}
 
 export const OpapGameIdList = [
     'kino',

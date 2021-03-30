@@ -1,4 +1,4 @@
-Roll = require('roll');
+const Roll = require('roll');
 
 test('1d6 must return a number between 1 and 6', () => {
     const roll_lib = new Roll();

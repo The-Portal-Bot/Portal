@@ -55,13 +55,25 @@ module.exports = async (
 									if (current_voice) {
 										current_voice.members.forEach(member => {
 											if (member.voice) {
-												member.voice.setChannel(clone, 'portal force update');
+												member.voice.setChannel(clone, 'portal force update')
+													.catch((e: any) => {
+														return resolve({
+															result: false,
+															value: `failed to se messages channel / ${e}`
+														});
+													});
 											}
 										});
 
 										update_voice(guild_object.id, p.id, current_voice.id, 'id', clone.id)
 											.then(r => {
-												delete_channel(PortalChannelTypes.voice, current_voice, message, true);
+												delete_channel(PortalChannelTypes.voice, current_voice, message, true)
+													.catch((e: any) => {
+														return resolve({
+															result: false,
+															value: `failed to delete channel / ${e}`
+														});
+													});
 
 												return resolve({
 													result: r,

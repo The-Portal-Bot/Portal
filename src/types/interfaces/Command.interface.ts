@@ -4,7 +4,8 @@ import { OpapGameIdList } from '../../data/enums/OpapGames.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
-export const command_prefix: string = './';
+export const command_prefix = './';
+
 const commands: InterfaceBlueprint[] = [
 	{
 		name: 'about',
@@ -507,7 +508,7 @@ export function get_command_help(): MessageEmbed[] {
 			);
 		}
 	});
-};
+}
 
 export function get_command_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < commands.length; i++) {
@@ -535,5 +536,4 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 	}
 
 	return false;
-};
-
+}

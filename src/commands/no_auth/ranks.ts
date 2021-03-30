@@ -19,19 +19,26 @@ module.exports = async (
 				});
 			});
 
-			message.channel.send(
-				create_rich_embed(
-					'Ranking System',
-					null,
-					'#FF4500',
-					ranks_msg,
-					null,
-					null,
-					true,
-					null,
-					null
+			message.channel
+				.send(
+					create_rich_embed(
+						'Ranking System',
+						null,
+						'#FF4500',
+						ranks_msg,
+						null,
+						null,
+						true,
+						null,
+						null
+					)
 				)
-			);
+				.catch(e => {
+					return resolve({
+						result: true,
+						value: `failed to send message / ${e}`
+					});
+				});
 
 			resolve({
 				result: true,

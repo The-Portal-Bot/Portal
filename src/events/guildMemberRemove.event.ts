@@ -24,19 +24,23 @@ module.exports = async (
 										.find(channel => channel.id === guild_object.announcement)
 
 									if (announcement_channel) {
-										announcement_channel.send(
-											create_rich_embed(
-												'member left',
-												leave_message,
-												'#FC0303',
-												[],
-												args.member.user.avatarURL(),
-												null,
-												true,
-												null,
-												null
+										announcement_channel
+											.send(
+												create_rich_embed(
+													'member left',
+													leave_message,
+													'#FC0303',
+													[],
+													args.member.user.avatarURL(),
+													null,
+													true,
+													null,
+													null
+												)
 											)
-										);
+											.catch(e => {
+												return reject(`failed to send message / ${e}`);
+											});
 									}
 								} else {
 									return reject(`could not find announcement channel, it has been deleted`);

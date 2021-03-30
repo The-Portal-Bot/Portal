@@ -22,6 +22,9 @@ module.exports = async (
 							return reject(`failed to join guild ${args.guild.name} [${args.guild.id}] / ${e}`);
 						});
 				}
+			})
+			.catch(e => {
+				return reject(`failed to get data for guild / ${e}`);
 			});
 	});
 };
