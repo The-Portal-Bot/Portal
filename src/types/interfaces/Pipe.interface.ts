@@ -5,14 +5,13 @@ import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
+const portal_url = 'https://portal-bot.xyz/docs';
+const interpreter_url = '/interpreter/objects';
 export const pipe_prefix = '|';
+
 const pipes: InterfaceBlueprint[] = [
 	{
 		name: 'acronym',
-		description: 'returns the acronym of the input',
-		super_description: '**acronym**, returns the acronym of the input',
-		example: '(variable, string)|acronym',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
@@ -25,10 +24,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'vowels',
-		description: 'returns the vowels of the input',
-		super_description: '**vowels**, returns the vowels of the input',
-		example: '(variable, string)|vowels',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_vowels(str).join('')
@@ -41,10 +36,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'consonants',
-		description: 'returns the consonants of the input',
-		super_description: '**consonants**, returns the first character of the input',
-		example: '(variable, string)|consonants',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_constants(str).join('')
@@ -57,10 +48,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'camelCase',
-		description: 'returns an camelCase of the input',
-		super_description: '**camelCase**, makes the first character upper-case',
-		example: '(variable, string)|camelCase',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.camelCase(str)
@@ -73,10 +60,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'capitalise',
-		description: 'returns an capitalise of the input',
-		super_description: '**capitalise**, makes the first character upper-case',
-		example: '(variable, string)|capitalise',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.capitalize(str)
@@ -89,10 +72,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'decapitalise',
-		description: 'returns an decapitalise of the input',
-		super_description: '**decapitalise**, makes the first character lower-case',
-		example: '(variable, string)|decapitalise',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.decapitalize(str)
@@ -105,10 +84,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'lowerCase',
-		description: 'returns an lowerCase of the input',
-		super_description: '**lowerCase**, makes all characters lower-case',
-		example: '(variable, string)|lowerCase',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.lowerCase(str)
@@ -121,10 +96,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'upperCase',
-		description: 'returns an upperCase of the input',
-		super_description: '**upperCase**, makes all characters upper-case',
-		example: '(variable, string)|upperCase',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.upperCase(str)
@@ -137,10 +108,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'populous_count',
-		description: 'returns the count of most common element in list',
-		super_description: '**populous_count**, returns the count of most common element in list',
-		example: '(array)|populous_count',
-		args: 'none',
 		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? 1
@@ -153,10 +120,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'populous',
-		description: 'returns the name of the most common element in list',
-		super_description: '**populous**, returns the name of the most common element in list',
-		example: '(array)|populous',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? str
@@ -169,10 +132,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'snakeCase',
-		description: 'returns an snakeCase of the input',
-		super_description: '**snakeCase**, connects all words with \'_\', like a snake',
-		example: '(variable, string)|snakeCase',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.snakeCase(str)
@@ -185,10 +144,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'souvlakiCase',
-		description: 'returns an souvlakiCase of the input',
-		super_description: '**souvlakiCase**, connects all words with \'-\', like a greek souvlaki',
-		example: '(variable, string)|souvlakiCase',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.kebabCase(str)
@@ -201,10 +156,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'words',
-		description: 'returns the number of words, of the input',
-		super_description: '**words**, returns the number of words, of the input',
-		example: '(array)|words',
-		args: 'none',
 		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? voca.words(str).length
@@ -217,10 +168,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'titleCase',
-		description: 'returns an titleCase of the input',
-		super_description: '**titleCase**, makes every words first character upper-case',
-		example: '(variable, string)|titleCase',
-		args: 'none',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.titleCase(str)
@@ -233,10 +180,6 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'length',
-		description: 'returns the length of the input',
-		super_description: '**length**, returns the length in number of input',
-		example: '(variable, string)|length',
-		args: 'none',
 		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? str.length
@@ -293,7 +236,8 @@ export function get_pipe_guide(): MessageEmbed {
 
 	return create_rich_embed(
 		'Pipe Guide',
-		'go to https://portal-bot.xyz/docs/interpreter/objects/pipes/description\n\n' +
+		'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
+		'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
 		'How to use pipes with the Text Interpreter',
 		'#6EEB83',
 		pipe_array,
@@ -308,13 +252,13 @@ export function get_pipe_guide(): MessageEmbed {
 export function get_pipe_help(): MessageEmbed[] {
 	const pipe_array: Field[][] = [];
 
-	for (let l = 0; l <= pipes.length / 24; l++) {
+	for (let l = 0; l <= pipes.length / 25; l++) {
 		pipe_array[l] = []
 		for (let i = (24 * l); i < pipes.length && i < 24 * (l + 1); i++) {
 			pipe_array[l].push({
 				emote: `${i + 1}. ${pipes[i].name}`,
-				role: '**desc**: *' + pipes[i].description + '*' +
-					'\n**args**: *' + pipes[i].args + '*',
+				role: `[description](${portal_url}${interpreter_url}` +
+					`/pipes/detailed/${(pipes[i].name)})`,
 				inline: true
 			});
 		}
@@ -324,11 +268,16 @@ export function get_pipe_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Pipes',
-				'go to https://portal-bot.xyz/docs/interpreter/objects/pipes/description\n\n' +
-				'Prefix: ' + pipe_prefix + '\n' +
-				'Mini functions you can pass text or Variables to manipulate their outcome\n' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-				'#6EEB83', pipe_array[0], null, null, null, null, null
+				'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
+				'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
+				'Prefix: ' + pipe_prefix,
+				'#6EEB83',
+				pipe_array[0],
+				null,
+				null,
+				null,
+				null,
+				null
 			);
 		} else {
 			return create_rich_embed(
@@ -352,14 +301,15 @@ export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 		if (pipe.name === candidate) {
 			return create_rich_embed(
 				pipe.name,
-				'Type: Pipe' +
-				'\nPrefix: ' + pipe_prefix + '\n' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
+				null,
 				'#6EEB83',
 				[
-					{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },
-					{ emote: 'Arguments', role: '*' + pipe.args + '*', inline: false },
-					{ emote: 'Example', role: '*' + pipe.example + '*', inline: false }
+					{ emote: `Type`, role: `Pipe`, inline: true },
+					{ emote: `Prefix`, role: `${pipe_prefix}`, inline: true },
+					{
+						emote: `Description`, role: `[${candidate} doc](${portal_url}${interpreter_url}` +
+							`/pipes/detailed/${candidate})`, inline: true
+					}
 				],
 				null,
 				null,

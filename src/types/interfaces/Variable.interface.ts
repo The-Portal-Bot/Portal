@@ -8,17 +8,13 @@ import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
 
-
+const portal_url = 'https://portal-bot.xyz/docs';
+const interpreter_url = '/interpreter/objects';
 export const variable_prefix = '$';
+
 const variables: InterfaceBlueprint[] = [
 	{
 		name: '##',
-		description: 'returns the channel number in list with # in the front',
-		super_description: '**##**, returns the channel number in list with # ' +
-			'in the front, if it was created first ' +
-			'it will display #1, if third #3, etc',
-		example: '$##',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: any, guild: Guild
@@ -50,11 +46,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: '#',
-		description: 'returns the channel number in list',
-		super_description: '**#**, returns the channel number in list, if it was created first ' +
-			'it will display 1, if third 3, etc',
-		example: '#',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: any, guild: Guild
@@ -86,10 +77,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'creator_portal',
-		description: 'returns the creator of current voice channel\'s portal',
-		super_description: '**creator_portal**, returns the creator of current voice channel\'s portal',
-		example: '$creator_portal',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: any, guild: Guild
@@ -117,10 +104,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'creator_voice',
-		description: 'returns the creator of current voice channel',
-		super_description: '**creator_voice**, returns the creator of current voice channel',
-		example: '$creator_voice',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -136,10 +119,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'date',
-		description: 'returns the full date: dd/mm/yyyy',
-		super_description: '**date**, full date: dd/mm/yyyy',
-		example: '$date',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -155,10 +134,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'day_number',
-		description: 'returns the day number',
-		super_description: '**day_number**, returns the day number',
-		example: '$day_number',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -174,10 +149,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'day_name',
-		description: 'returns the day name',
-		super_description: '**day_name**, returns the day name',
-		example: '$day_name',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -192,10 +163,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'month_number',
-		description: 'returns the month by number',
-		super_description: '**month_number**, returns the month by number',
-		example: '$month_number',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -210,10 +177,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'month_name',
-		description: 'returns the month by name',
-		super_description: '**month_name**, returns the month by name',
-		example: '$month_name',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -229,10 +192,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'year',
-		description: 'returns the year',
-		super_description: '**year**, returns the year',
-		example: '$year',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -247,10 +206,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'time',
-		description: 'full time: hh:mm:ss',
-		super_description: '**time**, full time: hh:mm:ss',
-		example: '$time',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -265,10 +220,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'hour',
-		description: 'returns the hour in current time',
-		super_description: '**hour**, returns the hour',
-		example: '$hour',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -283,10 +234,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'minute',
-		description: 'returns the minute in current time',
-		super_description: '**minute**, returns the minute',
-		example: '$minute',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -301,10 +248,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'second',
-		description: 'returns the second in current time',
-		super_description: '**second**, returns the second',
-		example: '$second',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -319,10 +262,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_active_count',
-		description: 'returns number of members with a status',
-		super_description: '**member_with_status**, returns the number of members with a status',
-		example: '$member_active_count',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -342,10 +281,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_count',
-		description: 'returns number of members in channel',
-		super_description: '**member_count**, returns the number of members in channel',
-		example: '$member_count',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -365,10 +300,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_history',
-		description: 'returns a list of all members that have connected to the channel',
-		super_description: '**member_history**, returns a list of all members that have connected to the channel',
-		example: '$member_history',
-		args: 'none',
 		get: (
 			// voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -380,10 +311,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_list',
-		description: 'returns the currently played games',
-		super_description: '**member_list**, returns the currentstatuses',
-		example: '$member_list',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -401,10 +328,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'member_with_status',
-		description: 'returns number of members with a status',
-		super_description: '**member_with_status**, returns the number of members with a status',
-		example: '$member_with_status',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null// , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -424,10 +347,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'status_count',
-		description: 'returns the count of current member statuses',
-		super_description: '**status_count**, returns the count of current member statuses',
-		example: '$status_count',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -448,10 +367,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'status_history',
-		description: 'returns the history of all the statuses',
-		super_description: '**status_history**, returns the history of all the statuses',
-		example: '$status_history',
-		args: 'none',
 		get: (
 			// voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -463,10 +378,6 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'status_list',
-		description: 'returns the list of current member statuses',
-		super_description: '**status_list**, returns the list of all current members statuses',
-		example: '$status_list',
-		args: 'none',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
@@ -529,7 +440,8 @@ export function get_variable_guide(): MessageEmbed {
 
 	return create_rich_embed(
 		'Variable Guide',
-		'go to https://portal-bot.xyz/docs/interpreter/objects/variables/description\n\n' +
+		'[Variables](' + portal_url + interpreter_url + '/variables/description) ' +
+		'are immutable and live data that return information about your current voice channel.\n' +
 		'how to use variables with text interpreter',
 		'#1BE7FF',
 		strc_array,
@@ -541,6 +453,32 @@ export function get_variable_guide(): MessageEmbed {
 	);
 }
 
+function get_link(variable: string): string {
+	const url = portal_url + interpreter_url + '/variables';
+	const general = ['creator_portal', 'creator_voice', '##', '#'];
+	const member = ['member_list', 'member_count', 'member_active_count', 'member_with_status', 'member_history'];
+	const status = ['status_list', 'status_count', 'status_history'];
+	const time = ['date', 'day_number', 'day_name', 'month_number', 'month_name', 'year', 'time', 'hour', 'minute', 'second'];
+
+	if (general.includes(variable)) {
+		if (variable === '##') {
+			return `${url}/detailed/general/slash`
+		} else if (variable === '#') {
+			return `${url}/detailed/general/double_slash`
+		} else {
+			return `${url}/detailed/general/${variable}`
+		}
+	} else if (member.includes(variable)) {
+		return `${url}/detailed/member/${variable}`
+	} else if (status.includes(variable)) {
+		return `${url}/detailed/status/${variable}`
+	} else if (time.includes(variable)) {
+		return `${url}/detailed/time/${variable}`
+	} else {
+		return `${url}/description`
+	}
+}
+
 export function get_variable_help(): MessageEmbed[] {
 	const vrbl_array: Field[][] = [];
 
@@ -549,8 +487,7 @@ export function get_variable_help(): MessageEmbed[] {
 		for (let i = (24 * l); i < variables.length && i < 24 * (l + 1); i++) {
 			vrbl_array[l].push({
 				emote: `${i + 1}. ${variables[i].name}`,
-				role: '**desc**: *' + variables[i].description + '*' +
-					'\n**args**: *' + variables[i].args + '*',
+				role: `[description](${get_link(variables[i].name)})`,
 				inline: true
 			});
 		}
@@ -560,16 +497,28 @@ export function get_variable_help(): MessageEmbed[] {
 		if (index === 0) {
 			return create_rich_embed(
 				'Variables',
-				'go to https://portal-bot.xyz/docs/interpreter/objects/variables/description\n\n' +
-				'Prefix: ' + variable_prefix + '\n' +
-				'Immutable and live data that return information\n' +
-				'about your current voice channel' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-				'#1BE7FF', vrbl_array[0], null, null, null, null, null
+				'[Variables](' + portal_url + interpreter_url + '/variables/description) ' +
+				'are immutable and live data that return information about your current voice channel.\n' +
+				'Prefix: ' + variable_prefix,
+				'#1BE7FF',
+				vrbl_array[0],
+				null,
+				null,
+				null,
+				null,
+				null
 			);
 		} else {
 			return create_rich_embed(
-				null, null, '#1BE7FF', vrbl_array[index], null, null, null, null, null
+				null,
+				null,
+				'#1BE7FF',
+				vrbl_array[index],
+				null,
+				null,
+				null,
+				null,
+				null
 			);
 		}
 	});
@@ -581,14 +530,12 @@ export function get_variable_help_super(candidate: string): MessageEmbed | boole
 		if (vrbl.name === candidate) {
 			return create_rich_embed(
 				vrbl.name,
-				'Type: Variable' +
-				'\nPrefix: ' + variable_prefix + '\n' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
+				null,
 				'#1BE7FF',
 				[
-					{ emote: 'Description', role: '*' + vrbl.super_description + '*', inline: false },
-					{ emote: 'Arguments', role: '*' + vrbl.args + '*', inline: false },
-					{ emote: 'Example', role: '```' + vrbl.example + '```', inline: false }
+					{ emote: `Type`, role: `Variables`, inline: true },
+					{ emote: `Prefix`, role: `${variable_prefix}`, inline: true },
+					{ emote: `Description`, role: `[${candidate} doc](${get_link(candidate)})`, inline: true }
 				],
 				null,
 				null,
@@ -598,6 +545,7 @@ export function get_variable_help_super(candidate: string): MessageEmbed | boole
 			);
 		}
 	}
+
 	return false;
 }
 

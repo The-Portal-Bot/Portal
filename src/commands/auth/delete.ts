@@ -1,10 +1,9 @@
 import { Message, TextChannel } from "discord.js";
 import { ask_for_approval, message_help } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
-    message: Message, args: string[], guild_object: GuildPrtl
+    message: Message, args: string[]
 ): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
         if (args.length !== 1) {
@@ -46,7 +45,7 @@ module.exports = async (
             .then(result => {
                 if (result) {
                     (<TextChannel>message.channel)
-                        .bulkDelete(bulk_delete_length + 1)
+                        .bulkDelete(bulk_delete_length + 3)
                         .then(messages => {
                             return resolve({
                                 result: true,

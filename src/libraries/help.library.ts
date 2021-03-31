@@ -502,6 +502,7 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
+	if (footer) rich_message.setFooter(footer);
 	if (from_bot) rich_message.setFooter(
 		footer
 			? footer

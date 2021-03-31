@@ -94,29 +94,17 @@ export interface TimeRemaining {
 
 export class InterfaceBlueprint {
 	public name = '';
-	public description = '';
-	public super_description = '';
-	public example = '';
-	public args = '';
 	public get!: any;
 	public set!: any;
 	public auth!: number;
 
 	constructor(
 		name: string,
-		description: string,
-		super_description: string,
-		example: string,
-		args: string,
 		auth: number,
 		get: any,
 		set: any
 	) {
 		this.name = name;
-		this.description = description;
-		this.super_description = super_description;
-		this.example = example;
-		this.args = args;
 		this.auth = auth;
 		this.get = get;
 		this.set = set;

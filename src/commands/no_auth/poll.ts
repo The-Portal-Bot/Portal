@@ -12,8 +12,16 @@ function create_role_message(
 	colour: string, poll_map: Field[], member_id: string
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const role_message_emb: MessageEmbed = create_rich_embed(
-			title, desc, colour, poll_map, null, null, true, null, null
+		const role_message_emb = create_rich_embed(
+			title,
+			desc,
+			colour,
+			poll_map,
+			null,
+			null,
+			true,
+			null,
+			null
 		);
 
 		channel
@@ -145,7 +153,7 @@ module.exports = async (
 			.then(r => {
 				return resolve({
 					result: r.result,
-					value: r.value
+					value: r.result ? '' : r.value
 				});
 			})
 			.catch(e => {

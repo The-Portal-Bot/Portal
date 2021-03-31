@@ -32,6 +32,13 @@ module.exports = async (
 			});
 		}
 
+		if (message.member.voice.channel.members.size > 10) {
+			return resolve({
+				result: false,
+				value: message_help('commands', 'force', 'you can only force a channel with up-to 10 members')
+			});
+		}
+
 		const current_member = message.member;
 		const current_voice = message.member.voice.channel;
 

@@ -8,19 +8,16 @@ import { update_guild, update_member, update_portal, update_voice } from '../../
 import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { MemberPrtl } from '../classes/MemberPrtl.class';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
-import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
 import { Field, InterfaceBlueprint, ReturnPormise } from '../classes/TypesPrtl.interface';
+import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
 
+const portal_url = 'https://portal-bot.xyz/docs';
+const interpreter_url = '/interpreter/objects';
 export const attribute_prefix = '&';
 
 const attributes: InterfaceBlueprint[] = [
 	{
 		name: 'p.ann_announce',
-		description: 'returns/sets whether Portal announces events in current portals spawned channels',
-		super_description: '**p.ann_announce** returns/sets whether Portal announces events in ' +
-			'current portals spawned channels',
-		example: '&p.ann_announce',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -96,10 +93,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.ann_announce',
-		description: 'returns/sets whether Portal announces events in current channel',
-		super_description: '**v.ann_announce** returns/sets whether Portal announces events in current channel',
-		example: '&v.ann_announce',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -163,11 +156,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.no_bots',
-		description: 'returns/sets whether bots can join portal\'s voice channels',
-		super_description: '**p.no_bots** returns/sets whether bots can join portal\'s voice channels. ' +
-			'Basically switching name rendering on/off.',
-		example: '&p.no_bots',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -243,10 +231,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.no_bots',
-		description: 'returns/sets whether bots can join voice channel',
-		super_description: '**v.no_bots** returns/sets whether bots can join voice channel. ',
-		example: '&v.no_bots',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -310,11 +294,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.render',
-		description: 'returns/sets whether portal\'s voice channels render names',
-		super_description: '**p.render** returns/sets whether portal\'s voice channels render names. ' +
-			'Basically switching name rendering on/off.',
-		example: '&p.render',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -390,11 +369,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.render',
-		description: 'returns/sets whether voice channel renders its name',
-		super_description: '**v.render** returns/sets whether voice channel renders its name. ' +
-			'Basically switching name rendering on/off.',
-		example: '&v.render',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -458,11 +432,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.ann_user',
-		description: 'returns/sets whether Portal announces user\'s join or leave from current portals spawned channels',
-		super_description: '**p.ann_user** returns/sets whether Portal announces user\'s join or leave from ' +
-			'current portals spawned channels',
-		example: '&p.ann_user',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -538,10 +507,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.ann_user',
-		description: 'returns/sets whether Portal announces user\'s join or leave from current channel',
-		super_description: '**v.ann_user** returns/sets whether Portal announces user\'s join or leave from current channel',
-		example: '&v.ann_user',
-		args: 'true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -605,10 +570,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.bitrate',
-		description: 'returns/sets bitrate of channel',
-		super_description: '**v.bitrate** returns/sets bitrate of channel',
-		example: '&v.bitrate',
-		args: 'number',
 		get: (
 			voice_channel: VoiceChannel
 		): number => {
@@ -658,10 +619,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.prefix',
-		description: 'returns/sets prefix of Portal',
-		super_description: '**prefix**, returns/sets guild prefix which is how you refere to Portal',
-		example: '&g.prefix',
-		args: 'string',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -697,11 +654,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.rank_speed',
-		description: 'returns/sets leveling speed of your server',
-		super_description: '**g.rank_speed**, returns/sets leveling speed of your server,' +
-			'Basically how fast or slow members will reach levels that will give them roles.',
-		example: '&g.rank_speed',
-		args: 'none/slow/default/fast',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -748,11 +700,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.profanity_level',
-		description: 'returns/sets the level of Profanity check strictness',
-		super_description: '**g.profanity_level**, returns/sets the level of Profanity check strictness,' +
-			'For example fuckshit would not be flagged in `default` level but would in `strict`.',
-		example: '&g.profanity_level',
-		args: 'none/default/strict',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -799,11 +746,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.initial_role',
-		description: 'returns/sets the level of Profanity check strictness',
-		super_description: '**g.initial_role**, returns/sets the level of Profanity check strictness,' +
-			'For example fuckshit would not be flagged in `default` level but would in `strict`.',
-		example: '&g.initial_role',
-		args: 'none/default/strict',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -892,11 +834,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.locale',
-		description: 'returns/sets g.locale of the guild',
-		super_description: '**g.locale**, returns/sets guild locale makes the bot talk your language and all communication is done' +
-			'in your local language',
-		example: '&g.locale',
-		args: 'en/gr/de',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -942,10 +879,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.locale',
-		description: 'returns/sets p.locale of current channel',
-		super_description: '**p.locale**, returns/sets language used in statuses',
-		example: '&p.locale',
-		args: 'en/gr/de',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1007,10 +940,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.locale',
-		description: 'returns/sets v.locale of current channel',
-		super_description: '**v.locale**, returns/sets language used in statuses',
-		example: '&v.locale',
-		args: 'en/gr/de',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -1061,10 +990,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.position',
-		description: 'returns/sets the position of the voice channel',
-		super_description: '**v.position**, returns/sets the position of the voice channel',
-		example: '&v.position',
-		args: '!v.position_of_channel',
 		get: (
 			voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -1111,10 +1036,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.regex_overwrite',
-		description: 'returns/sets your personal voice channel regex',
-		super_description: '**p.regex_overwrite**, returns/sets your personal voice channel regex',
-		example: '&p.regex_overwrite',
-		args: '!true/false',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1190,10 +1111,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.regex',
-		description: 'returns/sets title-guidelines of portal channel',
-		super_description: '**p.regex**, returns/sets title-guidelines of portal channel',
-		example: '&p.regex',
-		args: '!regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1245,10 +1162,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.v.regex',
-		description: 'returns/sets the default title for created voice channels',
-		super_description: '**p.v.regex**, returns/sets the default title for created voice channels',
-		example: '&p.v.regex',
-		args: '!regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1300,10 +1213,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.regex',
-		description: 'returns/sets the title for current voice channel',
-		super_description: '**v.regex**, returns/sets the title for current voice channel',
-		example: '&v.regex',
-		args: '!v.regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -1343,10 +1252,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'm.regex',
-		description: 'returns/sets your personal voice channel regex',
-		super_description: '**m.regex**, returns/sets your personal voice channel regex',
-		example: '&m.regex',
-		args: '!m.regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild,
@@ -1392,10 +1297,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.user_limit',
-		description: 'returns/sets maximum number of members guideline for portal',
-		super_description: '**p.user_limit**, returns/sets maximum number of members guideline for portal',
-		example: '&p.user_limit',
-		args: '!number of maximum members (0 is infinite)',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1462,10 +1363,6 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.user_limit',
-		description: 'returns/sets maximum number of members allowed',
-		super_description: '**v.user_limit**, returns/sets maximum number of members allowed',
-		example: '&v.user_limit',
-		args: '!number of maximum members (0 is infinite)',
 		get: (
 			voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -1567,7 +1464,8 @@ export function get_attribute_guide(): MessageEmbed {
 
 	return create_rich_embed(
 		'Attribute Guide',
-		'go to https://portal-bot.xyz/docs/interpreter/objects/attributes/description\n\n' +
+		'[Attributes](' + portal_url + interpreter_url + '/attributes/description) ' +
+		'are options that can be manipulated by whomever has clearance.\n' +
 		'How to use attributes with the Text Interpreter',
 		'#FF5714',
 		attr_array,
@@ -1579,38 +1477,67 @@ export function get_attribute_guide(): MessageEmbed {
 	);
 }
 
+function get_link(attribute: string): string {
+	const url = portal_url + interpreter_url + '/attributes';
+
+	if (attribute.indexOf('g.') > -1) {
+		return `${url}/detailed/global/${attribute}`
+	} else if (attribute.indexOf('m.') > -1) {
+		return `${url}/detailed/member/${attribute}`
+	} else if (attribute.indexOf('p.') > -1) {
+		return `${url}/detailed/portal/${attribute}`
+	} else if (attribute.indexOf('v.') > -1) {
+		return `${url}/detailed/voice/${attribute}`
+	} else {
+		return `${url}/description`
+	}
+}
+
 export function get_attribute_help(): MessageEmbed[] {
 	const attr_array: Field[][] = [];
 
-	for (let l = 0; l <= attributes.length / 24; l++) {
+	for (let l = 0; l <= attributes.length / 25; l++) {
 		attr_array[l] = []
 		for (let i = (24 * l); i < attributes.length && i < 24 * (l + 1); i++) {
-			attr_array[l].push({
-				emote: `${i + 1}. ${attributes[i].name}`,
-				role: '**desc**: *' + attributes[i].description + '*' +
-					'\n**args**: *' + attributes[i].args + '*',
-				inline: true
-			});
+			attr_array[l]
+				.push({
+					emote: `${i + 1}. ${attributes[i].name}`,
+					role: `[description](${get_link(attributes[i].name)})`,
+					inline: true
+				});
 		}
 	}
 
-	return attr_array.map((cmmd, index) => {
-		if (index === 0) {
-			return create_rich_embed(
-				'Attributes',
-				'go to https://portal-bot.xyz/docs/interpreter/objects/attributes/description\n\n' +
-				'Prefix: ' + attribute_prefix + '\n' +
-				'are Portal\'s, portal or voice channel options ' +
-				'that can be manipulated by whomever has clearance.\n' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-				'#FF5714', attr_array[0], null, null, null, null, null
-			)
-		} else {
-			return create_rich_embed(
-				null, null, '#FF5714', attr_array[index], null, null, null, null, null
-			)
-		}
-	});
+	return attr_array
+		.map((cmmd, index) => {
+			if (index === 0) {
+				return create_rich_embed(
+					'Attributes',
+					'[Attributes](' + portal_url + interpreter_url + '/attributes/description) ' +
+					'are options that can be manipulated by whomever has clearance.\n' +
+					'Prefix: ' + attribute_prefix,
+					'#FF5714',
+					attr_array[0],
+					null,
+					null,
+					null,
+					null,
+					null
+				)
+			} else {
+				return create_rich_embed(
+					null,
+					null,
+					'#FF5714',
+					attr_array[index],
+					null,
+					null,
+					null,
+					null,
+					null
+				)
+			}
+		});
 }
 
 export function get_attribute_help_super(
@@ -1621,15 +1548,12 @@ export function get_attribute_help_super(
 		if (attr.name === candidate) {
 			return create_rich_embed(
 				attr.name,
-				'Type: Attribute' +
-				'\nPrefix: ' + attribute_prefix + '\n' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
+				null,
 				'#FF5714',
 				[
-					{ emote: 'Description', role: '*' + attr.super_description + '*', inline: false },
-					{ emote: 'Arguments', role: '*' + attr.args + '*', inline: false },
-					{ emote: 'Example', role: '*' + attr.example + '*', inline: false },
-					{ emote: 'Clearance', role: '' + AuthEnum[attr.auth] + '', inline: false }
+					{ emote: `Type`, role: `Attribute`, inline: true },
+					{ emote: `Prefix`, role: `${attribute_prefix}`, inline: true },
+					{ emote: `Description`, role: `[${candidate} doc](${get_link(candidate)})`, inline: true }
 				],
 				null,
 				null,
@@ -1659,18 +1583,6 @@ export function get_attribute(
 
 	return -1;
 }
-
-// export function get_attribute(
-// 	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-// 	guild_object: GuildPrtl, candidate: string, member_object: MemberPrtl | undefined | undefined
-// ): string | number | boolean {
-// 	for (let l = 0; l < attributes.length; l++) {
-// 		if (candidate === attributes[l].name) {
-// 			return attributes[l].get(voice_channel, voice_object, portal_object_list, guild_object, member_object);
-// 		}
-// 	}
-// 	return -1;
-// }
 
 export function set_attribute(
 	voice_channel: VoiceChannel | undefined | null, guild_object: GuildPrtl,

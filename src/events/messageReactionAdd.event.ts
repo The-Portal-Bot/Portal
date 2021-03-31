@@ -567,7 +567,7 @@ module.exports = async (
 										create_rich_embed(
 											null,
 											null,
-											'#ffa500',
+											'#9900ff',
 											null,
 											null,
 											null,
