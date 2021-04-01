@@ -1,6 +1,6 @@
 import { Client, Guild, TextChannel, VoiceChannel, VoiceConnection, VoiceState } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guild.library";
-import { update_music_lyrics_message, update_music_message } from "../libraries/help.library";
+import { logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
 import { client_talk } from "../libraries/localisation.library";
 import { fetch_guild, remove_voice, set_music_data, update_guild } from "../libraries/mongo.library";
 import { update_timestamp } from "../libraries/user.library";
@@ -159,10 +159,13 @@ async function from_null(
 					return reject('null->existing (source: null / dest: portal_list) / could not find portal_object');
 				}
 
-				update_timestamp(newState, guild_object); // points for voice
-
 				create_voice_channel(newState, portal_object)
 					.then(() => {
+						update_timestamp(newState, guild_object) // points for voice
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
+
 						return resolve('null->existing (source: null / dest: portal_list)');
 					})
 					.catch(e => {
@@ -171,14 +174,18 @@ async function from_null(
 			}
 			else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // joined voice channel
 				five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
-				update_timestamp(newState, guild_object); // points for voice
-
+				update_timestamp(newState, guild_object) // points for voice
+					.catch((e: any) => {
+						logger.error(new Error(`failed to send message / ${e}`));
+					});
 
 				return resolve('null->existing (source: null / dest: voice_list)');
 			}
 			else { // joined other channel
-				update_timestamp(newState, guild_object); // points for other
-
+				update_timestamp(newState, guild_object) // points for voice
+					.catch((e: any) => {
+						logger.error(new Error(`failed to send message / ${e}`));
+					});
 
 				return resolve('null->existing (source: null / dest: other channel)');
 			}
@@ -194,18 +201,26 @@ async function from_existing(
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
 		if (new_channel === null) {
-			update_timestamp(newState, guild_object);
+			update_timestamp(newState, guild_object) // points for voice
+				.catch((e: any) => {
+					logger.error(new Error(`failed to send message / ${e}`));
+				});
+
 			channel_empty_check(old_channel, guild_object, client)
 				.catch(e => {
-					return resolve(`failed to check channel state / ${e}`);
+					logger.error(new Error(`failed to check channel state / ${e}`));
 				});
 
 			return resolve('existing->null');
 		}
 		else if (new_channel !== null) { // Moved from channel to channel
+			update_timestamp(newState, guild_object) // points for voice
+				.catch((e: any) => {
+					logger.error(new Error(`failed to send message / ${e}`));
+				});
+				
 			if (included_in_portal_list(old_channel.id, guild_object.portal_list)) {
 				if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // has been handled before
-					update_timestamp(newState, guild_object); // points from voice creation
 					five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
 
 					return resolve('existing->existing (source: portal_list / dest: voice_list) / has been handled before');
@@ -216,7 +231,7 @@ async function from_existing(
 			else if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
 				channel_empty_check(old_channel, guild_object, client)
 					.catch(e => {
-						return resolve(`failed to check channel state / ${e}`);
+						logger.error(new Error(`failed to check channel state / ${e}`));
 					});
 
 				if (included_in_portal_list(new_channel.id, guild_object.portal_list)) { // moved from voice to portal
@@ -236,14 +251,11 @@ async function from_existing(
 						});
 				}
 				else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // moved from voice to voice
-					update_timestamp(newState, guild_object); // points calculation from any channel
 					five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
 
 					return resolve('existing->existing (source: voice_list / dest: voice_list)');
 				}
-				else { // moved from voice to other
-					update_timestamp(newState, guild_object); // points calculation from any channel
-					five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
+				else { // moved from voice to otherefresher(new_channel, guild_object.portal_list, newState.guild, 5);
 
 					return resolve('existing->existing (source: voice_list / dest: other)');
 				}

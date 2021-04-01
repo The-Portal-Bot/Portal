@@ -15,10 +15,27 @@ module.exports = async (
             });
         }
 
-        if (guild_object.announcement === '') {
+        if (guild_object.announcement === '' || guild_object.announcement === 'null') {
             return resolve({
                 result: false,
                 value: message_help('commands', 'announce', 'there is no announcement channel')
+            });
+        }
+
+        if (!message.guild) {
+            return resolve({
+                result: false,
+                value: 'message\'s guild could not be fetched'
+            });
+        }
+
+        const announcement_channel = <TextChannel>message.guild.channels.cache
+            .find(c => c.id === guild_object.announcement);
+
+        if (!announcement_channel) {
+            return resolve({
+                result: false,
+                value: message_help('commands', 'announce', 'announcements channel does not exist')
             });
         }
 
@@ -28,16 +45,6 @@ module.exports = async (
         if (body === '' && title !== '') {
             body = title;
             title = '';
-        }
-
-        const announcement_channel = <TextChannel>message?.guild?.channels.cache
-            .find(c => c.id === guild_object.announcement);
-
-        if (!announcement_channel) {
-            return resolve({
-                result: false,
-                value: message_help('commands', 'announce', 'announcements channel does not exist')
-            });
         }
 
         const rich_message = create_rich_embed(
@@ -52,8 +59,9 @@ module.exports = async (
             null
         );
 
-        announcement_channel.send(rich_message)
-            .then(message => {
+        announcement_channel
+            .send(rich_message)
+            .then(() => {
                 client_talk(client, guild_object, 'announce');
 
                 return resolve({

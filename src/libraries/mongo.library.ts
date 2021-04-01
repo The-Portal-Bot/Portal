@@ -513,6 +513,43 @@ export async function update_member(
     });
 }
 
+export async function update_entire_member(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    guild_id: string, member_id: string, member: MemberPrtl
+): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        const placeholder: any = {}
+        placeholder['member_list'] = member;
+
+        GuildPrtlMdl.updateOne(
+            {
+                id: guild_id
+            },
+            {
+                $set: placeholder
+            },
+            {
+                'new': true,
+                'arrayFilters': [
+                    {
+                        'm.id': member_id
+                    }
+                ]
+            }
+        )
+            .then((r: MongoPromise) => {
+                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+                    return resolve(true);
+                } else {
+                    return reject('did not execute database transaction');
+                }
+            })
+            .catch((e: any) => {
+                return reject(e);
+            });
+    });
+}
+
 export async function insert_member(
     member_id: string, guild_id: string
 ): Promise<boolean> {

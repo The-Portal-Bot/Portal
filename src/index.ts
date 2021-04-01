@@ -477,16 +477,18 @@ function portal_preprocessor(
 function handle_ranking_system(
 	message: Message, guild_object: GuildPrtl
 ): void {
-	const level = add_points_message(
-		message, guild_object.member_list[0], guild_object.rank_speed
-	);
-
-	if (level) {
-		message_reply(true, message, `you reached level ${level}!`)
-			.catch((e: any) => {
-				logger.error(new Error(`failed to send message / ${e}`));
-			});
-	}
+	add_points_message(message, guild_object.member_list[0], guild_object.rank_speed)
+		.then(level => {
+			if (level) {
+				message_reply(true, message, `you reached level ${level}!`)
+					.catch((e: any) => {
+						logger.error(new Error(`failed to send message / ${e}`));
+					});
+			}
+		})
+		.catch(e => {
+			logger.error(new Error(e));
+		});
 }
 
 function handle_url_channels(
