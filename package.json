@@ -16,7 +16,7 @@
         "cheerio": "^1.0.0-rc.5",
         "discord-anti-spam": "^2.5.0",
         "discord-ytdl-core": "^5.0.2",
-        "discord.js": "^12.5.1",
+        "discord.js": "^12.5.2",
         "ffmpeg-static": "^4.2.8",
         "give-me-a-joke": "^0.4.0",
         "jest": "^26.6.3",
