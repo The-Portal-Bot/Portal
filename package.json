@@ -37,7 +37,7 @@
         "@types/node-fetch": "^2.5.8",
         "@types/roll": "^1.2.0",
         "@types/voca": "^1.4.0",
-        "@types/ws": "^7.4.0",
+        "@types/ws": "^7.4.1",
         "@types/yt-search": "^2.3.0",
         "eslint": "^7.23.0",
         "nodemon": "^2.0.7",
