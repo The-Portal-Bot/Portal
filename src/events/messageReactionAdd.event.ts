@@ -123,12 +123,14 @@ async function reaction_music_manager(
 					messageReaction.message.guild, guild_object
 				)
 					.then(r => {
-						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+						clear_music_vote(guild_object.id)
+							.catch(e => logger.error(new Error(e)));
 
 						return resolve(r);
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+						clear_music_vote(guild_object.id)
+							.catch(e => logger.error(new Error(e)));
 
 						return reject(`failed to play video / ${e}`);
 					});
@@ -138,12 +140,14 @@ async function reaction_music_manager(
 			case '⏸': {
 				pause(portal_voice_connection)
 					.then(r => {
-						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+						clear_music_vote(guild_object.id)
+							.catch(e => logger.error(new Error(e)));
 
 						return resolve(r);
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+						clear_music_vote(guild_object.id)
+							.catch(e => logger.error(new Error(e)));
 
 						return reject(`failed to pause video / ${e}`);
 					});
@@ -208,7 +212,8 @@ async function reaction_music_manager(
 						messageReaction.message.guild, guild_object
 					)
 						.then(r => {
-							clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+							clear_music_vote(guild_object.id)
+								.catch(e => logger.error(new Error(e)));
 							guild_object.music_queue.shift();
 
 							return resolve(`${r} (by ${reason})`);
@@ -230,7 +235,8 @@ async function reaction_music_manager(
 									guild, guild_object
 								)
 									.then(r => {
-										clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+										clear_music_vote(guild_object.id)
+											.catch(e => logger.error(new Error(e)));
 										guild_object.music_queue.shift();
 
 										return resolve(`${r} (by ${reason})`);
@@ -254,12 +260,14 @@ async function reaction_music_manager(
 			// case '➖': {
 			// 	volume_down(portal_voice_connection)
 			// 		.then(r => {
-			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+			// 			clear_music_vote(guild_object.id)
+			//.catch(e => logger.error(new Error(e)));
 
 			// 			return resolve(r);
 			// 		})
 			// 		.catch(e => {
-			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+			// 			clear_music_vote(guild_object.id)
+			// .catch(e => logger.error(new Error(e)));
 
 			// 			return resolve({
 			// 				result: false,
@@ -272,12 +280,14 @@ async function reaction_music_manager(
 			// case '➕': {
 			// 	volume_up(portal_voice_connection)
 			// 		.then(r => {
-			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+			// 			clear_music_vote(guild_object.id)
+			// .catch(e => logger.error(new Error(e)));
 
 			// 			return resolve(r);
 			// 		})
-			// 		.catch(e => {
-			// 			clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+			// 		// .catch(e => {
+			// 			clear_music_vote(guild_object.id)
+			// .catch(e => logger.error(new Error(e)));
 
 			// 			return resolve({
 			// 				result: false,
@@ -367,20 +377,22 @@ async function reaction_music_manager(
 						.find(g => g.id === guild_object.id);
 
 					if (!guild) {
-						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+						clear_music_vote(guild_object.id)
+							.catch(e => logger.error(new Error(e)));
 
 						return reject('could fetch guild from client');
 					}
 				}
 
-				clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+				clear_music_vote(guild_object.id)
+					.catch(e => logger.error(new Error(e)));
 				return resolve('queue has been cleared');
 
 				break;
 			}
 			case '🚪': {
 				pause(portal_voice_connection)
-					.then(r => {
+					.then(() => {
 						if (portal_voice_connection) {
 							guild_object.music_queue = [];
 							update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
@@ -395,7 +407,8 @@ async function reaction_music_manager(
 									});
 							}
 
-							clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+							clear_music_vote(guild_object.id)
+								.catch(e => logger.error(new Error(e)));
 							portal_voice_connection.disconnect();
 
 							return resolve('Portal has been disconnected');
@@ -404,7 +417,8 @@ async function reaction_music_manager(
 						}
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id).catch(e => logger.error(new Error(e)));
+						clear_music_vote(guild_object.id)
+							.catch(e => logger.error(new Error(e)));
 
 						return reject(`Portal failed to get disconnected / ${e}`);
 					});
@@ -420,9 +434,8 @@ module.exports = async (
 ): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		if (args.user.bot) {
-			return resolve(``); // 'not handling bot reactions'
-		}
-		else if (args.messageReaction.message?.guild) {
+			return resolve(''); // 'not handling bot reactions'
+		} else if (args.messageReaction.message?.guild) {
 			const current_guild = args.messageReaction.message.guild;
 			fetch_guild_reaction_data(current_guild.id, args.user.id)
 				.then(guild_object => {

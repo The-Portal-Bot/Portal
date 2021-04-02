@@ -525,10 +525,10 @@ export async function pause(
 					voice_connection.dispatcher.pause();
 					return resolve('playback paused');
 				} else {
-					return reject('already paused');
+					return resolve('already paused');
 				}
 			} else {
-				return reject('player is idle');
+				return resolve('player is idle');
 			}
 		} else {
 			return reject('Portal is not connected');

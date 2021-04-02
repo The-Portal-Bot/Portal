@@ -11,8 +11,7 @@ import event_config_json from './config.event.json';
 import config from './config.json';
 import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
-import { is_authorised, is_ignored, is_url, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
-import { client_talk } from './libraries/localisation.library';
+import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { isProfane } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 import { start } from './libraries/music.library';
@@ -507,16 +506,13 @@ function handle_url_channels(
 					logger.error(new Error(`failed to remove url channel / ${e}`));
 				});
 		}
-		else if (is_url(message.content)) {
-			client_talk(client, guild_object, 'url');
-		}
 		else {
-			// client_talk(client, guild_object, 'read_only');
 			message.author
 				.send(`${message.channel} is a url-only channel`)
 				.catch(e => {
 					logger.error(new Error(`failed to remove url channel / ${e}`));
 				});
+
 			if (message.deletable) {
 				message
 					.delete()
