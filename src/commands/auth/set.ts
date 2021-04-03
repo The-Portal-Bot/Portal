@@ -23,7 +23,7 @@ module.exports = async (
 		}
 
 		if (args.length >= 2) {
-			let value_array = [...args];
+			const value_array = [...args];
 			value_array.shift();
 
 			const value = value_array

@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, User, VoiceState } from "discord.js";
 import mongoose from 'mongoose';
 import { transports } from "winston";
@@ -6,8 +11,7 @@ import event_config_json from './config.event.json';
 import config from './config.json';
 import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
-import { is_authorised, is_ignored, is_url, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
-import { client_talk } from './libraries/localisation.library';
+import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { isProfane } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 import { start } from './libraries/music.library';
@@ -184,21 +188,28 @@ client.on('message', async (message: Message) => {
 				return true;
 			} else {
 				// anti_spam.message(message);
-				
+
 				// Ignore any message that does not start with prefix
 				if (message.content.indexOf(guild_object.prefix) !== 0) {
 					if (message.content === 'prefix') {
-						message_reply(true, message, `portal's prefix is \`${guild_object.prefix}\``);
+						message_reply(true, message, `portal's prefix is \`${guild_object.prefix}\``)
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
 
 						if (message.deletable) {
-							message.delete();
+							message
+								.delete()
+								.catch((e: any) => {
+									logger.error(new Error(`failed to delete message / ${e}`));
+								});
 						}
 					}
 
 					return false;
 				}
 
-				let command = command_decypher(message, guild_object);
+				const command = command_decypher(message, guild_object);
 
 				if (!command.command_options) {
 					return false;
@@ -206,7 +217,11 @@ client.on('message', async (message: Message) => {
 
 				if (command.command_options.auth && message.member) {
 					if (!is_authorised(message.member)) {
-						message_reply(false, message, 'you are not authorised to use this command', true, true);
+						message_reply(false, message, 'you are not authorised to use this command', true, true)
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
+
 
 						return false;
 					}
@@ -222,7 +237,10 @@ client.on('message', async (message: Message) => {
 					.then(guild_object_rest => {
 						if (!guild_object_rest) {
 							logger.error(new Error('server is not in database'));
-							message_reply(false, message, 'server is not in database');
+							message_reply(false, message, 'server is not in database')
+								.catch((e: any) => {
+									logger.error(new Error(`failed to send message / ${e}`));
+								});
 
 							return false;
 						}
@@ -275,7 +293,10 @@ function command_loader(
 			.then((response: ReturnPormise) => {
 				if (response) {
 					message_reply(response.result, message, response.value,
-						command_options.delete.source, command_options.delete.reply);
+						command_options.delete.source, command_options.delete.reply)
+						.catch((e: any) => {
+							logger.error(new Error(`failed to send message / ${e}`));
+						});
 				} else {
 					logger.error(new Error(`did not get response from command: ${command}`));
 				}
@@ -321,7 +342,10 @@ function command_loader(
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
 			`${pad(time.timeout_sec)}** *to use* **${command}** *again${type_for_msg}`;
 
-		message_reply(false, message, must_wait_msg, true, true);
+		message_reply(false, message, must_wait_msg, true, true)
+			.catch((e: any) => {
+				logger.error(new Error(`failed to reply to message / ${e}`));
+			});
 
 		return false;
 	}
@@ -349,7 +373,10 @@ function command_loader(
 				}
 
 				message_reply(response.result, message, response.value,
-					command_options.delete.source, command_options.delete.reply);
+					command_options.delete.source, command_options.delete.reply)
+					.catch(e => {
+						logger.error(new Error(`in ${command} got error ${e}`));
+					});
 			} else {
 				logger.error(new Error(`did not get response from command: ${command}`));
 			}
@@ -365,7 +392,7 @@ function event_loader(event: string, args: any): void {
 	require(`./events/${event}.event.js`)(args)
 		.then((response: string) => {
 			if (response) {
-				if (config.debug || (event_config_json.find(e => e.name === event))) {
+				if ((event_config_json.find(e => e.name === event))) {
 					logger.info(`[event-accepted] ${event} | ${response}`);
 				} else if (config.debug) {
 					logger.info(`[event-accepted-debug] ${event} | ${response}`);
@@ -391,9 +418,17 @@ function portal_preprocessor(
 	if (is_ignored(message.member)) {
 		if (!handle_url_channels(message, guild_object)) {
 			if (guild_object.music_data.channel_id === message.channel.id) {
-				message.member.send('you can\'t play music when ignored');
+				message.member
+					.send('you can\'t play music when ignored')
+					.catch((e: any) => {
+						logger.error(new Error(`failed to send message / ${e}`));
+					});
 				if (message.deletable) {
-					message.delete();
+					message
+						.delete()
+						.catch((e: any) => {
+							logger.error(new Error(`failed to delete message / ${e}`));
+						});
 				}
 			}
 		}
@@ -419,7 +454,12 @@ function portal_preprocessor(
 				// profanity check
 				const profanities = isProfane(message.content, guild_object.profanity_level);
 				if (profanities.length > 0) {
-					message.react('🚩');
+					message
+						.react('🚩')
+						.catch((e: any) => {
+							logger.error(new Error(`failed to react message / ${e}`));
+						});
+
 					message.author
 						.send(`try not to use profanities (${profanities.join(',')})`)
 						.catch(e => {
@@ -436,13 +476,18 @@ function portal_preprocessor(
 function handle_ranking_system(
 	message: Message, guild_object: GuildPrtl
 ): void {
-	const level = add_points_message(
-		message, guild_object.member_list[0], guild_object.rank_speed
-	);
-
-	if (level) {
-		message_reply(true, message, `you reached level ${level}!`);
-	}
+	add_points_message(message, guild_object.member_list[0], guild_object.rank_speed)
+		.then(level => {
+			if (level) {
+				message_reply(true, message, `you reached level ${level}!`)
+					.catch((e: any) => {
+						logger.error(new Error(`failed to send message / ${e}`));
+					});
+			}
+		})
+		.catch(e => {
+			logger.error(new Error(e));
+		});
 }
 
 function handle_url_channels(
@@ -452,25 +497,28 @@ function handle_url_channels(
 		if (message.content === './url') {
 			remove_url(guild_object.id, message.channel.id)
 				.then(r => {
-					message_reply(true, message, 'removed url channel ' +
-						r ? 'successfully' : 'unsuccessfully');
+					message_reply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`)
+						.catch((e: any) => {
+							logger.error(new Error(`failed to send message / ${e}`));
+						});
 				})
 				.catch(e => {
 					logger.error(new Error(`failed to remove url channel / ${e}`));
 				});
 		}
-		else if (is_url(message.content)) {
-			client_talk(client, guild_object, 'url');
-		}
 		else {
-			// client_talk(client, guild_object, 'read_only');
 			message.author
 				.send(`${message.channel} is a url-only channel`)
 				.catch(e => {
 					logger.error(new Error(`failed to remove url channel / ${e}`));
 				});
+
 			if (message.deletable) {
-				message.delete();
+				message
+					.delete()
+					.catch((e: any) => {
+						logger.error(new Error(`failed to delete message / ${e}`));
+					});
 			}
 		}
 
@@ -487,8 +535,10 @@ function handle_ignored_channels(
 		if (message.content === './ignore') {
 			remove_ignore(guild_object.id, message.channel.id)
 				.then(r => {
-					message_reply(true, message, 'removed from ignored channels ' +
-						r ? 'successfully' : 'unsuccessfully');
+					message_reply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
+						.catch((e: any) => {
+							logger.error(new Error(`failed to send message / ${e}`));
+						});
 				})
 				.catch(e => {
 					logger.error(new Error(`failed to remove ignored channel / ${e}`));
@@ -514,8 +564,10 @@ function handle_music_channels(
 			const music_data = new MusicData('null', 'null', 'null', [], false);
 			set_music_data(guild_object.id, music_data)
 				.then(r => {
-					message_reply(true, message, 'removed music channel ' +
-						r ? 'successfully' : 'unsuccessfully');
+					message_reply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
+						.catch((e: any) => {
+							logger.error(new Error(`failed to send message / ${e}`));
+						});
 				})
 				.catch(e => {
 					logger.error(new Error(`failed to remove music channel / ${e}`));
@@ -528,7 +580,11 @@ function handle_music_channels(
 
 			if (!message.guild || !message.member) {
 				if (message.deletable) {
-					message.delete();
+					message
+						.delete()
+						.catch((e: any) => {
+							logger.error(new Error(`failed to send message / ${e}`));
+						});
 				}
 
 				return false;
@@ -561,7 +617,11 @@ function handle_music_channels(
 					}
 
 					if (message.deletable) {
-						message.delete();
+						message
+							.delete()
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
 					}
 
 					return false;
@@ -595,7 +655,11 @@ function handle_music_channels(
 					}
 
 					if (message.deletable) {
-						message.delete();
+						message
+							.delete()
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
 					}
 				})
 				.catch(e => {
@@ -613,7 +677,11 @@ function handle_music_channels(
 					}
 
 					if (message.deletable) {
-						message.delete();
+						message
+							.delete()
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
 					}
 				});
 		}
@@ -647,9 +715,9 @@ function command_decypher(
 	}
 	const cmd = cmd_only.toLowerCase();
 
-	let path_to_command: string = '';
+	let path_to_command = '';
 	let command_options: CommandOptions | undefined = undefined;
-	let type: string = 'none';
+	let type = 'none';
 
 	command_config_json.some(category => {
 		command_options = category.commands.

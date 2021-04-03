@@ -87,7 +87,7 @@ export class GuildPrtl {
 		this.premium = premium;
 		this.prefix = prefix;
 	}
-};
+}
 
 export interface IGuildPrtl extends Document {
 	id: string;

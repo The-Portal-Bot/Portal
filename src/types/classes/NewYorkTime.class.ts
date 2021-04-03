@@ -1,5 +1,4 @@
 export class Multimedia {
-    public array: object;
     public url: string;
     public format: string;
     public height: number;
@@ -10,7 +9,6 @@ export class Multimedia {
     public copyright: string;
 
     constructor(
-        array: object,
         url: string,
         format: string,
         height: number,
@@ -20,7 +18,6 @@ export class Multimedia {
         caption: string,
         copyright: string
     ) {
-        this.array = array;
         this.url = url;
         this.format = format;
         this.height = height;
@@ -119,4 +116,4 @@ export class News {
         this.num_results = num_results;
         this.results = results;
     }
-};
+}

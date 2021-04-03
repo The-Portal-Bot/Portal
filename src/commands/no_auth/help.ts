@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { create_rich_embed, message_help } from "../../libraries/help.library";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../types/interfaces/Attribute.interface";
@@ -89,151 +89,150 @@ module.exports = async (
 						null
 					)
 				)
-				.catch(console.error);
-
-			return resolve({
-				result: true,
-				value: ''
-			});
+				.then(() => {
+					return resolve({
+						result: true,
+						value: ''
+					});
+				})
+				.catch(e => {
+					return resolve({
+						result: false,
+						value: `failed to send message / ${e}`
+					});
+				});
 		}
-		else if (args.length === 2) {
-			if (args[0] === 'commands' && args[1] === 'guide') {
-				message.author
-					.send(get_command_guide())
-					.catch(console.error);
+		else if (args.length === 2 && args[1] === 'guide') {
+			let guide: MessageEmbed | null = null;
+
+			switch (args[0]) {
+				case 'commands':
+					guide = get_command_guide();
+					break;
+				case 'variables':
+					guide = get_variable_guide();
+					break;
+				case 'pipes':
+					guide = get_pipe_guide();
+					break;
+				case 'attributes':
+					guide = get_attribute_guide();
+					break;
+				case 'structures':
+					guide = get_structure_guide();
+					break;
 			}
-			else if (args[0] === 'variables' && args[1] === 'guide') {
+
+			if (guide) {
 				message.author
-					.send(get_variable_guide())
-					.catch(console.error);
-			}
-			else if (args[0] === 'pipes' && args[1] === 'guide') {
-				message.author
-					.send(get_pipe_guide())
-					.catch(console.error);
-			}
-			else if (args[0] === 'attributes' && args[1] === 'guide') {
-				message.author
-					.send(get_attribute_guide())
-					.catch(console.error);
-			}
-			else if (args[0] === 'structures' && args[1] === 'guide') {
-				message.author
-					.send(get_structure_guide())
-					.catch(console.error);
-			}
-			else {
+					.send(guide)
+					.then(() => {
+						return resolve({
+							result: true,
+							value: ''
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `failed to send message / ${e}`
+						});
+					});
+			} else {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'bet', `*${args[0]} ${args[1]}* does not exist in portal`)
+					value: message_help('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`)
 				});
 			}
 		}
 		else if (args.length === 1) {
-			if (args[0] === 'all') {
-				get_command_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_variable_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_pipe_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_attribute_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-				get_structure_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+			let embed_array: MessageEmbed[] | null = null;
+
+			switch (args[0]) {
+				case 'commands':
+					embed_array = get_command_help();
+					break;
+				case 'variables':
+					embed_array = get_variable_help();
+					break;
+				case 'pipes':
+					embed_array = get_pipe_help();
+					break;
+				case 'attributes':
+					embed_array = get_attribute_help();
+					break;
+				case 'structures':
+					embed_array = get_structure_help();
+					break;
 			}
-			else if (args[0] === 'commands') {
-				get_command_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-			}
-			else if (args[0] === 'variables') {
-				get_variable_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-			}
-			else if (args[0] === 'pipes') {
-				get_pipe_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-			}
-			else if (args[0] === 'attributes') {
-				get_attribute_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
-			}
-			else if (args[0] === 'structures') {
-				get_structure_help().forEach(embed =>
-					message.author
-						.send(embed)
-						.catch(console.error)
-				);
+
+			if (embed_array) {
+				embed_array
+					.forEach(embed => {
+						message.author
+							.send(embed)
+							.then(() => {
+								return resolve({
+									result: true,
+									value: ''
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `failed to send message / ${e}`
+								});
+							})
+					});
 			} else {
-				const cmmd_detailed = get_command_help_super(args[0]);
-				if (cmmd_detailed) {
-					message.author
-						.send(cmmd_detailed)
-						.catch(console.error);
-				}
-				const vrbl_detailed = get_variable_help_super(args[0]);
-				if (vrbl_detailed) {
-					message.author
-						.send(vrbl_detailed)
-						.catch(console.error);
-				}
-				const pipe_detailed = get_pipe_help_super(args[0]);
-				if (pipe_detailed) {
-					message.author
-						.send(pipe_detailed)
-						.catch(console.error);
-				}
-				const attr_detailed = get_attribute_help_super(args[0]);
-				if (attr_detailed) {
-					message.author
-						.send(attr_detailed)
-						.catch(console.error);
-				}
-				const strc_detailed = get_structure_help_super(args[0]);
-				if (strc_detailed) {
-					message.author
-						.send(strc_detailed)
-						.catch(console.error);
+				let detailed: boolean | MessageEmbed = false;
+
+				detailed = get_command_help_super(args[0]);
+				if (!detailed) {
+					detailed = get_variable_help_super(args[0]);
+					if (!detailed) {
+						detailed = get_pipe_help_super(args[0]);
+						if (!detailed) {
+							detailed = get_attribute_help_super(args[0]);
+							if (!detailed) {
+								detailed = get_structure_help_super(args[0]);
+								if (!detailed) {
+									return resolve({
+										result: false,
+										value: message_help('commands', 'help', `*${args[0]}* does not exist in portal`)
+									});
+								}
+							}
+						}
+					}
 				}
 
-				if (!cmmd_detailed && !vrbl_detailed && !pipe_detailed && !attr_detailed && !strc_detailed) {
+				if (detailed) {
+					message.author
+						.send(detailed)
+						.then(() => {
+							return resolve({
+								result: true,
+								value: ''
+							});
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: `failed to send message / ${e}`
+							});
+						});
+				} else {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'help', `*${args[0]}* does not exist in portal`)
+						value: message_help('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`)
 					});
 				}
 			}
-
+		} else {
 			return resolve({
-				result: true,
-				value: 'I sent you a private message'
+				result: false,
+				value: message_help('commands', 'help')
 			});
 		}
 	});

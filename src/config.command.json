@@ -304,7 +304,7 @@
                 "reply": false,
                 "delete": {
                     "source": false,
-                    "reply": false
+                    "reply": true
                 }
             },
             {

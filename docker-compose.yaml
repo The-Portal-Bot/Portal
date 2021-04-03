@@ -3,6 +3,7 @@ version: "3.9"
 services:
   portal:
     container_name: portal
+    restart: always
     image: keybraker/portal:latest
     build:
       context: .
@@ -13,6 +14,10 @@ services:
       - type: bind
         source: ../logs
         target: /logs
+    deploy:
+      resources:
+        limits:
+          memory: 768M
 
   mongo:
     container_name: mongo
@@ -28,4 +33,4 @@ services:
       resources:
         limits:
           cpus: 0.50
-          memory: 512M
+          memory: 256M

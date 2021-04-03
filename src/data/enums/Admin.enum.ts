@@ -3,7 +3,7 @@ export enum AuthEnum {
     portal,
     voice,
     admin
-};
+}
 
 export const AuthList = [
     'none',

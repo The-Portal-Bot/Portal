@@ -14,7 +14,7 @@ function compare(
 		: member_b.level > member_a.level
 			? 1
 			: -1;
-};
+}
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -81,17 +81,24 @@ module.exports = async (
 					}
 				});
 
-			message.channel.send(create_rich_embed(
-				'LEADERBOARD',
-				'[Ranking System](https://portal-bot.xyz/docs/ranking)',
-				'#00FFFF',
-				member_levels,
-				null,
-				null,
-				true,
-				null,
-				null)
-			);
+			message.channel
+				.send(create_rich_embed(
+					'LEADERBOARD',
+					'[Ranking System](https://portal-bot.xyz/docs/ranking)',
+					'#00FFFF',
+					member_levels,
+					null,
+					null,
+					true,
+					null,
+					null)
+				)
+				.catch(e => {
+					return resolve({
+						result: false,
+						value: `failed to send message / ${e}`
+					});
+				});
 
 			return resolve({
 				result: true,
@@ -105,4 +112,4 @@ module.exports = async (
 			});
 		}
 	});
-};
+}

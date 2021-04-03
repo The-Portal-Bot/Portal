@@ -66,6 +66,7 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
 
 				if (json === null) {
@@ -75,6 +76,7 @@ module.exports = async (
 					});
 				}
 
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				if (json.status !== 'OK') {
 					return resolve({
 						result: false,
@@ -82,6 +84,7 @@ module.exports = async (
 					});
 				}
 
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const news: News = json;
 
 				const top_news: Field[] = [];
@@ -96,19 +99,27 @@ module.exports = async (
 					return i === count;
 				});
 
-				message.channel.send(
-					create_rich_embed(
-						`News ${args[0]} | ${moment(json.last_updated).format('DD/MM/YY hh:mm')}`,
-						'powered by NYTimes',
-						'#000000',
-						top_news,
-						null,
-						null,
-						true,
-						null,
-						null
+				message.channel
+					.send(
+						create_rich_embed(
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+							`News ${args[0]} | ${moment(json.last_updated).format('DD/MM/YY hh:mm')}`,
+							'powered by NYTimes',
+							'#000000',
+							top_news,
+							null,
+							null,
+							true,
+							null,
+							null
+						)
 					)
-				);
+					.catch(e => {
+						return resolve({
+							result: true,
+							value: `failed to send message / ${e}`
+						});
+					});
 
 				return resolve({
 					result: true,

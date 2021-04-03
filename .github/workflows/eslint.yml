@@ -1,14 +1,18 @@
-name: ESLint
+name: nodejs
 
 on:
   [ push, pull_request ]
 
 jobs:
-  build:
+  node_test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install modules
-      run: yarn
-    - name: run ESLint
-      run: eslint . --ext .js,.jsx,.ts,.tsx
+      - uses: actions/checkout@v2
+      - name: setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+          check-latest: true
+      - run: npm install
+      - run: npm ci
+      - run: npm lint

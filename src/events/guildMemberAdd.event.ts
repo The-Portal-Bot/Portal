@@ -28,7 +28,9 @@ module.exports = async (
 													return reject(`failed to send join message / ${e}`);
 												});
 										}
-										catch (e) { }
+										catch (e) {
+											console.error(e);
+										}
 									}
 								}
 

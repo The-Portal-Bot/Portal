@@ -7,7 +7,7 @@ import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	// message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		// if (args.length < 3) {
@@ -39,6 +39,7 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 				console.log('response :>> ', response);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
 				console.log('json :>> ', json);
 

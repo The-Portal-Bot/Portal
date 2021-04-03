@@ -58,7 +58,7 @@ function status_aliases(
 	});
 
 	return new_status;
-};
+}
 
 export function get_status_list(
 	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl
@@ -93,4 +93,4 @@ export function get_status_list(
 	}
 
 	return array_of_statuses;
-};
+}

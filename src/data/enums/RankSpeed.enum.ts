@@ -3,7 +3,7 @@ export enum RankSpeedEnum {
 	slow,
 	default,
 	fast
-};
+}
 
 export const RankSpeedList = [
 	'none',

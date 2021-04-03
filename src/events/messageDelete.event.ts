@@ -21,7 +21,7 @@ module.exports = async (
 							.find(channel => channel.id === guild_object.music_data.channel_id);
 
 						if (music_channel) {
-							create_music_message(<TextChannel>music_channel, guild_object)
+							create_music_message(music_channel, guild_object)
 								.then(() => {
 									if (guild_object.music_data.message_lyrics_id) {
 										if (music_channel) {
@@ -97,6 +97,9 @@ module.exports = async (
 						});
 					}
 
+				})
+				.catch(e => {
+					return reject(`failed to fetch guild / ${e}`);
 				});
 		} else {
 			return reject(`message's guild could not be fetched`);

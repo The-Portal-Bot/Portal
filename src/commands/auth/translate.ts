@@ -4,9 +4,9 @@ import { message_help } from '../../libraries/help.library';
 import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
-const translate = require('translate')
-translate.engine = config.api_keys.translate.engine;
-translate.key = config.api_keys.translate.key;
+// const translate = require('translate')
+// translate.engine = config.api_keys.translate.engine;
+// translate.key = config.api_keys.translate.key;
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -34,33 +34,33 @@ module.exports = async (
 
 		const language_duplet = language_options.split(',');
 		if (language_duplet.length === 2) {
-			translate(string_to_tranlate, { from: language_duplet[0], to: language_duplet[1] })
-				.then((response: string) => {
-					return resolve({
-						result: true,
-						value: response
-					});
-				})
-				.catch((error: any) => {
-					return resolve({
-						result: false,
-						value: message_help('commands', 'translate', `server responded with error: ${error}`)
-					});
-				});
+			// translate(string_to_tranlate, { from: language_duplet[0], to: language_duplet[1] })
+			// 	.then((response: string) => {
+			// 		return resolve({
+			// 			result: true,
+			// 			value: response
+			// 		});
+			// 	})
+			// 	.catch((error: any) => {
+			// 		return resolve({
+			// 			result: false,
+			// 			value: message_help('commands', 'translate', `server responded with error: ${error}`)
+			// 		});
+			// 	});
 		} else if (language_duplet.length === 1) {
-			translate(string_to_tranlate, { to: language_duplet[0] })
-				.then((response: string) => {
-					return resolve({
-						result: true,
-						value: response
-					});
-				})
-				.catch((error: any) => {
-					return resolve({
-						result: false,
-						value: message_help('commands', 'translate', `server responded with error: ${error}`)
-					});
-				});
+			// translate(string_to_tranlate, { to: language_duplet[0] })
+			// 	.then((response: string) => {
+			// 		return resolve({
+			// 			result: true,
+			// 			value: response
+			// 		});
+			// 	})
+			// 	.catch((error: any) => {
+			// 		return resolve({
+			// 			result: false,
+			// 			value: message_help('commands', 'translate', `server responded with error: ${error}`)
+			// 		});
+			// 	});
 		} else {
 			return resolve({
 				result: false,

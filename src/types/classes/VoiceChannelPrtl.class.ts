@@ -29,7 +29,7 @@ export class VoiceChannelPrtl {
 		this.ann_announce = ann_announce;
 		this.ann_user = ann_user;
 	}
-};
+}
 
 export interface IVoiceChannelPrtl extends Document {
 	id: string;

@@ -27,7 +27,7 @@ export class GiveRolePrtl {
 		this.message_id = message_id;
 		this.role_emote_map = role_emote_map;
 	}
-};
+}
 
 export interface IGiveRolePrtl extends Document {
 	message_id: string;

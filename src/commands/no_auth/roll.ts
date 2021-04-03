@@ -1,11 +1,10 @@
 import { Message } from "discord.js";
 import Roll from 'roll';
 import { create_rich_embed, max_string, message_help } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.length > 0) {
@@ -44,7 +43,13 @@ module.exports = async (
 							icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif'
 						}
 					)
-				);
+				)
+					.catch(e => {
+						return resolve({
+							result: true,
+							value: `failed to send message / ${e}`
+						});
+					});
 
 				return resolve({
 					result: true,

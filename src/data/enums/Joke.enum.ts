@@ -5,7 +5,7 @@ export enum JokeEnum {
     animal,
     job,
     knock
-};
+}
 
 export const JokeList = [
     'blonde',

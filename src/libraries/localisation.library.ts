@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Client, Message, User } from "discord.js";
 import { LocaleEnum } from "../data/enums/Locales.enum";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
@@ -175,7 +180,7 @@ export function client_talk(
 	}
 
 	return false;
-};
+}
 
 export function get_function(
 	output: string, locale: number, context: string
@@ -216,7 +221,7 @@ export function get_function(
 	}
 
 	return func;
-};
+}
 
 export function client_write(
 	message: Message, guild_object: GuildPrtl, context: string
@@ -251,7 +256,7 @@ export function client_write(
 	} else {
 		return portal.find(p => p.name === context)?.lang.en();
 	}
-};
+}
 
 export function client_log(
 	message: Message | null, guild_list: GuildPrtl[], context: string, args: any
@@ -284,5 +289,4 @@ export function client_log(
 	);
 
 	return console_text.find(c => c.name === context)?.lang.en(args);
-};
-
+}

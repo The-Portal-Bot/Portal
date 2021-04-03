@@ -19,8 +19,20 @@ function create_role_message(
 			.send(role_message_emb)
 			.then(sent_message => {
 				for (let i = 0; i < role_map.length; i++) {
-					sent_message.react(role_map[i].give);
-					sent_message.react(role_map[i].strip);
+					sent_message.react(role_map[i].give)
+						.catch((e: any) => {
+							return resolve({
+								result: false,
+								value: `failed to react to message / ${e}`
+							});
+						});
+					sent_message.react(role_map[i].strip)
+						.catch((e: any) => {
+							return resolve({
+								result: false,
+								value: `failed to react to message / ${e}`
+							});
+						});
 				}
 
 				insert_role_assigner(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
@@ -47,7 +59,7 @@ function create_role_message(
 				})
 			});
 	});
-};
+}
 
 function multiple_same_emote(emote_map: GiveRole[]) {
 	for (let i = 0; i < emote_map.length; i++) {
@@ -68,7 +80,7 @@ function multiple_same_emote(emote_map: GiveRole[]) {
 	}
 
 	return false;
-};
+}
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -87,7 +99,9 @@ module.exports = async (
 			});
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const role_map_json = get_json(args.join(' '));
+
 		if (!role_map_json) {
 			return resolve({
 				result: false,
@@ -126,9 +140,9 @@ module.exports = async (
 		role_emb_display_give.push({ emote: '', role: 'React with emote to get correlating role', inline: false, });
 		role_emb_display_strip.push({ emote: '', role: 'React with emote to strip correlating role', inline: false, });
 
-		let return_value: string = '';
+		let return_value = '';
 		// give roles
-		const failed = role_map.some((r, index) => {
+		const failed = role_map.some(r => {
 			if (message.guild) {
 				const role_fetched = get_role(message.guild, r.role_id);
 				if (!role_fetched) {
@@ -172,4 +186,4 @@ module.exports = async (
 				})
 			});
 	});
-};
+}

@@ -1,21 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { create_rich_embed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
-export const pipe_prefix: string = '|';
+const portal_url = 'https://portal-bot.xyz/docs';
+const interpreter_url = '/interpreter/objects';
+export const pipe_prefix = '|';
+
 const pipes: InterfaceBlueprint[] = [
 	{
 		name: 'acronym',
-		description: 'returns the acronym of the input',
-		super_description: '**acronym**, returns the acronym of the input',
-		example: '(variable, string)|acronym',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'make acronym',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',')
 					: str;
 		},
@@ -24,14 +25,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'vowels',
-		description: 'returns the vowels of the input',
-		super_description: '**vowels**, returns the vowels of the input',
-		example: '(variable, string)|vowels',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'keep only vowels',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_vowels(str).join('')
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => get_vowels(s).join('')).join(',')
 					: str;
 		},
@@ -40,14 +38,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'consonants',
-		description: 'returns the consonants of the input',
-		super_description: '**consonants**, returns the first character of the input',
-		example: '(variable, string)|consonants',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'keep only consonants',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_constants(str).join('')
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => get_constants(s).join('')).join(',')
 					: str;
 		},
@@ -56,14 +51,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'camelCase',
-		description: 'returns an camelCase of the input',
-		super_description: '**camelCase**, makes the first character upper-case',
-		example: '(variable, string)|camelCase',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'make to camel Case',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.camelCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.camelCase(s)).join(',')
 					: str;
 		},
@@ -72,14 +64,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'capitalise',
-		description: 'returns an capitalise of the input',
-		super_description: '**capitalise**, makes the first character upper-case',
-		example: '(variable, string)|capitalise',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'make first characters upper case',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.capitalize(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.capitalize(s)).join(',')
 					: str;
 		},
@@ -88,14 +77,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'decapitalise',
-		description: 'returns an decapitalise of the input',
-		super_description: '**decapitalise**, makes the first character lower-case',
-		example: '(variable, string)|decapitalise',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'make first characters lower case',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.decapitalize(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.decapitalize(s)).join(',')
 					: str;
 		},
@@ -104,14 +90,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'lowerCase',
-		description: 'returns an lowerCase of the input',
-		super_description: '**lowerCase**, makes all characters lower-case',
-		example: '(variable, string)|lowerCase',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'make all characters lower case',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.lowerCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.lowerCase(s)).join(',')
 					: str;
 		},
@@ -120,14 +103,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'upperCase',
-		description: 'returns an upperCase of the input',
-		super_description: '**upperCase**, makes all characters upper-case',
-		example: '(variable, string)|upperCase',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'make all characters upper case',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.upperCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.upperCase(s)).join(',')
 					: str;
 		},
@@ -136,15 +116,12 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'populous_count',
-		description: 'returns the count of most common element in list',
-		super_description: '**populous_count**, returns the count of most common element in list',
-		example: '(array)|populous_count',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'frequency of most popular item',
+		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
-				? str
-				:  (typeof str === 'object') 
-					? most_frequent(str, true)
+				? 1
+				: (typeof str === 'object')
+					? <number>most_frequent(str, true)
 					: str;
 		},
 		set: null,
@@ -152,15 +129,12 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'populous',
-		description: 'returns the name of the most common element in list',
-		super_description: '**populous**, returns the name of the most common element in list',
-		example: '(array)|populous',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'most popular item',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? str
-				:  (typeof str === 'object') 
-					? most_frequent(str, false)
+				: (typeof str === 'object')
+					? <string>most_frequent(str, false)
 					: str;
 		},
 		set: null,
@@ -168,14 +142,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'snakeCase',
-		description: 'returns an snakeCase of the input',
-		super_description: '**snakeCase**, connects all words with \'_\', like a snake',
-		example: '(variable, string)|snakeCase',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'replace space with _',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.snakeCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.snakeCase(s)).join(',')
 					: str;
 		},
@@ -184,14 +155,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'souvlakiCase',
-		description: 'returns an souvlakiCase of the input',
-		super_description: '**souvlakiCase**, connects all words with \'-\', like a greek souvlaki',
-		example: '(variable, string)|souvlakiCase',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'replace space with -',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.kebabCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.kebabCase(s)).join(',')
 					: str;
 		},
@@ -200,14 +168,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'words',
-		description: 'returns the number of words, of the input',
-		super_description: '**words**, returns the number of words, of the input',
-		example: '(array)|words',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'get the number of words',
+		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? voca.words(str).length
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? voca.words(str.join(' ')).length
 					: str;
 		},
@@ -216,14 +181,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'titleCase',
-		description: 'returns an titleCase of the input',
-		super_description: '**titleCase**, makes every words first character upper-case',
-		example: '(variable, string)|titleCase',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'make the first letter upper case and rest lower',
+		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.titleCase(str)
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.map(s => voca.titleCase(s)).join(',')
 					: str;
 		},
@@ -232,14 +194,11 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'length',
-		description: 'returns the length of the input',
-		super_description: '**length**, returns the length in number of input',
-		example: '(variable, string)|length',
-		args: 'none',
-		get: (str: string | string[]) => {
+		hover: 'get length',
+		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? str.length
-				:  (typeof str === 'object') 
+				: (typeof str === 'object')
 					? str.join(',').length
 					: str;
 		},
@@ -259,7 +218,7 @@ export function is_pipe(candidate: string): string {
 	}
 
 	return '';
-};
+}
 
 export function get_pipe_guide(): MessageEmbed {
 	const pipe_array: Field[] = [
@@ -292,7 +251,8 @@ export function get_pipe_guide(): MessageEmbed {
 
 	return create_rich_embed(
 		'Pipe Guide',
-		'go to https://portal-bot.xyz/docs/interpreter/objects/pipes/description\n\n' +
+		'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
+		'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
 		'How to use pipes with the Text Interpreter',
 		'#6EEB83',
 		pipe_array,
@@ -307,27 +267,32 @@ export function get_pipe_guide(): MessageEmbed {
 export function get_pipe_help(): MessageEmbed[] {
 	const pipe_array: Field[][] = [];
 
-	for (let l = 0; l <= pipes.length / 24; l++) {
+	for (let l = 0; l <= pipes.length / 25; l++) {
 		pipe_array[l] = []
 		for (let i = (24 * l); i < pipes.length && i < 24 * (l + 1); i++) {
 			pipe_array[l].push({
 				emote: `${i + 1}. ${pipes[i].name}`,
-				role: '**desc**: *' + pipes[i].description + '*' +
-					'\n**args**: *' + pipes[i].args + '*',
+				role: `[hover or click](${portal_url}${interpreter_url}` +
+					`/pipes/detailed/${(pipes[i].name)} "${(pipes[i].hover)}")`,
 				inline: true
 			});
 		}
 	}
 
-	return pipe_array.map((cmmd, index) => {
+	return pipe_array.map((cmmd, index): MessageEmbed => {
 		if (index === 0) {
 			return create_rich_embed(
 				'Pipes',
-				'go to https://portal-bot.xyz/docs/interpreter/objects/pipes/description\n\n' +
-				'Prefix: ' + pipe_prefix + '\n' +
-				'Mini functions you can pass text or Variables to manipulate their outcome\n' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
-				'#6EEB83', pipe_array[0], null, null, null, null, null
+				'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
+				'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
+				'Prefix: ' + pipe_prefix,
+				'#6EEB83',
+				pipe_array[0],
+				null,
+				null,
+				null,
+				null,
+				null
 			);
 		} else {
 			return create_rich_embed(
@@ -343,22 +308,22 @@ export function get_pipe_help(): MessageEmbed[] {
 			);
 		}
 	});
-};
+}
 
 export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < pipes.length; i++) {
-		const pipe = pipes[i];
-		if (pipe.name === candidate) {
+		if (pipes[i].name === candidate) {
 			return create_rich_embed(
-				pipe.name,
-				'Type: Pipe' +
-				'\nPrefix: ' + pipe_prefix + '\n' +
-				'argument preceded by **!** is *mandatory*, **@** is *optional*\n',
+				pipes[i].name,
+				null,
 				'#6EEB83',
 				[
-					{ emote: 'Description', role: '*' + pipe.super_description + '*', inline: false },
-					{ emote: 'Arguments', role: '*' + pipe.args + '*', inline: false },
-					{ emote: 'Example', role: '*' + pipe.example + '*', inline: false }
+					{ emote: `Type`, role: `Pipe`, inline: true },
+					{ emote: `Prefix`, role: `${pipe_prefix}`, inline: true },
+					{
+						emote: `Description`, role: `[hover or click](${portal_url}${interpreter_url}` +
+							`/pipes/detailed/${candidate} "${(pipes[i].hover)}")`, inline: true
+					}
 				],
 				null,
 				null,
@@ -370,29 +335,30 @@ export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 	}
 
 	return false;
-};
+}
 
-export function get_pipe(str: string | string[], pipe: string): any {
+export function get_pipe(str: string | string[], pipe: string): string | number {
 	for (let l = 0; l < pipes.length; l++) {
 		if (pipe === pipes[l].name) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
 			return pipes[l].get(str);
 		}
 	}
 
 	return -1;
-};
+}
 
 function most_frequent(array: string[], return_number: boolean): string | number {
 	if (array.length == 0) {
 		return 'no statuses';
 	}
 
-	let modeMap: any = {};
+	const modeMap: any = {};
 	let maxEl: string = array[0]
-	let maxCount: number = 1;
+	let maxCount = 1;
 
 	for (let i = 0; i < array.length; i++) {
-		let el = array[i];
+		const el = array[i];
 
 		if (modeMap[el] == null) {
 			modeMap[el] = 1;
@@ -402,6 +368,7 @@ function most_frequent(array: string[], return_number: boolean): string | number
 
 		if (modeMap[el] > maxCount) {
 			maxEl = el;
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			maxCount = modeMap[el];
 		}
 	}

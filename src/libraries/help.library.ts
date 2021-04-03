@@ -39,7 +39,7 @@ export async function ask_for_approval(
 				const collector = message.channel
 					.createMessageCollector(filter, { time: 10000 });
 
-				collector.on('collect', m => {
+				collector.on('collect', (m: Message) => {
 					if (m.content === 'yes') {
 						accepted = true;
 						collector.stop();
@@ -54,12 +54,17 @@ export async function ask_for_approval(
 						if (reply_message.deletable) {
 							reply_message
 								.delete()
-								.catch();
+								.catch((e: any) => {
+									return reject(e);
+								});
 						}
 					}
 
 					if (question_msg.deletable) {
-						question_msg.delete();
+						question_msg.delete()
+							.catch((e: any) => {
+								return reject(`failed to delete messages / ${e}`);
+							});
 					}
 
 					return resolve(accepted);
@@ -69,22 +74,24 @@ export async function ask_for_approval(
 				return reject(e);
 			});
 	});
-};
+}
 
 export function get_json(
 	str: string
-): any | null {
+): any {
 	let data = null;
 
 	try {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		data = JSON.parse(str);
 	}
 	catch (error) {
 		return null;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return data;
-};
+}
 
 export function max_string(
 	abstract: string, max: number
@@ -95,10 +102,12 @@ export function max_string(
 }
 
 export function get_key_from_enum(
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	value: string, enumeration: any
 ): string | number | undefined {
-	for (let e in enumeration) {
+	for (const e in enumeration) {
 		if (e === value) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
 			return enumeration[e];
 		}
 	}
@@ -132,16 +141,38 @@ export function create_music_message(
 		channel
 			.send(music_message_emb)
 			.then(sent_message => {
-				sent_message.react('▶️');
-				sent_message.react('⏸');
-				sent_message.react('⏭');
-				// sent_message.react('➖');
-				// sent_message.react('➕');
-				sent_message.react('📌');
-				sent_message.react('📄');
-				sent_message.react('⬇️');
-				sent_message.react('🧹');
-				sent_message.react('🚪');
+				sent_message.react('▶️')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
+				sent_message.react('⏸')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
+				sent_message.react('⏭')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
+				sent_message.react('📌')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
+				sent_message.react('📄')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
+				sent_message.react('⬇️')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
+				sent_message.react('🧹')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
+				sent_message.react('🚪')
+					.catch((e: any) => {
+						return reject(`failed to set remote / ${e}`);
+					});
 
 				const music_data = new MusicData(
 					channel.id,
@@ -153,14 +184,17 @@ export function create_music_message(
 					false
 				);
 
-				set_music_data(guild_object.id, music_data);
+				set_music_data(guild_object.id, music_data)
+					.catch((e: any) => {
+						return reject(`failed to set music data / ${e}`);
+					});
 				return resolve(sent_message.id);
 			})
 			.catch(() => {
 				return reject('failed to send message to channel');
 			});
 	});
-};
+}
 
 export function create_lyrics_message(
 	channel: TextChannel, guild_object: GuildPrtl, message_id: string
@@ -189,14 +223,18 @@ export function create_lyrics_message(
 					false
 				);
 
-				set_music_data(guild_object.id, music_data);
+				set_music_data(guild_object.id, music_data)
+					.catch((e: any) => {
+						return reject(`failed to set music data / ${e}`);
+					});
+
 				return resolve(sent_message_lyrics.id);
 			})
-			.catch(() => {
-				return reject('failed to send message to channel');
+			.catch(e => {
+				return reject(`failed to send message to channel / ${e}`);
 			});
 	});
-};
+}
 
 export function update_music_message(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
@@ -274,7 +312,7 @@ export function update_music_message(
 			}
 		}
 	});
-};
+}
 
 export function update_music_lyrics_message(
 	guild: Guild, guild_object: GuildPrtl, lyrics: string, url?: string
@@ -324,7 +362,7 @@ export function update_music_lyrics_message(
 			}
 		}
 	});
-};
+}
 
 export async function join_by_reaction(
 	client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
@@ -382,7 +420,7 @@ export async function join_by_reaction(
 }
 
 export async function join_user_voice(
-	client: Client, message: Message, guild_object: GuildPrtl, join: boolean = false
+	client: Client, message: Message, guild_object: GuildPrtl, join = false
 ): Promise<VoiceConnection> {
 	return new Promise((resolve, reject) => {
 		if (!message.member) {
@@ -439,7 +477,7 @@ export async function join_user_voice(
 				});
 		}
 	});
-};
+}
 
 export function create_rich_embed(
 	title: string | null | undefined,
@@ -464,6 +502,7 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
+	if (footer) rich_message.setFooter(footer);
 	if (from_bot) rich_message.setFooter(
 		footer
 			? footer
@@ -490,13 +529,13 @@ export function create_rich_embed(
 		});
 	}
 	if (member && !author) {
-		const url = !!member.user.avatarURL()
+		const url = member.user.avatarURL()
 			? member.user.avatarURL()
 			: undefined;
 
 		rich_message.setAuthor(
 			member.displayName,
-			!!url
+			url
 				? url
 				: undefined,
 			undefined
@@ -504,13 +543,13 @@ export function create_rich_embed(
 	}
 
 	return rich_message;
-};
+}
 
 export function is_authorised(
 	member: GuildMember
 ): boolean {
 	const administrator: PermissionString = 'ADMINISTRATOR';
-	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true };
+	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true }
 
 	if (member.hasPermission(administrator, options)) {
 		return true;
@@ -522,7 +561,7 @@ export function is_authorised(
 	}
 
 	return false;
-};
+}
 
 export function is_dj(
 	member: GuildMember
@@ -533,14 +572,14 @@ export function is_dj(
 	}
 
 	return false;
-};
+}
 
 export function is_ignored(
 	member: GuildMember
 ): boolean {
 	return member.roles.cache.some(r =>
 		r.name.toLowerCase() === 'p.ignore');
-};
+}
 
 export function is_mod(
 	member: GuildMember
@@ -551,10 +590,10 @@ export function is_mod(
 	}
 
 	return false;
-};
+}
 
 export function message_help(
-	type: string, argument: string, info: string = ''
+	type: string, argument: string, info = ''
 ): string {
 	if (info !== '') info += '\n';
 	return `${info} get help by typing \`./help ${argument}\`\n` +
@@ -565,10 +604,10 @@ export function message_reply(
 	status: boolean,
 	message: Message,
 	reply_string: string,
-	delete_source: boolean = false,
-	delete_reply: boolean = false,
-	emote_pass: string = '✔️',
-	emote_fail: string = '❌'
+	delete_source = false,
+	delete_reply = false,
+	emote_pass = '✔️',
+	emote_fail = '❌'
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
 		if (!message) {
@@ -613,7 +652,7 @@ export function message_reply(
 				});
 		}
 	});
-};
+}
 
 export function is_url(
 	potential_url: string
@@ -626,15 +665,15 @@ export function is_url(
 		'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
 
 	return pattern.test(potential_url);
-};
+}
 
 export function pad(
 	num: number
 ): string {
 	return num.toString().length >= 2
-		? '' + num
-		: '0' + num;
-};
+		? `${num}`
+		: `0${num}`;
+}
 
 export function time_elapsed(
 	timestamp: Date | number, timeout: number
@@ -652,14 +691,13 @@ export function time_elapsed(
 	const remaining_min = el.minutes();
 	const remaining_sec = el.seconds();
 
-	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec };
-};
+	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec }
+}
 
 // must get updated
 export function remove_deleted_channels(
 	guild: Guild
 ): Promise<boolean> {
-	let removed_channel = false;
 	return new Promise((resolve) => {
 		fetch_guild(guild.id)
 			.then(guild_object => {
@@ -667,17 +705,15 @@ export function remove_deleted_channels(
 					guild_object.portal_list.forEach((p, index_p) => {
 						if (!guild.channels.cache.some(c => c.id === p.id)) {
 							guild_object.portal_list.splice(index_p, 1);
-							removed_channel = true;
 						}
 						p.voice_list.forEach((v, index_v) => {
 							if (!guild.channels.cache.some(c => c.id === v.id)) {
 								p.voice_list.splice(index_v, 1);
-								removed_channel = true;
 							}
 						});
 					});
 
-					removed_channel = guild_object.url_list.some((u_id, index_u) => {
+					guild_object.url_list.some((u_id, index_u) => {
 						if (!guild.channels.cache.some(c => c.id === u_id)) {
 							guild_object.url_list.splice(index_u, 1);
 							return true;
@@ -692,14 +728,13 @@ export function remove_deleted_channels(
 								let found = false;
 								c.messages
 									.fetch(r.message_id)
-									.then((message: Message) => {
+									.then(() => {
 										// clear from emotes leave only those from portal
 										found = true;
 									})
 									.catch(() => {
 										guild_object.role_list.splice(index_r, 1);
 									});
-								removed_channel = found;
 
 								return found;
 							}
@@ -711,19 +746,16 @@ export function remove_deleted_channels(
 					guild_object.member_list.forEach((m, index_m) => {
 						if (!guild.members.cache.some(m => m.id === m.id)) {
 							guild_object.url_list.splice(index_m, 1);
-							removed_channel = true;
 						}
 					});
 
 					if (!guild.channels.cache.some(c => c.id === guild_object.music_data.channel_id)) {
-						removed_channel = true;
 						guild_object.music_data.channel_id = undefined;
 						guild_object.music_data.message_id = undefined;
 						guild_object.music_data.votes = undefined;
 					}
 
 					if (!guild.channels.cache.some(c => c.id === guild_object.announcement)) {
-						removed_channel = true;
 						guild_object.announcement = null;
 					}
 
@@ -732,6 +764,9 @@ export function remove_deleted_channels(
 
 				return resolve(false);
 			})
+			.catch(() => {
+				return resolve(false);
+			});
 	});
 }
 
@@ -773,6 +808,8 @@ export function remove_empty_voice_channels(
 				}
 				return resolve(false);
 			})
-			.catch();
+			.catch(() => {
+				return resolve(false);
+			});
 	});
-};
+}

@@ -26,7 +26,7 @@ export class MemberPrtl {
 		this.timestamp = timestamp;
 		this.regex = regex;
 	}
-};
+}
 
 export interface IMemberPrtl extends Document {
 	id: string;

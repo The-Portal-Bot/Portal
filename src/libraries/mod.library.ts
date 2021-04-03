@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ProfaneWords } from '../data/lists/profane_words.static';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { Language } from '../types/classes/TypesPrtl.interface';
@@ -15,7 +18,7 @@ export function isProfane(
 		return [];
 	}
 
-	const gr = profane_words.gr.filter((word: string) => {
+	const gr: string[] = profane_words.gr.filter((word: string) => {
 		return canditate.toLowerCase() === word.toLowerCase();
 	});
 
@@ -40,4 +43,4 @@ export function isProfane(
 	return (gr.length > 0 || false) || (en.length > 0 || false) || (de.length > 0 || false)
 		? gr.concat(en).concat(de)
 		: [];
-};
+}
