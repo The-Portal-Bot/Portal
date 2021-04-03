@@ -28,7 +28,7 @@ module.exports = async (
 								: 'failed to remove announcement channel'
 						});
 					})
-					.catch(e => {
+					.catch(() => {
 						return resolve({
 							result: false,
 							value: 'failed to remove announcement channel'

@@ -1,7 +1,5 @@
 import { Message } from 'discord.js';
-import config from '../../config.json';
 import { message_help } from '../../libraries/help.library';
-import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 // const translate = require('translate')
@@ -9,7 +7,7 @@ import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 // translate.key = config.api_keys.translate.key;
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		return resolve({

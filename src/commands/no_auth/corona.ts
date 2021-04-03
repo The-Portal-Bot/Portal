@@ -9,7 +9,6 @@ import config from '../../config.json';
 import { CountryCodes } from '../../data/lists/country_codes_iso.static';
 import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 const country_codes: { name: string; code: string; }[] = CountryCodes;
@@ -26,7 +25,7 @@ const get_country_code = function (country: string): string | null {
 };
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		let code: string | null = null;

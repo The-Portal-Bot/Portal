@@ -7,7 +7,7 @@ module.exports = async (
 ): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		if (!args.member.user.bot) {
-			insert_member(args.member.id, args.member.guild.id)
+			insert_member(args.member.guild.id, args.member.id)
 				.then(r => {
 					if (!r) {
 						return reject(`failed to add member ${args.member.id} to ${args.member.guild.id}`);

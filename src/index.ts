@@ -13,7 +13,7 @@ import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { isProfane } from "./libraries/mod.library";
-import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
+import { fetch_guild_predata, fetch_guild_rest, insert_member, member_exists, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
@@ -168,11 +168,26 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
 
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
-	if (!message) return;
-	if (!message.member) return;
-	if (!message.guild) return;
-	if (message.channel.type === 'dm') return; // ignore DMs
-	if (message.author.bot) return; // ignore bots 'botception'
+	if (!message || !message.member || !message.guild) return;
+	if (message.channel.type === 'dm' || message.author.bot) return;
+
+	member_exists(message.guild.id, message.author.id)
+		.then(exists => {
+			if (!exists && message.guild) {
+				insert_member(message.guild.id, message.author.id)
+					.then(() => {
+						if (message.guild) {
+							logger.info(`late-insert ${message.author.id} to ${message.guild.name} [${message.guild.id}]`);
+						}
+					})
+					.catch(e => {
+						logger.error(new Error(`failed to late-insert member / ${e}`));
+					});
+			}
+		})
+		.catch(e => {
+			logger.error(new Error(`failed to add member / ${e}`));
+		});
 
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {

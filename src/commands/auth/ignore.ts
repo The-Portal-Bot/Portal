@@ -27,7 +27,7 @@ module.exports = async (
 								: 'failed to remove ignore channel'
 						});
 					})
-					.catch(e => {
+					.catch(() => {
 						return resolve({
 							result: false,
 							value: 'failed to remove ignore channel'

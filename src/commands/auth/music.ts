@@ -21,13 +21,13 @@ module.exports = async (
 			if (is_music_channel(message.channel.id, guild_object)) {
 				const music_data = new MusicData('null', 'null', 'null', [], false);
 				set_music_data(guild_object.id, music_data)
-					.then(r => {
+					.then(() => {
 						return resolve({
 							result: true,
 							value: 'successfully removed music channel'
 						});
 					})
-					.catch(e => {
+					.catch(() => {
 						return resolve({
 							result: false,
 							value: 'failed to remove music channel'
