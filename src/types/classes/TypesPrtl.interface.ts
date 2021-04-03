@@ -92,21 +92,10 @@ export interface TimeRemaining {
 	remaining_sec: number;
 }
 
-export class InterfaceBlueprint {
-	public name = '';
-	public get!: any;
-	public set!: any;
-	public auth!: number;
-
-	constructor(
-		name: string,
-		auth: number,
-		get: any,
-		set: any
-	) {
-		this.name = name;
-		this.auth = auth;
-		this.get = get;
-		this.set = set;
-	}
+export interface InterfaceBlueprint {
+	name: string;
+	hover: string;
+	get: any;
+	set: any;
+	auth: number;
 }

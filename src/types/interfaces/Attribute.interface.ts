@@ -18,6 +18,7 @@ export const attribute_prefix = '&';
 const attributes: InterfaceBlueprint[] = [
 	{
 		name: 'p.ann_announce',
+		hover: 'if voice channels spawned by portal channel will make announcements',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -54,8 +55,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -71,8 +72,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -93,6 +94,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.ann_announce',
+		hover: 'if voice channel will make announcements',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -117,8 +119,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -134,8 +136,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -156,6 +158,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.no_bots',
+		hover: 'if bots can hjoin voice channels spawned by portal channel',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -192,8 +195,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -209,8 +212,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -231,6 +234,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.no_bots',
+		hover: 'if bots can join voice channel',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -255,8 +259,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -272,8 +276,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -294,6 +298,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.render',
+		hover: 'if voice channels spawned by portal channel will use the text interpreter',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -330,8 +335,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -347,8 +352,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -369,6 +374,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.render',
+		hover: 'if voice channel will use the text interpreter',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -393,8 +399,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -410,8 +416,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -432,6 +438,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.ann_user',
+		hover: 'if voice channels spawned by portal channel will make join/leave announcements',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -468,8 +475,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -485,8 +492,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -507,6 +514,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.ann_user',
+		hover: 'if voice channel will make join/leave announcements',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -531,8 +539,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -548,8 +556,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -570,6 +578,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.bitrate',
+		hover: 'voice channels bitrate',
 		get: (
 			voice_channel: VoiceChannel
 		): number => {
@@ -603,8 +612,8 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r.bitrate === new_bitrate,
 							value: r.bitrate === new_bitrate
-								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to ${value} (is ${r.bitrate})`
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`
 						});
 					})
 					.catch(e => {
@@ -619,6 +628,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.prefix',
+		hover: 'Portals prefix',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -638,8 +648,8 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r,
 							value: r
-								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 						});
 					})
 					.catch(e => {
@@ -654,6 +664,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.rank_speed',
+		hover: 'leveling speed of members',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -676,8 +687,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -700,6 +711,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.profanity_level',
+		hover: 'how harsh Portal will be flagging members for use of profanities',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -722,8 +734,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -746,6 +758,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.initial_role',
+		hover: 'role given to new members',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -779,15 +792,14 @@ const attributes: InterfaceBlueprint[] = [
 				}
 
 				if (!message.mentions || !message.mentions.roles || message.mentions.roles.array().length === 0) {
-					console.log(`${value} === 'null' :>> `, value === 'null');
 					if (value === 'null') {
 						update_guild(guild_object.id, attr, 'null')
 							.then(r => {
 								return resolve({
 									result: r,
 									value: r
-										? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 								});
 							})
 							.catch(e => {
@@ -811,8 +823,8 @@ const attributes: InterfaceBlueprint[] = [
 								return resolve({
 									result: r,
 									value: r
-										? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 								});
 							})
 							.catch(e => {
@@ -834,6 +846,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'g.locale',
+		hover: 'Portals locale',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
@@ -856,8 +869,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -879,6 +892,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.locale',
+		hover: 'portal channels locale',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -917,8 +931,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -940,6 +954,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.locale',
+		hover: 'voice channels locale',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -966,8 +981,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -990,6 +1005,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.position',
+		hover: 'voice channels position in Discord',
 		get: (
 			voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -1020,8 +1036,8 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r.position === Number(value),
 							value: r.position === Number(value)
-								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to ${value} (is ${r.position})`
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to\`${value}\` to ${value} (is ${r.position})`
 						});
 					})
 					.catch(e => {
@@ -1036,6 +1052,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.regex_overwrite',
+		hover: 'whether voice channels spawned from portal channel will let users use their own regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1072,8 +1089,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -1089,8 +1106,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -1111,6 +1128,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.regex',
+		hover: 'portal channels regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1146,8 +1164,8 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r,
 							value: r
-								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 						});
 					})
 					.catch(e => {
@@ -1162,6 +1180,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.v.regex',
+		hover: 'voice channels spawned by portal channel regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1197,8 +1216,8 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r,
 							value: r
-								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 						});
 					})
 					.catch(e => {
@@ -1213,6 +1232,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.regex',
+		hover: 'voice channels regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -1236,8 +1256,8 @@ const attributes: InterfaceBlueprint[] = [
 						return resolve({
 							result: r,
 							value: r
-								? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 						});
 					})
 					.catch(e => {
@@ -1252,6 +1272,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'm.regex',
+		hover: 'members regex',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild,
@@ -1275,8 +1296,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -1297,6 +1318,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'p.user_limit',
+		hover: 'voice channels spawned by portal channel user limit',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
@@ -1341,8 +1363,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r,
 								value: r
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -1363,6 +1385,7 @@ const attributes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'v.user_limit',
+		hover: 'voice channels user limit',
 		get: (
 			voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
@@ -1388,8 +1411,8 @@ const attributes: InterfaceBlueprint[] = [
 							return resolve({
 								result: r.userLimit === new_user_limit,
 								value: r.userLimit === new_user_limit
-									? `attribute ${ctgr.join('.') + '.' + attr} set to ${value} successfully`
-									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set`
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
 							});
 						})
 						.catch(e => {
@@ -1502,7 +1525,7 @@ export function get_attribute_help(): MessageEmbed[] {
 			attr_array[l]
 				.push({
 					emote: `${i + 1}. ${attributes[i].name}`,
-					role: `[description](${get_link(attributes[i].name)})`,
+					role: `[hover or click](${get_link(attributes[i].name)} "${attributes[i].hover}")`,
 					inline: true
 				});
 		}
@@ -1544,16 +1567,15 @@ export function get_attribute_help_super(
 	candidate: string
 ): MessageEmbed | boolean {
 	for (let i = 0; i < attributes.length; i++) {
-		const attr = attributes[i];
-		if (attr.name === candidate) {
+		if (attributes[i].name === candidate) {
 			return create_rich_embed(
-				attr.name,
+				attributes[i].name,
 				null,
 				'#FF5714',
 				[
 					{ emote: `Type`, role: `Attribute`, inline: true },
 					{ emote: `Prefix`, role: `${attribute_prefix}`, inline: true },
-					{ emote: `Description`, role: `[${candidate} doc](${get_link(candidate)})`, inline: true }
+					{ emote: `Description`, role: `[hover or click](${get_link(candidate)} "${attributes[i].hover}")`, inline: true }
 				],
 				null,
 				null,

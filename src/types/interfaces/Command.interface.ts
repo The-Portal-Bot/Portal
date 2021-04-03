@@ -9,215 +9,238 @@ export const command_prefix = './';
 const commands: InterfaceBlueprint[] = [
 	{
 		name: 'about',
+		hover: 'about Portal',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'announce',
+		hover: 'make an announcement',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'announcement',
+		hover: 'create an announcement channel',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'bet',
+		hover: 'get betting information',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ban',
+		hover: 'ban a member',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'corona',
+		hover: 'get the latest covid19 data',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'crypto',
+		hover: 'get the latest crypto currency data',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'delete',
+		hover: 'bulk delete message',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'focus',
+		hover: 'talk exclusively with a member',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'force',
+		hover: 'force refresh your current channel',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'help',
+		hover: 'get help about Portal',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'join',
+		hover: 'make Portal join your current voice channel',
 		auth: AuthEnum.voice,
 		get: null,
 		set: null
 	},
 	{
 		name: 'joke',
+		hover: 'get a joke',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'kick',
+		hover: 'kick a member',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'leaderboard',
+		hover: 'get current leaderboard',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'leave',
+		hover: 'make Portal leave your current voice channel',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'level',
+		hover: 'get your current level information',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'music',
+		hover: 'create a music channel',
 		auth: AuthEnum.voice,
 		get: null,
 		set: null
 	},
 	{
 		name: 'news',
+		hover: 'get the latest news',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ignore',
+		hover: 'ignore current channel',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ping',
+		hover: 'ping Portal',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'poll',
+		hover: 'create a Poll',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'portal',
+		hover: 'create a portal channel',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ranks',
+		hover: 'get current ranks',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'role_assigner',
+		hover: 'create roll assigning message',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'roll',
+		hover: 'roll a dice',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'run',
-		auth: AuthEnum.admin,
-		get: null,
-		set: null
-	},
-	{
-		name: 'save',
+		hover: 'run text through Text Interpreter',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'set_ranks',
+		hover: 'set new ranks',
 		auth: AuthEnum.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'set',
+		hover: 'update an attribute\'s value',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'state',
+		hover: 'get current state of Portal visualised',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	// {
 	// 	name: 'translate',
-	// 	description: 'returns given text in translated language',
-	// 	super_description: '**translate**, returns given text in translated language, ' +
-	// 		'will always attempt to translate even if language given does not match from argument',
-	// 	example: './translate en,gr | What is the weather like, ./translate gr | What is the weather like',
-	// 	args: '<!from>,<!to> | <!text>, <!to> | <!text>',
+	//  hover: 'hover me | click me',
 	// 	auth: AuthEnum.none,
 	// 	get: null,
 	// 	set: null
 	// },
 	{
 		name: 'url',
+		hover: 'create a url-only channel',
 		auth: AuthEnum.voice,
 		get: null,
 		set: null
 	},
 	{
 		name: 'weather',
+		hover: 'get current weather forcast',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'whoami',
+		hover: 'get current information about you',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
@@ -279,8 +302,8 @@ export function get_command_help(): MessageEmbed[] {
 		for (let i = (24 * l); i < commands.length && i < 24 * (l + 1); i++) {
 			cmmd_array[l].push({
 				emote: `${i + 1}. ${commands[i].name}`,
-				role: `[description](${portal_url}` +
-					`/commands/detailed/${(commands[i].name)})`,
+				role: `[hover or click](${portal_url}` +
+					`/commands/detailed/${(commands[i].name)} "${commands[i].hover}")`,
 				inline: true
 			});
 		}
@@ -319,10 +342,9 @@ export function get_command_help(): MessageEmbed[] {
 
 export function get_command_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < commands.length; i++) {
-		const cmmd = commands[i];
-		if (cmmd.name === candidate) {
+		if (commands[i].name === candidate) {
 			return create_rich_embed(
-				cmmd.name,
+				commands[i].name,
 				null,
 				'#9775A9',
 				[
@@ -330,7 +352,7 @@ export function get_command_help_super(candidate: string): MessageEmbed | boolea
 					{ emote: `Prefix`, role: `${command_prefix}`, inline: true },
 					{
 						emote: `Description`,
-						role: `[${candidate} doc](${portal_url}/commands/detailed/${candidate})`,
+						role: `[hover or click](${portal_url}/commands/detailed/${candidate} "${commands[i].hover}")`,
 						inline: true
 					}
 				],

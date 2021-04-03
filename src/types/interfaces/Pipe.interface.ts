@@ -12,6 +12,7 @@ export const pipe_prefix = '|';
 const pipes: InterfaceBlueprint[] = [
 	{
 		name: 'acronym',
+		hover: 'make acronym',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
@@ -24,6 +25,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'vowels',
+		hover: 'keep only vowels',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_vowels(str).join('')
@@ -36,6 +38,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'consonants',
+		hover: 'keep only consonants',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? get_constants(str).join('')
@@ -48,6 +51,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'camelCase',
+		hover: 'make to camel Case',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.camelCase(str)
@@ -60,6 +64,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'capitalise',
+		hover: 'make first characters upper case',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.capitalize(str)
@@ -72,6 +77,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'decapitalise',
+		hover: 'make first characters lower case',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.decapitalize(str)
@@ -84,6 +90,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'lowerCase',
+		hover: 'make all characters lower case',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.lowerCase(str)
@@ -96,6 +103,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'upperCase',
+		hover: 'make all characters upper case',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.upperCase(str)
@@ -108,6 +116,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'populous_count',
+		hover: 'frequency of most popular item',
 		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? 1
@@ -120,6 +129,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'populous',
+		hover: 'most popular item',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? str
@@ -132,6 +142,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'snakeCase',
+		hover: 'replace space with _',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.snakeCase(str)
@@ -144,6 +155,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'souvlakiCase',
+		hover: 'replace space with -',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.kebabCase(str)
@@ -156,6 +168,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'words',
+		hover: 'get the number of words',
 		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? voca.words(str).length
@@ -168,6 +181,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'titleCase',
+		hover: 'make the first letter upper case and rest lower',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
 				? voca.titleCase(str)
@@ -180,6 +194,7 @@ const pipes: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'length',
+		hover: 'get length',
 		get: (str: string | string[]): number => {
 			return (typeof str === 'string')
 				? str.length
@@ -257,8 +272,8 @@ export function get_pipe_help(): MessageEmbed[] {
 		for (let i = (24 * l); i < pipes.length && i < 24 * (l + 1); i++) {
 			pipe_array[l].push({
 				emote: `${i + 1}. ${pipes[i].name}`,
-				role: `[description](${portal_url}${interpreter_url}` +
-					`/pipes/detailed/${(pipes[i].name)})`,
+				role: `[hover or click](${portal_url}${interpreter_url}` +
+					`/pipes/detailed/${(pipes[i].name)} "${(pipes[i].hover)}")`,
 				inline: true
 			});
 		}
@@ -297,18 +312,17 @@ export function get_pipe_help(): MessageEmbed[] {
 
 export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < pipes.length; i++) {
-		const pipe = pipes[i];
-		if (pipe.name === candidate) {
+		if (pipes[i].name === candidate) {
 			return create_rich_embed(
-				pipe.name,
+				pipes[i].name,
 				null,
 				'#6EEB83',
 				[
 					{ emote: `Type`, role: `Pipe`, inline: true },
 					{ emote: `Prefix`, role: `${pipe_prefix}`, inline: true },
 					{
-						emote: `Description`, role: `[${candidate} doc](${portal_url}${interpreter_url}` +
-							`/pipes/detailed/${candidate})`, inline: true
+						emote: `Description`, role: `[hover or click](${portal_url}${interpreter_url}` +
+							`/pipes/detailed/${candidate} "${(pipes[i].hover)}")`, inline: true
 					}
 				],
 				null,

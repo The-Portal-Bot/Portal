@@ -10,6 +10,7 @@ export const structure_prefix = '{{';
 const structures: InterfaceBlueprint[] = [
 	{
 		name: 'if',
+		hover: 'if statement flow control',
 		get: null,
 		set: null,
 		auth: AuthEnum.none
@@ -81,8 +82,8 @@ export function get_structure_help(): MessageEmbed[] {
 		for (let i = (24 * l); i < structures.length && i < 24 * (l + 1); i++) {
 			strc_array[l].push({
 				emote: `${i + 1}. ${structures[i].name}`,
-				role: `[description](${portal_url}${interpreter_url}` +
-					`/structures/detailed/${(structures[i].name)})`,
+				role: `[hover or click](${portal_url}${interpreter_url}` +
+					`/structures/detailed/${(structures[i].name)} "${(structures[i].hover)}")`,
 				inline: true
 			});
 		}
@@ -121,18 +122,17 @@ export function get_structure_help(): MessageEmbed[] {
 
 export function get_structure_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < structures.length; i++) {
-		const strc = structures[i];
-		if (strc.name === candidate) {
+		if (structures[i].name === candidate) {
 			return create_rich_embed(
-				strc.name,
+				structures[i].name,
 				null,
 				'#EEB902',
 				[
 					{ emote: `Type`, role: `structures`, inline: true },
 					{ emote: `Prefix`, role: `${structure_prefix}`, inline: true },
 					{
-						emote: `Description`, role: `[${candidate} doc](${portal_url}${interpreter_url}` +
-							`/structures/detailed/${candidate})`, inline: true
+						emote: `Description`, role: `[hover or click](${portal_url}${interpreter_url}` +
+							`/structures/detailed/${candidate} "${(structures[i].name)}")`, inline: true
 					}
 				],
 				null,

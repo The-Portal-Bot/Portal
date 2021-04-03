@@ -218,11 +218,11 @@ export async function start(
 						const json = <VideoSearchResult[]>get_json(response.toString());
 
 						if (!json) {
-							return reject('data from source was corrupted');
+							return resolve('data from source was corrupted');
 						}
 
 						if (json.length === 0) {
-							return reject('must give at least one');
+							return resolve('must give at least one');
 						}
 
 						start_playback(
@@ -268,7 +268,7 @@ export async function start(
 				yts({ listId: listId })
 					.then((yts_attempt: PlaylistMetadataResult) => {
 						if (yts_attempt.videos.length <= 0) {
-							return reject(`could not find the playlist on youtube`);
+							return resolve(`could not find the playlist on youtube`);
 						}
 
 						const yt_url = 'https://www.youtube.com/watch';
@@ -378,13 +378,13 @@ export async function start(
 						return reject(`error while searching youtube video / ${e}`);
 					});
 			} else {
-				return reject(`the url is not of a youtube video or playlist`);
+				return resolve(`the url is not of a youtube video or playlist`);
 			}
 		} else {
 			yts(search_term)
 				.then((yts_attempt: SearchResult) => {
 					if (yts_attempt.videos.length <= 0) {
-						return reject(`could not find something matching ${search_term}, on youtube`);
+						return resolve(`could not find something matching ${search_term}, on youtube`);
 					}
 
 					start_playback(
@@ -454,7 +454,7 @@ export async function play(
 										});
 								})
 								.catch(e => {
-									return resolve(`failed to skip video / ${e}`);
+									return reject(`failed to skip video / ${e}`);
 								});
 						});
 
@@ -472,7 +472,7 @@ export async function play(
 			join_by_reaction(client, guild_object, user, false)
 				.then(r => {
 					if (!r) {
-						return reject('could not join voice channel');
+						return resolve('could not join voice channel');
 					}
 
 					const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r);
@@ -502,7 +502,7 @@ export async function play(
 
 							})
 							.catch(e => {
-								return resolve(`failed to skip video / ${e}`);
+								return reject(`failed to skip video / ${e}`);
 							});
 					});
 
@@ -518,7 +518,7 @@ export async function play(
 export async function pause(
 	voice_connection: VoiceConnection | undefined
 ): Promise<string> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
 				if (!voice_connection.dispatcher.paused) {
@@ -531,7 +531,7 @@ export async function pause(
 				return resolve('player is idle');
 			}
 		} else {
-			return reject('Portal is not connected');
+			return resolve('Portal is not connected');
 		}
 	});
 }
@@ -600,7 +600,7 @@ export async function skip(
 										});
 								})
 								.catch(e => {
-									return resolve(`failed to skip video / ${e}`);
+									return reject(`failed to skip video / ${e}`);
 								});
 						})
 
@@ -620,7 +620,7 @@ export async function skip(
 					join_by_reaction(client, guild_object, user, false)
 						.then(r => {
 							if (!r) {
-								return reject('could not join voice channel');
+								return resolve('could not join voice channel');
 							}
 
 							const dispatcher = spawn_dispatcher(next_video, r);
@@ -649,7 +649,7 @@ export async function skip(
 											});
 									})
 									.catch(e => {
-										return resolve(`failed to skip video / ${e}`);
+										return reject(`failed to skip video / ${e}`);
 									});
 							});
 
@@ -669,16 +669,16 @@ export async function skip(
 export async function volume_up(
 	voice_connection: VoiceConnection | undefined
 ): Promise<string> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
 				voice_connection.dispatcher.setVolume(voice_connection.dispatcher.volume + 0.25);
 				return resolve(`volume increased by 25% to ${voice_connection.dispatcher.volume * 100}%`);
 			} else {
-				return reject('player is idle');
+				return resolve('player is idle');
 			}
 		} else {
-			return reject('Portal is not connected');
+			return resolve('Portal is not connected');
 		}
 	});
 }
@@ -686,20 +686,20 @@ export async function volume_up(
 export async function volume_down(
 	voice_connection: VoiceConnection | undefined
 ): Promise<string> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		if (voice_connection) {
 			if (voice_connection.dispatcher) {
 				if (voice_connection.dispatcher.volume !== 0) {
 					voice_connection.dispatcher.setVolume(voice_connection.dispatcher.volume - 0.25);
 					return resolve(`volume decreased by 25% to ${voice_connection.dispatcher.volume * 100}%`);
 				} else {
-					return reject('volume is at 0%');
+					return resolve('volume is at 0%');
 				}
 			} else {
-				return reject('player is idle');
+				return resolve('player is idle');
 			}
 		} else {
-			return reject('Portal is not connected');
+			return resolve('Portal is not connected');
 		}
 	});
 }
@@ -746,11 +746,11 @@ export async function get_lyrics(
 					}
 
 					if (json.meta.status !== 200) {
-						return reject('could not fetch lyrics');
+						return resolve('could not fetch lyrics');
 					}
 
 					if (json.response.hits.length === 0 || json.response.hits[0].type !== 'song') {
-						return reject('could not find song');
+						return resolve('could not find song');
 					}
 
 					scrape_lyrics(`https://genius.com${json.response.hits[0].result.path}`)
@@ -776,12 +776,13 @@ export async function get_lyrics(
 				});
 		} else {
 			update_music_lyrics_message(guild, guild_object, '')
+				.then(() => {
+					return resolve('no song in queue');
+				})
 				.catch(e => {
 					return reject(`failed to update music lyrics message / ${e}`);
 				});
 
-
-			return reject('no song in queue');
 		}
 	});
 }
@@ -789,7 +790,7 @@ export async function get_lyrics(
 export async function export_txt(
 	guild_object: GuildPrtl
 ): Promise<MessageAttachment | null> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		if (guild_object.music_queue.length > 0) {
 			const stringData = JSON.stringify(guild_object.music_queue);
 			const buffer = Buffer.from(stringData, "utf-8");

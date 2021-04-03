@@ -318,6 +318,7 @@ export async function guild_exists(
 }
 
 export async function update_guild(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -335,7 +336,6 @@ export async function update_guild(
             }
         )
             .then((r: MongoPromise) => {
-                console.log('r :>> ', r);
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
                 } else {
