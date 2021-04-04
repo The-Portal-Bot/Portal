@@ -1,4 +1,5 @@
 import { Client, Message } from "discord.js";
+import { create_rich_embed } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -6,12 +7,29 @@ module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl, client: Client
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		message.channel.send('ping sent')
+		message.channel
+			.send('ping sent')
 			.then((message_sent: Message) => {
-				message_sent.edit(
-					`rtt    latency:\t**${message_sent.createdTimestamp - message.createdTimestamp}** *ms*.\n` +
-					`portal latency:\t**${client.ws.ping}** *ms*`
-				)
+				message_sent
+					.edit(
+						create_rich_embed(
+							null,
+							null,
+							'#FF0000',
+							null,
+							null,
+							null,
+							false,
+							null,
+							null,
+							undefined,
+							{
+								name: `RTT latency\t${message_sent.createdTimestamp - message.createdTimestamp} ms\n` +
+									`Portal latency\t${client.ws.ping} ms`,
+								icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/ping.gif'
+							}
+						)
+					)
 					.then(() => {
 						return resolve({
 							result: true,

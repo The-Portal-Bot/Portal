@@ -176,7 +176,7 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "reply": false,
+                "reply": true,
                 "delete": {
                     "source": true,
                     "reply": true
@@ -188,7 +188,7 @@
                 "time": 0,
                 "auth": false,
                 "premium": false,
-                "reply": false,
+                "reply": true,
                 "delete": {
                     "source": true,
                     "reply": true
