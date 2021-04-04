@@ -1608,6 +1608,7 @@ export function get_attribute(
 
 export function set_attribute(
 	voice_channel: VoiceChannel | undefined | null, guild_object: GuildPrtl,
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	candidate: string, value: any, member: GuildMember, message: Message
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {

@@ -6,7 +6,6 @@ import moment from 'moment';
 import config from '../../config.json';
 import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 function kelvin_to_celsius(kelvin: number): number {
@@ -26,7 +25,7 @@ function ms_to_mlh(ms: number): number {
 }
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		if (args.length < 1)

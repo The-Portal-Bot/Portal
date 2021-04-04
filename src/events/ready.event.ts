@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "discord.js";
 import { logger } from "../libraries/help.library";
 import { get_function } from "../libraries/localisation.library";

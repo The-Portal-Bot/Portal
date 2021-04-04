@@ -9,14 +9,13 @@
         "start": "node build/index.js",
         "build-start": "npx tsc && node build/index.js",
         "test": "npx tsc && jest",
-        "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet"
+        "lint": "eslint '*/**/*.{js,ts,tsx}'"
     },
     "dependencies": {
         "@discordjs/opus": "^0.5.0",
         "@types/jsonfile": "^6.0.0",
         "cheerio": "^1.0.0-rc.5",
         "core-util-is": "^1.0.2",
-        "discord-anti-spam": "^2.5.0",
         "discord-ytdl-core": "^5.0.2",
         "discord.js": "^12.5.3",
         "ffmpeg-static": "^4.3.0",

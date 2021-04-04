@@ -43,10 +43,10 @@ module.exports = async (
 											});
 									}
 								} else {
-									return reject(`could not find announcement channel, it has been deleted`);
+									return resolve(`no announcement channel, it has been deleted`);
 								}
 							} else {
-								return reject(`could not find announcement channel in database`);
+								return resolve(`no announcement channel in database`);
 							}
 						})
 						.catch(e => {

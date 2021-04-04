@@ -727,6 +727,7 @@ export async function remove_portal(
 //
 
 export async function update_voice(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, portal_id: string, voice_id: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {

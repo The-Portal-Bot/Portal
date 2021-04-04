@@ -786,7 +786,7 @@ export function remove_empty_voice_channels(
 										if (channel.deletable) {
 											channel
 												.delete()
-												.then(g => {
+												.then(() => {
 													p.voice_list.splice(index, 1);
 													logger.log({
 														level: 'info', type: 'none', message: `deleted empty channel: ${channel.name} ` +

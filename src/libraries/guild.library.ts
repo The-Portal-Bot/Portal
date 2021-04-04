@@ -467,13 +467,13 @@ export function delete_channel(
 								if (channel_to_delete.deletable) {
 									channel_to_delete
 										.delete()
-										.then(g => {
+										.then(() => {
 											question_msg
 												.edit(`channel **"${channel_to_delete_name}"** deleted`)
 												.then(edit_message => {
 													edit_message
 														.delete({ timeout: 7000 })
-														.then(r => {
+														.then(() => {
 															return resolve(true);
 														})
 														.catch(e => {
@@ -513,7 +513,7 @@ export function delete_channel(
 		else if (channel_to_delete.deletable) {
 			channel_to_delete
 				.delete()
-				.then(r => {
+				.then(() => {
 					return resolve(true);
 				})
 				.catch(e => {

@@ -80,7 +80,7 @@ module.exports = async (
 							: 'failed to set new ranks'
 					});
 				})
-				.catch(e => {
+				.catch(() => {
 					return resolve({
 						result: false,
 						value: 'failed to set new ranks'
