@@ -546,7 +546,7 @@ export async function update_entire_member(
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         const placeholder: any = {}
-        placeholder['member_list'] = member;
+        placeholder['member_list.$[m]'] = member;
 
         GuildPrtlMdl.updateOne(
             {
