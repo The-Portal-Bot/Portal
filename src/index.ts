@@ -169,10 +169,10 @@ client.on('message', async (message: Message) => {
 						logger.error(new Error(`failed to late-insert member / ${e}`));
 					});
 
-				message_reply(true, message, `as you were not in database, you have been added.`, true, true)
-					.catch((e: any) => {
-						logger.error(new Error(`failed to send message / ${e}`));
-					});
+				// message_reply(true, message, `as you were not in database, you have been added.`, true, true)
+				// 	.catch((e: any) => {
+				// 		logger.error(new Error(`failed to send message / ${e}`));
+				// 	});
 
 				return;
 			}
