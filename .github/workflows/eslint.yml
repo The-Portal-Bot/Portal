@@ -15,4 +15,4 @@ jobs:
           check-latest: true
       - run: npm install
       - run: npm ci
-      - run: npm lint
+      - run: npm run lint

@@ -130,7 +130,11 @@ export async function fetch_guild_reaction_data(
             },
             {
                 id: 1,
-                member_list: { $elemMatch: { id: member_id } },
+                member_list: {
+                    $elemMatch: {
+                        id: member_id
+                    }
+                },
                 role_list: 1,
                 poll_list: 1,
                 music_data: 1,
@@ -306,6 +310,29 @@ export async function guild_exists(
         GuildPrtlMdl.countDocuments(
             {
                 id: guild_id
+            }
+        )
+            .then((count: number) => {
+                return resolve(count > 0);
+            })
+            .catch((e: any) => {
+                return reject(e);
+            });
+    });
+}
+
+export async function member_exists(
+    guild_id: string, member_id: string
+): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        GuildPrtlMdl.countDocuments(
+            {
+                id: guild_id,
+                member_list: {
+                    $elemMatch: {
+                        id: member_id
+                    }
+                }
             }
         )
             .then((count: number) => {
@@ -551,7 +578,7 @@ export async function update_entire_member(
 }
 
 export async function insert_member(
-    member_id: string, guild_id: string
+    guild_id: string, member_id: string
 ): Promise<boolean> {
     const new_member_portal = new MemberPrtl(member_id, 1, 0, 1, 0, null, 'null');
     return new Promise((resolve, reject) => {
@@ -700,6 +727,7 @@ export async function remove_portal(
 //
 
 export async function update_voice(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, portal_id: string, voice_id: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {

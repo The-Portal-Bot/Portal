@@ -13,12 +13,11 @@ import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { isProfane } from "./libraries/mod.library";
-import { fetch_guild_predata, fetch_guild_rest, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
+import { fetch_guild_predata, fetch_guild_rest, insert_member, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ActiveCooldowns, CommandOptions, ReturnPormise } from "./types/classes/TypesPrtl.interface";
-// const AntiSpam = require('discord-anti-spam');
 
 if (config.debug) {
 	logger.add(new transports.Console());
@@ -69,25 +68,6 @@ const client = new Client(
 		}
 	}
 );
-
-// const anti_spam = new AntiSpam({
-// 	warnThreshold: 5,
-// 	muteThreshold: 10,
-// 	maxInterval: 2000,
-// 	warnMessage: '{@user}, you will be muted if you continue spamming',
-// 	muteMessage: '{@user}, you are muted, contact an admin to unmute you',
-// 	maxDuplicatesWarning: 3,
-// 	warnEnabled: true,
-// 	muteEnabled: true,
-// 	kickEnabled: false,
-// 	banEnabled: false,
-// 	exemptPermissions: ['ADMINISTRATOR'],
-// 	muteRoleName: "p.ignore",
-// 	ignoreBots: true,
-// 	removeMessages: true,
-// 	debug: false,
-// 	verbose: false
-// });
 
 // This event triggers when the bot joins a guild.
 client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
@@ -168,17 +148,33 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
 
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
-	if (!message) return;
-	if (!message.member) return;
-	if (!message.guild) return;
-	if (message.channel.type === 'dm') return; // ignore DMs
-	if (message.author.bot) return; // ignore bots 'botception'
+	if (!message || !message.member || !message.guild) return;
+	if (message.channel.type === 'dm' || message.author.bot) return;
 
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {
 			if (!guild_object) {
 				logger.error(new Error(`guild does not exist in Portal`));
 				return false;
+			}
+
+			if (guild_object.member_list.length === 0 && message.guild) {
+				insert_member(message.guild.id, message.author.id)
+					.then(() => {
+						if (message.guild) {
+							logger.info(`late-insert ${message.author.id} to ${message.guild.name} [${message.guild.id}]`);
+						}
+					})
+					.catch(e => {
+						logger.error(new Error(`failed to late-insert member / ${e}`));
+					});
+
+				message_reply(true, message, `as you were not in database, you have been added.`, true, true)
+					.catch((e: any) => {
+						logger.error(new Error(`failed to send message / ${e}`));
+					});
+
+				return;
 			}
 
 			if (portal_preprocessor(message, guild_object)) {

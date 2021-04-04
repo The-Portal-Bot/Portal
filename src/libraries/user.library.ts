@@ -1,5 +1,4 @@
 import { BanOptions, Guild, GuildMember, Message, VoiceState } from "discord.js";
-import { CLOSING } from "ws";
 import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
@@ -173,7 +172,7 @@ export function kick(
 	return new Promise((resolve, reject) => {
 		member_to_kick
 			.kick(kick_reason)
-			.then(r => {
+			.then(() => {
 				return resolve(true);
 			})
 			.catch(e => {
@@ -188,7 +187,7 @@ export function ban(
 	return new Promise((resolve, reject) => {
 		member_to_ban
 			.ban(ban_options)
-			.then(r => {
+			.then(() => {
 				return resolve(true);
 			})
 			.catch(e => {

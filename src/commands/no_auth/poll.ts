@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
 import { insert_poll } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";

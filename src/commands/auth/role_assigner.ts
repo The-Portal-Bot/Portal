@@ -45,14 +45,14 @@ function create_role_message(
 								: 'failed to set new ranks'
 						});
 					})
-					.catch(e => {
+					.catch(() => {
 						return resolve({
 							result: false,
 							value: 'failed to set new ranks'
 						});
 					});
 			})
-			.catch(e => {
+			.catch(() => {
 				return resolve({
 					result: false,
 					value: 'failed to create role assigner message'

@@ -320,14 +320,15 @@ export async function create_focus_channel(
 			userLimit: 2
 		};
 
-		const chatroom_name = `PR${focus_time === 0
-			? ''
-			: `-${focus_time}' $hour:$minute/${moment()
+		const chatroom_name = `${focus_time === 0
+			? 'Private Room'
+			: `PR-${focus_time}' $hour:$minute/${moment()
 				.add(focus_time, focus_time === 1 ? "minute" : "minutes")
 				.format('hh:mm')}`
 			}`;
 
-		guild.channels.create(chatroom_name, voice_options)
+		guild.channels
+			.create(chatroom_name, voice_options)
 			.then(channel => {
 				member.voice.setChannel(channel)
 					.catch(e => {
@@ -466,13 +467,13 @@ export function delete_channel(
 								if (channel_to_delete.deletable) {
 									channel_to_delete
 										.delete()
-										.then(g => {
+										.then(() => {
 											question_msg
 												.edit(`channel **"${channel_to_delete_name}"** deleted`)
 												.then(edit_message => {
 													edit_message
 														.delete({ timeout: 7000 })
-														.then(r => {
+														.then(() => {
 															return resolve(true);
 														})
 														.catch(e => {
@@ -512,7 +513,7 @@ export function delete_channel(
 		else if (channel_to_delete.deletable) {
 			channel_to_delete
 				.delete()
-				.then(r => {
+				.then(() => {
 					return resolve(true);
 				})
 				.catch(e => {

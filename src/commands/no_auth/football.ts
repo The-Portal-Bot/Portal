@@ -1,9 +1,7 @@
-import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import config from '../../config.json';
 import { get_json } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 module.exports = async (

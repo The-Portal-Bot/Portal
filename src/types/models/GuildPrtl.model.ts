@@ -1,4 +1,4 @@
-import { Document, model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import { IGuildPrtl } from '../classes/GuildPrtl.class';
 import GiveRolePrtlSchm from './schemas/GiveRolePrtl.schema';
 import MemberPrtlSchm from './schemas/MemberPrtl.schema';

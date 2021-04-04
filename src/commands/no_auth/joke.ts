@@ -5,13 +5,12 @@
 import { Message } from "discord.js";
 import { JokeEnum } from "../../data/enums/Joke.enum";
 import { get_key_from_enum } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 const giveMeAJoke = require('give-me-a-joke');
 
 module.exports = async (
-	message: Message, args: string[], guild_object: GuildPrtl
+	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		const category = get_key_from_enum(args[0], JokeEnum);

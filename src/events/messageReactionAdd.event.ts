@@ -78,7 +78,7 @@ async function reaction_role_manager(
 									}
 								})
 								.catch(e => {
-									return reject(`Portal's role must be higher than role you want to be removed from, contact server admin`);
+									return reject(`Portal's role must be higher than role you want to be removed from, contact server admin / ${e}`);
 								});
 						}
 						catch (e) {

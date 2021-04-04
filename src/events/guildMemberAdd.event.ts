@@ -7,7 +7,7 @@ module.exports = async (
 ): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		if (!args.member.user.bot) {
-			insert_member(args.member.id, args.member.guild.id)
+			insert_member(args.member.guild.id, args.member.id)
 				.then(r => {
 					if (!r) {
 						return reject(`failed to add member ${args.member.id} to ${args.member.guild.id}`);
@@ -63,10 +63,10 @@ module.exports = async (
 										});
 
 								} else {
-									return reject(`could not find announcement channel, it has been deleted`);
+									return resolve(`no announcement channel, it has been deleted`);
 								}
 							} else {
-								return reject(`could not find announcement channel in database`);
+								return resolve(`no announcement channel in database`);
 							}
 						})
 						.catch(e => {

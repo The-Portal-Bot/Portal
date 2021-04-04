@@ -10,8 +10,14 @@ function is_rank(rank: Rank) {
 
 function is_role(rank: Rank, roles: Role[]) {
 	return roles.some(role => {
-		if (role.id === rank.role) return true;
-		if (role.name === rank.role) return true;
+		if (role.id === rank.role) {
+			return true;
+		}
+		
+		if (role.name === rank.role) {
+			return true;
+		}
+
 		return false;
 	});
 }
@@ -74,7 +80,7 @@ module.exports = async (
 							: 'failed to set new ranks'
 					});
 				})
-				.catch(e => {
+				.catch(() => {
 					return resolve({
 						result: false,
 						value: 'failed to set new ranks'
