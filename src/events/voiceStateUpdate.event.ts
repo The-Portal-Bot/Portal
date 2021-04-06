@@ -218,7 +218,7 @@ async function from_existing(
 				.catch((e: any) => {
 					logger.error(new Error(`failed to send message / ${e}`));
 				});
-				
+
 			if (included_in_portal_list(old_channel.id, guild_object.portal_list)) {
 				if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // has been handled before
 					five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
@@ -301,12 +301,16 @@ module.exports = async (
 			fetch_guild(args.newState?.guild.id)
 				.then(guild_object => {
 					if (guild_object) {
-						if (!!new_channel && args.newState.member?.user.bot) {
+						if (!new_channel) {
+							return reject(`new channel does not exist`);
+						}
+
+						if (args.newState.member?.user.bot) {
 							guild_object.portal_list.find(p => {
 								if (p.id === new_channel.id) {
 									if (p.no_bots) {
 										args.newState
-											.kick()
+											.kick('voice channel does not allow bots')
 											.catch(e => {
 												return reject(`failed to kick / ${e}`);
 											});
@@ -319,17 +323,39 @@ module.exports = async (
 									if (v.id === new_channel.id) {
 										if (v.no_bots) {
 											args.newState
-												.kick()
+												.kick('voice channel does not allow bots')
 												.catch(e => {
 													return reject(`failed to kick / ${e}`);
 												});
 
 											return reject(`no bots are allowed`);
 										}
+
+										if (v.allowed_roles !== null) {
+											const allowed_role = args.newState.guild.roles.cache
+												.find(r => r.id === v.allowed_roles);
+
+											if (allowed_role) {
+												const has_role = allowed_role.members
+													.some(m => m.id === args.newState.member?.id);
+
+												if (!has_role) {
+													args.newState
+														.kick(`you don't have role ${has_role} to enter this voice channel`)
+														.catch(e => {
+															return reject(`failed to kick / ${e}`);
+														});
+
+													return reject(`you don't have role ${has_role} to enter this voice channel`);
+												}
+											}
+										}
 									}
 								});
 							});
 						}
+
+
 
 						if (args.client.voice && args.newState.member) {
 							const new_voice_connection = args.client.voice.connections

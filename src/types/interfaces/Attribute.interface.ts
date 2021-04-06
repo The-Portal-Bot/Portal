@@ -297,6 +297,99 @@ const attributes: InterfaceBlueprint[] = [
 		auth: AuthEnum.voice
 	},
 	{
+		name: 'p.allowed_roles',
+		hover: 'the roles allowed to be create',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
+		): string[] | string => {
+			if (!voice_object) {
+				return 'N/A';
+			}
+			if (!portal_object_list) {
+				return 'N/A';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				return portal_object.allowed_roles;
+			}
+
+			return 'N/A';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
+		): Promise<ReturnPormise> => {
+			const ctgr = ['p'];
+			const attr = 'allowed_roles';
+
+			return new Promise((resolve) => {
+				update_portal(guild_object.id, portal_object.id, attr, value)
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+						});
+					});
+			});
+		},
+		auth: AuthEnum.portal
+	},
+	{
+		name: 'v.allowed_roles',
+		hover: 'the roles allowed to be create',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null
+			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): string[] | string => {
+			if (!voice_object) {
+				return 'N/A';
+			}
+			
+			return voice_object.allowed_roles;
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
+		): Promise<ReturnPormise> => {
+			const ctgr = ['v'];
+			const attr = 'allowed_roles';
+
+			return new Promise((resolve) => {
+				update_voice(guild_object.id, portal_object.id, voice_object.id, attr, value)
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+						});
+					});
+			});
+		},
+		auth: AuthEnum.voice
+	},
+
+	{
 		name: 'p.render',
 		hover: 'if voice channels spawned by portal channel will use the text interpreter',
 		get: (
@@ -607,7 +700,8 @@ const attributes: InterfaceBlueprint[] = [
 					});
 				}
 
-				voice_channel.edit({ bitrate: new_bitrate })
+				voice_channel
+					.edit({ bitrate: new_bitrate })
 					.then(r => {
 						return resolve({
 							result: r.bitrate === new_bitrate,
@@ -1031,7 +1125,8 @@ const attributes: InterfaceBlueprint[] = [
 					});
 				}
 
-				voice_channel.edit({ position: Number(value) })
+				voice_channel
+					.edit({ position: Number(value) })
 					.then(r => {
 						return resolve({
 							result: r.position === Number(value),
