@@ -36,10 +36,8 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((response: Buffer) => {
-				console.log('response :>> ', response);
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
-				console.log('json :>> ', json);
 
 				return resolve({
 					result: true,
