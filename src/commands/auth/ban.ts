@@ -79,11 +79,13 @@ module.exports = async (
 							};
 
 							ban(member_to_ban, ban_options)
-								.then(() => {
+								.then(r => {
 									return resolve({
-										result: true,
-										value: `${member_to_ban} has been banned by ${message.author} ` +
+										result: r,
+										value: r
+											? `${member_to_ban} has been banned by ${message.author} ` +
 											`for ${ban_days} ${ban_days > 1 ? 'days' : 'day'}, because: *${ban_reason}*`
+											: `${member_to_ban} is not bannable`
 									});
 								})
 								.catch(e => {

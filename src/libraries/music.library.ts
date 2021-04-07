@@ -164,6 +164,13 @@ async function start_playback(
 												return reject(`failed to clear queue / ${e}`);
 											});
 
+										const voice_connection = client.voice?.connections.find(c =>
+											c.voice?.guild.id === guild_object.id);
+
+										const animate = voice_connection?.dispatcher
+											? !voice_connection?.dispatcher.paused
+											: false;
+
 										update_music_message(
 											guild,
 											guild_object,
@@ -171,7 +178,7 @@ async function start_playback(
 												? guild_object.music_queue[0]
 												: undefined,
 											r,
-											true // check
+											animate
 										)
 											.catch(e => {
 												return reject(`failed to update music message / ${e}`);
@@ -487,6 +494,13 @@ export async function play(
 										return reject(`failed to clear music vote / ${e}`);
 									});
 
+								const voice_connection = client.voice?.connections.find(c =>
+									c.voice?.guild.id === guild_object.id);
+
+								const animate = voice_connection?.dispatcher
+									? !voice_connection?.dispatcher.paused
+									: false;
+
 								update_music_message(
 									guild,
 									guild_object,
@@ -494,7 +508,7 @@ export async function play(
 										? guild_object.music_queue[0]
 										: undefined,
 									r,
-									true // check
+									animate
 								)
 									.catch(e => {
 										return reject(`failed to update music message / ${e}`);
@@ -635,6 +649,13 @@ export async function skip(
 												return reject(`failed to clear music queue / ${e}`);
 											});
 
+										const voice_connection = client.voice?.connections.find(c =>
+											c.voice?.guild.id === guild_object.id);
+
+										const animate = voice_connection?.dispatcher
+											? !voice_connection?.dispatcher.paused
+											: false;
+
 										update_music_message(
 											guild,
 											guild_object,
@@ -642,7 +663,7 @@ export async function skip(
 												? guild_object.music_queue[0]
 												: undefined,
 											r,
-											true // check
+											animate
 										)
 											.catch(e => {
 												return reject(`failed to update music message / ${e}`);

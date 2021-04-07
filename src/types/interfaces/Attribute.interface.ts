@@ -171,8 +171,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
-					voice.id === voice_object.id)
+				portal.voice_list.some(voice => voice.id === voice_object.id)
 			);
 
 			if (portal_object) {
@@ -297,6 +296,159 @@ const attributes: InterfaceBlueprint[] = [
 		auth: AuthEnum.voice
 	},
 	{
+		name: 'p.allowed_roles',
+		hover: 'the role allowed to create a voice channel',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl
+		): string[] | string => {
+			if (!voice_object) {
+				return 'N/A';
+			}
+			if (!voice_channel) {
+				return 'N/A';
+			}
+			if (!portal_object_list) {
+				return 'N/A';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice => voice.id === voice_object.id)
+			);
+
+			if (portal_object) {
+				if (portal_object.allowed_roles) {
+					const allowed_role = voice_channel.guild.roles.cache
+						.find(r => r.id === portal_object.allowed_roles);
+
+					if (allowed_role) {
+						return `tsiakkas: ${allowed_role.name}`;
+					} else {
+						return 'N/A';
+					}
+				}
+			}
+
+			return 'N/A';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
+		): Promise<ReturnPormise> => {
+			const ctgr = ['p'];
+			const attr = 'allowed_roles';
+
+			return new Promise((resolve) => {
+				if (message.mentions && message.mentions.roles) {
+					if (message.mentions.roles.array().length === 0) {
+						return resolve({
+							result: false,
+							value: `attribute p.allowed_roles can only be a role`
+						});
+					}
+
+					const allowed_role = message.mentions.roles.first();
+
+					if (allowed_role) {
+						update_portal(guild_object.id, portal_object.id, attr, allowed_role.id)
+							.then(r => {
+								return resolve({
+									result: r,
+									value: r
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${allowed_role.name}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${allowed_role.name}\``
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+								});
+							});
+					} else {
+						return resolve({
+							result: false,
+							value: `attribute p.allowed_roles can only be a role`
+						});
+					}
+				}
+			});
+		},
+		auth: AuthEnum.portal
+	},
+	{
+		name: 'v.allowed_roles',
+		hover: 'the role allowed join the voice channel',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null
+			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): string[] | string => {
+			if (!voice_object) {
+				return 'N/A';
+			}
+			if (!voice_channel) {
+				return 'N/A';
+			}
+
+			if (voice_object.allowed_roles) {
+				const allowed_role = voice_channel.guild.roles.cache
+					.find(r => r.id === voice_object.allowed_roles);
+
+				if (allowed_role) {
+					return `tsiakkas: ${allowed_role.name}`;
+				} else {
+					return 'N/A';
+				}
+			}
+
+			return 'N/A';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
+		): Promise<ReturnPormise> => {
+			const ctgr = ['v'];
+			const attr = 'allowed_roles';
+
+			return new Promise((resolve) => {
+				if (message.mentions && message.mentions.roles) {
+					if (message.mentions.roles.array().length === 0) {
+						return resolve({
+							result: false,
+							value: `attribute p.allowed_roles can only be a role`
+						});
+					}
+
+					const allowed_role = message.mentions.roles.first();
+
+					if (allowed_role) {
+						update_portal(guild_object.id, portal_object.id, attr, allowed_role.id)
+							.then(r => {
+								return resolve({
+									result: r,
+									value: r
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${allowed_role.name}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${allowed_role.name}\``
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+								});
+							});
+					} else {
+						return resolve({
+							result: false,
+							value: `attribute p.allowed_roles can only be a role`
+						});
+					}
+				}
+			});
+		},
+		auth: AuthEnum.voice
+	},
+	{
 		name: 'p.render',
 		hover: 'if voice channels spawned by portal channel will use the text interpreter',
 		get: (
@@ -311,8 +463,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
-					voice.id === voice_object.id)
+				portal.voice_list.some(voice => voice.id === voice_object.id)
 			);
 
 			if (portal_object) {
@@ -451,8 +602,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
-					voice.id === voice_object.id)
+				portal.voice_list.some(voice => voice.id === voice_object.id)
 			);
 
 			if (portal_object) {
@@ -607,7 +757,8 @@ const attributes: InterfaceBlueprint[] = [
 					});
 				}
 
-				voice_channel.edit({ bitrate: new_bitrate })
+				voice_channel
+					.edit({ bitrate: new_bitrate })
 					.then(r => {
 						return resolve({
 							result: r.bitrate === new_bitrate,
@@ -905,8 +1056,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
-					voice.id === voice_object.id)
+				portal.voice_list.some(voice => voice.id === voice_object.id)
 			);
 
 			if (portal_object) {
@@ -1031,7 +1181,8 @@ const attributes: InterfaceBlueprint[] = [
 					});
 				}
 
-				voice_channel.edit({ position: Number(value) })
+				voice_channel
+					.edit({ position: Number(value) })
 					.then(r => {
 						return resolve({
 							result: r.position === Number(value),
@@ -1065,8 +1216,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
-					voice.id === voice_object.id)
+				portal.voice_list.some(voice => voice.id === voice_object.id)
 			);
 
 			if (portal_object) {
@@ -1141,8 +1291,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
-					voice.id === voice_object.id)
+				portal.voice_list.some(voice => voice.id === voice_object.id)
 			);
 
 			if (portal_object) {
@@ -1193,8 +1342,7 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
-					voice.id === voice_object.id)
+				portal.voice_list.some(voice => voice.id === voice_object.id)
 			);
 
 			if (portal_object) {
@@ -1608,8 +1756,7 @@ export function get_attribute(
 
 export function set_attribute(
 	voice_channel: VoiceChannel | undefined | null, guild_object: GuildPrtl,
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-	candidate: string, value: any, member: GuildMember, message: Message
+	candidate: string, value: string, member: GuildMember, message: Message
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		let voice_object: VoiceChannelPrtl | undefined = undefined;

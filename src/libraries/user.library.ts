@@ -170,14 +170,18 @@ export function kick(
 	member_to_kick: GuildMember, kick_reason: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		member_to_kick
-			.kick(kick_reason)
-			.then(() => {
-				return resolve(true);
-			})
-			.catch(e => {
-				return reject(e);
-			});
+		if (member_to_kick.kickable) {
+			member_to_kick
+				.kick(kick_reason)
+				.then(() => {
+					return resolve(true);
+				})
+				.catch(e => {
+					return reject(e);
+				});
+		} else {
+			return resolve(false);
+		}
 	});
 }
 
@@ -185,13 +189,17 @@ export function ban(
 	member_to_ban: GuildMember, ban_options: BanOptions
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		member_to_ban
-			.ban(ban_options)
-			.then(() => {
-				return resolve(true);
-			})
-			.catch(e => {
-				return reject(e);
-			});
+		if (member_to_ban.bannable) {
+			member_to_ban
+				.ban(ban_options)
+				.then(() => {
+					return resolve(true);
+				})
+				.catch(e => {
+					return reject(e);
+				});
+		} else {
+			return resolve(false);
+		}
 	});
 }

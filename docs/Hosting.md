@@ -46,7 +46,7 @@
 
    ```json
    {
-     "version": "0.6.6", // current version
+     "version": "0.6.7", // current version
      "token": "add-your-token-here", // your Discord-API-Token
      "prefix": "./", // default prefix
      "mongo_url": "mongodb://mongo/portal?compressors=zlib&gssapiServiceName=portal", // mongoDB url

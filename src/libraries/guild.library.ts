@@ -158,7 +158,7 @@ export function create_voice_channel(
 					if (state.member) {
 						const new_voice = new VoiceChannelPrtl(
 							channel.id, state.member.id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
-							portal_object.locale, portal_object.ann_announce, portal_object.ann_user);
+							portal_object.allowed_roles, portal_object.locale, portal_object.ann_announce, portal_object.ann_user);
 
 						insert_voice(state.member.guild.id, portal_object.id, new_voice)
 							.catch(e => {
@@ -347,7 +347,7 @@ export async function create_focus_channel(
 
 				insert_voice(guild.id, portal_object.id, new VoiceChannelPrtl(
 					channel.id, member.id, portal_object.render, chatroom_name, portal_object.no_bots,
-					portal_object.locale, portal_object.ann_announce, portal_object.ann_user
+					null, portal_object.locale, portal_object.ann_announce, portal_object.ann_user
 				))
 					.catch(e => {
 						return resolve({

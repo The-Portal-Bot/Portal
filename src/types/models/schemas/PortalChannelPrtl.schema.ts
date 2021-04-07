@@ -11,6 +11,7 @@ const PortalChannelPrtlSchm = new Schema(
 		regex_voice: { type: String, required: true },
 		voice_list: { type: [VoiceChannelPrtlSch], required: true },
 		no_bots: { type: Boolean, required: true },
+		allowed_roles: { type: String },
 		locale: { type: Number, required: true },
 		ann_announce: { type: Boolean, required: true },
 		ann_user: { type: Boolean, required: true },

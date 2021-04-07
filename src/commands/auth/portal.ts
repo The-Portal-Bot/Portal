@@ -59,7 +59,7 @@ module.exports = async (
 		create_channel(current_guild, portal_channel, portal_options, portal_category)
 			.then(r_channel => {
 				const new_portal = new PortalChannelPrtl(r_channel, current_member.id,
-					true, portal_channel, voice_regex, [], false, guild_object.locale, true, true, 0, false);
+					true, portal_channel, voice_regex, [], false, null, guild_object.locale, true, true, 0, false);
 
 				insert_portal(guild_object.id, new_portal)
 					.then(r_portal => {

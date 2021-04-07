@@ -8,14 +8,29 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		message.channel
-			.send('ping sent')
+			.send(create_rich_embed(
+				null,
+				null,
+				'#0093ff',
+				null,
+				null,
+				null,
+				false,
+				null,
+				null,
+				undefined,
+				{
+					name: `Request sent`,
+					icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/ping.gif'
+				}
+			))
 			.then((message_sent: Message) => {
 				message_sent
 					.edit(
 						create_rich_embed(
 							null,
 							null,
-							'#FF0000',
+							'#0093ff',
 							null,
 							null,
 							null,
