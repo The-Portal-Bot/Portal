@@ -66,11 +66,13 @@ module.exports = async (
 					.then(result => {
 						if (result) {
 							kick(member_to_kick, kick_reason)
-								.then(() => {
+								.then(r => {
 									return resolve({
-										result: true,
-										value: `${member_to_kick} has been kicked by ${message.author} ` +
+										result: r,
+										value: r
+											? `${member_to_kick} has been kicked by ${message.author} ` +
 											`because: *${kick_reason}*`
+											: `${member_to_kick} is not kickable`
 									});
 								})
 								.catch(e => {

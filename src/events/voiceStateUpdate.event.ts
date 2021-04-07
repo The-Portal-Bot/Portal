@@ -321,7 +321,8 @@ module.exports = async (
 										return reject(`portal channel does not allow bots`);
 									}
 
-									if (p.allowed_roles) {
+									if ((p.allowed_roles && p.creator_id !== args.newState.member?.id) &&
+										!args.newState.member?.user.bot) {
 										for (const role of args.newState.guild.roles.cache) {
 											if (role[1].id === p.allowed_roles) {
 												let has_role = false;
@@ -369,7 +370,8 @@ module.exports = async (
 											return reject(`voice channel does not allow bots`);
 										}
 
-										if (v.allowed_roles) {
+										if (v.allowed_roles && v.creator_id !== args.newState.member?.id &&
+											!args.newState.member?.user.bot) {
 											for (const role of args.newState.guild.roles.cache) {
 												if (role[1].id === v.allowed_roles) {
 													let has_role = false;
