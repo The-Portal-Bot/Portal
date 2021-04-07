@@ -332,6 +332,18 @@
                 }
             },
             {
+                "name": "invite",
+                "range": "member",
+                "time": 1,
+                "auth": true,
+                "premium": true,
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
+            },
+            {
                 "name": "kick",
                 "range": "member",
                 "time": 1,

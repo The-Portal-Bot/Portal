@@ -48,6 +48,7 @@ module.exports = async (
 			bitrate: 32000,
 			userLimit: 1
 		};
+
 		const voice_regex = guild_object.premium
 			// ? 'G$#-P$member_count | $status_list'
 			? `$#:$member_count {{

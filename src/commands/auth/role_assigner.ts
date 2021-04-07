@@ -170,7 +170,7 @@ module.exports = async (
 		create_role_message(
 			<TextChannel>message.channel,
 			guild_object,
-			'Portal Role Assigner',
+			'Role Assigner',
 			'',
 			'#FF7F00',
 			role_emb_display_give.concat(role_emb_display_strip),
