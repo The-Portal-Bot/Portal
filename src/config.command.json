@@ -411,7 +411,7 @@
                 "premium": true,
                 "reply": true,
                 "delete": {
-                    "source": false,
+                    "source": true,
                     "reply": true
                 }
             },

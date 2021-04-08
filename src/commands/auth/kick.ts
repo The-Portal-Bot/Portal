@@ -36,7 +36,7 @@ module.exports = async (
 			.trim();
 
 		if (kick_reason === '') {
-			kick_reason = 'kickned by admin'
+			kick_reason = 'kicked by admin'
 		}
 
 		if (message.mentions && message.mentions.members) {
