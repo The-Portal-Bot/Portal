@@ -29,7 +29,10 @@ if (config.log) {
 	logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
 
-const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
+const active_cooldowns: ActiveCooldowns = {
+	guild: [],
+	member: []
+};
 
 // Connect to mongoose database
 mongoose.connect(config.mongo_url, {
@@ -168,11 +171,6 @@ client.on('message', async (message: Message) => {
 					.catch(e => {
 						logger.error(new Error(`failed to late-insert member / ${e}`));
 					});
-
-				// message_reply(true, message, `as you were not in database, you have been added.`, true, true)
-				// 	.catch((e: any) => {
-				// 		logger.error(new Error(`failed to send message / ${e}`));
-				// 	});
 
 				return;
 			}

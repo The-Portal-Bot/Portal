@@ -358,7 +358,7 @@ const attributes: InterfaceBlueprint[] = [
 					if (!message.mentions.everyone && message.mentions.roles.array().length === 0) {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be one or more roles`
+							value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
 						});
 					}
 
@@ -419,7 +419,7 @@ const attributes: InterfaceBlueprint[] = [
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute p.allowed_roles can only be one or more roles`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
 					});
 				}
 			});
@@ -481,7 +481,7 @@ const attributes: InterfaceBlueprint[] = [
 					if (!message.mentions.everyone && message.mentions.roles.array().length === 0) {
 						return resolve({
 							result: false,
-							value: `attribute p.v.allowed_roles can only be one or more roles`
+							value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
 						});
 					}
 
@@ -514,7 +514,7 @@ const attributes: InterfaceBlueprint[] = [
 					} else {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be one or more roles`
+							value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
 						});
 					}
 				}
@@ -567,7 +567,7 @@ const attributes: InterfaceBlueprint[] = [
 					if (!message.mentions.everyone && message.mentions.roles.array().length === 0) {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be one or more roles`
+							value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
 						});
 					}
 
@@ -624,13 +624,13 @@ const attributes: InterfaceBlueprint[] = [
 					} else {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be one or more roles`
+							value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
 						});
 					}
 				} else {
 					return resolve({
 						result: false,
-						value: `attribute v.allowed_roles can only be one or more roles`
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
 					});
 				}
 			});
@@ -1002,6 +1002,69 @@ const attributes: InterfaceBlueprint[] = [
 							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
 						});
 					});
+			});
+		},
+		auth: AuthEnum.admin
+	},
+	{
+		name: 'g.mute_role',
+		hover: 'role given to muted members',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
+		): string => {
+			if (!guild) {
+				return 'N/A';
+			}
+
+			const mute_role = guild.roles.cache
+				.find(r => r.id === guild_object.mute_role);
+
+			if (mute_role) {
+				return mute_role.name;
+			}
+
+			return 'N/A';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
+		): Promise<ReturnPormise> => {
+			const ctgr = ['g'];
+			const attr = 'mute_role';
+
+			return new Promise((resolve) => {
+				if (!message.mentions.everyone && message.mentions.roles.array().length === 0) {
+					return resolve({
+						result: false,
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be a role`
+					});
+				}
+
+				const mute_role = message.mentions.roles.first();
+
+				if (mute_role) {
+					update_guild(guild_object.id, attr, mute_role.id)
+						.then(r => {
+							return resolve({
+								result: r,
+								value: r
+									? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${mute_role.name}\``
+									: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${mute_role.name}\``
+							});
+						})
+						.catch(e => {
+							return resolve({
+								result: false,
+								value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+							});
+						});
+				} else {
+					return resolve({
+						result: false,
+						value: `attribute ${ctgr.join('.') + '.' + attr} can only be a role`
+					});
+				}
 			});
 		},
 		auth: AuthEnum.admin

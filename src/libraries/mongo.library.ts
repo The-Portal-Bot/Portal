@@ -20,7 +20,8 @@ import GuildPrtlMdl from '../types/models/GuildPrtl.model';
 export async function fetch_guild_list(
 ): Promise<GuildPrtl[] | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.find({})
+        GuildPrtlMdl
+            .find({})
             .then((guilds: IGuildPrtl[]) => {
                 if (guilds) {
                     return resolve(<GuildPrtl[]>guilds);
@@ -38,11 +39,12 @@ export async function fetch_guild(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            }
-        )
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
+                }
+            )
             .then((guild: IGuildPrtl | null) => {
                 if (guild) {
                     return resolve(<GuildPrtl>guild);
@@ -60,18 +62,19 @@ export async function fetch_guild_channel_delete(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                id: 1,
-                portal_list: 1,
-                announcement: 1,
-                music_data: 1,
-                url_list: 1,
-                ignore_list: 1
-            })
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
+                },
+                {
+                    id: 1,
+                    portal_list: 1,
+                    announcement: 1,
+                    music_data: 1,
+                    url_list: 1,
+                    ignore_list: 1
+                })
             .then((r: any) => {
                 if (r) {
                     return resolve(<GuildPrtl>{
@@ -96,14 +99,15 @@ export async function fetch_guild_announcement(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                announcement: 1,
-                initial_role: 1
-            })
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
+                },
+                {
+                    announcement: 1,
+                    initial_role: 1
+                })
             .then((r: any) => {
                 if (r) {
                     return resolve(<GuildPrtl>{
@@ -124,22 +128,23 @@ export async function fetch_guild_reaction_data(
     guild_id: string, member_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                id: 1,
-                member_list: {
-                    $elemMatch: {
-                        id: member_id
-                    }
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
                 },
-                role_list: 1,
-                poll_list: 1,
-                music_data: 1,
-                music_queue: 1
-            })
+                {
+                    id: 1,
+                    member_list: {
+                        $elemMatch: {
+                            id: member_id
+                        }
+                    },
+                    role_list: 1,
+                    poll_list: 1,
+                    music_data: 1,
+                    music_queue: 1
+                })
             .then((r: any) => {
                 if (r) {
                     return resolve(<GuildPrtl>{
@@ -164,13 +169,14 @@ export async function fetch_guild_members(
     guild_id: string
 ): Promise<MemberPrtl[] | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                member_list: 1
-            })
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
+                },
+                {
+                    member_list: 1
+                })
             .then((r: any) => {
                 if (r) {
                     return resolve(<MemberPrtl[]>r.member_list);
@@ -188,14 +194,15 @@ export async function fetch_guild_music_queue(
     guild_id: string
 ): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                music_data: 1,
-                music_queue: 1
-            })
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
+                },
+                {
+                    music_data: 1,
+                    music_queue: 1
+                })
             .then((r: any) => {
                 if (r) {
                     return resolve(<{ queue: VideoSearchResult[], data: MusicData }>{
@@ -216,27 +223,29 @@ export async function fetch_guild_predata(
     guild_id: string, member_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                id: 1,
-                prefix: 1,
-                portal_list: 1,
-                member_list: {
-                    $elemMatch: {
-                        id: member_id
-                    }
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
                 },
-                ignore_list: 1,
-                url_list: 1,
-                initial_role: 1,
-                music_data: 1,
-                music_queue: 1,
-                rank_speed: 1,
-                profanity_level: 1
-            })
+                {
+                    id: 1,
+                    prefix: 1,
+                    portal_list: 1,
+                    member_list: {
+                        $elemMatch: {
+                            id: member_id
+                        }
+                    },
+                    ignore_list: 1,
+                    url_list: 1,
+                    mute_role: 1,
+                    music_data: 1,
+                    music_queue: 1,
+                    initial_role: 1,
+                    rank_speed: 1,
+                    profanity_level: 1
+                })
             .then((r: any) => {
                 if (r) {
                     return resolve(<GuildPrtl>{
@@ -246,9 +255,10 @@ export async function fetch_guild_predata(
                         member_list: r.member_list,
                         ignore_list: r.ignore_list,
                         url_list: r.url_list,
-                        initial_role: r.initial_role,
+                        mute_role: r.mute_role,
                         music_data: r.music_data,
                         music_queue: r.music_queue,
+                        initial_role: r.initial_role,
                         rank_speed: r.rank_speed,
                         profanity_level: r.profanity_level
                     });
@@ -266,20 +276,21 @@ export async function fetch_guild_rest(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.findOne(
-            {
-                id: guild_id
-            },
-            {
-                id: 0,
-                prefix: 0,
-                portal_list: 0,
-                ignore_list: 0,
-                url_list: 0,
-                music_data: 0,
-                rank_speed: 0,
-                profanity_level: 0
-            })
+        GuildPrtlMdl
+            .findOne(
+                {
+                    id: guild_id
+                },
+                {
+                    id: 0,
+                    prefix: 0,
+                    portal_list: 0,
+                    ignore_list: 0,
+                    url_list: 0,
+                    music_data: 0,
+                    rank_speed: 0,
+                    profanity_level: 0
+                })
             .then((r: any) => {
                 if (r) {
                     return resolve(<GuildPrtl>{
@@ -307,11 +318,12 @@ export async function guild_exists(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.countDocuments(
-            {
-                id: guild_id
-            }
-        )
+        GuildPrtlMdl
+            .countDocuments(
+                {
+                    id: guild_id
+                }
+            )
             .then((count: number) => {
                 return resolve(count > 0);
             })
@@ -325,16 +337,17 @@ export async function member_exists(
     guild_id: string, member_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.countDocuments(
-            {
-                id: guild_id,
-                member_list: {
-                    $elemMatch: {
-                        id: member_id
+        GuildPrtlMdl
+            .countDocuments(
+                {
+                    id: guild_id,
+                    member_list: {
+                        $elemMatch: {
+                            id: member_id
+                        }
                     }
                 }
-            }
-        )
+            )
             .then((count: number) => {
                 return resolve(count > 0);
             })
@@ -351,17 +364,18 @@ export async function update_guild(
     return new Promise((resolve, reject) => {
         const placeholder: any = {}
         placeholder[key] = value;
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $set: placeholder
-            },
-            {
-                'new': true
-            }
-        )
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $set: placeholder
+                },
+                {
+                    'new': true
+                }
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -445,6 +459,7 @@ export async function insert_guild(
     }
     const music_queue: VideoSearchResult[] = [];
     const announcement: string | null = 'null';
+    const mute_role: string | null = 'null';
     const locale = 1;
     const announce = true;
     const rank_speed: number = RankSpeedEnum.default;
@@ -453,25 +468,27 @@ export async function insert_guild(
     const prefix: string = config.prefix;
 
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.create({
-            id: id,
-            portal_list: portal_list,
-            member_list: member_list,
-            url_list: url_list,
-            role_list: role_list,
-            poll_list: poll_list,
-            initial_role: initial_role,
-            ranks: ranks,
-            music_data: music_data,
-            music_queue: music_queue,
-            announcement: announcement,
-            locale: locale,
-            announce: announce,
-            rank_speed: rank_speed,
-            profanity_level: profanity_level,
-            premium: premium,
-            prefix: prefix
-        })
+        GuildPrtlMdl
+            .create({
+                id: id,
+                portal_list: portal_list,
+                member_list: member_list,
+                url_list: url_list,
+                role_list: role_list,
+                poll_list: poll_list,
+                initial_role: initial_role,
+                ranks: ranks,
+                music_data: music_data,
+                music_queue: music_queue,
+                announcement: announcement,
+                mute_role: mute_role,
+                locale: locale,
+                announce: announce,
+                rank_speed: rank_speed,
+                profanity_level: profanity_level,
+                premium: premium,
+                prefix: prefix
+            })
             .then((r: Document<any>) => {
                 return resolve(!!r);
             })
@@ -485,9 +502,10 @@ export async function remove_guild(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.deleteOne({
-            id: guild_id
-        })
+        GuildPrtlMdl
+            .deleteOne({
+                id: guild_id
+            })
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -511,22 +529,23 @@ export async function update_member(
         const placeholder: any = {}
         placeholder['member_list.$[m].' + key] = value;
 
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $set: placeholder
-            },
-            {
-                'new': true,
-                'arrayFilters': [
-                    {
-                        'm.id': member_id
-                    }
-                ]
-            }
-        )
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $set: placeholder
+                },
+                {
+                    'new': true,
+                    'arrayFilters': [
+                        {
+                            'm.id': member_id
+                        }
+                    ]
+                }
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -548,22 +567,23 @@ export async function update_entire_member(
         const placeholder: any = {}
         placeholder['member_list.$[m]'] = member;
 
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $set: placeholder
-            },
-            {
-                'new': true,
-                'arrayFilters': [
-                    {
-                        'm.id': member_id
-                    }
-                ]
-            }
-        )
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $set: placeholder
+                },
+                {
+                    'new': true,
+                    'arrayFilters': [
+                        {
+                            'm.id': member_id
+                        }
+                    ]
+                }
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -582,14 +602,15 @@ export async function insert_member(
 ): Promise<boolean> {
     const new_member_portal = new MemberPrtl(member_id, 1, 0, 1, 0, null, 'null');
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            { id: guild_id },
-            {
-                $push: {
-                    member_list: new_member_portal
+        GuildPrtlMdl
+            .updateOne(
+                { id: guild_id },
+                {
+                    $push: {
+                        member_list: new_member_portal
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -607,17 +628,18 @@ export async function remove_member(
     member_id: string, guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    member_list: {
-                        id: member_id
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $pull: {
+                        member_list: {
+                            id: member_id
+                        }
                     }
-                }
-            })
+                })
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -641,20 +663,21 @@ export async function update_portal(
         const placeholder: any = {}
         placeholder['portal_list.$[p].' + key] = value;
 
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $set: placeholder
-            },
-            {
-                'new': true,
-                'arrayFilters': [
-                    { 'p.id': portal_id }
-                ]
-            }
-        )
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $set: placeholder
+                },
+                {
+                    'new': true,
+                    'arrayFilters': [
+                        { 'p.id': portal_id }
+                    ]
+                }
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -672,16 +695,17 @@ export async function insert_portal(
     guild_id: string, new_portal: PortalChannelPrtl
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    portal_list: new_portal
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        portal_list: new_portal
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -699,18 +723,19 @@ export async function remove_portal(
     guild_id: string, portal_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    portal_list: {
-                        id: portal_id
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $pull: {
+                        portal_list: {
+                            id: portal_id
+                        }
                     }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -734,21 +759,22 @@ export async function update_voice(
         const placeholder: any = {}
         placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
 
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $set: placeholder
-            },
-            {
-                'new': true,
-                'arrayFilters': [
-                    { 'p.id': portal_id },
-                    { 'v.id': voice_id }
-                ]
-            }
-        )
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $set: placeholder
+                },
+                {
+                    'new': true,
+                    'arrayFilters': [
+                        { 'p.id': portal_id },
+                        { 'v.id': voice_id }
+                    ]
+                }
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -766,22 +792,23 @@ export async function insert_voice(
     guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    'portal_list.$[p].voice_list': new_voice
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        'portal_list.$[p].voice_list': new_voice
+                    }
+                },
+                {
+                    'new': true,
+                    'arrayFilters': [
+                        { 'p.id': portal_id }
+                    ]
                 }
-            },
-            {
-                'new': true,
-                'arrayFilters': [
-                    { 'p.id': portal_id }
-                ]
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -799,28 +826,29 @@ export async function remove_voice(
     guild_id: string, portal_id: string, voice_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    'portal_list.$[p].voice_list': {
-                        id: voice_id
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $pull: {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        'portal_list.$[p].voice_list': {
+                            id: voice_id
+                        }
                     }
+                },
+                {
+                    'new': true,
+                    'arrayFilters': [
+                        {
+                            'p.id': portal_id
+                        }
+                    ]
                 }
-            },
-            {
-                'new': true,
-                'arrayFilters': [
-                    {
-                        'p.id': portal_id
-                    }
-                ]
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -840,16 +868,17 @@ export async function insert_url(
     guild_id: string, new_url: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    url_list: new_url
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        url_list: new_url
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -867,15 +896,16 @@ export async function remove_url(
     guild_id: string, remove_url: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    url_list: remove_url
-                }
-            })
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $pull: {
+                        url_list: remove_url
+                    }
+                })
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -895,16 +925,17 @@ export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    ignore_list: new_ignore
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        ignore_list: new_ignore
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -922,15 +953,16 @@ export async function remove_ignore( // channel
     guild_id: string, remove_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    ignore_list: remove_ignore
-                }
-            })
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $pull: {
+                        ignore_list: remove_ignore
+                    }
+                })
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -949,14 +981,15 @@ export async function remove_ignore( // channel
 export async function set_ranks(
     guild_id: string, new_ranks: Rank[]): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                ranks: new_ranks
-            }
-        )
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    ranks: new_ranks
+                }
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -976,16 +1009,17 @@ export async function insert_poll(
     guild_id: string, poll: PollPrtl
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    poll_list: poll
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        poll_list: poll
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -1003,18 +1037,19 @@ export async function remove_poll(
     guild_id: string, message_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    poll_list: {
-                        message_id: message_id
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $pull: {
+                        poll_list: {
+                            message_id: message_id
+                        }
                     }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -1034,16 +1069,17 @@ export async function insert_role_assigner(
     guild_id: string, new_role_assigner: GiveRolePrtl
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    role_list: new_role_assigner
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        role_list: new_role_assigner
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -1061,18 +1097,19 @@ export async function remove_role_assigner(
     guild_id: string, message_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $pull: {
-                    role_list: {
-                        message_id: message_id
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $pull: {
+                        role_list: {
+                            message_id: message_id
+                        }
                     }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -1092,16 +1129,17 @@ export async function insert_music_video(
     guild_id: string, video: VideoSearchResult
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    music_queue: video
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        music_queue: video
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -1119,16 +1157,17 @@ export async function clear_music_vote(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $set: {
-                    'music_data.votes': []
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $set: {
+                        'music_data.votes': []
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -1146,16 +1185,17 @@ export async function insert_music_vote(
     guild_id: string, user_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $push: {
-                    'music_data.votes': user_id
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $push: {
+                        'music_data.votes': user_id
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);
@@ -1173,16 +1213,17 @@ export async function set_music_data(
     guild_id: string, new_music_data: MusicData
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl.updateOne(
-            {
-                id: guild_id
-            },
-            {
-                $set: {
-                    music_data: new_music_data
+        GuildPrtlMdl
+            .updateOne(
+                {
+                    id: guild_id
+                },
+                {
+                    $set: {
+                        music_data: new_music_data
+                    }
                 }
-            }
-        )
+            )
             .then((r: MongoPromise) => {
                 if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
                     return resolve(true);

@@ -98,9 +98,9 @@ module.exports = async (
 										});
 									}
 
-									const portal_object = guild_object.portal_list.find(p => {
-										return p.voice_list.some(v => v.id === message.member?.voice.channel?.id);
-									});
+									const portal_object = guild_object.portal_list.find(p => 
+										p.voice_list.some(v => v.id === message.member?.voice.channel?.id)
+									);
 
 									if (!portal_object) {
 										return resolve({
