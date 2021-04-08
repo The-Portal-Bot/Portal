@@ -344,7 +344,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			}
 
-			return 'N/A';
+			return '@everyone';
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
@@ -354,60 +354,73 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'allowed_roles';
 
 			return new Promise((resolve) => {
-				if (message.mentions && message.mentions.roles) {
-					if (message.mentions.roles.array().length === 0) {
+				if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
+					if (!message.mentions.everyone && message.mentions.roles.array().length === 0) {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be a role`
+							value: `attribute p.allowed_roles can only be one or more roles`
 						});
 					}
 
-					const allowed_roles = message.mentions.roles.map(r => r.id);
+					let permission_overwrites: OverwriteResolvable[] = [];
 
-					const permission_overwrites = message.mentions.roles
-						.map(id => <OverwriteResolvable>{
-							id: id,
-							allow: ['CONNECT']
-						});
+					if (!message.mentions.everyone) {
+						permission_overwrites = message.mentions.roles
+							.map(id => <OverwriteResolvable>{
+								id: id,
+								allow: ['CONNECT']
+							});
 
-					if (message.guild) {
-						permission_overwrites.push({
-							id: portal_object.creator_id,
-							allow: ['CONNECT']
-						}, {
-							id: message.guild.roles.everyone.id,
-							deny: ['CONNECT']
-						});
-					}
-
-					if (allowed_roles) {
-						const portal_channel = voice_channel.guild.channels.cache
-							.find(c => c.id === portal_object.id);
-
-						if (portal_channel) {
-							portal_channel
-								.overwritePermissions(permission_overwrites)
-								.then(() => {
-									return resolve({
-										result: true,
-										value: `attribute ${ctgr.join('.') + '.' + attr} set ` +
-											`successfully to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
-
-									});
-								})
-								.catch(e => {
-									return resolve({
-										result: false,
-										value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
-									});
-								});
+						if (message.guild) {
+							permission_overwrites.push({
+								id: portal_object.creator_id,
+								allow: ['CONNECT']
+							}, {
+								id: message.guild.roles.everyone.id,
+								deny: ['CONNECT']
+							});
 						}
 					} else {
-						return resolve({
-							result: false,
-							value: `attribute p.allowed_roles can only be a role`
-						});
+						if (message && message.guild) {
+							permission_overwrites.push({
+								id: message.guild.roles.everyone.id,
+								allow: ['CONNECT']
+							});
+						}
 					}
+
+					const portal_channel = voice_channel.guild.channels.cache
+						.find(c => c.id === portal_object.id);
+
+					if (portal_channel) {
+						portal_channel
+							.overwritePermissions(permission_overwrites)
+							.then(r => {
+								const roles = message.mentions.everyone
+									? '@everyone'
+									: message.mentions.roles
+										.map(r => `@${r.name}`)
+										.join(', ');
+
+								return resolve({
+									result: !!r,
+									value: r
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${roles}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${roles}\``
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+								});
+							});
+					}
+				} else {
+					return resolve({
+						result: false,
+						value: `attribute p.allowed_roles can only be one or more roles`
+					});
 				}
 			});
 		},
@@ -454,7 +467,7 @@ const attributes: InterfaceBlueprint[] = [
 				}
 			}
 
-			return 'N/A';
+			return '@everyone';
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
@@ -464,26 +477,32 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'allowed_roles';
 
 			return new Promise((resolve) => {
-				if (message.mentions && message.mentions.roles) {
-					if (message.mentions.roles.array().length === 0) {
+				if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
+					if (!message.mentions.everyone && message.mentions.roles.array().length === 0) {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be a role`
+							value: `attribute p.v.allowed_roles can only be one or more roles`
 						});
 					}
 
-					const allowed_roles = message.mentions.roles.map(r => r.id);
+					const allowed_roles = message.mentions.everyone
+						? message.guild?.roles.everyone.id
+						: message.mentions.roles.map(r => r.id);
 
 					if (allowed_roles) {
 						update_portal(guild_object.id, portal_object.id, attr, allowed_roles)
 							.then(r => {
+								const roles = message.mentions.everyone
+									? '@everyone'
+									: message.mentions.roles
+										.map(r => `@${r.name}`)
+										.join(', ');
+
 								return resolve({
 									result: r,
 									value: r
-										? `attribute ${ctgr.join('.') + '.' + attr} set successfully ` +
-										`to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
-										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set ` +
-										`to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${roles}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${roles}\``
 								});
 							})
 							.catch(e => {
@@ -495,7 +514,7 @@ const attributes: InterfaceBlueprint[] = [
 					} else {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be a role`
+							value: `attribute p.allowed_roles can only be one or more roles`
 						});
 					}
 				}
@@ -534,7 +553,7 @@ const attributes: InterfaceBlueprint[] = [
 					.join(', ')}`
 			}
 
-			return 'N/A';
+			return '@everyone';
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
@@ -544,56 +563,75 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'allowed_roles';
 
 			return new Promise((resolve) => {
-				if (message.mentions && message.mentions.roles) {
-					if (message.mentions.roles.array().length === 0) {
+				if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
+					if (!message.mentions.everyone && message.mentions.roles.array().length === 0) {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be a role`
+							value: `attribute p.allowed_roles can only be one or more roles`
 						});
 					}
 
-					const allowed_roles = message.mentions.roles.map(r => r.id);
+					let permission_overwrites: OverwriteResolvable[] = [];
 
-					const permission_overwrites = message.mentions.roles
-						.map(id => <OverwriteResolvable>{
-							id: id,
-							allow: ['CONNECT']
-						});
+					if (!message.mentions.everyone) {
+						permission_overwrites = message.mentions.roles
+							.map(id => <OverwriteResolvable>{
+								id: id,
+								allow: ['CONNECT']
+							});
 
-					if (message.guild) {
-						permission_overwrites.push({
-							id: voice_object.creator_id,
-							allow: ['CONNECT']
-						}, {
-							id: message.guild.roles.everyone.id,
-							deny: ['CONNECT']
-						});
-					}
-
-					if (allowed_roles) {
-						if (voice_channel) {
-							voice_channel
-								.overwritePermissions(permission_overwrites)
-								.then(() => {
-									return resolve({
-										result: true,
-										value: `attribute ${ctgr.join('.') + '.' + attr} set ` +
-											`successfully to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
-									});
-								})
-								.catch(e => {
-									return resolve({
-										result: false,
-										value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
-									});
-								});
+						if (message.guild) {
+							permission_overwrites.push({
+								id: portal_object.creator_id,
+								allow: ['CONNECT']
+							}, {
+								id: message.guild.roles.everyone.id,
+								deny: ['CONNECT']
+							});
 						}
+					} else {
+						if (message && message.guild) {
+							permission_overwrites.push({
+								id: message.guild.roles.everyone.id,
+								allow: ['CONNECT']
+							});
+						}
+					}
+
+					if (voice_channel) {
+						voice_channel
+							.overwritePermissions(permission_overwrites)
+							.then(r => {
+								const roles = message.mentions.everyone
+									? '@everyone'
+									: message.mentions.roles
+										.map(r => `@${r.name}`)
+										.join(', ');
+
+								return resolve({
+									result: !!r,
+									value: r
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${roles}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${roles}\``
+								});
+							})
+							.catch(e => {
+								return resolve({
+									result: false,
+									value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+								});
+							});
 					} else {
 						return resolve({
 							result: false,
-							value: `attribute p.allowed_roles can only be a role`
+							value: `attribute p.allowed_roles can only be one or more roles`
 						});
 					}
+				} else {
+					return resolve({
+						result: false,
+						value: `attribute v.allowed_roles can only be one or more roles`
+					});
 				}
 			});
 		},
