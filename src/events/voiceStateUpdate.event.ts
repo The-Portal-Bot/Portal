@@ -320,35 +320,6 @@ module.exports = async (
 
 										return reject(`portal channel does not allow bots`);
 									}
-
-									if ((p.allowed_roles && p.creator_id !== args.newState.member?.id) &&
-										!args.newState.member?.user.bot) {
-										for (const role of args.newState.guild.roles.cache) {
-											if (role[1].id === p.allowed_roles) {
-												let has_role = false;
-												for (const member of role[1].members) {
-													if (member[1].id === args.newState.member?.id) {
-														has_role = true;
-													}
-												}
-
-												if (!has_role) {
-													args.newState
-														.kick(`you don't have role ${role[1]} to enter this portal channel`)
-														.catch(e => {
-															return reject(`failed to kick / ${e}`);
-														});
-
-													channel_empty_check(new_channel, guild_object, args.client)
-														.catch(e => {
-															logger.error(new Error(`failed to check channel state / ${e}`));
-														});
-
-													return reject(`you don't have role ${role[1]} to enter this portal channel`);
-												}
-											}
-										}
-									}
 								}
 
 								for (let i = 0; i < p.voice_list.length; i++) {
@@ -368,35 +339,6 @@ module.exports = async (
 												});
 
 											return reject(`voice channel does not allow bots`);
-										}
-
-										if (v.allowed_roles && v.creator_id !== args.newState.member?.id &&
-											!args.newState.member?.user.bot) {
-											for (const role of args.newState.guild.roles.cache) {
-												if (role[1].id === v.allowed_roles) {
-													let has_role = false;
-													for (const member of role[1].members) {
-														if (member[1].id === args.newState.member?.id) {
-															has_role = true;
-														}
-													}
-
-													if (!has_role) {
-														args.newState
-															.kick(`you don't have role ${role[1]} to enter this voice channel`)
-															.catch(e => {
-																return reject(`failed to kick / ${e}`);
-															});
-
-														channel_empty_check(new_channel, guild_object, args.client)
-															.catch(e => {
-																logger.error(new Error(`failed to check channel state / ${e}`));
-															});
-
-														return reject(`you don't have role ${role[1]} to enter this voice channel`);
-													}
-												}
-											}
 										}
 									}
 								}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
 	CategoryChannel, Collection, CollectorFilter, Guild, GuildCreateChannelOptions,
-	GuildMember, Message, MessageCollector, Role, TextChannel, VoiceChannel, VoiceState
+	GuildMember, Message, MessageCollector, OverwriteResolvable, Role, TextChannel, VoiceChannel, VoiceState
 } from "discord.js";
 import moment from "moment";
 import voca from 'voca';
@@ -145,12 +145,42 @@ export function create_voice_channel(
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
 		if (state && state.channel) {
-			const voice_options: GuildCreateChannelOptions = {
-				type: 'voice',
-				bitrate: 96000,
-				userLimit: portal_object.user_limit_portal,
-				parent: state.channel.parent ? state.channel.parent : undefined
-			};
+			let voice_options: GuildCreateChannelOptions;
+
+			if (portal_object.allowed_roles) {
+				const permission_overwrites = portal_object.allowed_roles
+					.map(id => <OverwriteResolvable>{
+						id: id,
+						allow: ['CONNECT']
+					});
+
+				permission_overwrites.push({
+					id: state.guild.roles.everyone.id,
+					deny: ['CONNECT']
+				});
+
+				if (state.member) {
+					permission_overwrites.push({
+						id: state.member.id,
+						allow: ['CONNECT']
+					});
+				}
+
+				voice_options = {
+					type: 'voice',
+					bitrate: 96000,
+					userLimit: portal_object.user_limit_portal,
+					parent: state.channel.parent ? state.channel.parent : undefined,
+					permissionOverwrites: permission_overwrites
+				};
+			} else {
+				voice_options = {
+					type: 'voice',
+					bitrate: 96000,
+					userLimit: portal_object.user_limit_portal,
+					parent: state.channel.parent ? state.channel.parent : undefined
+				};
+			}
 
 			state.channel.guild.channels
 				.create('loading..', voice_options)
@@ -158,7 +188,7 @@ export function create_voice_channel(
 					if (state.member) {
 						const new_voice = new VoiceChannelPrtl(
 							channel.id, state.member.id, portal_object.render, portal_object.regex_voice, portal_object.no_bots,
-							portal_object.allowed_roles, portal_object.locale, portal_object.ann_announce, portal_object.ann_user);
+							portal_object.locale, portal_object.ann_announce, portal_object.ann_user);
 
 						insert_voice(state.member.guild.id, portal_object.id, new_voice)
 							.catch(e => {
@@ -347,7 +377,7 @@ export async function create_focus_channel(
 
 				insert_voice(guild.id, portal_object.id, new VoiceChannelPrtl(
 					channel.id, member.id, portal_object.render, chatroom_name, portal_object.no_bots,
-					null, portal_object.locale, portal_object.ann_announce, portal_object.ann_user
+					portal_object.locale, portal_object.ann_announce, portal_object.ann_user
 				))
 					.catch(e => {
 						return resolve({

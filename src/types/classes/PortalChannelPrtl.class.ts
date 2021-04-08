@@ -9,7 +9,7 @@ export class PortalChannelPrtl {
 	public regex_voice: string;
 	public voice_list: VoiceChannelPrtl[];
 	public no_bots: boolean;
-	public allowed_roles: string | null;
+	public allowed_roles: [string] | null;
 	public locale: number;
 	public ann_announce: boolean;
 	public ann_user: boolean;
@@ -24,7 +24,7 @@ export class PortalChannelPrtl {
 		regex_voice: string,
 		voice_list: VoiceChannelPrtl[],
 		no_bots: boolean,
-		allowed_roles: string | null,
+		allowed_roles: [string] | null,
 		locale: number,
 		ann_announce: boolean,
 		ann_user: boolean,
@@ -55,7 +55,7 @@ export interface IPortalChannelPrtl extends Document {
 	regex_voice: string;
 	voice_list: [VoiceChannelPrtl];
 	no_bots: boolean;
-	allowed_roles: string | null;
+	allowed_roles: [string] | null;
 	locale: number;
 	ann_announce: boolean;
 	ann_user: boolean;

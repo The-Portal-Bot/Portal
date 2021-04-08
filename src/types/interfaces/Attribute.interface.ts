@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Message, MessageEmbed, VoiceChannel } from 'discord.js';
+import { Guild, GuildMember, Message, MessageEmbed, OverwriteResolvable, VoiceChannel } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
 import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
@@ -32,7 +32,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -171,7 +173,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -313,19 +317,30 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
-				if (portal_object.allowed_roles) {
-					const allowed_role = voice_channel.guild.roles.cache
-						.find(r => r.id === portal_object.allowed_roles);
+				const portal_channel = voice_channel.guild.channels.cache
+					.find(c => c.id === portal_object.id);
 
-					if (allowed_role) {
-						return `tsiakkas: ${allowed_role.name}`;
-					} else {
-						return 'N/A';
-					}
+				if (portal_channel && portal_channel.permissionOverwrites.size > 0) {
+					return `${portal_channel.permissionOverwrites
+						.filter(p => p.type === 'role')
+						.filter(p => p.allow.bitfield === 1048576)
+						.map(p => {
+							const role = voice_channel.guild.roles.cache
+								.find(r => r.id === p.id);
+
+							if (role) {
+								return `${role.name}`;
+							} else {
+								return 'N/A';
+							}
+						})
+						.join(', ')}`
 				}
 			}
 
@@ -347,16 +362,128 @@ const attributes: InterfaceBlueprint[] = [
 						});
 					}
 
-					const allowed_role = message.mentions.roles.first();
+					const allowed_roles = message.mentions.roles.map(r => r.id);
 
-					if (allowed_role) {
-						update_portal(guild_object.id, portal_object.id, attr, allowed_role.id)
+					const permission_overwrites = message.mentions.roles
+						.map(id => <OverwriteResolvable>{
+							id: id,
+							allow: ['CONNECT']
+						});
+
+					if (message.guild) {
+						permission_overwrites.push({
+							id: portal_object.creator_id,
+							allow: ['CONNECT']
+						}, {
+							id: message.guild.roles.everyone.id,
+							deny: ['CONNECT']
+						});
+					}
+
+					if (allowed_roles) {
+						const portal_channel = voice_channel.guild.channels.cache
+							.find(c => c.id === portal_object.id);
+
+						if (portal_channel) {
+							portal_channel
+								.overwritePermissions(permission_overwrites)
+								.then(() => {
+									return resolve({
+										result: true,
+										value: `attribute ${ctgr.join('.') + '.' + attr} set ` +
+											`successfully to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
+
+									});
+								})
+								.catch(e => {
+									return resolve({
+										result: false,
+										value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+									});
+								});
+						}
+					} else {
+						return resolve({
+							result: false,
+							value: `attribute p.allowed_roles can only be a role`
+						});
+					}
+				}
+			});
+		},
+		auth: AuthEnum.portal
+	},
+	{
+		name: 'p.v.allowed_roles',
+		hover: 'the role given to the spawned voice channels',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl
+		): string[] | string => {
+			if (!voice_object) {
+				return 'N/A';
+			}
+			if (!voice_channel) {
+				return 'N/A';
+			}
+			if (!portal_object_list) {
+				return 'N/A';
+			}
+
+			const portal_object = portal_object_list.find(portal =>
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
+			);
+
+			if (portal_object && portal_object.allowed_roles) {
+				const allowed_roles = voice_channel.guild.roles.cache
+					.filter(r => {
+						if (portal_object.allowed_roles) {
+							return portal_object.allowed_roles
+								.some(id => id === r.id);
+						} else {
+							return false;
+						}
+					});
+
+				if (allowed_roles) {
+					return `${allowed_roles.map(r => r.name).join(', ')}`;
+				} else {
+					return 'N/A';
+				}
+			}
+
+			return 'N/A';
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
+		): Promise<ReturnPormise> => {
+			const ctgr = ['p', 'v'];
+			const attr = 'allowed_roles';
+
+			return new Promise((resolve) => {
+				if (message.mentions && message.mentions.roles) {
+					if (message.mentions.roles.array().length === 0) {
+						return resolve({
+							result: false,
+							value: `attribute p.allowed_roles can only be a role`
+						});
+					}
+
+					const allowed_roles = message.mentions.roles.map(r => r.id);
+
+					if (allowed_roles) {
+						update_portal(guild_object.id, portal_object.id, attr, allowed_roles)
 							.then(r => {
 								return resolve({
 									result: r,
 									value: r
-										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${allowed_role.name}\``
-										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${allowed_role.name}\``
+										? `attribute ${ctgr.join('.') + '.' + attr} set successfully ` +
+										`to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
+										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set ` +
+										`to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
 								});
 							})
 							.catch(e => {
@@ -390,15 +517,21 @@ const attributes: InterfaceBlueprint[] = [
 				return 'N/A';
 			}
 
-			if (voice_object.allowed_roles) {
-				const allowed_role = voice_channel.guild.roles.cache
-					.find(r => r.id === voice_object.allowed_roles);
+			if (voice_channel.permissionOverwrites.size > 0) {
+				return `${voice_channel.permissionOverwrites
+					.filter(p => p.type === 'role')
+					.filter(p => p.allow.bitfield === 1048576)
+					.map(p => {
+						const role = voice_channel.guild.roles.cache
+							.find(r => r.id === p.id);
 
-				if (allowed_role) {
-					return `tsiakkas: ${allowed_role.name}`;
-				} else {
-					return 'N/A';
-				}
+						if (role) {
+							return `${role.name}`;
+						} else {
+							return 'N/A';
+						}
+					})
+					.join(', ')}`
 			}
 
 			return 'N/A';
@@ -419,24 +552,42 @@ const attributes: InterfaceBlueprint[] = [
 						});
 					}
 
-					const allowed_role = message.mentions.roles.first();
+					const allowed_roles = message.mentions.roles.map(r => r.id);
 
-					if (allowed_role) {
-						update_portal(guild_object.id, portal_object.id, attr, allowed_role.id)
-							.then(r => {
-								return resolve({
-									result: r,
-									value: r
-										? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${allowed_role.name}\``
-										: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${allowed_role.name}\``
+					const permission_overwrites = message.mentions.roles
+						.map(id => <OverwriteResolvable>{
+							id: id,
+							allow: ['CONNECT']
+						});
+
+					if (message.guild) {
+						permission_overwrites.push({
+							id: voice_object.creator_id,
+							allow: ['CONNECT']
+						}, {
+							id: message.guild.roles.everyone.id,
+							deny: ['CONNECT']
+						});
+					}
+
+					if (allowed_roles) {
+						if (voice_channel) {
+							voice_channel
+								.overwritePermissions(permission_overwrites)
+								.then(() => {
+									return resolve({
+										result: true,
+										value: `attribute ${ctgr.join('.') + '.' + attr} set ` +
+											`successfully to \`${message.mentions.roles.map(r => r.name).join(', ')}\``
+									});
+								})
+								.catch(e => {
+									return resolve({
+										result: false,
+										value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+									});
 								});
-							})
-							.catch(e => {
-								return resolve({
-									result: false,
-									value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
-								});
-							});
+						}
 					} else {
 						return resolve({
 							result: false,
@@ -463,7 +614,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -602,7 +755,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -1056,7 +1211,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -1216,7 +1373,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -1291,7 +1450,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -1342,7 +1503,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -1480,7 +1643,9 @@ const attributes: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice => voice.id === voice_object.id)
+				portal.voice_list.some(voice =>
+					voice.id === voice_object.id
+				)
 			);
 
 			if (portal_object) {
@@ -1745,9 +1910,8 @@ export function get_attribute(
 	for (let l = 0; l < attributes.length; l++) {
 		if (attr === attributes[l].name) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-			return attributes[l].get(
-				voice_channel, voice_object, portal_object_list, guild_object, guild
-			);
+			return attributes[l]
+				.get(voice_channel, voice_object, portal_object_list, guild_object, guild);
 		}
 	}
 

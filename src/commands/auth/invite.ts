@@ -1,5 +1,5 @@
 import { InviteOptions, Message, TextChannel } from "discord.js";
-import { get_json, message_help } from "../../libraries/help.library";
+import { get_json, is_mod, message_help } from "../../libraries/help.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
@@ -12,6 +12,21 @@ module.exports = async (
 				value: 'guild could not be fetched'
 			});
 		}
+
+		if (!message.member) {
+			return resolve({
+				result: false,
+				value: 'member could not be fetched'
+			});
+		}
+
+		if (!is_mod(message.member)) {
+			return resolve({
+				result: false,
+				value: `you must be a portal moderator to ban users`
+			});
+		}
+		
 		if (args.length <= 0) {
 			return resolve({
 				result: false,
