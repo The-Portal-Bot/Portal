@@ -79,6 +79,7 @@ const GuildPrtlSchm = new Schema(
 		announcement: { type: String, required: true },
 		locale: { type: Number, required: true },
 		announce: { type: Boolean, required: true },
+		mute_role: { type: String, required: true },
 		rank_speed: { type: Number, required: true },
 		profanity_level: { type: Number, required: true },
 		premium: { type: Boolean, required: true },

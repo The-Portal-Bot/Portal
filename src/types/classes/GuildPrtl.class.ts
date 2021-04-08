@@ -41,6 +41,7 @@ export class GuildPrtl {
 	public music_data: MusicData;
 	public music_queue: VideoSearchResult[];
 	public announcement: string | null;
+	public mute_role: string | null;
 	public locale: number;
 	public announce: boolean;
 	public rank_speed: number;
@@ -63,6 +64,7 @@ export class GuildPrtl {
 		announcement: string | null,
 		locale: number,
 		announce: boolean,
+		mute_role: string | null,
 		rank_speed: number,
 		profanity_level: number,
 		premium: boolean,
@@ -82,6 +84,7 @@ export class GuildPrtl {
 		this.announcement = announcement;
 		this.locale = locale;
 		this.announce = announce;
+		this.mute_role = mute_role;
 		this.rank_speed = rank_speed;
 		this.profanity_level = profanity_level;
 		this.premium = premium;
@@ -104,6 +107,7 @@ export interface IGuildPrtl extends Document {
 	announcement: string | null;
 	locale: number;
 	announce: boolean;
+	mute_role: string | null;
 	rank_speed: number;
 	profanity_level: number;
 	premium: boolean;

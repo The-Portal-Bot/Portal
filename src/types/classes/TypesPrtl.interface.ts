@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { VoiceConnection } from "discord.js";
 
-export interface MongoPromise { 
+export interface MongoPromise {
 	ok?: number | undefined;
 	n?: number | undefined;
 	nModified?: number | undefined;
@@ -77,18 +77,24 @@ export interface ActiveCooldowns {
 	member: ActiveCooldown[];
 }
 
+export interface SpamCache {
+	member_id: string;
+	timestamp: Date | null;
+	spam_number: number;
+}
+
 export interface TimeElapsed {
-	timeout_min: number; 
-	timeout_sec: number; 
-	remaining_hrs: number; 
-	remaining_min: number; 
+	timeout_min: number;
+	timeout_sec: number;
+	remaining_hrs: number;
+	remaining_min: number;
 	remaining_sec: number;
 }
 
 export interface TimeRemaining {
-	timeout_min: number; 
-	timeout_sec: number; 
-	remaining_min: number; 
+	timeout_min: number;
+	timeout_sec: number;
+	remaining_min: number;
 	remaining_sec: number;
 }
 

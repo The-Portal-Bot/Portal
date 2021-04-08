@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { ProfaneWords } from '../data/lists/profane_words.static';
+import { Message } from 'discord.js';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
-import { Language } from '../types/classes/TypesPrtl.interface';
+import { ProfaneWords } from '../data/lists/profane_words.static';
+import { Language, SpamCache } from '../types/classes/TypesPrtl.interface';
 
 const profane_words: Language = <Language>ProfaneWords;
 
@@ -43,4 +44,29 @@ export function isProfane(
 	return (gr.length > 0 || false) || (en.length > 0 || false) || (de.length > 0 || false)
 		? gr.concat(en).concat(de)
 		: [];
+}
+
+/**
+   * Determine if a user is spamming
+   * @param {string} string - String to evaluate for profanity
+   */
+export function messageSpamCheck(
+	message: Message, spam_cache: SpamCache[]
+): void {
+	// export interface SpamCache {
+	// 	member_id: string;
+	// 	timestamp: string;
+	// 	spam_number: number;
+	// }
+	// const member_spam_cache = spam_cache.find(c => c.member_id === message.id);
+
+	// if (member_spam_cache) {
+	// 	if (momentmember_spam_cache.timestamp)
+	// } else {
+	// 	spam_cache.push({
+	// 		member_id: message.id,
+	// 		timestamp: new Date(),
+	// 		spam_number: 1
+	// 	});
+	// }
 }
