@@ -154,10 +154,12 @@ export function create_voice_channel(
 						allow: ['CONNECT']
 					});
 
-				permission_overwrites.push({
-					id: state.guild.roles.everyone.id,
-					deny: ['CONNECT']
-				});
+				if (!portal_object.allowed_roles.some(id => id === state.guild.roles.everyone.id)) {
+					permission_overwrites.push({
+						id: state.guild.roles.everyone.id,
+						deny: ['CONNECT']
+					});
+				}
 
 				if (state.member) {
 					permission_overwrites.push({
