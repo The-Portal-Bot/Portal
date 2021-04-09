@@ -93,8 +93,8 @@ export function is_announcement_channel(channel_id: string, guild_object: GuildP
 
 //
 
-export function get_role(guild: Guild, role_name_or_name: string): Role | undefined {
-	return guild.roles.cache.find(cached_role =>
+export function get_role(guild: Guild | null, role_name_or_name: string): Role | undefined {
+	return guild?.roles.cache.find(cached_role =>
 		cached_role.id === role_name_or_name || cached_role.name === role_name_or_name
 	);
 }

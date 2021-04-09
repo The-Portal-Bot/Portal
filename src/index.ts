@@ -179,11 +179,11 @@ client.on('message', async (message: Message) => {
 
 			if (portal_preprocessor(message, guild_object)) {
 				// preprocessor has handled the message
-				messageSpamCheck(message, spam_cache);
+				messageSpamCheck(message, guild_object, spam_cache);
 
 				return true;
 			} else {
-				messageSpamCheck(message, spam_cache);
+				messageSpamCheck(message, guild_object, spam_cache);
 
 				// Ignore any message that does not start with prefix
 				if (message.content.indexOf(guild_object.prefix) !== 0) {
@@ -351,12 +351,13 @@ function command_loader(
 			if (response) {
 				if (response.result) {
 					if (message.guild) {
-						active_cooldowns[type_string].push({
-							member: message.author.id,
-							guild: message.guild.id,
-							command: command,
-							timestamp: Date.now()
-						});
+						active_cooldowns[type_string]
+							.push({
+								member: message.author.id,
+								guild: message.guild.id,
+								command: command,
+								timestamp: Date.now()
+							});
 
 						if (command_options) {
 							setTimeout(() => {

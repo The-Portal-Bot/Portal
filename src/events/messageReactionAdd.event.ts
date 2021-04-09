@@ -42,52 +42,60 @@ async function reaction_role_manager(
 			return reject('could not fetch member');
 		}
 
-		role_list_object.role_emote_map.some(role_map => {
-			if (messageReaction.message.guild) {
-				if (role_map.give === messageReaction.emoji.name) { // give role
-					const role_to_give = get_role(messageReaction?.message?.guild, role_map.role_id);
-					if (role_to_give) {
-						try {
-							current_member.roles
-								.add(role_to_give)
-								.then(member => {
-									if (member) {
-										return resolve(`you have been assigned to ${role_map.role_id}`);
-									} else {
-										return reject(`Portal's role must be higher than role you want to get, contact server admin`);
-									}
-								})
-								.catch(e => {
-									return reject(`Portal's role must be higher than role you want to get, contact server admin / ${e}`);
-								});
+		role_list_object.role_emote_map
+			.some(role_map => {
+				if (messageReaction.message.guild) {
+					if (role_map.give === messageReaction.emoji.name) { // give role
+						const role_to_give = get_role(messageReaction?.message?.guild, role_map.role_id);
+						if (role_to_give) {
+							try {
+								current_member.roles
+									.add(role_to_give)
+									.then(member => {
+										if (member) {
+											return resolve(`you have been assigned ` +
+												`to ${role_map.role_id}`);
+										} else {
+											return reject(`Portal's role must be higher ` +
+												`than role you want to get, contact server admin`);
+										}
+									})
+									.catch(e => {
+										return reject(`Portal's role must be higher than ` +
+											`role you want to get, contact server admin / ${e}`);
+									});
+							}
+							catch (e) {
+								return reject(`failed to assign role ${role_map.role_id}`);
+							}
 						}
-						catch (e) {
-							return reject(`failed to assign role ${role_map.role_id}`);
-						}
-					}
-				} else if (role_map.strip === messageReaction.emoji.name) {
-					const role_to_strip = get_role(messageReaction?.message?.guild, role_map.role_id);
-					if (role_to_strip) {
-						try {
-							current_member.roles.remove(role_to_strip)
-								.then(member => {
-									if (member) {
-										return resolve(`you have been removed from ${role_map.role_id}`);
-									} else {
-										return reject(`Portal's role must be higher than role you want to be removed from, contact server admin`);
-									}
-								})
-								.catch(e => {
-									return reject(`Portal's role must be higher than role you want to be removed from, contact server admin / ${e}`);
-								});
-						}
-						catch (e) {
-							return reject(`failed to strip role ${role_map.role_id} / ${e}`);
+					} else if (role_map.strip === messageReaction.emoji.name) {
+						const role_to_strip = get_role(messageReaction?.message?.guild, role_map.role_id);
+						if (role_to_strip) {
+							try {
+								current_member.roles
+									.remove(role_to_strip)
+									.then(member => {
+										if (member) {
+											return resolve(`you have been removed ` +
+												`from ${role_map.role_id}`);
+										} else {
+											return reject(`Portal's role must be higher ` +
+												`than role you want to be removed from, contact server admin`);
+										}
+									})
+									.catch(e => {
+										return reject(`Portal's role must be higher than ` +
+											`role you want to be removed from, contact server admin / ${e}`);
+									});
+							}
+							catch (e) {
+								return reject(`failed to strip role ${role_map.role_id} / ${e}`);
+							}
 						}
 					}
 				}
-			}
-		});
+			});
 	});
 }
 

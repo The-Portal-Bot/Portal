@@ -25,11 +25,11 @@ module.exports = async (
 											args.member.roles
 												.add(initial_role)
 												.catch(e => {
-													return reject(`failed to send join message / ${e}`);
+													return reject(`failed to give role to member / ${e}`);
 												});
 										}
 										catch (e) {
-											console.error(e);
+											return reject(`failed to give role to member / ${e}`);
 										}
 									}
 								}

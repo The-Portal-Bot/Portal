@@ -1,0 +1,7 @@
+{
+  "dupl_after": 2,
+  "warn_after": 3,
+  "mute_after": 5,
+  "mute_period": 0.1,
+  "message_interval": 1000
+}

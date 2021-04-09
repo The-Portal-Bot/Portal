@@ -681,9 +681,13 @@ export function time_elapsed(
 	const timeout_time = timeout * 60 * 1000;
 	const el = moment
 		.duration(moment()
-			.diff(moment(typeof timestamp === 'number'
-				? timestamp
-				: timestamp.getTime())));
+			.diff(
+				moment(typeof timestamp === 'number'
+					? timestamp
+					: timestamp.getTime()
+				)
+			)
+		);
 
 	const timeout_min = moment(timeout_time).minutes();
 	const timeout_sec = moment(timeout_time).seconds();
