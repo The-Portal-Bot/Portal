@@ -172,7 +172,9 @@ export function create_voice_channel(
 					type: 'voice',
 					bitrate: 96000,
 					userLimit: portal_object.user_limit_portal,
-					parent: state.channel.parent ? state.channel.parent : undefined,
+					parent: state.channel.parent
+						? state.channel.parent
+						: undefined,
 					permissionOverwrites: permission_overwrites
 				};
 			} else {
@@ -180,7 +182,9 @@ export function create_voice_channel(
 					type: 'voice',
 					bitrate: 96000,
 					userLimit: portal_object.user_limit_portal,
-					parent: state.channel.parent ? state.channel.parent : undefined
+					parent: state.channel.parent
+						? state.channel.parent
+						: undefined
 				};
 			}
 

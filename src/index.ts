@@ -12,7 +12,7 @@ import config from './config.json';
 import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
-import { isProfane, messageSpamCheck } from "./libraries/mod.library";
+import { isProfane, message_spam_check } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, insert_member, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
@@ -179,11 +179,11 @@ client.on('message', async (message: Message) => {
 
 			if (portal_preprocessor(message, guild_object)) {
 				// preprocessor has handled the message
-				messageSpamCheck(message, guild_object, spam_cache);
+				message_spam_check(message, guild_object, spam_cache);
 
 				return true;
 			} else {
-				messageSpamCheck(message, guild_object, spam_cache);
+				message_spam_check(message, guild_object, spam_cache);
 
 				// Ignore any message that does not start with prefix
 				if (message.content.indexOf(guild_object.prefix) !== 0) {

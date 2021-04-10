@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Message } from 'discord.js';
+import { BanOptions, Message } from 'discord.js';
 import moment from "moment";
 import config_spam from '../config.spam.json';
 import config from '../config.json';
@@ -11,6 +11,8 @@ import { GuildPrtl } from '../types/classes/GuildPrtl.class';
 import { Language, SpamCache } from '../types/classes/TypesPrtl.interface';
 import { get_role } from './guild.library';
 import { logger, message_reply } from './help.library';
+import { update_member } from './mongo.library';
+import { ban, kick } from './user.library';
 
 const profane_words: Language = <Language>ProfaneWords;
 
@@ -54,7 +56,7 @@ export function isProfane(
 /**
    * Determine if a user is spamming
    */
-export function messageSpamCheck(
+export function message_spam_check(
 	message: Message, guild_object: GuildPrtl, spam_cache: SpamCache[]
 ): void {
 	const member_spam_cache = spam_cache
@@ -78,26 +80,82 @@ export function messageSpamCheck(
 					member_spam_cache.dupl_fouls = 0;
 				}
 
-				if (member_spam_cache.dupl_fouls === config_spam.dupl_after) {
+				if (config_spam.dupl_after !== 0 && member_spam_cache.dupl_fouls >= config_spam.dupl_after) {
 					message_reply(false, message, `please stop spamming the same message (this is a warning)`, false, true)
 						.catch((e: any) => {
 							logger.error(new Error(`failed to reply to message / ${e}`));
 						});
 
 					member_spam_cache.timestamp = new Date();
-				} else if (member_spam_cache.spam_fouls === config_spam.warn_after) {
+				} else if (config_spam.warn_after !== 0 && member_spam_cache.spam_fouls >= config_spam.warn_after) {
 					message_reply(false, message, `please stop spamming (this is a warning)`, false, true)
 						.catch((e: any) => {
 							logger.error(new Error(`failed to reply to message / ${e}`));
 						});
 
 					member_spam_cache.timestamp = new Date();
-				} else if (member_spam_cache.spam_fouls === config_spam.mute_after) {
+				} else if (config_spam.mute_after !== 0 && member_spam_cache.spam_fouls >= config_spam.mute_after) {
 					member_spam_cache.timestamp = null;
 					member_spam_cache.spam_fouls = 0;
 
-					if (guild_object.mute_role) {
-						mute_user(message, guild_object.mute_role);
+					if (config_spam.kick_after !== 0 && guild_object.member_list[0].penalties + 1 >= config_spam.kick_after) {
+						if (message.member) {
+							kick(message.member, 'kicked due to spamming')
+								.then(r => {
+									const reply_message = r
+										? `kicked ${message.author} due to spamming`
+										: `member ${message.author} cannot be kicked`;
+
+									message_reply(false, message, reply_message, false, true)
+										.catch((e: any) => {
+											logger.error(new Error(`failed to reply to message / ${e}`));
+										});
+								})
+								.catch(e => {
+									logger.error(new Error(`failed to kick member / ${e}`));
+								});
+						} else {
+							message_reply(false, message, `could not kick ${message.author}`, false, true)
+								.catch((e: any) => {
+									logger.error(new Error(`failed to reply to message / ${e}`));
+								});
+						}
+					} else if (config_spam.ban_after !== 0 && guild_object.member_list[0].penalties + 1 >= config_spam.ban_after) {
+						if (message.member) {
+							const ban_options: BanOptions = {
+								days: 0,
+								reason: 'banned due to spamming'
+							};
+
+							ban(message.member, ban_options)
+								.then(r => {
+									const reply_message = r
+										? `banned ${message.author} due to spamming`
+										: `member ${message.author} cannot be banned`;
+
+									message_reply(false, message, reply_message, false, true)
+										.catch((e: any) => {
+											logger.error(new Error(`failed to reply to message / ${e}`));
+										});
+								})
+								.catch(e => {
+									logger.error(new Error(`failed to ban member / ${e}`));
+								});
+						} else {
+							message_reply(false, message, `could not kick ${message.author}`, false, true)
+								.catch((e: any) => {
+									logger.error(new Error(`failed to reply to message / ${e}`));
+								});
+						}
+					} else {
+						update_member(guild_object.id, message.id, 'penalties', guild_object.member_list[0].penalties + 1)
+							.catch(e => {
+								logger.error(new Error(`failed to update member / ${e}`));
+							});
+
+						if (guild_object.mute_role) {
+							mute_user(message, guild_object.mute_role);
+						}
 					}
 				}
 			} else {

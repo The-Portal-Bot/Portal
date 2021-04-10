@@ -387,8 +387,8 @@
                 "premium": true,
                 "reply": true,
                 "delete": {
-                    "source": false,
-                    "reply": false
+                    "source": true,
+                    "reply": true
                 }
             },
             {

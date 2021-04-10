@@ -1,7 +1,7 @@
 {
     "name": "portal",
     "author": "Ioannis Tsiakkas",
-    "version": "0.6.7",
+    "version": "0.6.8",
     "private": true,
     "main": "src/index.ts",
     "scripts": {
@@ -14,7 +14,7 @@
     "dependencies": {
         "@discordjs/opus": "^0.5.0",
         "@types/jsonfile": "^6.0.0",
-        "cheerio": "^1.0.0-rc.5",
+        "cheerio": "^1.0.0-rc.6",
         "core-util-is": "^1.0.2",
         "discord-ytdl-core": "^5.0.2",
         "discord.js": "^12.5.3",

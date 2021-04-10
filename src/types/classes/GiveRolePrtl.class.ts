@@ -1,18 +1,15 @@
 import { Document } from "mongoose";
 
 export class GiveRole {
-	public role_id: string;
-	public give: string;
-	public strip: string;
+	public role: string;
+	public emote: string;
 
 	constructor(
-		role_id: string,
-		give: string,
-		strip: string
+		role: string,
+		emote: string
 	) {
-		this.role_id = role_id;
-		this.give = give;
-		this.strip = strip;
+		this.role = role;
+		this.emote = emote;
 	}
 }
 

@@ -19,14 +19,8 @@ function create_role_message(
 			.send(role_message_emb)
 			.then(sent_message => {
 				for (let i = 0; i < role_map.length; i++) {
-					sent_message.react(role_map[i].give)
-						.catch((e: any) => {
-							return resolve({
-								result: false,
-								value: `failed to react to message / ${e}`
-							});
-						});
-					sent_message.react(role_map[i].strip)
+					sent_message
+						.react(role_map[i].emote)
 						.catch((e: any) => {
 							return resolve({
 								result: false,
@@ -61,19 +55,12 @@ function create_role_message(
 	});
 }
 
-function multiple_same_emote(emote_map: GiveRole[]) {
+function multiple_same_emote(
+	emote_map: GiveRole[]
+) {
 	for (let i = 0; i < emote_map.length; i++) {
 		for (let j = i + 1; j < emote_map.length; j++) {
-			if (emote_map[i].give === emote_map[j].give) {
-				return true;
-			}
-			else if (emote_map[i].give === emote_map[j].strip) {
-				return true;
-			}
-			else if (emote_map[i].strip === emote_map[j].give) {
-				return true;
-			}
-			else if (emote_map[i].strip === emote_map[j].strip) {
+			if (emote_map[i].emote === emote_map[j].emote) {
 				return true;
 			}
 		}
@@ -108,6 +95,7 @@ module.exports = async (
 				value: message_help('commands', 'role_assigner', 'must be an array in JSON format (even for one role)')
 			});
 		}
+
 		const role_map = <GiveRole[]>role_map_json;
 		if (!Array.isArray(role_map)) {
 			return resolve({
@@ -121,44 +109,38 @@ module.exports = async (
 				value: message_help('commands', 'role_assigner', 'can not have the same emote for multiple actions')
 			});
 		}
-		if (!role_map.every(rm => rm.give && rm.strip && rm.role_id)) {
+		if (!role_map.every(rm => rm.emote && rm.role)) {
 			return resolve({
 				result: false,
 				value: message_help('commands', 'role_assigner', 'JSON syntax has spelling errors')
 			});
 		}
 
-		role_map.forEach(r => {
-			r.give = r.give.trim();
-			r.strip = r.strip.trim();
-		});
+		role_map
+			.forEach(r => {
+				r.emote = r.emote.trim();
+				r.role = r.role.trim();
+			});
 
-		const role_emb_value: GiveRole[] = [];
-		const role_emb_display_give: Field[] = [];
-		const role_emb_display_strip: Field[] = [];
-
-		role_emb_display_give.push({ emote: '', role: 'React with emote to get correlating role', inline: false, });
-		role_emb_display_strip.push({ emote: '', role: 'React with emote to strip correlating role', inline: false, });
+		const role_emb_display: Field[] = [];
 
 		let return_value = '';
 		// give roles
-		const failed = role_map.some(r => {
-			if (message.guild) {
-				const role_fetched = get_role(message.guild, r.role_id);
-				if (!role_fetched) {
-					return_value = `${r.role_id} is not a role`;
+		const failed = role_map
+			.some(r => {
+				if (message.guild) {
+					const role_fetched = get_role(message.guild, r.role);
+					if (!role_fetched) {
+						return_value = `${r.role} is not a role`;
+						return true;
+					}
+
+					role_emb_display.push(new Field(r.emote, `\`\`\`@${role_fetched.name}\`\`\``, true));
+				} else {
+					return_value = `could not fetch guild of message`;
 					return true;
 				}
-
-				role_emb_display_give.push(new Field(r.give, role_fetched.name, true));
-				role_emb_display_strip.push(new Field(r.strip, role_fetched.name, true));
-				role_emb_value.push(new GiveRole(role_fetched.id, r.give, r.strip));
-			} else {
-				return_value = `could not fetch guild of message`;
-
-				return true;
-			}
-		});
+			});
 
 		if (failed) {
 			return resolve({
@@ -171,9 +153,9 @@ module.exports = async (
 			<TextChannel>message.channel,
 			guild_object,
 			'Role Assigner',
-			'',
+			'React with emote to get or remove mentioned role',
 			'#FF7F00',
-			role_emb_display_give.concat(role_emb_display_strip),
+			role_emb_display,
 			role_map
 		)
 			.then(r => {

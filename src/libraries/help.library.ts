@@ -78,7 +78,7 @@ export async function ask_for_approval(
 
 export function get_json(
 	str: string
-): any {
+): any | unknown {
 	let data = null;
 
 	try {
