@@ -119,7 +119,7 @@ module.exports = async (
 		role_map
 			.forEach(r => {
 				r.emote = r.emote.trim();
-				r.role = r.role.trim();
+				r.role.forEach(role => role.trim());
 			});
 
 		const role_emb_display: Field[] = [];
@@ -129,13 +129,22 @@ module.exports = async (
 		const failed = role_map
 			.some(r => {
 				if (message.guild) {
-					const role_fetched = get_role(message.guild, r.role);
-					if (!role_fetched) {
+					const role_fetched = r.role.map(role => get_role(message.guild, role));
+
+
+					if (role_fetched.some(role => !role)) {
 						return_value = `${r.role} is not a role`;
 						return true;
 					}
 
-					role_emb_display.push(new Field(r.emote, `\`\`\`@${role_fetched.name}\`\`\``, true));
+					role_emb_display.push(
+						new Field(
+							r.emote,
+							`\`\`\`${role_fetched.map(role =>
+								`@${role ? role.name : 'undefined'}`).join(', ')}\`\`\``,
+							true
+						)
+					);
 				} else {
 					return_value = `could not fetch guild of message`;
 					return true;

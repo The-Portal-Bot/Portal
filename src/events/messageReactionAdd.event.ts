@@ -1,4 +1,4 @@
-import { Client, MessageReaction, User } from "discord.js";
+import { Client, MessageReaction, Role, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
 import { create_rich_embed, is_authorised, is_dj, logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
@@ -46,13 +46,23 @@ async function reaction_role_manager(
 			.some(role_map => {
 				if (messageReaction.message.guild) {
 					if (role_map.emote === messageReaction.emoji.name) { // give role
-						const role = get_role(messageReaction?.message?.guild, role_map.role);
+						const role_array: Role[] = [];
+						role_map.role.map(role => {
+							const r = get_role(messageReaction.message.guild, role);
+							if (r) {
+								role_array.push(r);
+							}
+						});
 
-						if (role) {
-							if (current_member.roles.cache.some(member_role => member_role.id === role.id)) {
+						if (role_array) {
+							const has_atleast_one_role = current_member.roles.cache
+								.some(member_role => role_array
+									.some(role => role && member_role.id === role.id));
+
+							if (has_atleast_one_role) {
 								try {
 									current_member.roles
-										.remove(role)
+										.remove(role_array)
 										.then(member => {
 											if (member) {
 												return resolve(`you have been removed ` +
@@ -73,7 +83,7 @@ async function reaction_role_manager(
 							} else {
 								try {
 									current_member.roles
-										.add(role)
+										.add(role_array)
 										.then(member => {
 											if (member) {
 												return resolve(`you have been assigned ` +

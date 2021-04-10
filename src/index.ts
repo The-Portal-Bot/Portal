@@ -361,9 +361,8 @@ function command_loader(
 
 						if (command_options) {
 							setTimeout(() => {
-								active_cooldowns[type_string] =
-									active_cooldowns[type_string]
-										.filter(active => active.command !== command);
+								active_cooldowns[type_string] = active_cooldowns[type_string]
+									.filter(active => active.command !== command);
 							}, command_options.time * 60 * 1000);
 						}
 					}
