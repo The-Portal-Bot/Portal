@@ -32,7 +32,7 @@ async function reaction_role_manager(
 			.find(r => r.message_id === messageReaction.message.id);
 
 		if (!role_list_object) {
-			return resolve('message is not role assigner');
+			return resolve('message is not role adder');
 		}
 
 		const current_member = messageReaction.message.guild.members.cache
@@ -55,11 +55,11 @@ async function reaction_role_manager(
 						});
 
 						if (role_array) {
-							const has_atleast_one_role = current_member.roles.cache
+							const has_at_least_one_role = current_member.roles.cache
 								.some(member_role => role_array
 									.some(role => role && member_role.id === role.id));
 
-							if (has_atleast_one_role) {
+							if (has_at_least_one_role) {
 								try {
 									current_member.roles
 										.remove(role_array)
@@ -86,7 +86,7 @@ async function reaction_role_manager(
 										.add(role_array)
 										.then(member => {
 											if (member) {
-												return resolve(`you have been assigned ` +
+												return resolve(`you have been added ` +
 													`to ${role_map.role}`);
 											} else {
 												return reject(`Portal's role must be higher ` +
@@ -99,7 +99,7 @@ async function reaction_role_manager(
 										});
 								}
 								catch (e) {
-									return reject(`failed to assign role ${role_map.role}`);
+									return reject(`failed to add role ${role_map.role}`);
 								}
 							}
 						}

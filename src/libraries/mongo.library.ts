@@ -1075,8 +1075,8 @@ export async function remove_poll(
 
 //
 
-export async function insert_role_assigner(
-    guild_id: string, new_role_assigner: GiveRolePrtl
+export async function insert_vendor(
+    guild_id: string, new_vendor: GiveRolePrtl
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         GuildPrtlMdl
@@ -1086,7 +1086,7 @@ export async function insert_role_assigner(
                 },
                 {
                     $push: {
-                        role_list: new_role_assigner
+                        role_list: new_vendor
                     }
                 }
             )
@@ -1103,7 +1103,7 @@ export async function insert_role_assigner(
     });
 }
 
-export async function remove_role_assigner(
+export async function remove_vendor(
     guild_id: string, message_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {

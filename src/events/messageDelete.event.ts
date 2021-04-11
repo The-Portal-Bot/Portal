@@ -1,6 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { create_lyrics_message, create_music_message } from "../libraries/help.library";
-import { fetch_guild, remove_poll, remove_role_assigner } from "../libraries/mongo.library";
+import { fetch_guild, remove_poll, remove_vendor } from "../libraries/mongo.library";
 
 module.exports = async (
 	args: { client: Client, message: Message }
@@ -82,7 +82,7 @@ module.exports = async (
 					} else {
 						role_list.find(role_giver => {
 							if (role_giver.message_id === args.message.id) {
-								remove_role_assigner(guild_object.id, role_giver.message_id)
+								remove_vendor(guild_object.id, role_giver.message_id)
 									.then(r => {
 										if (r) {
 											return resolve('successfully deleted role message');

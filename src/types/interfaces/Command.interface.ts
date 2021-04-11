@@ -176,7 +176,7 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'role_assigner',
+		name: 'vendor',
 		hover: 'create roll assigning message',
 		auth: AuthEnum.admin,
 		get: null,

@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../libraries/guild.library";
 import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
-import { insert_role_assigner } from "../../libraries/mongo.library";
+import { insert_vendor } from "../../libraries/mongo.library";
 import { GiveRole, GiveRolePrtl } from "../../types/classes/GiveRolePrtl.class";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -29,7 +29,7 @@ function create_role_message(
 						});
 				}
 
-				insert_role_assigner(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
+				insert_vendor(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
 					.then(r => {
 						return resolve({
 							result: r,
@@ -82,7 +82,7 @@ module.exports = async (
 		if (args.length <= 0) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'role_assigner')
+				value: message_help('commands', 'vendor')
 			});
 		}
 
@@ -92,7 +92,7 @@ module.exports = async (
 		if (!role_map_json) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'role_assigner', 'must be an array in JSON format (even for one role)')
+				value: message_help('commands', 'vendor', 'must be an array in JSON format (even for one role)')
 			});
 		}
 
@@ -100,19 +100,19 @@ module.exports = async (
 		if (!Array.isArray(role_map)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'role_assigner', 'must be an array in JSON format (even for one role)')
+				value: message_help('commands', 'vendor', 'must be an array in JSON format (even for one role)')
 			});
 		}
 		if (multiple_same_emote(role_map)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'role_assigner', 'can not have the same emote for multiple actions')
+				value: message_help('commands', 'vendor', 'can not have the same emote for multiple actions')
 			});
 		}
 		if (!role_map.every(rm => rm.emote && rm.role)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'role_assigner', 'JSON syntax has spelling errors')
+				value: message_help('commands', 'vendor', 'JSON syntax has spelling errors')
 			});
 		}
 

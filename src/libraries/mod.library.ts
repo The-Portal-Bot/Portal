@@ -22,10 +22,6 @@ const profane_words: Language = <Language>ProfaneWords;
 export function isProfane(
 	canditate: string, profanity_level: number
 ): string[] {
-	if (canditate.includes('role_assigner')) {
-		return [];
-	}
-
 	const gr: string[] = profane_words.gr.filter((word: string) => {
 		return canditate.toLowerCase() === word.toLowerCase();
 	});

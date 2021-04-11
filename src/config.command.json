@@ -380,7 +380,7 @@
                 }
             },
             {
-                "name": "role_assigner",
+                "name": "vendor",
                 "range": "none",
                 "time": 0,
                 "auth": true,
