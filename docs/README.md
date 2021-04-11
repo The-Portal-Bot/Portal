@@ -50,8 +50,7 @@
 
 > -   Portal will never record conversations or store anything you type
 > -   Discord updated their server rate limit to twice per 10 minutes.<br>
-
-    The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
+> -   The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
 
 <br>
 
