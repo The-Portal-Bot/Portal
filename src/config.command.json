@@ -380,15 +380,15 @@
                 }
             },
             {
-                "name": "role_assigner",
+                "name": "vendor",
                 "range": "none",
                 "time": 0,
                 "auth": true,
                 "premium": true,
                 "reply": true,
                 "delete": {
-                    "source": false,
-                    "reply": false
+                    "source": true,
+                    "reply": true
                 }
             },
             {

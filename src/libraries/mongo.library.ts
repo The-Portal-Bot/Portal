@@ -428,6 +428,7 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
                         0,
                         1,
                         0,
+                        0,
                         new Date('1 January, 1970, 00:00:00 UTC'),
                         'null'
                     )
@@ -600,7 +601,16 @@ export async function update_entire_member(
 export async function insert_member(
     guild_id: string, member_id: string
 ): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(member_id, 1, 0, 1, 0, null, 'null');
+    const new_member_portal = new MemberPrtl(
+        member_id,
+        1,
+        0,
+        1,
+        0,
+        0,
+        null,
+        'null'
+    );
     return new Promise((resolve, reject) => {
         GuildPrtlMdl
             .updateOne(
@@ -1065,8 +1075,8 @@ export async function remove_poll(
 
 //
 
-export async function insert_role_assigner(
-    guild_id: string, new_role_assigner: GiveRolePrtl
+export async function insert_vendor(
+    guild_id: string, new_vendor: GiveRolePrtl
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         GuildPrtlMdl
@@ -1076,7 +1086,7 @@ export async function insert_role_assigner(
                 },
                 {
                     $push: {
-                        role_list: new_role_assigner
+                        role_list: new_vendor
                     }
                 }
             )
@@ -1093,7 +1103,7 @@ export async function insert_role_assigner(
     });
 }
 
-export async function remove_role_assigner(
+export async function remove_vendor(
     guild_id: string, message_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {

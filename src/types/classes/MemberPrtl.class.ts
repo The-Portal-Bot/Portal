@@ -6,6 +6,7 @@ export class MemberPrtl {
 	public rank: number;
 	public tier: number;
 	public points: number;
+	public penalties: number;
 	public timestamp: Date | null;
 	public regex: string | null;
 
@@ -15,6 +16,7 @@ export class MemberPrtl {
 		rank: number,
 		tier: number,
 		points: number,
+		penalties: number,
 		timestamp: Date | null,
 		regex: string | null
 	) {
@@ -23,6 +25,7 @@ export class MemberPrtl {
 		this.rank = rank;
 		this.tier = tier;
 		this.points = points;
+		this.penalties = penalties;
 		this.timestamp = timestamp;
 		this.regex = regex;
 	}
@@ -34,6 +37,7 @@ export interface IMemberPrtl extends Document {
 	rank: number;
 	tier: number;
 	points: number;
+	penalties: number;
 	timestamp: Date | null;
 	regex: string | null;
 }

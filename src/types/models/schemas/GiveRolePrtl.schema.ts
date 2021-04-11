@@ -2,9 +2,8 @@ import { Schema } from "mongoose";
 
 const GiveRoleSchm = new Schema(
 	{
-		role_id: { type: String, required: true },
-		give: { type: String, required: true },
-		strip: { type: String, required: true },
+		emote: { type: String, required: true },
+		role: { type: [String], required: true }
 	},
 	{
 		collection: 'guild_list'
@@ -14,7 +13,7 @@ const GiveRoleSchm = new Schema(
 const GiveRolePrtlSchm = new Schema(
 	{
 		message_id: { type: String, required: true },
-		role_emote_map: { type: [GiveRoleSchm], required: true },
+		role_emote_map: { type: [GiveRoleSchm], required: true }
 	},
 	{
 		collection: 'guild_list'

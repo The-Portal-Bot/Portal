@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+// const ytdl = require('ytdl-core');
 import ytdl from 'discord-ytdl-core';
 import { Client, Guild, Message, MessageAttachment, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
 import { RequestOptions } from 'https';
@@ -8,8 +9,6 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { get_json, is_url, join_by_reaction, join_user_voice, update_music_lyrics_message, update_music_message } from './help.library';
 import { https_fetch, scrape_lyrics } from './http.library';
 import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
-
-// const ytdl = require('ytdl-core');
 
 async function pop_music_queue(
 	guild_object: GuildPrtl
@@ -57,14 +56,16 @@ function spawn_dispatcher(
 	const stream = ytdl(video_options.url, {
 		filter: 'audioonly',
 		opusEncoded: true,
-		encoderArgs: ['-af', 'bass=g=10, dynaudnorm=f=200']
+		encoderArgs: ['-af', 'dynaudnorm=f=500'],
+		liveBuffer: 20000, // default: 20000
+		highWaterMark: 2048, // default: 5120
+		dlChunkSize: 5120 // default: 10240
 	});
 
 	const stream_options = <StreamOptions>{
 		type: 'opus',
 		volume: false
-		// bitrate: not added as dispatcher does not auto destroy
-	}
+	};
 
 	return voice_connection.play(stream, stream_options);
 }

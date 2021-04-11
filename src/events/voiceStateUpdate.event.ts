@@ -55,17 +55,25 @@ function five_min_refresher(
 		.then(guild_object => {
 			if (guild_object) {
 				generate_channel_name(voice_channel, portal_list, guild_object, guild)
-					.catch(console.error);
+					.catch((e: any) => {
+						logger.error(new Error(`failed to generate channel name / ${e}`));
+					});
+
 				setTimeout(() => {
 					if (!guild.deleted && !voice_channel.deleted) {
 						generate_channel_name(voice_channel, portal_list, guild_object, guild)
-							.catch(console.error);
+							.catch((e: any) => {
+								logger.error(new Error(`failed to generate channel name / ${e}`));
+							});
+
 						five_min_refresher(voice_channel, portal_list, guild, minutes);
 					}
 				}, minutes * 60 * 1000);
 			}
 		})
-		.catch(console.error);
+		.catch((e: any) => {
+			logger.error(new Error(`failed to fetch guild / ${e}`));
+		});
 }
 
 async function channel_empty_check(
@@ -79,7 +87,7 @@ async function channel_empty_check(
 						return resolve(response);
 					})
 					.catch(e => {
-						return reject(`an error occurred while deleting voice / ${e}`);
+						return reject(`an error occurred while deleting voice | ${e}`);
 					});
 			} else {
 				return reject(`channel is not handled by Portal`);
@@ -131,7 +139,7 @@ async function channel_empty_check(
 								return resolve(response);
 							})
 							.catch(e => {
-								return reject(`an error occurred while deleting voice / ${e}`)
+								return reject(`an error occurred while deleting voice | ${e}`)
 							});
 					} else {
 						return resolve('Portal left voice channel');
@@ -156,7 +164,7 @@ async function from_null(
 					.find(p => p.id === new_channel.id);
 
 				if (!portal_object) {
-					return reject('null->existing (source: null / dest: portal_list) / could not find portal_object');
+					return reject('null->existing (source: null | dest: portal_list) / could not find portal_object');
 				}
 
 				create_voice_channel(newState, portal_object)
@@ -166,10 +174,10 @@ async function from_null(
 								logger.error(new Error(`failed to send message / ${e}`));
 							});
 
-						return resolve('null->existing (source: null / dest: portal_list)');
+						return resolve('null->existing (source: null | dest: portal_list)');
 					})
 					.catch(e => {
-						return reject(`null->existing (source: null / dest: portal_list) / ${e}`);
+						return reject(`null->existing (source: null | dest: portal_list) / ${e}`);
 					});
 			}
 			else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // joined voice channel
@@ -179,7 +187,7 @@ async function from_null(
 						logger.error(new Error(`failed to send message / ${e}`));
 					});
 
-				return resolve('null->existing (source: null / dest: voice_list)');
+				return resolve('null->existing (source: null | dest: voice_list)');
 			}
 			else { // joined other channel
 				update_timestamp(newState, guild_object) // points for voice
@@ -187,7 +195,7 @@ async function from_null(
 						logger.error(new Error(`failed to send message / ${e}`));
 					});
 
-				return resolve('null->existing (source: null / dest: other channel)');
+				return resolve('null->existing (source: null | dest: other channel)');
 			}
 		} else {
 			return reject('strange, from null to null');
@@ -223,7 +231,7 @@ async function from_existing(
 				if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // has been handled before
 					five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
 
-					return resolve('existing->existing (source: portal_list / dest: voice_list) / has been handled before');
+					return resolve('existing->existing (source: portal_list | dest: voice_list) / has been handled before');
 				} else {
 					return resolve('not handled by portal');
 				}
@@ -244,7 +252,7 @@ async function from_existing(
 
 					create_voice_channel(newState, portal_object)
 						.then(() => {
-							return resolve('existing->existing (source: voice_list / dest: portal_list) has been handled before');
+							return resolve('existing->existing (source: voice_list | dest: portal_list) has been handled before');
 						})
 						.catch(e => {
 							return reject(`an error occurred while creating voice channel / ${e}`);
@@ -253,11 +261,11 @@ async function from_existing(
 				else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // moved from voice to voice
 					five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
 
-					return resolve('existing->existing (source: voice_list / dest: voice_list)');
+					return resolve('existing->existing (source: voice_list | dest: voice_list)');
 				}
 				else { // moved from voice to otherefresher(new_channel, guild_object.portal_list, newState.guild, 5);
 
-					return resolve('existing->existing (source: voice_list / dest: other)');
+					return resolve('existing->existing (source: voice_list | dest: other)');
 				}
 			}
 			else {
@@ -267,23 +275,21 @@ async function from_existing(
 						.find(p => p.id === new_channel.id);
 
 					if (!portal_object) {
-						return reject('existing->existing (source: other voice / dest: portal_list) / could not find portal in DB, contact Portal support');
+						return reject('existing->existing (source: other voice | dest: portal_list) / could not find portal in DB, contact Portal support');
 					}
 
 					create_voice_channel(newState, portal_object)
 						.then(() => {
-							return resolve('existing->existing (source: other voice / dest: portal_list)');
+							return resolve('existing->existing (source: other voice | dest: portal_list)');
 						})
 						.catch(e => {
-							return reject(`existing->existing (source: other voice / dest: portal_list ) / ${e}`);
+							return reject(`existing->existing (source: other voice | dest: portal_list ) / ${e}`);
 						});
 				}
-				else if (included_in_voice_list(
-					new_channel.id, guild_object.portal_list)) { // left created channel and joins another created
-
+				else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // left created channel and joins another created
 					five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
 
-					return resolve('existing->existing (source: other voice / dest: voice_list)');
+					return resolve('existing->existing (source: other voice | dest: voice_list)');
 				}
 			}
 		}

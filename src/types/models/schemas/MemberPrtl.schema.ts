@@ -7,6 +7,7 @@ const MemberPrtlSch = new Schema(
 		rank: { type: Number, required: true },
 		tier: { type: Number, required: true },
 		points: { type: Number, required: true },
+		penalties: { type: Number, required: true },
 		timestamp: { type: Date, required: true },
 		regex: { type: String, required: true },
 	},

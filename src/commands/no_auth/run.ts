@@ -65,7 +65,7 @@ module.exports = async (
 								<Field[]>[{
 									emote: 'input',
 									role: max_string(
-										`\`\`\`${args.join(' ')}\`\`\``,
+										`\`\`\`\n${args.join(' ')}\n\`\`\``,
 										256
 									),
 									inline: false
@@ -73,7 +73,7 @@ module.exports = async (
 								{
 									emote: 'output',
 									role: max_string(
-										`\`\`\`${regex_interpreter(
+										`\`\`\`\n${regex_interpreter(
 											args.join(' '),
 											current_voice_channel,
 											voice_object,
@@ -81,7 +81,7 @@ module.exports = async (
 											guild_object,
 											message.guild,
 											message.author.id
-										)}\`\`\``,
+										)}\n\`\`\``,
 										256
 									),
 									inline: false

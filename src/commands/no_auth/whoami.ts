@@ -40,6 +40,11 @@ module.exports = async (
                                 ? 'not set'
                                 : member_object.regex,
                             inline: true
+                        },
+                        {
+                            emote: 'Penalties',
+                            role: member_object.penalties,
+                            inline: true
                         }
                     ],
                     message.member?.user.avatarURL(),

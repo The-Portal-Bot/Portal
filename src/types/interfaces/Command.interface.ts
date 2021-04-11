@@ -176,7 +176,7 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'role_assigner',
+		name: 'vendor',
 		hover: 'create roll assigning message',
 		auth: AuthEnum.admin,
 		get: null,
@@ -300,44 +300,46 @@ export function get_command_help(): MessageEmbed[] {
 	for (let l = 0; l <= commands.length / 25; l++) {
 		cmmd_array[l] = []
 		for (let i = (24 * l); i < commands.length && i < 24 * (l + 1); i++) {
-			cmmd_array[l].push({
-				emote: `${i + 1}. ${commands[i].name}`,
-				role: `[hover or click](${portal_url}` +
-					`/commands/detailed/${(commands[i].name)} "${commands[i].hover}")`,
-				inline: true
-			});
+			cmmd_array[l]
+				.push({
+					emote: `${i + 1}. ${commands[i].name}`,
+					role: `[hover or click](${portal_url}` +
+						`/commands/detailed/${(commands[i].name)} "${commands[i].hover}")`,
+					inline: true
+				});
 		}
 	}
 
-	return cmmd_array.map((cmmd, index) => {
-		if (index === 0) {
-			return create_rich_embed(
-				'Commands',
-				'[Commands](' + portal_url + '/commands/description) ' +
-				'are the way you communicate with Portal.\n' +
-				'Prefix: ' + command_prefix,
-				'#9775A9',
-				cmmd_array[0],
-				null,
-				null,
-				null,
-				null,
-				null
-			);
-		} else {
-			return create_rich_embed(
-				null,
-				null,
-				'#9775A9',
-				cmmd_array[index],
-				null,
-				null,
-				null,
-				null,
-				null
-			);
-		}
-	});
+	return cmmd_array
+		.map((cmmd, index) => {
+			if (index === 0) {
+				return create_rich_embed(
+					'Commands',
+					'[Commands](' + portal_url + '/commands/description) ' +
+					'are the way you communicate with Portal.\n' +
+					'Prefix: ' + command_prefix,
+					'#9775A9',
+					cmmd_array[0],
+					null,
+					null,
+					null,
+					null,
+					null
+				);
+			} else {
+				return create_rich_embed(
+					null,
+					null,
+					'#9775A9',
+					cmmd_array[index],
+					null,
+					null,
+					null,
+					null,
+					null
+				);
+			}
+		});
 }
 
 export function get_command_help_super(candidate: string): MessageEmbed | boolean {

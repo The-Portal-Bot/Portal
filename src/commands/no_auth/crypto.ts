@@ -15,8 +15,7 @@ module.exports = async (
 				result: false,
 				value: message_help('commands', 'crypto', 'must add currency to search')
 			});
-		}
-		else if (args.length > 3) {
+		} else if (args.length > 3) {
 			return resolve({
 				result: false,
 				value: message_help('commands', 'crypto')
@@ -49,11 +48,13 @@ module.exports = async (
 			.then((response: Buffer) => {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
-				if (json === null)
+
+				if (!json) {
 					return resolve({
 						result: false,
 						value: 'data from source was corrupted'
 					});
+				}
 
 				message.channel
 					.send(
@@ -75,22 +76,23 @@ module.exports = async (
 							}
 						)
 					)
+					.then(() => {
+						return resolve({
+							result: true,
+							value: ''
+						});
+					})
 					.catch((e: any) => {
 						return resolve({
 							result: false,
 							value: `failed to send message / ${e}`
 						});
 					});
-
-				return resolve({
-					result: true,
-					value: ''
-				});
 			})
 			.catch((e: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server / ${e}`
+					value: `crypto-currency or fiat-currency does not exist`
 				});
 			});
 	});
