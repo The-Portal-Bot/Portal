@@ -217,7 +217,11 @@ function mute_user(
 									.then(() => {
 										channel
 											.send(`user ${message.author}, has been unmuted`)
-											.then(message => delete_message(message))
+											.then(message => {
+												if (message.deletable) {
+													delete_message(message);
+												}
+											})
 											.catch((e: any) => {
 												logger.error(new Error(`failed to reply to message / ${e}`));
 											});

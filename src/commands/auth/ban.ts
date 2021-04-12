@@ -17,7 +17,7 @@ module.exports = async (
 		if (!is_mod(message.member)) {
 			return resolve({
 				result: false,
-				value: `you must be a portal moderator to ban users`
+				value: `you must be a Portal moderator to ban users`
 			});
 		}
 

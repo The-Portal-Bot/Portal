@@ -582,9 +582,9 @@ export function is_ignored(
 }
 
 export function is_mod(
-	member: GuildMember
+	member: GuildMember | null
 ): boolean {
-	if (member.roles.cache) {
+	if (member && member.roles.cache) {
 		return member.roles.cache.some(r =>
 			r.name.toLowerCase() === 'p.mod');
 	}

@@ -3,5 +3,5 @@
   "warn_after": 3,
   "mute_after": 4,
   "mute_period": 2,
-  "message_interval": 2000
+  "message_interval": 1500
 }

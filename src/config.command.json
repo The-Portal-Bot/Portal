@@ -243,6 +243,18 @@
                 }
             },
             {
+                "name": "spam_rules",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": true,
+                "reply": false,
+                "delete": {
+                    "source": true,
+                    "reply": true
+                }
+            },
+            {
                 "name": "weather",
                 "range": "none",
                 "time": 0,

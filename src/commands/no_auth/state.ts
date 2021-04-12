@@ -7,7 +7,9 @@ module.exports = async (
     message: Message, args: string[], guild_object: GuildPrtl, client: Client
 ): Promise<ReturnPormise> => {
     return new Promise((resolve) => {
-        const guild = client.guilds.cache.find(g => g.id === message?.guild?.id);
+        const guild = client.guilds.cache
+            .find(g => g.id === message?.guild?.id);
+
         if (!guild) {
             return resolve({
                 result: false,
@@ -145,9 +147,9 @@ module.exports = async (
         message.channel
             .send(
                 create_rich_embed(
-                    'Portal state - current state of Portal',
+                    'State of Portal',
                     null,
-                    '#964B00',
+                    '#eba000',
                     portal_state,
                     null,
                     null,

@@ -131,9 +131,8 @@ module.exports = async (
 				if (message.guild) {
 					const role_fetched = r.role.map(role => get_role(message.guild, role));
 
-
 					if (role_fetched.some(role => !role)) {
-						return_value = `${r.role} is not a role`;
+						return_value = `some of the given roles do not exist`;
 						return true;
 					}
 

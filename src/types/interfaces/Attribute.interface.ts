@@ -3,7 +3,7 @@ import { AuthEnum } from '../../data/enums/Admin.enum';
 import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
 import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
-import { create_rich_embed, get_key_from_enum, is_authorised } from '../../libraries/help.library';
+import { create_rich_embed, get_key_from_enum, is_authorised, is_mod } from '../../libraries/help.library';
 import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongo.library';
 import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { MemberPrtl } from '../classes/MemberPrtl.class';
@@ -981,12 +981,19 @@ const attributes: InterfaceBlueprint[] = [
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-			guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
+			guild_object: GuildPrtl, value: string, member_object: GuildMember, message: Message
 		): Promise<ReturnPormise> => {
 			const ctgr = ['g'];
 			const attr = 'kick_after';
 
 			return new Promise((resolve) => {
+				if (!is_mod(message.member)) {
+					return resolve({
+						result: false,
+						value: `you must be a Portal moderator to set attribute ${ctgr.join('.') + '.' + attr}`
+					});
+				}
+
 				if (isNaN(Number(value))) {
 					return resolve({
 						result: false,
@@ -1023,12 +1030,19 @@ const attributes: InterfaceBlueprint[] = [
 		},
 		set: (
 			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-			guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
+			guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
 		): Promise<ReturnPormise> => {
 			const ctgr = ['g'];
 			const attr = 'ban_after';
 
 			return new Promise((resolve) => {
+				if (!is_mod(message.member)) {
+					return resolve({
+						result: false,
+						value: `you must be a Portal moderator to set attribute ${ctgr.join('.') + '.' + attr}`
+					});
+				}
+
 				if (isNaN(Number(value))) {
 					return resolve({
 						result: false,
