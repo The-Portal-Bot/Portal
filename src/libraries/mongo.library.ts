@@ -244,7 +244,9 @@ export async function fetch_guild_predata(
                     music_queue: 1,
                     initial_role: 1,
                     rank_speed: 1,
-                    profanity_level: 1
+                    profanity_level: 1,
+                    kick_after: 1,
+                    ban_after: 1
                 })
             .then((r: any) => {
                 if (r) {
@@ -260,7 +262,9 @@ export async function fetch_guild_predata(
                         music_queue: r.music_queue,
                         initial_role: r.initial_role,
                         rank_speed: r.rank_speed,
-                        profanity_level: r.profanity_level
+                        profanity_level: r.profanity_level,
+                        kick_after: r.kick_after,
+                        ban_after: r.ban_after
                     });
                 } else {
                     return resolve(undefined);

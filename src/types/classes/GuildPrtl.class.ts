@@ -46,6 +46,8 @@ export class GuildPrtl {
 	public announce: boolean;
 	public rank_speed: number;
 	public profanity_level: number;
+	public kick_after: number;
+	public ban_after: number;
 	public premium: boolean;
 	public prefix: string;
 
@@ -66,6 +68,8 @@ export class GuildPrtl {
 		announce: boolean,
 		mute_role: string | null,
 		rank_speed: number,
+		kick_after: number,
+		ban_after: number,
 		profanity_level: number,
 		premium: boolean,
 		prefix: string
@@ -86,6 +90,8 @@ export class GuildPrtl {
 		this.announce = announce;
 		this.mute_role = mute_role;
 		this.rank_speed = rank_speed;
+		this.kick_after = kick_after;
+		this.ban_after = ban_after;
 		this.profanity_level = profanity_level;
 		this.premium = premium;
 		this.prefix = prefix;
@@ -109,6 +115,8 @@ export interface IGuildPrtl extends Document {
 	announce: boolean;
 	mute_role: string | null;
 	rank_speed: number;
+	kick_after: number;
+	ban_after: number;
 	profanity_level: number;
 	premium: boolean;
 	prefix: string;

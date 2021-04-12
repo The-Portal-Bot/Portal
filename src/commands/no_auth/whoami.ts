@@ -43,7 +43,7 @@ module.exports = async (
                         },
                         {
                             emote: 'Penalties',
-                            role: member_object.penalties,
+                            role: `${member_object.penalties ? member_object.penalties : 0}`,
                             inline: true
                         }
                     ],

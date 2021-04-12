@@ -971,6 +971,94 @@ const attributes: InterfaceBlueprint[] = [
 		auth: AuthEnum.voice
 	},
 	{
+		name: 'g.kick_after',
+		hover: 'Portals kick_after',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
+		): number => {
+			return guild_object.kick_after;
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
+		): Promise<ReturnPormise> => {
+			const ctgr = ['g'];
+			const attr = 'kick_after';
+
+			return new Promise((resolve) => {
+				if (isNaN(Number(value))) {
+					return resolve({
+						result: false,
+						value: `attribute ${ctgr.join('.') + '.' + attr} has to be a number`
+					});
+				}
+
+				update_guild(guild_object.id, attr, Number(value))
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+						});
+					});
+			});
+		},
+		auth: AuthEnum.admin
+	}, {
+		name: 'g.ban_after',
+		hover: 'Portals ban_after',
+		get: (
+			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
+		): number => {
+			return guild_object.ban_after;
+		},
+		set: (
+			voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
+			guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
+		): Promise<ReturnPormise> => {
+			const ctgr = ['g'];
+			const attr = 'ban_after';
+
+			return new Promise((resolve) => {
+				if (isNaN(Number(value))) {
+					return resolve({
+						result: false,
+						value: `attribute ${ctgr.join('.') + '.' + attr} has to be a number`
+					});
+				}
+
+				update_guild(guild_object.id, attr, Number(value))
+					.then(r => {
+						return resolve({
+							result: r,
+							value: r
+								? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
+								: `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
+						});
+					})
+					.catch(e => {
+						return resolve({
+							result: false,
+							value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set / ${e}`
+						});
+					});
+			});
+		},
+		auth: AuthEnum.admin
+	},
+
+
+
+	{
 		name: 'g.prefix',
 		hover: 'Portals prefix',
 		get: (

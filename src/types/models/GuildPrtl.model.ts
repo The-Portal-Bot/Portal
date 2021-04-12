@@ -82,6 +82,8 @@ const GuildPrtlSchm = new Schema(
 		mute_role: { type: String, required: true },
 		rank_speed: { type: Number, required: true },
 		profanity_level: { type: Number, required: true },
+		kick_after: { type: Number, required: true },
+		ban_after: { type: Number, required: true },
 		premium: { type: Boolean, required: true },
 		prefix: { type: String, required: true }
 	},

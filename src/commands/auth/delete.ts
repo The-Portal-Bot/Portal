@@ -25,7 +25,14 @@ module.exports = async (
         if (bulk_delete_length <= 0) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'delete', 'number of messages to delete must be > 1')
+                value: message_help('commands', 'delete', 'you can delete one or more messages')
+            });
+        }
+
+        if (bulk_delete_length > 97) {
+            return resolve({
+                result: false,
+                value: message_help('commands', 'delete', 'you can delete up-to 97 messages')
             });
         }
 

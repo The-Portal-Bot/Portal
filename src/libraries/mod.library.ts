@@ -76,25 +76,33 @@ export function message_spam_check(
 					member_spam_cache.dupl_fouls = 0;
 				}
 
-				if (config_spam.dupl_after !== 0 && member_spam_cache.dupl_fouls >= config_spam.dupl_after) {
-					message_reply(false, message, `please stop spamming the same message (this is a warning)`, false, true)
+				if (config_spam.dupl_after !== 0 && member_spam_cache.dupl_fouls === config_spam.dupl_after) {
+					message_reply(false, message, `warning: please stop spamming the same message`, false, true)
 						.catch((e: any) => {
 							logger.error(new Error(`failed to reply to message / ${e}`));
 						});
 
 					member_spam_cache.timestamp = new Date();
-				} else if (config_spam.warn_after !== 0 && member_spam_cache.spam_fouls >= config_spam.warn_after) {
-					message_reply(false, message, `please stop spamming (this is a warning)`, false, true)
+				} else if (config_spam.warn_after !== 0 && member_spam_cache.spam_fouls === config_spam.warn_after) {
+					message_reply(false, message, `warning: please stop spamming messages`, false, true)
 						.catch((e: any) => {
 							logger.error(new Error(`failed to reply to message / ${e}`));
 						});
 
 					member_spam_cache.timestamp = new Date();
-				} else if (config_spam.mute_after !== 0 && member_spam_cache.spam_fouls >= config_spam.mute_after) {
+				}
+
+				if (config_spam.mute_after !== 0 && member_spam_cache.spam_fouls === config_spam.mute_after) {
 					member_spam_cache.timestamp = null;
 					member_spam_cache.spam_fouls = 0;
 
-					if (config_spam.kick_after !== 0 && guild_object.member_list[0].penalties + 1 >= config_spam.kick_after) {
+					if (guild_object.member_list[0].penalties) {
+						guild_object.member_list[0].penalties++;
+					} else {
+						guild_object.member_list[0].penalties = 1;
+					}
+
+					if (guild_object.kick_after && guild_object.kick_after !== 0 && guild_object.member_list[0].penalties === guild_object.kick_after) {
 						if (message.member) {
 							kick(message.member, 'kicked due to spamming')
 								.then(r => {
@@ -116,7 +124,7 @@ export function message_spam_check(
 									logger.error(new Error(`failed to reply to message / ${e}`));
 								});
 						}
-					} else if (config_spam.ban_after !== 0 && guild_object.member_list[0].penalties + 1 >= config_spam.ban_after) {
+					} else if (guild_object.ban_after && guild_object.ban_after !== 0 && guild_object.member_list[0].penalties === guild_object.ban_after) {
 						if (message.member) {
 							const ban_options: BanOptions = {
 								days: 0,
@@ -144,7 +152,7 @@ export function message_spam_check(
 								});
 						}
 					} else {
-						update_member(guild_object.id, message.id, 'penalties', guild_object.member_list[0].penalties + 1)
+						update_member(guild_object.id, message.author.id, 'penalties', guild_object.member_list[0].penalties)
 							.catch(e => {
 								logger.error(new Error(`failed to update member / ${e}`));
 							});

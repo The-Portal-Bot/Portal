@@ -1,9 +1,7 @@
 {
-  "dupl_after": 3,
-  "warn_after": 5,
-  "mute_after": 6,
+  "dupl_after": 2,
+  "warn_after": 3,
+  "mute_after": 4,
   "mute_period": 2,
-  "kick_after": 0,
-  "ban_after": 0,
-  "message_interval": 1000
+  "message_interval": 2000
 }
