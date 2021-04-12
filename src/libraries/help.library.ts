@@ -592,6 +592,17 @@ export function is_mod(
 	return false;
 }
 
+export function is_whitelist(
+	member: GuildMember | null
+): boolean {
+	if (member && member.roles.cache) {
+		return member.roles.cache.some(r =>
+			r.name.toLowerCase() === 'p.whitelist');
+	}
+
+	return false;
+}
+
 export function message_help(
 	type: string, argument: string, info = ''
 ): string {
