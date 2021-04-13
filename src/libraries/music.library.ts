@@ -58,8 +58,8 @@ function spawn_dispatcher(
 		opusEncoded: true,
 		encoderArgs: ['-af', 'dynaudnorm=f=500'],
 		liveBuffer: 20000, // default: 20000
-		highWaterMark: 2048, // default: 5120
-		dlChunkSize: 5120 // default: 10240
+		highWaterMark: 5120, // default: 5120
+		dlChunkSize: 10240 // default: 10240
 	});
 
 	const stream_options = <StreamOptions>{

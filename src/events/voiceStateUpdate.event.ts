@@ -90,7 +90,7 @@ async function channel_empty_check(
 						return reject(`an error occurred while deleting voice | ${e}`);
 					});
 			} else {
-				return reject(`channel is not handled by Portal`);
+				return resolve(`channel is not handled by Portal`);
 			}
 		}
 		else if (old_channel.members.size === 1) {
