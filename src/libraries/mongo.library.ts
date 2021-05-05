@@ -469,6 +469,8 @@ export async function insert_guild(
     const announce = true;
     const rank_speed: number = RankSpeedEnum.default;
     const profanity_level: number = ProfanityLevelEnum.default;
+    const kick_after = 0;
+    const ban_after = 0;
     const premium = true; // as it is not a paid service anymore
     const prefix: string = config.prefix;
 
@@ -491,6 +493,8 @@ export async function insert_guild(
                 announce: announce,
                 rank_speed: rank_speed,
                 profanity_level: profanity_level,
+                kick_after: kick_after,
+                ban_after: ban_after,
                 premium: premium,
                 prefix: prefix
             })

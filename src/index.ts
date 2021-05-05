@@ -174,7 +174,7 @@ client.on('message', async (message: Message) => {
 						logger.error(new Error(`failed to late-insert member / ${e}`));
 					});
 
-				return;
+				return true;
 			}
 
 			if (portal_preprocessor(message, guild_object)) {

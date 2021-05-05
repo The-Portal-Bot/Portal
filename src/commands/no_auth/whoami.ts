@@ -21,14 +21,9 @@ module.exports = async (
                     message.member
                         ? message.member?.displayName
                         : 'could not fetch name',
-                    'Portal member card',
+                    null,
                     '#ddff00',
                     [
-                        {
-                            emote: 'Id',
-                            role: member_object.id,
-                            inline: false
-                        },
                         {
                             emote: 'Level',
                             role: member_object.level,
@@ -45,6 +40,11 @@ module.exports = async (
                             emote: 'Penalties',
                             role: `${member_object.penalties ? member_object.penalties : 0}`,
                             inline: true
+                        },
+                        {
+                            emote: 'Id',
+                            role: member_object.id,
+                            inline: false
                         }
                     ],
                     message.member?.user.avatarURL(),
