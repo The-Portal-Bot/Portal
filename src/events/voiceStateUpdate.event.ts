@@ -170,6 +170,14 @@ async function from_null(
 				create_voice_channel(newState, portal_object)
 					.then(() => {
 						update_timestamp(newState, guild_object) // points for voice
+							.then(level => {
+								if (level) {
+									newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+										.catch((e: any) => {
+											logger.error(new Error(`failed to send message / ${e}`));
+										});
+								}
+							})
 							.catch((e: any) => {
 								logger.error(new Error(`failed to send message / ${e}`));
 							});
@@ -183,6 +191,14 @@ async function from_null(
 			else if (included_in_voice_list(new_channel.id, guild_object.portal_list)) { // joined voice channel
 				five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
 				update_timestamp(newState, guild_object) // points for voice
+					.then(level => {
+						if (level) {
+							newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+								.catch((e: any) => {
+									logger.error(new Error(`failed to send message / ${e}`));
+								});
+						}
+					})
 					.catch((e: any) => {
 						logger.error(new Error(`failed to send message / ${e}`));
 					});
@@ -191,6 +207,14 @@ async function from_null(
 			}
 			else { // joined other channel
 				update_timestamp(newState, guild_object) // points for voice
+					.then(level => {
+						if (level) {
+							newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+								.catch((e: any) => {
+									logger.error(new Error(`failed to send message / ${e}`));
+								});
+						}
+					})
 					.catch((e: any) => {
 						logger.error(new Error(`failed to send message / ${e}`));
 					});
@@ -210,6 +234,14 @@ async function from_existing(
 	return new Promise((resolve, reject) => {
 		if (new_channel === null) {
 			update_timestamp(newState, guild_object) // points for voice
+				.then(level => {
+					if (level) {
+						newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
+					}
+				})
 				.catch((e: any) => {
 					logger.error(new Error(`failed to send message / ${e}`));
 				});
@@ -223,6 +255,14 @@ async function from_existing(
 		}
 		else if (new_channel !== null) { // Moved from channel to channel
 			update_timestamp(newState, guild_object) // points for voice
+				.then(level => {
+					if (level) {
+						newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+							.catch((e: any) => {
+								logger.error(new Error(`failed to send message / ${e}`));
+							});
+					}
+				})
 				.catch((e: any) => {
 					logger.error(new Error(`failed to send message / ${e}`));
 				});

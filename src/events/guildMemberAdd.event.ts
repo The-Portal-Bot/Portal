@@ -34,8 +34,9 @@ module.exports = async (
 									}
 								}
 
-								const join_message = `member ${args.member.presence.user} ` +
-									`[${args.member.guild.id}]\n\thas joined ${args.member.guild}`;
+								const join_message = `member: ${args.member.presence.user}\n` +
+									`id: ${args.member.guild.id}\n` +
+									`\thas joined ${args.member.guild}`;
 
 								const announcement_channel = <TextChannel>args.member.guild.channels.cache
 									.find(channel => channel.id === guild_object.announcement);

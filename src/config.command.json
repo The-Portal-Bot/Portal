@@ -262,8 +262,8 @@
                 "premium": false,
                 "reply": false,
                 "delete": {
-                    "source": false,
-                    "reply": false
+                    "source": true,
+                    "reply": true
                 }
             },
             {

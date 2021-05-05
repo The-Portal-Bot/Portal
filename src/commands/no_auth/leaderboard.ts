@@ -36,12 +36,20 @@ module.exports = async (
 			});
 		}
 
-		let entries = args.length > 0 &&
-			(requested_number > 0 && member_list.length >= requested_number)
+		if (requested_number <= 0) {
+			return resolve({
+				result: false,
+				value: `${args[0]} must be at least 1`
+			});
+		}
+
+		let entries = member_list.length >= requested_number
 			? requested_number > 25
 				? 24
 				: requested_number
-			: 9;
+			: member_list.length > 25
+				? 24
+				: member_list.length;
 
 		if (entries <= 0) {
 			return resolve({
@@ -65,8 +73,8 @@ module.exports = async (
 						if (this_member) {
 							member_levels.push(
 								{
-									emote: `${i + 1}. ${this_member.displayName} at level ${member_object.level}`,
-									role: `points: ${Math.round(member_object.points)}`,
+									emote: `${i + 1}. ${this_member.displayName}`,
+									role: `level ${member_object.level}\t|\tpoints: ${Math.round(member_object.points)}`,
 									inline: false
 								}
 							);

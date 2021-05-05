@@ -16,8 +16,9 @@ module.exports = async (
 					fetch_guild_announcement(args.member.guild.id)
 						.then(guild_object => {
 							if (guild_object) {
-								const leave_message = `member: ${args.member.presence.user} ` +
-									`[${args.member.guild.id}]\n\thas left ${args.member.guild}`;
+								const leave_message = `member: ${args.member.presence.user}\n` +
+									`id: ${args.member.guild.id}\n` +
+									`\thas left ${args.member.guild}`;
 
 								if (guild_object) {
 									const announcement_channel = <TextChannel>args.member.guild.channels.cache
