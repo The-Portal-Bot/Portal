@@ -217,7 +217,7 @@ export async function start(
 				const options: RequestOptions = {
 					'method': 'GET',
 					"hostname": 'cdn.discordapp.com',
-					'port': undefined,
+					'port': null,
 					"path": url_path
 				}
 
@@ -749,7 +749,7 @@ export async function get_lyrics(
 			const options: RequestOptions = {
 				'method': 'GET',
 				"hostname": "genius.p.rapidapi.com",
-				'port': undefined,
+				'port': null,
 				"path": `/search?q=${search_term}`,
 				'headers': {
 					"x-rapidapi-host": "genius.p.rapidapi.com",
