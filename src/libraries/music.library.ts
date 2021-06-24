@@ -46,7 +46,10 @@ async function pop_music_queue(
 function delete_dispatcher(
 	dispatcher: StreamDispatcher
 ): boolean {
-	if (!dispatcher.destroyed) dispatcher.destroy();
+	if (!dispatcher.destroyed) {
+		dispatcher.destroy();
+	}
+
 	return !dispatcher.destroyed;
 }
 
@@ -56,15 +59,14 @@ function spawn_dispatcher(
 	const stream = ytdl(video_options.url, {
 		filter: 'audioonly',
 		opusEncoded: true,
-		encoderArgs: ['-af', 'dynaudnorm=f=500'],
-		liveBuffer: 20000, // default: 20000
-		highWaterMark: 5120, // default: 5120
-		dlChunkSize: 10240 // default: 10240
+		encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200'],
+		// liveBuffer: 20000, // default: 20000
+		// highWaterMark: 5120, // default: 5120
+		// dlChunkSize: 10240 // default: 10240
 	});
 
 	const stream_options = <StreamOptions>{
-		type: 'opus',
-		volume: false
+		type: 'opus'
 	};
 
 	return voice_connection.play(stream, stream_options);
@@ -432,7 +434,10 @@ export async function play(
 							return resolve('queue is empty');
 						}
 
-						const dispatcher = spawn_dispatcher(next_video, voice_connection);
+						const dispatcher = spawn_dispatcher(
+							next_video,
+							voice_connection
+						);
 
 						dispatcher.once('finish', () => {
 							delete_dispatcher(dispatcher);
@@ -483,7 +488,10 @@ export async function play(
 						return resolve('could not join voice channel');
 					}
 
-					const dispatcher = spawn_dispatcher(guild_object.music_queue[0], r);
+					const dispatcher = spawn_dispatcher(
+						guild_object.music_queue[0],
+						r
+					);
 
 					dispatcher.once('finish', () => {
 						delete_dispatcher(dispatcher);
@@ -585,7 +593,10 @@ export async function skip(
 							return resolve('queue is empty');
 						}
 
-						const dispatcher = spawn_dispatcher(next_video, voice_connection);
+						const dispatcher = spawn_dispatcher(
+							next_video,
+							voice_connection
+						);
 
 						dispatcher.once('finish', () => {
 							delete_dispatcher(dispatcher);
@@ -638,7 +649,10 @@ export async function skip(
 								return resolve('could not join voice channel');
 							}
 
-							const dispatcher = spawn_dispatcher(next_video, r);
+							const dispatcher = spawn_dispatcher(
+								next_video,
+								r
+							);
 
 							dispatcher.once('finish', () => {
 								delete_dispatcher(dispatcher);

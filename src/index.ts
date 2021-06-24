@@ -446,23 +446,23 @@ function portal_preprocessor(
 		} else {
 			handle_ranking_system(message, guild_object);
 
-			if (guild_object.profanity_level !== ProfanityLevelEnum.none) {
-				// profanity check
-				const profanities = isProfane(message.content, guild_object.profanity_level);
-				if (profanities.length > 0) {
-					message
-						.react('🚩')
-						.catch((e: any) => {
-							logger.error(new Error(`failed to react message / ${e}`));
-						});
+			// if (guild_object.profanity_level !== ProfanityLevelEnum.none) {
+			// 	// profanity check
+			// 	const profanities = isProfane(message.content, guild_object.profanity_level);
+			// 	if (profanities.length > 0) {
+			// 		message
+			// 			.react('🚩')
+			// 			.catch((e: any) => {
+			// 				logger.error(new Error(`failed to react message / ${e}`));
+			// 			});
 
-					message.author
-						.send(`try not to use profanities (${profanities.join(',')})`)
-						.catch(e => {
-							logger.error(new Error(e));
-						});
-				}
-			}
+			// 		message.author
+			// 			.send(`try not to use profanities (${profanities.join(',')})`)
+			// 			.catch(e => {
+			// 				logger.error(new Error(e));
+			// 			});
+			// 	}
+			// }
 
 			return false;
 		}
@@ -579,7 +579,7 @@ function handle_music_channels(
 					message
 						.delete()
 						.catch((e: any) => {
-							logger.error(new Error(`failed to send message / ${e}`));
+							logger.error(new Error(`failed to delete message / ${e}`));
 						});
 				}
 
