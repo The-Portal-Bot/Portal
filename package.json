@@ -17,7 +17,7 @@
         "cheerio": "^1.0.0-rc.10",
         "core-util-is": "^1.0.3",
         "discord-ytdl-core": "^5.0.4",
-        "discord.js": "^12.5.3",
+        "discord.js": "^13.6.0",
         "dotenv": "^16.0.0",
         "ffmpeg-static": "^5.0.0",
         "give-me-a-joke": "^0.5.1",
