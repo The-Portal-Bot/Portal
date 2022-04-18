@@ -4,15 +4,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, User, VoiceState } from "discord.js";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import { transports } from "winston";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import config from './config.json';
-import { ProfanityLevelEnum } from "./data/enums/ProfanityLevel.enum";
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
-import { isProfane, message_spam_check } from "./libraries/mod.library";
+import { message_spam_check } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, insert_member, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
@@ -36,17 +35,19 @@ const active_cooldowns: ActiveCooldowns = {
 
 const spam_cache: SpamCache[] = [];
 
-// Connect to mongoose database
 mongoose.connect(config.mongo_url, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	useCreateIndex: true
+	dbName: config.mongo_db,
+	autoIndex: true,
+	maxPoolSize: 10,
+	serverSelectionTimeoutMS: 20000,
+	socketTimeoutMS: 45000
 })
 	.then(() => {
 		logger.info(`connected to the database`);
-	}).catch(e => {
+	})
+	.catch((e: any) => {
 		logger.error(new Error(`unable to connect to database | ${e}`));
-		process.exit(1);
+		process.exit(4);
 	});
 
 const client = new Client(

@@ -380,8 +380,8 @@ export async function update_guild(
                     'new': true
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -515,8 +515,8 @@ export async function remove_guild(
             .deleteOne({
                 id: guild_id
             })
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r: any) => {
+                if ((r && r.id === guild_id)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -555,8 +555,8 @@ export async function update_member(
                     ]
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -593,8 +593,8 @@ export async function update_entire_member(
                     ]
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -629,8 +629,8 @@ export async function insert_member(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -658,8 +658,8 @@ export async function remove_member(
                         }
                     }
                 })
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -696,8 +696,8 @@ export async function update_portal(
                     ]
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -724,8 +724,8 @@ export async function insert_portal(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -754,8 +754,8 @@ export async function remove_portal(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -793,8 +793,8 @@ export async function update_voice(
                     ]
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -827,8 +827,8 @@ export async function insert_voice(
                     ]
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -867,8 +867,8 @@ export async function remove_voice(
                     ]
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -897,8 +897,8 @@ export async function insert_url(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -924,8 +924,8 @@ export async function remove_url(
                         url_list: remove_url
                     }
                 })
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -954,8 +954,8 @@ export async function insert_ignore( // channel
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -981,8 +981,8 @@ export async function remove_ignore( // channel
                         ignore_list: remove_ignore
                     }
                 })
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1008,8 +1008,8 @@ export async function set_ranks(
                     ranks: new_ranks
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1038,8 +1038,8 @@ export async function insert_poll(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1068,8 +1068,8 @@ export async function remove_poll(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1098,8 +1098,8 @@ export async function insert_vendor(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1128,8 +1128,8 @@ export async function remove_vendor(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1158,8 +1158,8 @@ export async function insert_music_video(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1186,8 +1186,8 @@ export async function clear_music_vote(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1214,8 +1214,8 @@ export async function insert_music_vote(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
@@ -1242,8 +1242,8 @@ export async function set_music_data(
                     }
                 }
             )
-            .then((r: MongoPromise) => {
-                if ((!!r.ok && !!r.n) && (r.ok > 0 && r.n > 0)) {
+            .then((r) => {
+                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
                     return resolve(true);
                 } else {
                     return reject('did not execute database transaction');
