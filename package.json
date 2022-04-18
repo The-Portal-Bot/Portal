@@ -23,7 +23,7 @@
         "jest": "^27.0.6",
         "jsonfile": "^6.1.0",
         "lodash": "^4.17.21",
-        "moment": "^2.29.1",
+        "moment": "^2.29.3",
         "mongoose": "^5.13.5",
         "optionator": "^0.9.1",
         "opusscript": "0.0.8",
