@@ -3,10 +3,11 @@
 import { VoiceConnection } from "discord.js";
 
 export interface MongoPromise {
-	ok?: number | undefined;
-	n?: number | undefined;
-	nModified?: number | undefined;
-	deletedCount?: number | undefined;
+	matchedCount?: number; // Number of documents matched
+	modifiedCount?: number; // Number of documents modified
+	acknowledged?: number; // Boolean indicating everything went smoothly.
+	upsertedId?: number; // null or an id containing a document that had to be upserted.
+	upsertedCount?: number; // Number indicating how many documents had to be upserted. Will either be 0 or 1.
 }
 
 export interface ReturnPormise {
