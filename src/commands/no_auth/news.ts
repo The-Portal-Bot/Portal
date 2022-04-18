@@ -1,7 +1,6 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import config from '../../config.json';
 import { NYTCategories } from '../../data/lists/news_categories.static';
 import { create_rich_embed, get_json, max_string, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
@@ -55,10 +54,10 @@ module.exports = async (
 			'method': 'GET',
 			'hostname': `api.nytimes.com`,
 			'port': undefined,
-			'path': `/svc/topstories/v2/${category}.json?api-key=${config.api_keys.new_york_times}`,
+			'path': `/svc/topstories/v2/${category}.json?api-key=${process.env.NEW_YORK_TIMES}`,
 			'headers': {
 				'x-api-host': 'api.nytimes.com',
-				// 'api-key': config.api_keys.new_york_times,
+				// 'api-key': process.env.NEW_YORK_TIMES,
 				"Accept": "application/json",
 				'useQueryString': 1
 			}

@@ -1,7 +1,6 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import voca from 'voca';
-import config from '../../config.json';
 import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
@@ -39,7 +38,7 @@ module.exports = async (
 			'path': `/simple/price?ids=${crypto_name}&vs_currencies=${currnc_name}`,
 			'headers': {
 				'x-rapidapi-host': 'coingecko.p.rapidapi.com',
-				'x-rapidapi-key': config.api_keys.coingecko,
+				'x-rapidapi-key': process.env.COINGECKO,
 				'useQueryString': 1
 			}
 		};

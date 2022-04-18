@@ -2,7 +2,6 @@ import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, Permis
 import moment from "moment";
 import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
-import config from '../config.json';
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
 import { Field, TimeElapsed } from "../types/classes/TypesPrtl.interface";
 import { client_talk } from "./localisation.library";
@@ -632,7 +631,7 @@ export function message_reply(
 					if (delete_reply && sent_message.deletable) {
 						sent_message
 							.delete({
-								timeout: config.delete_delay * 1000
+								timeout: (process.env.DELETE_DELAY as unknown as number) * 1000
 							})
 							.catch(e => {
 								return reject(`failed to delete message / ${e}`);
@@ -650,7 +649,7 @@ export function message_reply(
 				.then(() => {
 					message
 						.delete({
-							timeout: config.delete_delay * 1000
+							timeout: (process.env.DELETE_DELAY as unknown as number) * 1000
 						})
 						.catch(e => {
 							return reject(`failed to delete message / ${e}`);

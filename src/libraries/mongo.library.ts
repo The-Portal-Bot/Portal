@@ -3,7 +3,6 @@
 import { Client, TextChannel, VoiceChannel } from 'discord.js';
 import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
-import config from '../config.json';
 import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
@@ -472,7 +471,7 @@ export async function insert_guild(
     const kick_after = 0;
     const ban_after = 0;
     const premium = true; // as it is not a paid service anymore
-    const prefix: string = config.prefix;
+    const prefix: string = process.env.PREFIX as unknown as string;
 
     return new Promise((resolve, reject) => {
         GuildPrtlMdl

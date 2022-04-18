@@ -4,7 +4,6 @@
 import { BanOptions, Message } from 'discord.js';
 import moment from "moment";
 import config_spam from '../config.spam.json';
-import config from '../config.json';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { ProfaneWords } from '../data/lists/profane_words.static';
 import { GuildPrtl } from '../types/classes/GuildPrtl.class';
@@ -255,7 +254,7 @@ function delete_message(message: Message): void {
 	if (message.deletable) {
 		message
 			.delete({
-				timeout: config.delete_delay * 1000
+				timeout: (process.env.DELETE_DELAY as unknown as number) * 1000
 			})
 			.catch(e => {
 				logger.error(new Error(`failed to delete message / ${e}`));

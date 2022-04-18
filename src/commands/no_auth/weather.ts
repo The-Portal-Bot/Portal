@@ -3,7 +3,6 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import config from '../../config.json';
 import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
@@ -39,7 +38,7 @@ module.exports = async (
 			"method": "GET",
 			"hostname": "api.openweathermap.org",
 			"port": undefined,
-			"path": `/data/2.5/weather?q=${location}&appid=${config.api_keys.OpenWeatherMap}`,
+			"path": `/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP}`,
 		};
 
 		https_fetch(options)

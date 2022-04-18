@@ -3,8 +3,9 @@ version: "3.9"
 services:
   portal:
     container_name: portal
-    restart: always
     image: keybraker/portal:latest
+    environment:
+      NODE_ENV: production
     build:
       context: .
       dockerfile: ./docker/Dockerfile

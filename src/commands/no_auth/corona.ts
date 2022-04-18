@@ -5,7 +5,6 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
-import config from '../../config.json';
 import { CountryCodes } from '../../data/lists/country_codes_iso.static';
 import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
@@ -57,7 +56,7 @@ module.exports = async (
 			'path': '/statistics',
 			'headers': {
 				'x-rapidapi-host': 'covid-193.p.rapidapi.com',
-				'x-rapidapi-key': config.api_keys.covid_193,
+				'x-rapidapi-key': process.env.COVID_193,
 				'useQueryString': 1
 			},
 		};

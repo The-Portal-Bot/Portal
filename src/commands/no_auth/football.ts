@@ -1,5 +1,4 @@
 import { RequestOptions } from 'https';
-import config from '../../config.json';
 import { get_json } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
@@ -29,7 +28,7 @@ module.exports = async (
 			'port': undefined,
 			'path': '/statistics',
 			'headers': {
-				'X-Auth-Token': config.api_keys.football_data,
+				'X-Auth-Token': process.env.FOOTBALL_DATA,
 				'useQueryString': 1
 			},
 		};

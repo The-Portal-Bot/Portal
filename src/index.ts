@@ -1,14 +1,8 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, User, VoiceState } from "discord.js";
 import mongoose from "mongoose";
 import { transports } from "winston";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
-import config from './config.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
 import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
 import { message_spam_check } from "./libraries/mod.library";
@@ -17,12 +11,15 @@ import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ActiveCooldowns, CommandOptions, ReturnPormise, SpamCache } from "./types/classes/TypesPrtl.interface";
+import dotenv from 'dotenv';
 
-if (config.debug) {
+dotenv.config();
+
+if (process.env.DEBUG) {
 	logger.add(new transports.Console());
 }
 
-if (config.log) {
+if (process.env.LOG) {
 	logger.add(new transports.File({ filename: '/logs/portal-error.log.json', level: 'error' }));
 	logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info' }));
 	logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
@@ -35,8 +32,8 @@ const active_cooldowns: ActiveCooldowns = {
 
 const spam_cache: SpamCache[] = [];
 
-mongoose.connect(config.mongo_url, {
-	dbName: config.mongo_db,
+mongoose.connect(process.env.MONGO_URL!, {
+	dbName: process.env.MONGO_DB,
 	autoIndex: true,
 	maxPoolSize: 10,
 	serverSelectionTimeoutMS: 20000,
@@ -47,7 +44,7 @@ mongoose.connect(config.mongo_url, {
 	})
 	.catch((e: any) => {
 		logger.error(new Error(`unable to connect to database | ${e}`));
-		process.exit(4);
+		process.exit(1);
 	});
 
 const client = new Client(
@@ -281,7 +278,7 @@ function command_loader(
 	message: Message, command: string, args: string[], type: string, command_options: CommandOptions,
 	path_to_command: string, guild_object: GuildPrtl
 ): boolean {
-	if (config.debug === true) {
+	if (process.env.DEBUG!) {
 		logger.info(`[command-debug] ${command}`);
 	}
 
@@ -391,7 +388,7 @@ function event_loader(event: string, args: any): void {
 			if (response) {
 				if ((event_config_json.find(e => e.name === event))) {
 					logger.info(`[event-accepted] ${event} | ${response}`);
-				} else if (config.debug) {
+				} else if (process.env.DEBUG) {
 					logger.info(`[event-accepted-debug] ${event} | ${response}`);
 				}
 			}
@@ -740,7 +737,7 @@ function command_decypher(
 }
 
 function connect_to_discord() {
-	client.login(config.token)
+	client.login(process.env.TOKEN)
 		.then(r => {
 			logger.info(`login to discord successful / ${r}`);
 		})

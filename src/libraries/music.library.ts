@@ -4,7 +4,6 @@ import ytdl from 'discord-ytdl-core';
 import { Client, Guild, Message, MessageAttachment, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
 import { RequestOptions } from 'https';
 import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
-import config from '../config.json';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { get_json, is_url, join_by_reaction, join_user_voice, update_music_lyrics_message, update_music_message } from './help.library';
 import { https_fetch, scrape_lyrics } from './http.library';
@@ -767,7 +766,7 @@ export async function get_lyrics(
 				"path": `/search?q=${search_term}`,
 				'headers': {
 					"x-rapidapi-host": "genius.p.rapidapi.com",
-					'x-rapidapi-key': config.api_keys.lyrics,
+					'x-rapidapi-key': process.env.LYRICS,
 					'useQueryString': 1
 				},
 			}

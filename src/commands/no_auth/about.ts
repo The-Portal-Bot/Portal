@@ -1,5 +1,4 @@
 import { Message } from "discord.js";
-import config from '../../config.json';
 import { create_rich_embed } from "../../libraries/help.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -25,7 +24,7 @@ module.exports = async (
                     },
                     {
                         emote: 'Version',
-                        role: `[${config.version}](https://portal-bot.xyz/blog/${config.version})`,
+                        role: `[${process.env.VERSION}](https://portal-bot.xyz/blog/${process.env.VERSION})`,
                         inline: true
                     },
                     {

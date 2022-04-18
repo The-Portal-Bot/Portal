@@ -3,7 +3,6 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import config from '../../config.json';
 // import { CountryCodes } from '../../data/lists/country_codes_iso.static';
 import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
@@ -39,7 +38,7 @@ module.exports = async (
 			'path': `/v8/finance/chart/${args[0]}?events=div%2Csplit`,
 			'headers': {
 				'x-rapidapi-host': 'yahoo-finance-low-latency.p.rapidapi.com',
-				'x-rapidapi-key': config.api_keys.yahoo_finance,
+				'x-rapidapi-key': process.env.YAHOO_FINANCE,
 				'useQueryString': 1
 			}
 		};
