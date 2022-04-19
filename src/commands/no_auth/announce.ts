@@ -1,6 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { create_rich_embed, message_help } from "../../libraries/help.library";
-import { client_talk } from "../../libraries/localisation.library";
+// import { client_talk } from "../../libraries/localisation.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -60,7 +60,7 @@ module.exports = async (
         );
 
         announcement_channel
-            .send(rich_message)
+            .send({ embeds: [rich_message] })
             .then(() => {
                 client_talk(client, guild_object, 'announce');
 

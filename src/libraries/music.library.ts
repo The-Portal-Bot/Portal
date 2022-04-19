@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 // const ytdl = require('ytdl-core');
 import ytdl from 'discord-ytdl-core';
-import { Client, Guild, Message, MessageAttachment, StreamDispatcher, StreamOptions, User, VoiceConnection } from "discord.js";
+import { Client, Guild, Message, MessageAttachment, User } from "discord.js";
 import { RequestOptions } from 'https';
 import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";

@@ -1,4 +1,4 @@
-import { Channel, Client, Guild, GuildMember, Intents, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, User, VoiceState } from "discord.js";
+import { CacheFactory, Channel, Client, ClientOptions, Guild, GuildMember, Intents, Message, MessageReaction, Options, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, User, VoiceState } from "discord.js";
 import mongoose from "mongoose";
 import { transports } from "winston";
 import command_config_json from './config.command.json';
@@ -47,30 +47,75 @@ mongoose.connect(process.env.MONGO_URL!, {
 		process.exit(1);
 	});
 
-const client = new Client(
-	{
-		partials: [
-			'USER',
-			'CHANNEL',
-			'GUILD_MEMBER',
-			'MESSAGE',
-			'REACTION'
-		],
-		ws: {
-			intents: // Intents.ALL
-				[
-					Intents.FLAGS.GUILDS,
-					Intents.FLAGS.GUILD_MEMBERS,
-					Intents.FLAGS.GUILD_VOICE_STATES,
-					Intents.FLAGS.GUILD_PRESENCES,
-					Intents.FLAGS.GUILD_MESSAGES,
-					Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-					Intents.FLAGS.DIRECT_MESSAGES,
-					Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
-				]
-		}
-	}
-);
+const cacheFactory: CacheFactory = Options.cacheWithLimits({
+	MessageManager: 200, // This is default
+	PresenceManager: 0,
+	ApplicationCommandManager: 0,
+	BaseGuildEmojiManager: 0,
+	GuildEmojiManager: 0,
+	GuildMemberManager: 0,
+	GuildBanManager: 0,
+	GuildInviteManager: 0,
+	GuildScheduledEventManager: 0,
+	GuildStickerManager: 0,
+	ReactionManager: 0,
+	ReactionUserManager: 0,
+	StageInstanceManager: 0,
+	ThreadManager: 0,
+	ThreadMemberManager: 0,
+	UserManager: 0,
+	VoiceStateManager: 0,
+});
+const intents = new Intents(32767);
+
+const clientOptions: ClientOptions = {
+	makeCache: cacheFactory,
+	partials: [
+		'USER',
+		'CHANNEL',
+		'GUILD_MEMBER',
+		'MESSAGE',
+		'REACTION'
+	],
+	intents: [ // Intents.ALL
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MEMBERS,
+		Intents.FLAGS.GUILD_VOICE_STATES,
+		Intents.FLAGS.GUILD_PRESENCES,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+		Intents.FLAGS.DIRECT_MESSAGES,
+		Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+	]
+}
+
+const client = new Client(clientOptions);
+
+
+// const client = new Client(
+// 	{
+// 		partials: [
+// 			'USER',
+// 			'CHANNEL',
+// 			'GUILD_MEMBER',
+// 			'MESSAGE',
+// 			'REACTION'
+// 		],
+// 		ws: {
+// 			intents: // Intents.ALL
+// 				[
+// 					Intents.FLAGS.GUILDS,
+// 					Intents.FLAGS.GUILD_MEMBERS,
+// 					Intents.FLAGS.GUILD_VOICE_STATES,
+// 					Intents.FLAGS.GUILD_PRESENCES,
+// 					Intents.FLAGS.GUILD_MESSAGES,
+// 					Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+// 					Intents.FLAGS.DIRECT_MESSAGES,
+// 					Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+// 				]
+// 		}
+// 	}
+// );
 
 // This event triggers when the bot joins a guild.
 client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
@@ -117,13 +162,13 @@ client.on('messageDelete', (message: Message | PartialMessage) =>
 );
 
 // This event triggers when a member reacts to a message
-client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | PartialUser) =>
-	event_loader('messageReactionAdd', {
-		'client': client,
-		'messageReaction': messageReaction,
-		'user': user
-	})
-);
+// client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | PartialUser) =>
+// 	event_loader('messageReactionAdd', {
+// 		'client': client,
+// 		'messageReaction': messageReaction,
+// 		'user': user
+// 	})
+// );
 
 // This event will run if the bot starts, and logs in, successfully.
 client.on('ready', () =>
@@ -152,7 +197,7 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
 // runs on every single message received, from any channel or DM
 client.on('message', async (message: Message) => {
 	if (!message || !message.member || !message.guild) return;
-	if (message.channel.type === 'dm' || message.author.bot) return;
+	if (message.channel.type === 'DM' || message.author.bot) return;
 
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {

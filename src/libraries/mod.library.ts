@@ -249,12 +249,14 @@ function mute_user(
    */
 function delete_message(message: Message): void {
 	if (message.deletable) {
-		message
-			.delete({
-				timeout: (process.env.DELETE_DELAY as unknown as number) * 1000
-			})
-			.catch(e => {
-				logger.error(new Error(`failed to delete message / ${e}`));
-			});
+		const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+		setTimeout(() =>
+			message
+				.delete()
+				.catch((e: any) => {
+					return Promise.reject(`failed to delete message / ${e}`);
+				}),
+			delay
+		);
 	}
 }

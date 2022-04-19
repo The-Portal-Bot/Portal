@@ -1,4 +1,4 @@
-import { Message, TextChannel } from "discord.js";
+import { ColorResolvable, Message, TextChannel } from "discord.js";
 import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
 import { insert_poll } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
@@ -9,7 +9,7 @@ const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣',
 
 function create_role_message(
 	channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
-	colour: string, poll_map: Field[], member_id: string
+	colour: ColorResolvable, poll_map: Field[], member_id: string
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
 		const role_message_emb = create_rich_embed(
@@ -25,7 +25,7 @@ function create_role_message(
 		);
 
 		channel
-			.send(role_message_emb)
+			.send({ embeds: [role_message_emb] })
 			.then(sent_message => {
 				sent_message
 					.react('🏁')

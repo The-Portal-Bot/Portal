@@ -1,4 +1,4 @@
-// import { GuildCreateChannelOptions, Message, TextChannel } from "discord.js";
+// import { GuildChannelCreateOptions, Message, TextChannel } from "discord.js";
 // import { create_channel, create_music_channel, delete_channel, get_options } from "../../libraries/guild.library";
 // import { insert_portal, update_guild, insert_url } from "../../libraries/mongo.library";
 // import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
@@ -32,7 +32,7 @@
 // 				});
 
 // 				if (message.member) {
-// 					const portal_options: GuildCreateChannelOptions = {
+// 					const portal_options: GuildChannelCreateOptions = {
 // 						topic: `by Portal, channels on demand`,
 // 						type: 'voice',
 // 						bitrate: 64000,

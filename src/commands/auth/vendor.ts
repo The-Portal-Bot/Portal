@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
+import { ColorResolvable, Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../libraries/guild.library";
 import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
 import { insert_vendor } from "../../libraries/mongo.library";
@@ -8,15 +8,15 @@ import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 function create_role_message(
 	channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
-	colour: string, role_emb: Field[], role_map: GiveRole[]
+	colour: ColorResolvable, role_emb: Field[], role_map: GiveRole[]
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const role_message_emb: MessageEmbed = create_rich_embed(
+		const role_message_emb = create_rich_embed(
 			title, desc, colour, role_emb, null, null, null, null, null
 		);
 
 		channel
-			.send(role_message_emb)
+			.send({ embeds: [role_message_emb] })
 			.then(sent_message => {
 				for (let i = 0; i < role_map.length; i++) {
 					sent_message

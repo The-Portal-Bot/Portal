@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, VoiceChannel } from "discord.js";
 import { message_help } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -30,7 +30,7 @@ module.exports = async (
 				.filter(val => val !== '\n')
 				.join(' ');
 
-			set_attribute(message.member.voice.channel, guild_object, args[0], value, message.member, message)
+			set_attribute(message.member.voice.channel as VoiceChannel, guild_object, args[0], value, message.member, message)
 				.then(r => {
 					return resolve(r);
 				})

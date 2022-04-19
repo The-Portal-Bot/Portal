@@ -86,8 +86,8 @@ module.exports = async (
 				});
 			}
 			else if (args.length > 0) {
-				let announcement_channel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-				let announcement_category: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+				let announcement_channel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
+				let announcement_category: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
 
 				if (announcement_channel === '' && announcement_category !== '') {
 					announcement_channel = announcement_category;

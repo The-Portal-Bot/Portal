@@ -63,15 +63,15 @@ module.exports = async (
 					});
 			}
 		} else if (args.length > 0) {
-			let url_channel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-			let url_category: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+			let url_channel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
+			let url_category: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
 
 			if (url_channel === '' && url_category !== '') {
 				url_channel = url_category;
 				url_category = null;
 			}
 
-			const url_options = get_options(message.guild, 'url only channel', true);
+			const url_options = get_options(message.guild, 'url only channel');
 
 			create_channel(
 				message.guild, url_channel, url_options, url_category

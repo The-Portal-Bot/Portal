@@ -148,40 +148,40 @@ export const console_text: LocalisationOption[] = [
 	}
 ]
 
-export function client_talk(
-	client: Client, guild_object: GuildPrtl, context: string
-): boolean {
-	const voice_connection = client?.voice?.connections
-		.find(connection => connection.channel.guild.id === guild_object.id);
+// export function client_talk(
+// 	client: Client, guild_object: GuildPrtl, context: string
+// ): boolean {
+// 	const voice_connection = client?.voice?.connections
+// 		.find(connection => connection.channel.guild.id === guild_object.id);
 
-	if (voice_connection) {
-		if (!voice_connection.dispatcher) {
-			return guild_object.portal_list.some(p =>
-				p.voice_list.some(v => {
+// 	if (voice_connection) {
+// 		if (!voice_connection.dispatcher) {
+// 			return guild_object.portal_list.some(p =>
+// 				p.voice_list.some(v => {
 
-					if (type_of_announcement.includes(context) && v.ann_announce) {
-						const locale = v.locale;
-						const random = Math.floor(Math.random() * Math.floor(3));
+// 					if (type_of_announcement.includes(context) && v.ann_announce) {
+// 						const locale = v.locale;
+// 						const random = Math.floor(Math.random() * Math.floor(3));
 
-						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-						return true;
-					}
-					else if (type_of_action.includes(context) && v.ann_user) {
-						const locale = v.locale;
-						const random = Math.floor(Math.random() * Math.floor(3));
+// 						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+// 						return true;
+// 					}
+// 					else if (type_of_action.includes(context) && v.ann_user) {
+// 						const locale = v.locale;
+// 						const random = Math.floor(Math.random() * Math.floor(3));
 
-						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
-						return true;
-					}
+// 						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+// 						return true;
+// 					}
 
-					return v.id === voice_connection.channel.id;
-				})
-			);
-		}
-	}
+// 					return v.id === voice_connection.channel.id;
+// 				})
+// 			);
+// 		}
+// 	}
 
-	return false;
-}
+// 	return false;
+// }
 
 export function get_function(
 	output: string, locale: number, context: string
