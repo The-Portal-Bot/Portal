@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import https, { RequestOptions } from 'https';
 import fetch from 'node-fetch';
 import { URL } from 'url';
@@ -12,7 +10,7 @@ export async function https_fetch(
 		const req = https.request(options, function (res) {
 			const chunks: Uint8Array[] = [];
 
-			res.on('data', function (chunk: any) {
+			res.on('data', function (chunk: Uint8Array) {
 				chunks.push(chunk);
 			});
 

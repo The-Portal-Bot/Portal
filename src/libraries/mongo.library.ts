@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Client, TextChannel, VoiceChannel } from 'discord.js';
 import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
@@ -11,7 +9,7 @@ import { GuildPrtl, IGuildPrtl, MusicData } from '../types/classes/GuildPrtl.cla
 import { MemberPrtl } from '../types/classes/MemberPrtl.class';
 import { PollPrtl } from '../types/classes/PollPrtl.class';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
-import { MongoPromise, Rank } from '../types/classes/TypesPrtl.interface';
+import { Rank } from '../types/classes/TypesPrtl.interface';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
 
@@ -931,7 +929,7 @@ export async function remove_url(
                 }
             })
             .catch((e: any) => {
-                return reject(e);
+                return reject(`did not execute database transaction / ${e}`);
             });
     });
 }

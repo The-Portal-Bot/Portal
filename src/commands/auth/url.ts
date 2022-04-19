@@ -18,7 +18,7 @@ module.exports = async (
 		if (args.length === 0) {
 			if (is_url_only_channel(message.channel.id, guild_object)) {
 				remove_url(guild_object.id, message.channel.id)
-					.then(r => {
+					.then((r: boolean) => {
 						return resolve({
 							result: r,
 							value: r
@@ -26,7 +26,7 @@ module.exports = async (
 								: 'failed to remove url channel'
 						});
 					})
-					.catch(e => {
+					.catch((e: string) => {
 						return resolve({
 							result: false,
 							value: `failed to remove url channel / ${e}`
@@ -93,7 +93,7 @@ module.exports = async (
 							});
 						});
 				})
-				.catch(e => {
+				.catch((e: any) => {
 					return resolve(e);
 				});
 		}

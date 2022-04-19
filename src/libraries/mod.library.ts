@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BanOptions, Message } from 'discord.js';
 import moment from "moment";
 import config_spam from '../config.spam.json';
@@ -43,7 +40,7 @@ export function isProfane(
 		return word_exp.test(canditate);
 	});
 
-	return (gr.length > 0 || false) || (en.length > 0 || false) || (de.length > 0 || false)
+	return (gr.length > 0) && (en.length > 0) && (de.length > 0)
 		? gr.concat(en).concat(de)
 		: [];
 }

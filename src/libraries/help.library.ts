@@ -389,9 +389,13 @@ export async function join_by_reaction(
 		if (voice_connection_in_guild &&
 			voice_connection_in_guild.channel.id === user.presence.member.voice.channel?.id
 		) {
-			voice_connection_in_guild?.voice?.setSelfDeaf(true);
-
-			return resolve(voice_connection_in_guild);
+			voice_connection_in_guild?.voice?.setSelfDeaf(true)
+			.then(didSelfDeaf => {
+				return resolve(voice_connection_in_guild);				
+			})
+			.catch(e => {
+				return reject(`failed to set self deaf / ${e}`)
+			});
 		} else if (!voice_connection_in_guild || (voice_connection_in_guild &&
 			!voice_connection_in_guild.channel.members.some(m => !m.user.bot))
 		) {

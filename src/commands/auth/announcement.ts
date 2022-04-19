@@ -117,7 +117,7 @@ module.exports = async (
 								});
 							});
 					})
-					.catch(e => {
+					.catch((e: any) => {
 						return resolve(e);
 					});
 			} else {
