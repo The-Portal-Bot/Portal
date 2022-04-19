@@ -36,7 +36,7 @@
         "ytdl-core": "^4.11.0"
     },
     "devDependencies": {
-        "@types/lodash": "^4.14.181",
+        "@types/lodash": "^4.14.182",
         "@types/node": "^17.0.24",
         "@types/node-fetch": "2.6.1",
         "@types/roll": "^1.2.0",
