@@ -1,10 +1,11 @@
 import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
-import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, PermissionString, TextChannel, User } from "discord.js";
+import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, PermissionString, TextChannel, User, VoiceChannel } from "discord.js";
 import moment from "moment";
 import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
 import { Field, TimeElapsed } from "../types/classes/TypesPrtl.interface";
+import { createDiscordJSAdapter } from "./adapter.library";
 // import { client_talk } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
@@ -392,10 +393,10 @@ export async function join_by_reaction(
 	if (voiceConnection && member.voice.channel.guild.me?.voice.channelId === member.voice.channel?.id) {
 		member.voice.channel.guild.me?.voice.setDeaf();
 	} else {
-		voiceConnection = await joinVoiceChannel({
+		voiceConnection = joinVoiceChannel({
 			channelId: member.voice.channel.id,
 			guildId: member.voice.channel.guild.id,
-			adapterCreator: member.voice.channel.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
+			adapterCreator: createDiscordJSAdapter(member.voice.channel as VoiceChannel),
 		});
 
 		if (!voiceConnection) {
@@ -446,7 +447,7 @@ export async function join_user_voice(
 		voiceConnection = await joinVoiceChannel({
 			channelId: message.member.voice.channel.id,
 			guildId: message.guild.id,
-			adapterCreator: message.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
+			adapterCreator: createDiscordJSAdapter(message.member.voice.channel as VoiceChannel),
 		});
 
 		if (!voiceConnection) {

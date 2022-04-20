@@ -1,3 +1,4 @@
+import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
 import { Client, MessageReaction, Role, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
 import { create_rich_embed, is_authorised, is_dj, logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
@@ -112,339 +113,347 @@ async function reaction_role_manager(
 async function reaction_music_manager(
 	client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
 ): Promise<string> {
-	return new Promise((resolve, reject) => {
-		if (!messageReaction.message.guild) {
-			return reject(`could not fetch message's guild`);
+	if (!messageReaction.message.guild) {
+		return `could not fetch message's guild`;
+	}
+
+	if (!guild_object.music_data) {
+		return 'guild has no music channel';
+	}
+
+	if (guild_object.music_data.message_id !== messageReaction.message.id) {
+		return 'message is not music player';
+	}
+
+	const portal_voice_connection = await getVoiceConnection(messageReaction.message.guild.id);
+
+	if (!portal_voice_connection) {
+		return 'portal is not connected to voice channel';
+	}
+
+	try {
+		await entersState(portal_voice_connection, VoiceConnectionStatus.Ready, 30e3);
+	} catch (error) {
+		portal_voice_connection.destroy();
+		Promise.reject(error);
+	}
+
+	if (portal_voice_connection) {
+		if (!portal_voice_connection.channel.members.has(user.id)) {
+			return 'you must be in the same channel as Portal';
 		}
+	}
 
-		if (!guild_object.music_data) {
-			return resolve('guild has no music channel');
+	switch (messageReaction.emoji.name) {
+		case '▶️': {
+			play(
+				portal_voice_connection, user, client,
+				messageReaction.message.guild, guild_object
+			)
+				.then(r => {
+					clear_music_vote(guild_object.id)
+						.catch(e => logger.error(new Error(e)));
+
+					return r;
+				})
+				.catch(e => {
+					clear_music_vote(guild_object.id)
+						.catch(e => logger.error(new Error(e)));
+
+					return Promise.reject(`failed to play video / ${e}`);
+				});
+
+			break;
 		}
+		case '⏸': {
+			pause(portal_voice_connection)
+				.then(r => {
+					clear_music_vote(guild_object.id)
+						.catch(e => logger.error(new Error(e)));
 
-		if (guild_object.music_data.message_id !== messageReaction.message.id) {
-			return resolve('message is not music player');
+					return r;
+				})
+				.catch(e => {
+					clear_music_vote(guild_object.id)
+						.catch(e => logger.error(new Error(e)));
+
+					return Promise.reject(`failed to pause video / ${e}`);
+				});
+
+			break;
 		}
+		case '⏭': {
+			if (!portal_voice_connection) {
+				update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
+					.catch(e => logger.error(new Error(e)));
 
-		const portal_voice_connection = client.voice?.connections
-			.find(c => c.channel.guild.id === messageReaction.message?.guild?.id);
-
-		if (portal_voice_connection) {
-			if (!portal_voice_connection.channel.members.has(user.id)) {
-				return resolve('you must be in the same channel as Portal');
+				return 'nothing to skip, player is idle';
 			}
-		}
 
-		switch (messageReaction.emoji.name) {
-			case '▶️': {
-				play(
+			if (!guild_object.music_data.votes) {
+				return 'could not fetch music votes';
+			}
+
+			const guild = messageReaction.message.guild;
+			// const guild = client.guilds.cache
+			// 	.find(g => g.id === guild_object.id);
+
+			if (!guild) {
+				return Promise.reject(`could not fetch guild`);
+			}
+
+			const member = guild.members.cache
+				.find(m => m.id === user.id);
+
+			if (!member) {
+				return Promise.reject(`could not fetch memeber`);
+			}
+
+			let reason = 'none';
+
+			if (!is_dj(member)) {
+				if (!is_authorised(member)) {
+					if (!guild_object.music_data.votes.includes(user.id)) {
+						guild_object.music_data.votes.push(user.id);
+						insert_music_vote(guild_object.id, user.id).catch(e => logger.error(new Error(e)));
+					}
+
+					const votes = guild_object.music_data.votes.length;
+					const users = portal_voice_connection?.channel?.members
+						.filter(member => !member.user.bot).size;
+
+					if (!(votes < users / 2)) {
+						return `${votes}/${Math.round(users / 2)} votes required`;
+					} else {
+						reason = 'vote'
+					}
+				} else {
+					reason = 'admin'
+				}
+			} else {
+				reason = 'DJ'
+			}
+
+			if (!guild_object.music_data.pinned) {
+				skip(
 					portal_voice_connection, user, client,
 					messageReaction.message.guild, guild_object
 				)
 					.then(r => {
 						clear_music_vote(guild_object.id)
 							.catch(e => logger.error(new Error(e)));
+						guild_object.music_queue.shift();
 
-						return resolve(r);
+						return `${r} (by ${reason})`;
 					})
 					.catch(e => {
-						clear_music_vote(guild_object.id)
-							.catch(e => logger.error(new Error(e)));
-
-						return reject(`failed to play video / ${e}`);
+						return Promise.reject(`error while skipping / ${e}`);
 					});
-
-				break;
-			}
-			case '⏸': {
-				pause(portal_voice_connection)
-					.then(r => {
-						clear_music_vote(guild_object.id)
-							.catch(e => logger.error(new Error(e)));
-
-						return resolve(r);
-					})
-					.catch(e => {
-						clear_music_vote(guild_object.id)
-							.catch(e => logger.error(new Error(e)));
-
-						return reject(`failed to pause video / ${e}`);
-					});
-
-				break;
-			}
-			case '⏭': {
-				if (!portal_voice_connection) {
-					update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
-						.catch(e => logger.error(new Error(e)));
-
-					return resolve('nothing to skip, player is idle');
-				}
-
-				if (!guild_object.music_data.votes) {
-					return resolve('could not fetch music votes');
-				}
-
-				const guild = messageReaction.message.guild;
-				// const guild = client.guilds.cache
-				// 	.find(g => g.id === guild_object.id);
-
-				if (!guild) {
-					return reject(`could not fetch guild`);
-				}
-
-				const member = guild.members.cache
-					.find(m => m.id === user.id);
-
-				if (!member) {
-					return reject(`could not fetch memeber`);
-				}
-
-				let reason = 'none';
-
-				if (!is_dj(member)) {
-					if (!is_authorised(member)) {
-						if (!guild_object.music_data.votes.includes(user.id)) {
-							guild_object.music_data.votes.push(user.id);
-							insert_music_vote(guild_object.id, user.id).catch(e => logger.error(new Error(e)));
-						}
-
-						const votes = guild_object.music_data.votes.length;
-						const users = portal_voice_connection?.channel?.members
-							.filter(member => !member.user.bot).size;
-
-						if (!(votes < users / 2)) {
-							return resolve(`${votes}/${Math.round(users / 2)} votes required`);
-						} else {
-							reason = 'vote'
-						}
-					} else {
-						reason = 'admin'
-					}
-				} else {
-					reason = 'DJ'
-				}
-
-				if (!guild_object.music_data.pinned) {
-					skip(
-						portal_voice_connection, user, client,
-						messageReaction.message.guild, guild_object
-					)
-						.then(r => {
-							clear_music_vote(guild_object.id)
-								.catch(e => logger.error(new Error(e)));
-							guild_object.music_queue.shift();
-
-							return resolve(`${r} (by ${reason})`);
-						})
-						.catch(e => {
-							return reject(`error while skipping / ${e}`);
-						});
-				} else {
-					guild_object.music_data.pinned = false;
-					set_music_data(guild_object.id, guild_object.music_data)
-						.then(r => {
-							if (!r) {
-								return reject(guild_object.music_data.pinned
-									? 'failed to pin song'
-									: 'failed to unpin song');
-							} else {
-								skip(
-									portal_voice_connection, user, client,
-									guild, guild_object
-								)
-									.then(r => {
-										clear_music_vote(guild_object.id)
-											.catch(e => logger.error(new Error(e)));
-										guild_object.music_queue.shift();
-
-										return resolve(`${r} (by ${reason})`);
-									})
-									.catch(e => {
-										return reject(`error while skipping / ${e}`);
-									});
-							}
-						})
-						.catch(e => {
-							guild_object.music_data.pinned = !guild_object.music_data.pinned;
-
-							return reject(!guild_object.music_data.pinned
-								? `error occurred while pinning song / ${e}`
-								: `error occurred while unpinning song / ${e}`);
-						});
-				}
-
-				break;
-			}
-			// case '➖': {
-			// 	volume_down(portal_voice_connection)
-			// 		.then(r => {
-			// 			clear_music_vote(guild_object.id)
-			//.catch(e => logger.error(new Error(e)));
-
-			// 			return resolve(r);
-			// 		})
-			// 		.catch(e => {
-			// 			clear_music_vote(guild_object.id)
-			// .catch(e => logger.error(new Error(e)));
-
-			// 			return resolve({
-			// 				result: false,
-			// 				value: `error while decreasing volume / ${e}`
-			// 			});
-			// 		});
-
-			// 	break;
-			// }
-			// case '➕': {
-			// 	volume_up(portal_voice_connection)
-			// 		.then(r => {
-			// 			clear_music_vote(guild_object.id)
-			// .catch(e => logger.error(new Error(e)));
-
-			// 			return resolve(r);
-			// 		})
-			// 		// .catch(e => {
-			// 			clear_music_vote(guild_object.id)
-			// .catch(e => logger.error(new Error(e)));
-
-			// 			return resolve({
-			// 				result: false,
-			// 				value: `error while increasing volume / ${e}`
-			// 			});
-			// 		});
-
-			// 	break;
-			// }
-			case '📌': {
-				guild_object.music_data.pinned = !guild_object.music_data.pinned;
-
+			} else {
+				guild_object.music_data.pinned = false;
 				set_music_data(guild_object.id, guild_object.music_data)
 					.then(r => {
 						if (!r) {
-							guild_object.music_data.pinned = !guild_object.music_data.pinned;
-						}
-
-						if (r) {
-							return resolve(guild_object.music_data.pinned
-								? 'pinned song'
-								: 'unpinned song');
-						} else {
-							return reject(!guild_object.music_data.pinned
+							return Promise.reject(guild_object.music_data.pinned
 								? 'failed to pin song'
 								: 'failed to unpin song');
+						} else {
+							skip(
+								portal_voice_connection, user, client,
+								guild, guild_object
+							)
+								.then(r => {
+									clear_music_vote(guild_object.id)
+										.catch(e => logger.error(new Error(e)));
+									guild_object.music_queue.shift();
+
+									return `${r} (by ${reason})`;
+								})
+								.catch(e => {
+									return Promise.reject(`error while skipping / ${e}`);
+								});
 						}
 					})
 					.catch(e => {
 						guild_object.music_data.pinned = !guild_object.music_data.pinned;
 
-						const reply_message = !guild_object.music_data.pinned
-							? `error occurred while pinning song`
-							: `error occurred while unpinning song`;
-
-						return reject(`${reply_message} / ${e}`);
+						return Promise.reject(!guild_object.music_data.pinned
+							? `error occurred while pinning song / ${e}`
+							: `error occurred while unpinning song / ${e}`);
 					});
-
-				break;
 			}
-			case '📄': {
-				get_lyrics(messageReaction.message.guild, guild_object)
-					.then(r => {
-						return resolve(r);
-					})
-					.catch(e => {
-						return reject(`error occurred while fetching lyrics / ${e}`);
-					});
 
-				break;
-			}
-			case '⬇️': {
-				export_txt(guild_object)
-					.then(r => {
-						if (r) {
-							user.createDM()
-								.then(dm => {
-									dm
-										.send(r)
-										.catch(e => {
-											return reject(`failed to send a message / ${e}`);
-										});
-									return resolve(`sent '${user.presence.member?.displayName}' a list of the queue`);
-								})
-								.catch(e => {
-									return reject(`failed to create dm channel / ${e}`);
-								});
-						} else {
-							return resolve(`queue is empty`);
-						}
-					})
-					.catch(e => {
-						return reject(`failed to create music queue txt / ${e}`);
-					});
-
-				break;
-			}
-			case '🧹': {
-				if (guild_object.music_queue.length > 1) {
-					guild_object.music_queue.splice(1, guild_object.music_queue.length);
-					update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
-						.catch(e => {
-							return reject(`failed to update guild / ${e}`);
-						});
-
-					const guild = client.guilds.cache
-						.find(g => g.id === guild_object.id);
-
-					if (!guild) {
-						clear_music_vote(guild_object.id)
-							.catch(e => logger.error(new Error(e)));
-
-						return reject('could fetch guild from client');
-					}
-				}
-
-				clear_music_vote(guild_object.id)
-					.catch(e => logger.error(new Error(e)));
-				return resolve('queue has been cleared');
-
-				break;
-			}
-			case '🚪': {
-				pause(portal_voice_connection)
-					.then(() => {
-						if (portal_voice_connection) {
-							guild_object.music_queue = [];
-							update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
-								.catch(e => {
-									return reject(`failed to update guild / ${e}`);
-								});
-
-							if (messageReaction.message.guild) {
-								update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
-									.catch(e => {
-										return reject(`failed to update music lyric message / ${e}`);
-									});
-							}
-
-							clear_music_vote(guild_object.id)
-								.catch(e => logger.error(new Error(e)));
-							portal_voice_connection.disconnect();
-
-							return resolve('Portal has been disconnected');
-						} else {
-							return resolve('Portal is not connected to a voice channel');
-						}
-					})
-					.catch(e => {
-						clear_music_vote(guild_object.id)
-							.catch(e => logger.error(new Error(e)));
-
-						return reject(`Portal failed to get disconnected / ${e}`);
-					});
-
-				break;
-			}
+			break;
 		}
-	});
+		// case '➖': {
+		// 	volume_down(portal_voice_connection)
+		// 		.then(r => {
+		// 			clear_music_vote(guild_object.id)
+		//.catch(e => logger.error(new Error(e)));
+
+		// 			return resolve(r);
+		// 		})
+		// 		.catch(e => {
+		// 			clear_music_vote(guild_object.id)
+		// .catch(e => logger.error(new Error(e)));
+
+		// 			return resolve({
+		// 				result: false,
+		// 				value: `error while decreasing volume / ${e}`
+		// 			});
+		// 		});
+
+		// 	break;
+		// }
+		// case '➕': {
+		// 	volume_up(portal_voice_connection)
+		// 		.then(r => {
+		// 			clear_music_vote(guild_object.id)
+		// .catch(e => logger.error(new Error(e)));
+
+		// 			return resolve(r);
+		// 		})
+		// 		// .catch(e => {
+		// 			clear_music_vote(guild_object.id)
+		// .catch(e => logger.error(new Error(e)));
+
+		// 			return resolve({
+		// 				result: false,
+		// 				value: `error while increasing volume / ${e}`
+		// 			});
+		// 		});
+
+		// 	break;
+		// }
+		case '📌': {
+			guild_object.music_data.pinned = !guild_object.music_data.pinned;
+
+			set_music_data(guild_object.id, guild_object.music_data)
+				.then(r => {
+					if (!r) {
+						guild_object.music_data.pinned = !guild_object.music_data.pinned;
+					}
+
+					if (r) {
+						return resolve(guild_object.music_data.pinned
+							? 'pinned song'
+							: 'unpinned song');
+					} else {
+						return reject(!guild_object.music_data.pinned
+							? 'failed to pin song'
+							: 'failed to unpin song');
+					}
+				})
+				.catch(e => {
+					guild_object.music_data.pinned = !guild_object.music_data.pinned;
+
+					const reply_message = !guild_object.music_data.pinned
+						? `error occurred while pinning song`
+						: `error occurred while unpinning song`;
+
+					return reject(`${reply_message} / ${e}`);
+				});
+
+			break;
+		}
+		case '📄': {
+			get_lyrics(messageReaction.message.guild, guild_object)
+				.then(r => {
+					return resolve(r);
+				})
+				.catch(e => {
+					return reject(`error occurred while fetching lyrics / ${e}`);
+				});
+
+			break;
+		}
+		case '⬇️': {
+			export_txt(guild_object)
+				.then(r => {
+					if (r) {
+						user.createDM()
+							.then(dm => {
+								dm
+									.send(r)
+									.catch(e => {
+										return reject(`failed to send a message / ${e}`);
+									});
+								return resolve(`sent '${user.presence.member?.displayName}' a list of the queue`);
+							})
+							.catch(e => {
+								return reject(`failed to create dm channel / ${e}`);
+							});
+					} else {
+						return resolve(`queue is empty`);
+					}
+				})
+				.catch(e => {
+					return reject(`failed to create music queue txt / ${e}`);
+				});
+
+			break;
+		}
+		case '🧹': {
+			if (guild_object.music_queue.length > 1) {
+				guild_object.music_queue.splice(1, guild_object.music_queue.length);
+				update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+					.catch(e => {
+						return reject(`failed to update guild / ${e}`);
+					});
+
+				const guild = client.guilds.cache
+					.find(g => g.id === guild_object.id);
+
+				if (!guild) {
+					clear_music_vote(guild_object.id)
+						.catch(e => logger.error(new Error(e)));
+
+					return reject('could fetch guild from client');
+				}
+			}
+
+			clear_music_vote(guild_object.id)
+				.catch(e => logger.error(new Error(e)));
+			return resolve('queue has been cleared');
+
+			break;
+		}
+		case '🚪': {
+			pause(portal_voice_connection)
+				.then(() => {
+					if (portal_voice_connection) {
+						guild_object.music_queue = [];
+						update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+							.catch(e => {
+								return reject(`failed to update guild / ${e}`);
+							});
+
+						if (messageReaction.message.guild) {
+							update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
+								.catch(e => {
+									return reject(`failed to update music lyric message / ${e}`);
+								});
+						}
+
+						clear_music_vote(guild_object.id)
+							.catch(e => logger.error(new Error(e)));
+						portal_voice_connection.disconnect();
+
+						return resolve('Portal has been disconnected');
+					} else {
+						return resolve('Portal is not connected to a voice channel');
+					}
+				})
+				.catch(e => {
+					clear_music_vote(guild_object.id)
+						.catch(e => logger.error(new Error(e)));
+
+					return reject(`Portal failed to get disconnected / ${e}`);
+				});
+
+			break;
+		}
+	}
 }
 
 module.exports = async (
@@ -480,11 +489,14 @@ module.exports = async (
 									args.messageReaction.message.channel
 										.send(`${args.user}, ${r}`)
 										.then(sent_message => {
-											sent_message
-												.delete({ timeout: 7500 })
-												.catch(e => {
-													return reject(`failed to delete message / ${e}`);
-												});
+											setTimeout(() =>
+												sent_message
+													.delete()
+													.catch(e => {
+														return Promise.reject(`failed to delete message / ${e}`);
+													}),
+												7500
+											);
 											return resolve('');
 										})
 										.catch(e => {
@@ -499,11 +511,14 @@ module.exports = async (
 									args.messageReaction.message.channel
 										.send(`${args.user}, ${e}`)
 										.then(sent_message => {
-											sent_message
-												.delete({ timeout: 7500 })
-												.catch(e => {
-													return reject(`failed to delete message / ${e}`);
-												});
+											setTimeout(() =>
+												sent_message
+													.delete()
+													.catch(e => {
+														return Promise.reject(`failed to delete message / ${e}`);
+													}),
+												7500
+											);
 											return resolve('');
 										})
 										.catch(e => {
@@ -594,24 +609,26 @@ module.exports = async (
 									: `Noboody voted`;
 
 								args.messageReaction.message.channel
-									.send(
-										create_rich_embed(
-											null,
-											null,
-											'#9900ff',
-											null,
-											null,
-											null,
-											false,
-											null,
-											null,
-											undefined,
-											{
-												name: message,
-												icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/firework.gif'
-											}
-										)
-									)
+									.send({
+										embeds: [
+											create_rich_embed(
+												null,
+												null,
+												'#9900ff',
+												null,
+												null,
+												null,
+												false,
+												null,
+												null,
+												undefined,
+												{
+													name: message,
+													icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/firework.gif'
+												}
+											)
+										]
+									})
 									.catch(e => {
 										return reject(`failed to send message / ${e}`);
 									});

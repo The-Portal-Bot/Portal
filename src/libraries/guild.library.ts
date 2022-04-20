@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { DiscordGatewayAdapterCreator, joinVoiceChannel } from "@discordjs/voice";
 import {
-	CategoryChannel, CategoryChannelResolvable, Collection, CollectorFilter, Guild,
+	CategoryChannel, CategoryChannelResolvable, Collection, Guild,
 	GuildChannelCreateOptions,
 	GuildMember, Message, MessageCollector, OverwriteResolvable, Role, TextChannel, VoiceBasedChannel, VoiceChannel, VoiceState
 } from "discord.js";
@@ -11,7 +10,6 @@ import voca from 'voca';
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { GuildPrtl } from '../types/classes/GuildPrtl.class';
 import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
-import { ReturnPormise } from "../types/classes/TypesPrtl.interface";
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
@@ -247,7 +245,7 @@ export async function create_music_channel(
 	return true;
 }
 
-async function moveMembersBack(
+export async function moveMembersBack(
 	oldChannel: VoiceBasedChannel, member: GuildMember, member_found: GuildMember
 ): Promise<string> {
 	if (!oldChannel.deletable) {

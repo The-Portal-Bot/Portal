@@ -91,13 +91,17 @@ module.exports = async (
 		return Promise.reject('could not find member\'s portal channel');
 	}
 
-	const oldChannel = message.member;
+	const oldChannel = message.member.voice.channel;
 	const focusChannelOutcome = await create_focus_channel(message.guild, message.member, member_to_focus, focus_time, portal_object)
 		.catch(e => {
 			return Promise.reject(`error while creating focus channel ${e}`);
 		});
 
 	setTimeout(async () => {
+		if (!message.member) {
+			return Promise.reject('could not fetch message\'s member');
+		}
+
 		const movedMembers = await moveMembersBack(oldChannel, message.member, member_to_focus)
 			.catch((e: string) => Promise.reject(e));
 

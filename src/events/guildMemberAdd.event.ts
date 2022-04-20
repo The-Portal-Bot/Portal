@@ -34,7 +34,7 @@ module.exports = async (
 									}
 								}
 
-								const join_message = `member: ${args.member.presence.user}\n` +
+								const join_message = `member: ${args.member.presence?.user}\n` +
 									`id: ${args.member.guild.id}\n` +
 									`\thas joined ${args.member.guild}`;
 
@@ -43,19 +43,21 @@ module.exports = async (
 
 								if (announcement_channel) {
 									announcement_channel
-										.send(
-											create_rich_embed(
-												'member joined',
-												join_message,
-												'#00C70D',
-												[],
-												args.member.user.avatarURL(),
-												null,
-												true,
-												null,
-												null
-											)
-										)
+										.send({
+											embeds: [
+												create_rich_embed(
+													'member joined',
+													join_message,
+													'#00C70D',
+													[],
+													args.member.user.avatarURL(),
+													null,
+													true,
+													null,
+													null
+												)
+											]
+										})
 										.then(() => {
 											return resolve(`added member ${args.member.id} to ${args.member.guild.id}`);
 										})

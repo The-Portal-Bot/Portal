@@ -1,4 +1,5 @@
 import { Channel, PartialDMChannel, TextChannel, VoiceChannel } from "discord.js";
+import { ChannelTypes } from "discord.js/typings/enums";
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { deleted_channel_sync } from "../libraries/mongo.library";
 
@@ -6,7 +7,8 @@ module.exports = async (
 	args: { channel: Channel | PartialDMChannel }
 ): Promise<string> => {
 	return new Promise((resolve, reject) => {
-		if (args.channel.type !== 'text' && args.channel.type !== 'voice') {
+		if (args.channel.type !== ChannelTypes.GUILD_TEXT.toString() &&
+			args.channel.type !== ChannelTypes.GUILD_VOICE.toString()) {
 			return reject(`only voice and text channels are handled`);
 		}
 

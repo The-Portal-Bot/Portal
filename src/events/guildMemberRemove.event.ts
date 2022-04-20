@@ -16,7 +16,7 @@ module.exports = async (
 					fetch_guild_announcement(args.member.guild.id)
 						.then(guild_object => {
 							if (guild_object) {
-								const leave_message = `member: ${args.member.presence.user}\n` +
+								const leave_message = `member: ${args.member.presence?.user}\n` +
 									`id: ${args.member.guild.id}\n` +
 									`\thas left ${args.member.guild}`;
 
@@ -26,19 +26,21 @@ module.exports = async (
 
 									if (announcement_channel) {
 										announcement_channel
-											.send(
-												create_rich_embed(
-													'member left',
-													leave_message,
-													'#FC0303',
-													[],
-													args.member.user.avatarURL(),
-													null,
-													true,
-													null,
-													null
-												)
-											)
+											.send({
+												embeds: [
+													create_rich_embed(
+														'member left',
+														leave_message,
+														'#FC0303',
+														[],
+														args.member.user.avatarURL(),
+														null,
+														true,
+														null,
+														null
+													)
+												]
+											})
 											.catch(e => {
 												return reject(`failed to send message / ${e}`);
 											});
