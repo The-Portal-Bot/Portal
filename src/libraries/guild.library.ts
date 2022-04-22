@@ -41,7 +41,8 @@ function inline_operator(
 }
 
 export function get_options(
-	guild: Guild, topic: string, can_write: boolean = true, parent?: CategoryChannelResolvable
+	guild: Guild, topic: string, can_write: boolean = true,
+	parent?: CategoryChannelResolvable, type: ChannelTypes = ChannelTypes.GUILD_TEXT
 ): GuildChannelCreateOptions {
 	return {
 		parent: parent,
@@ -52,7 +53,7 @@ export function get_options(
 			}]
 			: [],
 		topic: `by Portal, ${topic}`,
-		type: ChannelTypes.GUILD_TEXT,
+		type: type,
 		nsfw: false
 	} as GuildChannelCreateOptions;
 }
@@ -249,18 +250,18 @@ export async function moveMembersBack(
 	oldChannel: VoiceBasedChannel, member: GuildMember, member_found: GuildMember
 ): Promise<string> {
 	if (!oldChannel.deletable) {
-		Promise.reject('could not move to original voice channel because it was deleted');
+		return Promise.reject('could not move to original voice channel because it was deleted');
 	}
 
 	const setUserBackToOriginalChannel = await member.voice.setChannel(oldChannel)
-		.catch(e => Promise.reject(`focus did not end properly / ${e}`));
+		.catch(e => { return Promise.reject(`focus did not end properly / ${e}`); });
 
 	if (!setUserBackToOriginalChannel) {
 		return Promise.reject(`did not move requester back to original channel`);
 	}
 
 	const setUserFocusBackToOriginalChannel = await member_found.voice.setChannel(oldChannel)
-		.catch(e => Promise.reject(`focus did not end properly / ${e}`));
+		.catch(e => { return Promise.reject(`focus did not end properly / ${e}`); });
 
 	if (!setUserFocusBackToOriginalChannel) {
 		return Promise.reject(`did not move requested back to original channel`);
@@ -292,22 +293,24 @@ export async function create_focus_channel(
 
 	const newVoiceChannel = await guild.channels
 		.create(chatroom_name, voice_options)
-		.catch(e => Promise.reject(`failed to create focus channel / ${e}`));
+		.catch(e => { return Promise.reject(`failed to create focus channel / ${e}`); });
 
 	if (!newVoiceChannel) {
 		return Promise.reject(`failed to create new voice channel`);
 	}
 
 	member.voice.setChannel(newVoiceChannel as VoiceBasedChannel)
-		.catch(e => Promise.reject(`failed to set member to new channel / ${e}`));
+		.catch(e => { return Promise.reject(`failed to set member to new channel / ${e}`); });
+
 	member_found.voice.setChannel(newVoiceChannel as VoiceBasedChannel)
-		.catch(e => Promise.reject(`failed to set member to new channel / ${e}`));
+		.catch(e => { return Promise.reject(`failed to set member to new channel / ${e}`); });
+
 
 	insert_voice(guild.id, portalObject.id, new VoiceChannelPrtl(
 		newVoiceChannel.id, member.id, portalObject.render, chatroom_name, portalObject.no_bots,
 		portalObject.locale, portalObject.ann_announce, portalObject.ann_user
 	))
-		.catch(e => Promise.reject(`failed to store voice channel / ${e}`));
+		.catch(e => { return Promise.reject(`failed to store voice channel / ${e}`); });
 
 	if (focus_time === 0) {
 		return 'private room successfully created';

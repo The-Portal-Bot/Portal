@@ -1,7 +1,8 @@
-import { Client, Guild, TextChannel, VoiceChannel, VoiceConnection, VoiceState } from "discord.js";
+import { getVoiceConnection, VoiceConnection } from "@discordjs/voice";
+import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guild.library";
-import { logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
-import { client_talk } from "../libraries/localisation.library";
+import { isChannelDeleted, isGuildDeleted, logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
+// import { client_talk } from "../libraries/localisation.library";
 import { fetch_guild, remove_voice, set_music_data, update_guild } from "../libraries/mongo.library";
 import { update_timestamp } from "../libraries/user.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
@@ -60,7 +61,7 @@ function five_min_refresher(
 					});
 
 				setTimeout(() => {
-					if (!guild.deleted && !voice_channel.deleted) {
+					if (!isGuildDeleted(guild) && !isChannelDeleted(voice_channel)) {
 						generate_channel_name(voice_channel, portal_list, guild_object, guild)
 							.catch((e: any) => {
 								logger.error(new Error(`failed to generate channel name / ${e}`));
@@ -94,62 +95,61 @@ async function channel_empty_check(
 			}
 		}
 		else if (old_channel.members.size === 1) {
-			if (client.voice) {
-				const voice_connection = client.voice.connections
-					.find((connection: VoiceConnection) =>
-						connection.channel.id === old_channel.id);
-
-				if (voice_connection) {
-					guild_object.music_queue = [];
-					update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
-						.catch(e => {
-							return reject(`failed to update guild / ${e}`);
-						});
-					voice_connection.disconnect();
-
-					if (guild_object.music_data.pinned) {
-						guild_object.music_data.pinned = false;
-						set_music_data(guild_object.id, guild_object.music_data)
-							.catch(e => {
-								return reject(`failed to set music data / ${e}`);
-							});
-					}
-
-					update_music_message(
-						old_channel.guild,
-						guild_object,
-						guild_object.music_queue.length > 0
-							? guild_object.music_queue[0]
-							: undefined,
-						'left last',
-						false
-					)
-						.catch(e => {
-							return reject(`failed to update music message / ${e}`);
-						});
-
-					update_music_lyrics_message(old_channel.guild, guild_object, '')
-						.catch(e => {
-							return reject(`failed to update music lyrics / ${e}`);
-						});
-
-					if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
-						delete_voice_channel(old_channel, guild_object)
-							.then(response => {
-								return resolve(response);
-							})
-							.catch(e => {
-								return reject(`an error occurred while deleting voice | ${e}`)
-							});
-					} else {
-						return resolve('Portal left voice channel');
-					}
-				} else {
-					return resolve(`Portal is not connected`);
-				}
-			} else {
+			if (!client.voice) {
 				return resolve(`Portal is not connected`);
 			}
+
+			const voiceConnection = getVoiceConnection(old_channel.guild.id);
+
+			if (!voiceConnection) {
+				return resolve(`Portal is not connected`);
+			}
+
+			guild_object.music_queue = [];
+			update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+				.catch(e => {
+					return reject(`failed to update guild / ${e}`);
+				});
+			voiceConnection.disconnect();
+
+			if (guild_object.music_data.pinned) {
+				guild_object.music_data.pinned = false;
+				set_music_data(guild_object.id, guild_object.music_data)
+					.catch(e => {
+						return reject(`failed to set music data / ${e}`);
+					});
+			}
+
+			update_music_message(
+				old_channel.guild,
+				guild_object,
+				guild_object.music_queue.length > 0
+					? guild_object.music_queue[0]
+					: undefined,
+				'left last',
+				false
+			)
+				.catch(e => {
+					return reject(`failed to update music message / ${e}`);
+				});
+
+			update_music_lyrics_message(old_channel.guild, guild_object, '')
+				.catch(e => {
+					return reject(`failed to update music lyrics / ${e}`);
+				});
+
+			if (included_in_voice_list(old_channel.id, guild_object.portal_list)) {
+				delete_voice_channel(old_channel, guild_object)
+					.then(response => {
+						return resolve(response);
+					})
+					.catch(e => {
+						return reject(`an error occurred while deleting voice | ${e}`)
+					});
+			} else {
+				return resolve('Portal left voice channel');
+			}
+
 		}
 	});
 }
@@ -354,12 +354,12 @@ module.exports = async (
 								if (p.id === new_channel.id) {
 									if (p.no_bots && args.newState.member?.user.bot) {
 										args.newState
-											.kick('voice channel does not allow bots')
+											.disconnect('voice channel does not allow bots')
 											.catch(e => {
 												return reject(`failed to kick / ${e}`);
 											});
 
-										channel_empty_check(new_channel, guild_object, args.client)
+										channel_empty_check(new_channel as VoiceChannel, guild_object, args.client)
 											.catch(e => {
 												logger.error(new Error(`failed to check channel state / ${e}`));
 											});
@@ -374,12 +374,12 @@ module.exports = async (
 									if (v.id === new_channel.id) {
 										if (v.no_bots) {
 											args.newState
-												.kick('voice channel does not allow bots')
+												.disconnect('voice channel does not allow bots')
 												.catch(e => {
 													return reject(`failed to kick / ${e}`);
 												});
 
-											channel_empty_check(new_channel, guild_object, args.client)
+											channel_empty_check(new_channel as VoiceChannel, guild_object, args.client)
 												.catch(e => {
 													logger.error(new Error(`failed to check channel state / ${e}`));
 												});
@@ -391,26 +391,26 @@ module.exports = async (
 							}
 						}
 
-						if (args.client.voice && args.newState.member) {
-							const new_voice_connection = args.client.voice.connections
-								.find((connection: VoiceConnection) =>
-									!!new_channel && connection.channel.id === new_channel.id);
+						// if (args.client.voice && args.newState.member) {
+						// 	const new_voice_connection = args.client.voice.connections
+						// 		.find((connection: VoiceConnection) =>
+						// 			!!new_channel && connection.channel.id === new_channel.id);
 
-							if (new_voice_connection && !args.newState.member.user.bot) {
-								client_talk(args.client, guild_object, 'user_connected');
-							}
+						// 	if (new_voice_connection && !args.newState.member.user.bot) {
+						// 		client_talk(args.client, guild_object, 'user_connected');
+						// 	}
 
-							const old_voice_connection = args.client.voice.connections
-								.find((connection: VoiceConnection) =>
-									!!old_channel && connection.channel.id === old_channel.id);
+						// 	const old_voice_connection = args.client.voice.connections
+						// 		.find((connection: VoiceConnection) =>
+						// 			!!old_channel && connection.channel.id === old_channel.id);
 
-							if (old_voice_connection && !args.newState.member.user.bot) {
-								client_talk(args.client, guild_object, 'user_disconnected');
-							}
-						}
+						// 	if (old_voice_connection && !args.newState.member.user.bot) {
+						// 		client_talk(args.client, guild_object, 'user_disconnected');
+						// 	}
+						// }
 
 						if (!old_channel) {
-							from_null(new_channel, guild_object, args.newState)
+							from_null(new_channel as VoiceChannel | null, guild_object, args.newState)
 								.then(r => {
 									return resolve(r);
 								})
@@ -418,7 +418,7 @@ module.exports = async (
 									return reject(e);
 								})
 						} else {
-							from_existing(old_channel, new_channel, args.client, guild_object, args.newState)
+							from_existing(old_channel as VoiceChannel, new_channel as VoiceChannel | null, args.client, guild_object, args.newState)
 								.then(r => {
 									return resolve(r);
 								})

@@ -25,7 +25,7 @@ services:
     restart: always
     image: mongo:5.0
     ports:
-      - "29017:27017"
+      - "27017:27017"
     volumes:
       - type: bind
         source: ../mongo/data/db

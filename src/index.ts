@@ -1,19 +1,23 @@
-import { CacheFactory, Channel, Client, ClientOptions, Guild, GuildMember, Intents, Message, MessageReaction, Options, PartialDMChannel, PartialGuildMember, PartialMessage, PartialUser, User, VoiceState } from "discord.js";
+import { CacheFactory, Channel, Client, ClientOptions, Guild, GuildMember, Intents, Message, MessageReaction, Options, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from "discord.js";
+import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import { transports } from "winston";
 import command_config_json from './config.command.json';
 import event_config_json from './config.event.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
-import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed, update_music_message } from './libraries/help.library';
+import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed } from './libraries/help.library';
 import { message_spam_check } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, insert_member, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
-import { start } from './libraries/music.library';
+// import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
 import { GuildPrtl, MusicData } from './types/classes/GuildPrtl.class';
 import { ActiveCooldowns, CommandOptions, ReturnPormise, SpamCache } from "./types/classes/TypesPrtl.interface";
-import dotenv from 'dotenv';
 
 dotenv.config();
+
+if (!process.env.MONGO_URL) {
+	process.exit(3);
+}
 
 if (process.env.DEBUG) {
 	logger.add(new transports.Console());
@@ -32,39 +36,45 @@ const active_cooldowns: ActiveCooldowns = {
 
 const spam_cache: SpamCache[] = [];
 
-mongoose.connect(process.env.MONGO_URL!, {
-	dbName: process.env.MONGO_DB,
-	autoIndex: true,
-	maxPoolSize: 10,
-	serverSelectionTimeoutMS: 20000,
-	socketTimeoutMS: 45000
-})
-	.then(() => {
-		logger.info(`connected to the database`);
-	})
+mongoose.connection.on('connecting', () => {
+	console.log('[mongoose] connecting to mongo');
+});
+
+mongoose.connection.on('connected', () => {
+	console.log('[mongoose] connected to mongo');
+});
+
+const connectOptions = {
+	dbName: 'portal',
+	autoCreate: false,
+	connectTimeoutMS: 5000,
+	compressors: 'zlib'
+}
+
+mongoose.connect(process.env.MONGO_URL, connectOptions)
 	.catch((e: any) => {
-		logger.error(new Error(`unable to connect to database | ${e}`));
-		process.exit(1);
+		logger.error(new Error(`unable to connect to database / ${e}`));
+		process.exit(2);
 	});
 
 const cacheFactory: CacheFactory = Options.cacheWithLimits({
 	MessageManager: 200, // This is default
-	PresenceManager: 0,
-	ApplicationCommandManager: 0,
-	BaseGuildEmojiManager: 0,
-	GuildEmojiManager: 0,
-	GuildMemberManager: 0,
-	GuildBanManager: 0,
-	GuildInviteManager: 0,
-	GuildScheduledEventManager: 0,
-	GuildStickerManager: 0,
-	ReactionManager: 0,
-	ReactionUserManager: 0,
-	StageInstanceManager: 0,
-	ThreadManager: 0,
-	ThreadMemberManager: 0,
-	UserManager: 0,
-	VoiceStateManager: 0,
+	// PresenceManager: 0,
+	// ApplicationCommandManager: 0,
+	// BaseGuildEmojiManager: 0,
+	// GuildEmojiManager: 0,
+	// GuildMemberManager: 0,
+	// GuildBanManager: 0,
+	// GuildInviteManager: 0,
+	// GuildScheduledEventManager: 0,
+	// GuildStickerManager: 0,
+	// ReactionManager: 0,
+	// ReactionUserManager: 0,
+	// StageInstanceManager: 0,
+	// ThreadManager: 0,
+	// ThreadMemberManager: 0,
+	// UserManager: 0,
+	// VoiceStateManager: 0,
 });
 const intents = new Intents(32767);
 
@@ -77,56 +87,21 @@ const clientOptions: ClientOptions = {
 		'MESSAGE',
 		'REACTION'
 	],
-	intents: [ // Intents.ALL
-		Intents.FLAGS.GUILDS,
-		Intents.FLAGS.GUILD_MEMBERS,
-		Intents.FLAGS.GUILD_VOICE_STATES,
-		Intents.FLAGS.GUILD_PRESENCES,
-		Intents.FLAGS.GUILD_MESSAGES,
-		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-		Intents.FLAGS.DIRECT_MESSAGES,
-		Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
-	]
+	intents: intents
 }
 
 const client = new Client(clientOptions);
 
-
-// const client = new Client(
-// 	{
-// 		partials: [
-// 			'USER',
-// 			'CHANNEL',
-// 			'GUILD_MEMBER',
-// 			'MESSAGE',
-// 			'REACTION'
-// 		],
-// 		ws: {
-// 			intents: // Intents.ALL
-// 				[
-// 					Intents.FLAGS.GUILDS,
-// 					Intents.FLAGS.GUILD_MEMBERS,
-// 					Intents.FLAGS.GUILD_VOICE_STATES,
-// 					Intents.FLAGS.GUILD_PRESENCES,
-// 					Intents.FLAGS.GUILD_MESSAGES,
-// 					Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-// 					Intents.FLAGS.DIRECT_MESSAGES,
-// 					Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
-// 				]
-// 		}
-// 	}
-// );
-
 // This event triggers when the bot joins a guild.
 client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
-	event_loader('channelDelete', {
+	eventLoader('channelDelete', {
 		'channel': channel
 	});
 });
 
 // This event triggers when the bot joins a guild
 client.on('guildCreate', (guild: Guild) =>
-	event_loader('guildCreate', {
+	eventLoader('guildCreate', {
 		'client': client,
 		'guild': guild
 	})
@@ -134,45 +109,45 @@ client.on('guildCreate', (guild: Guild) =>
 
 // this event triggers when the bot is removed from a guild
 client.on('guildDelete', (guild: Guild) =>
-	event_loader('guildDelete', {
+	eventLoader('guildDelete', {
 		'guild': guild
 	})
 );
 
 // This event triggers when a new member joins a guild.
 client.on('guildMemberAdd', (member: GuildMember) => {
-	event_loader('guildMemberAdd', {
+	eventLoader('guildMemberAdd', {
 		'member': member
 	})
 });
 
 // This event triggers when a new member leaves a guild.
 client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
-	event_loader('guildMemberRemove', {
+	eventLoader('guildMemberRemove', {
 		'member': member
 	})
 });
 
 // This event triggers when a message is deleted
 client.on('messageDelete', (message: Message | PartialMessage) =>
-	event_loader('messageDelete', {
+	eventLoader('messageDelete', {
 		'client': client,
 		'message': message
 	})
 );
 
 // This event triggers when a member reacts to a message
-// client.on('messageReactionAdd', (messageReaction: MessageReaction, user: User | PartialUser) =>
-// 	event_loader('messageReactionAdd', {
-// 		'client': client,
-// 		'messageReaction': messageReaction,
-// 		'user': user
-// 	})
-// );
+client.on('messageReactionAdd', (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
+	eventLoader('messageReactionAdd', {
+		'client': client,
+		'messageReaction': messageReaction,
+		'user': user
+	})
+);
 
 // This event will run if the bot starts, and logs in, successfully.
 client.on('ready', () =>
-	event_loader('ready', {
+	eventLoader('ready', {
 		'client': client
 	})
 );
@@ -187,7 +162,7 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
 		return;
 	}
 
-	event_loader('voiceStateUpdate', {
+	eventLoader('voiceStateUpdate', {
 		'client': client,
 		'oldState': oldState,
 		'newState': newState
@@ -195,10 +170,12 @@ client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
 });
 
 // runs on every single message received, from any channel or DM
-client.on('message', async (message: Message) => {
+client.on('messageCreate', async (message: Message) => {
+	``
 	if (!message || !message.member || !message.guild) return;
 	if (message.channel.type === 'DM' || message.author.bot) return;
 
+	console.log('message: ', message.content);
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(guild_object => {
 			if (!guild_object) {
@@ -220,7 +197,7 @@ client.on('message', async (message: Message) => {
 				return true;
 			}
 
-			if (portal_preprocessor(message, guild_object)) {
+			if (portalPreprocessor(message, guild_object)) {
 				// preprocessor has handled the message
 				message_spam_check(message, guild_object, spam_cache);
 
@@ -297,7 +274,7 @@ client.on('message', async (message: Message) => {
 							return false;
 						}
 
-						command_loader(
+						commandLoader(
 							message,
 							command.cmd,
 							command.args,
@@ -305,7 +282,7 @@ client.on('message', async (message: Message) => {
 							command.command_options,
 							command.path_to_command,
 							guild_object
-						);
+						).catch();
 					})
 					.catch(e => {
 						logger.error(new Error(`error while fetch guild restdata / ${e}`));
@@ -319,32 +296,25 @@ client.on('message', async (message: Message) => {
 		});
 });
 
-function command_loader(
+async function commandLoader(
 	message: Message, command: string, args: string[], type: string, command_options: CommandOptions,
 	path_to_command: string, guild_object: GuildPrtl
-): boolean {
+): Promise<void> {
 	if (process.env.DEBUG!) {
 		logger.info(`[command-debug] ${command}`);
 	}
 
 	if (type === 'none' && command_options.time === 0) {
-		require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
-			.then((response: ReturnPormise) => {
-				if (response) {
-					message_reply(response.result, message, response.value,
-						command_options.delete.source, command_options.delete.reply)
-						.catch((e: any) => {
-							logger.error(new Error(`failed to send message / ${e}`));
-						});
-				} else {
-					logger.error(new Error(`did not get response from command: ${command}`));
-				}
-			})
-			.catch((e: any) => {
-				logger.error(new Error(`error in ${command} / ${e}`));
+		const commandReturn: ReturnPormise = await require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
+			.catch((e: string) => {
+				message_reply(false, message, e, command_options.delete.source, command_options.delete.reply)
+					.catch((e: any) => logger.error(new Error('failed to send message')));
 			});
 
-		return true;
+		if (commandReturn) {
+			message_reply(commandReturn.result, message, commandReturn.value, command_options.delete.source, command_options.delete.reply)
+				.catch((e: any) => logger.error(new Error('failed to send message')));
+		}
 	}
 
 	const type_string = type === 'guild'
@@ -382,71 +352,63 @@ function command_loader(
 			`${pad(time.timeout_sec)}** *to use* **${command}** *again${type_for_msg}`;
 
 		message_reply(false, message, must_wait_msg, true, true)
-			.catch((e: any) => {
-				logger.error(new Error(`failed to reply to message / ${e}`));
-			});
+			.catch((e: any) => logger.error(new Error(`failed to reply to message / ${e}`)));
 
-		return false;
+		return;
 	}
 
-	require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
-		.then((response: ReturnPormise) => {
-			if (response) {
-				if (response.result) {
-					if (message.guild) {
-						active_cooldowns[type_string]
-							.push({
-								member: message.author.id,
-								guild: message.guild.id,
-								command: command,
-								timestamp: Date.now()
-							});
+	const commandReturn: ReturnPormise = await require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
+		.catch((e: any) => logger.error(new Error(`in ${command} got error ${e}`)));
 
-						if (command_options) {
-							setTimeout(() => {
-								active_cooldowns[type_string] = active_cooldowns[type_string]
-									.filter(active => active.command !== command);
-							}, command_options.time * 60 * 1000);
-						}
-					}
-				}
-
-				message_reply(response.result, message, response.value,
-					command_options.delete.source, command_options.delete.reply)
-					.catch(e => {
-						logger.error(new Error(`in ${command} got error ${e}`));
+	if (commandReturn) {
+		if (commandReturn.result) {
+			if (message.guild) {
+				active_cooldowns[type_string]
+					.push({
+						member: message.author.id,
+						guild: message.guild.id,
+						command: command,
+						timestamp: Date.now()
 					});
-			} else {
-				logger.error(new Error(`did not get response from command: ${command}`));
-			}
-		})
-		.catch((e: any) => {
-			logger.error(new Error(`in ${command} got error ${e}`));
-		});
 
-	return false;
+				if (command_options) {
+					setTimeout(() => {
+						active_cooldowns[type_string] = active_cooldowns[type_string]
+							.filter(active => active.command !== command);
+					}, command_options.time * 60 * 1000);
+				}
+			}
+		}
+
+		message_reply(commandReturn.result, message, commandReturn.value,
+			command_options.delete.source, command_options.delete.reply)
+			.catch(e => {
+				logger.error(new Error(`in ${command} got error ${e}`));
+			});
+	} else {
+		logger.error(new Error(`did not get response from command: ${command}`));
+	}
 }
 
-function event_loader(event: string, args: any): void {
-	require(`./events/${event}.event.js`)(args)
-		.then((response: string) => {
-			if (response) {
-				if ((event_config_json.find(e => e.name === event))) {
-					logger.info(`[event-accepted] ${event} | ${response}`);
-				} else if (process.env.DEBUG) {
-					logger.info(`[event-accepted-debug] ${event} | ${response}`);
-				}
-			}
-		})
+async function eventLoader(event: string, args: any): Promise<void> {
+	const commandReturn: ReturnPormise = await require(`./events/${event}.event.js`)(args)
 		.catch((e: string) => {
 			logger.error(`[event-rejected] ${event} | ${e}`);
 		});
+
+	if (commandReturn) {
+		if ((event_config_json.find(e => e.name === event))) {
+			logger.info(`[event-accepted] ${event} | ${commandReturn}`);
+		} else if (process.env.DEBUG) {
+			logger.info(`[event-accepted-debug] ${event} | ${commandReturn}`);
+		}
+	}
 }
 
 /*
 * Returns: true/false if processing must continue
 */
-function portal_preprocessor(
+function portalPreprocessor(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
 	if (!message.member) {
@@ -478,16 +440,14 @@ function portal_preprocessor(
 			return true;
 		}
 		else if (handle_ignored_channels(message, guild_object)) {
-			handle_ranking_system(message, guild_object);
-
+			handleRankingSystem(message, guild_object);
 			return true;
 		}
-		else if (handle_music_channels(message, guild_object)) {
-			handle_ranking_system(message, guild_object);
-
+		else if (handleMusicChannels(message, guild_object)) {
+			handleRankingSystem(message, guild_object);
 			return true;
 		} else {
-			handle_ranking_system(message, guild_object);
+			handleRankingSystem(message, guild_object);
 
 			// if (guild_object.profanity_level !== ProfanityLevelEnum.none) {
 			// 	// profanity check
@@ -512,7 +472,7 @@ function portal_preprocessor(
 	}
 }
 
-function handle_ranking_system(
+function handleRankingSystem(
 	message: Message, guild_object: GuildPrtl
 ): void {
 	add_points_message(message, guild_object.member_list[0], guild_object.rank_speed)
@@ -590,7 +550,7 @@ function handle_ignored_channels(
 	return false;
 }
 
-function handle_music_channels(
+function handleMusicChannels(
 	message: Message, guild_object: GuildPrtl
 ): boolean {
 	if (guild_object.music_data.channel_id === message.channel.id) {
@@ -604,125 +564,114 @@ function handle_music_channels(
 			set_music_data(guild_object.id, music_data)
 				.then(r => {
 					message_reply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
-						.catch((e: any) => {
-							logger.error(new Error(`failed to send message / ${e}`));
-						});
+						.catch((e: any) => logger.error(new Error(`failed to send message / ${e}`)));
 				})
-				.catch(e => {
-					logger.error(new Error(`failed to remove music channel / ${e}`));
-				});
+				.catch(e => logger.error(new Error(`failed to remove music channel / ${e}`)));
 		} else {
-			const voice_connection = client.voice
-				? client.voice.connections.find(c =>
-					c.channel.guild.id === message.guild?.id)
-				: undefined;
+			// if (!message.guild || !message.member) {
+			// 	if (message.deletable) {
+			// 		message
+			// 			.delete()
+			// 			.catch((e: any) => logger.error(new Error(`failed to delete message / ${e}`)));
+			// 	}
 
-			if (!message.guild || !message.member) {
-				if (message.deletable) {
-					message
-						.delete()
-						.catch((e: any) => {
-							logger.error(new Error(`failed to delete message / ${e}`));
-						});
-				}
+			// 	return false;
+			// }
 
-				return false;
-			}
+			// const portal_voice_connection = client.voice?.connections
+			// 	.find(c => c.channel.guild.id === message.guild?.id);
 
-			const portal_voice_connection = client.voice?.connections
-				.find(c => c.channel.guild.id === message.guild?.id);
+			// if (portal_voice_connection) {
+			// 	if (!portal_voice_connection.channel.members.has(message.member.id)) {
+			// 		if (message.guild) {
+			// 			const portal_voice_connection = client.voice?.connections
+			// 				.find(c => c.channel.guild.id === message.guild?.id);
 
-			if (portal_voice_connection) {
-				if (!portal_voice_connection.channel.members.has(message.member.id)) {
-					if (message.guild) {
-						const portal_voice_connection = client.voice?.connections
-							.find(c => c.channel.guild.id === message.guild?.id);
+			// 			const animate = portal_voice_connection?.dispatcher
+			// 				? !portal_voice_connection?.dispatcher.paused
+			// 				: false;
 
-						const animate = portal_voice_connection?.dispatcher
-							? !portal_voice_connection?.dispatcher.paused
-							: false;
+			// 			update_music_message(
+			// 				message.guild,
+			// 				guild_object,
+			// 				guild_object.music_queue.length > 0
+			// 					? guild_object.music_queue[0]
+			// 					: undefined,
+			// 				'you must be in the same channel as Portal',
+			// 				animate
+			// 			).catch(e => {
+			// 				logger.error(new Error(e));
+			// 			});
+			// 		}
 
-						update_music_message(
-							message.guild,
-							guild_object,
-							guild_object.music_queue.length > 0
-								? guild_object.music_queue[0]
-								: undefined,
-							'you must be in the same channel as Portal',
-							animate
-						).catch(e => {
-							logger.error(new Error(e));
-						});
-					}
+			// 		if (message.deletable) {
+			// 			message
+			// 				.delete()
+			// 				.catch((e: any) => {
+			// 					logger.error(new Error(`failed to send message / ${e}`));
+			// 				});
+			// 		}
 
-					if (message.deletable) {
-						message
-							.delete()
-							.catch((e: any) => {
-								logger.error(new Error(`failed to send message / ${e}`));
-							});
-					}
+			// 		return false;
+			// 	}
+			// }
 
-					return false;
-				}
-			}
+			// start(
+			// 	voice_connection, client, message.member.user, message,
+			// 	message.guild, guild_object, message.content
+			// )
+			// 	.then(r => {
+			// 		if (message.guild) {
+			// 			const portal_voice_connection = client.voice?.connections
+			// 				.find(c => c.channel.guild.id === message.guild?.id);
 
-			start(
-				voice_connection, client, message.member.user, message,
-				message.guild, guild_object, message.content
-			)
-				.then(r => {
-					if (message.guild) {
-						const portal_voice_connection = client.voice?.connections
-							.find(c => c.channel.guild.id === message.guild?.id);
+			// 			const animate = portal_voice_connection?.dispatcher
+			// 				? !portal_voice_connection?.dispatcher.paused
+			// 				: false;
 
-						const animate = portal_voice_connection?.dispatcher
-							? !portal_voice_connection?.dispatcher.paused
-							: false;
+			// 			update_music_message(
+			// 				message.guild,
+			// 				guild_object,
+			// 				guild_object.music_queue.length > 0
+			// 					? guild_object.music_queue[0]
+			// 					: undefined,
+			// 				r,
+			// 				animate
+			// 			).catch(e => {
+			// 				logger.error(new Error(e));
+			// 			});
+			// 		}
 
-						update_music_message(
-							message.guild,
-							guild_object,
-							guild_object.music_queue.length > 0
-								? guild_object.music_queue[0]
-								: undefined,
-							r,
-							animate
-						).catch(e => {
-							logger.error(new Error(e));
-						});
-					}
+			// 		if (message.deletable) {
+			// 			message
+			// 				.delete()
+			// 				.catch((e: any) => {
+			// 					logger.error(new Error(`failed to send message / ${e}`));
+			// 				});
+			// 		}
+			// 	})
+			// 	.catch(e => {
+			// 		if (message.guild) {
+			// 			update_music_message(
+			// 				message.guild,
+			// 				guild_object,
+			// 				guild_object.music_queue.length > 0
+			// 					? guild_object.music_queue[0]
+			// 					: undefined,
+			// 				`error while starting playback / ${e}`
+			// 			).catch(e => {
+			// 				logger.error(new Error(e));
+			// 			});
+			// 		}
 
-					if (message.deletable) {
-						message
-							.delete()
-							.catch((e: any) => {
-								logger.error(new Error(`failed to send message / ${e}`));
-							});
-					}
-				})
-				.catch(e => {
-					if (message.guild) {
-						update_music_message(
-							message.guild,
-							guild_object,
-							guild_object.music_queue.length > 0
-								? guild_object.music_queue[0]
-								: undefined,
-							`error while starting playback / ${e}`
-						).catch(e => {
-							logger.error(new Error(e));
-						});
-					}
-
-					if (message.deletable) {
-						message
-							.delete()
-							.catch((e: any) => {
-								logger.error(new Error(`failed to send message / ${e}`));
-							});
-					}
-				});
+			// 		if (message.deletable) {
+			// 			message
+			// 				.delete()
+			// 				.catch((e: any) => {
+			// 					logger.error(new Error(`failed to send message / ${e}`));
+			// 				});
+			// 		}
+			// 	});
 		}
 		return true;
 	}

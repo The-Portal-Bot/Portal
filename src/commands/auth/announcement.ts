@@ -5,6 +5,7 @@ import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { message_help } from "../../libraries/help.library";
+import { ChannelTypes } from "discord.js/typings/enums";
 
 module.exports = async (
 	message: Message, args: string[], guild_object: GuildPrtl
@@ -94,7 +95,7 @@ module.exports = async (
 					announcement_category = null;
 				}
 
-				const announcement_options = get_options(message.guild, 'announcements channel (Portal/Users/Admins)', false);
+				const announcement_options = get_options(message.guild, 'announcements channel (Portal/Users/Admins)', false, undefined, ChannelTypes.GUILD_NEWS);
 
 				create_channel(
 					message.guild, announcement_channel,

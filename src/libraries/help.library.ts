@@ -1,5 +1,5 @@
 import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
-import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, PermissionString, TextChannel, User, VoiceChannel } from "discord.js";
+import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, PermissionString, TextBasedChannel, TextChannel, User, VoiceChannel } from "discord.js";
 import moment from "moment";
 import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
@@ -11,6 +11,34 @@ import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
 const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 	'Portal/master/src/assets/img/empty_queue.png';
+
+const deletedMessages = new WeakSet<Message>();
+const deletedChannel = new WeakSet<GuildBasedChannel | TextBasedChannel>();
+const deletedGuild = new WeakSet<Guild>();
+
+export function isMessageDeleted(message: Message) {
+	return deletedMessages.has(message);
+}
+
+export function markMessageAsDeleted(message: Message) {
+	deletedMessages.add(message);
+}
+
+export function isChannelDeleted(channel: GuildBasedChannel | TextBasedChannel) {
+	return deletedChannel.has(channel);
+}
+
+export function markChannelAsDeleted(channel: GuildBasedChannel) {
+	deletedChannel.add(channel);
+}
+
+export function isGuildDeleted(guild: Guild) {
+	return deletedGuild.has(guild);
+}
+
+export function markGuildAsDeleted(guild: Guild) {
+	deletedGuild.add(guild);
+}
 
 export const logger = createLogger({
 	format: format.combine(
@@ -413,23 +441,23 @@ export async function join_user_voice(
 	client: Client, message: Message, guild_object: GuildPrtl, join = false
 ): Promise<VoiceConnection> {
 	if (!message.member) {
-		return Promise.reject('message has no member');
+		return Promise.reject('user could not be fetched for message');
 	}
 
 	if (!message.member.voice) {
-		return Promise.reject('message has no member');
+		return Promise.reject('voice could not be fetched for member');
 	}
 
 	if (!message.member.voice.channel) {
-		return Promise.reject('message has no channel');
+		return Promise.reject('you aren\'t in a channel');
 	}
 
 	if (!message.guild) {
-		return Promise.reject('message has no guild');
+		return Promise.reject('guild could not be fetched for message');
 	}
 
 	if (!message.guild.voiceAdapterCreator) {
-		return Promise.reject('message has no voiceAdapterCreator');
+		return Promise.reject('voiceAdapterCreator could not be fetched for guild');
 	}
 
 	if (!guild_object) {
@@ -608,46 +636,43 @@ export async function message_reply(
 		return Promise.reject(`failed to find message`);
 	}
 
-	if (!message.channel.deleted && reply_string !== null && reply_string !== '') {
-		message
-			.reply(reply_string)
-			.then(sent_message => {
-				if (delete_reply && sent_message.deletable) {
-					const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
-					setTimeout(() =>
-						sent_message
-							.delete()
-							.catch((e: any) => {
-								return Promise.reject(`failed to delete message / ${e}`);
-							}),
-						delay
-					);
+	if (!isChannelDeleted(message.channel) && reply_string !== null && reply_string !== '') {
+		const sentMessage = await message.reply(reply_string)
+			.catch(e => { return Promise.reject(`failed to send message / ${e}`); });
+
+		if (!sentMessage) {
+			return Promise.reject(`failed to send message`);
+		}
+
+		if (delete_reply) {
+			const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+			setTimeout(() => {
+				if (!isMessageDeleted(sentMessage)) {
+					sentMessage.delete()
+						.catch(e => { return Promise.reject(`failed to delete message / ${e}`) })
 				}
-			})
-			.catch(e => {
-				return Promise.reject(`failed to send message / ${e}`);
-			});
+			}, delay);
+
+		}
 	}
 
-	if (delete_source && message.deletable) {
-		message
-			.react(status ? emote_pass : emote_fail)
-			.then(() => {
-				const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
-				setTimeout(() =>
-					message
-						.delete()
-						.catch((e: any) => {
-							return Promise.reject(`failed to delete message / ${e}`);
-						}),
-					delay
-				);
+	if (delete_source) {
+		const rection = await message.react(status ? emote_pass : emote_fail)
+			.catch(e => { return Promise.reject(`failed to react to message / ${e}`); });
 
-				return true;
-			})
-			.catch(e => {
-				return Promise.reject(`failed to react to message / ${e}`);
-			});
+		if (!rection) {
+			return Promise.reject(`failed to react to message`);
+		}
+
+		const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+		setTimeout(() => {
+			if (!isMessageDeleted(message)) {
+				message.delete()
+					.catch((e: any) => { return Promise.reject(`failed to delete message / ${e}`); });
+			}
+		}, delay);
+
+		return true;
 	}
 
 	return false;

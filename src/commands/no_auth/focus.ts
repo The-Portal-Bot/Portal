@@ -69,7 +69,7 @@ module.exports = async (
 		`*${member_to_focus.user}, member ${message.author}, would like to talk in ` +
 		`private${focus_time === 0 ? '' : ` for ${focus_time}'`}*, do you **(yes / no)** ?`
 	)
-		.catch(e => Promise.reject(`failed Promise.reject(to focus / ${e}`));
+		.catch(e => { return Promise.reject(`failed to get approval / ${e}`); });
 
 	if (!gotApproval) {
 		return Promise.reject('user declined the request');
@@ -103,7 +103,7 @@ module.exports = async (
 		}
 
 		const movedMembers = await moveMembersBack(oldChannel, message.member, member_to_focus)
-			.catch((e: string) => Promise.reject(e));
+			.catch(e => { return Promise.reject(e); });
 
 		if (!movedMembers) {
 			return Promise.reject('could not move members back');

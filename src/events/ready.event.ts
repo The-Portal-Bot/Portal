@@ -9,7 +9,7 @@ function added_when_down(
 	guild: Guild, member_list: MemberPrtl[]
 ): Promise<string> {
 	return new Promise((resolve) => {
-		const guild_members: GuildMember[] = guild.members.cache.array();
+		const guild_members: GuildMember[] = guild.members.cache.map(m => m);
 
 		for (let j = 0; j < guild_members.length; j++) {
 			if (!guild_members[j].user.bot) {
@@ -37,7 +37,8 @@ function removed_when_down(
 ): Promise<string> {
 	return new Promise((resolve) => {
 		for (let j = 0; j < member_list.length; j++) {
-			const member_in_guild = guild.members.cache.array()
+			const member_in_guild = guild.members.cache
+				.map(m => m)
 				.find(m => m.id === member_list[j].id);
 
 			if (!member_in_guild) {
@@ -69,7 +70,7 @@ async function add_guild_again(
 						.catch(() => {
 							return resolve(false);
 						});
-				} 
+				}
 				// else {
 				// 	fetch_guild_members(guild.id)
 				// 		.then(async member_list => {
@@ -101,23 +102,15 @@ module.exports = async (
 			return reject('could not fetch user from client');
 		}
 
-		const options: ActivityOptions = {
+		const activitiesOptions: ActivityOptions = {
 			name: './help', // `in ${args.client.guilds.cache.size} servers``
 			type: 'LISTENING',
 			url: 'https://github.com/keybraker'
 		}
 
-		const data: PresenceData = {
-			status: 'online',
-			afk: false,
-			activity: options
-		};
+		const data: PresenceData = { activities: [activitiesOptions], status: 'online', afk: false };
 
-		args.client.user
-			.setPresence(data)
-			.catch(e => {
-				return reject(`failed to set precense / ${e}`);
-			});
+		args.client.user.setPresence(data);
 
 		args.client.guilds.cache.forEach((guild: Guild) => {
 			logger.info(`${guild} | ${guild.id}`);
