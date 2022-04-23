@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import Roll from 'roll';
-import { create_rich_embed, max_string, message_help } from "../../libraries/help.library";
+import { createEmded, maxString, messageHelp } from "../../libraries/help.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
@@ -29,7 +29,7 @@ module.exports = async (
 				message.channel
 					.send({
 						embeds: [
-							create_rich_embed(
+							createEmded(
 								null,
 								null,
 								'#FF0000',
@@ -41,7 +41,7 @@ module.exports = async (
 								null,
 								undefined,
 								{
-									name: max_string(roll_msg, 256),
+									name: maxString(roll_msg, 256),
 									icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif'
 								}
 							)
@@ -67,7 +67,7 @@ module.exports = async (
 		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'roll')
+				value: messageHelp('commands', 'roll')
 			});
 		}
 	});

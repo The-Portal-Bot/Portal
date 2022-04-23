@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import { create_rich_embed, message_help } from "../../libraries/help.library";
+import { createEmded, messageHelp } from "../../libraries/help.library";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../types/interfaces/Attribute.interface";
 import { get_command_guide, get_command_help, get_command_help_super } from "../../types/interfaces/Command.interface";
@@ -68,7 +68,7 @@ const help_array: Field[] = [
 async function simpleReply(message: Message) {
 	return !!await message.reply({
 		embeds: [
-			create_rich_embed(
+			createEmded(
 				'Help Card',
 				'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
 				'> make a member an **admin**, give role `p.admin`\n' +
@@ -128,7 +128,7 @@ async function propertyReply(message: Message, args: string[]) {
 					if (!detailed) {
 						detailed = get_structure_help_super(args[0]);
 						if (!detailed) {
-							return Promise.reject(message_help('commands', 'help', `*${args[0]}* does not exist in portal`));
+							return Promise.reject(messageHelp('commands', 'help', `*${args[0]}* does not exist in portal`));
 						}
 					}
 				}
@@ -139,7 +139,7 @@ async function propertyReply(message: Message, args: string[]) {
 			return !!message.author.send({ embeds: [detailed] })
 				.catch(e => { return Promise.reject('failed to send message') });
 		} else {
-			return Promise.reject(message_help('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`));
+			return Promise.reject(messageHelp('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`));
 		}
 	}
 }
@@ -169,7 +169,7 @@ async function guideReply(message: Message, args: string[]) {
 		return !!message.author.send({ embeds: [guide] })
 			.catch(e => { return Promise.reject('failed to send message') });
 	} else {
-		return Promise.reject(message_help('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`));
+		return Promise.reject(messageHelp('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`));
 	}
 }
 
@@ -188,5 +188,5 @@ module.exports = async (
 		return { result: !!reply, value: '' };
 	}
 
-	return { result: false, value: message_help('commands', 'help') };
+	return { result: false, value: messageHelp('commands', 'help') };
 };

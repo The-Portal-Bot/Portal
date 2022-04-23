@@ -1,7 +1,7 @@
 import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
 import { Client, MessageReaction, Role, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
-import { create_rich_embed, is_authorised, is_dj, logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
+import { createEmded, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, update_guild } from "../libraries/mongo.library";
 // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";

@@ -1,5 +1,5 @@
 import { Message, VoiceChannel } from "discord.js";
-import { message_help } from "../../libraries/help.library";
+import { messageHelp } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { set_attribute } from "../../types/interfaces/Attribute.interface";
@@ -43,7 +43,7 @@ module.exports = async (
 		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'set', 'arguments are set by name and value')
+				value: messageHelp('commands', 'set', 'arguments are set by name and value')
 			});
 		}
 	});

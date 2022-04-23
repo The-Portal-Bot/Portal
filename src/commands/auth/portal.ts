@@ -1,7 +1,7 @@
 import { GuildChannelCreateOptions, Message } from "discord.js";
 import { ChannelTypes } from "discord.js/typings/enums";
 import { create_channel } from "../../libraries/guild.library";
-import { message_help } from "../../libraries/help.library";
+import { messageHelp } from "../../libraries/help.library";
 import { insert_portal } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { PortalChannelPrtl } from "../../types/classes/PortalChannelPrtl.class";
@@ -14,7 +14,7 @@ module.exports = async (
 		if (args.length === 0) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'portal')
+				value: messageHelp('commands', 'portal')
 			});
 		}
 

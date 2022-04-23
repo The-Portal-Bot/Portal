@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import { create_rich_embed } from "../../libraries/help.library";
+import { createEmded } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import spam_config from "../../config.spam.json";
@@ -35,7 +35,7 @@ module.exports = async (
         message.channel
             .send({
                 embeds: [
-                    create_rich_embed(
+                    createEmded(
                         'Spam Rules',
                         rules,
                         '#006996',

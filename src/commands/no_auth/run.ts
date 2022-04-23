@@ -1,6 +1,6 @@
 import { Message, VoiceChannel } from "discord.js";
 import { regex_interpreter } from "../../libraries/guild.library";
-import { create_rich_embed, max_string } from "../../libraries/help.library";
+import { createEmded, maxString } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { VoiceChannelPrtl } from "../../types/classes/VoiceChannelPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -41,7 +41,7 @@ module.exports = async (
 
 		message.channel.send({
 			embeds: [
-				create_rich_embed(
+				createEmded(
 					'executing: ' + args.join(' '),
 					args.join(' '),
 					'#00ffb3',
@@ -61,13 +61,13 @@ module.exports = async (
 					sent_message
 						.edit({
 							embeds: [
-								create_rich_embed(
+								createEmded(
 									'Text Interpreter',
 									null,
 									'#00ffb3',
 									<Field[]>[{
 										emote: 'input',
-										role: max_string(
+										role: maxString(
 											`\`\`\`\n${args.join(' ')}\n\`\`\``,
 											256
 										),
@@ -75,7 +75,7 @@ module.exports = async (
 									},
 									{
 										emote: 'output',
-										role: max_string(
+										role: maxString(
 											`\`\`\`\n${regex_interpreter(
 												args.join(' '),
 												current_voice_channel as VoiceChannel,

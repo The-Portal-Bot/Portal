@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { create_channel, get_options, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
-import { message_help } from "../../libraries/help.library";
+import { messageHelp } from "../../libraries/help.library";
 import { insert_url, remove_url } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -100,7 +100,7 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'url')
+				value: messageHelp('commands', 'url')
 			});
 		}
 	});

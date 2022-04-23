@@ -56,7 +56,7 @@ export const logger = createLogger({
 });
 
 
-export async function ask_for_approval(
+export async function askForApproval(
 	message: Message, requester: GuildMember, question: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
@@ -114,7 +114,7 @@ export async function ask_for_approval(
 	});
 }
 
-export function get_json(
+export function getJsonFromString(
 	str: string
 ): any | unknown {
 	let data = null;
@@ -131,7 +131,7 @@ export function get_json(
 	return data;
 }
 
-export function max_string(
+export function maxString(
 	abstract: string, max: number
 ): string {
 	return abstract.length < max
@@ -139,7 +139,7 @@ export function max_string(
 		: abstract.substring(0, max - 3) + '...';
 }
 
-export function get_key_from_enum(
+export function getKeyFromEnum(
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	value: string, enumeration: any
 ): string | number | undefined {
@@ -153,11 +153,11 @@ export function get_key_from_enum(
 	return undefined;
 }
 
-export function create_music_message(
+export function createMusicMessage(
 	channel: TextChannel, guild_object: GuildPrtl
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const music_message_emb = create_rich_embed(
+		const music_message_emb = createEmded(
 			'Music Player',
 			'Type and Portal will play it !',
 			'#e60026',
@@ -235,11 +235,11 @@ export function create_music_message(
 	});
 }
 
-export function create_lyrics_message(
+export function createMusicLyricsMessage(
 	channel: TextChannel, guild_object: GuildPrtl, message_id: string
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const music_lyrics_message_emb = create_rich_embed(
+		const music_lyrics_message_emb = createEmded(
 			'Lyrics 📄',
 			'',
 			'#e60026',
@@ -275,7 +275,7 @@ export function create_lyrics_message(
 	});
 }
 
-export function update_music_message(
+export function updateMusicMessage(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
@@ -298,7 +298,7 @@ export function update_music_message(
 				? guild_object.music_queue
 					.map((v, i) => {
 						if (i !== 0 && i < 6) {
-							return (`${i}. ${max_string(v.title, 61)}`);
+							return (`${i}. ${maxString(v.title, 61)}`);
 						} else if (i === 6) {
 							return `_...${guild_object.music_queue.length - 6} more_`;
 						}
@@ -308,7 +308,7 @@ export function update_music_message(
 				: 'empty'
 			: 'empty';
 
-		const music_message_emb = create_rich_embed(
+		const music_message_emb = createEmded(
 			yts ? yts.title : 'Music Player',
 			yts ? yts.url : 'Type and Portal will play it !',
 			'#e60026',
@@ -353,7 +353,7 @@ export function update_music_message(
 	});
 }
 
-export function update_music_lyrics_message(
+export function updateMusicLyricsMessage(
 	guild: Guild, guild_object: GuildPrtl, lyrics: string, url?: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
@@ -370,9 +370,9 @@ export function update_music_lyrics_message(
 			return reject(`could not find channel`);
 		}
 
-		const music_message_emb = create_rich_embed(
+		const music_message_emb = createEmded(
 			`Lyrics 📄 ${url ? `at ${url}` : ''}`,
-			max_string(lyrics, 2000),
+			maxString(lyrics, 2000),
 			'#e60026',
 			null,
 			null,
@@ -403,7 +403,7 @@ export function update_music_lyrics_message(
 	});
 }
 
-export async function join_by_reaction(
+export async function joinUserVoiceChannelByReaction(
 	guild: Guild, client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
 ): Promise<VoiceConnection> {
 	const guildMembers = await guild.members.fetch();
@@ -446,7 +446,7 @@ export async function join_by_reaction(
 	return voiceConnection;
 }
 
-export async function join_user_voice(
+export async function joinUserVoiceChannelByMessage(
 	client: Client, message: Message, guild_object: GuildPrtl, join = false
 ): Promise<VoiceConnection> {
 	if (!message.member) {
@@ -497,7 +497,7 @@ export async function join_user_voice(
 	return voiceConnection;
 }
 
-export function create_rich_embed(
+export function createEmded(
 	title: string | null | undefined,
 	description: string | null | undefined,
 	colour: ColorResolvable | null | undefined,
@@ -567,7 +567,7 @@ export function create_rich_embed(
 	return rich_message;
 }
 
-export function is_authorised(
+export function isUserAuthorised(
 	member: GuildMember
 ): boolean {
 	const administrator: PermissionResolvable = 'ADMINISTRATOR';
@@ -584,7 +584,7 @@ export function is_authorised(
 	return false;
 }
 
-export function is_dj(
+export function isUserDj(
 	member: GuildMember
 ): boolean {
 	if (member.roles.cache) {
@@ -595,14 +595,14 @@ export function is_dj(
 	return false;
 }
 
-export function is_ignored(
+export function isUserIgnored(
 	member: GuildMember
 ): boolean {
 	return member.roles.cache.some(r =>
 		r.name.toLowerCase() === 'p.ignore');
 }
 
-export function is_mod(
+export function isMod(
 	member: GuildMember | null
 ): boolean {
 	if (member && member.roles.cache) {
@@ -613,7 +613,7 @@ export function is_mod(
 	return false;
 }
 
-export function is_whitelist(
+export function isWhitelist(
 	member: GuildMember | null
 ): boolean {
 	if (member && member.roles.cache) {
@@ -624,7 +624,7 @@ export function is_whitelist(
 	return false;
 }
 
-export function message_help(
+export function messageHelp(
 	type: string, argument: string, info = ''
 ): string {
 	if (info !== '') info += '\n';
@@ -632,41 +632,41 @@ export function message_help(
 		`*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`;
 }
 
-export async function message_reply(
+export async function messageReply(
 	status: boolean,
 	message: Message,
-	reply_string: string,
-	delete_source = false,
-	delete_reply = false,
-	emote_pass = '✔️',
-	emote_fail = '❌'
+	replyString: string,
+	deleteSource = false,
+	deleteReply = false,
+	emotePass = '✔️',
+	emoteFail = '❌'
 ): Promise<boolean> {
 	if (!message) {
 		return Promise.reject(`failed to find message`);
 	}
 
-	if (!isChannelDeleted(message.channel) && reply_string !== null && reply_string !== '') {
-		const sentMessage = await message.reply(reply_string)
+	if (!isChannelDeleted(message.channel) && replyString !== null && replyString !== '') {
+		const sentMessage = await message.reply(replyString)
 			.catch(e => { return Promise.reject(`failed to send message / ${e}`); });
 
 		if (!sentMessage) {
 			return Promise.reject(`failed to send message`);
 		}
 
-		if (delete_reply) {
+		if (deleteReply) {
 			const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
 			setTimeout(() => {
 				if (!sentMessage.deletable) {
 					sentMessage.delete()
-						.catch(e => { return Promise.reject(`2. failed to delete message / ${e}`) })
+						.catch(e => { return Promise.reject(`2. failed to delete message / ${e}`); });
 				}
 			}, delay);
 
 		}
 	}
 
-	if (delete_source) {
-		const reaction = await message.react(status ? emote_pass : emote_fail)
+	if (deleteSource) {
+		const reaction = await message.react(status ? emotePass : emoteFail)
 			.catch(e => { return Promise.reject(`failed to react to message / ${e}`); });
 
 		if (!reaction) {
@@ -694,7 +694,7 @@ export async function message_reply(
 	return false;
 }
 
-export function is_url(
+export function isUrl(
 	potential_url: string
 ): boolean {
 	const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
@@ -715,7 +715,7 @@ export function pad(
 		: `0${num}`;
 }
 
-export function time_elapsed(
+export function timeElapsed(
 	timestamp: Date | number, timeout: number
 ): TimeElapsed {
 	const timeout_time = timeout * 60 * 1000;
@@ -739,7 +739,7 @@ export function time_elapsed(
 }
 
 // must get updated
-export function remove_deleted_channels(
+export function removeDeletedChannels(
 	guild: Guild
 ): Promise<boolean> {
 	return new Promise((resolve) => {
@@ -815,7 +815,7 @@ export function remove_deleted_channels(
 }
 
 // must get updated
-export async function remove_empty_voice_channels(
+export async function removeEmptyVoiceChannels(
 	guild: Guild
 ): Promise<boolean> {
 	const guild_list = await fetch_guild_list();

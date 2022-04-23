@@ -1,5 +1,5 @@
 import { ColorResolvable, Message, TextChannel } from "discord.js";
-import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
+import { createEmded, getJsonFromString, messageHelp } from "../../libraries/help.library";
 import { insert_poll } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { PollPrtl } from "../../types/classes/PollPrtl.class";
@@ -12,7 +12,7 @@ function create_role_message(
 	colour: ColorResolvable, poll_map: Field[], member_id: string
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const role_message_emb = create_rich_embed(
+		const role_message_emb = createEmded(
 			title,
 			desc,
 			colour,
@@ -87,7 +87,7 @@ module.exports = async (
 		if (args.length <= 1) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'poll')
+				value: messageHelp('commands', 'poll')
 			});
 		}
 
@@ -97,16 +97,16 @@ module.exports = async (
 		if (title === '' && poll_json_string !== '') {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'poll')
+				value: messageHelp('commands', 'poll')
 			});
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		const poll_json = get_json(poll_json_string);
+		const poll_json = getJsonFromString(poll_json_string);
 		if (!poll_json) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'poll', 'poll must be in JSON array format `./help poll`')
+				value: messageHelp('commands', 'poll', 'poll must be in JSON array format `./help poll`')
 			});
 		}
 
@@ -114,21 +114,21 @@ module.exports = async (
 		if (poll_map.length > 9) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'poll', 'polls can have maximum 9 options')
+				value: messageHelp('commands', 'poll', 'polls can have maximum 9 options')
 			});
 		}
 
 		if (poll_map.length < 2) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'poll', 'polls must have minimum 2 options')
+				value: messageHelp('commands', 'poll', 'polls must have minimum 2 options')
 			});
 		}
 
 		if (!Array.isArray(poll_map)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'poll', 'must be array even for one role')
+				value: messageHelp('commands', 'poll', 'must be array even for one role')
 			});
 		}
 

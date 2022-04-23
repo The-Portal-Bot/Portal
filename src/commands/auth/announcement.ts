@@ -4,7 +4,7 @@ import { update_guild } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
-import { message_help } from "../../libraries/help.library";
+import { messageHelp } from "../../libraries/help.library";
 import { ChannelTypes } from "discord.js/typings/enums";
 
 module.exports = async (
@@ -124,7 +124,7 @@ module.exports = async (
 			} else {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'announcement')
+					value: messageHelp('commands', 'announcement')
 				});
 			}
 		}

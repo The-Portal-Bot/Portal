@@ -1,5 +1,5 @@
 import { RequestOptions } from 'https';
-import { get_json } from '../../libraries/help.library';
+import { getJsonFromString } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
@@ -36,7 +36,7 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
+				const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
 
 				return resolve({
 					result: true,

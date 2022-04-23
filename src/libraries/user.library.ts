@@ -3,7 +3,7 @@ import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum"
 import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
 import { Rank } from "../types/classes/TypesPrtl.interface";
-import { time_elapsed } from './help.library';
+import { timeElapsed } from './help.library';
 import { update_entire_member, update_member } from "./mongo.library";
 
 export function give_role_from_rankup(
@@ -65,7 +65,7 @@ export function add_points_time(
 		return member_prtl.points;
 	}
 
-	const voice_time = time_elapsed(member_prtl.timestamp, 0);
+	const voice_time = timeElapsed(member_prtl.timestamp, 0);
 
 	member_prtl.points += Math.round(voice_time.remaining_sec * RankSpeedValueList[rank_speed] * 0.5);
 	member_prtl.points += Math.round(voice_time.remaining_min * RankSpeedValueList[rank_speed] * 30 * 1.15);

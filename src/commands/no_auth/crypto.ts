@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import voca from 'voca';
-import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
+import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
@@ -12,12 +12,12 @@ module.exports = async (
 		if (args.length === 0) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'crypto', 'must add currency to search')
+				value: messageHelp('commands', 'crypto', 'must add currency to search')
 			});
 		} else if (args.length > 3) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'crypto')
+				value: messageHelp('commands', 'crypto')
 			});
 		}
 
@@ -27,7 +27,7 @@ module.exports = async (
 		if (crypto_name === '') {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'crypto', 'you must give an authority currency like usd')
+				value: messageHelp('commands', 'crypto', 'you must give an authority currency like usd')
 			});
 		}
 
@@ -46,7 +46,7 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
+				const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
 
 				if (!json) {
 					return resolve({
@@ -58,7 +58,7 @@ module.exports = async (
 				message.channel
 					.send({
 						embeds: [
-							create_rich_embed(
+							createEmded(
 								null,
 								null,
 								'#FFE600',

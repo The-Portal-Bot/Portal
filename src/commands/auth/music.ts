@@ -1,7 +1,7 @@
 import { Message, TextChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { create_music_channel, delete_channel, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
-import { create_lyrics_message, create_music_message, logger, message_help } from "../../libraries/help.library";
+import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
 import { set_music_data } from "../../libraries/mongo.library";
 import { GuildPrtl, MusicData } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -73,10 +73,10 @@ module.exports = async (
 				});
 			}
 
-			create_music_message(new_music, guild_object)
+			createMusicMessage(new_music, guild_object)
 				.then(music_message_id => {
 					logger.log({ level: 'info', type: 'none', message: `created music message ${music_message_id}` });
-					create_lyrics_message(new_music, guild_object, music_message_id)
+					createMusicLyricsMessage(new_music, guild_object, music_message_id)
 						.then(lyrics_message_id => {
 							logger.log({ level: 'info', type: 'none', message: `created lyrics message ${lyrics_message_id}` });
 							return resolve({
@@ -137,7 +137,7 @@ module.exports = async (
 			else {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'music')
+					value: messageHelp('commands', 'music')
 				});
 			}
 

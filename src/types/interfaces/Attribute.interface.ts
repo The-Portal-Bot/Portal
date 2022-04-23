@@ -3,7 +3,7 @@ import { AuthEnum } from '../../data/enums/Admin.enum';
 import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
 import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
-import { create_rich_embed, get_key_from_enum, is_authorised, is_mod } from '../../libraries/help.library';
+import { createEmded, getKeyFromEnum, isUserAuthorised, isMod } from '../../libraries/help.library';
 import { update_guild, update_member, update_portal, update_voice } from '../../libraries/mongo.library';
 import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { MemberPrtl } from '../classes/MemberPrtl.class';
@@ -980,7 +980,7 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'kick_after';
 
 			return new Promise((resolve) => {
-				if (!is_mod(message.member)) {
+				if (!isMod(message.member)) {
 					return resolve({
 						result: false,
 						value: `you must be a Portal moderator to set attribute ${ctgr.join('.') + '.' + attr}`
@@ -1029,7 +1029,7 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'ban_after';
 
 			return new Promise((resolve) => {
-				if (!is_mod(message.member)) {
+				if (!isMod(message.member)) {
 					return resolve({
 						result: false,
 						value: `you must be a Portal moderator to set attribute ${ctgr.join('.') + '.' + attr}`
@@ -1182,7 +1182,7 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'rank_speed';
 
 			return new Promise((resolve) => {
-				const speed = get_key_from_enum(value, RankSpeedEnum);
+				const speed = getKeyFromEnum(value, RankSpeedEnum);
 
 				if (speed !== undefined) {
 					update_guild(guild_object.id, attr, speed)
@@ -1229,7 +1229,7 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'profanity_level';
 
 			return new Promise((resolve) => {
-				const level = get_key_from_enum(value, ProfanityLevelEnum);
+				const level = getKeyFromEnum(value, ProfanityLevelEnum);
 
 				if (level !== undefined) {
 					update_guild(guild_object.id, attr, level)
@@ -1365,7 +1365,7 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'locale';
 
 			return new Promise((resolve) => {
-				const locale = get_key_from_enum(value, LocaleEnum);
+				const locale = getKeyFromEnum(value, LocaleEnum);
 
 				if (locale !== undefined) {
 					update_guild(guild_object.id, attr, locale)
@@ -1428,7 +1428,7 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'locale';
 
 			return new Promise((resolve) => {
-				const locale = get_key_from_enum(value, LocaleEnum);
+				const locale = getKeyFromEnum(value, LocaleEnum);
 
 				if (locale !== undefined) {
 					update_portal(guild_object.id, portal_object.id, attr, locale)
@@ -1478,7 +1478,7 @@ const attributes: InterfaceBlueprint[] = [
 			const attr = 'locale';
 
 			return new Promise((resolve) => {
-				const locale = get_key_from_enum(value, LocaleEnum);
+				const locale = getKeyFromEnum(value, LocaleEnum);
 
 				if (locale !== undefined) {
 					update_voice(guild_object.id, portal_object.id, voice_object.id, attr, locale)
@@ -1996,7 +1996,7 @@ export function get_attribute_guide(): MessageEmbed {
 		}
 	];
 
-	return create_rich_embed(
+	return createEmded(
 		'Attribute Guide',
 		'[Attributes](' + portal_url + interpreter_url + '/attributes/description) ' +
 		'are options that can be manipulated by whomever has clearance.\n' +
@@ -2045,7 +2045,7 @@ export function get_attribute_help(): MessageEmbed[] {
 	return attr_array
 		.map((cmmd, index) => {
 			if (index === 0) {
-				return create_rich_embed(
+				return createEmded(
 					'Attributes',
 					'[Attributes](' + portal_url + interpreter_url + '/attributes/description) ' +
 					'are options that can be manipulated by whomever has clearance.\n' +
@@ -2059,7 +2059,7 @@ export function get_attribute_help(): MessageEmbed[] {
 					null
 				)
 			} else {
-				return create_rich_embed(
+				return createEmded(
 					null,
 					null,
 					'#FF5714',
@@ -2079,7 +2079,7 @@ export function get_attribute_help_super(
 ): MessageEmbed | boolean {
 	for (let i = 0; i < attributes.length; i++) {
 		if (attributes[i].name === candidate) {
-			return create_rich_embed(
+			return createEmded(
 				attributes[i].name,
 				null,
 				'#FF5714',
@@ -2128,7 +2128,7 @@ export function set_attribute(
 			if (candidate === attributes[l].name) {
 				switch (attributes[l].auth) {
 					case AuthEnum.admin:
-						if (!is_authorised(member)) {
+						if (!isUserAuthorised(member)) {
 							return resolve({
 								result: false,
 								value: `attribute ${candidate} can only be **set by an administrator**`

@@ -6,7 +6,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
 import { CountryCodes } from '../../data/lists/country_codes_iso.static';
-import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
+import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
@@ -34,18 +34,18 @@ module.exports = async (
 			if (code === null) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'corona', `${args[0]} is neither a country name nor code`)
+					value: messageHelp('commands', 'corona', `${args[0]} is neither a country name nor code`)
 				});
 			}
 		} else if (args.length > 1) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'corona', 'you must give only one argument')
+				value: messageHelp('commands', 'corona', 'you must give only one argument')
 			});
 		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'corona')
+				value: messageHelp('commands', 'corona')
 			});
 		}
 
@@ -64,7 +64,7 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
+				const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
 
 				if (json === null) {
 					return resolve({
@@ -86,7 +86,7 @@ module.exports = async (
 					message.channel
 						.send({
 							embeds: [
-								create_rich_embed(
+								createEmded(
 									`${country_data.country} | ${moment(country_data.time).format('DD/MM/YY')}`,
 									'Covid19 stats by covid-193',
 									'#FF0000',

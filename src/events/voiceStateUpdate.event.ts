@@ -1,7 +1,7 @@
 import { getVoiceConnection, VoiceConnection } from "@discordjs/voice";
 import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import { create_voice_channel, generate_channel_name, included_in_portal_list, included_in_voice_list } from "../libraries/guild.library";
-import { isChannelDeleted, isGuildDeleted, logger, update_music_lyrics_message, update_music_message } from "../libraries/help.library";
+import { isChannelDeleted, isGuildDeleted, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
 // import { client_talk } from "../libraries/localisation.library";
 import { fetch_guild, remove_voice, set_music_data, update_guild } from "../libraries/mongo.library";
 import { update_timestamp } from "../libraries/user.library";
@@ -120,7 +120,7 @@ async function channel_empty_check(
 					});
 			}
 
-			update_music_message(
+			updateMusicMessage(
 				old_channel.guild,
 				guild_object,
 				guild_object.music_queue.length > 0
@@ -133,7 +133,7 @@ async function channel_empty_check(
 					return reject(`failed to update music message / ${e}`);
 				});
 
-			update_music_lyrics_message(old_channel.guild, guild_object, '')
+			updateMusicLyricsMessage(old_channel.guild, guild_object, '')
 				.catch(e => {
 					return reject(`failed to update music lyrics / ${e}`);
 				});

@@ -1,5 +1,5 @@
 import { Message, TextChannel } from "discord.js";
-import { ask_for_approval, message_help } from "../../libraries/help.library";
+import { askForApproval, messageHelp } from "../../libraries/help.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = async (
@@ -9,7 +9,7 @@ module.exports = async (
         if (args.length !== 1) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'delete', 'you can only give one number as argument')
+                value: messageHelp('commands', 'delete', 'you can only give one number as argument')
             });
         }
 
@@ -18,21 +18,21 @@ module.exports = async (
         if (typeof bulk_delete_length !== "number") { // isNaN ?
             return resolve({
                 result: false,
-                value: message_help('commands', 'delete', 'argument must always be number')
+                value: messageHelp('commands', 'delete', 'argument must always be number')
             });
         }
 
         if (bulk_delete_length <= 0) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'delete', 'you can delete one or more messages')
+                value: messageHelp('commands', 'delete', 'you can delete one or more messages')
             });
         }
 
         if (bulk_delete_length > 97) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'delete', 'you can delete up-to 97 messages')
+                value: messageHelp('commands', 'delete', 'you can delete up-to 97 messages')
             });
         }
 
@@ -43,7 +43,7 @@ module.exports = async (
             });
         }
 
-        ask_for_approval(
+        askForApproval(
             message,
             message.member,
             `*${message.author}, are you sure you want to delete ` +

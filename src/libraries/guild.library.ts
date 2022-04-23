@@ -14,7 +14,7 @@ import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
-import { create_lyrics_message, create_music_message, get_json, logger, max_string } from './help.library';
+import { createMusicLyricsMessage, createMusicMessage, getJsonFromString, logger, maxString } from './help.library';
 import { insert_voice } from "./mongo.library";
 
 function inline_operator(
@@ -228,7 +228,7 @@ export async function create_music_channel(
 
 	guild_object.music_data.channel_id = newMusicGuildChannel.id;
 
-	const musicMessageId = await create_music_message(newMusicGuildChannel, guild_object)
+	const musicMessageId = await createMusicMessage(newMusicGuildChannel, guild_object)
 		.catch(e => {
 			return Promise.reject(`failed to send music message / ${e}`);
 		});
@@ -238,7 +238,7 @@ export async function create_music_channel(
 	}
 
 	logger.log({ level: 'info', type: 'none', message: `send music message ${musicMessageId}` });
-	create_lyrics_message(newMusicGuildChannel, guild_object, musicMessageId)
+	createMusicLyricsMessage(newMusicGuildChannel, guild_object, musicMessageId)
 		.catch(e => {
 			return Promise.reject(`failed to send music lyrics message / ${e}`);
 		});
@@ -487,7 +487,7 @@ export async function generate_channel_name(
 					: regex;
 
 				if (new_name.length >= 1) {
-					const capped_new_name = max_string(new_name, 99);
+					const capped_new_name = maxString(new_name, 99);
 					if (voice_channel.name !== capped_new_name) {
 						await voice_channel
 							.edit({ name: capped_new_name })
@@ -626,7 +626,7 @@ export function regex_interpreter(
 				// did not put into structure_list due to many unnecessary function calls
 				let is_valid = false;
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const statement = get_json(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
+				const statement = getJsonFromString(regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1));
 
 				if (!statement) return 'error';
 

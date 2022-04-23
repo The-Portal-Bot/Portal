@@ -1,5 +1,5 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { create_rich_embed, message_help } from "../../libraries/help.library";
+import { createEmded, messageHelp } from "../../libraries/help.library";
 // import { client_talk } from "../../libraries/localisation.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -11,14 +11,14 @@ module.exports = async (
         if (args.length === 0) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'announce')
+                value: messageHelp('commands', 'announce')
             });
         }
 
         if (guild_object.announcement === '' || guild_object.announcement === 'null') {
             return resolve({
                 result: false,
-                value: message_help('commands', 'announce', 'there is no announcement channel')
+                value: messageHelp('commands', 'announce', 'there is no announcement channel')
             });
         }
 
@@ -35,7 +35,7 @@ module.exports = async (
         if (!announcement_channel) {
             return resolve({
                 result: false,
-                value: message_help('commands', 'announce', 'announcements channel does not exist')
+                value: messageHelp('commands', 'announce', 'announcements channel does not exist')
             });
         }
 
@@ -47,7 +47,7 @@ module.exports = async (
             title = '';
         }
 
-        const rich_message = create_rich_embed(
+        const rich_message = createEmded(
             title,
             `@here ${body}`,
             '#022E4E',

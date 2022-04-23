@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import { OpapGameIdEnum } from '../../data/enums/OpapGames.enum';
-import { create_rich_embed, get_json, get_key_from_enum, message_help } from '../../libraries/help.library';
+import { createEmded, getJsonFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
@@ -17,24 +17,24 @@ module.exports = async (
 			if (args[0].toLowerCase() !== 'opap') {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'bet', `${args[0]} is not a provider`)
+					value: messageHelp('commands', 'bet', `${args[0]} is not a provider`)
 				});
 			} else {
 				if (isNaN(+args[1])) {
-					game_code = <number>get_key_from_enum(args[1].toLowerCase(), OpapGameIdEnum);
+					game_code = <number>getKeyFromEnum(args[1].toLowerCase(), OpapGameIdEnum);
 				}
 
 				if (!game_code) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'bet', `${args[1]} does not exist in ${args[0]}`)
+						value: messageHelp('commands', 'bet', `${args[1]} does not exist in ${args[0]}`)
 					});
 				}
 			}
 		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'bet', '')
+				value: messageHelp('commands', 'bet', '')
 			});
 		}
 
@@ -52,7 +52,7 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const json = get_json(response.toString()
+				const json = getJsonFromString(response.toString()
 					.substring(response.toString().indexOf('{')));
 
 				if (json === null) {
@@ -65,7 +65,7 @@ module.exports = async (
 				message.channel
 					.send({
 						embeds: [
-							create_rich_embed(
+							createEmded(
 								`${args[1]} from ${args[0]} | ${moment(json.last.drawTime).format('DD/MM/YY')}`,
 								`powered by ${args[0]}`,
 								'#0384fc',

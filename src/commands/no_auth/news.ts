@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import { NYTCategories } from '../../data/lists/news_categories.static';
-import { create_rich_embed, get_json, max_string, message_help } from '../../libraries/help.library';
+import { createEmded, getJsonFromString, maxString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { News } from '../../types/classes/NewYorkTime.class';
 import { Field, ReturnPormise } from '../../types/classes/TypesPrtl.interface';
@@ -18,27 +18,27 @@ module.exports = async (
 			if (!category) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'news', `${args[0]} is not a news category`)
+					value: messageHelp('commands', 'news', `${args[0]} is not a news category`)
 				});
 			}
 		} else if (args.length === 2) {
 			if (!category) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'news', `${args[0]} is not a news category`)
+					value: messageHelp('commands', 'news', `${args[0]} is not a news category`)
 				});
 			} else {
 				count = +args[1];
 				if (isNaN(count)) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'news', `${args[1]} is not a number`)
+						value: messageHelp('commands', 'news', `${args[1]} is not a number`)
 					});
 				}
 				if (count > 15) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'news', `can display up to 15 articles`)
+						value: messageHelp('commands', 'news', `can display up to 15 articles`)
 					});
 				}
 				--count;
@@ -46,7 +46,7 @@ module.exports = async (
 		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'news')
+				value: messageHelp('commands', 'news')
 			});
 		}
 
@@ -66,7 +66,7 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
+				const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
 
 				if (json === null) {
 					return resolve({
@@ -91,7 +91,7 @@ module.exports = async (
 				news.results.some((n, i) => {
 					top_news.push(<Field>{
 						emote: `${n.title}`,
-						role: `_[${max_string(n.abstract, 256)}](${n.url})_`,
+						role: `_[${maxString(n.abstract, 256)}](${n.url})_`,
 						inline: false
 					});
 
@@ -101,7 +101,7 @@ module.exports = async (
 				message.channel
 					.send({
 						embeds: [
-							create_rich_embed(
+							createEmded(
 								// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 								`News ${args[0]} | ${moment(json.last_updated).format('DD/MM/YY hh:mm')}`,
 								'powered by NYTimes',

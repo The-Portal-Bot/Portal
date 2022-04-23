@@ -1,6 +1,6 @@
 import { ColorResolvable, Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../libraries/guild.library";
-import { create_rich_embed, get_json, message_help } from "../../libraries/help.library";
+import { createEmded, getJsonFromString, messageHelp } from "../../libraries/help.library";
 import { insert_vendor } from "../../libraries/mongo.library";
 import { GiveRole, GiveRolePrtl } from "../../types/classes/GiveRolePrtl.class";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
@@ -11,7 +11,7 @@ function create_role_message(
 	colour: ColorResolvable, role_emb: Field[], role_map: GiveRole[]
 ): Promise<ReturnPormise> {
 	return new Promise((resolve) => {
-		const role_message_emb = create_rich_embed(
+		const role_message_emb = createEmded(
 			title, desc, colour, role_emb, null, null, null, null, null
 		);
 
@@ -82,17 +82,17 @@ module.exports = async (
 		if (args.length <= 0) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'vendor')
+				value: messageHelp('commands', 'vendor')
 			});
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		const role_map_json = get_json(args.join(' '));
+		const role_map_json = getJsonFromString(args.join(' '));
 
 		if (!role_map_json) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'vendor', 'must be an array in JSON format (even for one role)')
+				value: messageHelp('commands', 'vendor', 'must be an array in JSON format (even for one role)')
 			});
 		}
 
@@ -100,19 +100,19 @@ module.exports = async (
 		if (!Array.isArray(role_map)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'vendor', 'must be an array in JSON format (even for one role)')
+				value: messageHelp('commands', 'vendor', 'must be an array in JSON format (even for one role)')
 			});
 		}
 		if (multiple_same_emote(role_map)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'vendor', 'can not have the same emote for multiple actions')
+				value: messageHelp('commands', 'vendor', 'can not have the same emote for multiple actions')
 			});
 		}
 		if (!role_map.every(rm => rm.emote && rm.role)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'vendor', 'JSON syntax has spelling errors')
+				value: messageHelp('commands', 'vendor', 'JSON syntax has spelling errors')
 			});
 		}
 

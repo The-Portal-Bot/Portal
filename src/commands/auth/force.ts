@@ -1,7 +1,7 @@
 import { Message, VoiceChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { delete_channel, included_in_voice_list, regex_interpreter } from "../../libraries/guild.library";
-import { message_help } from "../../libraries/help.library";
+import { messageHelp } from "../../libraries/help.library";
 import { update_voice } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -21,21 +21,21 @@ module.exports = async (
 		if (!message.member.voice.channel) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'force', 'you must be in a channel handled by Portal')
+				value: messageHelp('commands', 'force', 'you must be in a channel handled by Portal')
 			});
 		}
 
 		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'force', 'the channel you are in is not handled by Portal')
+				value: messageHelp('commands', 'force', 'the channel you are in is not handled by Portal')
 			});
 		}
 
 		if (message.member.voice.channel.members.size > 10) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'force', 'you can only force a channel with up-to 10 members')
+				value: messageHelp('commands', 'force', 'you can only force a channel with up-to 10 members')
 			});
 		}
 

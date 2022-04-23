@@ -1,5 +1,5 @@
 import { BanOptions, Message } from "discord.js";
-import { ask_for_approval, is_mod, message_help } from "../../libraries/help.library";
+import { askForApproval, isMod, messageHelp } from "../../libraries/help.library";
 import { ban } from "../../libraries/user.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -14,7 +14,7 @@ module.exports = async (
 			});
 		}
 
-		if (!is_mod(message.member)) {
+		if (!isMod(message.member)) {
 			return resolve({
 				result: false,
 				value: `you must be a Portal moderator to ban users`
@@ -51,7 +51,7 @@ module.exports = async (
 			if (message.mentions.members.size === 0) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'ban', `you must tag a member`)
+					value: messageHelp('commands', 'ban', `you must tag a member`)
 				});
 			}
 
@@ -61,11 +61,11 @@ module.exports = async (
 				if (message.member === member_to_ban) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'ban', `you can't ban on yourself`)
+						value: messageHelp('commands', 'ban', `you can't ban on yourself`)
 					});
 				}
 
-				ask_for_approval(
+				askForApproval(
 					message,
 					message.member,
 					`*${message.member}, are you sure you want to ban ` +

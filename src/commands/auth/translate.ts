@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { message_help } from '../../libraries/help.library';
+import { messageHelp } from '../../libraries/help.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
 // const translate = require('translate')
@@ -12,13 +12,13 @@ module.exports = async (
 	return new Promise((resolve) => {
 		return resolve({
 			result: true,
-			value: message_help('commands', 'translate', 'work in progress')
+			value: messageHelp('commands', 'translate', 'work in progress')
 		});
 
 		if (args.length <= 1)
 			return resolve({
 				result: false,
-				value: message_help('commands', 'translate', '1 you can run `./help translate` for help')
+				value: messageHelp('commands', 'translate', '1 you can run `./help translate` for help')
 			});
 
 		const language_options = args.join(' ').substr(0, args.join(' ').indexOf('|'));
@@ -27,7 +27,7 @@ module.exports = async (
 		if (!language_options || !string_to_tranlate)
 			return resolve({
 				result: false,
-				value: message_help('commands', 'translate', '2 you can run `./help translate` for help')
+				value: messageHelp('commands', 'translate', '2 you can run `./help translate` for help')
 			});
 
 		const language_duplet = language_options.split(',');
@@ -62,7 +62,7 @@ module.exports = async (
 		} else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'translate', '3 you can run `./help translate` for help')
+				value: messageHelp('commands', 'translate', '3 you can run `./help translate` for help')
 			});
 		}
 	});

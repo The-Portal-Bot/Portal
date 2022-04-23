@@ -1,5 +1,5 @@
 import { Client, Message } from "discord.js";
-import { create_rich_embed } from "../../libraries/help.library";
+import { createEmded } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -147,7 +147,7 @@ module.exports = async (
         message.channel
             .send({
                 embeds: [
-                    create_rich_embed(
+                    createEmded(
                         'State of Portal',
                         null,
                         '#eba000',

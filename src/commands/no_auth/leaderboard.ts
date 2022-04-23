@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_rich_embed, message_help } from "../../libraries/help.library";
+import { createEmded, messageHelp } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../../types/classes/MemberPrtl.class";
 import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -47,7 +47,7 @@ module.exports = async (
 		if (entries <= 0) {
 			return resolve({
 				result: false,
-				value: message_help('commands',
+				value: messageHelp('commands',
 					'leaderboard',
 					'leaderboard entries must be at least one'
 				)
@@ -85,7 +85,7 @@ module.exports = async (
 			message.channel
 				.send({
 					embeds: [
-						create_rich_embed(
+						createEmded(
 							'LEADERBOARD',
 							'[Ranking System](https://portal-bot.xyz/docs/ranking)',
 							'#00FFFF',

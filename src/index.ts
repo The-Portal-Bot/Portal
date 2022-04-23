@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 import { transports } from "winston";
 import command_config_json from './config.command.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
-import { isMessageDeleted, is_authorised, is_ignored, logger, markMessageAsDeleted, message_reply, pad, time_elapsed } from './libraries/help.library';
-import { message_spam_check } from "./libraries/mod.library";
+import { isMessageDeleted, isUserAuthorised, isUserIgnored, logger, markMessageAsDeleted, messageReply as messageReply, pad, timeElapsed } from './libraries/help.library';
+import { messageSpamCheck } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, insert_member, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 // import { start } from './libraries/music.library';
 import { add_points_message } from './libraries/user.library';
@@ -79,7 +79,6 @@ client.on('messageCreate', async (message: Message) => {
 	if (!message || !message.member || !message.guild) return;
 	if (message.channel.type === 'DM' || message.author.bot) return;
 
-	console.log('message: ', message.content);
 	fetch_guild_predata(message.guild.id, message.author.id)
 		.then(async guild_object => {
 			if (!guild_object) {
@@ -103,16 +102,16 @@ client.on('messageCreate', async (message: Message) => {
 
 			if (await portalPreprocessor(message, guild_object)) {
 				// preprocessor has handled the message
-				message_spam_check(message, guild_object, spam_cache);
+				messageSpamCheck(message, guild_object, spam_cache);
 
 				return true;
 			} else {
-				message_spam_check(message, guild_object, spam_cache);
+				messageSpamCheck(message, guild_object, spam_cache);
 
 				// Ignore any message that does not start with prefix
 				if (message.content.indexOf(guild_object.prefix) !== 0) {
 					if (message.content === 'prefix') {
-						message_reply(true, message, `portal's prefix is \`${guild_object.prefix}\``)
+						messageReply(true, message, `portal's prefix is \`${guild_object.prefix}\``)
 							.catch((e: any) => {
 								logger.error(new Error(`failed to send message / ${e}`));
 							});
@@ -140,8 +139,8 @@ client.on('messageCreate', async (message: Message) => {
 				}
 
 				if (command.command_options.auth && message.member) {
-					if (!is_authorised(message.member)) {
-						message_reply(false, message, 'you are not authorised to use this command', true, true)
+					if (!isUserAuthorised(message.member)) {
+						messageReply(false, message, 'you are not authorised to use this command', true, true)
 							.catch((e: any) => {
 								logger.error(new Error(`failed to send message / ${e}`));
 							});
@@ -161,7 +160,7 @@ client.on('messageCreate', async (message: Message) => {
 					.then(guild_object_rest => {
 						if (!guild_object_rest) {
 							logger.error(new Error('server is not in database'));
-							message_reply(false, message, 'server is not in database')
+							messageReply(false, message, 'server is not in database')
 								.catch((e: any) => {
 									logger.error(new Error(`failed to send message / ${e}`));
 								});
@@ -215,19 +214,19 @@ async function commandLoader(
 	if (type === 'none' && command_options.time === 0) {
 		const commandReturn: ReturnPormise = await require(`./commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
 			.catch((e: string) => {
-				message_reply(false, message, e, command_options.delete.source, command_options.delete.reply)
+				messageReply(false, message, e, command_options.delete.source, command_options.delete.reply)
 					.catch((e: any) => logger.error(new Error('failed to send message')));
 			});
 
 		if (commandReturn) {
-			message_reply(commandReturn.result, message, commandReturn.value, command_options.delete.source, command_options.delete.reply)
+			messageReply(commandReturn.result, message, commandReturn.value, command_options.delete.source, command_options.delete.reply)
 				.catch((e: any) => logger.error(new Error('failed to send message')));
 		}
+
+		return;
 	}
 
-	const type_string = type === 'guild'
-		? 'guild'
-		: 'member';
+	const type_string = type === 'guild' ? 'guild' : 'member';
 
 	const active = active_cooldowns[type_string]
 		.find(active_current => {
@@ -249,7 +248,7 @@ async function commandLoader(
 		});
 
 	if (active) {
-		const time = time_elapsed(active.timestamp, command_options.time);
+		const time = timeElapsed(active.timestamp, command_options.time);
 
 		const type_for_msg = (type !== 'member')
 			? `, as it was used again in* **${message.guild?.name}**`
@@ -259,7 +258,7 @@ async function commandLoader(
 			`${pad(time.remaining_sec)}/${pad(time.timeout_min)}:` +
 			`${pad(time.timeout_sec)}** *to use* **${command}** *again${type_for_msg}`;
 
-		message_reply(false, message, must_wait_msg, true, true)
+		messageReply(false, message, must_wait_msg, true, true)
 			.catch((e: any) => logger.error(new Error(`failed to reply to message / ${e}`)));
 
 		return;
@@ -288,7 +287,7 @@ async function commandLoader(
 			}
 		}
 
-		message_reply(commandReturn.result, message, commandReturn.value,
+		messageReply(commandReturn.result, message, commandReturn.value,
 			command_options.delete.source, command_options.delete.reply)
 			.catch(e => {
 				logger.error(new Error(`in ${command} got error ${e}`));
@@ -309,7 +308,7 @@ async function portalPreprocessor(
 		return true;
 	}
 
-	if (is_ignored(message.member)) {
+	if (isUserIgnored(message.member)) {
 		if (!handle_url_channels(message, guild_object)) {
 			if (guild_object.music_data.channel_id === message.channel.id) {
 				message.member
@@ -376,7 +375,7 @@ function handleRankingSystem(
 	add_points_message(message, guild_object.member_list[0], guild_object.rank_speed)
 		.then(level => {
 			if (level) {
-				message_reply(true, message, `you reached level ${level}!`)
+				messageReply(true, message, `you reached level ${level}!`)
 					.catch((e: any) => {
 						logger.error(new Error(`failed to send message / ${e}`));
 					});
@@ -394,7 +393,7 @@ async function handle_url_channels(
 		if (message.content === './url') {
 			remove_url(guild_object.id, message.channel.id)
 				.then(r => {
-					message_reply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`)
+					messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`)
 						.catch((e: any) => {
 							logger.error(new Error(`failed to send message / ${e}`));
 						});
@@ -436,7 +435,7 @@ function handle_ignored_channels(
 		if (message.content === './ignore') {
 			remove_ignore(guild_object.id, message.channel.id)
 				.then(r => {
-					message_reply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
+					messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
 						.catch((e: any) => {
 							logger.error(new Error(`failed to send message / ${e}`));
 						});
@@ -465,7 +464,7 @@ function handleMusicChannels(
 			const music_data = new MusicData('null', 'null', 'null', [], false);
 			set_music_data(guild_object.id, music_data)
 				.then(r => {
-					message_reply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
+					messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
 						.catch((e: any) => logger.error(new Error(`failed to send message / ${e}`)));
 				})
 				.catch(e => logger.error(new Error(`failed to remove music channel / ${e}`)));

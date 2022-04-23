@@ -4,7 +4,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 // import { CountryCodes } from '../../data/lists/country_codes_iso.static';
-import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
+import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
@@ -27,7 +27,7 @@ module.exports = async (
 		if (args.length === 0 || args.length > 1) {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'stock')
+				value: messageHelp('commands', 'stock')
 			});
 		}
 
@@ -46,7 +46,7 @@ module.exports = async (
 		https_fetch(options)
 			.then((response: Buffer) => {
 
-				const json = get_json(response.toString().substring(response.toString().indexOf('{')));
+				const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
 				if (json === null) {
 					return resolve({
 						result: false,
@@ -83,7 +83,7 @@ module.exports = async (
 				message.channel
 					.send({
 						embeds: [
-							create_rich_embed(
+							createEmded(
 								`STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${moment().format('DD/MM/YY')}`,
 								'powered by yahoo finance',
 								'#FF0000', [],
@@ -111,7 +111,7 @@ module.exports = async (
 
 				return resolve({
 					result: true,
-					value: message_help('commands', 'stock', `${json} crypto stats`)
+					value: messageHelp('commands', 'stock', `${json} crypto stats`)
 				});
 			})
 			.catch((e: any) => {

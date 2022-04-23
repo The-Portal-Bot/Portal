@@ -1,5 +1,5 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { create_lyrics_message, create_music_message, isMessageDeleted, markMessageAsDeleted } from "../libraries/help.library";
+import { createMusicLyricsMessage, createMusicMessage, isMessageDeleted, markMessageAsDeleted } from "../libraries/help.library";
 import { fetch_guild, remove_poll, remove_vendor } from "../libraries/mongo.library";
 
 module.exports = async (
@@ -21,7 +21,7 @@ module.exports = async (
 							.find(channel => channel.id === guild_object.music_data.channel_id);
 
 						if (music_channel) {
-							create_music_message(music_channel, guild_object)
+							createMusicMessage(music_channel, guild_object)
 								.then(() => {
 									if (guild_object.music_data.message_lyrics_id) {
 										if (music_channel) {
@@ -58,7 +58,7 @@ module.exports = async (
 							.find(channel => channel.id === guild_object.music_data.channel_id);
 
 						if (music_channel && guild_object.music_data.message_id) {
-							create_lyrics_message(music_channel, guild_object, guild_object.music_data.message_id)
+							createMusicLyricsMessage(music_channel, guild_object, guild_object.music_data.message_id)
 								.then(() => {
 									return resolve('created lyrics message');
 								})

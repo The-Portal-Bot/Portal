@@ -1,5 +1,5 @@
 import { Message, Role } from "discord.js";
-import { get_json, message_help } from "../../libraries/help.library";
+import { getJsonFromString, messageHelp } from "../../libraries/help.library";
 import { set_ranks } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { Rank, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -36,11 +36,11 @@ module.exports = async (
 
 		if (args.length > 0) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			const new_ranks_json = get_json(args.join(' '));
+			const new_ranks_json = getJsonFromString(args.join(' '));
 			if (!new_ranks_json || !Array.isArray(new_ranks_json)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')
+					value: messageHelp('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')
 				});
 			}
 
@@ -49,19 +49,19 @@ module.exports = async (
 			if (!new_ranks.every(r => r.level && r.role)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'set_ranks', 'JSON syntax has spelling errors`')
+					value: messageHelp('commands', 'set_ranks', 'JSON syntax has spelling errors`')
 				});
 			}
 			if (!new_ranks.every(is_rank)) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'set_ranks', 'rankings must be a key-pair from level and role')
+					value: messageHelp('commands', 'set_ranks', 'rankings must be a key-pair from level and role')
 				});
 			}
 			if (!new_ranks.every(r => is_role(r, roles))) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'set_ranks', 'a role given does not exist in server')
+					value: messageHelp('commands', 'set_ranks', 'a role given does not exist in server')
 				});
 			}
 
@@ -90,7 +90,7 @@ module.exports = async (
 		else {
 			return resolve({
 				result: false,
-				value: message_help('commands', 'set_ranks')
+				value: messageHelp('commands', 'set_ranks')
 			});
 		}
 

@@ -3,7 +3,7 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import { create_rich_embed, get_json, message_help } from '../../libraries/help.library';
+import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
 
@@ -30,7 +30,7 @@ module.exports = async (
 		if (args.length < 1)
 			return resolve({
 				result: false,
-				value: message_help('commands', 'weather')
+				value: messageHelp('commands', 'weather')
 			});
 
 		const location = args.join('%2C%20');
@@ -43,7 +43,7 @@ module.exports = async (
 
 		https_fetch(options)
 			.then((rspns: Buffer) => {
-				const json = get_json(rspns.toString().substring(rspns.toString().indexOf('{')));
+				const json = getJsonFromString(rspns.toString().substring(rspns.toString().indexOf('{')));
 				if (json === null) {
 					return resolve({
 						result: false,
@@ -54,7 +54,7 @@ module.exports = async (
 				if (json.cod === '404') {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'weather', 'city not found')
+						value: messageHelp('commands', 'weather', 'city not found')
 					});
 				}
 
@@ -62,7 +62,7 @@ module.exports = async (
 					message.channel
 						.send({
 							embeds: [
-								create_rich_embed(
+								createEmded(
 									`${json.name}, ${json.sys.country} at ${moment().format('DD/MM/YY')}`,
 									'powered by OpenWeatherMap',
 									'#BFEFFF',

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Message } from "discord.js";
 import { JokeEnum } from "../../data/enums/Joke.enum";
-import { get_key_from_enum } from "../../libraries/help.library";
+import { getKeyFromEnum } from "../../libraries/help.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
 const giveMeAJoke = require('give-me-a-joke');
@@ -13,7 +13,7 @@ module.exports = async (
 	message: Message, args: string[]
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
-		const category = get_key_from_enum(args[0], JokeEnum);
+		const category = getKeyFromEnum(args[0], JokeEnum);
 
 		if (args.length === 1) {
 			switch (category) {

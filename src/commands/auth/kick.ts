@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { ask_for_approval, is_mod, message_help } from "../../libraries/help.library";
+import { askForApproval, isMod, messageHelp } from "../../libraries/help.library";
 import { kick } from "../../libraries/user.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 
@@ -15,7 +15,7 @@ module.exports = async (
 			});
 		}
 
-		if (!is_mod(message.member)) {
+		if (!isMod(message.member)) {
 			return resolve({
 				result: false,
 				value: `you must be a Portal moderator to ban users`
@@ -43,7 +43,7 @@ module.exports = async (
 			if (message.mentions.members.size === 0) {
 				return resolve({
 					result: false,
-					value: message_help('commands', 'kick', `you must tag a member`)
+					value: messageHelp('commands', 'kick', `you must tag a member`)
 				});
 			}
 
@@ -53,11 +53,11 @@ module.exports = async (
 				if (message.member === member_to_kick) {
 					return resolve({
 						result: false,
-						value: message_help('commands', 'kick', `you can't kick on yourself`)
+						value: messageHelp('commands', 'kick', `you can't kick on yourself`)
 					});
 				}
 
-				ask_for_approval(
+				askForApproval(
 					message,
 					message.member,
 					`*${message.member}, are you sure you want to kick ` +
