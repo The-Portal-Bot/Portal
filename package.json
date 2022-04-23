@@ -12,11 +12,14 @@
         "lint": "npx eslint . --ext .ts --fix"
     },
     "dependencies": {
+        "@discordjs/builders": "^0.13.0",
         "@discordjs/opus": "^0.7.0",
+        "@discordjs/rest": "^0.4.1",
         "@discordjs/voice": "^0.9.0",
         "@types/jsonfile": "^6.1.0",
         "cheerio": "^1.0.0-rc.10",
         "core-util-is": "^1.0.3",
+        "discord-api-types": "^0.31.2",
         "discord-ytdl-core": "^5.0.4",
         "discord.js": "^13.6.0",
         "dotenv": "^16.0.0",

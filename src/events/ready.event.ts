@@ -2,7 +2,7 @@
 import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "discord.js";
 import { logger } from "../libraries/help.library";
 import { get_function } from "../libraries/localisation.library";
-import { guildExists, insertGuild, insertMember, remove_member } from "../libraries/mongo.library";
+import { fetch_guild_members, guildExists, insertGuild, insertMember, remove_member } from "../libraries/mongo.library";
 import { MemberPrtl } from "../types/classes/MemberPrtl.class";
 
 function added_when_down(
@@ -71,22 +71,22 @@ async function add_guild_again(
                             return resolve(false);
                         });
                 }
-                // else {
-                //     fetch_guild_members(guild.id)
-                //         .then(async member_list => {
-                //             if (member_list) {
-                //                 await added_when_down(guild, member_list);
-                //                 await removed_when_down(guild, member_list);
+                else {
+                    fetch_guild_members(guild.id)
+                        .then(async member_list => {
+                            if (member_list) {
+                                await added_when_down(guild, member_list);
+                                await removed_when_down(guild, member_list);
 
-                //                 return resolve(true);
-                //             } else {
-                //                 return resolve(false);
-                //             }
-                //         })
-                //         .catch(() => {
-                //             return resolve(false);
-                //         });
-                // }
+                                return resolve(true);
+                            } else {
+                                return resolve(false);
+                            }
+                        })
+                        .catch(() => {
+                            return resolve(false);
+                        });
+                }
             })
             .catch(() => {
                 return resolve(false);

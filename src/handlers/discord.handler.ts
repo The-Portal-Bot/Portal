@@ -1,5 +1,4 @@
 import { CacheFactory, Client, ClientOptions, Intents, Options } from "discord.js";
-import { logger } from "../libraries/help.library";
 
 export function clientHandler() {
     const cacheFactory: CacheFactory = Options.cacheWithLimits({ MessageManager: 200 });
@@ -20,6 +19,6 @@ export function clientHandler() {
     return new Client(clientOptions);
 }
 
-export async function connectToDiscord(client: Client) {
-    return client.login(process.env.TOKEN);
+export async function connectToDiscord(client: Client, token: string) {
+    return client.login(token);
 }

@@ -24,6 +24,13 @@ async function eventLoader(event: string, args: any): Promise<void> {
 }
 
 export async function eventHandler(client: Client, active_cooldowns: ActiveCooldowns = { guild: [], member: [] }, spam_cache: SpamCache[] = []) {
+    // This event will run if the bot starts, and logs in, successfully.
+    client.once('ready', () =>
+        eventLoader('ready', {
+            'client': client
+        })
+    );
+
     // This event triggers when the bot joins a guild.
     client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
         eventLoader('channelDelete', {
@@ -74,13 +81,6 @@ export async function eventHandler(client: Client, active_cooldowns: ActiveCoold
             'client': client,
             'messageReaction': messageReaction,
             'user': user
-        })
-    );
-
-    // This event will run if the bot starts, and logs in, successfully.
-    client.on('ready', () =>
-        eventLoader('ready', {
-            'client': client
         })
     );
 

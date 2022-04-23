@@ -44,6 +44,7 @@ async function doesChannelHaveUsage(message: Message, guild_object: GuildPrtl) {
         value: ''
     };
 }
+
 module.exports = async (
     message: Message, args: string[], guild_object: GuildPrtl
 ): Promise<ReturnPormise> => {
