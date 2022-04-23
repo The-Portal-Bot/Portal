@@ -1,3 +1,4 @@
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from "discord.js";
 import { createEmded } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
@@ -42,31 +43,37 @@ const embeds = (message: Message, member_object: MemberPrtl) => [
         null
     )
 ]
-module.exports = async (
-    message: Message, args: string[], guild_object: GuildPrtl
-): Promise<ReturnPormise> => {
-    return new Promise((resolve, reject) => {
-        const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
-        if (!member_object) {
-            return resolve({
-                result: false,
-                value: 'could not find guild'
-            });
-        }
 
-        message.channel
-            .send({ embeds: embeds(message, member_object) })
-            .then(() => {
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('whoami')
+        .setDescription('returns who am I information'),
+    async execute(
+        message: Message, args: string[], guild_object: GuildPrtl
+    ): Promise<ReturnPormise> {
+        return new Promise((resolve, reject) => {
+            const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
+            if (!member_object) {
                 return resolve({
-                    result: true,
-                    value: ''
+                    result: false,
+                    value: 'could not find guild'
                 });
-            })
-            .catch(e => {
-                return resolve({
-                    result: true,
-                    value: `could not send message: ${e}`
+            }
+
+            message.channel
+                .send({ embeds: embeds(message, member_object) })
+                .then(() => {
+                    return resolve({
+                        result: true,
+                        value: ''
+                    });
+                })
+                .catch(e => {
+                    return resolve({
+                        result: true,
+                        value: `could not send message: ${e}`
+                    });
                 });
-            });
-    });
+        });
+    }
 };

@@ -6,6 +6,7 @@ import moment from 'moment';
 import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 function kelvin_to_celsius(kelvin: number): number {
     return Math.round(kelvin - 273.15);
@@ -23,121 +24,126 @@ function ms_to_mlh(ms: number): number {
     return Math.round(ms * 2.237);
 }
 
-module.exports = async (
-    message: Message, args: string[]
-): Promise<ReturnPormise> => {
-    return new Promise((resolve) => {
-        if (args.length < 1)
-            return resolve({
-                result: false,
-                value: messageHelp('commands', 'weather')
-            });
-
-        const location = args.join('%2C%20');
-        const options: RequestOptions = {
-            "method": "GET",
-            "hostname": "api.openweathermap.org",
-            "port": undefined,
-            "path": `/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP}`,
-        };
-
-        https_fetch(options)
-            .then((rspns: Buffer) => {
-                const json = getJsonFromString(rspns.toString().substring(rspns.toString().indexOf('{')));
-                if (json === null) {
-                    return resolve({
-                        result: false,
-                        value: 'data from source was corrupted'
-                    });
-                }
-
-                if (json.cod === '404') {
-                    return resolve({
-                        result: false,
-                        value: messageHelp('commands', 'weather', 'city not found')
-                    });
-                }
-
-                if (json.cod === 200) {
-                    message.channel
-                        .send({
-                            embeds: [
-                                createEmded(
-                                    `${json.name}, ${json.sys.country} at ${moment().format('DD/MM/YY')}`,
-                                    'powered by OpenWeatherMap',
-                                    '#BFEFFF',
-                                    [
-                                        {
-                                            emote: 'Temperature',
-                                            role: `${kelvin_to_celsius(json.main.temp)}°C / ${kelvin_to_fahrenheit(json.main.temp)}°F`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Feels like',
-                                            role: `${kelvin_to_celsius(json.main.feels_like)}°C / ${kelvin_to_fahrenheit(json.main.feels_like)}°F`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: null,
-                                            role: null,
-                                            inline: false
-                                        },
-                                        {
-                                            emote: 'Humidity',
-                                            role: `${json.main.humidity}`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Wind Speed',
-                                            role: `${ms_to_ks(json.wind.speed)}kmh / ${ms_to_mlh(json.wind.speed)}mlh`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Cloudiness',
-                                            role: `${json.clouds.all}%`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Condition',
-                                            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                                            role: `${json.weather.map((w: any) => {
-                                                return `${w.main} (${w.description})`;
-                                            }).join(', ')}`,
-                                            inline: false
-                                        }
-                                    ],
-                                    `http://openweathermap.org/img/wn/${json.weather[0].icon}@2x.png`,
-                                    null,
-                                    true,
-                                    null,
-                                    null
-                                )
-                            ]
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: true,
-                                value: `failed to send message: ${e}`
-                            });
-                        });
-
-                    return resolve({
-                        result: true,
-                        value: `${json.name} weather`
-                    });
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: `could not access the server / ${json.cod}`
-                    });
-                }
-            })
-            .catch((e: any) => {
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('weather')
+        .setDescription('returns data information'),
+    async execute(
+        message: Message, args: string[]
+    ): Promise<ReturnPormise> {
+        return new Promise((resolve) => {
+            if (args.length < 1)
                 return resolve({
                     result: false,
-                    value: `could not access the server: ${e}`
+                    value: messageHelp('commands', 'weather')
                 });
-            });
-    });
+
+            const location = args.join('%2C%20');
+            const options: RequestOptions = {
+                "method": "GET",
+                "hostname": "api.openweathermap.org",
+                "port": undefined,
+                "path": `/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP}`,
+            };
+
+            https_fetch(options)
+                .then((rspns: Buffer) => {
+                    const json = getJsonFromString(rspns.toString().substring(rspns.toString().indexOf('{')));
+                    if (json === null) {
+                        return resolve({
+                            result: false,
+                            value: 'data from source was corrupted'
+                        });
+                    }
+
+                    if (json.cod === '404') {
+                        return resolve({
+                            result: false,
+                            value: messageHelp('commands', 'weather', 'city not found')
+                        });
+                    }
+
+                    if (json.cod === 200) {
+                        message.channel
+                            .send({
+                                embeds: [
+                                    createEmded(
+                                        `${json.name}, ${json.sys.country} at ${moment().format('DD/MM/YY')}`,
+                                        'powered by OpenWeatherMap',
+                                        '#BFEFFF',
+                                        [
+                                            {
+                                                emote: 'Temperature',
+                                                role: `${kelvin_to_celsius(json.main.temp)}°C / ${kelvin_to_fahrenheit(json.main.temp)}°F`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Feels like',
+                                                role: `${kelvin_to_celsius(json.main.feels_like)}°C / ${kelvin_to_fahrenheit(json.main.feels_like)}°F`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: null,
+                                                role: null,
+                                                inline: false
+                                            },
+                                            {
+                                                emote: 'Humidity',
+                                                role: `${json.main.humidity}`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Wind Speed',
+                                                role: `${ms_to_ks(json.wind.speed)}kmh / ${ms_to_mlh(json.wind.speed)}mlh`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Cloudiness',
+                                                role: `${json.clouds.all}%`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Condition',
+                                                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                                                role: `${json.weather.map((w: any) => {
+                                                    return `${w.main} (${w.description})`;
+                                                }).join(', ')}`,
+                                                inline: false
+                                            }
+                                        ],
+                                        `http://openweathermap.org/img/wn/${json.weather[0].icon}@2x.png`,
+                                        null,
+                                        true,
+                                        null,
+                                        null
+                                    )
+                                ]
+                            })
+                            .catch(e => {
+                                return resolve({
+                                    result: true,
+                                    value: `failed to send message: ${e}`
+                                });
+                            });
+
+                        return resolve({
+                            result: true,
+                            value: `${json.name} weather`
+                        });
+                    }
+                    else {
+                        return resolve({
+                            result: false,
+                            value: `could not access the server / ${json.cod}`
+                        });
+                    }
+                })
+                .catch((e: any) => {
+                    return resolve({
+                        result: false,
+                        value: `could not access the server: ${e}`
+                    });
+                });
+        });
+    }
 };

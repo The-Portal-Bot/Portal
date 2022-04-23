@@ -101,134 +101,144 @@ export async function eventHandler(client: Client, active_cooldowns: ActiveCoold
         });
     });
 
+    // This event will run when a slash command is called.
+    client.on('interactionCreate', async interaction => {
+        if (!interaction.isCommand()) return;
+        await interaction.reply({ content: 'Slash commands under construction', ephemeral: true });
+    });
+
     // runs on every single message received, from anywhere
     client.on('messageCreate', async (message: Message) => {
-        if (!message || !message.member || !message.guild) return;
-        if (message.channel.type === ChannelTypes.DM.toString() || message.author.bot) return;
+        handleCommand(client, message, active_cooldowns, spam_cache);
+    });
+}
 
-        fetchGuildPredata(message.guild.id, message.author.id)
-            .then(async guild_object => {
-                if (!guild_object) {
-                    logger.error(new Error(`guild does not exist in Portal`));
+async function handleCommand(client: Client, message: Message, active_cooldowns: ActiveCooldowns = { guild: [], member: [] }, spam_cache: SpamCache[] = []) {
+    if (!message || !message.member || !message.guild) return;
+    if (message.channel.type === ChannelTypes.DM.toString() || message.author.bot) return;
+
+    fetchGuildPredata(message.guild.id, message.author.id)
+        .then(async guild_object => {
+            if (!guild_object) {
+                logger.error(new Error(`guild does not exist in Portal`));
+                return false;
+            }
+
+            if (guild_object.member_list.length === 0 && message.guild) {
+                insertMember(message.guild.id, message.author.id)
+                    .then(() => {
+                        if (message.guild) {
+                            logger.info(`late-insert ${message.author.id} to ${message.guild.name} [${message.guild.id}]`);
+                        }
+                    })
+                    .catch(e => {
+                        logger.error(new Error(`failed to late-insert member: ${e}`));
+                    });
+
+                return true;
+            }
+
+            if (await portalPreprocessor(message, guild_object)) {
+                // preprocessor has handled the message
+                messageSpamCheck(message, guild_object, spam_cache);
+
+                return true;
+            } else {
+                messageSpamCheck(message, guild_object, spam_cache);
+
+                // Ignore any message that does not start with prefix
+                if (message.content.indexOf(guild_object.prefix) !== 0) {
+                    if (message.content === 'prefix') {
+                        messageReply(true, message, `portal's prefix is \`${guild_object.prefix}\``)
+                            .catch((e: any) => {
+                                logger.error(new Error(`failed to send message: ${e}`));
+                            });
+
+                        if (isMessageDeleted(message)) {
+                            const deletedMessage = await message
+                                .delete()
+                                .catch((e: any) => {
+                                    logger.error(new Error(`failed to delete message: ${e}`));
+                                });
+
+                            if (deletedMessage) {
+                                markMessageAsDeleted(deletedMessage);
+                            }
+                        }
+                    }
+
                     return false;
                 }
 
-                if (guild_object.member_list.length === 0 && message.guild) {
-                    insertMember(message.guild.id, message.author.id)
-                        .then(() => {
-                            if (message.guild) {
-                                logger.info(`late-insert ${message.author.id} to ${message.guild.name} [${message.guild.id}]`);
-                            }
-                        })
-                        .catch(e => {
-                            logger.error(new Error(`failed to late-insert member: ${e}`));
-                        });
+                const command = commandDecypher(message, guild_object);
 
-                    return true;
+                if (!command.command_options) {
+                    return false;
                 }
 
-                if (await portalPreprocessor(message, guild_object)) {
-                    // preprocessor has handled the message
-                    messageSpamCheck(message, guild_object, spam_cache);
+                if (command.command_options.auth && message.member) {
+                    if (!isUserAuthorised(message.member)) {
+                        messageReply(false, message, 'you are not authorised to use this command', true, true)
+                            .catch((e: any) => {
+                                logger.error(new Error(`failed to send message: ${e}`));
+                            });
 
-                    return true;
-                } else {
-                    messageSpamCheck(message, guild_object, spam_cache);
 
-                    // Ignore any message that does not start with prefix
-                    if (message.content.indexOf(guild_object.prefix) !== 0) {
-                        if (message.content === 'prefix') {
-                            messageReply(true, message, `portal's prefix is \`${guild_object.prefix}\``)
+                        return false;
+                    }
+                }
+
+                if (!message.guild) {
+                    logger.error(new Error('could not fetch guild of message'));
+
+                    return false;
+                }
+
+                fetchGuildRest(message.guild.id)
+                    .then(guild_object_rest => {
+                        if (!guild_object_rest) {
+                            logger.error(new Error('server is not in database'));
+                            messageReply(false, message, 'server is not in database')
                                 .catch((e: any) => {
                                     logger.error(new Error(`failed to send message: ${e}`));
                                 });
 
-                            if (isMessageDeleted(message)) {
-                                const deletedMessage = await message
-                                    .delete()
-                                    .catch((e: any) => {
-                                        logger.error(new Error(`failed to delete message: ${e}`));
-                                    });
-
-                                if (deletedMessage) {
-                                    markMessageAsDeleted(deletedMessage);
-                                }
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    const command = commandDecypher(message, guild_object);
-
-                    if (!command.command_options) {
-                        return false;
-                    }
-
-                    if (command.command_options.auth && message.member) {
-                        if (!isUserAuthorised(message.member)) {
-                            messageReply(false, message, 'you are not authorised to use this command', true, true)
-                                .catch((e: any) => {
-                                    logger.error(new Error(`failed to send message: ${e}`));
-                                });
-
-
                             return false;
                         }
-                    }
 
-                    if (!message.guild) {
-                        logger.error(new Error('could not fetch guild of message'));
+                        guild_object.member_list = guild_object_rest.member_list;
+                        guild_object.poll_list = guild_object_rest.poll_list;
+                        guild_object.ranks = guild_object_rest.ranks;
+                        guild_object.music_queue = guild_object_rest.music_queue;
+                        guild_object.announcement = guild_object_rest.announcement;
+                        guild_object.locale = guild_object_rest.locale;
+                        guild_object.announce = guild_object_rest.announce;
+                        guild_object.premium = guild_object_rest.premium;
 
-                        return false;
-                    }
-
-                    fetchGuildRest(message.guild.id)
-                        .then(guild_object_rest => {
-                            if (!guild_object_rest) {
-                                logger.error(new Error('server is not in database'));
-                                messageReply(false, message, 'server is not in database')
-                                    .catch((e: any) => {
-                                        logger.error(new Error(`failed to send message: ${e}`));
-                                    });
-
-                                return false;
-                            }
-
-                            guild_object.member_list = guild_object_rest.member_list;
-                            guild_object.poll_list = guild_object_rest.poll_list;
-                            guild_object.ranks = guild_object_rest.ranks;
-                            guild_object.music_queue = guild_object_rest.music_queue;
-                            guild_object.announcement = guild_object_rest.announcement;
-                            guild_object.locale = guild_object_rest.locale;
-                            guild_object.announce = guild_object_rest.announce;
-                            guild_object.premium = guild_object_rest.premium;
-
-                            if (!command.command_options) {
-                                return false;
-                            }
-
-                            commandLoader(
-                                client,
-                                message,
-                                command.cmd,
-                                command.args,
-                                command.type,
-                                command.command_options,
-                                command.path_to_command,
-                                guild_object,
-                                active_cooldowns
-                            ).catch();
-                        })
-                        .catch(e => {
-                            logger.error(new Error(`error while fetch guild restdata: ${e}`));
+                        if (!command.command_options) {
                             return false;
-                        });
-                }
-            })
-            .catch(e => {
-                logger.error(new Error(`error while fetch guild predata: ${e}`));
-                return false;
-            });
-    });
+                        }
+
+                        commandLoader(
+                            client,
+                            message,
+                            command.cmd,
+                            command.args,
+                            command.type,
+                            command.command_options,
+                            command.path_to_command,
+                            guild_object,
+                            active_cooldowns
+                        ).catch();
+                    })
+                    .catch(e => {
+                        logger.error(new Error(`error while fetch guild restdata: ${e}`));
+                        return false;
+                    });
+            }
+        })
+        .catch(e => {
+            logger.error(new Error(`error while fetch guild predata: ${e}`));
+            return false;
+        });
 }

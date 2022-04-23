@@ -13,7 +13,7 @@ export async function commandLoader(
     }
 
     if (type === 'none' && command_options.time === 0) {
-        const commandReturn: ReturnPormise = await require(`../commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
+        const commandReturn: ReturnPormise = await require(`../commands/${path_to_command}/${command}.js`).execute(message, args, guild_object, client)
             .catch((e: string) => {
                 messageReply(false, message, e, command_options.delete.source, command_options.delete.reply)
                     .catch((e: any) => logger.error(new Error('failed to send message')));
@@ -65,7 +65,7 @@ export async function commandLoader(
         return;
     }
 
-    const commandReturn: ReturnPormise = await require(`../commands/${path_to_command}/${command}.js`)(message, args, guild_object, client)
+    const commandReturn: ReturnPormise = await require(`../commands/${path_to_command}/${command}.js`).execute(message, args, guild_object, client)
         .catch((e: any) => logger.error(new Error(`in ${command} got error ${e}`)));
 
     if (commandReturn) {

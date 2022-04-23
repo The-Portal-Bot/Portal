@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
@@ -23,154 +21,159 @@ const get_country_code = function (country: string): string | null {
     return null;
 };
 
-module.exports = async (
-    message: Message, args: string[]
-): Promise<ReturnPormise> => {
-    return new Promise((resolve) => {
-        let code: string | null = null;
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('corona')
+        .setDescription('returns data about COVID19'),
+    async execute(
+        message: Message, args: string[]
+    ): Promise<ReturnPormise> {
+        return new Promise((resolve) => {
+            let code: string | null = null;
 
-        if (args.length === 1) {
-            code = get_country_code(args[0]);
-            if (code === null) {
-                return resolve({
-                    result: false,
-                    value: messageHelp('commands', 'corona', `${args[0]} is neither a country name nor code`)
-                });
-            }
-        } else if (args.length > 1) {
-            return resolve({
-                result: false,
-                value: messageHelp('commands', 'corona', 'you must give only one argument')
-            });
-        } else {
-            return resolve({
-                result: false,
-                value: messageHelp('commands', 'corona')
-            });
-        }
-
-        const options: RequestOptions = {
-            'method': 'GET',
-            'hostname': 'covid-193.p.rapidapi.com',
-            'port': undefined,
-            'path': '/statistics',
-            'headers': {
-                'x-rapidapi-host': 'covid-193.p.rapidapi.com',
-                'x-rapidapi-key': process.env.COVID_193,
-                'useQueryString': 1
-            },
-        };
-
-        https_fetch(options)
-            .then((response: Buffer) => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
-
-                if (json === null) {
+            if (args.length === 1) {
+                code = get_country_code(args[0]);
+                if (code === null) {
                     return resolve({
                         result: false,
-                        value: 'data from source was corrupted'
+                        value: messageHelp('commands', 'corona', `${args[0]} is neither a country name nor code`)
                     });
                 }
+            } else if (args.length > 1) {
+                return resolve({
+                    result: false,
+                    value: messageHelp('commands', 'corona', 'you must give only one argument')
+                });
+            } else {
+                return resolve({
+                    result: false,
+                    value: messageHelp('commands', 'corona')
+                });
+            }
 
-                if (json.errors.length === 0) {
-                    const country_data = json.response.find((data: any) => data.country === code);
+            const options: RequestOptions = {
+                'method': 'GET',
+                'hostname': 'covid-193.p.rapidapi.com',
+                'port': undefined,
+                'path': '/statistics',
+                'headers': {
+                    'x-rapidapi-host': 'covid-193.p.rapidapi.com',
+                    'x-rapidapi-key': process.env.COVID_193,
+                    'useQueryString': 1
+                },
+            };
 
-                    if (!country_data) {
+            https_fetch(options)
+                .then((response: Buffer) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
+
+                    if (json === null) {
                         return resolve({
                             result: false,
-                            value: `${args[0]} is neither a country name nor code`
+                            value: 'data from source was corrupted'
                         });
                     }
 
-                    message.channel
-                        .send({
-                            embeds: [
-                                createEmded(
-                                    `${country_data.country} | ${moment(country_data.time).format('DD/MM/YY')}`,
-                                    'Covid19 stats by covid-193',
-                                    '#FF0000',
-                                    [
-                                        {
-                                            emote: 'NEW cases',
-                                            role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'NEW deaths',
-                                            role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Tests P1M',
-                                            role: `${country_data.tests['1M_pop']}`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Cases',
-                                            role: `${country_data.cases.total}`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Deaths',
-                                            role: `${country_data.deaths.total}`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Recovered',
-                                            role: `${country_data.cases.recovered}`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: '%Recovered',
-                                            role: `${((country_data.cases.recovered / country_data.cases.total) * 100)
-                                                .toFixed(2)}%`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: '%Diseased',
-                                            role: `${((country_data.deaths.total / country_data.cases.total) * 100)
-                                                .toFixed(2)}%`,
-                                            inline: true
-                                        },
-                                        {
-                                            emote: 'Critical',
-                                            role: `${country_data.cases.critical}`,
-                                            inline: true
-                                        }
-                                    ],
-                                    null,
-                                    null,
-                                    true,
-                                    null,
-                                    null
-                                )
-                            ]
-                        })
-                        .catch((e: any) => {
+                    if (json.errors.length === 0) {
+                        const country_data = json.response.find((data: any) => data.country === code);
+
+                        if (!country_data) {
                             return resolve({
                                 result: false,
-                                value: `failed to send message: ${e}`
+                                value: `${args[0]} is neither a country name nor code`
                             });
-                        });
+                        }
 
-                    return resolve({
-                        result: true,
-                        value: ''
-                    });
-                }
-                else {
+                        message.channel
+                            .send({
+                                embeds: [
+                                    createEmded(
+                                        `${country_data.country} | ${moment(country_data.time).format('DD/MM/YY')}`,
+                                        'Covid19 stats by covid-193',
+                                        '#FF0000',
+                                        [
+                                            {
+                                                emote: 'NEW cases',
+                                                role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'NEW deaths',
+                                                role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Tests P1M',
+                                                role: `${country_data.tests['1M_pop']}`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Cases',
+                                                role: `${country_data.cases.total}`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Deaths',
+                                                role: `${country_data.deaths.total}`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Recovered',
+                                                role: `${country_data.cases.recovered}`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: '%Recovered',
+                                                role: `${((country_data.cases.recovered / country_data.cases.total) * 100)
+                                                    .toFixed(2)}%`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: '%Diseased',
+                                                role: `${((country_data.deaths.total / country_data.cases.total) * 100)
+                                                    .toFixed(2)}%`,
+                                                inline: true
+                                            },
+                                            {
+                                                emote: 'Critical',
+                                                role: `${country_data.cases.critical}`,
+                                                inline: true
+                                            }
+                                        ],
+                                        null,
+                                        null,
+                                        true,
+                                        null,
+                                        null
+                                    )
+                                ]
+                            })
+                            .catch((e: any) => {
+                                return resolve({
+                                    result: false,
+                                    value: `failed to send message: ${e}`
+                                });
+                            });
+
+                        return resolve({
+                            result: true,
+                            value: ''
+                        });
+                    }
+                    else {
+                        return resolve({
+                            result: false,
+                            value: `fetched data had errors`
+                        });
+                    }
+                })
+                .catch(e => {
                     return resolve({
                         result: false,
-                        value: `fetched data had errors`
+                        value: `could not access the server: ${e}`
                     });
-                }
-            })
-            .catch(e => {
-                return resolve({
-                    result: false,
-                    value: `could not access the server: ${e}`
                 });
-            });
-    });
+        });
+    }
 };

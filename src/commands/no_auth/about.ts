@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { createEmded } from "../../libraries/help.library";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 const embeds = [
     createEmded(
@@ -50,19 +51,24 @@ const embeds = [
     )
 ]
 
-module.exports = async (
-    message: Message
-): Promise<ReturnPormise> => {
-    await message.channel.send({ embeds })
-        .catch(e => {
-            return {
-                result: true,
-                value: `failed to send about message ${e}`
-            }
-        });
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('about')
+        .setDescription('returns about Portal informaation'),
+    async execute(
+        message: Message
+    ): Promise<ReturnPormise> {
+        await message.channel.send({ embeds })
+            .catch(e => {
+                return {
+                    result: true,
+                    value: `failed to send about message ${e}`
+                }
+            });
 
-    return {
-        result: true,
-        value: ''
+        return {
+            result: true,
+            value: ''
+        }
     }
 };

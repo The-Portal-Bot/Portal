@@ -12,11 +12,15 @@ import { ActiveCooldowns, SpamCache } from "./types/classes/TypesPrtl.interface"
 
 dotenv.config();
 
-if (process.env.DEBUG) logger.add(new transports.Console());
+if (process.env.DEBUG) {
+    logger.add(new transports.Console());
+}
+
 if (!process.env.MONGO_URL) {
     logger.error(new Error('No mongo url has been given'));
     process.exit(3);
 }
+
 if (!process.env.TOKEN) {
     logger.error(new Error('No token has been given'));
     process.exit(4);
@@ -34,9 +38,9 @@ const client: Client = clientHandler();
 
 //
 const commands: any[] = [];
-commandConfig.some(category => {
+commandConfig.forEach(category => {
     category.commands.forEach(async command => {
-        const commandFile = await require(`./commands/${category.path}/${command.name}.js`);
+        const commandFile = require(`./commands/${category.path}/${command.name}.js`);
         commands.push(commandFile.data.toJSON());
     });
 });

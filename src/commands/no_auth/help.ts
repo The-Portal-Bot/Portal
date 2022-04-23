@@ -6,63 +6,64 @@ import { get_command_guide, get_command_help, get_command_help_super } from "../
 import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../types/interfaces/Pipe.interface";
 import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../types/interfaces/Structure.interface";
 import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../types/interfaces/Variable.interface";
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 const help_array: Field[] = [
-    {
-        emote: null,
-        role: '**[Commands](https://portal-bot.xyz/docs/commands/description)**',
-        inline: false
-    },
-    {
-        emote: '`./help commands` or `./help commands guide`',
-        role: 'Commands are mini programs you can use to get a response or action\n',
-        inline: false
-    },
-    {
-        emote: null,
-        role: '**[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)**',
-        inline: false
-    },
-    {
-        emote: '`./help variables` or `./help variables guide`',
-        role: 'Variables are live data about the current state of things\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/variables/description)_',
-        inline: false
-    },
-    {
-        emote: '`./help pipes` or `./help pipes guide`',
-        role: 'Pipes are mini-programs that manipulate text or even variables and attributes\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)_',
-        inline: false
-    },
-    {
-        emote: '`./help attributes` or `./help attributes guide`',
-        role: 'Attributes are options that can be altered with **[set](https://portal-bot.xyz/docs/commands/detailed/set)** command\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)_',
-        inline: false
-    },
-    {
-        emote: '`./help structures` or `./help structures guide`',
-        role: 'Structures are rules to further manipulate the text outcome\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/structures/description)_',
-        inline: false
-    },
-    {
-        emote: null,
-        role: 'Specific help',
-        inline: false
-    },
-    {
-        emote: '`./help <specific_property_name>`',
-        role: 'If you want to get a complete description of any property\n' +
-            '_(lets say you want to learn more about variables year, just type **./help year**)_',
-        inline: false
-    },
-    {
-        emote: null,
-        role: '**[FAQ](https://portal-bot.xyz/help#faq)** _frequently asked questioned_',
-        inline: false
-    }
+	{
+		emote: null,
+		role: '**[Commands](https://portal-bot.xyz/docs/commands/description)**',
+		inline: false
+	},
+	{
+		emote: '`./help commands` or `./help commands guide`',
+		role: 'Commands are mini programs you can use to get a response or action\n',
+		inline: false
+	},
+	{
+		emote: null,
+		role: '**[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)**',
+		inline: false
+	},
+	{
+		emote: '`./help variables` or `./help variables guide`',
+		role: 'Variables are live data about the current state of things\n' +
+			'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/variables/description)_',
+		inline: false
+	},
+	{
+		emote: '`./help pipes` or `./help pipes guide`',
+		role: 'Pipes are mini-programs that manipulate text or even variables and attributes\n' +
+			'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)_',
+		inline: false
+	},
+	{
+		emote: '`./help attributes` or `./help attributes guide`',
+		role: 'Attributes are options that can be altered with **[set](https://portal-bot.xyz/docs/commands/detailed/set)** command\n' +
+			'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)_',
+		inline: false
+	},
+	{
+		emote: '`./help structures` or `./help structures guide`',
+		role: 'Structures are rules to further manipulate the text outcome\n' +
+			'_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/structures/description)_',
+		inline: false
+	},
+	{
+		emote: null,
+		role: 'Specific help',
+		inline: false
+	},
+	{
+		emote: '`./help <specific_property_name>`',
+		role: 'If you want to get a complete description of any property\n' +
+			'_(lets say you want to learn more about variables year, just type **./help year**)_',
+		inline: false
+	},
+	{
+		emote: null,
+		role: '**[FAQ](https://portal-bot.xyz/help#faq)** _frequently asked questioned_',
+		inline: false
+	}
 ];
 
 async function simpleReply(message: Message) {
@@ -173,20 +174,25 @@ async function guideReply(message: Message, args: string[]) {
 	}
 }
 
-module.exports = async (
-	message: Message, args: string[]
-): Promise<ReturnPormise> => {
-	if (args.length === 0) {
-		const reply = await simpleReply(message).catch(e => { return Promise.reject(e) });
-		return { result: !!reply, value: '' };
-	} else if (args.length === 1) {
-		const reply = await propertyReply(message, args).catch(e => { return Promise.reject(e) });
-		return { result: !!reply, value: '' };
-	} else if (args.length === 2 && args[1] === 'guide') {
-		console.log('2 arg');
-		const reply = await guideReply(message, args).catch(e => { return Promise.reject(e) });
-		return { result: !!reply, value: '' };
-	}
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('help')
+		.setDescription('returns help message'),
+	async execute(
+		message: Message, args: string[]
+	): Promise<ReturnPormise> {
+		if (args.length === 0) {
+			const reply = await simpleReply(message).catch(e => { return Promise.reject(e) });
+			return { result: !!reply, value: '' };
+		} else if (args.length === 1) {
+			const reply = await propertyReply(message, args).catch(e => { return Promise.reject(e) });
+			return { result: !!reply, value: '' };
+		} else if (args.length === 2 && args[1] === 'guide') {
+			console.log('2 arg');
+			const reply = await guideReply(message, args).catch(e => { return Promise.reject(e) });
+			return { result: !!reply, value: '' };
+		}
 
-	return { result: false, value: messageHelp('commands', 'help') };
+		return { result: false, value: messageHelp('commands', 'help') };
+	}
 };
