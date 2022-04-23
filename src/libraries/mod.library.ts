@@ -6,7 +6,7 @@ import { ProfaneWords } from '../data/lists/profane_words.static';
 import { GuildPrtl } from '../types/classes/GuildPrtl.class';
 import { Language, SpamCache } from '../types/classes/TypesPrtl.interface';
 import { get_role } from './guild.library';
-import { is_whitelist, logger, message_reply } from './help.library';
+import { isMessageDeleted, is_whitelist, logger, markMessageAsDeleted, message_reply } from './help.library';
 import { update_member } from './mongo.library';
 import { ban, kick } from './user.library';
 
@@ -250,13 +250,18 @@ function mute_user(
 function delete_message(message: Message): void {
 	if (message.deletable) {
 		const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
-		setTimeout(() =>
-			message
-				.delete()
-				.catch((e: any) => {
-					return Promise.reject(`failed to delete message / ${e}`);
-				}),
-			delay
-		);
+		setTimeout(async () => {
+			if (isMessageDeleted(message)) {
+				const deletedMessage = await message
+					.delete()
+					.catch((e: any) => {
+						return Promise.reject(`failed to delete message / ${e}`);
+					});
+
+				if (deletedMessage) {
+					markMessageAsDeleted(deletedMessage);
+				}
+			}
+		}, delay);
 	}
 }

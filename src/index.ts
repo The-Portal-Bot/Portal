@@ -3,9 +3,8 @@ import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import { transports } from "winston";
 import command_config_json from './config.command.json';
-import event_config_json from './config.event.json';
 import { included_in_ignore_list, is_url_only_channel } from './libraries/guild.library';
-import { is_authorised, is_ignored, logger, message_reply, pad, time_elapsed } from './libraries/help.library';
+import { isMessageDeleted, is_authorised, is_ignored, logger, markMessageAsDeleted, message_reply, pad, time_elapsed } from './libraries/help.library';
 import { message_spam_check } from "./libraries/mod.library";
 import { fetch_guild_predata, fetch_guild_rest, insert_member, remove_ignore, remove_url, set_music_data } from "./libraries/mongo.library";
 // import { start } from './libraries/music.library';
@@ -57,25 +56,7 @@ mongoose.connect(process.env.MONGO_URL, connectOptions)
 		process.exit(2);
 	});
 
-const cacheFactory: CacheFactory = Options.cacheWithLimits({
-	MessageManager: 200, // This is default
-	// PresenceManager: 0,
-	// ApplicationCommandManager: 0,
-	// BaseGuildEmojiManager: 0,
-	// GuildEmojiManager: 0,
-	// GuildMemberManager: 0,
-	// GuildBanManager: 0,
-	// GuildInviteManager: 0,
-	// GuildScheduledEventManager: 0,
-	// GuildStickerManager: 0,
-	// ReactionManager: 0,
-	// ReactionUserManager: 0,
-	// StageInstanceManager: 0,
-	// ThreadManager: 0,
-	// ThreadMemberManager: 0,
-	// UserManager: 0,
-	// VoiceStateManager: 0,
-});
+const cacheFactory: CacheFactory = Options.cacheWithLimits({ MessageManager: 200 });
 const intents = new Intents(32767);
 
 const clientOptions: ClientOptions = {
@@ -92,83 +73,6 @@ const clientOptions: ClientOptions = {
 
 const client = new Client(clientOptions);
 
-// This event triggers when the bot joins a guild.
-client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
-	eventLoader('channelDelete', {
-		'channel': channel
-	});
-});
-
-// This event triggers when the bot joins a guild
-client.on('guildCreate', (guild: Guild) =>
-	eventLoader('guildCreate', {
-		'client': client,
-		'guild': guild
-	})
-);
-
-// this event triggers when the bot is removed from a guild
-client.on('guildDelete', (guild: Guild) =>
-	eventLoader('guildDelete', {
-		'guild': guild
-	})
-);
-
-// This event triggers when a new member joins a guild.
-client.on('guildMemberAdd', (member: GuildMember) => {
-	eventLoader('guildMemberAdd', {
-		'member': member
-	})
-});
-
-// This event triggers when a new member leaves a guild.
-client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
-	eventLoader('guildMemberRemove', {
-		'member': member
-	})
-});
-
-// This event triggers when a message is deleted
-client.on('messageDelete', (message: Message | PartialMessage) =>
-	eventLoader('messageDelete', {
-		'client': client,
-		'message': message
-	})
-);
-
-// This event triggers when a member reacts to a message
-client.on('messageReactionAdd', (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
-	eventLoader('messageReactionAdd', {
-		'client': client,
-		'messageReaction': messageReaction,
-		'user': user
-	})
-);
-
-// This event will run if the bot starts, and logs in, successfully.
-client.on('ready', () =>
-	eventLoader('ready', {
-		'client': client
-	})
-);
-
-// This event triggers when a member joins or leaves a voice channel
-client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
-	const new_channel = newState.channel; // join channel
-	const old_channel = oldState.channel; // left channel
-
-	// mute / unmute  defean user are ignored
-	if ((old_channel && new_channel) && (new_channel.id === old_channel.id)) {
-		return;
-	}
-
-	eventLoader('voiceStateUpdate', {
-		'client': client,
-		'oldState': oldState,
-		'newState': newState
-	});
-});
-
 // runs on every single message received, from any channel or DM
 client.on('messageCreate', async (message: Message) => {
 	``
@@ -177,7 +81,7 @@ client.on('messageCreate', async (message: Message) => {
 
 	console.log('message: ', message.content);
 	fetch_guild_predata(message.guild.id, message.author.id)
-		.then(guild_object => {
+		.then(async guild_object => {
 			if (!guild_object) {
 				logger.error(new Error(`guild does not exist in Portal`));
 				return false;
@@ -197,7 +101,7 @@ client.on('messageCreate', async (message: Message) => {
 				return true;
 			}
 
-			if (portalPreprocessor(message, guild_object)) {
+			if (await portalPreprocessor(message, guild_object)) {
 				// preprocessor has handled the message
 				message_spam_check(message, guild_object, spam_cache);
 
@@ -213,12 +117,16 @@ client.on('messageCreate', async (message: Message) => {
 								logger.error(new Error(`failed to send message / ${e}`));
 							});
 
-						if (message.deletable) {
-							message
+						if (isMessageDeleted(message)) {
+							const deletedMessage = await message
 								.delete()
 								.catch((e: any) => {
 									logger.error(new Error(`failed to delete message / ${e}`));
 								});
+
+							if (deletedMessage) {
+								markMessageAsDeleted(deletedMessage);
+							}
 						}
 					}
 
@@ -390,27 +298,12 @@ async function commandLoader(
 	}
 }
 
-async function eventLoader(event: string, args: any): Promise<void> {
-	const commandReturn: ReturnPormise = await require(`./events/${event}.event.js`)(args)
-		.catch((e: string) => {
-			logger.error(`[event-rejected] ${event} | ${e}`);
-		});
-
-	if (commandReturn) {
-		if ((event_config_json.find(e => e.name === event))) {
-			logger.info(`[event-accepted] ${event} | ${commandReturn}`);
-		} else if (process.env.DEBUG) {
-			logger.info(`[event-accepted-debug] ${event} | ${commandReturn}`);
-		}
-	}
-}
-
 /*
 * Returns: true/false if processing must continue
 */
-function portalPreprocessor(
+async function portalPreprocessor(
 	message: Message, guild_object: GuildPrtl
-): boolean {
+): Promise<boolean> {
 	if (!message.member) {
 		logger.error(new Error('could not get member'));
 		return true;
@@ -424,19 +317,24 @@ function portalPreprocessor(
 					.catch((e: any) => {
 						logger.error(new Error(`failed to send message / ${e}`));
 					});
-				if (message.deletable) {
-					message
+
+				if (isMessageDeleted(message)) {
+					const deletedMessage = await message
 						.delete()
 						.catch((e: any) => {
 							logger.error(new Error(`failed to delete message / ${e}`));
 						});
+
+					if (deletedMessage) {
+						markMessageAsDeleted(deletedMessage);
+					}
 				}
 			}
 		}
 
 		return true;
 	} else {
-		if (handle_url_channels(message, guild_object)) {
+		if (await handle_url_channels(message, guild_object)) {
 			return true;
 		}
 		else if (handle_ignored_channels(message, guild_object)) {
@@ -489,9 +387,9 @@ function handleRankingSystem(
 		});
 }
 
-function handle_url_channels(
+async function handle_url_channels(
 	message: Message, guild_object: GuildPrtl
-): boolean {
+): Promise<boolean> {
 	if (is_url_only_channel(message.channel.id, guild_object)) {
 		if (message.content === './url') {
 			remove_url(guild_object.id, message.channel.id)
@@ -512,12 +410,16 @@ function handle_url_channels(
 					logger.error(new Error(`failed to remove url channel / ${e}`));
 				});
 
-			if (message.deletable) {
-				message
+			if (isMessageDeleted(message)) {
+				const deletedMessage = await message
 					.delete()
 					.catch((e: any) => {
 						logger.error(new Error(`failed to delete message / ${e}`));
 					});
+
+				if (deletedMessage) {
+					markMessageAsDeleted(deletedMessage);
+				}
 			}
 		}
 

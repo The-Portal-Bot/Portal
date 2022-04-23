@@ -1,5 +1,5 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { create_lyrics_message, create_music_message } from "../libraries/help.library";
+import { create_lyrics_message, create_music_message, isMessageDeleted, markMessageAsDeleted } from "../libraries/help.library";
 import { fetch_guild, remove_poll, remove_vendor } from "../libraries/mongo.library";
 
 module.exports = async (
@@ -27,15 +27,18 @@ module.exports = async (
 										if (music_channel) {
 											music_channel.messages
 												.fetch(guild_object.music_data.message_lyrics_id)
-												.then((message_lyrics: Message) => {
-													if (message_lyrics.deletable) {
-														message_lyrics.delete()
-															.then(() => {
-																return resolve(`deleted lyrics message`);
-															})
-															.catch(e => {
-																return reject(`failed to delete lyrics message / ${e}`);
+												.then(async (message_lyrics: Message) => {
+													if (isMessageDeleted(message_lyrics)) {
+														const deletedMessage = await message_lyrics
+															.delete()
+															.catch((e: any) => {
+																return reject(`failed to delete message / ${e}`);
 															});
+
+														if (deletedMessage) {
+															markMessageAsDeleted(deletedMessage);
+															return resolve(`deleted lyrics message`);
+														}
 													}
 												})
 												.catch(e => {

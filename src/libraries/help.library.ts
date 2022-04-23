@@ -1,5 +1,5 @@
-import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
-import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, PermissionString, TextBasedChannel, TextChannel, User, VoiceChannel } from "discord.js";
+import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
+import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, TextBasedChannel, TextChannel, User, VoiceChannel } from "discord.js";
 import moment from "moment";
 import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
@@ -78,22 +78,31 @@ export async function ask_for_approval(
 					}
 				});
 
-				collector.on('end', collected => {
+				collector.on('end', async collected => {
 					for (const reply_message of collected.values()) {
-						if (reply_message.deletable) {
-							reply_message
+						if (isMessageDeleted(reply_message)) {
+							const deletedMessage = await reply_message
 								.delete()
 								.catch((e: any) => {
-									return reject(e);
+									return reject(`failed to delete message / ${e}`);
 								});
+
+							if (deletedMessage) {
+								markMessageAsDeleted(deletedMessage);
+							}
 						}
 					}
 
-					if (question_msg.deletable) {
-						question_msg.delete()
+					if (isMessageDeleted(question_msg)) {
+						const deletedMessage = await question_msg
+							.delete()
 							.catch((e: any) => {
-								return reject(`failed to delete messages / ${e}`);
+								return reject(`failed to delete message / ${e}`);
 							});
+
+						if (deletedMessage) {
+							markMessageAsDeleted(deletedMessage);
+						}
 					}
 
 					return resolve(accepted);
@@ -647,9 +656,9 @@ export async function message_reply(
 		if (delete_reply) {
 			const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
 			setTimeout(() => {
-				if (!isMessageDeleted(sentMessage)) {
+				if (!sentMessage.deletable) {
 					sentMessage.delete()
-						.catch(e => { return Promise.reject(`failed to delete message / ${e}`) })
+						.catch(e => { return Promise.reject(`2. failed to delete message / ${e}`) })
 				}
 			}, delay);
 
@@ -657,18 +666,25 @@ export async function message_reply(
 	}
 
 	if (delete_source) {
-		const rection = await message.react(status ? emote_pass : emote_fail)
+		const reaction = await message.react(status ? emote_pass : emote_fail)
 			.catch(e => { return Promise.reject(`failed to react to message / ${e}`); });
 
-		if (!rection) {
+		if (!reaction) {
 			return Promise.reject(`failed to react to message`);
 		}
 
 		const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
-		setTimeout(() => {
-			if (!isMessageDeleted(message)) {
-				message.delete()
-					.catch((e: any) => { return Promise.reject(`failed to delete message / ${e}`); });
+		setTimeout(async () => {
+			if (isMessageDeleted(message)) {
+				const deletedMessage = await message
+					.delete()
+					.catch((e: any) => {
+						return Promise.reject(`failed to delete message / ${e}`);
+					});
+
+				if (deletedMessage) {
+					markMessageAsDeleted(deletedMessage);
+				}
 			}
 		}, delay);
 

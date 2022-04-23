@@ -8,12 +8,8 @@ function compare(
 	member_a: MemberPrtl, member_b: MemberPrtl
 ) {
 	return member_b.level === member_a.level
-		? member_b.points > member_a.points
-			? 1
-			: -1
-		: member_b.level > member_a.level
-			? 1
-			: -1;
+		? member_b.points > member_a.points ? 1 : -1
+		: member_b.level > member_a.level ? 1 : -1;
 }
 
 module.exports = async (
@@ -21,6 +17,7 @@ module.exports = async (
 ): Promise<ReturnPormise> => {
 	return new Promise((resolve) => {
 		const member_list = guild_object.member_list;
+
 		if (!member_list) {
 			return resolve({
 				result: false,
@@ -44,12 +41,8 @@ module.exports = async (
 		}
 
 		let entries = member_list.length >= requested_number
-			? requested_number > 25
-				? 24
-				: requested_number
-			: member_list.length > 25
-				? 24
-				: member_list.length;
+			? requested_number > 25 ? 24 : requested_number
+			: member_list.length > 25 ? 24 : member_list.length;
 
 		if (entries <= 0) {
 			return resolve({

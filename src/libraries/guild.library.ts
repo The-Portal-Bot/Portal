@@ -118,7 +118,7 @@ export async function create_channel(
 
 		newGuildChannel
 			.setParent(newGuildCategoryChannel)
-			.catch(e => Promise.reject(`failed to set parent to channel / ${e}`));
+			.catch(e => { return Promise.reject(`failed to set parent to channel / ${e}`); });
 	}
 
 	return newGuildChannel.id;
