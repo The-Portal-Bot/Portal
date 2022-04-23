@@ -24,5 +24,5 @@ export const NYTCategories = [
     'travel',
     'upshot',
     'world',
-    'us'
+    'us',
 ];

@@ -1,14 +1,44 @@
-import { Client, Guild, GuildChannel, GuildMember, Message, MessageEmbed, PermissionString, TextChannel, User, VoiceConnection } from "discord.js";
+import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
+import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, TextBasedChannel, TextChannel, User, VoiceChannel } from "discord.js";
 import moment from "moment";
 import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
 import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
 import { Field, TimeElapsed } from "../types/classes/TypesPrtl.interface";
-import { client_talk } from "./localisation.library";
+import { createDiscordJSAdapter } from "./adapter.library";
+// import { client_talk } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
 
 const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 	'Portal/master/src/assets/img/empty_queue.png';
+
+const deletedMessages = new WeakSet<Message>();
+const deletedChannel = new WeakSet<GuildBasedChannel | TextBasedChannel>();
+const deletedGuild = new WeakSet<Guild>();
+
+export function isMessageDeleted(message: Message) {
+	return deletedMessages.has(message);
+}
+
+export function markMessageAsDeleted(message: Message) {
+	deletedMessages.add(message);
+}
+
+export function isChannelDeleted(channel: GuildBasedChannel | TextBasedChannel) {
+	return deletedChannel.has(channel);
+}
+
+export function markChannelAsDeleted(channel: GuildBasedChannel) {
+	deletedChannel.add(channel);
+}
+
+export function isGuildDeleted(guild: Guild) {
+	return deletedGuild.has(guild);
+}
+
+export function markGuildAsDeleted(guild: Guild) {
+	deletedGuild.add(guild);
+}
 
 export const logger = createLogger({
 	format: format.combine(
@@ -26,7 +56,7 @@ export const logger = createLogger({
 });
 
 
-export async function ask_for_approval(
+export async function askForApproval(
 	message: Message, requester: GuildMember, question: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
@@ -36,7 +66,7 @@ export async function ask_for_approval(
 				let accepted = false;
 				const filter = (m: Message) => m.author.id === requester.user.id;
 				const collector = message.channel
-					.createMessageCollector(filter, { time: 10000 });
+					.createMessageCollector({ filter, time: 10000 });
 
 				collector.on('collect', (m: Message) => {
 					if (m.content === 'yes') {
@@ -48,22 +78,31 @@ export async function ask_for_approval(
 					}
 				});
 
-				collector.on('end', collected => {
+				collector.on('end', async collected => {
 					for (const reply_message of collected.values()) {
-						if (reply_message.deletable) {
-							reply_message
+						if (isMessageDeleted(reply_message)) {
+							const deletedMessage = await reply_message
 								.delete()
 								.catch((e: any) => {
-									return reject(e);
+									return reject(`failed to delete message: ${e}`);
 								});
+
+							if (deletedMessage) {
+								markMessageAsDeleted(deletedMessage);
+							}
 						}
 					}
 
-					if (question_msg.deletable) {
-						question_msg.delete()
+					if (isMessageDeleted(question_msg)) {
+						const deletedMessage = await question_msg
+							.delete()
 							.catch((e: any) => {
-								return reject(`failed to delete messages / ${e}`);
+								return reject(`failed to delete message: ${e}`);
 							});
+
+						if (deletedMessage) {
+							markMessageAsDeleted(deletedMessage);
+						}
 					}
 
 					return resolve(accepted);
@@ -75,7 +114,7 @@ export async function ask_for_approval(
 	});
 }
 
-export function get_json(
+export function getJsonFromString(
 	str: string
 ): any | unknown {
 	let data = null;
@@ -92,7 +131,7 @@ export function get_json(
 	return data;
 }
 
-export function max_string(
+export function maxString(
 	abstract: string, max: number
 ): string {
 	return abstract.length < max
@@ -100,7 +139,7 @@ export function max_string(
 		: abstract.substring(0, max - 3) + '...';
 }
 
-export function get_key_from_enum(
+export function getKeyFromEnum(
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	value: string, enumeration: any
 ): string | number | undefined {
@@ -114,11 +153,11 @@ export function get_key_from_enum(
 	return undefined;
 }
 
-export function create_music_message(
+export function createMusicMessage(
 	channel: TextChannel, guild_object: GuildPrtl
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const music_message_emb = create_rich_embed(
+		const music_message_emb = createEmded(
 			'Music Player',
 			'Type and Portal will play it !',
 			'#e60026',
@@ -138,39 +177,39 @@ export function create_music_message(
 		);
 
 		channel
-			.send(music_message_emb)
+			.send({ embeds: [music_message_emb] })
 			.then(sent_message => {
 				sent_message.react('▶️')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('⏸')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('⏭')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('📌')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('📄')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('⬇️')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('🧹')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('🚪')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 
 				const music_data = new MusicData(
@@ -185,8 +224,9 @@ export function create_music_message(
 
 				set_music_data(guild_object.id, music_data)
 					.catch((e: any) => {
-						return reject(`failed to set music data / ${e}`);
+						return reject(`failed to set music data: ${e}`);
 					});
+
 				return resolve(sent_message.id);
 			})
 			.catch(() => {
@@ -195,11 +235,11 @@ export function create_music_message(
 	});
 }
 
-export function create_lyrics_message(
+export function createMusicLyricsMessage(
 	channel: TextChannel, guild_object: GuildPrtl, message_id: string
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const music_lyrics_message_emb = create_rich_embed(
+		const music_lyrics_message_emb = createEmded(
 			'Lyrics 📄',
 			'',
 			'#e60026',
@@ -212,7 +252,7 @@ export function create_lyrics_message(
 		);
 
 		channel
-			.send(music_lyrics_message_emb)
+			.send({ embeds: [music_lyrics_message_emb] })
 			.then(sent_message_lyrics => {
 				const music_data = new MusicData(
 					channel.id,
@@ -224,23 +264,23 @@ export function create_lyrics_message(
 
 				set_music_data(guild_object.id, music_data)
 					.catch((e: any) => {
-						return reject(`failed to set music data / ${e}`);
+						return reject(`failed to set music data: ${e}`);
 					});
 
 				return resolve(sent_message_lyrics.id);
 			})
 			.catch(e => {
-				return reject(`failed to send message to channel / ${e}`);
+				return reject(`failed to send message to channel: ${e}`);
 			});
 	});
 }
 
-export function update_music_message(
+export function updateMusicMessage(
 	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		const guild_channel: GuildChannel | undefined = guild.channels.cache
+		const guild_channel: GuildBasedChannel | undefined = guild.channels.cache
 			.find(c => c.id === guild_object.music_data.channel_id);
 
 		if (!guild_channel) {
@@ -258,7 +298,7 @@ export function update_music_message(
 				? guild_object.music_queue
 					.map((v, i) => {
 						if (i !== 0 && i < 6) {
-							return (`${i}. ${max_string(v.title, 61)}`);
+							return (`${i}. ${maxString(v.title, 61)}`);
 						} else if (i === 6) {
 							return `_...${guild_object.music_queue.length - 6} more_`;
 						}
@@ -268,7 +308,7 @@ export function update_music_message(
 				: 'empty'
 			: 'empty';
 
-		const music_message_emb = create_rich_embed(
+		const music_message_emb = createEmded(
 			yts ? yts.title : 'Music Player',
 			yts ? yts.url : 'Type and Portal will play it !',
 			'#e60026',
@@ -297,27 +337,27 @@ export function update_music_message(
 					.fetch(guild_object.music_data.message_id)
 					.then((message: Message) => {
 						message
-							.edit(music_message_emb)
+							.edit({ embeds: [music_message_emb] })
 							.then(() => {
 								return resolve(true);
 							})
 							.catch(e => {
-								return reject(`failed to edit messages / ${e}`);
+								return reject(`failed to edit messages: ${e}`);
 							});
 					})
 					.catch(e => {
-						return reject(`failed to fetch messages / ${e}`);
+						return reject(`failed to fetch messages: ${e}`);
 					});
 			}
 		}
 	});
 }
 
-export function update_music_lyrics_message(
+export function updateMusicLyricsMessage(
 	guild: Guild, guild_object: GuildPrtl, lyrics: string, url?: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
-		const guild_channel: GuildChannel | undefined = guild.channels.cache
+		const guild_channel: GuildBasedChannel | undefined = guild.channels.cache
 			.find(c => c.id === guild_object.music_data.channel_id);
 
 		if (!guild_channel) {
@@ -330,9 +370,9 @@ export function update_music_lyrics_message(
 			return reject(`could not find channel`);
 		}
 
-		const music_message_emb = create_rich_embed(
+		const music_message_emb = createEmded(
 			`Lyrics 📄 ${url ? `at ${url}` : ''}`,
-			max_string(lyrics, 2000),
+			maxString(lyrics, 2000),
 			'#e60026',
 			null,
 			null,
@@ -347,145 +387,120 @@ export function update_music_lyrics_message(
 				channel.messages
 					.fetch(guild_object.music_data.message_lyrics_id)
 					.then((message: Message) => {
-						message.edit(music_message_emb)
+						message.edit({ embeds: [music_message_emb] })
 							.then(() => {
 								return resolve(true);
 							})
 							.catch(e => {
-								return reject(`failed to edit messages / ${e}`);
+								return reject(`failed to edit messages: ${e}`);
 							});
 					})
 					.catch(e => {
-						return reject(`failed to fetch messages / ${e}`);
+						return reject(`failed to fetch messages: ${e}`);
 					});
 			}
 		}
 	});
 }
 
-export async function join_by_reaction(
-	client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
+export async function joinUserVoiceChannelByReaction(
+	guild: Guild, client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
 ): Promise<VoiceConnection> {
-	return new Promise((resolve, reject) => {
-		if (!user.presence) {
-			return reject('no user presence');
+	const guildMembers = await guild.members.fetch();
+
+	if (!guildMembers) {
+		return Promise.reject(`could not fetch members`);
+	}
+
+	const member = guildMembers.find(m => !m.user?.bot && m.id === user.id);
+
+	if (!member) {
+		return Promise.reject(`could not find member`);
+	}
+
+	if (!member.voice) {
+		return Promise.reject('you must be connected to a voice channel');
+	}
+
+	if (!member.voice.channel) {
+		return Promise.reject('you must be connected to a voice channel');
+	}
+
+	let voiceConnection = await getVoiceConnection(member.voice.channel.id);
+	if (voiceConnection && member.voice.channel.guild.me?.voice.channelId === member.voice.channel?.id) {
+		member.voice.channel.guild.me?.voice.setDeaf();
+	} else {
+		voiceConnection = joinVoiceChannel({
+			channelId: member.voice.channel.id,
+			guildId: member.voice.channel.guild.id,
+			adapterCreator: createDiscordJSAdapter(member.voice.channel as VoiceChannel),
+		});
+
+		if (!voiceConnection) {
+			return Promise.reject('could not join voice channel');
 		}
 
-		if (!user.presence.member) {
-			return reject('no user presence member');
-		}
+		member.voice.channel.guild.me?.voice.setDeaf();
+	}
 
-		if (!user.presence.member.voice) {
-			return reject('you must be connected to a voice channel');
-		}
-
-		if (!user.presence.member.voice.channel) {
-			return reject('you must be connected to a voice channel');
-		}
-
-		const voice_connection_in_guild = client.voice?.connections
-			.find(connection => connection.channel.guild.id === user.presence.member?.voice.channel?.guild.id);
-
-		if (voice_connection_in_guild &&
-			voice_connection_in_guild.channel.id === user.presence.member.voice.channel?.id
-		) {
-			voice_connection_in_guild?.voice?.setSelfDeaf(true)
-			.then(didSelfDeaf => {
-				return resolve(voice_connection_in_guild);				
-			})
-			.catch(e => {
-				return reject(`failed to set self deaf / ${e}`)
-			});
-		} else if (!voice_connection_in_guild || (voice_connection_in_guild &&
-			!voice_connection_in_guild.channel.members.some(m => !m.user.bot))
-		) {
-			const current_voice = user.presence.member?.voice.channel;
-
-			if (!current_voice) {
-				return reject(`could not find your voice channel`);
-			}
-
-			current_voice.join()
-				.then(response => {
-					if (announce_entrance) {
-						client_talk(client, guild_object, 'join');
-					}
-
-					response.voice?.setDeaf(true); // setSelfDeaf(true);
-
-					return resolve(response);
-				})
-				.catch(e => {
-					return reject(`failed to join voice channel / ${e}`);
-				});
-		}
-	});
+	return voiceConnection;
 }
 
-export async function join_user_voice(
+export async function joinUserVoiceChannelByMessage(
 	client: Client, message: Message, guild_object: GuildPrtl, join = false
 ): Promise<VoiceConnection> {
-	return new Promise((resolve, reject) => {
-		if (!message.member) {
-			return reject('message has no member');
+	if (!message.member) {
+		return Promise.reject('user could not be fetched for message');
+	}
+
+	if (!message.member.voice) {
+		return Promise.reject('voice could not be fetched for member');
+	}
+
+	if (!message.member.voice.channel) {
+		return Promise.reject('you aren\'t in a channel');
+	}
+
+	if (!message.guild) {
+		return Promise.reject('guild could not be fetched for message');
+	}
+
+	if (!message.guild.voiceAdapterCreator) {
+		return Promise.reject('voiceAdapterCreator could not be fetched for guild');
+	}
+
+	if (!guild_object) {
+		return Promise.reject('could not find guild of message');
+	}
+
+	if (!client.voice) {
+		return Promise.reject('could not fetch portal\'s voice connections');
+	}
+
+	let voiceConnection = await getVoiceConnection(message.member.voice.channel.id);
+	if (voiceConnection && message.guild.me?.voice.channelId === message.member.voice.channel?.id) {
+		message.guild.me?.voice.setDeaf();
+	} else {
+		voiceConnection = await joinVoiceChannel({
+			channelId: message.member.voice.channel.id,
+			guildId: message.guild.id,
+			adapterCreator: createDiscordJSAdapter(message.member.voice.channel as VoiceChannel),
+		});
+
+		if (!voiceConnection) {
+			return Promise.reject('could not join voice channel');
 		}
 
-		if (!message.guild) {
-			return reject('message has no guild');
-		}
+		message.guild.me?.voice.setDeaf();
+	}
 
-		if (!guild_object) {
-			return reject('could not find guild of message');
-		}
-
-		if (!client.voice) {
-			return reject('could not fetch portal\'s voice connections');
-		}
-
-		const voice_connection_in_guild = client.voice.connections
-			.find(connection => connection.channel.guild.id === message.guild?.id);
-
-		if (
-			voice_connection_in_guild &&
-			voice_connection_in_guild.channel.id === message.member.voice.channel?.id
-		) {
-			voice_connection_in_guild?.voice?.setSelfDeaf(true);
-			return resolve(voice_connection_in_guild);
-		} else if (
-			!voice_connection_in_guild || (voice_connection_in_guild &&
-				!voice_connection_in_guild.channel.members.some(m => !m.user.bot))
-		) {
-			const current_voice = message.member.voice.channel;
-
-			if (!current_voice) {
-				return reject('you are not connected to any channel');
-			}
-
-			if (current_voice.guild.id !== message.guild.id) {
-				return reject('your current channel is on another guild');
-			}
-
-			current_voice.join()
-				.then(response => {
-					if (join) {
-						client_talk(client, guild_object, 'join');
-					}
-
-					response.voice?.setSelfDeaf(true);
-
-					return resolve(response,);
-				})
-				.catch(e => {
-					return reject(`error while joining voice connection / ${e}`);
-				});
-		}
-	});
+	return voiceConnection;
 }
 
-export function create_rich_embed(
+export function createEmded(
 	title: string | null | undefined,
 	description: string | null | undefined,
-	colour: string | null | undefined,
+	colour: ColorResolvable | null | undefined,
 	field_array: Field[] | null,
 	thumbnail: string | null | undefined,
 	member: GuildMember | null | undefined,
@@ -505,18 +520,22 @@ export function create_rich_embed(
 	if (url) rich_message.setURL(url);
 	if (colour) rich_message.setColor(colour);
 	if (description) rich_message.setDescription(description);
-	if (footer) rich_message.setFooter(footer);
-	if (from_bot) rich_message.setFooter(
-		footer
+	if (footer) rich_message.setFooter({ text: footer });
+	if (from_bot) rich_message.setFooter({
+		text: footer
 			? footer
 			: 'Portal',
-		custom_gif
+		iconURL: custom_gif
 			? custom_gif
 			: portal_icon_url
-	).setTimestamp();
+	}).setTimestamp();
 	if (thumbnail) rich_message.setThumbnail(thumbnail);
 	if (image) rich_message.setImage(image);
-	if (author) rich_message.setAuthor(author.name, author.icon);
+	if (author) rich_message.setAuthor({
+		name: author.name,
+		iconURL: author.icon
+		// url: 'https://discord.js.org'
+	});
 	if (field_array) {
 		field_array.forEach(row => {
 			rich_message
@@ -548,13 +567,12 @@ export function create_rich_embed(
 	return rich_message;
 }
 
-export function is_authorised(
+export function isUserAuthorised(
 	member: GuildMember
 ): boolean {
-	const administrator: PermissionString = 'ADMINISTRATOR';
-	const options: { checkAdmin: boolean, checkOwner: boolean } = { checkAdmin: true, checkOwner: true }
+	const administrator: PermissionResolvable = 'ADMINISTRATOR';
 
-	if (member.hasPermission(administrator, options)) {
+	if (member.permissions.has(administrator, true)) {
 		return true;
 	}
 
@@ -566,7 +584,7 @@ export function is_authorised(
 	return false;
 }
 
-export function is_dj(
+export function isUserDj(
 	member: GuildMember
 ): boolean {
 	if (member.roles.cache) {
@@ -577,14 +595,14 @@ export function is_dj(
 	return false;
 }
 
-export function is_ignored(
+export function isUserIgnored(
 	member: GuildMember
 ): boolean {
 	return member.roles.cache.some(r =>
 		r.name.toLowerCase() === 'p.ignore');
 }
 
-export function is_mod(
+export function isMod(
 	member: GuildMember | null
 ): boolean {
 	if (member && member.roles.cache) {
@@ -595,7 +613,7 @@ export function is_mod(
 	return false;
 }
 
-export function is_whitelist(
+export function isWhitelist(
 	member: GuildMember | null
 ): boolean {
 	if (member && member.roles.cache) {
@@ -606,7 +624,7 @@ export function is_whitelist(
 	return false;
 }
 
-export function message_help(
+export function messageHelp(
 	type: string, argument: string, info = ''
 ): string {
 	if (info !== '') info += '\n';
@@ -614,61 +632,75 @@ export function message_help(
 		`*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`;
 }
 
-export function message_reply(
+export async function messageReply(
 	status: boolean,
 	message: Message,
-	reply_string: string,
-	delete_source = false,
-	delete_reply = false,
-	emote_pass = '✔️',
-	emote_fail = '❌'
+	replyString: string,
+	deleteSource = false,
+	deleteReply = false,
+	emotePass = '✔️',
+	emoteFail = '❌'
 ): Promise<boolean> {
-	return new Promise((resolve, reject) => {
-		if (!message) {
-			return reject(`failed to find message`);
+	if (!message) {
+		return Promise.reject(`failed to find message`);
+	}
+
+	if (!isChannelDeleted(message.channel) && replyString !== null && replyString !== '') {
+		const sentMessage = await message.reply(replyString)
+			.catch(e => { return Promise.reject(`failed to send message: ${e}`); });
+
+		if (!sentMessage) {
+			return Promise.reject(`failed to send message`);
 		}
 
-		if (!message.channel.deleted && reply_string !== null && reply_string !== '') {
-			message
-				.reply(reply_string)
-				.then(sent_message => {
-					if (delete_reply && sent_message.deletable) {
-						sent_message
-							.delete({
-								timeout: (process.env.DELETE_DELAY as unknown as number) * 1000
-							})
-							.catch(e => {
-								return reject(`failed to delete message / ${e}`);
-							});
-					}
-				})
-				.catch(e => {
-					return reject(`failed to send message / ${e}`);
-				});
-		}
-
-		if (delete_source && !message.deleted && message.deletable) {
-			message
-				.react(status ? emote_pass : emote_fail)
-				.then(() => {
-					message
-						.delete({
-							timeout: (process.env.DELETE_DELAY as unknown as number) * 1000
-						})
-						.catch(e => {
-							return reject(`failed to delete message / ${e}`);
+		if (deleteReply) {
+			const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+			setTimeout(async () => {
+				if (isMessageDeleted(sentMessage)) {
+					const deletedMessage = await sentMessage
+						.delete()
+						.catch((e: any) => {
+							return Promise.reject(`failed to delete message: ${e}`);
 						});
 
-					return resolve(true);
-				})
-				.catch(e => {
-					return reject(`failed to react to message / ${e}`);
-				});
+					if (deletedMessage) {
+						markMessageAsDeleted(deletedMessage);
+					}
+				}
+			}, delay);
 		}
-	});
+	}
+
+	if (deleteSource) {
+		const reaction = await message.react(status ? emotePass : emoteFail)
+			.catch(e => { return Promise.reject(`failed to react to message: ${e}`); });
+
+		if (!reaction) {
+			return Promise.reject(`failed to react to message`);
+		}
+
+		const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+		setTimeout(async () => {
+			if (isMessageDeleted(message)) {
+				const deletedMessage = await message
+					.delete()
+					.catch((e: any) => {
+						return Promise.reject(`failed to delete message: ${e}`);
+					});
+
+				if (deletedMessage) {
+					markMessageAsDeleted(deletedMessage);
+				}
+			}
+		}, delay);
+
+		return true;
+	}
+
+	return false;
 }
 
-export function is_url(
+export function isUrl(
 	potential_url: string
 ): boolean {
 	const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
@@ -689,7 +721,7 @@ export function pad(
 		: `0${num}`;
 }
 
-export function time_elapsed(
+export function timeElapsed(
 	timestamp: Date | number, timeout: number
 ): TimeElapsed {
 	const timeout_time = timeout * 60 * 1000;
@@ -713,7 +745,7 @@ export function time_elapsed(
 }
 
 // must get updated
-export function remove_deleted_channels(
+export function removeDeletedChannels(
 	guild: Guild
 ): Promise<boolean> {
 	return new Promise((resolve) => {
@@ -789,45 +821,42 @@ export function remove_deleted_channels(
 }
 
 // must get updated
-export function remove_empty_voice_channels(
+export async function removeEmptyVoiceChannels(
 	guild: Guild
 ): Promise<boolean> {
-	return new Promise((resolve) => {
-		fetch_guild_list()
-			.then(guild_list => {
-				if (guild_list) {
-					guild.channels.cache.forEach(channel => {
-						guild_list.some(g =>
-							g.portal_list.some(p =>
-								p.voice_list.some((v, index) => {
-									if (v.id === channel.id && channel.members.size === 0) {
-										if (channel.deletable) {
-											channel
-												.delete()
-												.then(() => {
-													p.voice_list.splice(index, 1);
-													logger.log({
-														level: 'info', type: 'none', message: `deleted empty channel: ${channel.name} ` +
-															`(${channel.id}) from ${channel.guild.name}`
-													});
-												})
-												.catch(e => {
-													logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
-												});
-										}
-										return true;
-									}
-									return false
-								})
-							)
-						);
-					});
-					return resolve(true);
-				}
-				return resolve(false);
-			})
-			.catch(() => {
-				return resolve(false);
-			});
+	const guild_list = await fetch_guild_list();
+	if (!guild_list) {
+		return false;
+	}
+
+	if (guild_list?.length === 0) {
+		return true;
+	}
+
+	guild.channels.cache.forEach(channel => {
+		guild_list.some(g =>
+			g.portal_list.some(p =>
+				p.voice_list.some((v, index) => {
+					if (v.id === channel.id && (<Collection<string, GuildMember>>channel.members).size === 0) {
+						channel
+							.delete()
+							.then(() => {
+								p.voice_list.splice(index, 1);
+								logger.log({
+									level: 'info', type: 'none', message: `deleted empty channel: ${channel.name} ` +
+										`(${channel.id}) from ${channel.guild.name}`
+								});
+							})
+							.catch(e => {
+								logger.log({ level: 'error', type: 'none', message: `failed to send message: ${e}` });
+							});
+						return true;
+					}
+					return false
+				})
+			)
+		);
 	});
+
+	return true;
 }

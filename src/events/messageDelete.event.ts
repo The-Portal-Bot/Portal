@@ -1,5 +1,5 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { create_lyrics_message, create_music_message } from "../libraries/help.library";
+import { createMusicLyricsMessage, createMusicMessage, isMessageDeleted, markMessageAsDeleted } from "../libraries/help.library";
 import { fetch_guild, remove_poll, remove_vendor } from "../libraries/mongo.library";
 
 module.exports = async (
@@ -21,31 +21,34 @@ module.exports = async (
 							.find(channel => channel.id === guild_object.music_data.channel_id);
 
 						if (music_channel) {
-							create_music_message(music_channel, guild_object)
+							createMusicMessage(music_channel, guild_object)
 								.then(() => {
 									if (guild_object.music_data.message_lyrics_id) {
 										if (music_channel) {
 											music_channel.messages
 												.fetch(guild_object.music_data.message_lyrics_id)
-												.then((message_lyrics: Message) => {
-													if (message_lyrics.deletable) {
-														message_lyrics.delete()
-															.then(() => {
-																return resolve(`deleted lyrics message`);
-															})
-															.catch(e => {
-																return reject(`failed to delete lyrics message / ${e}`);
+												.then(async (message_lyrics: Message) => {
+													if (isMessageDeleted(message_lyrics)) {
+														const deletedMessage = await message_lyrics
+															.delete()
+															.catch((e: any) => {
+																return reject(`failed to delete message: ${e}`);
 															});
+
+														if (deletedMessage) {
+															markMessageAsDeleted(deletedMessage);
+															return resolve(`deleted lyrics message`);
+														}
 													}
 												})
 												.catch(e => {
-													return reject(`error creating lyrics message / ${e}`);
+													return reject(`error creating lyrics message: ${e}`);
 												});
 										}
 									}
 								})
 								.catch(e => {
-									return reject(`failed to send music message / ${e}`);
+									return reject(`failed to send music message: ${e}`);
 								});
 						} else {
 							return reject('could not find channel');
@@ -55,12 +58,12 @@ module.exports = async (
 							.find(channel => channel.id === guild_object.music_data.channel_id);
 
 						if (music_channel && guild_object.music_data.message_id) {
-							create_lyrics_message(music_channel, guild_object, guild_object.music_data.message_id)
+							createMusicLyricsMessage(music_channel, guild_object, guild_object.music_data.message_id)
 								.then(() => {
 									return resolve('created lyrics message');
 								})
 								.catch(e => {
-									return reject(`error creating lyrics message / ${e}`);
+									return reject(`error creating lyrics message: ${e}`);
 								});
 						}
 					} else if (guild_object.poll_list.some(p => p.message_id === args.message.id)) {
@@ -76,7 +79,7 @@ module.exports = async (
 									}
 								})
 								.catch(e => {
-									return reject(`failed to remove poll / ${e}`);
+									return reject(`failed to remove poll: ${e}`);
 								});
 						}
 					} else {
@@ -91,7 +94,7 @@ module.exports = async (
 										}
 									})
 									.catch(e => {
-										return reject(`failed to delete role message / ${e}`);
+										return reject(`failed to delete role message: ${e}`);
 									});
 							}
 						});
@@ -99,7 +102,7 @@ module.exports = async (
 
 				})
 				.catch(e => {
-					return reject(`failed to fetch guild / ${e}`);
+					return reject(`failed to fetch guild: ${e}`);
 				});
 		} else {
 			return reject(`message's guild could not be fetched`);

@@ -66,15 +66,17 @@ export function get_status_list(
 	const array_of_statuses: string[] = [];
 
 	voice_channel.members.forEach((member: GuildMember) => {
-		if (!member.user.bot) {
-			if (member.presence.activities !== undefined) {
-				if (member.presence.activities.length > 0) {
-					status_aliases(member.presence.activities, voice_object.locale)
-						.forEach(stat => {
-							if (!array_of_statuses.includes(stat)) {
-								array_of_statuses.push(stat);
-							}
-						});
+		if (member.presence) {
+			if (!member.user.bot) {
+				if (member.presence.activities !== undefined) {
+					if (member.presence.activities.length > 0) {
+						status_aliases(member.presence.activities, voice_object.locale)
+							.forEach(stat => {
+								if (!array_of_statuses.includes(stat)) {
+									array_of_statuses.push(stat);
+								}
+							});
+					}
 				}
 			}
 		}

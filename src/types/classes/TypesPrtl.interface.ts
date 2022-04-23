@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { VoiceConnection } from "discord.js";
 
 export interface MongoPromise {
 	matchedCount?: number; // Number of documents matched
@@ -13,12 +12,6 @@ export interface MongoPromise {
 export interface ReturnPormise {
 	result: boolean;
 	value: string;
-}
-
-export interface ReturnPormiseVoice {
-	result: boolean;
-	value: string;
-	voice_connection: VoiceConnection | undefined;
 }
 
 export class Field {

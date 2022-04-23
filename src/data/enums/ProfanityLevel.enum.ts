@@ -1,11 +1,11 @@
 export enum ProfanityLevelEnum {
-	none,
+    none,
     default,
-	strict
+    strict
 }
 
 export const ProfanityLevelList = [
-	'none',
+    'none',
     'default',
-	'strict'
+    'strict'
 ];

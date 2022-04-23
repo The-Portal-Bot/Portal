@@ -1,7 +1,7 @@
 import { Guild, MessageEmbed, VoiceChannel } from 'discord.js';
 import moment from 'moment';
 import { AuthEnum } from '../../data/enums/Admin.enum';
-import { create_rich_embed } from '../../libraries/help.library';
+import { createEmded } from '../../libraries/help.library';
 import { get_status_list } from '../../libraries/status.library';
 import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
@@ -284,7 +284,7 @@ const variables: InterfaceBlueprint[] = [
 			if (!voice_channel) return 'N/A'
 			let cnt = 0;
 			voice_channel.members.forEach((member) => {
-				if (member.presence.activities !== null && !member.user.bot) {
+				if (member.presence?.activities !== null && !member.user.bot) {
 					cnt++;
 				}
 			});
@@ -354,7 +354,7 @@ const variables: InterfaceBlueprint[] = [
 			if (!voice_channel) return 'N/A'
 			const mmbr_lst: string[] = [];
 			voice_channel.members.forEach(member => {
-				if (member.presence.activities !== null) {
+				if (member.presence?.activities !== null) {
 					mmbr_lst.push(member.displayName);
 				}
 			});
@@ -461,7 +461,7 @@ export function get_variable_guide(): MessageEmbed {
 		}
 	];
 
-	return create_rich_embed(
+	return createEmded(
 		'Variable Guide',
 		'[Variables](' + portal_url + interpreter_url + '/variables/description) ' +
 		'are immutable and live data that return information about your current voice channel.\n' +
@@ -518,7 +518,7 @@ export function get_variable_help(): MessageEmbed[] {
 
 	return vrbl_array.map((cmmd, index) => {
 		if (index === 0) {
-			return create_rich_embed(
+			return createEmded(
 				'Variables',
 				'[Variables](' + portal_url + interpreter_url + '/variables/description) ' +
 				'are immutable and live data that return information about your current voice channel.\n' +
@@ -532,7 +532,7 @@ export function get_variable_help(): MessageEmbed[] {
 				null
 			);
 		} else {
-			return create_rich_embed(
+			return createEmded(
 				null,
 				null,
 				'#1BE7FF',
@@ -550,7 +550,7 @@ export function get_variable_help(): MessageEmbed[] {
 export function get_variable_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < variables.length; i++) {
 		if (variables[i].name === candidate) {
-			return create_rich_embed(
+			return createEmded(
 				variables[i].name,
 				null,
 				'#1BE7FF',

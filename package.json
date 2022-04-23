@@ -9,16 +9,21 @@
         "start": "node build/index.js",
         "build-start": "npx tsc && node build/index.js",
         "test": "npx tsc && jest",
-        "lint": "eslint '*/**/*.{js,ts,tsx}'"
+        "lint": "npx eslint . --ext .ts --fix"
     },
     "dependencies": {
+        "@discordjs/builders": "^0.13.0",
         "@discordjs/opus": "^0.7.0",
+        "@discordjs/rest": "^0.4.1",
+        "@discordjs/voice": "^0.9.0",
         "@types/jsonfile": "^6.1.0",
         "cheerio": "^1.0.0-rc.10",
         "core-util-is": "^1.0.3",
+        "discord-api-types": "^0.31.2",
         "discord-ytdl-core": "^5.0.4",
-        "discord.js": "^12.5.3",
+        "discord.js": "^13.6.0",
         "dotenv": "^16.0.0",
+        "eslint-config-prettier": "^8.5.0",
         "ffmpeg-static": "^5.0.0",
         "give-me-a-joke": "^0.5.1",
         "jest": "^27.5.1",
@@ -45,7 +50,8 @@
         "@types/yt-search": "^2.3.2",
         "@typescript-eslint/eslint-plugin": "^5.20.0",
         "@typescript-eslint/parser": "^5.20.0",
-        "eslint": "^8.13.0",
+        "eslint": "^8.14.0",
+        "eslint-plugin-prettier": "^4.0.0",
         "nodemon": "^2.0.15",
         "typescript": "^4.6.3"
     },

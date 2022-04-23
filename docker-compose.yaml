@@ -3,6 +3,7 @@ version: "3.9"
 services:
   portal:
     container_name: portal
+    restart: always
     image: keybraker/portal:latest
     environment:
       NODE_ENV: production
@@ -24,8 +25,10 @@ services:
     container_name: mongo
     restart: always
     image: mongo:5.0
+    logging:
+      driver: "none"
     ports:
-      - "29017:27017"
+      - "27017:27017"
     volumes:
       - type: bind
         source: ../mongo/data/db

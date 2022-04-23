@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
-import { create_rich_embed } from '../../libraries/help.library';
+import { createEmded } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
 
 const portal_url = 'https://portal-bot.xyz/docs';
@@ -279,7 +279,7 @@ export function get_command_guide(): MessageEmbed {
 		}
 	];
 
-	return create_rich_embed(
+	return createEmded(
 		'Command Guide',
 		'[Commands](' + portal_url + '/commands/description) ' +
 		'are the way you communicate with Portal.\n' +
@@ -313,7 +313,7 @@ export function get_command_help(): MessageEmbed[] {
 	return cmmd_array
 		.map((cmmd, index) => {
 			if (index === 0) {
-				return create_rich_embed(
+				return createEmded(
 					'Commands',
 					'[Commands](' + portal_url + '/commands/description) ' +
 					'are the way you communicate with Portal.\n' +
@@ -327,7 +327,7 @@ export function get_command_help(): MessageEmbed[] {
 					null
 				);
 			} else {
-				return create_rich_embed(
+				return createEmded(
 					null,
 					null,
 					'#9775A9',
@@ -345,7 +345,7 @@ export function get_command_help(): MessageEmbed[] {
 export function get_command_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < commands.length; i++) {
 		if (commands[i].name === candidate) {
-			return create_rich_embed(
+			return createEmded(
 				commands[i].name,
 				null,
 				'#9775A9',
