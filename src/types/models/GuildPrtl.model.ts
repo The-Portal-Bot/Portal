@@ -19,35 +19,35 @@ const VideoSearchResult = new Schema(
 		duration: {
 			type: {
 				seconds: { type: String, required: true },
-				timestamp: { type: Number, required: true }
+				timestamp: { type: Number, required: true },
 			},
-			required: true
+			required: true,
 		},
 		ago: { type: String, required: true },
 		views: { type: Number, required: true },
 		author: {
 			type: {
 				name: { type: String, required: true },
-				url: { type: String, required: true }
+				url: { type: String, required: true },
 			},
-			required: true
+			required: true,
 		},
 		level: { type: Number, required: true },
-		role: { type: String, required: true }
+		role: { type: String, required: true },
 	},
 	{
-		collection: 'guild_list'
-	}
+		collection: 'guild_list',
+	},
 );
 
 const Rank = new Schema(
 	{
 		level: { type: Number, required: true },
-		role: { type: String, required: true }
+		role: { type: String, required: true },
 	},
 	{
-		collection: 'guild_list'
-	}
+		collection: 'guild_list',
+	},
 );
 
 const MusicData = new Schema(
@@ -56,11 +56,11 @@ const MusicData = new Schema(
 		message_lyrics_id: { type: String, required: true },
 		channel_id: { type: String, required: true },
 		votes: { type: [String], required: true },
-		pinned: { type: Boolean, required: true }
+		pinned: { type: Boolean, required: true },
 	},
 	{
-		collection: 'guild_list'
-	}
+		collection: 'guild_list',
+	},
 );
 
 const GuildPrtlSchm = new Schema(
@@ -85,11 +85,11 @@ const GuildPrtlSchm = new Schema(
 		kick_after: { type: Number, required: true },
 		ban_after: { type: Number, required: true },
 		premium: { type: Boolean, required: true },
-		prefix: { type: String, required: true }
+		prefix: { type: String, required: true },
 	},
 	{
-		collection: 'guild_list'
-	}
+		collection: 'guild_list',
+	},
 );
 
-export default model<IGuildPrtl>('GuildPrtlSchm', GuildPrtlSchm);
+export default model < IGuildPrtl > ('GuildPrtlSchm', GuildPrtlSchm);

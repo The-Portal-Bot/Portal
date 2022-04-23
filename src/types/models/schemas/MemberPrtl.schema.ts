@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
 const MemberPrtlSch = new Schema(
 	{
@@ -12,8 +12,8 @@ const MemberPrtlSch = new Schema(
 		regex: { type: String, required: true },
 	},
 	{
-		collection: 'guild_list'
-	}
+		collection: 'guild_list',
+	},
 );
 
 // export default model('MemberPrtlSch', MemberPrtlSch);

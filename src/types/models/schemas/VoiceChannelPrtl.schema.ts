@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
 const VoiceChannelPrtlSchm = new Schema(
 	{
@@ -9,11 +9,11 @@ const VoiceChannelPrtlSchm = new Schema(
 		no_bots: { type: Boolean, required: true },
 		locale: { type: Number, required: true },
 		ann_announce: { type: Boolean, required: true },
-		ann_user: { type: Boolean, required: true }
+		ann_user: { type: Boolean, required: true },
 	},
 	{
-		collection: 'guild_list'
-	}
+		collection: 'guild_list',
+	},
 );
 
 // export default model('VoiceChannelPrtlSchm', VoiceChannelPrtlSchm);

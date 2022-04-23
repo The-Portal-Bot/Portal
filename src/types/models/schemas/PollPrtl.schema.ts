@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
 const PollPrtlSchm = new Schema(
 	{
@@ -6,8 +6,8 @@ const PollPrtlSchm = new Schema(
 		member_id: { type: String, required: true },
 	},
 	{
-		collection: 'guild_list'
-	}
+		collection: 'guild_list',
+	},
 );
 
 // export default model('PollPrtlSchm', PollPrtlSchm);
