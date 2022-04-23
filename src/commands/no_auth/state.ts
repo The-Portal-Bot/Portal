@@ -163,7 +163,7 @@ module.exports = async (
             .catch(e => {
                 return resolve({
                     result: true,
-                    value: `failed to send message / ${e}`
+                    value: `failed to send message: ${e}`
                 });
             });
 

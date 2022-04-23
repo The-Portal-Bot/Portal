@@ -32,7 +32,7 @@ module.exports = async (
 														const deletedMessage = await message_lyrics
 															.delete()
 															.catch((e: any) => {
-																return reject(`failed to delete message / ${e}`);
+																return reject(`failed to delete message: ${e}`);
 															});
 
 														if (deletedMessage) {
@@ -42,13 +42,13 @@ module.exports = async (
 													}
 												})
 												.catch(e => {
-													return reject(`error creating lyrics message / ${e}`);
+													return reject(`error creating lyrics message: ${e}`);
 												});
 										}
 									}
 								})
 								.catch(e => {
-									return reject(`failed to send music message / ${e}`);
+									return reject(`failed to send music message: ${e}`);
 								});
 						} else {
 							return reject('could not find channel');
@@ -63,7 +63,7 @@ module.exports = async (
 									return resolve('created lyrics message');
 								})
 								.catch(e => {
-									return reject(`error creating lyrics message / ${e}`);
+									return reject(`error creating lyrics message: ${e}`);
 								});
 						}
 					} else if (guild_object.poll_list.some(p => p.message_id === args.message.id)) {
@@ -79,7 +79,7 @@ module.exports = async (
 									}
 								})
 								.catch(e => {
-									return reject(`failed to remove poll / ${e}`);
+									return reject(`failed to remove poll: ${e}`);
 								});
 						}
 					} else {
@@ -94,7 +94,7 @@ module.exports = async (
 										}
 									})
 									.catch(e => {
-										return reject(`failed to delete role message / ${e}`);
+										return reject(`failed to delete role message: ${e}`);
 									});
 							}
 						});
@@ -102,7 +102,7 @@ module.exports = async (
 
 				})
 				.catch(e => {
-					return reject(`failed to fetch guild / ${e}`);
+					return reject(`failed to fetch guild: ${e}`);
 				});
 		} else {
 			return reject(`message's guild could not be fetched`);

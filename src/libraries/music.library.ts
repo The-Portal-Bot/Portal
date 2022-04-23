@@ -23,7 +23,7 @@
 // 					music.queue.shift();
 // 					update_guild(guild_object.id, 'music_queue', music.queue)
 // 						.catch(e => {
-// 							return reject(`failed to update guild / ${e}`);
+// 							return reject(`failed to update guild: ${e}`);
 // 						});
 // 				}
 
@@ -37,7 +37,7 @@
 // 				}
 // 			})
 // 			.catch(e => {
-// 				return reject(`could not fetch music queue / ${e}`);
+// 				return reject(`could not fetch music queue: ${e}`);
 // 			});
 // 	})
 // }
@@ -85,7 +85,7 @@
 // 				return resolve(`${video.title} has been added to queue`);
 // 			})
 // 			.catch(e => {
-// 				return reject(`${video.title} failed to get added to queue / ${e}`);
+// 				return reject(`${video.title} failed to get added to queue: ${e}`);
 // 			});
 // 	});
 // }
@@ -113,7 +113,7 @@
 // 								.then(r => {
 // 									clear_music_vote(guild_object.id)
 // 										.catch(e => {
-// 											return reject(`failed to clear queue / ${e}`);
+// 											return reject(`failed to clear queue: ${e}`);
 // 										});
 
 // 									const animate = voice_connection?.dispatcher
@@ -130,11 +130,11 @@
 // 										animate
 // 									)
 // 										.catch(e => {
-// 											return reject(`failed to update music message / ${e}`);
+// 											return reject(`failed to update music message: ${e}`);
 // 										});
 // 								})
 // 								.catch(e => {
-// 									return reject(`failed to skip video / ${e}`);
+// 									return reject(`failed to skip video: ${e}`);
 // 								});
 // 						});
 
@@ -163,7 +163,7 @@
 // 									.then(r => {
 // 										clear_music_vote(guild_object.id)
 // 											.catch(e => {
-// 												return reject(`failed to clear queue / ${e}`);
+// 												return reject(`failed to clear queue: ${e}`);
 // 											});
 
 // 										const voice_connection = client.voice?.connections.find(c =>
@@ -183,18 +183,18 @@
 // 											animate
 // 										)
 // 											.catch(e => {
-// 												return reject(`failed to update music message / ${e}`);
+// 												return reject(`failed to update music message: ${e}`);
 // 											});
 // 									})
 // 									.catch(e => {
-// 										return reject(`failed to skip video / ${e}`);
+// 										return reject(`failed to skip video: ${e}`);
 // 									});
 // 							});
 
 // 							return resolve('playback started');
 // 						})
 // 						.catch(e => {
-// 							return reject(`error while joining channel / ${e}`);
+// 							return reject(`error while joining channel: ${e}`);
 // 						});
 // 				}
 // 			})
@@ -243,7 +243,7 @@
 // 									if (i > 0) {
 // 										push_video_to_queue(guild_object, v)
 // 											.catch(e => {
-// 												return reject(`failed to push video to queue / ${e}`);
+// 												return reject(`failed to push video to queue: ${e}`);
 // 											});
 // 									}
 // 								});
@@ -251,11 +251,11 @@
 // 								return resolve(r);
 // 							})
 // 							.catch(e => {
-// 								return reject(`error while starting music player / ${e}`);
+// 								return reject(`error while starting music player: ${e}`);
 // 							});
 // 					})
 // 					.catch((e: any) => {
-// 						return reject(`could not access the server / ${e}`);
+// 						return reject(`could not access the server: ${e}`);
 // 					});
 // 			} else {
 // 				return resolve('file is not a portal queue');
@@ -285,7 +285,7 @@
 
 // 						update_music_lyrics_message(guild, guild_object, '')
 // 							.catch(e => {
-// 								return reject(`failed to update music lyrics message / ${e}`);
+// 								return reject(`failed to update music lyrics message: ${e}`);
 // 							});
 
 // 						start_playback(
@@ -338,7 +338,7 @@
 // 											}
 // 										)
 // 											.catch(e => {
-// 												return reject(`failed to push video to queue / ${e}`);
+// 												return reject(`failed to push video to queue: ${e}`);
 // 											});
 // 									}
 // 								});
@@ -346,11 +346,11 @@
 // 								return resolve(r);
 // 							})
 // 							.catch(e => {
-// 								return reject(`error while starting music player / ${e}`);
+// 								return reject(`error while starting music player: ${e}`);
 // 							});
 // 					})
 // 					.catch(e => {
-// 						return reject(`error while searching youtube playlist / ${e}`);
+// 						return reject(`error while searching youtube playlist: ${e}`);
 // 					});
 // 			} else if (video_index > 0) {
 // 				const videoId = search_term.substr(video_index + 3, 11);
@@ -379,12 +379,12 @@
 // 								return resolve(r);
 // 							})
 // 							.catch(e => {
-// 								return reject(`error while starting music player / ${e}`);
+// 								return reject(`error while starting music player: ${e}`);
 // 							});
 
 // 					})
 // 					.catch(e => {
-// 						return reject(`error while searching youtube video / ${e}`);
+// 						return reject(`error while searching youtube video: ${e}`);
 // 					});
 // 			} else {
 // 				return resolve(`the url is not of a youtube video or playlist`);
@@ -404,11 +404,11 @@
 // 							return resolve(r);
 // 						})
 // 						.catch(e => {
-// 							return reject(`error while starting music player / ${e}`);
+// 							return reject(`error while starting music player: ${e}`);
 // 						});
 // 				})
 // 				.catch(e => {
-// 					return reject(`error while searching youtube / ${e}`);
+// 					return reject(`error while searching youtube: ${e}`);
 // 				});
 // 		}
 // 	});
@@ -445,7 +445,7 @@
 // 								.then(r => {
 // 									clear_music_vote(guild_object.id)
 // 										.catch(e => {
-// 											return reject(`failed to clear music votes / ${e}`);
+// 											return reject(`failed to clear music votes: ${e}`);
 // 										});
 
 // 									const animate = voice_connection?.dispatcher
@@ -462,18 +462,18 @@
 // 										animate
 // 									)
 // 										.catch(e => {
-// 											return reject(`failed to update music message / ${e}`);
+// 											return reject(`failed to update music message: ${e}`);
 // 										});
 // 								})
 // 								.catch(e => {
-// 									return reject(`failed to skip video / ${e}`);
+// 									return reject(`failed to skip video: ${e}`);
 // 								});
 // 						});
 
 // 						return resolve('playing queued song');
 // 					})
 // 					.catch(e => {
-// 						return reject(`failed to pop queue / ${e}`);
+// 						return reject(`failed to pop queue: ${e}`);
 // 					});
 // 			}
 // 		} else {
@@ -499,7 +499,7 @@
 // 							.then(r => {
 // 								clear_music_vote(guild_object.id)
 // 									.catch(e => {
-// 										return reject(`failed to clear music vote / ${e}`);
+// 										return reject(`failed to clear music vote: ${e}`);
 // 									});
 
 // 								const voice_connection = client.voice?.connections.find(c =>
@@ -519,19 +519,19 @@
 // 									animate
 // 								)
 // 									.catch(e => {
-// 										return reject(`failed to update music message / ${e}`);
+// 										return reject(`failed to update music message: ${e}`);
 // 									});
 
 // 							})
 // 							.catch(e => {
-// 								return reject(`failed to skip video / ${e}`);
+// 								return reject(`failed to skip video: ${e}`);
 // 							});
 // 					});
 
 // 					return resolve('playing video from queue');
 // 				})
 // 				.catch(e => {
-// 					return reject(`could not to join voice channel / ${e}`);
+// 					return reject(`could not to join voice channel: ${e}`);
 // 				});
 // 		}
 // 	});
@@ -584,7 +584,7 @@
 // 						if (!guild_object.music_data.pinned) {
 // 							update_music_lyrics_message(guild, guild_object, '')
 // 								.catch(e => {
-// 									return reject(`failed to update music lyrics message / ${e}`);
+// 									return reject(`failed to update music lyrics message: ${e}`);
 // 								});
 // 						}
 
@@ -604,7 +604,7 @@
 // 								.then(r => {
 // 									clear_music_vote(guild_object.id)
 // 										.catch(e => {
-// 											return reject(`failed to clear music video / ${e}`);
+// 											return reject(`failed to clear music video: ${e}`);
 // 										});
 
 // 									const animate = voice_connection?.dispatcher
@@ -621,18 +621,18 @@
 // 										animate
 // 									)
 // 										.catch(e => {
-// 											return reject(`failed to update music message / ${e}`);
+// 											return reject(`failed to update music message: ${e}`);
 // 										});
 // 								})
 // 								.catch(e => {
-// 									return reject(`failed to skip video / ${e}`);
+// 									return reject(`failed to skip video: ${e}`);
 // 								});
 // 						})
 
 // 						return resolve('skipped to queued song');
 // 					})
 // 					.catch(e => {
-// 						return reject(`failed to pop queue / ${e}`);
+// 						return reject(`failed to pop queue: ${e}`);
 // 					});
 // 			}
 // 		} else {
@@ -660,7 +660,7 @@
 // 									.then(r => {
 // 										clear_music_vote(guild_object.id)
 // 											.catch(e => {
-// 												return reject(`failed to clear music queue / ${e}`);
+// 												return reject(`failed to clear music queue: ${e}`);
 // 											});
 
 // 										const voice_connection = client.voice?.connections.find(c =>
@@ -680,22 +680,22 @@
 // 											animate
 // 										)
 // 											.catch(e => {
-// 												return reject(`failed to update music message / ${e}`);
+// 												return reject(`failed to update music message: ${e}`);
 // 											});
 // 									})
 // 									.catch(e => {
-// 										return reject(`failed to skip video / ${e}`);
+// 										return reject(`failed to skip video: ${e}`);
 // 									});
 // 							});
 
 // 							return resolve('playing video from queue');
 // 						})
 // 						.catch(e => {
-// 							return reject(`failed to join voice channel / ${e}`);
+// 							return reject(`failed to join voice channel: ${e}`);
 // 						});
 // 				})
 // 				.catch(e => {
-// 					return reject(`failed to pop queue / ${e}`);
+// 					return reject(`failed to pop queue: ${e}`);
 // 				});
 // 		}
 // 	});
@@ -799,15 +799,15 @@
 // 									return resolve(`displayed lyrics`);
 // 								})
 // 								.catch((e: any) => {
-// 									return reject(`failed to update lyrics message / ${e}`);
+// 									return reject(`failed to update lyrics message: ${e}`);
 // 								});
 // 						})
 // 						.catch((e: any) => {
-// 							return reject(`failed to scrap genius page / ${e}`);
+// 							return reject(`failed to scrap genius page: ${e}`);
 // 						});
 // 				})
 // 				.catch((e: any) => {
-// 					return reject(`could not access the server / ${e}`);
+// 					return reject(`could not access the server: ${e}`);
 // 				});
 // 		} else {
 // 			update_music_lyrics_message(guild, guild_object, '')
@@ -815,7 +815,7 @@
 // 					return resolve('no song in queue');
 // 				})
 // 				.catch(e => {
-// 					return reject(`failed to update music lyrics message / ${e}`);
+// 					return reject(`failed to update music lyrics message: ${e}`);
 // 				});
 
 // 		}

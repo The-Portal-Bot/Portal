@@ -59,14 +59,14 @@ module.exports = async (
 					.catch(e => {
 						return resolve({
 							result: false,
-							value: `error while editing pong message / ${e}`
+							value: `error while editing pong message: ${e}`
 						})
 					});
 			})
 			.catch(e => {
 				return resolve({
 					result: false,
-					value: `error while sending pong message / ${e}`
+					value: `error while sending pong message: ${e}`
 				})
 			});
 	});

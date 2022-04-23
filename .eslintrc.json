@@ -1,14 +1,17 @@
 {
-    "extends": "eslint:recommended",
+    "extends": [
+        "eslint:recommended"
+    ],
     "env": {
         "node": true,
         "es6": true
     },
     "parserOptions": {
-        "ecmaVersion": 2021,
+        "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "rules": {
+        "camelcase": "warn",
         "arrow-spacing": [
             "warn",
             {
@@ -23,10 +26,6 @@
                 "allowSingleLine": true
             }
         ],
-        "comma-dangle": [
-            "error",
-            "always-multiline"
-        ],
         "comma-spacing": "error",
         "comma-style": "error",
         "curly": [
@@ -39,10 +38,6 @@
             "property"
         ],
         "handle-callback-err": "off",
-        "indent": [
-            "error",
-            "tab"
-        ],
         "keyword-spacing": "error",
         "max-nested-callbacks": [
             "error",

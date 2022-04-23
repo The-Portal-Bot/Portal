@@ -118,7 +118,7 @@ export async function create_channel(
 
 		newGuildChannel
 			.setParent(newGuildCategoryChannel)
-			.catch(e => { return Promise.reject(`failed to set parent to channel / ${e}`); });
+			.catch(e => { return Promise.reject(`failed to set parent to channel: ${e}`); });
 	}
 
 	return newGuildChannel.id;
@@ -186,7 +186,7 @@ export async function create_voice_channel(
 
 	insert_voice(state.member.guild.id, portalObject.id, newVoice)
 		.catch(e => {
-			return Promise.reject(`failed to store voice channel / ${e}`);
+			return Promise.reject(`failed to store voice channel: ${e}`);
 		});
 
 	await state.member.voice.setChannel(newGuildVoiceChannel as VoiceBasedChannel);
@@ -202,7 +202,7 @@ export async function create_music_channel(
 		newMusicCategoryGuildChannel = await guild.channels
 			.create(music_category, { type: ChannelTypes.GUILD_CATEGORY })
 			.catch(e => {
-				return Promise.reject(`faild to create music category / ${e}`);
+				return Promise.reject(`faild to create music category: ${e}`);
 			});
 	}
 	else if (music_category) { // with category object given
@@ -219,7 +219,7 @@ export async function create_music_channel(
 			},
 		)
 		.catch(e => {
-			return Promise.reject(`failed to create focus channel / ${e}`);
+			return Promise.reject(`failed to create focus channel: ${e}`);
 		});
 
 	if (!newMusicGuildChannel) {
@@ -230,7 +230,7 @@ export async function create_music_channel(
 
 	const musicMessageId = await createMusicMessage(newMusicGuildChannel, guild_object)
 		.catch(e => {
-			return Promise.reject(`failed to send music message / ${e}`);
+			return Promise.reject(`failed to send music message: ${e}`);
 		});
 
 	if (!musicMessageId) {
@@ -240,7 +240,7 @@ export async function create_music_channel(
 	logger.log({ level: 'info', type: 'none', message: `send music message ${musicMessageId}` });
 	createMusicLyricsMessage(newMusicGuildChannel, guild_object, musicMessageId)
 		.catch(e => {
-			return Promise.reject(`failed to send music lyrics message / ${e}`);
+			return Promise.reject(`failed to send music lyrics message: ${e}`);
 		});
 
 	return true;
@@ -254,14 +254,14 @@ export async function moveMembersBack(
 	}
 
 	const setUserBackToOriginalChannel = await member.voice.setChannel(oldChannel)
-		.catch(e => { return Promise.reject(`focus did not end properly / ${e}`); });
+		.catch(e => { return Promise.reject(`focus did not end properly: ${e}`); });
 
 	if (!setUserBackToOriginalChannel) {
 		return Promise.reject(`did not move requester back to original channel`);
 	}
 
 	const setUserFocusBackToOriginalChannel = await member_found.voice.setChannel(oldChannel)
-		.catch(e => { return Promise.reject(`focus did not end properly / ${e}`); });
+		.catch(e => { return Promise.reject(`focus did not end properly: ${e}`); });
 
 	if (!setUserFocusBackToOriginalChannel) {
 		return Promise.reject(`did not move requested back to original channel`);
@@ -293,24 +293,24 @@ export async function create_focus_channel(
 
 	const newVoiceChannel = await guild.channels
 		.create(chatroom_name, voice_options)
-		.catch(e => { return Promise.reject(`failed to create focus channel / ${e}`); });
+		.catch(e => { return Promise.reject(`failed to create focus channel: ${e}`); });
 
 	if (!newVoiceChannel) {
 		return Promise.reject(`failed to create new voice channel`);
 	}
 
 	member.voice.setChannel(newVoiceChannel as VoiceBasedChannel)
-		.catch(e => { return Promise.reject(`failed to set member to new channel / ${e}`); });
+		.catch(e => { return Promise.reject(`failed to set member to new channel: ${e}`); });
 
 	member_found.voice.setChannel(newVoiceChannel as VoiceBasedChannel)
-		.catch(e => { return Promise.reject(`failed to set member to new channel / ${e}`); });
+		.catch(e => { return Promise.reject(`failed to set member to new channel: ${e}`); });
 
 
 	insert_voice(guild.id, portalObject.id, new VoiceChannelPrtl(
 		newVoiceChannel.id, member.id, portalObject.render, chatroom_name, portalObject.no_bots,
 		portalObject.locale, portalObject.ann_announce, portalObject.ann_user
 	))
-		.catch(e => { return Promise.reject(`failed to store voice channel / ${e}`); });
+		.catch(e => { return Promise.reject(`failed to store voice channel: ${e}`); });
 
 	if (focus_time === 0) {
 		return 'private room successfully created';
@@ -331,7 +331,7 @@ export async function delete_channel(
 		const channelDeleted = await channel_to_delete
 			.delete()
 			.catch(e => {
-				return Promise.reject(`failed to delete channel / ${e}`);
+				return Promise.reject(`failed to delete channel: ${e}`);
 			});
 
 		return !!channelDeleted;
@@ -351,7 +351,7 @@ export async function delete_channel(
 			`${PortalChannelTypes[type].toString()} channel **${channel_to_delete}** (yes / no) ?`
 		)
 		.catch(e => {
-			return Promise.reject(`failed to send message / ${e}`);
+			return Promise.reject(`failed to send message: ${e}`);
 		});
 
 
@@ -372,7 +372,7 @@ export async function delete_channel(
 				reply_message
 					.delete()
 					.catch(e => {
-						return Promise.reject(`failed to delete message / ${e}`);
+						return Promise.reject(`failed to delete message: ${e}`);
 					});
 			}
 		});
@@ -385,13 +385,13 @@ export async function delete_channel(
 						msg
 							.delete()
 							.catch(e => {
-								return Promise.reject(`failed to delete message / ${e}`);
+								return Promise.reject(`failed to delete message: ${e}`);
 							}),
 						5000
 					);
 				})
 				.catch(e => {
-					return Promise.reject(`failed to send message / ${e}`);
+					return Promise.reject(`failed to send message: ${e}`);
 				});
 		} else {
 			if (channel_to_delete.deletable) {
@@ -408,17 +408,17 @@ export async function delete_channel(
 											return true;
 										})
 										.catch(e => {
-											return Promise.reject(`failed to delete message / ${e}`);
+											return Promise.reject(`failed to delete message: ${e}`);
 										}),
 									5000
 								);
 							})
 							.catch(e => {
-								return Promise.reject(`failed to send message / ${e}`);
+								return Promise.reject(`failed to send message: ${e}`);
 							});
 					})
 					.catch(e => {
-						return Promise.reject(`failed to delete channel / ${e}`);
+						return Promise.reject(`failed to delete channel: ${e}`);
 					});
 			}
 			else {
@@ -432,13 +432,13 @@ export async function delete_channel(
 									return true;
 								})
 								.catch(e => {
-									return Promise.reject(`failed to delete message / ${e}`);
+									return Promise.reject(`failed to delete message: ${e}`);
 								}),
 							5000
 						);
 					})
 					.catch(e => {
-						return Promise.reject(`failed to send message / ${e}`);
+						return Promise.reject(`failed to send message: ${e}`);
 					});
 			}
 		}
@@ -492,7 +492,7 @@ export async function generate_channel_name(
 						await voice_channel
 							.edit({ name: capped_new_name })
 							.catch(e => {
-								return Promise.reject(`failed to eddit voice channel / ${e}`);
+								return Promise.reject(`failed to eddit voice channel: ${e}`);
 							});
 
 						return true;
@@ -672,7 +672,7 @@ export function regex_interpreter(
 				}
 			}
 			catch (e) {
-				logger.log({ level: 'info', type: 'none', message: `failed to parse json / ${e}` });
+				logger.log({ level: 'info', type: 'none', message: `failed to parse json: ${e}` });
 				new_channel_name += regex[i];
 			}
 

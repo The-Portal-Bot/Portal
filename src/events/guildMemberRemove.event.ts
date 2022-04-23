@@ -42,7 +42,7 @@ module.exports = async (
 												]
 											})
 											.catch(e => {
-												return reject(`failed to send message / ${e}`);
+												return reject(`failed to send message: ${e}`);
 											});
 									}
 								} else {
@@ -53,11 +53,11 @@ module.exports = async (
 							}
 						})
 						.catch(e => {
-							return reject(`failed to get announcement channel in database / ${e}`);
+							return reject(`failed to get announcement channel in database: ${e}`);
 						});
 				})
 				.catch(e => {
-					return reject(`failed to remove member ${args.member.id} to ${args.member.guild.id} / ${e}`);
+					return reject(`failed to remove member ${args.member.id} to ${args.member.guild.id}: ${e}`);
 				});
 		} else {
 			return resolve('left member is a bot, bots are not handled');

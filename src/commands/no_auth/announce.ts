@@ -1,5 +1,6 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { createEmded, messageHelp } from "../../libraries/help.library";
+import { delay } from "lodash";
+import { createEmded, isMessageDeleted, markMessageAsDeleted, messageHelp } from "../../libraries/help.library";
 // import { client_talk } from "../../libraries/localisation.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
@@ -63,7 +64,6 @@ module.exports = async (
             .send({ embeds: [rich_message] })
             .then(() => {
                 // client_talk(client, guild_object, 'announce');
-
                 return resolve({
                     result: true,
                     value: 'announcement was sent successfully'
@@ -72,7 +72,7 @@ module.exports = async (
             .catch(e => {
                 return resolve({
                     result: false,
-                    value: `could not send message (missing permissions) / ${e}`
+                    value: `could not send message (missing permissions): ${e}`
                 });
             });
     });

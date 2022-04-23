@@ -27,7 +27,7 @@ module.exports = async (
 			})
 			.catch(e => {
 				return reject(`error syncing deleted channel from ` +
-					`${current_channel.guild.name}|${current_channel.guild.id} / ${e}`);
+					`${current_channel.guild.name}|${current_channel.guild.id}: ${e}`);
 			});
 	});
 };

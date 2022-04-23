@@ -84,7 +84,7 @@ export async function askForApproval(
 							const deletedMessage = await reply_message
 								.delete()
 								.catch((e: any) => {
-									return reject(`failed to delete message / ${e}`);
+									return reject(`failed to delete message: ${e}`);
 								});
 
 							if (deletedMessage) {
@@ -97,7 +97,7 @@ export async function askForApproval(
 						const deletedMessage = await question_msg
 							.delete()
 							.catch((e: any) => {
-								return reject(`failed to delete message / ${e}`);
+								return reject(`failed to delete message: ${e}`);
 							});
 
 						if (deletedMessage) {
@@ -181,35 +181,35 @@ export function createMusicMessage(
 			.then(sent_message => {
 				sent_message.react('▶️')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('⏸')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('⏭')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('📌')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('📄')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('⬇️')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('🧹')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 				sent_message.react('🚪')
 					.catch((e: any) => {
-						return reject(`failed to set remote / ${e}`);
+						return reject(`failed to set remote: ${e}`);
 					});
 
 				const music_data = new MusicData(
@@ -224,7 +224,7 @@ export function createMusicMessage(
 
 				set_music_data(guild_object.id, music_data)
 					.catch((e: any) => {
-						return reject(`failed to set music data / ${e}`);
+						return reject(`failed to set music data: ${e}`);
 					});
 
 				return resolve(sent_message.id);
@@ -264,13 +264,13 @@ export function createMusicLyricsMessage(
 
 				set_music_data(guild_object.id, music_data)
 					.catch((e: any) => {
-						return reject(`failed to set music data / ${e}`);
+						return reject(`failed to set music data: ${e}`);
 					});
 
 				return resolve(sent_message_lyrics.id);
 			})
 			.catch(e => {
-				return reject(`failed to send message to channel / ${e}`);
+				return reject(`failed to send message to channel: ${e}`);
 			});
 	});
 }
@@ -342,11 +342,11 @@ export function updateMusicMessage(
 								return resolve(true);
 							})
 							.catch(e => {
-								return reject(`failed to edit messages / ${e}`);
+								return reject(`failed to edit messages: ${e}`);
 							});
 					})
 					.catch(e => {
-						return reject(`failed to fetch messages / ${e}`);
+						return reject(`failed to fetch messages: ${e}`);
 					});
 			}
 		}
@@ -392,11 +392,11 @@ export function updateMusicLyricsMessage(
 								return resolve(true);
 							})
 							.catch(e => {
-								return reject(`failed to edit messages / ${e}`);
+								return reject(`failed to edit messages: ${e}`);
 							});
 					})
 					.catch(e => {
-						return reject(`failed to fetch messages / ${e}`);
+						return reject(`failed to fetch messages: ${e}`);
 					});
 			}
 		}
@@ -647,7 +647,7 @@ export async function messageReply(
 
 	if (!isChannelDeleted(message.channel) && replyString !== null && replyString !== '') {
 		const sentMessage = await message.reply(replyString)
-			.catch(e => { return Promise.reject(`failed to send message / ${e}`); });
+			.catch(e => { return Promise.reject(`failed to send message: ${e}`); });
 
 		if (!sentMessage) {
 			return Promise.reject(`failed to send message`);
@@ -655,19 +655,25 @@ export async function messageReply(
 
 		if (deleteReply) {
 			const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
-			setTimeout(() => {
-				if (!sentMessage.deletable) {
-					sentMessage.delete()
-						.catch(e => { return Promise.reject(`2. failed to delete message / ${e}`); });
+			setTimeout(async () => {
+				if (isMessageDeleted(sentMessage)) {
+					const deletedMessage = await sentMessage
+						.delete()
+						.catch((e: any) => {
+							return Promise.reject(`failed to delete message: ${e}`);
+						});
+
+					if (deletedMessage) {
+						markMessageAsDeleted(deletedMessage);
+					}
 				}
 			}, delay);
-
 		}
 	}
 
 	if (deleteSource) {
 		const reaction = await message.react(status ? emotePass : emoteFail)
-			.catch(e => { return Promise.reject(`failed to react to message / ${e}`); });
+			.catch(e => { return Promise.reject(`failed to react to message: ${e}`); });
 
 		if (!reaction) {
 			return Promise.reject(`failed to react to message`);
@@ -679,7 +685,7 @@ export async function messageReply(
 				const deletedMessage = await message
 					.delete()
 					.catch((e: any) => {
-						return Promise.reject(`failed to delete message / ${e}`);
+						return Promise.reject(`failed to delete message: ${e}`);
 					});
 
 				if (deletedMessage) {
@@ -842,7 +848,7 @@ export async function removeEmptyVoiceChannels(
 								});
 							})
 							.catch(e => {
-								logger.log({ level: 'error', type: 'none', message: `failed to send message / ${e}` });
+								logger.log({ level: 'error', type: 'none', message: `failed to send message: ${e}` });
 							});
 						return true;
 					}

@@ -62,7 +62,7 @@ module.exports = async (
                         .catch(e => {
                             return resolve({
                                 result: false,
-                                value: `error while bulk delete / ${e}`
+                                value: `error while bulk delete: ${e}`
                             });
                         });
                 } else {
@@ -75,7 +75,7 @@ module.exports = async (
             .catch(e => {
                 return resolve({
                     result: false,
-                    value: `failed to focus / ${e}`
+                    value: `failed to focus: ${e}`
                 });
             });
     });

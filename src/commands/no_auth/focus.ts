@@ -69,7 +69,7 @@ module.exports = async (
 		`*${member_to_focus.user}, member ${message.author}, would like to talk in ` +
 		`private${focus_time === 0 ? '' : ` for ${focus_time}'`}*, do you **(yes / no)** ?`
 	)
-		.catch(e => { return Promise.reject(`failed to get approval / ${e}`); });
+		.catch(e => { return Promise.reject(`failed to get approval: ${e}`); });
 
 	if (!gotApproval) {
 		return Promise.reject('user declined the request');

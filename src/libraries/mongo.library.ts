@@ -216,7 +216,7 @@ export async function fetch_guild_music_queue(
     });
 }
 
-export async function fetch_guild_predata(
+export async function fetchGuildPredata(
     guild_id: string, member_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
@@ -273,7 +273,7 @@ export async function fetch_guild_predata(
     });
 }
 
-export async function fetch_guild_rest(
+export async function fetchGuildRest(
     guild_id: string
 ): Promise<GuildPrtl | undefined> {
     return new Promise((resolve, reject) => {
@@ -315,7 +315,7 @@ export async function fetch_guild_rest(
     });
 }
 
-export async function guild_exists(
+export async function guildExists(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -334,7 +334,7 @@ export async function guild_exists(
     });
 }
 
-export async function member_exists(
+export async function memberExists(
     guild_id: string, member_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -358,7 +358,7 @@ export async function member_exists(
     });
 }
 
-export async function update_guild(
+export async function updateGuild(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, key: string, value: any
 ): Promise<boolean> {
@@ -392,7 +392,7 @@ export async function update_guild(
 
 // CRUD guilds
 
-function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
+function createMemberList(guild_id: string, client: Client): MemberPrtl[] {
     const member_list: MemberPrtl[] = [];
 
     const guild = client.guilds.cache.find(guild => guild.id === guild_id);
@@ -441,12 +441,12 @@ function create_member_list(guild_id: string, client: Client): MemberPrtl[] {
     return member_list;
 }
 
-export async function insert_guild(
+export async function insertGuild(
     guild_id: string, client: Client
 ): Promise<boolean> {
     const id: string = guild_id;
     const portal_list: PortalChannelPrtl[] = [];
-    const member_list: MemberPrtl[] = create_member_list(guild_id, client);
+    const member_list: MemberPrtl[] = createMemberList(guild_id, client);
     const url_list: string[] = [];
     const role_list: GiveRolePrtl[] = [];
     const poll_list: string[] = [];
@@ -504,7 +504,7 @@ export async function insert_guild(
     });
 }
 
-export async function remove_guild(
+export async function removeGuild(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -527,7 +527,7 @@ export async function remove_guild(
 
 //
 
-export async function update_member(
+export async function updateMember(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, member_id: string, key: string, value: any
 ): Promise<boolean> {
@@ -565,7 +565,7 @@ export async function update_member(
     });
 }
 
-export async function update_entire_member(
+export async function updateEntireMember(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     guild_id: string, member_id: string, member: MemberPrtl
 ): Promise<boolean> {
@@ -603,7 +603,7 @@ export async function update_entire_member(
     });
 }
 
-export async function insert_member(
+export async function insertMember(
     guild_id: string, member_id: string
 ): Promise<boolean> {
     const new_member_portal = new MemberPrtl(
@@ -929,7 +929,7 @@ export async function remove_url(
                 }
             })
             .catch((e: any) => {
-                return reject(`did not execute database transaction / ${e}`);
+                return reject(`did not execute database transaction: ${e}`);
             });
     });
 }
@@ -1299,7 +1299,7 @@ export async function deleted_channel_sync(
                         const current_text = channel_to_remove;
 
                         if (guild_object.announcement === current_text.id) {
-                            update_guild(current_text.guild.id, 'announcement', 'null')
+                            updateGuild(current_text.guild.id, 'announcement', 'null')
                                 .then(r => {
                                     return r
                                         ? resolve(PortalChannelTypes.announcement)

@@ -118,7 +118,7 @@ module.exports = async (
 					.catch(e => {
 						return resolve({
 							result: true,
-							value: `failed to send message / ${e}`
+							value: `failed to send message: ${e}`
 						});
 					});
 
@@ -131,7 +131,7 @@ module.exports = async (
 			.catch((e: any) => {
 				return resolve({
 					result: false,
-					value: `could not access the server / ${e}`
+					value: `could not access the server: ${e}`
 				});
 			});
 	});
