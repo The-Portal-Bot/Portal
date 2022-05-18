@@ -49,7 +49,7 @@
         "@types/ws": "^8.5.3",
         "@types/yt-search": "^2.3.2",
         "@typescript-eslint/eslint-plugin": "^5.20.0",
-        "@typescript-eslint/parser": "^5.20.0",
+        "@typescript-eslint/parser": "^5.25.0",
         "eslint": "^8.14.0",
         "eslint-plugin-prettier": "^4.0.0",
         "nodemon": "^2.0.15",
