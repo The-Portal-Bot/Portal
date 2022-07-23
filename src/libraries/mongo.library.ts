@@ -1,5 +1,5 @@
 import { Client, TextChannel, VoiceChannel } from 'discord.js';
-import { Document } from 'mongoose';
+import { Document, UpdateWithAggregationPipeline } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
 import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
@@ -8,7 +8,7 @@ import { GiveRolePrtl } from '../types/classes/GiveRolePrtl.class';
 import { GuildPrtl, IGuildPrtl, MusicData } from '../types/classes/GuildPrtl.class';
 import { MemberPrtl } from '../types/classes/MemberPrtl.class';
 import { PollPrtl } from '../types/classes/PollPrtl.class';
-import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
+import { PortalChannelPrtl, IPortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
 import { Rank } from '../types/classes/TypesPrtl.interface';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
@@ -707,7 +707,7 @@ export async function update_portal(
 }
 
 export async function insert_portal(
-    guild_id: string, new_portal: PortalChannelPrtl
+    guild_id: string, new_portal: IPortalChannelPrtl
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         GuildPrtlMdl

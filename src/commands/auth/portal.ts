@@ -4,7 +4,7 @@ import { create_channel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_portal } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { PortalChannelPrtl } from "../../types/classes/PortalChannelPrtl.class";
+import { IPortalChannelPrtl, PortalChannelPrtl } from "../../types/classes/PortalChannelPrtl.class";
 import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -68,7 +68,7 @@ module.exports = {
                     const new_portal = new PortalChannelPrtl(r_channel, current_member.id,
                         true, portal_channel, voice_regex, [], false, null, guild_object.locale, true, true, 0, false);
 
-                    insert_portal(guild_object.id, new_portal)
+                    insert_portal(guild_object.id, new_portal as IPortalChannelPrtl)
                         .then(r_portal => {
                             if (r_portal) {
                                 return resolve({
