@@ -12,21 +12,21 @@
         "lint": "npx eslint . --ext .ts --fix"
     },
     "dependencies": {
-        "@discordjs/builders": "^0.13.0",
-        "@discordjs/opus": "^0.7.0",
-        "@discordjs/rest": "^0.4.1",
-        "@discordjs/voice": "^0.9.0",
+        "@discordjs/builders": "^1.0.0",
+        "@discordjs/opus": "^0.8.0",
+        "@discordjs/rest": "^1.0.0",
+        "@discordjs/voice": "^0.11.0",
         "@types/jsonfile": "^6.1.0",
-        "cheerio": "^1.0.0-rc.10",
+        "cheerio": "^1.0.0-rc.12",
         "core-util-is": "^1.0.3",
         "discord-api-types": "^0.36.3",
         "discord-ytdl-core": "^5.0.4",
         "discord.js": "^13.6.0",
         "dotenv": "^16.0.0",
         "eslint-config-prettier": "^8.5.0",
-        "ffmpeg-static": "^5.0.0",
+        "ffmpeg-static": "^5.0.2",
         "give-me-a-joke": "^0.5.1",
-        "jest": "^27.5.1",
+        "jest": "^28.1.3",
         "jsonfile": "^6.1.0",
         "lodash": "^4.17.21",
         "moment": "^2.29.3",
@@ -53,7 +53,7 @@
         "eslint": "^8.20.0",
         "eslint-plugin-prettier": "^4.0.0",
         "nodemon": "^2.0.15",
-        "typescript": "^4.6.3"
+        "typescript": "^4.7.4"
     },
     "optionalDependencies": {
         "fsevents": "^2.3.2"

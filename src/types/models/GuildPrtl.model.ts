@@ -92,4 +92,4 @@ const GuildPrtlSchm = new Schema(
     }
 );
 
-export default model<IGuildPrtl>('GuildPrtlSchm', GuildPrtlSchm);
+export default model < IGuildPrtl > ('GuildPrtlSchm', GuildPrtlSchm);
