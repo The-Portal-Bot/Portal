@@ -17,7 +17,7 @@
         "@discordjs/rest": "^0.4.1",
         "@discordjs/voice": "^0.9.0",
         "@types/jsonfile": "^6.1.0",
-        "cheerio": "^1.0.0-rc.10",
+        "cheerio": "^1.0.0-rc.12",
         "core-util-is": "^1.0.3",
         "discord-api-types": "^0.36.3",
         "discord-ytdl-core": "^5.0.4",
