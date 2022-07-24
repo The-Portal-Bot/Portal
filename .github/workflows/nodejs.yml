@@ -18,4 +18,5 @@ jobs:
           check-latest: true
       - run: npm install
       - run: npm ci
-      - run: npm run test
+      - run: npx jest
+      # - run: npm run test
