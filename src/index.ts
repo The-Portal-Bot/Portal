@@ -32,11 +32,11 @@ if (process.env.LOG) {
     logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
 
-const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
-const spam_cache: SpamCache[] = [];
+//
+// const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
+// const spam_cache: SpamCache[] = [];
 const client: Client = clientHandler();
 
-//
 const commands: any[] = [];
 commandConfig.forEach(category => {
     category.commands.forEach(async command => {
