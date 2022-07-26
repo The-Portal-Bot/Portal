@@ -8,7 +8,6 @@ import { clientHandler, connectToDiscord } from "./handlers/discord.handler";
 import { eventHandler } from "./handlers/event.handler";
 import { mongoHandler } from "./handlers/mongo.handler";
 import { logger } from './libraries/help.library';
-import { ActiveCooldowns, SpamCache } from "./types/classes/TypesPrtl.interface";
 
 dotenv.config();
 
@@ -17,12 +16,12 @@ if (process.env.DEBUG) {
 }
 
 if (!process.env.MONGO_URL) {
-    logger.error(new Error('No mongo url has been given'));
+    logger.error(new Error('mongo url is not defined'));
     process.exit(3);
 }
 
 if (!process.env.TOKEN) {
-    logger.error(new Error('No token has been given'));
+    logger.error(new Error('Discord token is not defined'));
     process.exit(4);
 }
 
@@ -61,8 +60,8 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
         console.error(error);
     }
 })();
-//
 
+//
 eventHandler(client);
 const mongo = mongoHandler(process.env.MONGO_URL);
 const discord = connectToDiscord(client, process.env.TOKEN);

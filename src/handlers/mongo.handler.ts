@@ -11,10 +11,17 @@ export async function mongoHandler(mongoUrl: string) {
 
     const connectOptions = {
         dbName: 'portal',
-        autoCreate: false,
-        connectTimeoutMS: 10000,
-        compressors: 'zlib'
+        compressors: 'zlib',
+        maxPoolSize: 50, 
+        wtimeoutMS: 2500,
+        useNewUrlParser: true
     }
+    // {
+    //     dbName: 'portal',
+    //     autoCreate: false,
+    //     connectTimeoutMS: 10000,
+    //     compressors: 'zlib'
+    // }
 
     return mongoose.connect(mongoUrl, connectOptions);
 }

@@ -50,7 +50,7 @@ module.exports = {
 
             const portal_options: GuildChannelCreateOptions = {
                 topic: `by Portal, channels on demand`,
-                type: ChannelTypes.GUILD_TEXT,
+                type: ChannelTypes.GUILD_VOICE,
                 bitrate: 32000,
                 userLimit: 1
             };
