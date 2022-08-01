@@ -15,6 +15,18 @@
                 }
             },
             {
+                "name": "ai",
+                "range": "none",
+                "time": 0,
+                "auth": false,
+                "premium": false,
+                "reply": true,
+                "delete": {
+                    "source": true,
+                    "reply": false
+                }
+            },
+            {
                 "name": "announce",
                 "range": "member",
                 "time": 2,
