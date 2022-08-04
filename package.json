@@ -30,7 +30,7 @@
         "jsonfile": "^6.1.0",
         "lodash": "^4.17.21",
         "moment": "^2.29.3",
-        "mongoose": "^6.5.0",
+        "mongoose": "^6.5.1",
         "openai": "^3.0.0",
         "optionator": "^0.9.1",
         "opusscript": "0.0.8",
