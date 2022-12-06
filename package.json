@@ -19,7 +19,7 @@
         "@types/jsonfile": "^6.1.0",
         "cheerio": "^1.0.0-rc.12",
         "core-util-is": "^1.0.3",
-        "discord-api-types": "^0.37.0",
+        "discord-api-types": "^0.37.21",
         "discord-ytdl-core": "^5.0.4",
         "discord.js": "^13.6.0",
         "dotenv": "^16.0.1",
