@@ -3,7 +3,7 @@ import { included_in_ignore_list } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_ignore, remove_ignore } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         .setDescription('ignore user or channel from spam'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
                 return resolve({

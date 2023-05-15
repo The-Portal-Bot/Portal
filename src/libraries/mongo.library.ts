@@ -1,5 +1,5 @@
-import { Client, TextChannel, VoiceChannel } from 'discord.js';
-import { Document, UpdateWithAggregationPipeline } from 'mongoose';
+import { ChannelType, Client, TextChannel, VoiceChannel } from 'discord.js';
+import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
 import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
@@ -8,7 +8,7 @@ import { GiveRolePrtl } from '../types/classes/GiveRolePrtl.class';
 import { GuildPrtl, IGuildPrtl, MusicData } from '../types/classes/GuildPrtl.class';
 import { MemberPrtl } from '../types/classes/MemberPrtl.class';
 import { PollPrtl } from '../types/classes/PollPrtl.class';
-import { PortalChannelPrtl, IPortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
+import { IPortalChannelPrtl, PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
 import { Rank } from '../types/classes/TypesPrtl.interface';
 import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
 import GuildPrtlMdl from '../types/models/GuildPrtl.model';
@@ -1262,7 +1262,7 @@ export async function deleted_channel_sync(
             .then(guild_object => {
                 if (guild_object) {
                     // check if it is a portal or portal-voice channel
-                    if (!channel_to_remove.isText()) {
+                    if (channel_to_remove.type !== ChannelType.GuildText) {
                         const current_voice = channel_to_remove;
                         guild_object.portal_list.some(p => {
                             if (p.id === current_voice.id) {

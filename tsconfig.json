@@ -2,9 +2,7 @@
     "compilerOptions": {
         "incremental": true,
         "target": "ES2019",
-        "lib": [
-            "es2020", "es7", "es2017.object", "dom"
-        ],
+        "lib": ["es2020", "es7", "es2017.object", "dom"],
         "module": "commonjs",
         "allowJs": false,
         "checkJs": false,
@@ -22,14 +20,6 @@
         "resolveJsonModule": true,
         "typeRoots": ["node_modules/@types"]
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts",
-        "**/*.spec.js",
-        "**/*.test.ts",
-        "**/*.test.js"
-    ]
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.js", "**/*.test.ts", "**/*.test.js"]
 }

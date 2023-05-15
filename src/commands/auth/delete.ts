@@ -1,6 +1,6 @@
 import { Message, TextChannel } from "discord.js";
 import { askForApproval, messageHelp } from "../../libraries/help.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         .setDescription('delete n number of messages'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length !== 1) {
                 return resolve({

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
 export interface MongoPromise {
 	matchedCount?: number; // Number of documents matched
 	modifiedCount?: number; // Number of documents modified
@@ -9,7 +6,7 @@ export interface MongoPromise {
 	upsertedCount?: number; // Number indicating how many documents had to be upserted. Will either be 0 or 1.
 }
 
-export interface ReturnPormise {
+export interface ReturnPromise {
 	result: boolean;
 	value: string;
 }

@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { messageHelp } from '../../libraries/help.library';
-import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 // const translate = require('translate')
@@ -13,7 +13,7 @@ module.exports = {
         .setDescription('translate given text'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             return resolve({
                 result: true,

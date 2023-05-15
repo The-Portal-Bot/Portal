@@ -6,7 +6,7 @@ import voca from 'voca';
 import { CountryCodes } from '../../data/lists/country_codes_iso.static';
 import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 
 const country_codes: { name: string; code: string; }[] = CountryCodes;
 
@@ -27,7 +27,7 @@ module.exports = {
         .setDescription('returns data about COVID19'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             let code: string | null = null;
 

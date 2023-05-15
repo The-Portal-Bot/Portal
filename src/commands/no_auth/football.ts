@@ -1,7 +1,7 @@
 import { RequestOptions } from 'https';
 import { getJsonFromString } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('returns football data'),
     async execute(
         // message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             // if (args.length < 3) {
             //     return resolve({

@@ -4,7 +4,7 @@ import { RequestOptions } from 'https';
 import voca from 'voca';
 import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,7 +12,7 @@ module.exports = {
         .setDescription('returns information about crypto currencies'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length === 0) {
                 return resolve({

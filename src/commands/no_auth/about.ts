@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { createEmded } from "../../libraries/help.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 const embeds = [
@@ -57,7 +57,7 @@ module.exports = {
         .setDescription('returns about Portal informaation'),
     async execute(
         message: Message
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         await message.channel.send({ embeds })
             .catch(e => {
                 return {

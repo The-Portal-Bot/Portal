@@ -1,15 +1,14 @@
-import { Channel, Client, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from "discord.js";
-import { ChannelTypes } from "discord.js/typings/enums";
+import { Channel, ChannelType, Client, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from "discord.js";
 import event_config_json from '../config.event.json';
 import { isMessageDeleted, isUserAuthorised, logger, markMessageAsDeleted, messageReply } from "../libraries/help.library";
 import { messageSpamCheck } from "../libraries/mod.library";
 import { fetchGuildPredata, fetchGuildRest, insertMember } from "../libraries/mongo.library";
 import { portalPreprocessor, commandDecypher } from "../libraries/preprocessor.library";
-import { ActiveCooldowns, ReturnPormise, SpamCache } from "../types/classes/TypesPrtl.interface";
+import { ActiveCooldowns, ReturnPromise, SpamCache } from "../types/classes/TypesPrtl.interface";
 import { commandLoader } from "./command.handler";
 
 async function eventLoader(event: string, args: any): Promise<void> {
-    const commandReturn: ReturnPormise = await require(`../events/${event}.event.js`)(args)
+    const commandReturn: ReturnPromise = await require(`../events/${event}.event.js`)(args)
         .catch((e: string) => {
             logger.error(`[event-rejected] ${event} | ${e}`);
         });
@@ -115,7 +114,7 @@ export async function eventHandler(client: Client, active_cooldowns: ActiveCoold
 
 async function handleCommand(client: Client, message: Message, active_cooldowns: ActiveCooldowns = { guild: [], member: [] }, spam_cache: SpamCache[] = []) {
     if (!message || !message.member || !message.guild) return;
-    if (message.channel.type === ChannelTypes.DM.toString() || message.author.bot) return;
+    if (message.channel.type === ChannelType.DM || message.author.bot) return;
 
     fetchGuildPredata(message.guild.id, message.author.id)
         .then(async guild_object => {

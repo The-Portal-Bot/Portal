@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { createEmded } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('returns your level'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
             if (!member_object) {

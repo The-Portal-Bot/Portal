@@ -3,7 +3,7 @@ import { createEmded, getJsonFromString, messageHelp } from "../../libraries/hel
 import { insert_poll } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { PollPrtl } from "../../types/classes/PollPrtl.class";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
@@ -11,7 +11,7 @@ const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣',
 function create_role_message(
     channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
     colour: ColorResolvable, poll_map: Field[], member_id: string
-): Promise<ReturnPormise> {
+): Promise<ReturnPromise> {
     return new Promise((resolve) => {
         const role_message_emb = createEmded(
             title,
@@ -81,7 +81,7 @@ module.exports = {
         .setDescription('create a poll'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
                 return resolve({

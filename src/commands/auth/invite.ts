@@ -1,6 +1,6 @@
 import { Message, TextChannel } from "discord.js";
 import { getJsonFromString, isMod, messageHelp } from "../../libraries/help.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         .setDescription('generate an invite link'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
                 return resolve({

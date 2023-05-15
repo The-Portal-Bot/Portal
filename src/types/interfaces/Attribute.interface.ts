@@ -8,7 +8,7 @@ import { updateGuild, updateMember, update_portal, update_voice } from '../../li
 import { GuildPrtl } from '../classes/GuildPrtl.class';
 import { MemberPrtl } from '../classes/MemberPrtl.class';
 import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
-import { Field, InterfaceBlueprint, ReturnPormise } from '../classes/TypesPrtl.interface';
+import { Field, InterfaceBlueprint, ReturnPromise } from '../classes/TypesPrtl.interface';
 import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
 
 const portal_url = 'https://portal-bot.xyz/docs';
@@ -46,7 +46,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'ann_announce';
 
@@ -110,7 +110,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'ann_announce';
 
@@ -187,7 +187,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'no_bots';
 
@@ -251,7 +251,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'no_bots';
 
@@ -346,7 +346,7 @@ const attributes: InterfaceBlueprint[] = [
         set: async (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'allowed_roles';
 
@@ -469,7 +469,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p', 'v'];
             const attr = 'allowed_roles';
 
@@ -556,7 +556,7 @@ const attributes: InterfaceBlueprint[] = [
         set: async (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'allowed_roles';
 
@@ -659,7 +659,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'render';
 
@@ -723,7 +723,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string// , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'render';
 
@@ -800,7 +800,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'ann_user';
 
@@ -864,7 +864,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'ann_user';
 
@@ -923,7 +923,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string //, member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'bitrate';
             const new_bitrate = Number(value);
@@ -975,7 +975,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: GuildMember, message: Message
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'kick_after';
 
@@ -1024,7 +1024,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'ban_after';
 
@@ -1077,7 +1077,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'prefix';
 
@@ -1124,7 +1124,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'mute_role';
 
@@ -1177,7 +1177,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'rank_speed';
 
@@ -1224,7 +1224,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'profanity_level';
 
@@ -1282,7 +1282,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'initial_role';
 
@@ -1360,7 +1360,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['g'];
             const attr = 'locale';
 
@@ -1423,7 +1423,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'locale';
 
@@ -1473,7 +1473,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'locale';
 
@@ -1524,7 +1524,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'position';
 
@@ -1585,7 +1585,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'regex_overwrite';
 
@@ -1662,7 +1662,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'regex_portal';
 
@@ -1715,7 +1715,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p', 'v'];
             const attr = 'regex_voice';
 
@@ -1755,7 +1755,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'regex';
 
@@ -1794,7 +1794,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
             guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['m'];
             const attr = 'regex';
 
@@ -1855,7 +1855,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
             portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['p'];
             const attr = 'user_limit_portal';
             const new_user_limit = Number(value);
@@ -1910,7 +1910,7 @@ const attributes: InterfaceBlueprint[] = [
         set: (
             voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
             portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
-        ): Promise<ReturnPormise> => {
+        ): Promise<ReturnPromise> => {
             const ctgr = ['v'];
             const attr = 'user_limit';
             const new_user_limit = Number(value);
@@ -2119,7 +2119,7 @@ export function get_attribute(
 export function set_attribute(
     voice_channel: VoiceChannel | undefined | null, guild_object: GuildPrtl,
     candidate: string, value: string, member: GuildMember, message: Message
-): Promise<ReturnPormise> {
+): Promise<ReturnPromise> {
     return new Promise((resolve) => {
         let voice_object: VoiceChannelPrtl | undefined = undefined;
         let portal_object: PortalChannelPrtl | undefined = undefined;
@@ -2189,7 +2189,7 @@ export function set_attribute(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 attributes[l]
                     .set(voice_channel, voice_object, portal_object, guild_object, value, member_object, message)
-                    .then((r: ReturnPormise) => {
+                    .then((r: ReturnPromise) => {
                         return resolve(r);
                     })
                     .catch((e: any) => {

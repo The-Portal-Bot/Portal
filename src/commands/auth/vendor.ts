@@ -4,13 +4,13 @@ import { createEmded, getJsonFromString, messageHelp } from "../../libraries/hel
 import { insert_vendor } from "../../libraries/mongo.library";
 import { GiveRole, GiveRolePrtl } from "../../types/classes/GiveRolePrtl.class";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function create_role_message(
     channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
     colour: ColorResolvable, role_emb: Field[], role_map: GiveRole[]
-): Promise<ReturnPormise> {
+): Promise<ReturnPromise> {
     return new Promise((resolve) => {
         const role_message_emb = createEmded(
             title, desc, colour, role_emb, null, null, null, null, null
@@ -76,7 +76,7 @@ module.exports = {
         .setDescription('remove user from role'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
                 return resolve({

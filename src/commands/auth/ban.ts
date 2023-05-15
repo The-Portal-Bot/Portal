@@ -1,35 +1,31 @@
-import { BanOptions, Message } from "discord.js";
-import { askForApproval, isMod, messageHelp } from "../../libraries/help.library";
-import { ban } from "../../libraries/user.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { BanOptions, Message } from 'discord.js';
+import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
+import { ban } from '../../libraries/user.library';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('ban')
-        .setDescription('bans given user'),
-    async execute(
-        message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    data: new SlashCommandBuilder().setName('ban').setDescription('bans given user'),
+    async execute(message: Message, args: string[]): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.member) {
                 return resolve({
                     result: false,
-                    value: 'message author could not be fetched'
+                    value: 'message author could not be fetched',
                 });
             }
 
             if (!isMod(message.member)) {
                 return resolve({
                     result: false,
-                    value: `you must be a Portal moderator to ban users`
+                    value: `you must be a Portal moderator to ban users`,
                 });
             }
 
             if (!message.guild) {
                 return resolve({
                     result: false,
-                    value: `user guild could not be fetched`
+                    value: `user guild could not be fetched`,
                 });
             }
 
@@ -40,7 +36,7 @@ module.exports = {
                 .trim();
 
             if (ban_reason === '') {
-                ban_reason = 'banned by admin'
+                ban_reason = 'banned by admin';
             }
 
             let ban_days = +args
@@ -56,7 +52,7 @@ module.exports = {
                 if (message.mentions.members.size === 0) {
                     return resolve({
                         result: false,
-                        value: messageHelp('commands', 'ban', `you must tag a member`)
+                        value: messageHelp('commands', 'ban', `you must tag a member`),
                     });
                 }
 
@@ -66,7 +62,7 @@ module.exports = {
                     if (message.member === member_to_ban) {
                         return resolve({
                             result: false,
-                            value: messageHelp('commands', 'ban', `you can't ban on yourself`)
+                            value: messageHelp('commands', 'ban', `you can't ban on yourself`),
                         });
                     }
 
@@ -74,60 +70,60 @@ module.exports = {
                         message,
                         message.member,
                         `*${message.member}, are you sure you want to ban ` +
-                        `member ${member_to_ban}*, do you **(yes / no)** ? reason : ${ban_reason}`
+                            `member ${member_to_ban}*, do you **(yes / no)** ? reason : ${ban_reason}`
                     )
-                        .then(result => {
+                        .then((result) => {
                             if (result) {
                                 const ban_options: BanOptions = {
                                     days: ban_days,
-                                    reason: ban_reason
+                                    reason: ban_reason,
                                 };
 
                                 ban(member_to_ban, ban_options)
-                                    .then(r => {
+                                    .then((r) => {
                                         return resolve({
                                             result: r,
                                             value: r
                                                 ? `${member_to_ban} has been banned by ${message.author} ` +
-                                                `for ${ban_days} ${ban_days > 1 ? 'days' : 'day'}, because: *${ban_reason}*`
-                                                : `${member_to_ban} is not bannable`
+                                                  `for ${ban_days} ${
+                                                      ban_days > 1 ? 'days' : 'day'
+                                                  }, because: *${ban_reason}*`
+                                                : `${member_to_ban} is not bannable`,
                                         });
                                     })
-                                    .catch(e => {
+                                    .catch((e) => {
                                         return resolve({
                                             result: false,
-                                            value: `failed to ban member ${member_to_ban}\n` +
-                                                `Portal's role must be higher than member you want to ban: ${e}`
+                                            value:
+                                                `failed to ban member ${member_to_ban}\n` +
+                                                `Portal's role must be higher than member you want to ban: ${e}`,
                                         });
                                     });
                             } else {
                                 return resolve({
                                     result: false,
-                                    value: `user ${member_to_ban} will not be banned`
+                                    value: `user ${member_to_ban} will not be banned`,
                                 });
                             }
                         })
-                        .catch(e => {
+                        .catch((e) => {
                             return resolve({
                                 result: false,
-                                value: `failed to ban: ${e}`
+                                value: `failed to ban: ${e}`,
                             });
                         });
-                }
-                else {
+                } else {
                     return resolve({
                         result: false,
-                        value: `could not find member`
+                        value: `could not find member`,
                     });
                 }
-
             } else {
                 return resolve({
                     result: false,
-                    value: `no user mentioned to ban`
+                    value: `no user mentioned to ban`,
                 });
             }
         });
-    }
+    },
 };
-

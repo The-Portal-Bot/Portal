@@ -3,7 +3,7 @@ import { create_channel, get_options, is_announcement_channel, is_music_channel,
 import { messageHelp } from "../../libraries/help.library";
 import { insert_url, remove_url } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         .setDescription('create URL only channel'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild)
                 return resolve({

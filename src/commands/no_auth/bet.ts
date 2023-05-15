@@ -5,7 +5,7 @@ import moment from 'moment';
 import { OpapGameIdEnum } from '../../data/enums/OpapGames.enum';
 import { createEmded, getJsonFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
         .setDescription('returns betting data'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             let game_code: number | undefined = undefined;
 

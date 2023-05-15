@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import Roll from 'roll';
 import { createEmded, maxString, messageHelp } from "../../libraries/help.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('rolls dice'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length > 0) {
                 let roll_command: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));

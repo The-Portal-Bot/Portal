@@ -5,7 +5,7 @@ import { NYTCategories } from '../../data/lists/news_categories.static';
 import { createEmded, getJsonFromString, maxString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { News } from '../../types/classes/NewYorkTime.class';
-import { Field, ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { Field, ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
 		.setDescription('returns news from New York Times'),
 	async execute(
 		message: Message, args: string[]
-	): Promise<ReturnPormise> {
+	): Promise<ReturnPromise> {
 		return new Promise((resolve) => {
 			const category = NYTCategories.find(c => c === args[0]);
 			let count = 4;

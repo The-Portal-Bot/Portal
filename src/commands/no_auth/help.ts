@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { createEmded, messageHelp } from "../../libraries/help.library";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../types/interfaces/Attribute.interface";
 import { get_command_guide, get_command_help, get_command_help_super } from "../../types/interfaces/Command.interface";
 import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../types/interfaces/Pipe.interface";
@@ -180,7 +180,7 @@ module.exports = {
 		.setDescription('returns help message'),
 	async execute(
 		message: Message, args: string[]
-	): Promise<ReturnPormise> {
+	): Promise<ReturnPromise> {
 		if (args.length === 0) {
 			const reply = await simpleReply(message).catch(e => { return Promise.reject(e) });
 			return { result: !!reply, value: '' };

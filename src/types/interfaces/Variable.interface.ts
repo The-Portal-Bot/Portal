@@ -79,7 +79,7 @@ const variables: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'creator_portal',
-		hover: 'creater of portal channel',
+		hover: 'creator of portal channel',
 		get: (
 			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
 			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: any, guild: Guild

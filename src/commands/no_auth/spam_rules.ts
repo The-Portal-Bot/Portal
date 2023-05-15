@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 import { createEmded } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import spam_config from "../../config.spam.json";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -11,7 +11,7 @@ module.exports = {
         .setDescription('returns the current spam rules'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl, client: Client
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const guild = client.guilds.cache
                 .find(g => g.id === message?.guild?.id);

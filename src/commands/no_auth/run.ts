@@ -3,7 +3,7 @@ import { regex_interpreter } from "../../libraries/guild.library";
 import { createEmded, maxString } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { VoiceChannelPrtl } from "../../types/classes/VoiceChannelPrtl.class";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         .setDescription('runs string given'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
                 return resolve({

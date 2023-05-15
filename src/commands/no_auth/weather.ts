@@ -5,7 +5,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function kelvin_to_celsius(kelvin: number): number {
@@ -30,7 +30,7 @@ module.exports = {
         .setDescription('returns data information'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length < 1)
                 return resolve({

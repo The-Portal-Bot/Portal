@@ -5,7 +5,7 @@ import { create_music_channel, delete_channel, is_announcement_channel, is_music
 import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
 import { set_music_data } from "../../libraries/mongo.library";
 import { GuildPrtl, MusicData } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,7 +13,7 @@ module.exports = {
         .setDescription('create music channel'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
                 return resolve({

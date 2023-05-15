@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 import { joinUserVoiceChannelByMessage } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('tell Portal to join your voice channel'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl, client: Client
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         const voiceConnection = await joinUserVoiceChannelByMessage(client, message, guild_object, true)
             .catch(e => { return Promise.reject(e); });
 

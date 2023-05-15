@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
-	CategoryChannel, CategoryChannelResolvable, Collection, Guild,
+	CategoryChannel, CategoryChannelResolvable, ChannelType, Collection, Guild,
 	GuildChannelCreateOptions,
 	GuildMember, Message, MessageCollector, OverwriteResolvable, Role, TextChannel, VoiceBasedChannel, VoiceChannel, VoiceState
 } from "discord.js";
-import { ChannelTypes } from "discord.js/typings/enums";
 import moment from "moment";
 import voca from 'voca';
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
@@ -42,7 +41,7 @@ function inline_operator(
 
 export function get_options(
 	guild: Guild, topic: string, can_write: boolean = true,
-	parent?: CategoryChannelResolvable, type: ChannelTypes = ChannelTypes.GUILD_TEXT
+	parent?: CategoryChannelResolvable, type: ChannelType = ChannelType.GuildText
 ): GuildChannelCreateOptions {
 	return {
 		parent: parent,
@@ -57,8 +56,6 @@ export function get_options(
 		nsfw: false
 	} as GuildChannelCreateOptions;
 }
-
-//
 
 export function included_in_portal_guilds(guild_id: string, guild_list: GuildPrtl[]): boolean {
 	return guild_list ? guild_list.some(g => g.id === guild_id) : false;
@@ -88,21 +85,17 @@ export function is_announcement_channel(channel_id: string, guild_object: GuildP
 	return guild_object ? guild_object.announcement === channel_id : false;
 }
 
-//
-
 export function get_role(guild: Guild | null, role_name_or_name: string): Role | undefined {
 	return guild?.roles.cache.find(cached_role =>
 		cached_role.id === role_name_or_name || cached_role.name === role_name_or_name
 	);
 }
 
-//
-
 export async function create_channel(
 	guild: Guild, channel_name: string, channel_options: GuildChannelCreateOptions,
 	channel_category: string | null
 ): Promise<string> {
-	const newGuildChannel = await guild.channels.create(channel_name, channel_options);
+	const newGuildChannel = await guild.channels.create({ ...channel_options, name: channel_name });
 
 	if (!newGuildChannel) {
 		return Promise.reject(new Error('failed to create new channel'));
@@ -110,7 +103,7 @@ export async function create_channel(
 
 	if (typeof channel_category === "string") { // create category
 		const newGuildCategoryChannel = await guild.channels
-			.create(channel_name, { type: ChannelTypes.GUILD_CATEGORY });
+			.create({ name: channel_name, type: ChannelType.GuildCategory }); // channel_name
 
 		if (!newGuildCategoryChannel) {
 			return Promise.reject(new Error('failed to create new category channel'));
@@ -151,7 +144,7 @@ function createVoiceOptions(
 	}
 
 	return {
-		type: ChannelTypes.GUILD_VOICE,
+		type: ChannelType.GuildVoice,
 		bitrate: 96000,
 		userLimit: portalObject.user_limit_portal,
 		parent: state.channel?.parent
@@ -200,7 +193,7 @@ export async function create_music_channel(
 	let newMusicCategoryGuildChannel: CategoryChannel | undefined;
 	if (music_category && typeof music_category === 'string') { // with category		
 		newMusicCategoryGuildChannel = await guild.channels
-			.create(music_category, { type: ChannelTypes.GUILD_CATEGORY })
+			.create(music_category, { type: ChannelType.GuildCategory })
 			.catch(e => {
 				return Promise.reject(`faild to create music category: ${e}`);
 			});
@@ -214,7 +207,7 @@ export async function create_music_channel(
 			`${music_channel}`,
 			{
 				parent: newMusicCategoryGuildChannel,
-				type: ChannelTypes.GUILD_TEXT,
+				type: ChannelType.GuildText,
 				topic: 'play:▶️, pause:⏸, skip:⏭, pin last:📌, lyrics:📄, queue text:⬇️, clear queue:🧹, leave:🚪' // , vol dwn ➖, vol up ➕
 			},
 		)
@@ -279,7 +272,7 @@ export async function create_focus_channel(
 	}
 
 	const voice_options: GuildChannelCreateOptions = {
-		type: ChannelTypes.GUILD_VOICE,
+		type: ChannelType.GuildVoice,
 		bitrate: 96000,
 		userLimit: 2
 	};
@@ -320,8 +313,6 @@ export async function create_focus_channel(
 		? 'private room successfully created'
 		: 'focus channel successfully created';
 }
-
-//
 
 export async function delete_channel(
 	type: PortalChannelTypes, channel_to_delete: VoiceChannel | TextChannel,
@@ -446,8 +437,6 @@ export async function delete_channel(
 
 	return true;
 }
-
-//
 
 export async function generate_channel_name(
 	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],

@@ -4,7 +4,7 @@ import { delete_channel, included_in_voice_list, regex_interpreter } from "../..
 import { messageHelp } from "../../libraries/help.library";
 import { update_voice } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
         .setDescription('force updates channel you are in to force a rename'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.member) {
                 return resolve({

@@ -5,7 +5,7 @@
 import { Message } from "discord.js";
 import { JokeEnum } from "../../data/enums/Joke.enum";
 import { getKeyFromEnum } from "../../libraries/help.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 const giveMeAJoke = require('give-me-a-joke');
@@ -16,7 +16,7 @@ module.exports = {
         .setDescription('returns a joke'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const category = getKeyFromEnum(args[0], JokeEnum);
 

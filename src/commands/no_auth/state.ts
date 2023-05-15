@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 import { createEmded } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('returns server\'s state'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl, client: Client
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const guild = client.guilds.cache
                 .find(g => g.id === message?.guild?.id);

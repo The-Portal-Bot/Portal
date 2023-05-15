@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { createEmded, messageHelp } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { MemberPrtl } from "../../types/classes/MemberPrtl.class";
-import { Field, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function compare(
@@ -21,7 +21,7 @@ module.exports = {
         .setDescription('returns server\'s leaderboard'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const member_list = guild_object.member_list;
 

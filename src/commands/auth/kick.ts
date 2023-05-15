@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { askForApproval, isMod, messageHelp } from "../../libraries/help.library";
 import { kick } from "../../libraries/user.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('kick a user'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.member) {
                 return resolve({

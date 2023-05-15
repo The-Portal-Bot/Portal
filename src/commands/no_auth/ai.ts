@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
 import { Configuration, OpenAIApi } from "openai";
 import { createEmded, messageHelp } from '../../libraries/help.library';
-import { ReturnPormise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('returns a response to you question'),
     async execute(
         message: Message, args: string[]
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise(async (resolve) => {
             if (process.env.OPENAI_API_KEY) {
                 return resolve({

@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { create_focus_channel, included_in_voice_list, moveMembersBack } from "../../libraries/guild.library";
 import { askForApproval, messageHelp } from "../../libraries/help.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
 		.setDescription('creates a dedicated channel for two users to privately talk in'),
 	async execute(
 		message: Message, args: string[], guild_object: GuildPrtl
-	): Promise<ReturnPormise> {
+	): Promise<ReturnPromise> {
 		if (!message.member) {
 			return Promise.reject('message author could not be fetched');
 		}

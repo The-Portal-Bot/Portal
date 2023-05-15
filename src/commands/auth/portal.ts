@@ -1,11 +1,10 @@
-import { GuildChannelCreateOptions, Message } from "discord.js";
-import { ChannelTypes } from "discord.js/typings/enums";
+import { ChannelType, GuildChannelCreateOptions, Message } from "discord.js";
 import { create_channel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_portal } from "../../libraries/mongo.library";
 import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
 import { IPortalChannelPrtl, PortalChannelPrtl } from "../../types/classes/PortalChannelPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -14,7 +13,7 @@ module.exports = {
         .setDescription('create portal channel'),
     async execute(
         message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
+    ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length === 0) {
                 return resolve({
@@ -49,8 +48,9 @@ module.exports = {
             }
 
             const portal_options: GuildChannelCreateOptions = {
+                name: 'portal',
                 topic: `by Portal, channels on demand`,
-                type: ChannelTypes.GUILD_VOICE,
+                type: ChannelType.GuildVoice,
                 bitrate: 32000,
                 userLimit: 1
             };
