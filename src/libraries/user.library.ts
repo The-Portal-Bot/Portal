@@ -6,8 +6,8 @@ import { Rank } from "../types/classes/PTypes.interface";
 import { timeElapsed } from './help.library';
 import { updateEntireMember, updateMember } from "./mongo.library";
 
-export function give_role_from_rankup(
-    member_prtl: PMember, member: GuildMember, ranks: Rank[], guild: Guild
+export function giveRoleFromRankUp(
+    pMember: PMember, member: GuildMember, ranks: Rank[], guild: Guild
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         if (!ranks) {
@@ -15,7 +15,7 @@ export function give_role_from_rankup(
         }
 
         const new_rank = ranks
-            .find(r => r.level === member_prtl.level);
+            .find(r => r.level === pMember.level);
 
         if (!new_rank) {
             return resolve(false);
@@ -59,21 +59,21 @@ export function calculate_rank(
 }
 
 export function add_points_time(
-    member_prtl: PMember, rank_speed: number
+    pMember: PMember, rank_speed: number
 ): number {
-    if (!member_prtl.timestamp) {
-        return member_prtl.points;
+    if (!pMember.timestamp) {
+        return pMember.points;
     }
 
-    const voice_time = timeElapsed(member_prtl.timestamp, 0);
+    const voice_time = timeElapsed(pMember.timestamp, 0);
 
-    member_prtl.points += Math.round(voice_time.remaining_sec * RankSpeedValueList[rank_speed] * 0.5);
-    member_prtl.points += Math.round(voice_time.remaining_min * RankSpeedValueList[rank_speed] * 30 * 1.15);
-    member_prtl.points += Math.round(voice_time.remaining_hrs * RankSpeedValueList[rank_speed] * 30 * 30 * 1.25);
+    pMember.points += Math.round(voice_time.remaining_sec * RankSpeedValueList[rank_speed] * 0.5);
+    pMember.points += Math.round(voice_time.remaining_min * RankSpeedValueList[rank_speed] * 30 * 1.15);
+    pMember.points += Math.round(voice_time.remaining_hrs * RankSpeedValueList[rank_speed] * 30 * 30 * 1.25);
 
-    member_prtl.timestamp = null;
+    pMember.timestamp = null;
 
-    return member_prtl.points;
+    return pMember.points;
 }
 
 export function update_timestamp(
@@ -81,23 +81,23 @@ export function update_timestamp(
 ): Promise<number | boolean> {
     return new Promise((resolve, reject) => {
         if (voiceState.member && !voiceState.member.user.bot) {
-            const member_prtl = guild_object.member_list
+            const pMember = guild_object.member_list
                 .find(m =>
                     voiceState && voiceState.member && m.id === voiceState.member.id
                 );
 
-            if (!member_prtl) {
+            if (!pMember) {
                 return resolve(false);
             }
 
             const ranks = guild_object.ranks;
             const member = voiceState.member;
             const speed = guild_object.rank_speed;
-            const cached_level = member_prtl.level;
+            const cached_level = pMember.level;
 
-            if (!member_prtl.timestamp) {
-                member_prtl.timestamp = new Date();
-                updateMember(voiceState.guild.id, member.id, 'timestamp', member_prtl.timestamp)
+            if (!pMember.timestamp) {
+                pMember.timestamp = new Date();
+                updateMember(voiceState.guild.id, member.id, 'timestamp', pMember.timestamp)
                     .then(() => {
                         return resolve(false);
                     })
@@ -105,16 +105,16 @@ export function update_timestamp(
                         return reject(`failed to update member: ${e}`);
                     });
             } else {
-                member_prtl.points = add_points_time(member_prtl, speed);
-                member_prtl.level = calculate_rank(member_prtl);
-                member_prtl.timestamp = null;
+                pMember.points = add_points_time(pMember, speed);
+                pMember.level = calculate_rank(pMember);
+                pMember.timestamp = null;
 
-                updateEntireMember(voiceState.guild.id, member.id, member_prtl)
+                updateEntireMember(voiceState.guild.id, member.id, pMember)
                     .then(() => {
-                        give_role_from_rankup(member_prtl, member, ranks, voiceState.guild)
+                        giveRoleFromRankUp(pMember, member, ranks, voiceState.guild)
                             .then(() => {
-                                if (member_prtl.level > cached_level) {
-                                    return resolve(member_prtl.level);
+                                if (pMember.level > cached_level) {
+                                    return resolve(pMember.level);
                                 } else {
                                     return resolve(false);
                                 }
@@ -167,11 +167,11 @@ export function add_points_message(
 }
 
 export function kick(
-    member_to_kick: GuildMember, kick_reason: string
+    memberToKick: GuildMember, kick_reason: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        if (member_to_kick.kickable) {
-            member_to_kick
+        if (memberToKick.kickable) {
+            memberToKick
                 .kick(kick_reason)
                 .then(() => {
                     return resolve(true);

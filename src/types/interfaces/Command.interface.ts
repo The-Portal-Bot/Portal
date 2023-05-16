@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
@@ -106,8 +106,8 @@ const commands: InterfaceBlueprint[] = [
 		set: null
 	},
 	{
-		name: 'leaderboard',
-		hover: 'get current leaderboard',
+		name: 'leader board',
+		hover: 'get current leader board',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
@@ -233,7 +233,7 @@ const commands: InterfaceBlueprint[] = [
 	},
 	{
 		name: 'weather',
-		hover: 'get current weather forcast',
+		hover: 'get current weather forecast',
 		auth: AuthEnum.none,
 		get: null,
 		set: null
@@ -247,7 +247,7 @@ const commands: InterfaceBlueprint[] = [
 	}
 ];
 
-export function is_command(candidate: string): string {
+export function isCommand(candidate: string): string {
 	for (let i = 0; i < commands.length; i++) {
 		const sub_str = String(candidate)
 			.substring(1, (String(commands[i].name).length + 1));
@@ -260,8 +260,8 @@ export function is_command(candidate: string): string {
 	return '';
 }
 
-export function get_command_guide(): MessageEmbed {
-	const cmmd_array: Field[] = [
+export function getCommandGuide(): EmbedBuilder {
+	const commandArray: Field[] = [
 		{
 			emote: '1. Go to any channel',
 			role: '*you can write commands in any channel and Portal will see them*',
@@ -285,7 +285,7 @@ export function get_command_guide(): MessageEmbed {
 		'are the way you communicate with Portal.\n' +
 		'how to use commands',
 		'#9775A9',
-		cmmd_array,
+		commandArray,
 		null,
 		null,
 		null,
@@ -294,13 +294,13 @@ export function get_command_guide(): MessageEmbed {
 	);
 }
 
-export function get_command_help(): MessageEmbed[] {
-	const cmmd_array: Field[][] = [];
+export function getCommandHelp(): EmbedBuilder[] {
+	const commandArray: Field[][] = [];
 
 	for (let l = 0; l <= commands.length / 25; l++) {
-		cmmd_array[l] = []
+		commandArray[l] = []
 		for (let i = (24 * l); i < commands.length && i < 24 * (l + 1); i++) {
-			cmmd_array[l]
+			commandArray[l]
 				.push({
 					emote: `${i + 1}. ${commands[i].name}`,
 					role: `[hover or click](${portal_url}` +
@@ -310,8 +310,8 @@ export function get_command_help(): MessageEmbed[] {
 		}
 	}
 
-	return cmmd_array
-		.map((cmmd, index) => {
+	return commandArray
+		.map((command, index) => {
 			if (index === 0) {
 				return createEmbed(
 					'Commands',
@@ -319,7 +319,7 @@ export function get_command_help(): MessageEmbed[] {
 					'are the way you communicate with Portal.\n' +
 					'Prefix: ' + command_prefix,
 					'#9775A9',
-					cmmd_array[0],
+					commandArray[0],
 					null,
 					null,
 					null,
@@ -331,7 +331,7 @@ export function get_command_help(): MessageEmbed[] {
 					null,
 					null,
 					'#9775A9',
-					cmmd_array[index],
+					commandArray[index],
 					null,
 					null,
 					null,
@@ -342,7 +342,7 @@ export function get_command_help(): MessageEmbed[] {
 		});
 }
 
-export function get_command_help_super(candidate: string): MessageEmbed | boolean {
+export function getCommandHelpSuper(candidate: string): EmbedBuilder | boolean {
 	for (let i = 0; i < commands.length; i++) {
 		if (commands[i].name === candidate) {
 			return createEmbed(

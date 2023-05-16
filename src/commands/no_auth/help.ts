@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { createEmbed, messageHelp } from "../../libraries/help.library";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../types/interfaces/Attribute.interface";
-import { get_command_guide, get_command_help, get_command_help_super } from "../../types/interfaces/Command.interface";
+import { getCommandGuide, getCommandHelp, getCommandHelpSuper } from "../../types/interfaces/Command.interface";
 import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../types/interfaces/Pipe.interface";
 import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../types/interfaces/Structure.interface";
 import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../types/interfaces/Variable.interface";
@@ -95,7 +95,7 @@ async function propertyReply(message: Message, args: string[]) {
 
 	switch (args[0]) {
 		case 'commands':
-			embed_array = get_command_help();
+			embed_array = getCommandHelp();
 			break;
 		case 'variables':
 			embed_array = get_variable_help();
@@ -119,7 +119,7 @@ async function propertyReply(message: Message, args: string[]) {
 
 		return true;
 	} else {
-		let detailed = get_command_help_super(args[0]);
+		let detailed = getCommandHelpSuper(args[0]);
 		if (!detailed) {
 			detailed = get_variable_help_super(args[0]);
 			if (!detailed) {
@@ -150,7 +150,7 @@ async function guideReply(message: Message, args: string[]) {
 
 	switch (args[0]) {
 		case 'commands':
-			guide = get_command_guide();
+			guide = getCommandGuide();
 			break;
 		case 'variables':
 			guide = get_variable_guide();
