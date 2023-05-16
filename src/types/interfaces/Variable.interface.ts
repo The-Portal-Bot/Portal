@@ -1,12 +1,12 @@
 import { Guild, MessageEmbed, VoiceChannel } from 'discord.js';
 import moment from 'moment';
 import { AuthEnum } from '../../data/enums/Admin.enum';
-import { createEmded } from '../../libraries/help.library';
+import { createEmbed } from '../../libraries/help.library';
 import { get_status_list } from '../../libraries/status.library';
-import { GuildPrtl } from '../classes/GuildPrtl.class';
-import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
-import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
-import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
+import { PGuild } from '../classes/PGuild.class';
+import { PPortalChannel } from '../classes/PPortalChannel.class';
+import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
+import { PVoiceChannel } from '../classes/PVoiceChannel.class';
 
 const portal_url = 'https://portal-bot.xyz/docs';
 const interpreter_url = '/interpreter/objects';
@@ -17,8 +17,8 @@ const variables: InterfaceBlueprint[] = [
 		name: '##',
 		hover: 'number of voice channel with #',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: any, guild: Guild
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
+			portal_object_list: PPortalChannel[] | undefined | null // , guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
 				return 'N/A';
@@ -49,8 +49,8 @@ const variables: InterfaceBlueprint[] = [
 		name: '#',
 		hover: 'number of voice channel',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: any, guild: Guild
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
+			portal_object_list: PPortalChannel[] | undefined | null // , guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
 				return 'N/A';
@@ -81,8 +81,8 @@ const variables: InterfaceBlueprint[] = [
 		name: 'creator_portal',
 		hover: 'creator of portal channel',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-			portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: any, guild: Guild
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
+			portal_object_list: PPortalChannel[] | undefined | null // , guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
 				return 'N/A';
@@ -109,7 +109,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'creator_voice',
 		hover: 'creator of voice channel',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -125,7 +125,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'date',
 		hover: 'current date',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -141,7 +141,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'day_number',
 		hover: 'current day in number format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -157,7 +157,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'day_name',
 		hover: 'current day in text format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -172,7 +172,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'month_number',
 		hover: 'current month in number format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -187,7 +187,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'month_name',
 		hover: 'current month in text format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -203,7 +203,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'year',
 		hover: 'current year',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -218,7 +218,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'time',
 		hover: 'current time',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -233,7 +233,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'hour',
 		hover: 'current hour',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -248,7 +248,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'minute',
 		hover: 'current minute',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -263,7 +263,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'second',
 		hover: 'current second',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_object) {
@@ -368,7 +368,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'status_count',
 		hover: 'number of unique statuses',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_channel) {
@@ -402,7 +402,7 @@ const variables: InterfaceBlueprint[] = [
 		name: 'status_list',
 		hover: 'all statuses names',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
+			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
 			// portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: any, guild: Guild
 		) => {
 			if (!voice_channel) {
@@ -461,7 +461,7 @@ export function get_variable_guide(): MessageEmbed {
 		}
 	];
 
-	return createEmded(
+	return createEmbed(
 		'Variable Guide',
 		'[Variables](' + portal_url + interpreter_url + '/variables/description) ' +
 		'are immutable and live data that return information about your current voice channel.\n' +
@@ -518,7 +518,7 @@ export function get_variable_help(): MessageEmbed[] {
 
 	return vrbl_array.map((cmmd, index) => {
 		if (index === 0) {
-			return createEmded(
+			return createEmbed(
 				'Variables',
 				'[Variables](' + portal_url + interpreter_url + '/variables/description) ' +
 				'are immutable and live data that return information about your current voice channel.\n' +
@@ -532,7 +532,7 @@ export function get_variable_help(): MessageEmbed[] {
 				null
 			);
 		} else {
-			return createEmded(
+			return createEmbed(
 				null,
 				null,
 				'#1BE7FF',
@@ -550,7 +550,7 @@ export function get_variable_help(): MessageEmbed[] {
 export function get_variable_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < variables.length; i++) {
 		if (variables[i].name === candidate) {
-			return createEmded(
+			return createEmbed(
 				variables[i].name,
 				null,
 				'#1BE7FF',
@@ -572,8 +572,8 @@ export function get_variable_help_super(candidate: string): MessageEmbed | boole
 }
 
 export function get_variable(
-	voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-	portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild, vrbl: string
+	voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
+	portal_object_list: PPortalChannel[] | undefined | null, guild_object: PGuild, guild: Guild, vrbl: string
 ): any {
 	for (let l = 0; l < variables.length; l++) {
 		if (vrbl === variables[l].name) {

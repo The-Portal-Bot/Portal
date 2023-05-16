@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
-import { createEmded } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import spam_config from "../../config.spam.json";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -10,7 +10,7 @@ module.exports = {
         .setName('spam_rules')
         .setDescription('returns the current spam rules'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl, client: Client
+        message: Message, args: string[], guild_object: PGuild, client: Client
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const guild = client.guilds.cache
@@ -40,7 +40,7 @@ module.exports = {
             message.channel
                 .send({
                     embeds: [
-                        createEmded(
+                        createEmbed(
                             'Spam Rules',
                             rules,
                             '#006996',

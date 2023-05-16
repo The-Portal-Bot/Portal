@@ -5,7 +5,7 @@
 import { Message } from "discord.js";
 import { JokeEnum } from "../../data/enums/Joke.enum";
 import { getKeyFromEnum } from "../../libraries/help.library";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 const giveMeAJoke = require('give-me-a-joke');

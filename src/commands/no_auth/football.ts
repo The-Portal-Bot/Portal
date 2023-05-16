@@ -1,7 +1,7 @@
 import { RequestOptions } from 'https';
 import { getJsonFromString } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {

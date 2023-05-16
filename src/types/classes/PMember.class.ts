@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export class MemberPrtl {
+export class PMember {
 	public id: string;
 	public level: number;
 	public rank: number;
@@ -31,7 +31,7 @@ export class MemberPrtl {
 	}
 }
 
-export interface IMemberPrtl extends Document {
+export interface IPMember extends Document {
 	id: string;
 	level: number;
 	rank: number;

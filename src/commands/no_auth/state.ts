@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
-import { createEmded } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         .setName('state')
         .setDescription('returns server\'s state'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl, client: Client
+        message: Message, args: string[], guild_object: PGuild, client: Client
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const guild = client.guilds.cache
@@ -152,7 +152,7 @@ module.exports = {
             message.channel
                 .send({
                     embeds: [
-                        createEmded(
+                        createEmbed(
                             'State of Portal',
                             null,
                             '#eba000',

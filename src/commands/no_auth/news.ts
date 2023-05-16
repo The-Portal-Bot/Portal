@@ -2,10 +2,10 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import { NYTCategories } from '../../data/lists/news_categories.static';
-import { createEmded, getJsonFromString, maxString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJsonFromString, maxString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
 import { News } from '../../types/classes/NewYorkTime.class';
-import { Field, ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -106,7 +106,7 @@ module.exports = {
 					message.channel
 						.send({
 							embeds: [
-								createEmded(
+								createEmbed(
 									// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 									`News ${args[0]} | ${moment(json.last_updated).format('DD/MM/YY hh:mm')}`,
 									'powered by NYTimes',

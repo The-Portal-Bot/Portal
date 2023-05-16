@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { messageHelp } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 // const translate = require('translate')

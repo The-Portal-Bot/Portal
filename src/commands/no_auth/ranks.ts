@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import { createEmded } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
 		.setName('ranks')
 		.setDescription('returns server ranks'),
 	async execute(
-		message: Message, args: string[], guild_object: GuildPrtl
+		message: Message, args: string[], guild_object: PGuild
 	): Promise<ReturnPromise> {
 		return new Promise((resolve) => {
 			if (guild_object.ranks && guild_object.ranks.length > 0) {
@@ -27,7 +27,7 @@ module.exports = {
 				message.channel
 					.send({
 						embeds: [
-							createEmded(
+							createEmbed(
 								'Ranking System',
 								null,
 								'#FF4500',

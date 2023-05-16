@@ -1,7 +1,7 @@
 import { BanOptions, Message } from 'discord.js';
 import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
 import { ban } from '../../libraries/user.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {

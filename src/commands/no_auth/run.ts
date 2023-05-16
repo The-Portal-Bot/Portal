@@ -1,9 +1,9 @@
 import { Message, VoiceChannel } from "discord.js";
 import { regex_interpreter } from "../../libraries/guild.library";
-import { createEmded, maxString } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { VoiceChannelPrtl } from "../../types/classes/VoiceChannelPrtl.class";
-import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed, maxString } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { PVoiceChannel } from "../../types/classes/PVoiceChannel.class";
+import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
         .setName('run')
         .setDescription('runs string given'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
@@ -31,7 +31,7 @@ module.exports = {
             const current_voice = message.member.voice;
             const current_voice_channel = current_voice.channel;
 
-            let voice_object: VoiceChannelPrtl | null = null;
+            let voice_object: PVoiceChannel | null = null;
 
             if (current_voice_channel) {
                 for (let i = 0; i < guild_object.portal_list.length; i++) {
@@ -46,7 +46,7 @@ module.exports = {
 
             message.channel.send({
                 embeds: [
-                    createEmded(
+                    createEmbed(
                         'executing: ' + args.join(' '),
                         args.join(' '),
                         '#00ffb3',
@@ -66,7 +66,7 @@ module.exports = {
                         sent_message
                             .edit({
                                 embeds: [
-                                    createEmded(
+                                    createEmbed(
                                         'Text Interpreter',
                                         null,
                                         '#00ffb3',

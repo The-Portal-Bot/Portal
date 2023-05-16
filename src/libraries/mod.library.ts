@@ -3,8 +3,8 @@ import moment from "moment";
 import config_spam from '../config.spam.json';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { ProfaneWords } from '../data/lists/profane_words.static';
-import { GuildPrtl } from '../types/classes/GuildPrtl.class';
-import { Language, SpamCache } from '../types/classes/TypesPrtl.interface';
+import { PGuild } from '../types/classes/PGuild.class';
+import { Language, SpamCache } from '../types/classes/PTypes.interface';
 import { get_role } from './guild.library';
 import { isMessageDeleted, isWhitelist, logger, markMessageAsDeleted, messageReply } from './help.library';
 import { updateMember } from './mongo.library';
@@ -16,10 +16,10 @@ const profane_words: Language = <Language>ProfaneWords;
    * Determine if a string contains profane words
    */
 export function isProfane(
-    canditate: string, profanity_level: number
+    candidate: string, profanity_level: number
 ): string[] {
     const gr: string[] = profane_words.gr.filter((word: string) => {
-        return canditate.toLowerCase() === word.toLowerCase();
+        return candidate.toLowerCase() === word.toLowerCase();
     });
 
     const en = profane_words.en.filter((word: string) => {
@@ -28,7 +28,7 @@ export function isProfane(
             : `\\b(\\w*${word}\\w*)\\b`, 'gi'
         );
 
-        return word_exp.test(canditate);
+        return word_exp.test(candidate);
     });
 
     const de = profane_words.de.filter((word: string) => {
@@ -37,7 +37,7 @@ export function isProfane(
             : `\\b(\\w*${word}\\w*)\\b`, 'gi'
         );
 
-        return word_exp.test(canditate);
+        return word_exp.test(candidate);
     });
 
     return (gr.length > 0) && (en.length > 0) && (de.length > 0)
@@ -49,7 +49,7 @@ export function isProfane(
    * Determine if a user is spamming
    */
 export function messageSpamCheck(
-    message: Message, guild_object: GuildPrtl, spamCache: SpamCache[]
+    message: Message, guild_object: PGuild, spamCache: SpamCache[]
 ): void {
     if (isWhitelist(message.member)) {
         return;
@@ -65,7 +65,7 @@ export function messageSpamCheck(
                 last_message: message.content,
                 timestamp: new Date(),
                 spam_fouls: 1,
-                dupl_fouls: 1
+                duplicate_fouls: 1
             });
 
         return;
@@ -76,7 +76,7 @@ export function messageSpamCheck(
         memberSpamCache.last_message = message.content;
         memberSpamCache.timestamp = new Date();
         memberSpamCache.spam_fouls = 0;
-        memberSpamCache.dupl_fouls = 0;
+        memberSpamCache.duplicate_fouls = 0;
 
         return;
     }
@@ -86,20 +86,20 @@ export function messageSpamCheck(
     if (elapsed_time.asSeconds() > config_spam.message_interval / 1000) {
         memberSpamCache.timestamp = null;
         memberSpamCache.spam_fouls = 0;
-        memberSpamCache.dupl_fouls = 0;
+        memberSpamCache.duplicate_fouls = 0;
 
         return;
     }
 
     if (memberSpamCache.last_message === message.content) {
         memberSpamCache.spam_fouls++;
-        memberSpamCache.dupl_fouls++;
+        memberSpamCache.duplicate_fouls++;
     } else {
         memberSpamCache.spam_fouls++;
-        memberSpamCache.dupl_fouls = 0;
+        memberSpamCache.duplicate_fouls = 0;
     }
 
-    if (config_spam.dupl_after !== 0 && memberSpamCache.dupl_fouls === config_spam.dupl_after) {
+    if (config_spam.dupl_after !== 0 && memberSpamCache.duplicate_fouls === config_spam.dupl_after) {
         messageReply(false, message, `warning: please stop spamming the same message`, false, true)
             .catch((e: any) => {
                 logger.error(new Error(`failed to reply to message: ${e}`));
@@ -150,7 +150,7 @@ export function messageSpamCheck(
         } else if (guild_object.ban_after && guild_object.ban_after !== 0 && guild_object.member_list[0].penalties === guild_object.ban_after) {
             if (message.member) {
                 const ban_options: BanOptions = {
-                    days: 0,
+                    deleteMessageSeconds: 0,
                     reason: 'banned due to spamming'
                 };
 

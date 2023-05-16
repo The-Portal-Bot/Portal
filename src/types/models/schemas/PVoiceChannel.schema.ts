@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-const VoiceChannelPrtlSchm = new Schema(
+const PVoiceChannelSchema = new Schema(
     {
         id: { type: String, required: true },
         creator_id: { type: String, required: true },
@@ -16,5 +16,4 @@ const VoiceChannelPrtlSchm = new Schema(
     }
 );
 
-// export default model('VoiceChannelPrtlSchm', VoiceChannelPrtlSchm);
-export default VoiceChannelPrtlSchm;
+export default PVoiceChannelSchema;

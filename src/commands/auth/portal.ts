@@ -2,9 +2,9 @@ import { ChannelType, GuildChannelCreateOptions, Message } from "discord.js";
 import { create_channel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_portal } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { IPortalChannelPrtl, PortalChannelPrtl } from "../../types/classes/PortalChannelPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { IPPortalChannel, PPortalChannel } from "../../types/classes/PPortalChannel.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         .setName('portal')
         .setDescription('create portal channel'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length === 0) {
@@ -65,10 +65,10 @@ module.exports = {
 
             create_channel(current_guild, portal_channel, portal_options, portal_category)
                 .then(r_channel => {
-                    const new_portal = new PortalChannelPrtl(r_channel, current_member.id,
+                    const new_portal = new PPortalChannel(r_channel, current_member.id,
                         true, portal_channel, voice_regex, [], false, null, guild_object.locale, true, true, 0, false);
 
-                    insert_portal(guild_object.id, new_portal as IPortalChannelPrtl)
+                    insert_portal(guild_object.id, new_portal as IPPortalChannel)
                         .then(r_portal => {
                             if (r_portal) {
                                 return resolve({

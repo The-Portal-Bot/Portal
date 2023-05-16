@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
-import { CommandOptions } from "../types/classes/TypesPrtl.interface";
+import { PGuild, MusicData } from "../types/classes/PGuild.class";
+import { CommandOptions } from "../types/classes/PTypes.interface";
 import { is_url_only_channel, included_in_ignore_list } from "./guild.library";
 import { logger, isUserIgnored, isMessageDeleted, markMessageAsDeleted, messageReply } from "./help.library";
 import { remove_url, remove_ignore, set_music_data } from "./mongo.library";
@@ -11,7 +11,7 @@ import command_config_json from '../config.command.json';
 * Returns: true/false if processing must continue
 */
 export async function portalPreprocessor(
-    message: Message, guild_object: GuildPrtl
+    message: Message, guild_object: PGuild
 ): Promise<boolean> {
     if (!message.member) {
         logger.error(new Error('could not get member'));
@@ -80,7 +80,7 @@ export async function portalPreprocessor(
 }
 
 export function commandDecypher(
-    message: Message, guild_object: GuildPrtl
+    message: Message, guild_object: PGuild
 ): {
     args: string[],
     cmd: string,
@@ -131,7 +131,7 @@ export function commandDecypher(
 }
 
 export function handleRankingSystem(
-    message: Message, guild_object: GuildPrtl
+    message: Message, guild_object: PGuild
 ): void {
     add_points_message(message, guild_object.member_list[0], guild_object.rank_speed)
         .then(level => {
@@ -148,7 +148,7 @@ export function handleRankingSystem(
 }
 
 export async function handleUrlChannels(
-    message: Message, guild_object: GuildPrtl
+    message: Message, guild_object: PGuild
 ): Promise<boolean> {
     if (is_url_only_channel(message.channel.id, guild_object)) {
         if (message.content === './url') {
@@ -190,7 +190,7 @@ export async function handleUrlChannels(
 }
 
 export function handleIgnoredChannels(
-    message: Message, guild_object: GuildPrtl
+    message: Message, guild_object: PGuild
 ): boolean {
     if (included_in_ignore_list(message.channel.id, guild_object)) {
         if (message.content === './ignore') {
@@ -213,7 +213,7 @@ export function handleIgnoredChannels(
 }
 
 export function handleMusicChannels(
-    message: Message, guild_object: GuildPrtl
+    message: Message, guild_object: PGuild
 ): boolean {
     if (guild_object.music_data.channel_id === message.channel.id) {
         if (message.content === './music') {

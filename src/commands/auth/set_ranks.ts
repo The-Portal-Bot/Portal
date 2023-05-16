@@ -1,8 +1,8 @@
 import { Message, Role } from "discord.js";
 import { getJsonFromString, messageHelp } from "../../libraries/help.library";
 import { set_ranks } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Rank, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { Rank, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function is_rank(rank: Rank) {
@@ -20,7 +20,7 @@ module.exports = {
         .setName('set_ranks')
         .setDescription('create ranks for the server'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild)

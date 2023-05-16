@@ -4,15 +4,15 @@ import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { create_music_channel, delete_channel, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
 import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
 import { set_music_data } from "../../libraries/mongo.library";
-import { GuildPrtl, MusicData } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild, MusicData } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('music')
         .setDescription('create music channel'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {

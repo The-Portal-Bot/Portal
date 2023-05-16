@@ -1,13 +1,13 @@
 import { Document } from "mongoose";
-import { VoiceChannelPrtl } from "./VoiceChannelPrtl.class";
+import { PVoiceChannel } from "./PVoiceChannel.class";
 
-export class PortalChannelPrtl {
+export class PPortalChannel {
 	public id: string;
 	public creator_id: string;
 	public render: boolean;
 	public regex_portal: string;
 	public regex_voice: string;
-	public voice_list: VoiceChannelPrtl[];
+	public voice_list: PVoiceChannel[];
 	public no_bots: boolean;
 	public allowed_roles: [string] | null;
 	public locale: number;
@@ -22,7 +22,7 @@ export class PortalChannelPrtl {
 		render: boolean,
 		regex_portal: string,
 		regex_voice: string,
-		voice_list: VoiceChannelPrtl[],
+		voice_list: PVoiceChannel[],
 		no_bots: boolean,
 		allowed_roles: [string] | null,
 		locale: number,
@@ -47,13 +47,13 @@ export class PortalChannelPrtl {
 	}
 }
 
-export interface IPortalChannelPrtl extends Document {
+export interface IPPortalChannel extends Document {
 	id: string;
 	creator_id: string;
 	render: boolean;
 	regex_portal: string;
 	regex_voice: string;
-	voice_list: [VoiceChannelPrtl];
+	voice_list: [PVoiceChannel];
 	no_bots: boolean;
 	allowed_roles: [string] | null;
 	locale: number;

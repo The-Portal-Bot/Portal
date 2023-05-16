@@ -6,8 +6,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Client, Message, User } from "discord.js";
 import { LocaleEnum } from "../data/enums/Locales.enum";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { LocalisationOption } from "../types/classes/TypesPrtl.interface";
+import { PGuild } from "../types/classes/PGuild.class";
+import { LocalisationOption } from "../types/classes/PTypes.interface";
 
 const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
 const type_of_action = ['user_connected', 'user_disconnected'];
@@ -225,7 +225,7 @@ export function get_function(
 }
 
 export function client_write(
-	message: Message, guild_object: GuildPrtl, context: string
+	message: Message, guild_object: PGuild, context: string
 ): string {
 	if (!message) return 'could not fetch message';
 	if (!message.member) return 'could not fetch member';
@@ -260,7 +260,7 @@ export function client_write(
 }
 
 export function client_log(
-	message: Message | null, guild_list: GuildPrtl[], context: string, args: any
+	message: Message | null, guild_list: PGuild[], context: string, args: any
 ): string {
 	if (message === null || message.member === null) {
 		return 'there was an error';

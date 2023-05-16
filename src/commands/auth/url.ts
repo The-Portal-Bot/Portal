@@ -2,8 +2,8 @@ import { Message } from "discord.js";
 import { create_channel, get_options, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_url, remove_url } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
         .setName('url')
         .setDescription('create URL only channel'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild)

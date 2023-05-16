@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
-import { createEmded } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
+import { createEmbed } from '../../libraries/help.library';
+import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
 const portal_url = 'https://portal-bot.xyz/docs';
 export const command_prefix = './';
@@ -279,7 +279,7 @@ export function get_command_guide(): MessageEmbed {
 		}
 	];
 
-	return createEmded(
+	return createEmbed(
 		'Command Guide',
 		'[Commands](' + portal_url + '/commands/description) ' +
 		'are the way you communicate with Portal.\n' +
@@ -313,7 +313,7 @@ export function get_command_help(): MessageEmbed[] {
 	return cmmd_array
 		.map((cmmd, index) => {
 			if (index === 0) {
-				return createEmded(
+				return createEmbed(
 					'Commands',
 					'[Commands](' + portal_url + '/commands/description) ' +
 					'are the way you communicate with Portal.\n' +
@@ -327,7 +327,7 @@ export function get_command_help(): MessageEmbed[] {
 					null
 				);
 			} else {
-				return createEmded(
+				return createEmbed(
 					null,
 					null,
 					'#9775A9',
@@ -345,7 +345,7 @@ export function get_command_help(): MessageEmbed[] {
 export function get_command_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < commands.length; i++) {
 		if (commands[i].name === candidate) {
-			return createEmded(
+			return createEmbed(
 				commands[i].name,
 				null,
 				'#9775A9',

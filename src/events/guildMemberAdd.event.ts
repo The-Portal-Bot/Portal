@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel } from "discord.js";
-import { createEmded } from "../libraries/help.library";
+import { createEmbed } from "../libraries/help.library";
 import { fetch_guild_announcement, insertMember } from "../libraries/mongo.library";
 
 module.exports = async (
@@ -45,7 +45,7 @@ module.exports = async (
                                     announcement_channel
                                         .send({
                                             embeds: [
-                                                createEmded(
+                                                createEmbed(
                                                     'member joined',
                                                     join_message,
                                                     '#00C70D',

@@ -13,7 +13,7 @@ export class GiveRole {
 	}
 }
 
-export class GiveRolePrtl {
+export class PGiveRole {
 	public message_id: string;
 	public role_emote_map: GiveRole[];
 
@@ -26,7 +26,7 @@ export class GiveRolePrtl {
 	}
 }
 
-export interface IGiveRolePrtl extends Document {
+export interface IPGiveRole extends Document {
 	message_id: string;
 	role_emote_map: GiveRole[];
 }

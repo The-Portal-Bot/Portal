@@ -1,7 +1,7 @@
 import { Message, VoiceChannel } from "discord.js";
 import { messageHelp } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { set_attribute } from "../../types/interfaces/Attribute.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -10,7 +10,7 @@ module.exports = {
         .setName('set')
         .setDescription('set the value of an attribute'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {

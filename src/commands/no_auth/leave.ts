@@ -1,7 +1,7 @@
 import { getVoiceConnection } from "@discordjs/voice";
 import { Client, Message } from "discord.js";
 import { client_write } from "../../libraries/localisation.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
+import { PGuild } from "../../types/classes/PGuild.class";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
 		.setName('leave')
 		.setDescription('tell Portal to leave your voice channel'),
 	async execute(
-		message: Message, args: string[], guild_object: GuildPrtl, client: Client
+		message: Message, args: string[], guild_object: PGuild, client: Client
 	): Promise<string> {
 		if (!message.guild) {
 			return Promise.reject('message has no guild');

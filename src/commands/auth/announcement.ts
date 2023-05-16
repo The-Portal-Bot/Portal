@@ -8,13 +8,13 @@ import {
     is_url_only_channel,
 } from '../../libraries/guild.library';
 import { updateGuild } from '../../libraries/mongo.library';
-import { GuildPrtl } from '../../types/classes/GuildPrtl.class';
+import { PGuild } from '../../types/classes/PGuild.class';
 import { PortalChannelTypes } from '../../data/enums/PortalChannel.enum';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { messageHelp } from '../../libraries/help.library';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-async function doesChannelHaveUsage(message: Message, guild_object: GuildPrtl) {
+async function doesChannelHaveUsage(message: Message, guild_object: PGuild) {
     if (is_announcement_channel(message.channel.id, guild_object)) {
         const response = await updateGuild(guild_object.id, 'announcement', 'null').catch(() => {
             return {
@@ -60,7 +60,7 @@ module.exports = {
                 .setRequired(true)
                 .setAutocomplete(true)
         ),
-    async execute(message: Message, args: string[], guild_object: GuildPrtl): Promise<ReturnPromise> {
+    async execute(message: Message, args: string[], guild_object: PGuild): Promise<ReturnPromise> {
         if (!message.guild) {
             return {
                 result: false,

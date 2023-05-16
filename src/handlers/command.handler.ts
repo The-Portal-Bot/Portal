@@ -1,12 +1,12 @@
 import { Channel, Client, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from "discord.js";
 import event_config_json from '../config.event.json';
 import { logger, messageReply, pad, timeElapsed } from "../libraries/help.library";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { ActiveCooldowns, CommandOptions, ReturnPromise } from "../types/classes/TypesPrtl.interface";
+import { PGuild } from "../types/classes/PGuild.class";
+import { ActiveCooldowns, CommandOptions, ReturnPromise } from "../types/classes/PTypes.interface";
 
 export async function commandLoader(
     client: Client, message: Message, command: string, args: string[], type: string, command_options: CommandOptions,
-    path_to_command: string, guild_object: GuildPrtl, active_cooldowns: ActiveCooldowns
+    path_to_command: string, guild_object: PGuild, active_cooldowns: ActiveCooldowns
 ): Promise<void> {
     if (process.env.DEBUG!) {
         logger.info(`[command-debug] ${command}`);

@@ -1,9 +1,9 @@
 import { model, Schema } from 'mongoose';
-import { IGuildPrtl } from '../classes/GuildPrtl.class';
-import GiveRolePrtlSchm from './schemas/GiveRolePrtl.schema';
-import MemberPrtlSchm from './schemas/MemberPrtl.schema';
-import PollPrtlSchm from './schemas/PollPrtl.schema';
-import PortalChannelPrtlSchm from './schemas/PortalChannelPrtl.schema';
+import { IPGuild } from '../classes/PGuild.class';
+import PGiveRoleSchema from './schemas/PGiveRole.schema';
+import PMemberSchema from './schemas/PMember.schema';
+import PPollSchema from './schemas/PPoll.schema';
+import PPortalChannelSchema from './schemas/PPortalChannel.schema';
 
 const VideoSearchResult = new Schema(
     {
@@ -63,15 +63,15 @@ const MusicData = new Schema(
     }
 );
 
-const GuildPrtlSchm = new Schema(
+const PGuildSchema = new Schema(
     {
         id: { type: String, required: true },
-        portal_list: { type: [PortalChannelPrtlSchm], required: true },
-        member_list: { type: [MemberPrtlSchm], required: true },
+        portal_list: { type: [PPortalChannelSchema], required: true },
+        member_list: { type: [PMemberSchema], required: true },
         ignore_list: { type: [String], required: true },
         url_list: { type: [String], required: true },
-        role_list: { type: [GiveRolePrtlSchm], required: true },
-        poll_list: { type: [PollPrtlSchm], required: true },
+        role_list: { type: [PGiveRoleSchema], required: true },
+        poll_list: { type: [PPollSchema], required: true },
         initial_role: { type: String, required: true },
         ranks: { type: [Rank], required: true },
         music_data: { type: MusicData, required: true },
@@ -92,4 +92,4 @@ const GuildPrtlSchm = new Schema(
     }
 );
 
-export default model<IGuildPrtl>('GuildPrtlSchm', GuildPrtlSchm);
+export default model<IPGuild>('PGuildSchema', PGuildSchema);

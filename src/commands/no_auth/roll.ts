@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import Roll from 'roll';
-import { createEmded, maxString, messageHelp } from "../../libraries/help.library";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed, maxString, messageHelp } from "../../libraries/help.library";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -34,7 +34,7 @@ module.exports = {
                     message.channel
                         .send({
                             embeds: [
-                                createEmded(
+                                createEmbed(
                                     null,
                                     null,
                                     '#FF0000',

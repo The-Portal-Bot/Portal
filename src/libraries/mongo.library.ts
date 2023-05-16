@@ -4,24 +4,24 @@ import { VideoSearchResult } from 'yt-search';
 import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
 import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
-import { GiveRolePrtl } from '../types/classes/GiveRolePrtl.class';
-import { GuildPrtl, IGuildPrtl, MusicData } from '../types/classes/GuildPrtl.class';
-import { MemberPrtl } from '../types/classes/MemberPrtl.class';
-import { PollPrtl } from '../types/classes/PollPrtl.class';
-import { IPortalChannelPrtl, PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
-import { Rank } from '../types/classes/TypesPrtl.interface';
-import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
-import GuildPrtlMdl from '../types/models/GuildPrtl.model';
+import { PGiveRole } from '../types/classes/PGiveRole.class';
+import { PGuild, IPGuild, MusicData } from '../types/classes/PGuild.class';
+import { PMember } from '../types/classes/PMember.class';
+import { PPoll } from '../types/classes/PPoll.class';
+import { IPPortalChannel, PPortalChannel } from '../types/classes/PPortalChannel.class';
+import { Rank } from '../types/classes/PTypes.interface';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import PGuildModel from '../types/models/PGuild.model';
 
 // fetch guilds
 export async function fetch_guild_list(
-): Promise<GuildPrtl[] | undefined> {
+): Promise<PGuild[] | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .find({})
-            .then((guilds: IGuildPrtl[]) => {
+            .then((guilds: IPGuild[]) => {
                 if (guilds) {
-                    return resolve(<GuildPrtl[]>guilds);
+                    return resolve(<PGuild[]>guilds);
                 } else {
                     return resolve(undefined);
                 }
@@ -34,17 +34,17 @@ export async function fetch_guild_list(
 
 export async function fetch_guild(
     guild_id: string
-): Promise<GuildPrtl | undefined> {
+): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
                 }
             )
-            .then((guild: IGuildPrtl | null) => {
+            .then((guild: IPGuild | null) => {
                 if (guild) {
-                    return resolve(<GuildPrtl>guild);
+                    return resolve(<PGuild>guild);
                 } else {
                     return resolve(undefined);
                 }
@@ -57,9 +57,9 @@ export async function fetch_guild(
 
 export async function fetch_guild_channel_delete(
     guild_id: string
-): Promise<GuildPrtl | undefined> {
+): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
@@ -74,7 +74,7 @@ export async function fetch_guild_channel_delete(
                 })
             .then((r: any) => {
                 if (r) {
-                    return resolve(<GuildPrtl>{
+                    return resolve(<PGuild>{
                         id: r.id,
                         portal_list: r.portal_list,
                         announcement: r.announcement,
@@ -94,9 +94,9 @@ export async function fetch_guild_channel_delete(
 
 export async function fetch_guild_announcement(
     guild_id: string
-): Promise<GuildPrtl | undefined> {
+): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
@@ -107,7 +107,7 @@ export async function fetch_guild_announcement(
                 })
             .then((r: any) => {
                 if (r) {
-                    return resolve(<GuildPrtl>{
+                    return resolve(<PGuild>{
                         announcement: r.announcement,
                         initial_role: r.initial_role
                     });
@@ -123,9 +123,9 @@ export async function fetch_guild_announcement(
 
 export async function fetch_guild_reaction_data(
     guild_id: string, member_id: string
-): Promise<GuildPrtl | undefined> {
+): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
@@ -144,7 +144,7 @@ export async function fetch_guild_reaction_data(
                 })
             .then((r: any) => {
                 if (r) {
-                    return resolve(<GuildPrtl>{
+                    return resolve(<PGuild>{
                         id: r.id,
                         member_list: r.member_list,
                         role_list: r.role_list,
@@ -164,9 +164,9 @@ export async function fetch_guild_reaction_data(
 
 export async function fetch_guild_members(
     guild_id: string
-): Promise<MemberPrtl[] | undefined> {
+): Promise<PMember[] | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
@@ -176,7 +176,7 @@ export async function fetch_guild_members(
                 })
             .then((r: any) => {
                 if (r) {
-                    return resolve(<MemberPrtl[]>r.member_list);
+                    return resolve(<PMember[]>r.member_list);
                 } else {
                     return resolve(undefined);
                 }
@@ -191,7 +191,7 @@ export async function fetch_guild_music_queue(
     guild_id: string
 ): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
@@ -218,9 +218,9 @@ export async function fetch_guild_music_queue(
 
 export async function fetchGuildPredata(
     guild_id: string, member_id: string
-): Promise<GuildPrtl | undefined> {
+): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
@@ -247,7 +247,7 @@ export async function fetchGuildPredata(
                 })
             .then((r: any) => {
                 if (r) {
-                    return resolve(<GuildPrtl>{
+                    return resolve(<PGuild>{
                         id: r.id,
                         prefix: r.prefix,
                         portal_list: r.portal_list,
@@ -275,9 +275,9 @@ export async function fetchGuildPredata(
 
 export async function fetchGuildRest(
     guild_id: string
-): Promise<GuildPrtl | undefined> {
+): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .findOne(
                 {
                     id: guild_id
@@ -294,7 +294,7 @@ export async function fetchGuildRest(
                 })
             .then((r: any) => {
                 if (r) {
-                    return resolve(<GuildPrtl>{
+                    return resolve(<PGuild>{
                         id: r.id,
                         member_list: r.member_list,
                         poll_list: r.poll_list,
@@ -319,7 +319,7 @@ export async function guildExists(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .countDocuments(
                 {
                     id: guild_id
@@ -338,7 +338,7 @@ export async function memberExists(
     guild_id: string, member_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .countDocuments(
                 {
                     id: guild_id,
@@ -365,7 +365,7 @@ export async function updateGuild(
     return new Promise((resolve, reject) => {
         const placeholder: any = {}
         placeholder[key] = value;
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -392,8 +392,8 @@ export async function updateGuild(
 
 // CRUD guilds
 
-function createMemberList(guild_id: string, client: Client): MemberPrtl[] {
-    const member_list: MemberPrtl[] = [];
+function createMemberList(guild_id: string, client: Client): PMember[] {
+    const member_list: PMember[] = [];
 
     const guild = client.guilds.cache.find(guild => guild.id === guild_id);
     if (!guild) {
@@ -423,7 +423,7 @@ function createMemberList(guild_id: string, client: Client): MemberPrtl[] {
         if (!member.user.bot) {
             if (client.user && member.id !== client.user.id) {
                 member_list.push(
-                    new MemberPrtl(
+                    new PMember(
                         member.id,
                         1,
                         0,
@@ -445,10 +445,10 @@ export async function insertGuild(
     guild_id: string, client: Client
 ): Promise<boolean> {
     const id: string = guild_id;
-    const portal_list: PortalChannelPrtl[] = [];
-    const member_list: MemberPrtl[] = createMemberList(guild_id, client);
+    const portal_list: PPortalChannel[] = [];
+    const member_list: PMember[] = createMemberList(guild_id, client);
     const url_list: string[] = [];
-    const role_list: GiveRolePrtl[] = [];
+    const role_list: PGiveRole[] = [];
     const poll_list: string[] = [];
     const ranks: Rank[] = [];
     const initial_role: string | null = 'null';
@@ -472,7 +472,7 @@ export async function insertGuild(
     const prefix: string = process.env.PREFIX as unknown as string;
 
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .create({
                 id: id,
                 portal_list: portal_list,
@@ -508,7 +508,7 @@ export async function removeGuild(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .deleteOne({
                 id: guild_id
             })
@@ -535,7 +535,7 @@ export async function updateMember(
         const placeholder: any = {}
         placeholder['member_list.$[m].' + key] = value;
 
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -567,13 +567,13 @@ export async function updateMember(
 
 export async function updateEntireMember(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, member_id: string, member: MemberPrtl
+    guild_id: string, member_id: string, member: PMember
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         const placeholder: any = {}
         placeholder['member_list.$[m]'] = member;
 
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -606,7 +606,7 @@ export async function updateEntireMember(
 export async function insertMember(
     guild_id: string, member_id: string
 ): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(
+    const new_member_portal = new PMember(
         member_id,
         1,
         0,
@@ -617,7 +617,7 @@ export async function insertMember(
         'null'
     );
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 { id: guild_id },
                 {
@@ -643,7 +643,7 @@ export async function remove_member(
     member_id: string, guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -678,7 +678,7 @@ export async function update_portal(
         const placeholder: any = {}
         placeholder['portal_list.$[p].' + key] = value;
 
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -707,10 +707,10 @@ export async function update_portal(
 }
 
 export async function insert_portal(
-    guild_id: string, new_portal: IPortalChannelPrtl
+    guild_id: string, new_portal: IPPortalChannel
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -738,7 +738,7 @@ export async function remove_portal(
     guild_id: string, portal_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -774,7 +774,7 @@ export async function update_voice(
         const placeholder: any = {}
         placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
 
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -804,10 +804,10 @@ export async function update_voice(
 }
 
 export async function insert_voice(
-    guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl
+    guild_id: string, portal_id: string, new_voice: PVoiceChannel
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -841,7 +841,7 @@ export async function remove_voice(
     guild_id: string, portal_id: string, voice_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -883,7 +883,7 @@ export async function insert_url(
     guild_id: string, new_url: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -911,7 +911,7 @@ export async function remove_url(
     guild_id: string, remove_url: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -940,7 +940,7 @@ export async function insert_ignore( // channel
     guild_id: string, new_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -968,7 +968,7 @@ export async function remove_ignore( // channel
     guild_id: string, remove_ignore: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -996,7 +996,7 @@ export async function remove_ignore( // channel
 export async function set_ranks(
     guild_id: string, new_ranks: Rank[]): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1021,10 +1021,10 @@ export async function set_ranks(
 //
 
 export async function insert_poll(
-    guild_id: string, poll: PollPrtl
+    guild_id: string, poll: PPoll
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1052,7 +1052,7 @@ export async function remove_poll(
     guild_id: string, message_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1081,10 +1081,10 @@ export async function remove_poll(
 //
 
 export async function insert_vendor(
-    guild_id: string, new_vendor: GiveRolePrtl
+    guild_id: string, new_vendor: PGiveRole
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1112,7 +1112,7 @@ export async function remove_vendor(
     guild_id: string, message_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1144,7 +1144,7 @@ export async function insert_music_video(
     guild_id: string, video: VideoSearchResult
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1172,7 +1172,7 @@ export async function clear_music_vote(
     guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1200,7 +1200,7 @@ export async function insert_music_vote(
     guild_id: string, user_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id
@@ -1228,7 +1228,7 @@ export async function set_music_data(
     guild_id: string, new_music_data: MusicData
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        GuildPrtlMdl
+        PGuildModel
             .updateOne(
                 {
                     id: guild_id

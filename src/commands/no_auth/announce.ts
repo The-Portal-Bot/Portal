@@ -1,9 +1,9 @@
 import { Client, Message, TextChannel } from "discord.js";
 import { delay } from "lodash";
-import { createEmded, isMessageDeleted, markMessageAsDeleted, messageHelp } from "../../libraries/help.library";
+import { createEmbed, isMessageDeleted, markMessageAsDeleted, messageHelp } from "../../libraries/help.library";
 // import { client_talk } from "../../libraries/localisation.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
         .setName('announce')
         .setDescription('send an announcement to the announcement channel'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl, client: Client
+        message: Message, args: string[], guild_object: PGuild, client: Client
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length === 0) {
@@ -53,7 +53,7 @@ module.exports = {
                 title = '';
             }
 
-            const rich_message = createEmded(
+            const rich_message = createEmbed(
                 title,
                 `@here ${body}`,
                 '#022E4E',

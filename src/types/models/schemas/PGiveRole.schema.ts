@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-const GiveRoleSchm = new Schema(
+const GiveRoleSchema = new Schema(
     {
         emote: { type: String, required: true },
         role: { type: [String], required: true },
@@ -10,15 +10,14 @@ const GiveRoleSchm = new Schema(
     }
 );
 
-const GiveRolePrtlSchm = new Schema(
+const PGiveRoleSchema = new Schema(
     {
         message_id: { type: String, required: true },
-        role_emote_map: { type: [GiveRoleSchm], required: true },
+        role_emote_map: { type: [GiveRoleSchema], required: true },
     },
     {
         collection: 'guild_list',
     }
 );
 
-// export default model('GiveRolePrtlSchm', GiveRolePrtlSchm);
-export default GiveRolePrtlSchm;
+export default PGiveRoleSchema;

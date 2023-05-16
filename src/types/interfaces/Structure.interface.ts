@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
-import { createEmded } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
+import { createEmbed } from '../../libraries/help.library';
+import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
 const portal_url = 'https://portal-bot.xyz/docs';
 const interpreter_url = '/interpreter/objects';
@@ -59,7 +59,7 @@ export function get_structure_guide(): MessageEmbed {
 		}
 	];
 
-	return createEmded(
+	return createEmbed(
 		'Structure Guide',
 		'[Structures](' + portal_url + interpreter_url + '/structures/description) ' +
 		'conditional flow manipulators (if this do that, or if that do this).\n' +
@@ -91,7 +91,7 @@ export function get_structure_help(): MessageEmbed[] {
 
 	return strc_array.map((cmmd, index) => {
 		if (index === 0) {
-			return createEmded(
+			return createEmbed(
 				'Structures',
 				'[Structures](' + portal_url + interpreter_url + '/structures/description) ' +
 				'conditional flow manipulators (if this do that, or if that do this).\n' +
@@ -105,7 +105,7 @@ export function get_structure_help(): MessageEmbed[] {
 				null
 			);
 		} else {
-			return createEmded(
+			return createEmbed(
 				null,
 				null,
 				'#EEB902',
@@ -123,7 +123,7 @@ export function get_structure_help(): MessageEmbed[] {
 export function get_structure_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < structures.length; i++) {
 		if (structures[i].name === candidate) {
-			return createEmded(
+			return createEmbed(
 				structures[i].name,
 				null,
 				'#EEB902',

@@ -4,9 +4,9 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 // import { CountryCodes } from '../../data/lists/country_codes_iso.static';
-import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
@@ -88,7 +88,7 @@ module.exports = {
                     message.channel
                         .send({
                             embeds: [
-                                createEmded(
+                                createEmbed(
                                     `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${moment().format('DD/MM/YY')}`,
                                     'powered by yahoo finance',
                                     '#FF0000', [],

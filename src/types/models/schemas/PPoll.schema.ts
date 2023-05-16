@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-const PollPrtlSchm = new Schema(
+const PPollSchema = new Schema(
     {
         message_id: { type: String, required: true },
         member_id: { type: String, required: true },
@@ -10,5 +10,4 @@ const PollPrtlSchm = new Schema(
     }
 );
 
-// export default model('PollPrtlSchm', PollPrtlSchm);
-export default PollPrtlSchm;
+export default PPollSchema;

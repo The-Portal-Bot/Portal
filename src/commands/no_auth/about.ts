@@ -1,10 +1,10 @@
 import { Message } from "discord.js";
-import { createEmded } from "../../libraries/help.library";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed } from "../../libraries/help.library";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 const embeds = [
-    createEmded(
+    createEmbed(
         'About',
         'A fully fledged and feature rich bot for Discord',
         '#1DB954',

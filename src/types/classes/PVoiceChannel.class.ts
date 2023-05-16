@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export class VoiceChannelPrtl {
+export class PVoiceChannel {
 	public id: string;
 	public creator_id: string;
 	public render: boolean;
@@ -31,7 +31,7 @@ export class VoiceChannelPrtl {
 	}
 }
 
-export interface IVoiceChannelPrtl extends Document {
+export interface IPVoiceChannel extends Document {
 	id: string;
 	creator_id: string;
 	render: boolean;

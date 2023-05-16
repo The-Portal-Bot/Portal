@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import { createEmded } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         .setName('level')
         .setDescription('returns your level'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const member_object = guild_object.member_list.find(m => m.id === message.member?.id);
@@ -23,7 +23,7 @@ module.exports = {
             message.channel
                 .send({
                     embeds: [
-                        createEmded(
+                        createEmbed(
                             null,
                             null,
                             '#00FFFF',

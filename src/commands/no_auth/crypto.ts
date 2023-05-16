@@ -2,9 +2,9 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import voca from 'voca';
-import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -63,7 +63,7 @@ module.exports = {
                     message.channel
                         .send({
                             embeds: [
-                                createEmded(
+                                createEmbed(
                                     null,
                                     null,
                                     '#FFE600',

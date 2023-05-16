@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-const MemberPrtlSch = new Schema(
+const PMemberSchema = new Schema(
     {
         id: { type: String, required: true },
         level: { type: Number, required: true },
@@ -16,5 +16,4 @@ const MemberPrtlSch = new Schema(
     }
 );
 
-// export default model('MemberPrtlSch', MemberPrtlSch);
-export default MemberPrtlSch;
+export default PMemberSchema;

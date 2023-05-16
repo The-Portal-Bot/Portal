@@ -1,13 +1,13 @@
 import { BanOptions, Guild, GuildMember, Message, VoiceState } from "discord.js";
 import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { MemberPrtl } from "../types/classes/MemberPrtl.class";
-import { Rank } from "../types/classes/TypesPrtl.interface";
+import { PGuild } from "../types/classes/PGuild.class";
+import { PMember } from "../types/classes/PMember.class";
+import { Rank } from "../types/classes/PTypes.interface";
 import { timeElapsed } from './help.library';
 import { updateEntireMember, updateMember } from "./mongo.library";
 
 export function give_role_from_rankup(
-    member_prtl: MemberPrtl, member: GuildMember, ranks: Rank[], guild: Guild
+    member_prtl: PMember, member: GuildMember, ranks: Rank[], guild: Guild
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         if (!ranks) {
@@ -40,7 +40,7 @@ export function give_role_from_rankup(
 }
 
 export function calculate_rank(
-    member: MemberPrtl
+    member: PMember
 ): number {
     if (member.tier === 0) {
         member.tier = 1; // must be removed
@@ -59,7 +59,7 @@ export function calculate_rank(
 }
 
 export function add_points_time(
-    member_prtl: MemberPrtl, rank_speed: number
+    member_prtl: PMember, rank_speed: number
 ): number {
     if (!member_prtl.timestamp) {
         return member_prtl.points;
@@ -77,7 +77,7 @@ export function add_points_time(
 }
 
 export function update_timestamp(
-    voiceState: VoiceState, guild_object: GuildPrtl
+    voiceState: VoiceState, guild_object: PGuild
 ): Promise<number | boolean> {
     return new Promise((resolve, reject) => {
         if (voiceState.member && !voiceState.member.user.bot) {
@@ -134,7 +134,7 @@ export function update_timestamp(
 }
 
 export function add_points_message(
-    message: Message, member: MemberPrtl, rank_speed: number
+    message: Message, member: PMember, rank_speed: number
 ): Promise<number | boolean> {
     return new Promise((resolve, reject) => {
         if (rank_speed === RankSpeedEnum.none) {

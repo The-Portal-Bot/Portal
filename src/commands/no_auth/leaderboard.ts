@@ -1,12 +1,12 @@
 import { Message } from "discord.js";
-import { createEmded, messageHelp } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { MemberPrtl } from "../../types/classes/MemberPrtl.class";
-import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed, messageHelp } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { PMember } from "../../types/classes/PMember.class";
+import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function compare(
-    member_a: MemberPrtl, member_b: MemberPrtl
+    member_a: PMember, member_b: PMember
 ) {
     return member_b.level === member_a.level
         ? member_b.points > member_a.points ? 1 : -1
@@ -20,7 +20,7 @@ module.exports = {
         .setName('leaderboard')
         .setDescription('returns server\'s leaderboard'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const member_list = guild_object.member_list;
@@ -92,7 +92,7 @@ module.exports = {
                 message.channel
                     .send({
                         embeds: [
-                            createEmded(
+                            createEmbed(
                                 'LEADERBOARD',
                                 '[Ranking System](https://portal-bot.xyz/docs/ranking)',
                                 '#00FFFF',

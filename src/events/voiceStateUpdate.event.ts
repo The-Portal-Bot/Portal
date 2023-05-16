@@ -5,12 +5,12 @@ import { isChannelDeleted, isGuildDeleted, logger, updateMusicLyricsMessage, upd
 // import { client_talk } from "../libraries/localisation.library";
 import { fetch_guild, remove_voice, set_music_data, updateGuild } from "../libraries/mongo.library";
 import { update_timestamp } from "../libraries/user.library";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-import { PortalChannelPrtl } from "../types/classes/PortalChannelPrtl.class";
+import { PGuild } from "../types/classes/PGuild.class";
+import { PPortalChannel } from "../types/classes/PPortalChannel.class";
 
 // delete portal's voice channel
 async function delete_voice_channel(
-    channel: VoiceChannel | TextChannel, guild_object: GuildPrtl
+    channel: VoiceChannel | TextChannel, guild_object: PGuild
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (!channel.deletable) {
@@ -49,7 +49,7 @@ async function delete_voice_channel(
 }
 
 function five_min_refresher(
-    voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
+    voice_channel: VoiceChannel, portal_list: PPortalChannel[],
     guild: Guild, minutes: number
 ): void {
     fetch_guild(guild.id)
@@ -78,7 +78,7 @@ function five_min_refresher(
 }
 
 async function channel_empty_check(
-    old_channel: VoiceChannel | TextChannel, guild_object: GuildPrtl, client: Client
+    old_channel: VoiceChannel | TextChannel, guild_object: PGuild, client: Client
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (old_channel.members.size === 0) {
@@ -155,7 +155,7 @@ async function channel_empty_check(
 }
 
 async function from_null(
-    new_channel: VoiceChannel | null, guild_object: GuildPrtl, newState: VoiceState
+    new_channel: VoiceChannel | null, guild_object: PGuild, newState: VoiceState
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (new_channel) { // joined from null
@@ -229,7 +229,7 @@ async function from_null(
 
 async function from_existing(
     old_channel: VoiceChannel, new_channel: VoiceChannel | null, client: Client,
-    guild_object: GuildPrtl, newState: VoiceState
+    guild_object: PGuild, newState: VoiceState
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (new_channel === null) {

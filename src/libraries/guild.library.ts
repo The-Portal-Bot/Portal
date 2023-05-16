@@ -7,9 +7,9 @@ import {
 import moment from "moment";
 import voca from 'voca';
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
-import { GuildPrtl } from '../types/classes/GuildPrtl.class';
-import { PortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
-import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
+import { PGuild } from '../types/classes/PGuild.class';
+import { PPortalChannel } from '../types/classes/PPortalChannel.class';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import { attribute_prefix, get_attribute, is_attribute } from '../types/interfaces/Attribute.interface';
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
@@ -57,31 +57,31 @@ export function get_options(
 	} as GuildChannelCreateOptions;
 }
 
-export function included_in_portal_guilds(guild_id: string, guild_list: GuildPrtl[]): boolean {
+export function included_in_portal_guilds(guild_id: string, guild_list: PGuild[]): boolean {
 	return guild_list ? guild_list.some(g => g.id === guild_id) : false;
 }
 
-export function included_in_portal_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
+export function included_in_portal_list(channel_id: string, portal_list: PPortalChannel[]): boolean {
 	return portal_list ? portal_list.some(p => p.id === channel_id) : false;
 }
 
-export function included_in_voice_list(channel_id: string, portal_list: PortalChannelPrtl[]): boolean {
+export function included_in_voice_list(channel_id: string, portal_list: PPortalChannel[]): boolean {
 	return portal_list ? portal_list.some(p => p.voice_list.some(v => v.id === channel_id)) : false;
 }
 
-export function included_in_ignore_list(channel_id: string, guild_object: GuildPrtl): boolean {
+export function included_in_ignore_list(channel_id: string, guild_object: PGuild): boolean {
 	return guild_object.ignore_list ? guild_object.ignore_list.some(i => i === channel_id) : false;
 }
 
-export function is_url_only_channel(channel_id: string, guild_object: GuildPrtl): boolean {
+export function is_url_only_channel(channel_id: string, guild_object: PGuild): boolean {
 	return guild_object.url_list ? guild_object.url_list.some(u => u === channel_id) : false;
 }
 
-export function is_music_channel(channel_id: string, guild_object: GuildPrtl): boolean {
+export function is_music_channel(channel_id: string, guild_object: PGuild): boolean {
 	return guild_object ? guild_object.music_data.channel_id === channel_id : false;
 }
 
-export function is_announcement_channel(channel_id: string, guild_object: GuildPrtl): boolean {
+export function is_announcement_channel(channel_id: string, guild_object: PGuild): boolean {
 	return guild_object ? guild_object.announcement === channel_id : false;
 }
 
@@ -118,7 +118,7 @@ export async function create_channel(
 }
 
 function createVoiceOptions(
-	state: VoiceState, portalObject: PortalChannelPrtl
+	state: VoiceState, portalObject: PPortalChannel
 ): GuildChannelCreateOptions {
 	let permission_overwrites = null;
 	if (portalObject.allowed_roles) {
@@ -155,7 +155,7 @@ function createVoiceOptions(
 }
 
 export async function create_voice_channel(
-	state: VoiceState, portalObject: PortalChannelPrtl
+	state: VoiceState, portalObject: PPortalChannel
 ): Promise<string | boolean> {
 	if (!state) {
 		return Promise.reject(`there is no state`);
@@ -172,7 +172,7 @@ export async function create_voice_channel(
 		return false;
 	}
 
-	const newVoice = new VoiceChannelPrtl(
+	const newVoice = new PVoiceChannel(
 		newGuildVoiceChannel.id, state.member.id, portalObject.render, portalObject.regex_voice, portalObject.no_bots,
 		portalObject.locale, portalObject.ann_announce, portalObject.ann_user
 	);
@@ -188,7 +188,7 @@ export async function create_voice_channel(
 }
 
 export async function create_music_channel(
-	guild: Guild, music_channel: string, music_category: string | CategoryChannel | null, guild_object: GuildPrtl
+	guild: Guild, music_channel: string, music_category: string | CategoryChannel | null, guild_object: PGuild
 ): Promise<boolean> {
 	let newMusicCategoryGuildChannel: CategoryChannel | undefined;
 	if (music_category && typeof music_category === 'string') { // with category		
@@ -265,7 +265,7 @@ export async function moveMembersBack(
 
 export async function create_focus_channel(
 	guild: Guild, member: GuildMember, member_found: GuildMember,
-	focus_time: number, portalObject: PortalChannelPrtl
+	focus_time: number, portalObject: PPortalChannel
 ): Promise<string> {
 	if (!member.voice.channel) {
 		return Promise.reject(`member is not in a voice channel`);
@@ -299,7 +299,7 @@ export async function create_focus_channel(
 		.catch(e => { return Promise.reject(`failed to set member to new channel: ${e}`); });
 
 
-	insert_voice(guild.id, portalObject.id, new VoiceChannelPrtl(
+	insert_voice(guild.id, portalObject.id, new PVoiceChannel(
 		newVoiceChannel.id, member.id, portalObject.render, chatroom_name, portalObject.no_bots,
 		portalObject.locale, portalObject.ann_announce, portalObject.ann_user
 	))
@@ -439,8 +439,8 @@ export async function delete_channel(
 }
 
 export async function generate_channel_name(
-	voice_channel: VoiceChannel, portal_list: PortalChannelPrtl[],
-	guild_object: GuildPrtl, guild: Guild
+	voice_channel: VoiceChannel, portal_list: PPortalChannel[],
+	guild_object: PGuild, guild: Guild
 ): Promise<boolean> {
 	for (let i = 0; i < portal_list.length; i++) {
 		for (let j = 0; j < portal_list[i].voice_list.length; j++) {
@@ -501,8 +501,8 @@ export async function generate_channel_name(
 }
 
 export function regex_interpreter(
-	regex: string, voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-	portal_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild, member_id: string
+	regex: string, voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
+	portal_list: PPortalChannel[] | undefined | null, guild_object: PGuild, guild: Guild, member_id: string
 ): string {
 	let last_space_index = 0;
 	let last_vatiable_end_index = 0;

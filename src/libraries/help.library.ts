@@ -1,10 +1,10 @@
 import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
-import { Client, Collection, ColorResolvable, Guild, GuildBasedChannel, GuildMember, Message, MessageEmbed, PermissionResolvable, TextBasedChannel, TextChannel, User, VoiceChannel } from "discord.js";
+import { Client, Collection, ColorResolvable, EmbedAuthorOptions, EmbedBuilder, Guild, GuildBasedChannel, GuildMember, Message, PermissionResolvable, TextBasedChannel, TextChannel, User, VoiceChannel } from "discord.js";
 import moment from "moment";
 import { createLogger, format } from "winston";
 import { VideoSearchResult } from "yt-search";
-import { GuildPrtl, MusicData } from "../types/classes/GuildPrtl.class";
-import { Field, TimeElapsed } from "../types/classes/TypesPrtl.interface";
+import { PGuild, MusicData } from "../types/classes/PGuild.class";
+import { Field, TimeElapsed } from "../types/classes/PTypes.interface";
 import { createDiscordJSAdapter } from "./adapter.library";
 // import { client_talk } from "./localisation.library";
 import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
@@ -154,10 +154,10 @@ export function getKeyFromEnum(
 }
 
 export function createMusicMessage(
-	channel: TextChannel, guild_object: GuildPrtl
+	channel: TextChannel, guild_object: PGuild
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const music_message_emb = createEmded(
+		const music_message_emb = createEmbed(
 			'Music Player',
 			'Type and Portal will play it !',
 			'#e60026',
@@ -236,10 +236,10 @@ export function createMusicMessage(
 }
 
 export function createMusicLyricsMessage(
-	channel: TextChannel, guild_object: GuildPrtl, message_id: string
+	channel: TextChannel, guild_object: PGuild, message_id: string
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
-		const music_lyrics_message_emb = createEmded(
+		const music_lyrics_message_emb = createEmbed(
 			'Lyrics 📄',
 			'',
 			'#e60026',
@@ -276,7 +276,7 @@ export function createMusicLyricsMessage(
 }
 
 export function updateMusicMessage(
-	guild: Guild, guild_object: GuildPrtl, yts: VideoSearchResult | undefined,
+	guild: Guild, guild_object: PGuild, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
@@ -308,7 +308,7 @@ export function updateMusicMessage(
 				: 'empty'
 			: 'empty';
 
-		const music_message_emb = createEmded(
+		const music_message_emb = createEmbed(
 			yts ? yts.title : 'Music Player',
 			yts ? yts.url : 'Type and Portal will play it !',
 			'#e60026',
@@ -354,7 +354,7 @@ export function updateMusicMessage(
 }
 
 export function updateMusicLyricsMessage(
-	guild: Guild, guild_object: GuildPrtl, lyrics: string, url?: string
+	guild: Guild, guild_object: PGuild, lyrics: string, url?: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
 		const guild_channel: GuildBasedChannel | undefined = guild.channels.cache
@@ -370,7 +370,7 @@ export function updateMusicLyricsMessage(
 			return reject(`could not find channel`);
 		}
 
-		const music_message_emb = createEmded(
+		const music_message_emb = createEmbed(
 			`Lyrics 📄 ${url ? `at ${url}` : ''}`,
 			maxString(lyrics, 2000),
 			'#e60026',
@@ -404,7 +404,7 @@ export function updateMusicLyricsMessage(
 }
 
 export async function joinUserVoiceChannelByReaction(
-	guild: Guild, client: Client, guild_object: GuildPrtl, user: User, announce_entrance: boolean
+	guild: Guild, client: Client, guild_object: PGuild, user: User, announce_entrance: boolean
 ): Promise<VoiceConnection> {
 	const guildMembers = await guild.members.fetch();
 
@@ -412,7 +412,7 @@ export async function joinUserVoiceChannelByReaction(
 		return Promise.reject(`could not fetch members`);
 	}
 
-	const member = guildMembers.find(m => !m.user?.bot && m.id === user.id);
+	const member = guildMembers.find(guildMember => !guildMember.user?.bot && guildMember.id === user.id);
 
 	if (!member) {
 		return Promise.reject(`could not find member`);
@@ -427,8 +427,11 @@ export async function joinUserVoiceChannelByReaction(
 	}
 
 	let voiceConnection = await getVoiceConnection(member.voice.channel.id);
-	if (voiceConnection && member.voice.channel.guild.me?.voice.channelId === member.voice.channel?.id) {
-		member.voice.channel.guild.me?.voice.setDeaf();
+	const clientVoiceState = member.voice.channel.guild.voiceStates.cache.get(member.client.user.id);
+
+	if (voiceConnection && clientVoiceState?.channelId === member.voice.channel?.id) {
+		// member.voice.channel.guild.me?.voice.setDeaf();
+		clientVoiceState.setDeaf(true);
 	} else {
 		voiceConnection = joinVoiceChannel({
 			channelId: member.voice.channel.id,
@@ -440,14 +443,17 @@ export async function joinUserVoiceChannelByReaction(
 			return Promise.reject('could not join voice channel');
 		}
 
-		member.voice.channel.guild.me?.voice.setDeaf();
+		// member.voice.channel.guild.me?.voice.setDeaf();
+		if (clientVoiceState) {
+			clientVoiceState.setDeaf(true);
+		}
 	}
 
 	return voiceConnection;
 }
 
 export async function joinUserVoiceChannelByMessage(
-	client: Client, message: Message, guild_object: GuildPrtl, join = false
+	client: Client, message: Message, guild_object: PGuild, join = false
 ): Promise<VoiceConnection> {
 	if (!message.member) {
 		return Promise.reject('user could not be fetched for message');
@@ -478,8 +484,11 @@ export async function joinUserVoiceChannelByMessage(
 	}
 
 	let voiceConnection = await getVoiceConnection(message.member.voice.channel.id);
-	if (voiceConnection && message.guild.me?.voice.channelId === message.member.voice.channel?.id) {
-		message.guild.me?.voice.setDeaf();
+	const clientVoiceState = message.guild.voiceStates.cache.get(message.guild.client.user.id);
+
+	if (voiceConnection && clientVoiceState?.channelId === message.member.voice.channel?.id) {
+		// message.guild.me?.voice.setDeaf();
+		clientVoiceState.setDeaf(true);
 	} else {
 		voiceConnection = await joinVoiceChannel({
 			channelId: message.member.voice.channel.id,
@@ -491,13 +500,16 @@ export async function joinUserVoiceChannelByMessage(
 			return Promise.reject('could not join voice channel');
 		}
 
-		message.guild.me?.voice.setDeaf();
+		// message.guild.me?.voice.setDeaf();
+		if (clientVoiceState) {
+			clientVoiceState.setDeaf(true);
+		}
 	}
 
 	return voiceConnection;
 }
 
-export function createEmded(
+export function createEmbed(
 	title: string | null | undefined,
 	description: string | null | undefined,
 	colour: ColorResolvable | null | undefined,
@@ -510,11 +522,11 @@ export function createEmded(
 	custom_gif?: string,
 	author?: { name: string, icon: string },
 	footer?: string,
-): MessageEmbed {
+): EmbedBuilder {
 	const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker' +
 		'/Portal/master/src/assets/img/portal_logo_spinr.gif';
 
-	const rich_message: MessageEmbed = new MessageEmbed();
+	const rich_message = new EmbedBuilder();
 
 	if (title) rich_message.setTitle(title);
 	if (url) rich_message.setURL(url);
@@ -539,14 +551,15 @@ export function createEmded(
 	if (field_array) {
 		field_array.forEach(row => {
 			rich_message
-				.addField(
-					row.emote === '' || !row.emote
+				.addFields({
+					name: row.emote === '' || !row.emote
 						? `\u200b`
 						: `__${row.emote}__`,
-					row.role === '' || !row.role
+					value: row.role === '' || !row.role
 						? `\u200b`
 						: `${row.role}`,
-					row.inline
+					inline: row.inline
+				}
 				);
 		});
 	}
@@ -555,12 +568,11 @@ export function createEmded(
 			? member.user.avatarURL()
 			: undefined;
 
-		rich_message.setAuthor(
-			member.displayName,
-			url
-				? url
-				: undefined,
-			undefined
+		rich_message.setAuthor({
+			name: member.displayName,
+			value: url ? url.toString() : undefined,
+			inline: undefined
+		} as EmbedAuthorOptions
 		);
 	}
 
@@ -570,7 +582,7 @@ export function createEmded(
 export function isUserAuthorised(
 	member: GuildMember
 ): boolean {
-	const administrator: PermissionResolvable = 'ADMINISTRATOR';
+	const administrator: PermissionResolvable = 'Administrator';
 
 	if (member.permissions.has(administrator, true)) {
 		return true;

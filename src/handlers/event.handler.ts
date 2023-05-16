@@ -4,7 +4,7 @@ import { isMessageDeleted, isUserAuthorised, logger, markMessageAsDeleted, messa
 import { messageSpamCheck } from "../libraries/mod.library";
 import { fetchGuildPredata, fetchGuildRest, insertMember } from "../libraries/mongo.library";
 import { portalPreprocessor, commandDecypher } from "../libraries/preprocessor.library";
-import { ActiveCooldowns, ReturnPromise, SpamCache } from "../types/classes/TypesPrtl.interface";
+import { ActiveCooldowns, ReturnPromise, SpamCache } from "../types/classes/PTypes.interface";
 import { commandLoader } from "./command.handler";
 
 async function eventLoader(event: string, args: any): Promise<void> {

@@ -1,10 +1,10 @@
 import { Document } from "mongoose";
 import { VideoSearchResult } from "yt-search";
-import { GiveRolePrtl } from "./GiveRolePrtl.class";
-import { MemberPrtl } from "./MemberPrtl.class";
-import { PollPrtl } from "./PollPrtl.class";
-import { IPortalChannelPrtl, PortalChannelPrtl } from "./PortalChannelPrtl.class";
-import { Rank } from "./TypesPrtl.interface";
+import { PGiveRole } from "./PGiveRole.class";
+import { PPoll } from "./PPoll.class";
+import { IPPortalChannel, PPortalChannel } from "./PPortalChannel.class";
+import { Rank } from "./PTypes.interface";
+import { PMember } from "./PMember.class";
 
 export class MusicData {
 	public channel_id: string | undefined;
@@ -28,14 +28,14 @@ export class MusicData {
 	}
 }
 
-export class GuildPrtl {
+export class PGuild {
 	public id: string;
-	public portal_list: PortalChannelPrtl[];
-	public member_list: MemberPrtl[];
+	public portal_list: PPortalChannel[];
+	public member_list: PMember[];
 	public ignore_list: string[];
 	public url_list: string[];
-	public role_list: GiveRolePrtl[];
-	public poll_list: PollPrtl[];
+	public role_list: PGiveRole[];
+	public poll_list: PPoll[];
 	public initial_role: string | null;
 	public ranks: Rank[];
 	public music_data: MusicData;
@@ -53,12 +53,12 @@ export class GuildPrtl {
 
 	constructor(
 		id: string,
-		portal_list: PortalChannelPrtl[],
-		member_list: MemberPrtl[],
+		portal_list: PPortalChannel[],
+		member_list: PMember[],
 		ignore_list: string[],
 		url_list: string[],
-		role_list: GiveRolePrtl[],
-		poll_list: PollPrtl[],
+		role_list: PGiveRole[],
+		poll_list: PPoll[],
 		initial_role: string | null,
 		ranks: Rank[],
 		music_data: MusicData,
@@ -98,14 +98,14 @@ export class GuildPrtl {
 	}
 }
 
-export interface IGuildPrtl extends Document {
+export interface IPGuild extends Document {
 	id: string;
-	portal_list: [IPortalChannelPrtl];
-	member_list: MemberPrtl[];
+	portal_list: [IPPortalChannel];
+	member_list: PMember[];
 	ignore_list: string[];
 	url_list: string[];
-	role_list: GiveRolePrtl[];
-	poll_list: PollPrtl[];
+	role_list: PGiveRole[];
+	poll_list: PPoll[];
 	initial_role: string | null;
 	ranks: Rank[];
 	music_data: MusicData;

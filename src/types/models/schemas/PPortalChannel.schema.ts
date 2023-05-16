@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
-import VoiceChannelPrtlSch from './VoiceChannelPrtl.schema';
+import VoiceChannelPrtlSch from './PVoiceChannel.schema';
 
-const PortalChannelPrtlSchm = new Schema(
+const PPortalChannelSchema = new Schema(
     {
         id: { type: String, required: true },
         creator_id: { type: String, required: true },
@@ -22,5 +22,4 @@ const PortalChannelPrtlSchm = new Schema(
     }
 );
 
-// export default model('PortalChannelPrtlSchm', PortalChannelPrtlSchm);
-export default PortalChannelPrtlSchm;
+export default PPortalChannelSchema;

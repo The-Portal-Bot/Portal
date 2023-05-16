@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import { createEmded, messageHelp } from "../../libraries/help.library";
-import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed, messageHelp } from "../../libraries/help.library";
+import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../types/interfaces/Attribute.interface";
 import { get_command_guide, get_command_help, get_command_help_super } from "../../types/interfaces/Command.interface";
 import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../types/interfaces/Pipe.interface";
@@ -69,7 +69,7 @@ const help_array: Field[] = [
 async function simpleReply(message: Message) {
 	return !!await message.reply({
 		embeds: [
-			createEmded(
+			createEmbed(
 				'Help Card',
 				'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
 				'> make a member an **admin**, give role `p.admin`\n' +

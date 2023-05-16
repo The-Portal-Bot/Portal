@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export class PollPrtl {
+export class PPoll {
 	public message_id: string;
 	public member_id: string;
 
@@ -13,7 +13,7 @@ export class PollPrtl {
 	}
 }
 
-export interface IPollPrtl extends Document {
+export interface IPPoll extends Document {
 	message_id: string;
 	member_id: string;
 }

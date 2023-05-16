@@ -1,18 +1,18 @@
 import { ColorResolvable, Message, MessageEmbed, TextChannel } from "discord.js";
 import { get_role } from "../../libraries/guild.library";
-import { createEmded, getJsonFromString, messageHelp } from "../../libraries/help.library";
+import { createEmbed, getJsonFromString, messageHelp } from "../../libraries/help.library";
 import { insert_vendor } from "../../libraries/mongo.library";
-import { GiveRole, GiveRolePrtl } from "../../types/classes/GiveRolePrtl.class";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { GiveRole, PGiveRole } from "../../types/classes/PGiveRole.class";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function create_role_message(
-    channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
+    channel: TextChannel, guild_object: PGuild, title: string, desc: string,
     colour: ColorResolvable, role_emb: Field[], role_map: GiveRole[]
 ): Promise<ReturnPromise> {
     return new Promise((resolve) => {
-        const role_message_emb = createEmded(
+        const role_message_emb = createEmbed(
             title, desc, colour, role_emb, null, null, null, null, null
         );
 
@@ -30,7 +30,7 @@ function create_role_message(
                         });
                 }
 
-                insert_vendor(guild_object.id, new GiveRolePrtl(sent_message.id, role_map))
+                insert_vendor(guild_object.id, new PGiveRole(sent_message.id, role_map))
                     .then(r => {
                         return resolve({
                             result: r,
@@ -75,7 +75,7 @@ module.exports = {
         .setName('vendor')
         .setDescription('remove user from role'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {

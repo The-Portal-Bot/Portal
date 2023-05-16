@@ -1,12 +1,12 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from "discord.js";
-import { createEmded } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { MemberPrtl } from "../../types/classes/MemberPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { PMember } from "../../types/classes/PMember.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 
-const embeds = (message: Message, member_object: MemberPrtl) => [
-    createEmded(
+const embeds = (message: Message, member_object: PMember) => [
+    createEmbed(
         message.member
             ? message.member?.displayName
             : 'could not fetch name',
@@ -49,7 +49,7 @@ module.exports = {
         .setName('whoami')
         .setDescription('returns who am I information'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve, reject) => {
             const member_object = guild_object.member_list.find(m => m.id === message.member?.id);

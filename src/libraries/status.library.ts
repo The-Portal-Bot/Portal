@@ -1,7 +1,7 @@
 import { Activity, GuildMember, VoiceChannel } from "discord.js";
 import { GameNames } from "../data/lists/game_names.static";
 import { ProgramNames } from "../data/lists/program_names.static";
-import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
+import { PVoiceChannel } from "../types/classes/PVoiceChannel.class";
 import { LocaleEnum } from "../data/enums/Locales.enum";
 
 function status_aliases(
@@ -61,7 +61,7 @@ function status_aliases(
 }
 
 export function get_status_list(
-	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl
+	voice_channel: VoiceChannel, voice_object: PVoiceChannel
 ): string[] {
 	const array_of_statuses: string[] = [];
 

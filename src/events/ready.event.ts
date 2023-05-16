@@ -3,10 +3,10 @@ import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "disco
 import { logger } from "../libraries/help.library";
 import { get_function } from "../libraries/localisation.library";
 import { fetch_guild_members, guildExists, insertGuild, insertMember, remove_member } from "../libraries/mongo.library";
-import { MemberPrtl } from "../types/classes/MemberPrtl.class";
+import { PMember } from "../types/classes/PMember.class";
 
 function added_when_down(
-    guild: Guild, member_list: MemberPrtl[]
+    guild: Guild, member_list: PMember[]
 ): Promise<string> {
     return new Promise((resolve) => {
         const guild_members: GuildMember[] = guild.members.cache.map(m => m);
@@ -33,7 +33,7 @@ function added_when_down(
 }
 
 function removed_when_down(
-    guild: Guild, member_list: MemberPrtl[]
+    guild: Guild, member_list: PMember[]
 ): Promise<string> {
     return new Promise((resolve) => {
         for (let j = 0; j < member_list.length; j++) {

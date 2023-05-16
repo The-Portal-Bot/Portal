@@ -73,7 +73,7 @@ export interface SpamCache {
 	last_message: string;
 	timestamp: Date | null;
 	spam_fouls: number;
-	dupl_fouls: number;
+	duplicate_fouls: number;
 }
 
 export interface TimeElapsed {

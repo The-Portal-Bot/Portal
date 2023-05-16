@@ -3,9 +3,9 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function kelvin_to_celsius(kelvin: number): number {
@@ -67,7 +67,7 @@ module.exports = {
                         message.channel
                             .send({
                                 embeds: [
-                                    createEmded(
+                                    createEmbed(
                                         `${json.name}, ${json.sys.country} at ${moment().format('DD/MM/YY')}`,
                                         'powered by OpenWeatherMap',
                                         '#BFEFFF',

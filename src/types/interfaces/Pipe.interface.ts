@@ -2,8 +2,8 @@
 import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
 import { AuthEnum } from '../../data/enums/Admin.enum';
-import { createEmded } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from '../classes/TypesPrtl.interface';
+import { createEmbed } from '../../libraries/help.library';
+import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
 const portal_url = 'https://portal-bot.xyz/docs';
 const interpreter_url = '/interpreter/objects';
@@ -249,7 +249,7 @@ export function get_pipe_guide(): MessageEmbed {
 		}
 	];
 
-	return createEmded(
+	return createEmbed(
 		'Pipe Guide',
 		'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
 		'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
@@ -281,7 +281,7 @@ export function get_pipe_help(): MessageEmbed[] {
 
 	return pipe_array.map((cmmd, index): MessageEmbed => {
 		if (index === 0) {
-			return createEmded(
+			return createEmbed(
 				'Pipes',
 				'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
 				'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
@@ -295,7 +295,7 @@ export function get_pipe_help(): MessageEmbed[] {
 				null
 			);
 		} else {
-			return createEmded(
+			return createEmbed(
 				null,
 				null,
 				'#6EEB83',
@@ -313,7 +313,7 @@ export function get_pipe_help(): MessageEmbed[] {
 export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
 	for (let i = 0; i < pipes.length; i++) {
 		if (pipes[i].name === candidate) {
-			return createEmded(
+			return createEmbed(
 				pipes[i].name,
 				null,
 				'#6EEB83',

@@ -1,10 +1,10 @@
 import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
 import { Client, MessageReaction, Role, User } from "discord.js";
 import { get_role } from "../libraries/guild.library";
-import { createEmded, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
+import { createEmbed, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
 import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, updateGuild } from "../libraries/mongo.library";
 // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+import { PGuild } from "../types/classes/PGuild.class";
 
 // function clear_user_reactions(
 //     messageReaction: MessageReaction, user: User

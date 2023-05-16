@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
-import { createEmded } from "../../libraries/help.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { createEmbed } from "../../libraries/help.library";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -9,13 +9,13 @@ module.exports = {
 		.setName('ping')
 		.setDescription('returns time to reply with \'pong\''),
 	async execute(
-		message: Message, args: string[], guild_object: GuildPrtl, client: Client
+		message: Message, args: string[], guild_object: PGuild, client: Client
 	): Promise<ReturnPromise> {
 		return new Promise((resolve) => {
 			message.channel
 				.send({
 					embeds: [
-						createEmded(
+						createEmbed(
 							null,
 							null,
 							'#0093ff',
@@ -36,7 +36,7 @@ module.exports = {
 					message_sent
 						.edit({
 							embeds: [
-								createEmded(
+								createEmbed(
 									null,
 									null,
 									'#0093ff',

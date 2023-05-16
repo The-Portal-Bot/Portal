@@ -1,19 +1,19 @@
 import { ColorResolvable, Message, TextChannel } from "discord.js";
-import { createEmded, getJsonFromString, messageHelp } from "../../libraries/help.library";
+import { createEmbed, getJsonFromString, messageHelp } from "../../libraries/help.library";
 import { insert_poll } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { PollPrtl } from "../../types/classes/PollPrtl.class";
-import { Field, ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { PPoll } from "../../types/classes/PPoll.class";
+import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
 function create_role_message(
-    channel: TextChannel, guild_object: GuildPrtl, title: string, desc: string,
+    channel: TextChannel, guild_object: PGuild, title: string, desc: string,
     colour: ColorResolvable, poll_map: Field[], member_id: string
 ): Promise<ReturnPromise> {
     return new Promise((resolve) => {
-        const role_message_emb = createEmded(
+        const role_message_emb = createEmbed(
             title,
             desc,
             colour,
@@ -49,7 +49,7 @@ function create_role_message(
                     }
                 }
 
-                const poll: PollPrtl = { message_id: sent_message.id, member_id: member_id }
+                const poll: PPoll = { message_id: sent_message.id, member_id: member_id }
                 insert_poll(guild_object.id, poll)
                     .then(r => {
                         return resolve({
@@ -80,7 +80,7 @@ module.exports = {
         .setName('poll')
         .setDescription('create a poll'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {

@@ -2,8 +2,8 @@ import { Message } from "discord.js";
 import { included_in_ignore_list } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_ignore, remove_ignore } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
         .setName('ignore')
         .setDescription('ignore user or channel from spam'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {

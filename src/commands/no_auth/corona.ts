@@ -4,9 +4,9 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
 import { CountryCodes } from '../../data/lists/country_codes_iso.static';
-import { createEmded, getJsonFromString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 const country_codes: { name: string; code: string; }[] = CountryCodes;
 
@@ -88,7 +88,7 @@ module.exports = {
                         message.channel
                             .send({
                                 embeds: [
-                                    createEmded(
+                                    createEmbed(
                                         `${country_data.country} | ${moment(country_data.time).format('DD/MM/YY')}`,
                                         'Covid19 stats by covid-193',
                                         '#FF0000',

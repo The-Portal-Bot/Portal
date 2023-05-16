@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
 import { Configuration, OpenAIApi } from "openai";
-import { createEmded, messageHelp } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -54,7 +54,7 @@ module.exports = {
             message.channel
                 .send({
                     embeds: [
-                        createEmded(
+                        createEmbed(
                             `model: ${model}`,
                             'Ai by OpenAi',
                             '#FF0000',

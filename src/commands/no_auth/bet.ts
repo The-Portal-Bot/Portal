@@ -3,9 +3,9 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import { OpapGameIdEnum } from '../../data/enums/OpapGames.enum';
-import { createEmded, getJsonFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJsonFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
 import { https_fetch } from '../../libraries/http.library';
-import { ReturnPromise } from '../../types/classes/TypesPrtl.interface';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -70,7 +70,7 @@ module.exports = {
                     message.channel
                         .send({
                             embeds: [
-                                createEmded(
+                                createEmbed(
                                     `${args[1]} from ${args[0]} | ${moment(json.last.drawTime).format('DD/MM/YY')}`,
                                     `powered by ${args[0]}`,
                                     '#0384fc',

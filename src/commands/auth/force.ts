@@ -3,8 +3,8 @@ import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { delete_channel, included_in_voice_list, regex_interpreter } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { update_voice } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPromise } from "../../types/classes/TypesPrtl.interface";
+import { PGuild } from "../../types/classes/PGuild.class";
+import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
         .setName('force')
         .setDescription('force updates channel you are in to force a rename'),
     async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
+        message: Message, args: string[], guild_object: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.member) {
