@@ -1,6 +1,6 @@
 import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
 import { GatewayVoiceServerUpdateDispatchData } from 'discord-api-types/v9';
-import { Client, Constants, GatewayDispatchEvents, Guild, Snowflake, VoiceChannel } from 'discord.js';
+import { Client, Constants, Events, GatewayDispatchEvents, Guild, Snowflake, Status, VoiceChannel } from 'discord.js';
 
 const adapters = new Map<Snowflake, DiscordGatewayAdapterLibraryMethods>();
 const trackedClients = new Set<Client>();
@@ -21,7 +21,7 @@ function trackClient(client: Client) {
             adapters.get(payload.d.guild_id)?.onVoiceStateUpdate(payload);
         }
     });
-    client.on(Constants.Events.SHARD_DISCONNECT, (_, shardId) => {
+    client.on(Events.ShardDisconnect, (_, shardId) => {
         const guilds = trackedShards.get(shardId);
         if (guilds) {
             for (const guildID of guilds.values()) {
@@ -55,7 +55,7 @@ export function createDiscordJSAdapter(channel: VoiceChannel): DiscordGatewayAda
         trackGuild(channel.guild);
         return {
             sendPayload(data) {
-                if (channel.guild.shard.status === Constants.Status.READY) {
+                if (channel.guild.shard.status === Status.Ready) {
                     channel.guild.shard.send(data);
                     return true;
                 }

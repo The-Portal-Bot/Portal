@@ -27,12 +27,12 @@ module.exports = {
                 `**Spam warning after ${spam_config.warn_after}.**\n` +
                 `**Mute after ${spam_config.mute_after} ${spam_config.mute_after === 1 ? `warning` : `warnings`} ` +
                 `for ${spam_config.mute_period} ${spam_config.mute_period === 1 ? `minute` : `minutes`}.**\n\n` +
-                `${guild_object.kick_after && guild_object.kick_after > 0
-                    ? `***Member kicked after ${guild_object.kick_after} ${spam_config.mute_after === 1 ? `penalty` : `penalties`}.***\n`
+                `${guild_object.kickAfter && guild_object.kickAfter > 0
+                    ? `***Member kicked after ${guild_object.kickAfter} ${spam_config.mute_after === 1 ? `penalty` : `penalties`}.***\n`
                     : `***Automatic kick has not been set yet.***\n`
                 }` +
-                `${guild_object.ban_after && guild_object.ban_after > 0
-                    ? `***Member banned after ${guild_object.ban_after} ${spam_config.mute_after === 1 ? `penalty` : `penalties`}.***`
+                `${guild_object.banAfter && guild_object.banAfter > 0
+                    ? `***Member banned after ${guild_object.banAfter} ${spam_config.mute_after === 1 ? `penalty` : `penalties`}.***`
                     : `***Automatic ban has not been set yet.***`
                 }`
                 ;

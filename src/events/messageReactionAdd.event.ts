@@ -30,7 +30,7 @@ import { PGuild } from "../types/classes/PGuild.class";
 //         }
 
 //         const role_list_object = guild_object.role_list
-//             .find(r => r.message_id === messageReaction.message.id);
+//             .find(r => r.messageId === messageReaction.message.id);
 
 //         if (!role_list_object) {
 //             return resolve('message is not role adder');
@@ -121,7 +121,7 @@ import { PGuild } from "../types/classes/PGuild.class";
 //         return 'guild has no music channel';
 //     }
 
-//     if (guild_object.music_data.message_id !== messageReaction.message.id) {
+//     if (guild_object.music_data.messageId !== messageReaction.message.id) {
 //         return 'message is not music player';
 //     }
 
@@ -480,7 +480,7 @@ module.exports = async (
         //                     }
         //                 }
 
-        //                 if (guild_object.role_list.some(r => r.message_id === args.messageReaction.message.id)) {
+        //                 if (guild_object.role_list.some(r => r.messageId === args.messageReaction.message.id)) {
         //                     reaction_role_manager(guild_object, args.messageReaction, args.user)
         //                         .then(r => {
         //                             clear_user_reactions(args.messageReaction, args.user)
@@ -526,7 +526,7 @@ module.exports = async (
         //                                     return reject(`failed to send message: ${e}`);
         //                                 });
         //                         });
-        //                 } else if (guild_object.music_data.message_id === args.messageReaction.message.id) {
+        //                 } else if (guild_object.music_data.messageId === args.messageReaction.message.id) {
         //                     reaction_music_manager(args.client, guild_object, args.messageReaction, args.user)
         //                         .then(r => {
         //                             if (args.messageReaction.message.guild) {
@@ -581,11 +581,11 @@ module.exports = async (
         //                             return reject(e);
         //                         });
         //                 } else if (args.messageReaction.emoji.name === '🏁' &&
-        //                     guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
+        //                     guild_object.poll_list.some(p => p.messageId === args.messageReaction.message.id)) {
         //                     const poll = guild_object.poll_list.find(p =>
-        //                         p.message_id === args.messageReaction.message.id);
+        //                         p.messageId === args.messageReaction.message.id);
 
-        //                     if (poll && args.user.id === poll.member_id) {
+        //                     if (poll && args.user.id === poll.memberId) {
         //                         const winner: MessageReaction[] = [];
         //                         let count = 0;
 

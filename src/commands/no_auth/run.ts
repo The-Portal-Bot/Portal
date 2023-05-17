@@ -34,10 +34,10 @@ module.exports = {
             let voice_object: PVoiceChannel | null = null;
 
             if (current_voice_channel) {
-                for (let i = 0; i < guild_object.portal_list.length; i++) {
-                    for (let j = 0; j < guild_object.portal_list[i].voice_list.length; j++) {
-                        if (guild_object.portal_list[i].voice_list[j].id === current_voice_channel.id) {
-                            voice_object = guild_object.portal_list[i].voice_list[j];
+                for (let i = 0; i < guild_object.pChannels.length; i++) {
+                    for (let j = 0; j < guild_object.pChannels[i].voiceList.length; j++) {
+                        if (guild_object.pChannels[i].voiceList[j].id === current_voice_channel.id) {
+                            voice_object = guild_object.pChannels[i].voiceList[j];
                             break;
                         }
                     }
@@ -85,7 +85,7 @@ module.exports = {
                                                     args.join(' '),
                                                     current_voice_channel as VoiceChannel,
                                                     voice_object,
-                                                    guild_object.portal_list,
+                                                    guild_object.pChannels,
                                                     guild_object,
                                                     message.guild,
                                                     message.author.id

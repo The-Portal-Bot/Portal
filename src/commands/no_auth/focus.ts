@@ -20,7 +20,7 @@ module.exports = {
 			return Promise.reject(messageHelp('commands', 'focus', 'you must be in a channel handled by Portal'));
 		}
 
-		if (!includedInVoiceList(message.member.voice.channel.id, guild_object.portal_list)) {
+		if (!includedInVoiceList(message.member.voice.channel.id, guild_object.pChannels)) {
 			return Promise.reject(messageHelp('commands', 'focus', 'the channel you are in is not handled by Portal'));
 		}
 
@@ -88,8 +88,8 @@ module.exports = {
 			return Promise.reject('could not fetch message\'s member');
 		}
 
-		const portal_object = guild_object.portal_list.find(p =>
-			p.voice_list.some(v => v.id === message.member?.voice.channel?.id)
+		const portal_object = guild_object.pChannels.find(p =>
+			p.voiceList.some(v => v.id === message.member?.voice.channel?.id)
 		);
 
 		if (!portal_object) {

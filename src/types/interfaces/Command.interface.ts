@@ -3,8 +3,8 @@ import { AuthEnum } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
-const portal_url = 'https://portal-bot.xyz/docs';
-export const command_prefix = './';
+const PORTAL_URL = 'https://portal-bot.xyz/docs';
+export const COMMAND_PREFIX = './';
 
 const commands: InterfaceBlueprint[] = [
 	{
@@ -281,7 +281,7 @@ export function getCommandGuide(): EmbedBuilder {
 
 	return createEmbed(
 		'Command Guide',
-		'[Commands](' + portal_url + '/commands/description) ' +
+		'[Commands](' + PORTAL_URL + '/commands/description) ' +
 		'are the way you communicate with Portal.\n' +
 		'how to use commands',
 		'#9775A9',
@@ -303,7 +303,7 @@ export function getCommandHelp(): EmbedBuilder[] {
 			commandArray[l]
 				.push({
 					emote: `${i + 1}. ${commands[i].name}`,
-					role: `[hover or click](${portal_url}` +
+					role: `[hover or click](${PORTAL_URL}` +
 						`/commands/detailed/${(commands[i].name)} "${commands[i].hover}")`,
 					inline: true
 				});
@@ -315,9 +315,9 @@ export function getCommandHelp(): EmbedBuilder[] {
 			if (index === 0) {
 				return createEmbed(
 					'Commands',
-					'[Commands](' + portal_url + '/commands/description) ' +
+					'[Commands](' + PORTAL_URL + '/commands/description) ' +
 					'are the way you communicate with Portal.\n' +
-					'Prefix: ' + command_prefix,
+					'Prefix: ' + COMMAND_PREFIX,
 					'#9775A9',
 					commandArray[0],
 					null,
@@ -351,10 +351,10 @@ export function getCommandHelpSuper(candidate: string): EmbedBuilder | boolean {
 				'#9775A9',
 				[
 					{ emote: `Type`, role: `Command`, inline: true },
-					{ emote: `Prefix`, role: `${command_prefix}`, inline: true },
+					{ emote: `Prefix`, role: `${COMMAND_PREFIX}`, inline: true },
 					{
 						emote: `Description`,
-						role: `[hover or click](${portal_url}/commands/detailed/${candidate} "${commands[i].hover}")`,
+						role: `[hover or click](${PORTAL_URL}/commands/detailed/${candidate} "${commands[i].hover}")`,
 						inline: true
 					}
 				],

@@ -16,9 +16,9 @@ module.exports = async (
                     fetch_guild_announcement(args.member.guild.id)
                         .then(guild_object => {
                             if (guild_object) {
-                                if (guild_object.initial_role && guild_object.initial_role !== 'null') {
+                                if (guild_object.initialRole && guild_object.initialRole !== 'null') {
                                     const initial_role = args.member.guild.roles.cache
-                                        .find(r => r.id === guild_object.initial_role);
+                                        .find(r => r.id === guild_object.initialRole);
 
                                     if (initial_role) {
                                         try {

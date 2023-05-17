@@ -54,7 +54,7 @@ module.exports = {
             }
 
             const music = message.guild.channels.cache.find(channel =>
-                channel.id == guild_object.music_data.channel_id);
+                channel.id == guild_object.musicData.channelId);
 
             if (music) {
                 delete_channel(PortalChannelTypes.music, <TextChannel>music, message)
@@ -67,9 +67,9 @@ module.exports = {
             }
 
             if (args.length === 0) {
-                guild_object.music_data.channel_id = message.channel.id;
+                guild_object.musicData.channelId = message.channel.id;
                 const new_music = <TextChannel>message.guild.channels.cache.find(channel =>
-                    channel.id == guild_object.music_data.channel_id);
+                    channel.id == guild_object.musicData.channelId);
 
                 if (!new_music) {
                     return resolve({

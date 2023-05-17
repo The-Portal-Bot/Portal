@@ -1,19 +1,19 @@
 import { Document } from "mongoose";
 
 export class PPoll {
-	public message_id: string;
-	public member_id: string;
+	public messageId: string;
+	public memberId: string;
 
 	constructor(
-		message_id: string,
-		member_id: string
+		messageId: string,
+		memberId: string
 	) {
-		this.message_id = message_id;
-		this.member_id = member_id;
+		this.messageId = messageId;
+		this.memberId = memberId;
 	}
 }
 
 export interface IPPoll extends Document {
-	message_id: string;
-	member_id: string;
+	messageId: string;
+	memberId: string;
 }

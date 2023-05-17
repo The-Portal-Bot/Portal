@@ -12,8 +12,8 @@ const GiveRoleSchema = new Schema(
 
 const PGiveRoleSchema = new Schema(
     {
-        message_id: { type: String, required: true },
-        role_emote_map: { type: [GiveRoleSchema], required: true },
+        messageId: { type: String, required: true },
+        roleEmoteMap: { type: [GiveRoleSchema], required: true },
     },
     {
         collection: 'guild_list',

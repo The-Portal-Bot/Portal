@@ -75,7 +75,7 @@ module.exports = {
                         .then((result) => {
                             if (result) {
                                 const ban_options: BanOptions = {
-                                    days: ban_days,
+                                    deleteMessageDays: ban_days,
                                     reason: ban_reason,
                                 };
 

@@ -3,62 +3,62 @@ import { PVoiceChannel } from "./PVoiceChannel.class";
 
 export class PChannel {
 	public id: string;
-	public creator_id: string;
+	public creatorId: string;
 	public render: boolean;
-	public regex_portal: string;
-	public regex_voice: string;
-	public voice_list: PVoiceChannel[];
-	public no_bots: boolean;
-	public allowed_roles: [string] | null;
+	public regexPortal: string;
+	public regexVoice: string;
+	public voiceList: PVoiceChannel[];
+	public noBots: boolean;
+	public allowedRoles: [string] | null;
 	public locale: number;
-	public ann_announce: boolean;
-	public ann_user: boolean;
-	public user_limit_portal: number;
-	public regex_overwrite: boolean;
+	public annAnnounce: boolean;
+	public annUser: boolean;
+	public userLimitPortal: number;
+	public regexOverwrite: boolean;
 
 	constructor(
 		id: string,
-		creator_id: string,
+		creatorId: string,
 		render: boolean,
-		regex_portal: string,
-		regex_voice: string,
-		voice_list: PVoiceChannel[],
-		no_bots: boolean,
-		allowed_roles: [string] | null,
+		regexPortal: string,
+		regexVoice: string,
+		voiceList: PVoiceChannel[],
+		noBots: boolean,
+		allowedRoles: [string] | null,
 		locale: number,
-		ann_announce: boolean,
-		ann_user: boolean,
-		user_limit_portal: number,
-		regex_overwrite: boolean
+		annAnnounce: boolean,
+		annUser: boolean,
+		userLimitPortal: number,
+		regexOverwrite: boolean
 	) {
 		this.id = id;
-		this.creator_id = creator_id;
+		this.creatorId = creatorId;
 		this.render = render;
-		this.regex_portal = regex_portal;
-		this.regex_voice = regex_voice;
-		this.voice_list = voice_list;
-		this.no_bots = no_bots;
-		this.allowed_roles = allowed_roles;
+		this.regexPortal = regexPortal;
+		this.regexVoice = regexVoice;
+		this.voiceList = voiceList;
+		this.noBots = noBots;
+		this.allowedRoles = allowedRoles;
 		this.locale = locale;
-		this.ann_announce = ann_announce;
-		this.ann_user = ann_user;
-		this.user_limit_portal = user_limit_portal;
-		this.regex_overwrite = regex_overwrite;
+		this.annAnnounce = annAnnounce;
+		this.annUser = annUser;
+		this.userLimitPortal = userLimitPortal;
+		this.regexOverwrite = regexOverwrite;
 	}
 }
 
 export interface IPChannel extends Document {
 	id: string;
-	creator_id: string;
+	creatorId: string;
 	render: boolean;
-	regex_portal: string;
-	regex_voice: string;
-	voice_list: [PVoiceChannel];
-	no_bots: boolean;
-	allowed_roles: [string] | null;
+	regexPortal: string;
+	regexVoice: string;
+	voiceList: [PVoiceChannel];
+	noBots: boolean;
+	allowedRoles: [string] | null;
 	locale: number;
-	ann_announce: boolean;
-	ann_user: boolean;
-	user_limit_portal: number;
-	regex_overwrite: boolean;
+	annAnnounce: boolean;
+	annUser: boolean;
+	userLimitPortal: number;
+	regexOverwrite: boolean;
 }

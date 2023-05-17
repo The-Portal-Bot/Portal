@@ -81,7 +81,7 @@ export function update_timestamp(
 ): Promise<number | boolean> {
     return new Promise((resolve, reject) => {
         if (voiceState.member && !voiceState.member.user.bot) {
-            const pMember = guild_object.member_list
+            const pMember = guild_object.pMembers
                 .find(m =>
                     voiceState && voiceState.member && m.id === voiceState.member.id
                 );
@@ -92,7 +92,7 @@ export function update_timestamp(
 
             const ranks = guild_object.ranks;
             const member = voiceState.member;
-            const speed = guild_object.rank_speed;
+            const speed = guild_object.rankSpeed;
             const cached_level = pMember.level;
 
             if (!pMember.timestamp) {

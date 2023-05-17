@@ -14,19 +14,19 @@ export class GiveRole {
 }
 
 export class PGiveRole {
-	public message_id: string;
-	public role_emote_map: GiveRole[];
+	public messageId: string;
+	public roleEmoteMap: GiveRole[];
 
 	constructor(
-		message_id: string,
-		role_emote_map: GiveRole[]
+		messageId: string,
+		roleEmoteMap: GiveRole[]
 	) {
-		this.message_id = message_id;
-		this.role_emote_map = role_emote_map;
+		this.messageId = messageId;
+		this.roleEmoteMap = roleEmoteMap;
 	}
 }
 
 export interface IPGiveRole extends Document {
-	message_id: string;
-	role_emote_map: GiveRole[];
+	messageId: string;
+	roleEmoteMap: GiveRole[];
 }

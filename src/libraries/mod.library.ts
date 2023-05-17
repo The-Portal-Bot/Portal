@@ -56,12 +56,12 @@ export function messageSpamCheck(
     }
 
     const memberSpamCache = spamCache
-        .find(c => c.member_id === message.author.id);
+        .find(c => c.memberId === message.author.id);
 
     if (!memberSpamCache) {
         spamCache
             .push({
-                member_id: message.author.id,
+                memberId: message.author.id,
                 last_message: message.content,
                 timestamp: new Date(),
                 spam_fouls: 1,
@@ -72,7 +72,7 @@ export function messageSpamCheck(
     }
 
     if (!memberSpamCache.timestamp) {
-        memberSpamCache.member_id = message.author.id;
+        memberSpamCache.memberId = message.author.id;
         memberSpamCache.last_message = message.content;
         memberSpamCache.timestamp = new Date();
         memberSpamCache.spam_fouls = 0;
@@ -119,13 +119,13 @@ export function messageSpamCheck(
         memberSpamCache.timestamp = null;
         memberSpamCache.spam_fouls = 0;
 
-        if (guild_object.member_list[0].penalties) {
-            guild_object.member_list[0].penalties++;
+        if (guild_object.pMembers[0].penalties) {
+            guild_object.pMembers[0].penalties++;
         } else {
-            guild_object.member_list[0].penalties = 1;
+            guild_object.pMembers[0].penalties = 1;
         }
 
-        if (guild_object.kick_after && guild_object.kick_after !== 0 && guild_object.member_list[0].penalties === guild_object.kick_after) {
+        if (guild_object.kickAfter && guild_object.kickAfter !== 0 && guild_object.pMembers[0].penalties === guild_object.kickAfter) {
             if (message.member) {
                 kick(message.member, 'kicked due to spamming')
                     .then(r => {
@@ -147,10 +147,10 @@ export function messageSpamCheck(
                         logger.error(new Error(`failed to reply to message: ${e}`));
                     });
             }
-        } else if (guild_object.ban_after && guild_object.ban_after !== 0 && guild_object.member_list[0].penalties === guild_object.ban_after) {
+        } else if (guild_object.banAfter && guild_object.banAfter !== 0 && guild_object.pMembers[0].penalties === guild_object.banAfter) {
             if (message.member) {
                 const ban_options: BanOptions = {
-                    deleteMessageSeconds: 0,
+                    deleteMessageDays: 0,
                     reason: 'banned due to spamming'
                 };
 
@@ -175,13 +175,13 @@ export function messageSpamCheck(
                     });
             }
         } else {
-            updateMember(guild_object.id, message.author.id, 'penalties', guild_object.member_list[0].penalties)
+            updateMember(guild_object.id, message.author.id, 'penalties', guild_object.pMembers[0].penalties)
                 .catch(e => {
                     logger.error(new Error(`failed to update member: ${e}`));
                 });
 
-            if (guild_object.mute_role) {
-                mute_user(message, guild_object.mute_role);
+            if (guild_object.muteRole) {
+                mute_user(message, guild_object.muteRole);
             }
         }
     }

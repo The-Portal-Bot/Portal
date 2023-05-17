@@ -10,7 +10,7 @@ const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣',
 
 function create_role_message(
     channel: TextChannel, guild_object: PGuild, title: string, desc: string,
-    colour: ColorResolvable, poll_map: Field[], member_id: string
+    colour: ColorResolvable, poll_map: Field[], memberId: string
 ): Promise<ReturnPromise> {
     return new Promise((resolve) => {
         const role_message_emb = createEmbed(
@@ -49,7 +49,7 @@ function create_role_message(
                     }
                 }
 
-                const poll: PPoll = { message_id: sent_message.id, member_id: member_id }
+                const poll: PPoll = { messageId: sent_message.id, memberId: memberId }
                 insert_poll(guild_object.id, poll)
                     .then(r => {
                         return resolve({

@@ -1,6 +1,6 @@
 import { getVoiceConnection, VoiceConnection } from "@discordjs/voice";
 import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from "discord.js";
-import { create_voice_channel, generate_channel_name, includedInPortalList, includedInVoiceList } from "../libraries/guild.library";
+import { createVoiceChannel, generateChannelName, includedInPChannels, includedInVoiceList } from "../libraries/guild.library";
 import { isChannelDeleted, isGuildDeleted, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
 // import { client_talk } from "../libraries/localisation.library";
 import { fetch_guild, remove_voice, set_music_data, updateGuild } from "../libraries/mongo.library";
@@ -16,8 +16,8 @@ async function delete_voice_channel(
         if (!channel.deletable) {
             return reject(`channel ${channel.name} (${channel.id}) is not deletable`);
         } else {
-            guild_object.portal_list.some(p =>
-                p.voice_list.some(v => {
+            guild_object.pChannels.some(p =>
+                p.voiceList.some(v => {
                     if (v.id === channel.id) {
                         channel
                             .delete()
@@ -55,14 +55,14 @@ function five_min_refresher(
     fetch_guild(guild.id)
         .then(guild_object => {
             if (guild_object) {
-                generate_channel_name(voice_channel, portal_list, guild_object, guild)
+                generateChannelName(voice_channel, portal_list, guild_object, guild)
                     .catch((e: any) => {
                         logger.error(new Error(`failed to generate channel name: ${e}`));
                     });
 
                 setTimeout(() => {
                     if (!isGuildDeleted(guild) && !isChannelDeleted(voice_channel)) {
-                        generate_channel_name(voice_channel, portal_list, guild_object, guild)
+                        generateChannelName(voice_channel, portal_list, guild_object, guild)
                             .catch((e: any) => {
                                 logger.error(new Error(`failed to generate channel name: ${e}`));
                             });
@@ -82,7 +82,7 @@ async function channel_empty_check(
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (old_channel.members.size === 0) {
-            if (includedInVoiceList(old_channel.id, guild_object.portal_list)) {
+            if (includedInVoiceList(old_channel.id, guild_object.pChannels)) {
                 delete_voice_channel(old_channel, guild_object)
                     .then(response => {
                         return resolve(response);
@@ -105,16 +105,16 @@ async function channel_empty_check(
                 return resolve(`Portal is not connected`);
             }
 
-            guild_object.music_queue = [];
-            updateGuild(guild_object.id, 'music_queue', guild_object.music_queue)
+            guild_object.musicQueue = [];
+            updateGuild(guild_object.id, 'music_queue', guild_object.musicQueue)
                 .catch(e => {
                     return reject(`failed to update guild: ${e}`);
                 });
             voiceConnection.disconnect();
 
-            if (guild_object.music_data.pinned) {
-                guild_object.music_data.pinned = false;
-                set_music_data(guild_object.id, guild_object.music_data)
+            if (guild_object.musicData.pinned) {
+                guild_object.musicData.pinned = false;
+                set_music_data(guild_object.id, guild_object.musicData)
                     .catch(e => {
                         return reject(`failed to set music data: ${e}`);
                     });
@@ -123,8 +123,8 @@ async function channel_empty_check(
             updateMusicMessage(
                 old_channel.guild,
                 guild_object,
-                guild_object.music_queue.length > 0
-                    ? guild_object.music_queue[0]
+                guild_object.musicQueue.length > 0
+                    ? guild_object.musicQueue[0]
                     : undefined,
                 'left last',
                 false
@@ -138,7 +138,7 @@ async function channel_empty_check(
                     return reject(`failed to update music lyrics: ${e}`);
                 });
 
-            if (includedInVoiceList(old_channel.id, guild_object.portal_list)) {
+            if (includedInVoiceList(old_channel.id, guild_object.pChannels)) {
                 delete_voice_channel(old_channel, guild_object)
                     .then(response => {
                         return resolve(response);
@@ -159,15 +159,15 @@ async function from_null(
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (new_channel) { // joined from null
-            if (includedInPortalList(new_channel.id, guild_object.portal_list)) { // joined portal channel
-                const portal_object = guild_object.portal_list
+            if (includedInPChannels(new_channel.id, guild_object.pChannels)) { // joined portal channel
+                const portal_object = guild_object.pChannels
                     .find(p => p.id === new_channel.id);
 
                 if (!portal_object) {
                     return reject('null->existing (source: null | dest: portal_list) / could not find portal_object');
                 }
 
-                create_voice_channel(newState, portal_object)
+                createVoiceChannel(newState, portal_object)
                     .then(() => {
                         update_timestamp(newState, guild_object) // points for voice
                             .then(level => {
@@ -188,8 +188,8 @@ async function from_null(
                         return reject(`null->existing (source: null | dest: portal_list): ${e}`);
                     });
             }
-            else if (includedInVoiceList(new_channel.id, guild_object.portal_list)) { // joined voice channel
-                five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
+            else if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // joined voice channel
+                five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
                 update_timestamp(newState, guild_object) // points for voice
                     .then(level => {
                         if (level) {
@@ -267,30 +267,30 @@ async function from_existing(
                     logger.error(new Error(`failed to send message: ${e}`));
                 });
 
-            if (includedInPortalList(old_channel.id, guild_object.portal_list)) {
-                if (includedInVoiceList(new_channel.id, guild_object.portal_list)) { // has been handled before
-                    five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
+            if (includedInPChannels(old_channel.id, guild_object.pChannels)) {
+                if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // has been handled before
+                    five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
 
                     return resolve('existing->existing (source: portal_list | dest: voice_list) / has been handled before');
                 } else {
                     return resolve('not handled by portal');
                 }
             }
-            else if (includedInVoiceList(old_channel.id, guild_object.portal_list)) {
+            else if (includedInVoiceList(old_channel.id, guild_object.pChannels)) {
                 channel_empty_check(old_channel, guild_object, client)
                     .catch(e => {
                         logger.error(new Error(`failed to check channel state: ${e}`));
                     });
 
-                if (includedInPortalList(new_channel.id, guild_object.portal_list)) { // moved from voice to portal
-                    const portal_object = guild_object.portal_list
+                if (includedInPChannels(new_channel.id, guild_object.pChannels)) { // moved from voice to portal
+                    const portal_object = guild_object.pChannels
                         .find(p => p.id === new_channel.id);
 
                     if (!portal_object) {
                         return reject('could not find Portal in database');
                     }
 
-                    create_voice_channel(newState, portal_object)
+                    createVoiceChannel(newState, portal_object)
                         .then(() => {
                             return resolve('existing->existing (source: voice_list | dest: portal_list) has been handled before');
                         })
@@ -298,8 +298,8 @@ async function from_existing(
                             return reject(`an error occurred while creating voice channel: ${e}`);
                         });
                 }
-                else if (includedInVoiceList(new_channel.id, guild_object.portal_list)) { // moved from voice to voice
-                    five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
+                else if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // moved from voice to voice
+                    five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
 
                     return resolve('existing->existing (source: voice_list | dest: voice_list)');
                 }
@@ -310,15 +310,15 @@ async function from_existing(
             }
             else {
                 // Joined portal channel
-                if (includedInPortalList(new_channel.id, guild_object.portal_list)) {
-                    const portal_object = guild_object.portal_list
+                if (includedInPChannels(new_channel.id, guild_object.pChannels)) {
+                    const portal_object = guild_object.pChannels
                         .find(p => p.id === new_channel.id);
 
                     if (!portal_object) {
                         return reject('existing->existing (source: other voice | dest: portal_list) / could not find portal in DB, contact Portal support');
                     }
 
-                    create_voice_channel(newState, portal_object)
+                    createVoiceChannel(newState, portal_object)
                         .then(() => {
                             return resolve('existing->existing (source: other voice | dest: portal_list)');
                         })
@@ -326,8 +326,8 @@ async function from_existing(
                             return reject(`existing->existing (source: other voice | dest: portal_list ): ${e}`);
                         });
                 }
-                else if (includedInVoiceList(new_channel.id, guild_object.portal_list)) { // left created channel and joins another created
-                    five_min_refresher(new_channel, guild_object.portal_list, newState.guild, 5);
+                else if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // left created channel and joins another created
+                    five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
 
                     return resolve('existing->existing (source: other voice | dest: voice_list)');
                 }
@@ -348,11 +348,11 @@ module.exports = async (
                 .then(guild_object => {
                     if (guild_object) {
                         if (new_channel) {
-                            for (let i = 0; i < guild_object.portal_list.length; i++) {
-                                const p = guild_object.portal_list[i];
+                            for (let i = 0; i < guild_object.pChannels.length; i++) {
+                                const p = guild_object.pChannels[i];
 
                                 if (p.id === new_channel.id) {
-                                    if (p.no_bots && args.newState.member?.user.bot) {
+                                    if (p.noBots && args.newState.member?.user.bot) {
                                         args.newState
                                             .disconnect('voice channel does not allow bots')
                                             .catch(e => {
@@ -368,8 +368,8 @@ module.exports = async (
                                     }
                                 }
 
-                                for (let i = 0; i < p.voice_list.length; i++) {
-                                    const v = p.voice_list[i];
+                                for (let i = 0; i < p.voiceList.length; i++) {
+                                    const v = p.voiceList[i];
 
                                     if (v.id === new_channel.id) {
                                         if (v.no_bots) {

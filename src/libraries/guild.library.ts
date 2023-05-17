@@ -2,7 +2,7 @@ import {
 	CategoryChannel, CategoryChannelResolvable, ChannelType, Collection, Guild,
 	GuildChannelCreateOptions,
 	GuildMember,
-	Message, MessageCollector, OverwriteResolvable, PermissionsBitField, Role, TextChannel, VoiceBasedChannel, VoiceChannel, VoiceState
+	Message, MessageCollector, OverwriteResolvable, PermissionFlagsBits, PermissionsBitField, Role, TextChannel, VoiceBasedChannel, VoiceChannel, VoiceState
 } from "discord.js";
 import moment from "moment";
 import voca from 'voca';
@@ -40,15 +40,15 @@ function inlineOperator(
 }
 
 export function getOptions(
-	guild: Guild, topic: string, can_write: boolean = true,
+	guild: Guild, topic: string, canWrite: boolean = true,
 	parent?: CategoryChannelResolvable, type: ChannelType = ChannelType.GuildText
-): GuildChannelCreateOptions {
+) {
 	return {
 		parent: parent,
-		permissionOverwrites: can_write
+		permissionOverwrites: canWrite
 			? [{
 				id: guild.id,
-				deny: ['SEND_MESSAGES'],
+				deny: PermissionFlagsBits.SendMessages, //['SEND_MESSAGES'],
 			}]
 			: [],
 		topic: `by Portal, ${topic}`,
@@ -61,28 +61,28 @@ export function includedInPortalGuilds(guild_id: string, guild_list: PGuild[]): 
 	return guild_list ? guild_list.some(g => g.id === guild_id) : false;
 }
 
-export function includedInpChannels(channel_id: string, pChannels: PChannel[]): boolean {
-	return pChannels ? pChannels.some(p => p.id === channel_id) : false;
+export function includedInPChannels(channelId: string, pChannels: PChannel[]): boolean {
+	return pChannels ? pChannels.some(p => p.id === channelId) : false;
 }
 
-export function includedInVoiceList(channel_id: string, pChannels: PChannel[]): boolean {
-	return pChannels ? pChannels.some(p => p.voice_list.some(v => v.id === channel_id)) : false;
+export function includedInVoiceList(channelId: string, pChannels: PChannel[]): boolean {
+	return pChannels ? pChannels.some(p => p.voiceList.some(v => v.id === channelId)) : false;
 }
 
-export function includedInIgnoreList(channel_id: string, pGuild: PGuild): boolean {
-	return pGuild.ignore_list ? pGuild.ignore_list.some(i => i === channel_id) : false;
+export function includedInIgnoreList(channelId: string, pGuild: PGuild): boolean {
+	return pGuild.ignoreList ? pGuild.ignoreList.some(i => i === channelId) : false;
 }
 
-export function isUrlOnlyChannel(channel_id: string, pGuild: PGuild): boolean {
-	return pGuild.url_list ? pGuild.url_list.some(u => u === channel_id) : false;
+export function isUrlOnlyChannel(channelId: string, pGuild: PGuild): boolean {
+	return pGuild.urlList ? pGuild.urlList.some(u => u === channelId) : false;
 }
 
-export function isMusicChannel(channel_id: string, pGuild: PGuild): boolean {
-	return pGuild ? pGuild.music_data.channel_id === channel_id : false;
+export function isMusicChannel(channelId: string, pGuild: PGuild): boolean {
+	return pGuild ? pGuild.musicData.channelId === channelId : false;
 }
 
-export function isAnnouncementChannel(channel_id: string, pGuild: PGuild): boolean {
-	return pGuild ? pGuild.announcement === channel_id : false;
+export function isAnnouncementChannel(channelId: string, pGuild: PGuild): boolean {
+	return pGuild ? pGuild.announcement === channelId : false;
 }
 
 export function getRole(guild: Guild | null, roleIdOrName: string): Role | undefined {
@@ -121,14 +121,14 @@ function createVoiceOptions(
 	state: VoiceState, portalObject: PChannel
 ): GuildChannelCreateOptions {
 	let permissionOverwrites = null;
-	if (portalObject.allowed_roles) {
-		permissionOverwrites = portalObject.allowed_roles
+	if (portalObject.allowedRoles) {
+		permissionOverwrites = portalObject.allowedRoles
 			.map(id => <OverwriteResolvable>{
 				id,
 				allow: PermissionsBitField.Flags.Connect, // ['CONNECT']
 			});
 
-		if (!portalObject.allowed_roles.some(id => id === state.guild.roles.everyone.id)) {
+		if (!portalObject.allowedRoles.some(id => id === state.guild.roles.everyone.id)) {
 			permissionOverwrites.push({
 				id: state.guild.roles.everyone.id,
 				deny: PermissionsBitField.Flags.Connect, // ['CONNECT']
@@ -146,7 +146,7 @@ function createVoiceOptions(
 	return {
 		type: ChannelType.GuildVoice,
 		bitrate: 96000,
-		userLimit: portalObject.user_limit_portal,
+		userLimit: portalObject.userLimitPortal,
 		parent: state.channel?.parent
 			? state.channel?.parent
 			: undefined,
@@ -154,7 +154,7 @@ function createVoiceOptions(
 	} as GuildChannelCreateOptions;
 }
 
-export async function create_voiceChannel(
+export async function createVoiceChannel(
 	state: VoiceState, portalObject: PChannel
 ): Promise<string | boolean> {
 	if (!state) {
@@ -173,8 +173,8 @@ export async function create_voiceChannel(
 	}
 
 	const newVoice = new PVoiceChannel(
-		newGuildVoiceChannel.id, state.member.id, portalObject.render, portalObject.regex_voice, portalObject.no_bots,
-		portalObject.locale, portalObject.ann_announce, portalObject.ann_user
+		newGuildVoiceChannel.id, state.member.id, portalObject.render, portalObject.regexVoice, portalObject.noBots,
+		portalObject.locale, portalObject.annAnnounce, portalObject.annUser
 	);
 
 	insert_voice(state.member.guild.id, portalObject.id, newVoice)
@@ -220,7 +220,7 @@ export async function create_music_channel(
 		return false;
 	}
 
-	pGuild.music_data.channel_id = newMusicGuildChannel.id;
+	pGuild.musicData.channelId = newMusicGuildChannel.id;
 
 	const musicMessageId = await createMusicMessage(newMusicGuildChannel, pGuild)
 		.catch(e => {
@@ -303,8 +303,8 @@ export async function create_focus_channel(
 
 
 	insert_voice(guild.id, portalObject.id, new PVoiceChannel(
-		newVoiceChannel.id, member.id, portalObject.render, chatRoomName, portalObject.no_bots,
-		portalObject.locale, portalObject.ann_announce, portalObject.ann_user
+		newVoiceChannel.id, member.id, portalObject.render, chatRoomName, portalObject.noBots,
+		portalObject.locale, portalObject.annAnnounce, portalObject.annUser
 	))
 		.catch(e => { return Promise.reject(`failed to store voice channel: ${e}`); });
 
@@ -441,23 +441,23 @@ export async function delete_channel(
 	return true;
 }
 
-export async function generate_channelName(
+export async function generateChannelName(
 	voiceChannel: VoiceChannel, pChannels: PChannel[],
 	pGuild: PGuild, guild: Guild
 ): Promise<boolean> {
 	for (let i = 0; i < pChannels.length; i++) {
-		for (let j = 0; j < pChannels[i].voice_list.length; j++) {
-			if (pChannels[i].voice_list[j].id === voiceChannel.id) {
+		for (let j = 0; j < pChannels[i].voiceList.length; j++) {
+			if (pChannels[i].voiceList[j].id === voiceChannel.id) {
 				// I choose not to fetch the voice regex from database
 				// if it changed users can create a new one instead of
 				// me creating an database spam 
-				let regex = pChannels[i].voice_list[j].regex;
-				if (pChannels[i].regex_overwrite) {
+				let regex = pChannels[i].voiceList[j].regex;
+				if (pChannels[i].regexOverwrite) {
 					const member = voiceChannel.members
-						.find(m => m.id === pChannels[i].voice_list[j].creator_id);
+						.find(m => m.id === pChannels[i].voiceList[j].creator_id);
 
 					if (member) {
-						const member_object = pGuild.member_list
+						const member_object = pGuild.pMembers
 							.find(m => m.id === member.id);
 
 						if (member_object?.regex && member_object.regex !== 'null') {
@@ -466,15 +466,15 @@ export async function generate_channelName(
 					}
 				}
 
-				const new_name = pChannels[i].voice_list[j].render
+				const new_name = pChannels[i].voiceList[j].render
 					? regex_interpreter(
 						regex,
 						voiceChannel,
-						pChannels[i].voice_list[j],
+						pChannels[i].voiceList[j],
 						pChannels,
 						pGuild,
 						guild,
-						pChannels[i].voice_list[j].creator_id
+						pChannels[i].voiceList[j].creator_id
 					)
 					: regex;
 
@@ -505,7 +505,7 @@ export async function generate_channelName(
 
 export function regex_interpreter(
 	regex: string, voiceChannel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-	pChannels: PChannel[] | undefined | null, pGuild: PGuild, guild: Guild, member_id: string
+	pChannels: PChannel[] | undefined | null, pGuild: PGuild, guild: Guild, memberId: string
 ): string {
 	let lastSpaceIndex = 0;
 	let lastVariableEndIndex = 0;
@@ -542,7 +542,7 @@ export function regex_interpreter(
 			const attr = isAttribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				// const member_object = pGuild.member_list.find(m => m.id === member_id);
+				// const member_object = pGuild.member_list.find(m => m.id === memberId);
 
 				const returnValue = getAttribute(
 					voiceChannel, voice_object, pChannels, pGuild, guild, attr //, member_object
@@ -642,16 +642,16 @@ export function regex_interpreter(
 						statement.is === ">" || statement.is === "<" || statement.is === ">=" || statement.is === "<=") {
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 						if (inlineOperator(statement.is)(
-							regex_interpreter(statement.if, voiceChannel, voice_object, pChannels, pGuild, guild, member_id),
-							regex_interpreter(statement.with, voiceChannel, voice_object, pChannels, pGuild, guild, member_id)
+							regex_interpreter(statement.if, voiceChannel, voice_object, pChannels, pGuild, guild, memberId),
+							regex_interpreter(statement.with, voiceChannel, voice_object, pChannels, pGuild, guild, memberId)
 						)) {
-							const value = regex_interpreter(statement.yes, voiceChannel, voice_object, pChannels, pGuild, guild, member_id);
+							const value = regex_interpreter(statement.yes, voiceChannel, voice_object, pChannels, pGuild, guild, memberId);
 							if (value !== '--') {
 								newChannelName += value;
 							}
 						}
 						else {
-							const value = regex_interpreter(statement.no, voiceChannel, voice_object, pChannels, pGuild, guild, member_id);
+							const value = regex_interpreter(statement.no, voiceChannel, voice_object, pChannels, pGuild, guild, memberId);
 							if (value !== '--') {
 								newChannelName += value;
 							}

@@ -69,7 +69,7 @@ export interface ActiveCooldowns {
 }
 
 export interface SpamCache {
-	member_id: string;
+	memberId: string;
 	last_message: string;
 	timestamp: Date | null;
 	spam_fouls: number;

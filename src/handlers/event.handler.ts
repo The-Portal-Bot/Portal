@@ -123,7 +123,7 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                 return false;
             }
 
-            if (guild_object.member_list.length === 0 && message.guild) {
+            if (guild_object.pMembers.length === 0 && message.guild) {
                 insertMember(message.guild.id, message.author.id)
                     .then(() => {
                         if (message.guild) {
@@ -205,10 +205,10 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                             return false;
                         }
 
-                        guild_object.member_list = guild_object_rest.member_list;
-                        guild_object.poll_list = guild_object_rest.poll_list;
+                        guild_object.pMembers = guild_object_rest.pMembers;
+                        guild_object.pollList = guild_object_rest.pollList;
                         guild_object.ranks = guild_object_rest.ranks;
-                        guild_object.music_queue = guild_object_rest.music_queue;
+                        guild_object.musicQueue = guild_object_rest.musicQueue;
                         guild_object.announcement = guild_object_rest.announcement;
                         guild_object.locale = guild_object_rest.locale;
                         guild_object.announce = guild_object_rest.announce;

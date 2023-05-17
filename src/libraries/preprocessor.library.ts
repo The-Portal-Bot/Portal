@@ -20,7 +20,7 @@ export async function portalPreprocessor(
 
     if (isUserIgnored(message.member)) {
         if (!handleUrlChannels(message, guild_object)) {
-            if (guild_object.music_data.channel_id === message.channel.id) {
+            if (guild_object.musicData.channelId === message.channel.id) {
                 message.member
                     .send('you can\'t play music when ignored')
                     .catch((e: any) => {
@@ -133,7 +133,7 @@ export function commandDecypher(
 export function handleRankingSystem(
     message: Message, guild_object: PGuild
 ): void {
-    add_points_message(message, guild_object.member_list[0], guild_object.rank_speed)
+    add_points_message(message, guild_object.pMembers[0], guild_object.rankSpeed)
         .then(level => {
             if (level) {
                 messageReply(true, message, `you reached level ${level}!`)
@@ -215,7 +215,7 @@ export function handleIgnoredChannels(
 export function handleMusicChannels(
     message: Message, guild_object: PGuild
 ): boolean {
-    if (guild_object.music_data.channel_id === message.channel.id) {
+    if (guild_object.musicData.channelId === message.channel.id) {
         if (message.content === './music') {
             if (!message.guild) {
                 logger.error(new Error(`failed to get guild from message`));

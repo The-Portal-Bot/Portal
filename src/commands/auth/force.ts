@@ -29,7 +29,7 @@ module.exports = {
                 });
             }
 
-            if (!includedInVoiceList(message.member.voice.channel.id, guild_object.portal_list)) {
+            if (!includedInVoiceList(message.member.voice.channel.id, guild_object.pChannels)) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'force', 'the channel you are in is not handled by Portal')
@@ -46,8 +46,8 @@ module.exports = {
             const current_member = message.member;
             const current_voice = message.member.voice.channel as VoiceChannel;
 
-            guild_object.portal_list.some(p => {
-                return p.voice_list.some(v => {
+            guild_object.pChannels.some(p => {
+                return p.voiceList.some(v => {
                     if (v.id === current_voice.id) {
                         if (v.creator_id === current_member.id) {
                             if (message.guild) {
@@ -55,7 +55,7 @@ module.exports = {
                                     v.regex,
                                     current_voice,
                                     v,
-                                    guild_object.portal_list,
+                                    guild_object.pChannels,
                                     guild_object,
                                     message.guild,
                                     message.author.id

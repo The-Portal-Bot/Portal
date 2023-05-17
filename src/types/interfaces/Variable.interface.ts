@@ -28,13 +28,13 @@ const variables: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
+				portal.voiceList.some(voice =>
 					voice.id === voice_object.id)
 			);
 
 			if (portal_object !== undefined) {
 				let i = 0;
-				portal_object.voice_list.some(voice => {
+				portal_object.voiceList.some(voice => {
 					i++;
 					return voice.id === voice_object.id;
 				});
@@ -60,13 +60,13 @@ const variables: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
+				portal.voiceList.some(voice =>
 					voice.id === voice_object.id)
 			);
 
 			if (portal_object !== undefined) {
 				let i = 0;
-				portal_object.voice_list.some(voice => {
+				portal_object.voiceList.some(voice => {
 					i++;
 					return voice.id === voice_object.id;
 				});
@@ -92,12 +92,12 @@ const variables: InterfaceBlueprint[] = [
 			}
 
 			const portal_object = portal_object_list.find(portal =>
-				portal.voice_list.some(voice =>
+				portal.voiceList.some(voice =>
 					voice.id === voice_object.id)
 			);
 
 			if (portal_object !== undefined) {
-				return '' + portal_object.creator_id;
+				return '' + portal_object.creatorId;
 			}
 
 			return '?';

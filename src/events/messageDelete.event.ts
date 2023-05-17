@@ -13,20 +13,20 @@ module.exports = async (
 						return reject('could not find guild');
 					}
 
-					const role_list = guild_object.role_list;
-					const music_data = guild_object.music_data;
+					const role_list = guild_object.roleList;
+					const music_data = guild_object.musicData;
 
-					if (music_data.message_id === args.message.id) {
+					if (music_data.messageId === args.message.id) {
 						const music_channel = <TextChannel>args.message.guild?.channels.cache
-							.find(channel => channel.id === guild_object.music_data.channel_id);
+							.find(channel => channel.id === guild_object.musicData.channelId);
 
 						if (music_channel) {
 							createMusicMessage(music_channel, guild_object)
 								.then(() => {
-									if (guild_object.music_data.message_lyrics_id) {
+									if (guild_object.musicData.messageLyricsId) {
 										if (music_channel) {
 											music_channel.messages
-												.fetch(guild_object.music_data.message_lyrics_id)
+												.fetch(guild_object.musicData.messageLyricsId)
 												.then(async (message_lyrics: Message) => {
 													if (isMessageDeleted(message_lyrics)) {
 														const deletedMessage = await message_lyrics
@@ -53,12 +53,12 @@ module.exports = async (
 						} else {
 							return reject('could not find channel');
 						}
-					} else if (music_data.message_lyrics_id === args.message.id) {
+					} else if (music_data.messageLyricsId === args.message.id) {
 						const music_channel = <TextChannel>args.message?.guild?.channels.cache
-							.find(channel => channel.id === guild_object.music_data.channel_id);
+							.find(channel => channel.id === guild_object.musicData.channelId);
 
-						if (music_channel && guild_object.music_data.message_id) {
-							createMusicLyricsMessage(music_channel, guild_object, guild_object.music_data.message_id)
+						if (music_channel && guild_object.musicData.messageId) {
+							createMusicLyricsMessage(music_channel, guild_object, guild_object.musicData.messageId)
 								.then(() => {
 									return resolve('created lyrics message');
 								})
@@ -66,8 +66,8 @@ module.exports = async (
 									return reject(`error creating lyrics message: ${e}`);
 								});
 						}
-					} else if (guild_object.poll_list.some(p => p.message_id === args.message.id)) {
-						const poll = guild_object.poll_list.find(p => p.message_id === args.message.id);
+					} else if (guild_object.pollList.some(p => p.messageId === args.message.id)) {
+						const poll = guild_object.pollList.find(p => p.messageId === args.message.id);
 
 						if (poll) {
 							remove_poll(guild_object.id, args.message.id)
@@ -84,8 +84,8 @@ module.exports = async (
 						}
 					} else {
 						role_list.find(role_giver => {
-							if (role_giver.message_id === args.message.id) {
-								remove_vendor(guild_object.id, role_giver.message_id)
+							if (role_giver.messageId === args.message.id) {
+								remove_vendor(guild_object.id, role_giver.messageId)
 									.then(r => {
 										if (r) {
 											return resolve('successfully deleted role message');

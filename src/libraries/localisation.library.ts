@@ -234,8 +234,8 @@ export function client_write(
 
 	let return_value = 'could not find data';
 
-	const found = guild_object.portal_list.some(p =>
-		p.voice_list.some(v => {
+	const found = guild_object.pChannels.some(p =>
+		p.voiceList.some(v => {
 			if (message.member && message.member.voice.channel) {
 				if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 					switch (v.locale) {
@@ -271,8 +271,8 @@ export function client_log(
 	}
 
 	guild_list.some(g =>
-		g.portal_list.some(p =>
-			p.voice_list.some(v => {
+		g.pChannels.some(p =>
+			p.voiceList.some(v => {
 				if (message.member && message.member.voice.channel) {
 					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 						switch (v.locale) {

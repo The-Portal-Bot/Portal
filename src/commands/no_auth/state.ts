@@ -28,12 +28,12 @@ module.exports = {
                 inline: false
             }];
 
-            const portals = guild_object.portal_list
+            const portals = guild_object.pChannels
                 .map(p => {
                     const portal_channel = guild.channels.cache
                         .find(c => c.id === p.id);
 
-                    const voices = p.voice_list
+                    const voices = p.voiceList
                         .map((v, index_v) => {
                             const voice_channel = guild.channels.cache
                                 .find(c => c.id === v.id);
@@ -61,7 +61,7 @@ module.exports = {
                 });
 
             const music = guild.channels.cache.find(c =>
-                c.id === guild_object.music_data.channel_id);
+                c.id === guild_object.musicData.channelId);
 
             if (music) {
                 portal_state
@@ -105,7 +105,7 @@ module.exports = {
                     inline: false
                 });
 
-            const urls = guild_object.url_list.map((u_id, index_u) => {
+            const urls = guild_object.urlList.map((u_id, index_u) => {
                 const channel = guild.channels.cache.find(c => c.id === u_id);
                 return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
             });
@@ -127,7 +127,7 @@ module.exports = {
                     });
             }
 
-            const ignore = guild_object.ignore_list.map((u_id, index_u) => {
+            const ignore = guild_object.ignoreList.map((u_id, index_u) => {
                 const channel = guild.channels.cache.find(c => c.id === u_id);
                 return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
             });

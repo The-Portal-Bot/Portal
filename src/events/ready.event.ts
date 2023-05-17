@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "discord.js";
+import { ActivityOptions, ActivityType, Client, Guild, GuildMember, PresenceData } from "discord.js";
 import { logger } from "../libraries/help.library";
 import { get_function } from "../libraries/localisation.library";
 import { fetch_guild_members, guildExists, insertGuild, insertMember, remove_member } from "../libraries/mongo.library";
@@ -9,17 +9,17 @@ function added_when_down(
     guild: Guild, member_list: PMember[]
 ): Promise<string> {
     return new Promise((resolve) => {
-        const guild_members: GuildMember[] = guild.members.cache.map(m => m);
+        const guildMembers: GuildMember[] = guild.members.cache.map(m => m);
 
-        for (let j = 0; j < guild_members.length; j++) {
-            if (!guild_members[j].user.bot) {
+        for (let j = 0; j < guildMembers.length; j++) {
+            if (!guildMembers[j].user.bot) {
                 const already_in_db = member_list
-                    .find(m => m.id === guild_members[j].id);
+                    .find(m => m.id === guildMembers[j].id);
 
                 if (!already_in_db) { // if inside guild but not in portal db, add member
-                    insertMember(guild.id, guild_members[j].id)
+                    insertMember(guild.id, guildMembers[j].id)
                         .then(() => {
-                            logger.info(`late-insert ${guild_members[j].id} to ${guild.name} [${guild.id}]`);
+                            logger.info(`late-insert ${guildMembers[j].id} to ${guild.name} [${guild.id}]`);
                         })
                         .catch(e => {
                             logger.error(new Error(`failed to late-insert member: ${e}`));
@@ -64,8 +64,8 @@ async function add_guild_again(
             .then(exists => {
                 if (!exists) {
                     insertGuild(guild.id, client)
-                        .then(resposne => {
-                            return resolve(resposne);
+                        .then(response => {
+                            return resolve(response);
                         })
                         .catch(() => {
                             return resolve(false);
@@ -104,7 +104,7 @@ module.exports = async (
 
         const activitiesOptions: ActivityOptions = {
             name: './help', // `in ${args.client.guilds.cache.size} servers``
-            type: 'LISTENING',
+            type: ActivityType.Listening,
             url: 'https://github.com/keybraker'
         }
 

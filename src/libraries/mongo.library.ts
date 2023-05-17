@@ -21,7 +21,7 @@ export async function fetch_guild_list(
             .find({})
             .then((guilds: IPGuild[]) => {
                 if (guilds) {
-                    return resolve(<PGuild[]>guilds);
+                    return resolve(guilds as unknown as PGuild[]);
                 } else {
                     return resolve(undefined);
                 }
@@ -44,7 +44,7 @@ export async function fetch_guild(
             )
             .then((guild: IPGuild | null) => {
                 if (guild) {
-                    return resolve(<PGuild>guild);
+                    return resolve(guild as unknown as PGuild);
                 } else {
                     return resolve(undefined);
                 }
@@ -66,21 +66,21 @@ export async function fetch_guild_channel_delete(
                 },
                 {
                     id: 1,
-                    portal_list: 1,
+                    portalList: 1,
                     announcement: 1,
-                    music_data: 1,
-                    url_list: 1,
-                    ignore_list: 1
+                    musicData: 1,
+                    urlList: 1,
+                    ignoreList: 1
                 })
             .then((r: any) => {
                 if (r) {
                     return resolve(<PGuild>{
                         id: r.id,
-                        portal_list: r.portal_list,
+                        pChannels: r.portal_list,
                         announcement: r.announcement,
-                        music_data: r.music_data,
-                        url_list: r.url_list,
-                        ignore_list: r.ignore_lis
+                        musicData: r.music_data,
+                        urlList: r.url_list,
+                        ignoreList: r.ignore_lis
                     });
                 } else {
                     return resolve(undefined);
@@ -103,13 +103,13 @@ export async function fetch_guild_announcement(
                 },
                 {
                     announcement: 1,
-                    initial_role: 1
+                    initialRole: 1
                 })
             .then((r: any) => {
                 if (r) {
                     return resolve(<PGuild>{
                         announcement: r.announcement,
-                        initial_role: r.initial_role
+                        initialRole: r.initial_role
                     });
                 } else {
                     return resolve(undefined);
@@ -122,7 +122,7 @@ export async function fetch_guild_announcement(
 }
 
 export async function fetch_guild_reaction_data(
-    guild_id: string, member_id: string
+    guild_id: string, memberId: string
 ): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
         PGuildModel
@@ -132,25 +132,25 @@ export async function fetch_guild_reaction_data(
                 },
                 {
                     id: 1,
-                    member_list: {
+                    memberList: {
                         $elemMatch: {
-                            id: member_id
+                            id: memberId
                         }
                     },
-                    role_list: 1,
-                    poll_list: 1,
-                    music_data: 1,
-                    music_queue: 1
+                    roleList: 1,
+                    pollList: 1,
+                    musicData: 1,
+                    musicQueue: 1
                 })
             .then((r: any) => {
                 if (r) {
                     return resolve(<PGuild>{
                         id: r.id,
-                        member_list: r.member_list,
-                        role_list: r.role_list,
-                        poll_list: r.poll_list,
-                        music_data: r.music_data,
-                        music_queue: r.music_queue
+                        pMembers: r.member_list,
+                        roleList: r.role_list,
+                        pollList: r.poll_list,
+                        musicData: r.music_data,
+                        musicQueue: r.music_queue
                     });
                 } else {
                     return resolve(undefined);
@@ -172,7 +172,7 @@ export async function fetch_guild_members(
                     id: guild_id
                 },
                 {
-                    member_list: 1
+                    memberList: 1
                 })
             .then((r: any) => {
                 if (r) {
@@ -197,8 +197,8 @@ export async function fetch_guild_music_queue(
                     id: guild_id
                 },
                 {
-                    music_data: 1,
-                    music_queue: 1
+                    musicData: 1,
+                    musicQueue: 1
                 })
             .then((r: any) => {
                 if (r) {
@@ -217,7 +217,7 @@ export async function fetch_guild_music_queue(
 }
 
 export async function fetchGuildPredata(
-    guild_id: string, member_id: string
+    guild_id: string, memberId: string
 ): Promise<PGuild | undefined> {
     return new Promise((resolve, reject) => {
         PGuildModel
@@ -228,40 +228,40 @@ export async function fetchGuildPredata(
                 {
                     id: 1,
                     prefix: 1,
-                    portal_list: 1,
-                    member_list: {
+                    portalList: 1,
+                    memberList: {
                         $elemMatch: {
-                            id: member_id
+                            id: memberId
                         }
                     },
-                    ignore_list: 1,
-                    url_list: 1,
-                    mute_role: 1,
-                    music_data: 1,
-                    music_queue: 1,
-                    initial_role: 1,
-                    rank_speed: 1,
-                    profanity_level: 1,
-                    kick_after: 1,
-                    ban_after: 1
+                    ignoreList: 1,
+                    urlList: 1,
+                    muteRole: 1,
+                    musicData: 1,
+                    musicQueue: 1,
+                    initialRole: 1,
+                    rankSpeed: 1,
+                    profanityLevel: 1,
+                    kickAfter: 1,
+                    banAfter: 1
                 })
             .then((r: any) => {
                 if (r) {
                     return resolve(<PGuild>{
                         id: r.id,
                         prefix: r.prefix,
-                        portal_list: r.portal_list,
-                        member_list: r.member_list,
-                        ignore_list: r.ignore_list,
-                        url_list: r.url_list,
-                        mute_role: r.mute_role,
-                        music_data: r.music_data,
-                        music_queue: r.music_queue,
-                        initial_role: r.initial_role,
-                        rank_speed: r.rank_speed,
-                        profanity_level: r.profanity_level,
-                        kick_after: r.kick_after,
-                        ban_after: r.ban_after
+                        pChannels: r.portal_list,
+                        pMembers: r.member_list,
+                        ignoreList: r.ignore_list,
+                        urlList: r.url_list,
+                        muteRole: r.mute_role,
+                        musicData: r.music_data,
+                        musicQueue: r.music_queue,
+                        initialRole: r.initial_role,
+                        rankSpeed: r.rank_speed,
+                        profanityLevel: r.profanity_level,
+                        kickAfter: r.kick_after,
+                        banAfter: r.ban_after
                     });
                 } else {
                     return resolve(undefined);
@@ -285,21 +285,21 @@ export async function fetchGuildRest(
                 {
                     id: 0,
                     prefix: 0,
-                    portal_list: 0,
-                    ignore_list: 0,
-                    url_list: 0,
-                    music_data: 0,
-                    rank_speed: 0,
-                    profanity_level: 0
+                    portalList: 0,
+                    ignoreList: 0,
+                    urlList: 0,
+                    musicData: 0,
+                    rankSpeed: 0,
+                    profanityLevel: 0
                 })
             .then((r: any) => {
                 if (r) {
                     return resolve(<PGuild>{
                         id: r.id,
-                        member_list: r.member_list,
-                        poll_list: r.poll_list,
+                        pMembers: r.member_list,
+                        pollList: r.poll_list,
                         ranks: r.ranks,
-                        music_queue: r.music_queue,
+                        musicQueue: r.music_queue,
                         announcement: r.announcement,
                         locale: r.locale,
                         announce: r.announce,
@@ -335,16 +335,16 @@ export async function guildExists(
 }
 
 export async function memberExists(
-    guild_id: string, member_id: string
+    guild_id: string, memberId: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         PGuildModel
             .countDocuments(
                 {
                     id: guild_id,
-                    member_list: {
+                    memberList: {
                         $elemMatch: {
-                            id: member_id
+                            id: memberId
                         }
                     }
                 }
@@ -453,9 +453,9 @@ export async function insertGuild(
     const ranks: Rank[] = [];
     const initial_role: string | null = 'null';
     const music_data: MusicData = {
-        channel_id: 'null',
-        message_id: 'null',
-        message_lyrics_id: 'null',
+        channelId: 'null',
+        messageId: 'null',
+        messageLyricsId: 'null',
         votes: [],
         pinned: false
     }
@@ -475,23 +475,23 @@ export async function insertGuild(
         PGuildModel
             .create({
                 id: id,
-                portal_list: portal_list,
-                member_list: member_list,
-                url_list: url_list,
-                role_list: role_list,
-                poll_list: poll_list,
-                initial_role: initial_role,
+                portalList: portal_list,
+                memberList: member_list,
+                urlList: url_list,
+                roleList: role_list,
+                pollList: poll_list,
+                initialRole: initial_role,
                 ranks: ranks,
-                music_data: music_data,
-                music_queue: music_queue,
+                musicData: music_data,
+                musicQueue: music_queue,
                 announcement: announcement,
-                mute_role: mute_role,
+                muteRole: mute_role,
                 locale: locale,
                 announce: announce,
-                rank_speed: rank_speed,
-                profanity_level: profanity_level,
-                kick_after: kick_after,
-                ban_after: ban_after,
+                rankSpeed: rank_speed,
+                profanityLevel: profanity_level,
+                kickAfter: kick_after,
+                banAfter: ban_after,
                 premium: premium,
                 prefix: prefix
             })
@@ -529,7 +529,7 @@ export async function removeGuild(
 
 export async function updateMember(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, member_id: string, key: string, value: any
+    guild_id: string, memberId: string, key: string, value: any
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         const placeholder: any = {}
@@ -547,7 +547,7 @@ export async function updateMember(
                     'new': true,
                     'arrayFilters': [
                         {
-                            'm.id': member_id
+                            'm.id': memberId
                         }
                     ]
                 }
@@ -567,7 +567,7 @@ export async function updateMember(
 
 export async function updateEntireMember(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, member_id: string, member: PMember
+    guild_id: string, memberId: string, member: PMember
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         const placeholder: any = {}
@@ -585,7 +585,7 @@ export async function updateEntireMember(
                     'new': true,
                     'arrayFilters': [
                         {
-                            'm.id': member_id
+                            'm.id': memberId
                         }
                     ]
                 }
@@ -604,10 +604,10 @@ export async function updateEntireMember(
 }
 
 export async function insertMember(
-    guild_id: string, member_id: string
+    guild_id: string, memberId: string
 ): Promise<boolean> {
     const new_member_portal = new PMember(
-        member_id,
+        memberId,
         1,
         0,
         1,
@@ -622,7 +622,7 @@ export async function insertMember(
                 { id: guild_id },
                 {
                     $push: {
-                        member_list: new_member_portal
+                        memberList: new_member_portal
                     }
                 }
             )
@@ -640,7 +640,7 @@ export async function insertMember(
 }
 
 export async function remove_member(
-    member_id: string, guild_id: string
+    memberId: string, guild_id: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         PGuildModel
@@ -650,8 +650,8 @@ export async function remove_member(
                 },
                 {
                     $pull: {
-                        member_list: {
-                            id: member_id
+                        memberList: {
+                            id: memberId
                         }
                     }
                 })
@@ -717,7 +717,7 @@ export async function insert_portal(
                 },
                 {
                     $push: {
-                        portal_list: new_portal
+                        portalList: new_portal
                     }
                 }
             )
@@ -745,7 +745,7 @@ export async function remove_portal(
                 },
                 {
                     $pull: {
-                        portal_list: {
+                        portalList: {
                             id: portal_id
                         }
                     }
@@ -890,7 +890,7 @@ export async function insert_url(
                 },
                 {
                     $push: {
-                        url_list: new_url
+                        urlList: new_url
                     }
                 }
             )
@@ -918,7 +918,7 @@ export async function remove_url(
                 },
                 {
                     $pull: {
-                        url_list: remove_url
+                        urlList: remove_url
                     }
                 })
             .then((r) => {
@@ -947,7 +947,7 @@ export async function insert_ignore( // channel
                 },
                 {
                     $push: {
-                        ignore_list: new_ignore
+                        ignoreList: new_ignore
                     }
                 }
             )
@@ -975,7 +975,7 @@ export async function remove_ignore( // channel
                 },
                 {
                     $pull: {
-                        ignore_list: remove_ignore
+                        ignoreList: remove_ignore
                     }
                 })
             .then((r) => {
@@ -1031,7 +1031,7 @@ export async function insert_poll(
                 },
                 {
                     $push: {
-                        poll_list: poll
+                        pollList: poll
                     }
                 }
             )
@@ -1049,7 +1049,7 @@ export async function insert_poll(
 }
 
 export async function remove_poll(
-    guild_id: string, message_id: string
+    guild_id: string, messageId: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         PGuildModel
@@ -1059,8 +1059,8 @@ export async function remove_poll(
                 },
                 {
                     $pull: {
-                        poll_list: {
-                            message_id: message_id
+                        pollList: {
+                            messageId: messageId
                         }
                     }
                 }
@@ -1091,7 +1091,7 @@ export async function insert_vendor(
                 },
                 {
                     $push: {
-                        role_list: new_vendor
+                        roleList: new_vendor
                     }
                 }
             )
@@ -1109,7 +1109,7 @@ export async function insert_vendor(
 }
 
 export async function remove_vendor(
-    guild_id: string, message_id: string
+    guild_id: string, messageId: string
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         PGuildModel
@@ -1119,8 +1119,8 @@ export async function remove_vendor(
                 },
                 {
                     $pull: {
-                        role_list: {
-                            message_id: message_id
+                        roleList: {
+                            messageId: messageId
                         }
                     }
                 }
@@ -1151,7 +1151,7 @@ export async function insert_music_video(
                 },
                 {
                     $push: {
-                        music_queue: video
+                        musicQueue: video
                     }
                 }
             )
@@ -1235,7 +1235,7 @@ export async function set_music_data(
                 },
                 {
                     $set: {
-                        music_data: new_music_data
+                        musicData: new_music_data
                     }
                 }
             )
@@ -1264,7 +1264,7 @@ export async function deleted_channel_sync(
                     // check if it is a portal or portal-voice channel
                     if (channel_to_remove.type !== ChannelType.GuildText) {
                         const current_voice = channel_to_remove;
-                        guild_object.portal_list.some(p => {
+                        guild_object.pChannels.some(p => {
                             if (p.id === current_voice.id) {
                                 remove_portal(current_voice.guild.id, p.id)
                                     .then(r => {
@@ -1279,7 +1279,7 @@ export async function deleted_channel_sync(
                                 return true;
                             }
 
-                            p.voice_list.some(v => {
+                            p.voiceList.some(v => {
                                 if (v.id === current_voice.id) {
                                     remove_voice(current_voice.guild.id, p.id, v.id)
                                         .then(r => {
@@ -1308,7 +1308,7 @@ export async function deleted_channel_sync(
                                 .catch(() => {
                                     return resolve(PortalChannelTypes.unknown);
                                 });
-                        } else if (guild_object.music_data.channel_id === current_text.id) {
+                        } else if (guild_object.musicData.channelId === current_text.id) {
                             const music_data = new MusicData('null', 'null', 'null', [], false);
                             set_music_data(guild_object.id, music_data)
                                 .then(r => {
@@ -1320,8 +1320,8 @@ export async function deleted_channel_sync(
                                     return resolve(PortalChannelTypes.unknown);
                                 });
                         } else {
-                            for (let i = 0; i < guild_object.url_list.length; i++) {
-                                if (guild_object.url_list[i] === current_text.id) {
+                            for (let i = 0; i < guild_object.urlList.length; i++) {
+                                if (guild_object.urlList[i] === current_text.id) {
                                     remove_url(current_text.guild.id, current_text.id)
                                         .then(r => {
                                             return r
@@ -1335,8 +1335,8 @@ export async function deleted_channel_sync(
                                 }
                             }
 
-                            for (let i = 0; i < guild_object.ignore_list.length; i++) {
-                                if (guild_object.ignore_list[i] === current_text.id) {
+                            for (let i = 0; i < guild_object.ignoreList.length; i++) {
+                                if (guild_object.ignoreList[i] === current_text.id) {
                                     remove_ignore(current_text.guild.id, current_text.id)
                                         .then(r => {
                                             return r

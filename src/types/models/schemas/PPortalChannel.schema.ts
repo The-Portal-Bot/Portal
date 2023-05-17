@@ -1,21 +1,21 @@
 import { Schema } from 'mongoose';
-import VoiceChannelPrtlSch from './PVoiceChannel.schema';
+import PVoiceChanel from './PVoiceChannel.schema';
 
 const PPortalChannelSchema = new Schema(
     {
         id: { type: String, required: true },
-        creator_id: { type: String, required: true },
+        creatorId: { type: String, required: true },
         render: { type: Boolean, required: true },
-        regex_portal: { type: String, required: true },
-        regex_voice: { type: String, required: true },
-        voice_list: { type: [VoiceChannelPrtlSch], required: true },
-        no_bots: { type: Boolean, required: true },
-        allowed_roles: { type: [String] },
+        regexPortal: { type: String, required: true },
+        regexVoice: { type: String, required: true },
+        voiceList: { type: [PVoiceChanel], required: true },
+        noBots: { type: Boolean, required: true },
+        allowedRoles: { type: [String] },
         locale: { type: Number, required: true },
-        ann_announce: { type: Boolean, required: true },
-        ann_user: { type: Boolean, required: true },
-        user_limit_portal: { type: Number, required: true },
-        regex_overwrite: { type: Boolean, required: true },
+        annAnnounce: { type: Boolean, required: true },
+        annUser: { type: Boolean, required: true },
+        userLimitPortal: { type: Number, required: true },
+        regexOverwrite: { type: Boolean, required: true },
     },
     {
         collection: 'guild_list',
