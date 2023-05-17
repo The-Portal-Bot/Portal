@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_focus_channel, included_in_voice_list, moveMembersBack } from "../../libraries/guild.library";
+import { create_focus_channel, includedInVoiceList, moveMembersBack } from "../../libraries/guild.library";
 import { askForApproval, messageHelp } from "../../libraries/help.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
@@ -20,7 +20,7 @@ module.exports = {
 			return Promise.reject(messageHelp('commands', 'focus', 'you must be in a channel handled by Portal'));
 		}
 
-		if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
+		if (!includedInVoiceList(message.member.voice.channel.id, guild_object.portal_list)) {
 			return Promise.reject(messageHelp('commands', 'focus', 'the channel you are in is not handled by Portal'));
 		}
 

@@ -1,10 +1,10 @@
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import { createEmbed, messageHelp } from "../../libraries/help.library";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
-import { get_attribute_guide, get_attribute_help, get_attribute_help_super } from "../../types/interfaces/Attribute.interface";
+import { getAttributeGuide, getAttributeHelp, getAttributeHelpSuper } from "../../types/interfaces/Attribute.interface";
 import { getCommandGuide, getCommandHelp, getCommandHelpSuper } from "../../types/interfaces/Command.interface";
 import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../types/interfaces/Pipe.interface";
-import { get_structure_guide, get_structure_help, get_structure_help_super } from "../../types/interfaces/Structure.interface";
+import { getStructureGuide, get_structure_help, get_structure_help_super } from "../../types/interfaces/Structure.interface";
 import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../types/interfaces/Variable.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -91,7 +91,7 @@ async function simpleReply(message: Message) {
 }
 
 async function propertyReply(message: Message, args: string[]) {
-	let embed_array: MessageEmbed[] | null = null;
+	let embed_array: EmbedBuilder[] | null = null;
 
 	switch (args[0]) {
 		case 'commands':
@@ -104,7 +104,7 @@ async function propertyReply(message: Message, args: string[]) {
 			embed_array = get_pipe_help();
 			break;
 		case 'attributes':
-			embed_array = get_attribute_help();
+			embed_array = getAttributeHelp();
 			break;
 		case 'structures':
 			embed_array = get_structure_help();
@@ -125,7 +125,7 @@ async function propertyReply(message: Message, args: string[]) {
 			if (!detailed) {
 				detailed = get_pipe_help_super(args[0]);
 				if (!detailed) {
-					detailed = get_attribute_help_super(args[0]);
+					detailed = getAttributeHelpSuper(args[0]);
 					if (!detailed) {
 						detailed = get_structure_help_super(args[0]);
 						if (!detailed) {
@@ -136,7 +136,7 @@ async function propertyReply(message: Message, args: string[]) {
 			}
 		}
 
-		if (detailed instanceof MessageEmbed) {
+		if (detailed instanceof EmbedBuilder) {
 			return !!message.author.send({ embeds: [detailed] })
 				.catch(e => { return Promise.reject('failed to send message') });
 		} else {
@@ -146,7 +146,7 @@ async function propertyReply(message: Message, args: string[]) {
 }
 
 async function guideReply(message: Message, args: string[]) {
-	let guide: MessageEmbed | null = null;
+	let guide: EmbedBuilder | null = null;
 
 	switch (args[0]) {
 		case 'commands':
@@ -159,10 +159,10 @@ async function guideReply(message: Message, args: string[]) {
 			guide = get_pipe_guide();
 			break;
 		case 'attributes':
-			guide = get_attribute_guide();
+			guide = getAttributeGuide();
 			break;
 		case 'structures':
-			guide = get_structure_guide();
+			guide = getStructureGuide();
 			break;
 	}
 

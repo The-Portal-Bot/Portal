@@ -2,7 +2,7 @@ import { Message, VoiceChannel } from "discord.js";
 import { messageHelp } from "../../libraries/help.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
-import { set_attribute } from "../../types/interfaces/Attribute.interface";
+import { setAttribute } from "../../types/interfaces/Attribute.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -35,7 +35,7 @@ module.exports = {
                     .filter(val => val !== '\n')
                     .join(' ');
 
-                set_attribute(message.member.voice.channel as VoiceChannel, guild_object, args[0], value, message.member, message)
+                setAttribute(message.member.voice.channel as VoiceChannel, guild_object, args[0], value, message.member, message)
                     .then(r => {
                         return resolve(r);
                     })

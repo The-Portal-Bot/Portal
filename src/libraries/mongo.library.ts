@@ -8,7 +8,7 @@ import { PGiveRole } from '../types/classes/PGiveRole.class';
 import { PGuild, IPGuild, MusicData } from '../types/classes/PGuild.class';
 import { PMember } from '../types/classes/PMember.class';
 import { PPoll } from '../types/classes/PPoll.class';
-import { IPPortalChannel, PPortalChannel } from '../types/classes/PPortalChannel.class';
+import { IPChannel, PChannel } from '../types/classes/PPortalChannel.class';
 import { Rank } from '../types/classes/PTypes.interface';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import PGuildModel from '../types/models/PGuild.model';
@@ -445,7 +445,7 @@ export async function insertGuild(
     guild_id: string, client: Client
 ): Promise<boolean> {
     const id: string = guild_id;
-    const portal_list: PPortalChannel[] = [];
+    const portal_list: PChannel[] = [];
     const member_list: PMember[] = createMemberList(guild_id, client);
     const url_list: string[] = [];
     const role_list: PGiveRole[] = [];
@@ -707,7 +707,7 @@ export async function update_portal(
 }
 
 export async function insert_portal(
-    guild_id: string, new_portal: IPPortalChannel
+    guild_id: string, new_portal: IPChannel
 ): Promise<boolean> {
     return new Promise((resolve, reject) => {
         PGuildModel

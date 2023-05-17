@@ -1,11 +1,11 @@
-import { ColorResolvable, Message, MessageEmbed, TextChannel } from "discord.js";
-import { get_role } from "../../libraries/guild.library";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ColorResolvable, Message, TextChannel } from "discord.js";
+import { getRole } from "../../libraries/guild.library";
 import { createEmbed, getJsonFromString, messageHelp } from "../../libraries/help.library";
 import { insert_vendor } from "../../libraries/mongo.library";
 import { GiveRole, PGiveRole } from "../../types/classes/PGiveRole.class";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 function create_role_message(
     channel: TextChannel, guild_object: PGuild, title: string, desc: string,
@@ -134,7 +134,7 @@ module.exports = {
             const failed = role_map
                 .some(r => {
                     if (message.guild) {
-                        const role_fetched = r.role.map(role => get_role(message.guild, role));
+                        const role_fetched = r.role.map(role => getRole(message.guild, role));
 
                         if (role_fetched.some(role => !role)) {
                             return_value = `some of the given roles do not exist`;

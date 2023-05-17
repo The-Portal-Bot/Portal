@@ -12,10 +12,10 @@ module.exports = {
         message: Message, args: string[]
     ): Promise<ReturnPromise> {
         return new Promise(async (resolve) => {
-            if (process.env.OPENAI_API_KEY) {
+            if (process.env.OPEN_AI_API_KEY) {
                 return resolve({
                     result: false,
-                    value: messageHelp('commands', 'ai', `there is no openai API key`)
+                    value: messageHelp('commands', 'ai', `there is no OpenAi API key`)
                 });
             }
             if (args.length < 1) {
@@ -27,14 +27,14 @@ module.exports = {
 
             const model = "text-davinci-002";
             const configuration = new Configuration({
-                apiKey: process.env.OPENAI_API_KEY,
+                apiKey: process.env.OPEN_AI_API_KEY,
             });
 
-            const openai = new OpenAIApi(configuration);
+            const openAI = new OpenAIApi(configuration);
             let response: any = undefined;
 
             try {
-                response = await openai.createCompletion({
+                response = await openAI.createCompletion({
                     model: "text-davinci-002",
                     prompt: args.join(' '),
                     temperature: 0,

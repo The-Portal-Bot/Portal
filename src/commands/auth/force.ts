@@ -1,6 +1,6 @@
 import { Message, VoiceChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
-import { delete_channel, included_in_voice_list, regex_interpreter } from "../../libraries/guild.library";
+import { delete_channel, includedInVoiceList, regex_interpreter } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { update_voice } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
@@ -29,7 +29,7 @@ module.exports = {
                 });
             }
 
-            if (!included_in_voice_list(message.member.voice.channel.id, guild_object.portal_list)) {
+            if (!includedInVoiceList(message.member.voice.channel.id, guild_object.portal_list)) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'force', 'the channel you are in is not handled by Portal')

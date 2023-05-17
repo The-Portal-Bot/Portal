@@ -5,7 +5,7 @@ import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
 import { ProfaneWords } from '../data/lists/profane_words.static';
 import { PGuild } from '../types/classes/PGuild.class';
 import { Language, SpamCache } from '../types/classes/PTypes.interface';
-import { get_role } from './guild.library';
+import { getRole } from './guild.library';
 import { isMessageDeleted, isWhitelist, logger, markMessageAsDeleted, messageReply } from './help.library';
 import { updateMember } from './mongo.library';
 import { ban, kick } from './user.library';
@@ -193,7 +193,7 @@ export function messageSpamCheck(
 function mute_user(
     message: Message, mute_role_id: string
 ): void {
-    const mute_role = get_role(message.guild, mute_role_id);
+    const mute_role = getRole(message.guild, mute_role_id);
     const channel = message.channel;
 
     if (mute_role) {
@@ -209,7 +209,7 @@ function mute_user(
                         });
 
                     setTimeout(() => {
-                        const mute_role = get_role(message.guild, mute_role_id);
+                        const mute_role = getRole(message.guild, mute_role_id);
 
                         if (mute_role) {
                             try {

@@ -1,9 +1,9 @@
 import { ChannelType, GuildChannelCreateOptions, Message } from "discord.js";
-import { create_channel } from "../../libraries/guild.library";
+import { createChannel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_portal } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
-import { IPPortalChannel, PPortalChannel } from "../../types/classes/PPortalChannel.class";
+import { IPChannel, PChannel } from "../../types/classes/PPortalChannel.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -63,12 +63,12 @@ module.exports = {
             }}`
                 : 'Channel $#';
 
-            create_channel(current_guild, portal_channel, portal_options, portal_category)
+            createChannel(current_guild, portal_channel, portal_options, portal_category)
                 .then(r_channel => {
-                    const new_portal = new PPortalChannel(r_channel, current_member.id,
+                    const new_portal = new PChannel(r_channel, current_member.id,
                         true, portal_channel, voice_regex, [], false, null, guild_object.locale, true, true, 0, false);
 
-                    insert_portal(guild_object.id, new_portal as IPPortalChannel)
+                    insert_portal(guild_object.id, new_portal as IPChannel)
                         .then(r_portal => {
                             if (r_portal) {
                                 return resolve({

@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message, TextChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
-import { create_music_channel, delete_channel, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
+import { create_music_channel, delete_channel, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
 import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
 import { set_music_data } from "../../libraries/mongo.library";
 import { PGuild, MusicData } from "../../types/classes/PGuild.class";
@@ -23,7 +23,7 @@ module.exports = {
             }
 
             if (args.length === 0) {
-                if (is_music_channel(message.channel.id, guild_object)) {
+                if (isMusicChannel(message.channel.id, guild_object)) {
                     const music_data = new MusicData('null', 'null', 'null', [], false);
                     set_music_data(guild_object.id, music_data)
                         .then(() => {
@@ -39,13 +39,13 @@ module.exports = {
                             });
                         });
                 }
-                if (is_announcement_channel(message.channel.id, guild_object)) {
+                if (isAnnouncementChannel(message.channel.id, guild_object)) {
                     return resolve({
                         result: false,
                         value: 'this can\'t be set as the music channel for it is the announcement channel'
                     });
                 }
-                if (is_url_only_channel(message.channel.id, guild_object)) {
+                if (isUrlOnlyChannel(message.channel.id, guild_object)) {
                     return resolve({
                         result: false,
                         value: 'this can\'t be set as the Music channel for it is an url channel'

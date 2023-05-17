@@ -1,11 +1,11 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
-const portal_url = 'https://portal-bot.xyz/docs';
-const interpreter_url = '/interpreter/objects';
-export const structure_prefix = '{{';
+const PORTAL_URL = 'https://portal-bot.xyz/docs';
+const interpreterURL = '/interpreter/objects';
+export const structurePrefix = '{{';
 
 const structures: InterfaceBlueprint[] = [
 	{
@@ -17,12 +17,12 @@ const structures: InterfaceBlueprint[] = [
 	}
 ];
 
-export function is_structure(candidate: string): string {
+export function isStructure(candidate: string): string {
 	for (let i = 0; i < structures.length; i++) {
-		const sub_str = String(candidate)
+		const subString = String(candidate)
 			.substring(1, (String(structures[i].name).length + 1));
 
-		if (sub_str == structures[i].name) {
+		if (subString == structures[i].name) {
 			return structures[i].name;
 		}
 	}
@@ -30,8 +30,8 @@ export function is_structure(candidate: string): string {
 	return '';
 }
 
-export function get_structure_guide(): MessageEmbed {
-	const strc_array: Field[] = [
+export function getStructureGuide(): EmbedBuilder {
+	const structArray: Field[] = [
 		{
 			emote: 'Used in Regex Interpreter',
 			role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
@@ -39,7 +39,7 @@ export function get_structure_guide(): MessageEmbed {
 		},
 		{
 			emote: 'structures are flow manipulators',
-			role: '*you can change the outcome of the regex coresponding with live data*',
+			role: '*you can change the outcome of the regex corresponding with live data*',
 			inline: true
 		},
 		{
@@ -61,11 +61,11 @@ export function get_structure_guide(): MessageEmbed {
 
 	return createEmbed(
 		'Structure Guide',
-		'[Structures](' + portal_url + interpreter_url + '/structures/description) ' +
+		'[Structures](' + PORTAL_URL + interpreterURL + '/structures/description) ' +
 		'conditional flow manipulators (if this do that, or if that do this).\n' +
 		'How to use structures with the Text Interpreter',
 		'#EEB902',
-		strc_array,
+		structArray,
 		null,
 		null,
 		null,
@@ -74,30 +74,30 @@ export function get_structure_guide(): MessageEmbed {
 	);
 }
 
-export function get_structure_help(): MessageEmbed[] {
-	const strc_array: Field[][] = [];
+export function get_structure_help(): EmbedBuilder[] {
+	const structArray: Field[][] = [];
 
 	for (let l = 0; l <= structures.length / 25; l++) {
-		strc_array[l] = []
+		structArray[l] = []
 		for (let i = (24 * l); i < structures.length && i < 24 * (l + 1); i++) {
-			strc_array[l].push({
+			structArray[l].push({
 				emote: `${i + 1}. ${structures[i].name}`,
-				role: `[hover or click](${portal_url}${interpreter_url}` +
+				role: `[hover or click](${PORTAL_URL}${interpreterURL}` +
 					`/structures/detailed/${(structures[i].name)} "${(structures[i].hover)}")`,
 				inline: true
 			});
 		}
 	}
 
-	return strc_array.map((cmmd, index) => {
+	return structArray.map((command, index) => {
 		if (index === 0) {
 			return createEmbed(
 				'Structures',
-				'[Structures](' + portal_url + interpreter_url + '/structures/description) ' +
+				'[Structures](' + PORTAL_URL + interpreterURL + '/structures/description) ' +
 				'conditional flow manipulators (if this do that, or if that do this).\n' +
-				'Prefix: ' + structure_prefix,
+				'Prefix: ' + structurePrefix,
 				'#EEB902',
-				strc_array[0],
+				structArray[0],
 				null,
 				null,
 				null,
@@ -109,7 +109,7 @@ export function get_structure_help(): MessageEmbed[] {
 				null,
 				null,
 				'#EEB902',
-				strc_array[index],
+				structArray[index],
 				null,
 				null,
 				null,
@@ -120,7 +120,7 @@ export function get_structure_help(): MessageEmbed[] {
 	});
 }
 
-export function get_structure_help_super(candidate: string): MessageEmbed | boolean {
+export function get_structure_help_super(candidate: string): EmbedBuilder | boolean {
 	for (let i = 0; i < structures.length; i++) {
 		if (structures[i].name === candidate) {
 			return createEmbed(
@@ -129,9 +129,9 @@ export function get_structure_help_super(candidate: string): MessageEmbed | bool
 				'#EEB902',
 				[
 					{ emote: `Type`, role: `structures`, inline: true },
-					{ emote: `Prefix`, role: `${structure_prefix}`, inline: true },
+					{ emote: `Prefix`, role: `${structurePrefix}`, inline: true },
 					{
-						emote: `Description`, role: `[hover or click](${portal_url}${interpreter_url}` +
+						emote: `Description`, role: `[hover or click](${PORTAL_URL}${interpreterURL}` +
 							`/structures/detailed/${candidate} "${(structures[i].name)}")`, inline: true
 					}
 				],

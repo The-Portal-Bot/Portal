@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { MessageEmbed } from 'discord.js';
 import voca from 'voca';
 import { AuthEnum } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
+import { EmbedBuilder } from 'discord.js';
 
 const portal_url = 'https://portal-bot.xyz/docs';
 const interpreter_url = '/interpreter/objects';
@@ -220,7 +219,7 @@ export function is_pipe(candidate: string): string {
 	return '';
 }
 
-export function get_pipe_guide(): MessageEmbed {
+export function get_pipe_guide(): EmbedBuilder {
 	const pipe_array: Field[] = [
 		{
 			emote: 'Used in Regex Interpreter',
@@ -264,7 +263,7 @@ export function get_pipe_guide(): MessageEmbed {
 	);
 }
 
-export function get_pipe_help(): MessageEmbed[] {
+export function get_pipe_help(): EmbedBuilder[] {
 	const pipe_array: Field[][] = [];
 
 	for (let l = 0; l <= pipes.length / 25; l++) {
@@ -279,7 +278,7 @@ export function get_pipe_help(): MessageEmbed[] {
 		}
 	}
 
-	return pipe_array.map((cmmd, index): MessageEmbed => {
+	return pipe_array.map((command, index): EmbedBuilder => {
 		if (index === 0) {
 			return createEmbed(
 				'Pipes',
@@ -310,7 +309,7 @@ export function get_pipe_help(): MessageEmbed[] {
 	});
 }
 
-export function get_pipe_help_super(candidate: string): MessageEmbed | boolean {
+export function get_pipe_help_super(candidate: string): EmbedBuilder | boolean {
 	for (let i = 0; i < pipes.length; i++) {
 		if (pipes[i].name === candidate) {
 			return createEmbed(

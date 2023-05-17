@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { PGuild, MusicData } from "../types/classes/PGuild.class";
 import { CommandOptions } from "../types/classes/PTypes.interface";
-import { is_url_only_channel, included_in_ignore_list } from "./guild.library";
+import { isUrlOnlyChannel, includedInIgnoreList } from "./guild.library";
 import { logger, isUserIgnored, isMessageDeleted, markMessageAsDeleted, messageReply } from "./help.library";
 import { remove_url, remove_ignore, set_music_data } from "./mongo.library";
 import { add_points_message } from "./user.library";
@@ -150,7 +150,7 @@ export function handleRankingSystem(
 export async function handleUrlChannels(
     message: Message, guild_object: PGuild
 ): Promise<boolean> {
-    if (is_url_only_channel(message.channel.id, guild_object)) {
+    if (isUrlOnlyChannel(message.channel.id, guild_object)) {
         if (message.content === './url') {
             remove_url(guild_object.id, message.channel.id)
                 .then(r => {
@@ -192,7 +192,7 @@ export async function handleUrlChannels(
 export function handleIgnoredChannels(
     message: Message, guild_object: PGuild
 ): boolean {
-    if (included_in_ignore_list(message.channel.id, guild_object)) {
+    if (includedInIgnoreList(message.channel.id, guild_object)) {
         if (message.content === './ignore') {
             remove_ignore(guild_object.id, message.channel.id)
                 .then(r => {

@@ -2,7 +2,7 @@ import { Document } from "mongoose";
 import { VideoSearchResult } from "yt-search";
 import { PGiveRole } from "./PGiveRole.class";
 import { PPoll } from "./PPoll.class";
-import { IPPortalChannel, PPortalChannel } from "./PPortalChannel.class";
+import { IPChannel, PChannel } from "./PPortalChannel.class";
 import { Rank } from "./PTypes.interface";
 import { PMember } from "./PMember.class";
 
@@ -30,7 +30,7 @@ export class MusicData {
 
 export class PGuild {
 	public id: string;
-	public portal_list: PPortalChannel[];
+	public portal_list: PChannel[];
 	public member_list: PMember[];
 	public ignore_list: string[];
 	public url_list: string[];
@@ -53,7 +53,7 @@ export class PGuild {
 
 	constructor(
 		id: string,
-		portal_list: PPortalChannel[],
+		portal_list: PChannel[],
 		member_list: PMember[],
 		ignore_list: string[],
 		url_list: string[],
@@ -100,7 +100,7 @@ export class PGuild {
 
 export interface IPGuild extends Document {
 	id: string;
-	portal_list: [IPPortalChannel];
+	portal_list: [IPChannel];
 	member_list: PMember[];
 	ignore_list: string[];
 	url_list: string[];

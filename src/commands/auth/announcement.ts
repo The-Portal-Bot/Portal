@@ -1,11 +1,11 @@
 import { ChannelType, Message, VoiceChannel } from 'discord.js';
 import {
-    create_channel,
+    createChannel,
     delete_channel,
-    get_options,
-    is_announcement_channel,
-    is_music_channel,
-    is_url_only_channel,
+    getOptions,
+    isAnnouncementChannel,
+    isMusicChannel,
+    isUrlOnlyChannel,
 } from '../../libraries/guild.library';
 import { updateGuild } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
@@ -15,7 +15,7 @@ import { messageHelp } from '../../libraries/help.library';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 async function doesChannelHaveUsage(message: Message, guild_object: PGuild) {
-    if (is_announcement_channel(message.channel.id, guild_object)) {
+    if (isAnnouncementChannel(message.channel.id, guild_object)) {
         const response = await updateGuild(guild_object.id, 'announcement', 'null').catch(() => {
             return {
                 result: true,
@@ -29,14 +29,14 @@ async function doesChannelHaveUsage(message: Message, guild_object: PGuild) {
         };
     }
 
-    if (is_music_channel(message.channel.id, guild_object)) {
+    if (isMusicChannel(message.channel.id, guild_object)) {
         return {
             result: true,
             value: "this can't be set as an announcement channel for it is the music channel",
         };
     }
 
-    if (is_url_only_channel(message.channel.id, guild_object)) {
+    if (isUrlOnlyChannel(message.channel.id, guild_object)) {
         return {
             result: true,
             value: "this can't be set as the announcement channel for it is an url channel",
@@ -109,7 +109,7 @@ module.exports = {
                 announcement_category = null;
             }
 
-            const announcement_options = get_options(
+            const announcement_options = getOptions(
                 message.guild,
                 'announcements channel (Portal/Users/Admins)',
                 false,
@@ -118,7 +118,7 @@ module.exports = {
             );
             let createdChannelId: string;
             try {
-                createdChannelId = await create_channel(
+                createdChannelId = await createChannel(
                     message.guild,
                     announcement_channel,
                     announcement_options,

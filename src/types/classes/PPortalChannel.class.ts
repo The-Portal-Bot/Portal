@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 import { PVoiceChannel } from "./PVoiceChannel.class";
 
-export class PPortalChannel {
+export class PChannel {
 	public id: string;
 	public creator_id: string;
 	public render: boolean;
@@ -47,7 +47,7 @@ export class PPortalChannel {
 	}
 }
 
-export interface IPPortalChannel extends Document {
+export interface IPChannel extends Document {
 	id: string;
 	creator_id: string;
 	render: boolean;

@@ -54,7 +54,7 @@ const embeds = [
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('about')
-        .setDescription('returns about Portal informaation'),
+        .setDescription('returns about Portal information'),
     async execute(
         message: Message
     ): Promise<ReturnPromise> {

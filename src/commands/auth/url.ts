@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_channel, get_options, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
+import { createChannel, getOptions, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_url, remove_url } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
@@ -21,7 +21,7 @@ module.exports = {
                 });
 
             if (args.length === 0) {
-                if (is_url_only_channel(message.channel.id, guild_object)) {
+                if (isUrlOnlyChannel(message.channel.id, guild_object)) {
                     remove_url(guild_object.id, message.channel.id)
                         .then((r: boolean) => {
                             return resolve({
@@ -38,13 +38,13 @@ module.exports = {
                             });
                         });
                 }
-                else if (is_announcement_channel(message.channel.id, guild_object)) {
+                else if (isAnnouncementChannel(message.channel.id, guild_object)) {
                     return resolve({
                         result: false,
                         value: 'this can\'t be set as a URL channel for it is the Announcement channel'
                     });
                 }
-                else if (is_music_channel(message.channel.id, guild_object)) {
+                else if (isMusicChannel(message.channel.id, guild_object)) {
                     return resolve({
                         result: true,
                         value: 'this can\'t be set as a URL channel for it is the Music channel'
@@ -76,9 +76,9 @@ module.exports = {
                     url_category = null;
                 }
 
-                const url_options = get_options(message.guild, 'url only channel');
+                const url_options = getOptions(message.guild, 'url only channel');
 
-                create_channel(
+                createChannel(
                     message.guild, url_channel, url_options, url_category
                 )
                     .then(r_create => {

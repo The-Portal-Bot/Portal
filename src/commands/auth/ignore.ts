@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { included_in_ignore_list } from "../../libraries/guild.library";
+import { includedInIgnoreList } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { insert_ignore, remove_ignore } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
@@ -22,7 +22,7 @@ module.exports = {
             }
 
             if (args.length === 0) { // channel ignore
-                if (included_in_ignore_list(message.channel.id, guild_object)) {
+                if (includedInIgnoreList(message.channel.id, guild_object)) {
                     remove_ignore(guild_object.id, message.channel.id)
                         .then(r => {
                             return resolve({
