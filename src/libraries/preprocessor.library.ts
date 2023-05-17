@@ -3,7 +3,7 @@ import { PGuild, MusicData } from "../types/classes/PGuild.class";
 import { CommandOptions } from "../types/classes/PTypes.interface";
 import { isUrlOnlyChannel, includedInIgnoreList } from "./guild.library";
 import { logger, isUserIgnored, isMessageDeleted, markMessageAsDeleted, messageReply } from "./help.library";
-import { remove_url, remove_ignore, set_music_data } from "./mongo.library";
+import { removeURL, removeIgnore, setMusicData } from "./mongo.library";
 import { add_points_message } from "./user.library";
 import command_config_json from '../config.command.json';
 
@@ -11,7 +11,7 @@ import command_config_json from '../config.command.json';
 * Returns: true/false if processing must continue
 */
 export async function portalPreprocessor(
-    message: Message, guild_object: PGuild
+    message: Message, pGuild: PGuild
 ): Promise<boolean> {
     if (!message.member) {
         logger.error(new Error('could not get member'));
@@ -19,8 +19,8 @@ export async function portalPreprocessor(
     }
 
     if (isUserIgnored(message.member)) {
-        if (!handleUrlChannels(message, guild_object)) {
-            if (guild_object.musicData.channelId === message.channel.id) {
+        if (!handleUrlChannels(message, pGuild)) {
+            if (pGuild.musicData.channelId === message.channel.id) {
                 message.member
                     .send('you can\'t play music when ignored')
                     .catch((e: any) => {
@@ -43,22 +43,22 @@ export async function portalPreprocessor(
 
         return true;
     } else {
-        if (await handleUrlChannels(message, guild_object)) {
+        if (await handleUrlChannels(message, pGuild)) {
             return true;
         }
-        else if (handleIgnoredChannels(message, guild_object)) {
-            handleRankingSystem(message, guild_object);
+        else if (handleIgnoredChannels(message, pGuild)) {
+            handleRankingSystem(message, pGuild);
             return true;
         }
-        else if (handleMusicChannels(message, guild_object)) {
-            handleRankingSystem(message, guild_object);
+        else if (handleMusicChannels(message, pGuild)) {
+            handleRankingSystem(message, pGuild);
             return true;
         } else {
-            handleRankingSystem(message, guild_object);
+            handleRankingSystem(message, pGuild);
 
-            // if (guild_object.profanity_level !== ProfanityLevelEnum.none) {
+            // if (pGuild.profanity_level !== ProfanityLevelEnum.none) {
             //     // profanity check
-            //     const profanities = isProfane(message.content, guild_object.profanity_level);
+            //     const profanities = isProfane(message.content, pGuild.profanity_level);
             //     if (profanities.length > 0) {
             //         message
             //             .react('🚩')
@@ -80,7 +80,7 @@ export async function portalPreprocessor(
 }
 
 export function commandDecypher(
-    message: Message, guild_object: PGuild
+    message: Message, pGuild: PGuild
 ): {
     args: string[],
     cmd: string,
@@ -89,10 +89,10 @@ export function commandDecypher(
     type: string
 } {
     // separate command name and arguments
-    const args = message.content.slice(guild_object.prefix.length).trim().split(/ +/g);
+    const args = message.content.slice(pGuild.prefix.length).trim().split(/ +/g);
 
-    const cmd_only = args.shift();
-    if (!cmd_only) {
+    const commandOnly = args.shift();
+    if (!commandOnly) {
         return {
             args: [],
             cmd: '',
@@ -101,7 +101,7 @@ export function commandDecypher(
             type: ''
         };
     }
-    const cmd = cmd_only.toLowerCase();
+    const cmd = commandOnly.toLowerCase();
 
     let path_to_command = '';
     let command_options: CommandOptions | undefined = undefined;
@@ -131,9 +131,9 @@ export function commandDecypher(
 }
 
 export function handleRankingSystem(
-    message: Message, guild_object: PGuild
+    message: Message, pGuild: PGuild
 ): void {
-    add_points_message(message, guild_object.pMembers[0], guild_object.rankSpeed)
+    add_points_message(message, pGuild.pMembers[0], pGuild.rankSpeed)
         .then(level => {
             if (level) {
                 messageReply(true, message, `you reached level ${level}!`)
@@ -148,11 +148,11 @@ export function handleRankingSystem(
 }
 
 export async function handleUrlChannels(
-    message: Message, guild_object: PGuild
+    message: Message, pGuild: PGuild
 ): Promise<boolean> {
-    if (isUrlOnlyChannel(message.channel.id, guild_object)) {
+    if (isUrlOnlyChannel(message.channel.id, pGuild)) {
         if (message.content === './url') {
-            remove_url(guild_object.id, message.channel.id)
+            removeURL(pGuild.id, message.channel.id)
                 .then(r => {
                     messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`)
                         .catch((e: any) => {
@@ -190,11 +190,11 @@ export async function handleUrlChannels(
 }
 
 export function handleIgnoredChannels(
-    message: Message, guild_object: PGuild
+    message: Message, pGuild: PGuild
 ): boolean {
-    if (includedInIgnoreList(message.channel.id, guild_object)) {
+    if (includedInIgnoreList(message.channel.id, pGuild)) {
         if (message.content === './ignore') {
-            remove_ignore(guild_object.id, message.channel.id)
+            removeIgnore(pGuild.id, message.channel.id)
                 .then(r => {
                     messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
                         .catch((e: any) => {
@@ -213,9 +213,9 @@ export function handleIgnoredChannels(
 }
 
 export function handleMusicChannels(
-    message: Message, guild_object: PGuild
+    message: Message, pGuild: PGuild
 ): boolean {
-    if (guild_object.musicData.channelId === message.channel.id) {
+    if (pGuild.musicData.channelId === message.channel.id) {
         if (message.content === './music') {
             if (!message.guild) {
                 logger.error(new Error(`failed to get guild from message`));
@@ -223,7 +223,7 @@ export function handleMusicChannels(
             }
 
             const music_data = new MusicData('null', 'null', 'null', [], false);
-            set_music_data(guild_object.id, music_data)
+            setMusicData(pGuild.id, music_data)
                 .then(r => {
                     messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
                         .catch((e: any) => logger.error(new Error(`failed to send message: ${e}`)));
@@ -255,9 +255,9 @@ export function handleMusicChannels(
 
             //             update_music_message(
             //                 message.guild,
-            //                 guild_object,
-            //                 guild_object.music_queue.length > 0
-            //                     ? guild_object.music_queue[0]
+            //                 pGuild,
+            //                 pGuild.music_queue.length > 0
+            //                     ? pGuild.music_queue[0]
             //                     : undefined,
             //                 'you must be in the same channel as Portal',
             //                 animate
@@ -280,7 +280,7 @@ export function handleMusicChannels(
 
             // start(
             //     voice_connection, client, message.member.user, message,
-            //     message.guild, guild_object, message.content
+            //     message.guild, pGuild, message.content
             // )
             //     .then(r => {
             //         if (message.guild) {
@@ -293,9 +293,9 @@ export function handleMusicChannels(
 
             //             update_music_message(
             //                 message.guild,
-            //                 guild_object,
-            //                 guild_object.music_queue.length > 0
-            //                     ? guild_object.music_queue[0]
+            //                 pGuild,
+            //                 pGuild.music_queue.length > 0
+            //                     ? pGuild.music_queue[0]
             //                     : undefined,
             //                 r,
             //                 animate
@@ -316,9 +316,9 @@ export function handleMusicChannels(
             //         if (message.guild) {
             //             update_music_message(
             //                 message.guild,
-            //                 guild_object,
-            //                 guild_object.music_queue.length > 0
-            //                     ? guild_object.music_queue[0]
+            //                 pGuild,
+            //                 pGuild.music_queue.length > 0
+            //                     ? pGuild.music_queue[0]
             //                     : undefined,
             //                 `error while starting playback: ${e}`
             //             ).catch(e => {

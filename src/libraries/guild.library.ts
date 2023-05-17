@@ -14,7 +14,7 @@ import { ATTRIBUTE_PREFIX as attributePrefix, getAttribute, isAttribute } from '
 import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
 import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
 import { createMusicLyricsMessage, createMusicMessage, getJsonFromString, logger, maxString } from './help.library';
-import { insert_voice } from "./mongo.library";
+import { insertVoice } from "./mongo.library";
 
 function inlineOperator(
 	str: string
@@ -177,7 +177,7 @@ export async function createVoiceChannel(
 		portalObject.locale, portalObject.annAnnounce, portalObject.annUser
 	);
 
-	insert_voice(state.member.guild.id, portalObject.id, newVoice)
+	insertVoice(state.member.guild.id, portalObject.id, newVoice)
 		.catch(e => {
 			return Promise.reject(`failed to store voice channel: ${e}`);
 		});
@@ -302,7 +302,7 @@ export async function create_focus_channel(
 		.catch(e => { return Promise.reject(`failed to set member to new channel: ${e}`); });
 
 
-	insert_voice(guild.id, portalObject.id, new PVoiceChannel(
+	insertVoice(guild.id, portalObject.id, new PVoiceChannel(
 		newVoiceChannel.id, member.id, portalObject.render, chatRoomName, portalObject.noBots,
 		portalObject.locale, portalObject.annAnnounce, portalObject.annUser
 	))

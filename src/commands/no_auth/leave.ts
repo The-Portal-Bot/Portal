@@ -9,7 +9,7 @@ module.exports = {
 		.setName('leave')
 		.setDescription('tell Portal to leave your voice channel'),
 	async execute(
-		message: Message, args: string[], guild_object: PGuild, client: Client
+		message: Message, args: string[], pGuild: PGuild, client: Client
 	): Promise<string> {
 		if (!message.guild) {
 			return Promise.reject('message has no guild');
@@ -23,7 +23,7 @@ module.exports = {
 
 		voiceConnection.disconnect();
 
-		// client_talk(client, guild_object, 'leave');
+		// client_talk(client, pGuild, 'leave');
 		// setTimeout(
 		// 	function () {
 		// 		voiceConnection.disconnect();
@@ -32,6 +32,6 @@ module.exports = {
 		// );
 
 
-		return client_write(message, guild_object, 'leave');
+		return client_write(message, pGuild, 'leave');
 	}
 };

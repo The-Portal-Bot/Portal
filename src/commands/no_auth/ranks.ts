@@ -9,13 +9,13 @@ module.exports = {
 		.setName('ranks')
 		.setDescription('returns server ranks'),
 	async execute(
-		message: Message, args: string[], guild_object: PGuild
+		message: Message, args: string[], pGuild: PGuild
 	): Promise<ReturnPromise> {
 		return new Promise((resolve) => {
-			if (guild_object.ranks && guild_object.ranks.length > 0) {
+			if (pGuild.ranks && pGuild.ranks.length > 0) {
 				const ranks_msg: Field[] = [];
 
-				guild_object.ranks.forEach(rank => {
+				pGuild.ranks.forEach(rank => {
 					const role = message.guild?.roles.cache.find(r => r.id === rank.role);
 					ranks_msg.push({
 						emote: `At level ${rank.level}, you get role`,

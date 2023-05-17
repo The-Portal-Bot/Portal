@@ -3,7 +3,7 @@ import { Message, TextChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { create_music_channel, delete_channel, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
 import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
-import { set_music_data } from "../../libraries/mongo.library";
+import { setMusicData } from "../../libraries/mongo.library";
 import { PGuild, MusicData } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 
@@ -12,7 +12,7 @@ module.exports = {
         .setName('music')
         .setDescription('create music channel'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
@@ -23,9 +23,9 @@ module.exports = {
             }
 
             if (args.length === 0) {
-                if (isMusicChannel(message.channel.id, guild_object)) {
+                if (isMusicChannel(message.channel.id, pGuild)) {
                     const music_data = new MusicData('null', 'null', 'null', [], false);
-                    set_music_data(guild_object.id, music_data)
+                    setMusicData(pGuild.id, music_data)
                         .then(() => {
                             return resolve({
                                 result: true,
@@ -39,13 +39,13 @@ module.exports = {
                             });
                         });
                 }
-                if (isAnnouncementChannel(message.channel.id, guild_object)) {
+                if (isAnnouncementChannel(message.channel.id, pGuild)) {
                     return resolve({
                         result: false,
                         value: 'this can\'t be set as the music channel for it is the announcement channel'
                     });
                 }
-                if (isUrlOnlyChannel(message.channel.id, guild_object)) {
+                if (isUrlOnlyChannel(message.channel.id, pGuild)) {
                     return resolve({
                         result: false,
                         value: 'this can\'t be set as the Music channel for it is an url channel'
@@ -54,7 +54,7 @@ module.exports = {
             }
 
             const music = message.guild.channels.cache.find(channel =>
-                channel.id == guild_object.musicData.channelId);
+                channel.id == pGuild.musicData.channelId);
 
             if (music) {
                 delete_channel(PortalChannelTypes.music, <TextChannel>music, message)
@@ -67,9 +67,9 @@ module.exports = {
             }
 
             if (args.length === 0) {
-                guild_object.musicData.channelId = message.channel.id;
+                pGuild.musicData.channelId = message.channel.id;
                 const new_music = <TextChannel>message.guild.channels.cache.find(channel =>
-                    channel.id == guild_object.musicData.channelId);
+                    channel.id == pGuild.musicData.channelId);
 
                 if (!new_music) {
                     return resolve({
@@ -78,10 +78,10 @@ module.exports = {
                     });
                 }
 
-                createMusicMessage(new_music, guild_object)
+                createMusicMessage(new_music, pGuild)
                     .then(music_message_id => {
                         logger.log({ level: 'info', type: 'none', message: `created music message ${music_message_id}` });
-                        createMusicLyricsMessage(new_music, guild_object, music_message_id)
+                        createMusicLyricsMessage(new_music, pGuild, music_message_id)
                             .then(lyrics_message_id => {
                                 logger.log({ level: 'info', type: 'none', message: `created lyrics message ${lyrics_message_id}` });
                                 return resolve({
@@ -118,7 +118,7 @@ module.exports = {
                 let value = null;
 
                 if (music_channel !== '') {
-                    create_music_channel(message.guild, music_channel, music_category, guild_object)
+                    create_music_channel(message.guild, music_channel, music_category, pGuild)
                         .catch((e: any) => {
                             return resolve({
                                 result: false,
@@ -129,7 +129,7 @@ module.exports = {
                     value = 'music channel and category have been created';
                 }
                 else if (music_channel === '' && music_category !== '') {
-                    create_music_channel(message.guild, music_category, null, guild_object)
+                    create_music_channel(message.guild, music_category, null, pGuild)
                         .catch((e: any) => {
                             return resolve({
                                 result: false,

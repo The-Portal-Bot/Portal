@@ -7,7 +7,7 @@ import { PGuild, MusicData } from "../types/classes/PGuild.class";
 import { Field, TimeElapsed } from "../types/classes/PTypes.interface";
 import { createDiscordJSAdapter } from "./adapter.library";
 // import { client_talk } from "./localisation.library";
-import { fetch_guild, fetch_guild_list, set_music_data } from "./mongo.library";
+import { fetchGuild, fetchGuildList, setMusicData } from "./mongo.library";
 
 const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
 	'Portal/master/src/assets/img/empty_queue.png';
@@ -154,7 +154,7 @@ export function getKeyFromEnum(
 }
 
 export function createMusicMessage(
-	channel: TextChannel, guild_object: PGuild
+	channel: TextChannel, pGuild: PGuild
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const music_message_emb = createEmbed(
@@ -164,7 +164,7 @@ export function createMusicMessage(
 			[
 				{ emote: 'Duration', role: '-', inline: true },
 				{ emote: 'Views', role: '-', inline: true },
-				{ emote: 'Pinned', role: guild_object.musicData.pinned ? 'yes' : 'no', inline: true },
+				{ emote: 'Pinned', role: pGuild.musicData.pinned ? 'yes' : 'no', inline: true },
 				{ emote: 'Queue', role: 'empty', inline: false },
 				{ emote: 'Latest Action', role: '```music message created```', inline: false }
 			],
@@ -215,14 +215,14 @@ export function createMusicMessage(
 				const music_data = new MusicData(
 					channel.id,
 					sent_message.id,
-					guild_object.musicData.messageLyricsId
-						? guild_object.musicData.messageLyricsId
+					pGuild.musicData.messageLyricsId
+						? pGuild.musicData.messageLyricsId
 						: 'null',
 					[],
 					false
 				);
 
-				set_music_data(guild_object.id, music_data)
+				setMusicData(pGuild.id, music_data)
 					.catch((e: any) => {
 						return reject(`failed to set music data: ${e}`);
 					});
@@ -236,7 +236,7 @@ export function createMusicMessage(
 }
 
 export function createMusicLyricsMessage(
-	channel: TextChannel, guild_object: PGuild, messageId: string
+	channel: TextChannel, pGuild: PGuild, messageId: string
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const music_lyrics_message_emb = createEmbed(
@@ -262,7 +262,7 @@ export function createMusicLyricsMessage(
 					false
 				);
 
-				set_music_data(guild_object.id, music_data)
+				setMusicData(pGuild.id, music_data)
 					.catch((e: any) => {
 						return reject(`failed to set music data: ${e}`);
 					});
@@ -276,12 +276,12 @@ export function createMusicLyricsMessage(
 }
 
 export function updateMusicMessage(
-	guild: Guild, guild_object: PGuild, yts: VideoSearchResult | undefined,
+	guild: Guild, pGuild: PGuild, yts: VideoSearchResult | undefined,
 	status: string, animated = true
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
 		const guild_channel: GuildBasedChannel | undefined = guild.channels.cache
-			.find(c => c.id === guild_object.musicData.channelId);
+			.find(c => c.id === pGuild.musicData.channelId);
 
 		if (!guild_channel) {
 			return reject(`could not fetch channel`);
@@ -289,18 +289,18 @@ export function updateMusicMessage(
 
 		const channel: TextChannel = <TextChannel>guild_channel;
 
-		if (!channel || !guild_object.musicData.messageId) {
+		if (!channel || !pGuild.musicData.messageId) {
 			return reject(`could not find channel`);
 		}
 
-		const music_queue = guild_object.musicQueue ?
-			guild_object.musicQueue.length > 1
-				? guild_object.musicQueue
+		const music_queue = pGuild.musicQueue ?
+			pGuild.musicQueue.length > 1
+				? pGuild.musicQueue
 					.map((v, i) => {
 						if (i !== 0 && i < 6) {
 							return (`${i}. ${maxString(v.title, 61)}`);
 						} else if (i === 6) {
-							return `_...${guild_object.musicQueue.length - 6} more_`;
+							return `_...${pGuild.musicQueue.length - 6} more_`;
 						}
 					})
 					.filter(v => !!v)
@@ -315,7 +315,7 @@ export function updateMusicMessage(
 			[
 				{ emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
 				{ emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
-				{ emote: 'Pinned', role: guild_object.musicData.pinned ? 'yes' : 'no', inline: true },
+				{ emote: 'Pinned', role: pGuild.musicData.pinned ? 'yes' : 'no', inline: true },
 				// { emote: null, role: null, inline: true },
 				{ emote: 'Queue', role: music_queue, inline: false },
 				// { emote: null, role: null, inline: true },
@@ -331,10 +331,10 @@ export function updateMusicMessage(
 				: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
 		);
 
-		if (guild_object.musicData.messageId) {
+		if (pGuild.musicData.messageId) {
 			if (channel) {
 				channel.messages
-					.fetch(guild_object.musicData.messageId)
+					.fetch(pGuild.musicData.messageId)
 					.then((message: Message) => {
 						message
 							.edit({ embeds: [music_message_emb] })
@@ -354,11 +354,11 @@ export function updateMusicMessage(
 }
 
 export function updateMusicLyricsMessage(
-	guild: Guild, guild_object: PGuild, lyrics: string, url?: string
+	guild: Guild, pGuild: PGuild, lyrics: string, url?: string
 ): Promise<boolean> {
 	return new Promise((resolve, reject) => {
 		const guild_channel: GuildBasedChannel | undefined = guild.channels.cache
-			.find(c => c.id === guild_object.musicData.channelId);
+			.find(c => c.id === pGuild.musicData.channelId);
 
 		if (!guild_channel) {
 			return reject(`could not fetch channel`);
@@ -366,7 +366,7 @@ export function updateMusicLyricsMessage(
 
 		const channel: TextChannel = <TextChannel>guild_channel;
 
-		if (!channel || !guild_object.musicData.messageId) {
+		if (!channel || !pGuild.musicData.messageId) {
 			return reject(`could not find channel`);
 		}
 
@@ -382,10 +382,10 @@ export function updateMusicLyricsMessage(
 			null
 		);
 
-		if (guild_object.musicData.messageLyricsId) {
+		if (pGuild.musicData.messageLyricsId) {
 			if (channel) {
 				channel.messages
-					.fetch(guild_object.musicData.messageLyricsId)
+					.fetch(pGuild.musicData.messageLyricsId)
 					.then((message: Message) => {
 						message.edit({ embeds: [music_message_emb] })
 							.then(() => {
@@ -404,7 +404,7 @@ export function updateMusicLyricsMessage(
 }
 
 export async function joinUserVoiceChannelByReaction(
-	guild: Guild, client: Client, guild_object: PGuild, user: User, announce_entrance: boolean
+	guild: Guild, client: Client, pGuild: PGuild, user: User, announce_entrance: boolean
 ): Promise<VoiceConnection> {
 	const guildMembers = await guild.members.fetch();
 
@@ -453,7 +453,7 @@ export async function joinUserVoiceChannelByReaction(
 }
 
 export async function joinUserVoiceChannelByMessage(
-	client: Client, message: Message, guild_object: PGuild, join = false
+	client: Client, message: Message, pGuild: PGuild, join = false
 ): Promise<VoiceConnection> {
 	if (!message.member) {
 		return Promise.reject('user could not be fetched for message');
@@ -475,7 +475,7 @@ export async function joinUserVoiceChannelByMessage(
 		return Promise.reject('voiceAdapterCreator could not be fetched for guild');
 	}
 
-	if (!guild_object) {
+	if (!pGuild) {
 		return Promise.reject('could not find guild of message');
 	}
 
@@ -761,12 +761,12 @@ export function removeDeletedChannels(
 	guild: Guild
 ): Promise<boolean> {
 	return new Promise((resolve) => {
-		fetch_guild(guild.id)
-			.then(guild_object => {
-				if (guild_object) {
-					guild_object.pChannels.forEach((p, index_p) => {
+		fetchGuild(guild.id)
+			.then(pGuild => {
+				if (pGuild) {
+					pGuild.pChannels.forEach((p, index_p) => {
 						if (!guild.channels.cache.some(c => c.id === p.id)) {
-							guild_object.pChannels.splice(index_p, 1);
+							pGuild.pChannels.splice(index_p, 1);
 						}
 						p.voiceList.forEach((v, index_v) => {
 							if (!guild.channels.cache.some(c => c.id === v.id)) {
@@ -775,16 +775,16 @@ export function removeDeletedChannels(
 						});
 					});
 
-					guild_object.urlList.some((u_id, index_u) => {
+					pGuild.urlList.some((u_id, index_u) => {
 						if (!guild.channels.cache.some(c => c.id === u_id)) {
-							guild_object.urlList.splice(index_u, 1);
+							pGuild.urlList.splice(index_u, 1);
 							return true;
 						}
 
 						return false;
 					});
 
-					guild_object.roleList.forEach((r, index_r) => {
+					pGuild.roleList.forEach((r, index_r) => {
 						!guild.channels.cache.some(c => {
 							if (c instanceof TextChannel) {
 								let found = false;
@@ -795,7 +795,7 @@ export function removeDeletedChannels(
 										found = true;
 									})
 									.catch(() => {
-										guild_object.roleList.splice(index_r, 1);
+										pGuild.roleList.splice(index_r, 1);
 									});
 
 								return found;
@@ -805,20 +805,20 @@ export function removeDeletedChannels(
 						});
 					});
 
-					guild_object.pMembers.forEach((m, index_m) => {
+					pGuild.pMembers.forEach((m, index_m) => {
 						if (!guild.members.cache.some(m => m.id === m.id)) {
-							guild_object.urlList.splice(index_m, 1);
+							pGuild.urlList.splice(index_m, 1);
 						}
 					});
 
-					if (!guild.channels.cache.some(c => c.id === guild_object.musicData.channelId)) {
-						guild_object.musicData.channelId = undefined;
-						guild_object.musicData.messageId = undefined;
-						guild_object.musicData.votes = undefined;
+					if (!guild.channels.cache.some(c => c.id === pGuild.musicData.channelId)) {
+						pGuild.musicData.channelId = undefined;
+						pGuild.musicData.messageId = undefined;
+						pGuild.musicData.votes = undefined;
 					}
 
-					if (!guild.channels.cache.some(c => c.id === guild_object.announcement)) {
-						guild_object.announcement = null;
+					if (!guild.channels.cache.some(c => c.id === pGuild.announcement)) {
+						pGuild.announcement = null;
 					}
 
 					return resolve(true);
@@ -836,7 +836,7 @@ export function removeDeletedChannels(
 export async function removeEmptyVoiceChannels(
 	guild: Guild
 ): Promise<boolean> {
-	const guild_list = await fetch_guild_list();
+	const guild_list = await fetchGuildList();
 	if (!guild_list) {
 		return false;
 	}

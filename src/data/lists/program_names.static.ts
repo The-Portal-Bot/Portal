@@ -1,5 +1,5 @@
 export const ProgramNames = {
-    program_attributes: [
+    programAttributes: [
         {
             status: 'Google Chrome',
             type: 'browser',

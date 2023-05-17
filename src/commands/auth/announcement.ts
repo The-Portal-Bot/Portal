@@ -14,9 +14,9 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { messageHelp } from '../../libraries/help.library';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-async function doesChannelHaveUsage(message: Message, guild_object: PGuild) {
-    if (isAnnouncementChannel(message.channel.id, guild_object)) {
-        const response = await updateGuild(guild_object.id, 'announcement', 'null').catch(() => {
+async function doesChannelHaveUsage(message: Message, pGuild: PGuild) {
+    if (isAnnouncementChannel(message.channel.id, pGuild)) {
+        const response = await updateGuild(pGuild.id, 'announcement', 'null').catch(() => {
             return {
                 result: true,
                 value: 'failed to remove announcement channel',
@@ -29,14 +29,14 @@ async function doesChannelHaveUsage(message: Message, guild_object: PGuild) {
         };
     }
 
-    if (isMusicChannel(message.channel.id, guild_object)) {
+    if (isMusicChannel(message.channel.id, pGuild)) {
         return {
             result: true,
             value: "this can't be set as an announcement channel for it is the music channel",
         };
     }
 
-    if (isUrlOnlyChannel(message.channel.id, guild_object)) {
+    if (isUrlOnlyChannel(message.channel.id, pGuild)) {
         return {
             result: true,
             value: "this can't be set as the announcement channel for it is an url channel",
@@ -60,7 +60,7 @@ module.exports = {
                 .setRequired(true)
                 .setAutocomplete(true)
         ),
-    async execute(message: Message, args: string[], guild_object: PGuild): Promise<ReturnPromise> {
+    async execute(message: Message, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
         if (!message.guild) {
             return {
                 result: false,
@@ -69,7 +69,7 @@ module.exports = {
         }
 
         if (args.length === 0) {
-            const response = await doesChannelHaveUsage(message, guild_object);
+            const response = await doesChannelHaveUsage(message, pGuild);
             if (response.result) {
                 return {
                     result: false,
@@ -79,7 +79,7 @@ module.exports = {
         }
 
         const announcement = <VoiceChannel>(
-            message.guild.channels.cache.find((channel) => channel.id == guild_object.announcement)
+            message.guild.channels.cache.find((channel) => channel.id == pGuild.announcement)
         );
 
         if (announcement) {
@@ -92,7 +92,7 @@ module.exports = {
         }
 
         if (args.length === 0) {
-            const response = await updateGuild(guild_object.id, 'announcement', message.channel.id);
+            const response = await updateGuild(pGuild.id, 'announcement', message.channel.id);
 
             return {
                 result: response,
@@ -129,7 +129,7 @@ module.exports = {
             }
 
             try {
-                const response = await updateGuild(guild_object.id, 'announcement', createdChannelId);
+                const response = await updateGuild(pGuild.id, 'announcement', createdChannelId);
                 return {
                     result: response,
                     value: response

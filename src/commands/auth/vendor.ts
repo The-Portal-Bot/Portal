@@ -2,13 +2,13 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ColorResolvable, Message, TextChannel } from "discord.js";
 import { getRole } from "../../libraries/guild.library";
 import { createEmbed, getJsonFromString, messageHelp } from "../../libraries/help.library";
-import { insert_vendor } from "../../libraries/mongo.library";
+import { insertVendor } from "../../libraries/mongo.library";
 import { GiveRole, PGiveRole } from "../../types/classes/PGiveRole.class";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 
 function create_role_message(
-    channel: TextChannel, guild_object: PGuild, title: string, desc: string,
+    channel: TextChannel, pGuild: PGuild, title: string, desc: string,
     colour: ColorResolvable, role_emb: Field[], role_map: GiveRole[]
 ): Promise<ReturnPromise> {
     return new Promise((resolve) => {
@@ -30,7 +30,7 @@ function create_role_message(
                         });
                 }
 
-                insert_vendor(guild_object.id, new PGiveRole(sent_message.id, role_map))
+                insertVendor(pGuild.id, new PGiveRole(sent_message.id, role_map))
                     .then(r => {
                         return resolve({
                             result: r,
@@ -75,7 +75,7 @@ module.exports = {
         .setName('vendor')
         .setDescription('remove user from role'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
@@ -164,7 +164,7 @@ module.exports = {
 
             create_role_message(
                 <TextChannel>message.channel,
-                guild_object,
+                pGuild,
                 'Role Assigner',
                 'React with emote to get or remove mentioned role',
                 '#FF7F00',

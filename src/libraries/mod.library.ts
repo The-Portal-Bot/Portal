@@ -49,7 +49,7 @@ export function isProfane(
    * Determine if a user is spamming
    */
 export function messageSpamCheck(
-    message: Message, guild_object: PGuild, spamCache: SpamCache[]
+    message: Message, pGuild: PGuild, spamCache: SpamCache[]
 ): void {
     if (isWhitelist(message.member)) {
         return;
@@ -119,13 +119,13 @@ export function messageSpamCheck(
         memberSpamCache.timestamp = null;
         memberSpamCache.spam_fouls = 0;
 
-        if (guild_object.pMembers[0].penalties) {
-            guild_object.pMembers[0].penalties++;
+        if (pGuild.pMembers[0].penalties) {
+            pGuild.pMembers[0].penalties++;
         } else {
-            guild_object.pMembers[0].penalties = 1;
+            pGuild.pMembers[0].penalties = 1;
         }
 
-        if (guild_object.kickAfter && guild_object.kickAfter !== 0 && guild_object.pMembers[0].penalties === guild_object.kickAfter) {
+        if (pGuild.kickAfter && pGuild.kickAfter !== 0 && pGuild.pMembers[0].penalties === pGuild.kickAfter) {
             if (message.member) {
                 kick(message.member, 'kicked due to spamming')
                     .then(r => {
@@ -147,7 +147,7 @@ export function messageSpamCheck(
                         logger.error(new Error(`failed to reply to message: ${e}`));
                     });
             }
-        } else if (guild_object.banAfter && guild_object.banAfter !== 0 && guild_object.pMembers[0].penalties === guild_object.banAfter) {
+        } else if (pGuild.banAfter && pGuild.banAfter !== 0 && pGuild.pMembers[0].penalties === pGuild.banAfter) {
             if (message.member) {
                 const ban_options: BanOptions = {
                     deleteMessageDays: 0,
@@ -175,13 +175,13 @@ export function messageSpamCheck(
                     });
             }
         } else {
-            updateMember(guild_object.id, message.author.id, 'penalties', guild_object.pMembers[0].penalties)
+            updateMember(pGuild.id, message.author.id, 'penalties', pGuild.pMembers[0].penalties)
                 .catch(e => {
                     logger.error(new Error(`failed to update member: ${e}`));
                 });
 
-            if (guild_object.muteRole) {
-                mute_user(message, guild_object.muteRole);
+            if (pGuild.muteRole) {
+                mute_user(message, pGuild.muteRole);
             }
         }
     }

@@ -11,7 +11,7 @@ module.exports = {
         .setName('run')
         .setDescription('runs string given'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
@@ -34,10 +34,10 @@ module.exports = {
             let voice_object: PVoiceChannel | null = null;
 
             if (current_voice_channel) {
-                for (let i = 0; i < guild_object.pChannels.length; i++) {
-                    for (let j = 0; j < guild_object.pChannels[i].voiceList.length; j++) {
-                        if (guild_object.pChannels[i].voiceList[j].id === current_voice_channel.id) {
-                            voice_object = guild_object.pChannels[i].voiceList[j];
+                for (let i = 0; i < pGuild.pChannels.length; i++) {
+                    for (let j = 0; j < pGuild.pChannels[i].voiceList.length; j++) {
+                        if (pGuild.pChannels[i].voiceList[j].id === current_voice_channel.id) {
+                            voice_object = pGuild.pChannels[i].voiceList[j];
                             break;
                         }
                     }
@@ -85,8 +85,8 @@ module.exports = {
                                                     args.join(' '),
                                                     current_voice_channel as VoiceChannel,
                                                     voice_object,
-                                                    guild_object.pChannels,
-                                                    guild_object,
+                                                    pGuild.pChannels,
+                                                    pGuild,
                                                     message.guild,
                                                     message.author.id
                                                 )}\n\`\`\``,

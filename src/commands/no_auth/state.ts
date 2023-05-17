@@ -9,7 +9,7 @@ module.exports = {
         .setName('state')
         .setDescription('returns server\'s state'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild, client: Client
+        message: Message, args: string[], pGuild: PGuild, client: Client
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             const guild = client.guilds.cache
@@ -28,7 +28,7 @@ module.exports = {
                 inline: false
             }];
 
-            const portals = guild_object.pChannels
+            const portals = pGuild.pChannels
                 .map(p => {
                     const portal_channel = guild.channels.cache
                         .find(c => c.id === p.id);
@@ -61,7 +61,7 @@ module.exports = {
                 });
 
             const music = guild.channels.cache.find(c =>
-                c.id === guild_object.musicData.channelId);
+                c.id === pGuild.musicData.channelId);
 
             if (music) {
                 portal_state
@@ -80,7 +80,7 @@ module.exports = {
             }
 
             const announcement = guild.channels.cache.find(c =>
-                c.id === guild_object.announcement);
+                c.id === pGuild.announcement);
 
             if (announcement) {
                 portal_state
@@ -105,7 +105,7 @@ module.exports = {
                     inline: false
                 });
 
-            const urls = guild_object.urlList.map((u_id, index_u) => {
+            const urls = pGuild.urlList.map((u_id, index_u) => {
                 const channel = guild.channels.cache.find(c => c.id === u_id);
                 return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
             });
@@ -127,7 +127,7 @@ module.exports = {
                     });
             }
 
-            const ignore = guild_object.ignoreList.map((u_id, index_u) => {
+            const ignore = pGuild.ignoreList.map((u_id, index_u) => {
                 const channel = guild.channels.cache.find(c => c.id === u_id);
                 return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
             });

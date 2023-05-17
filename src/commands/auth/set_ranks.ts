@@ -1,6 +1,6 @@
 import { Message, Role } from "discord.js";
 import { getJsonFromString, messageHelp } from "../../libraries/help.library";
-import { set_ranks } from "../../libraries/mongo.library";
+import { setRanks } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { Rank, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -20,7 +20,7 @@ module.exports = {
         .setName('set_ranks')
         .setDescription('create ranks for the server'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild)
@@ -68,7 +68,7 @@ module.exports = {
                     if (role) rank.role = role.id;
                 });
 
-                set_ranks(guild_object.id, new_ranks)
+                setRanks(pGuild.id, new_ranks)
                     .then(r => {
                         return resolve({
                             result: r,

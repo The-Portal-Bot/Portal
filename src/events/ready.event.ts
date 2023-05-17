@@ -2,7 +2,7 @@
 import { ActivityOptions, ActivityType, Client, Guild, GuildMember, PresenceData } from "discord.js";
 import { logger } from "../libraries/help.library";
 import { get_function } from "../libraries/localisation.library";
-import { fetch_guild_members, guildExists, insertGuild, insertMember, remove_member } from "../libraries/mongo.library";
+import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from "../libraries/mongo.library";
 import { PMember } from "../types/classes/PMember.class";
 
 function added_when_down(
@@ -42,7 +42,7 @@ function removed_when_down(
                 .find(m => m.id === member_list[j].id);
 
             if (!member_in_guild) {
-                remove_member(member_list[j].id, guild.id)
+                removeMember(member_list[j].id, guild.id)
                     .then(() => {
                         logger.info(`late-remove ${member_list[j].id} to ${guild.name} [${guild.id}]`);
                     })
@@ -72,7 +72,7 @@ async function add_guild_again(
                         });
                 }
                 else {
-                    fetch_guild_members(guild.id)
+                    fetchGuildMembers(guild.id)
                         .then(async member_list => {
                             if (member_list) {
                                 await added_when_down(guild, member_list);

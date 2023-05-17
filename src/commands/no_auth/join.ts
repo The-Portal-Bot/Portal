@@ -9,9 +9,9 @@ module.exports = {
         .setName('join')
         .setDescription('tell Portal to join your voice channel'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild, client: Client
+        message: Message, args: string[], pGuild: PGuild, client: Client
     ): Promise<ReturnPromise> {
-        const voiceConnection = await joinUserVoiceChannelByMessage(client, message, guild_object, true)
+        const voiceConnection = await joinUserVoiceChannelByMessage(client, message, pGuild, true)
             .catch(e => { return Promise.reject(e); });
 
         if (!voiceConnection) {

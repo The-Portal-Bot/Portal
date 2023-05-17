@@ -11,7 +11,7 @@ module.exports = {
         .setName('announce')
         .setDescription('send an announcement to the announcement channel'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild, client: Client
+        message: Message, args: string[], pGuild: PGuild, client: Client
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length === 0) {
@@ -21,7 +21,7 @@ module.exports = {
                 });
             }
 
-            if (guild_object.announcement === '' || guild_object.announcement === 'null') {
+            if (pGuild.announcement === '' || pGuild.announcement === 'null') {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'announce', 'there is no announcement channel')
@@ -36,7 +36,7 @@ module.exports = {
             }
 
             const announcement_channel = <TextChannel>message.guild.channels.cache
-                .find(c => c.id === guild_object.announcement);
+                .find(c => c.id === pGuild.announcement);
 
             if (!announcement_channel) {
                 return resolve({
@@ -68,7 +68,7 @@ module.exports = {
             announcement_channel
                 .send({ embeds: [rich_message] })
                 .then(() => {
-                    // client_talk(client, guild_object, 'announce');
+                    // client_talk(client, pGuild, 'announce');
                     return resolve({
                         result: true,
                         value: 'announcement was sent successfully'

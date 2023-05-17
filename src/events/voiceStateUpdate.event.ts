@@ -3,26 +3,26 @@ import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from "discord.js
 import { createVoiceChannel, generateChannelName, includedInPChannels, includedInVoiceList } from "../libraries/guild.library";
 import { isChannelDeleted, isGuildDeleted, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
 // import { client_talk } from "../libraries/localisation.library";
-import { fetch_guild, remove_voice, set_music_data, updateGuild } from "../libraries/mongo.library";
+import { fetchGuild, removeVoice, setMusicData, updateGuild } from "../libraries/mongo.library";
 import { update_timestamp } from "../libraries/user.library";
 import { PGuild } from "../types/classes/PGuild.class";
 import { PChannel } from "../types/classes/PPortalChannel.class";
 
 // delete portal's voice channel
 async function delete_voice_channel(
-    channel: VoiceChannel | TextChannel, guild_object: PGuild
+    channel: VoiceChannel | TextChannel, pGuild: PGuild
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (!channel.deletable) {
             return reject(`channel ${channel.name} (${channel.id}) is not deletable`);
         } else {
-            guild_object.pChannels.some(p =>
+            pGuild.pChannels.some(p =>
                 p.voiceList.some(v => {
                     if (v.id === channel.id) {
                         channel
                             .delete()
                             .then(deleted_channel => {
-                                remove_voice(guild_object.id, p.id, v.id)
+                                removeVoice(pGuild.id, p.id, v.id)
                                     .then(r => {
                                         if (r) {
                                             return resolve(`channel (${deleted_channel.id}) deleted`);
@@ -52,17 +52,17 @@ function five_min_refresher(
     voice_channel: VoiceChannel, portal_list: PChannel[],
     guild: Guild, minutes: number
 ): void {
-    fetch_guild(guild.id)
-        .then(guild_object => {
-            if (guild_object) {
-                generateChannelName(voice_channel, portal_list, guild_object, guild)
+    fetchGuild(guild.id)
+        .then(pGuild => {
+            if (pGuild) {
+                generateChannelName(voice_channel, portal_list, pGuild, guild)
                     .catch((e: any) => {
                         logger.error(new Error(`failed to generate channel name: ${e}`));
                     });
 
                 setTimeout(() => {
                     if (!isGuildDeleted(guild) && !isChannelDeleted(voice_channel)) {
-                        generateChannelName(voice_channel, portal_list, guild_object, guild)
+                        generateChannelName(voice_channel, portal_list, pGuild, guild)
                             .catch((e: any) => {
                                 logger.error(new Error(`failed to generate channel name: ${e}`));
                             });
@@ -78,12 +78,12 @@ function five_min_refresher(
 }
 
 async function channel_empty_check(
-    old_channel: VoiceChannel | TextChannel, guild_object: PGuild, client: Client
+    old_channel: VoiceChannel | TextChannel, pGuild: PGuild, client: Client
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (old_channel.members.size === 0) {
-            if (includedInVoiceList(old_channel.id, guild_object.pChannels)) {
-                delete_voice_channel(old_channel, guild_object)
+            if (includedInVoiceList(old_channel.id, pGuild.pChannels)) {
+                delete_voice_channel(old_channel, pGuild)
                     .then(response => {
                         return resolve(response);
                     })
@@ -105,16 +105,16 @@ async function channel_empty_check(
                 return resolve(`Portal is not connected`);
             }
 
-            guild_object.musicQueue = [];
-            updateGuild(guild_object.id, 'music_queue', guild_object.musicQueue)
+            pGuild.musicQueue = [];
+            updateGuild(pGuild.id, 'music_queue', pGuild.musicQueue)
                 .catch(e => {
                     return reject(`failed to update guild: ${e}`);
                 });
             voiceConnection.disconnect();
 
-            if (guild_object.musicData.pinned) {
-                guild_object.musicData.pinned = false;
-                set_music_data(guild_object.id, guild_object.musicData)
+            if (pGuild.musicData.pinned) {
+                pGuild.musicData.pinned = false;
+                setMusicData(pGuild.id, pGuild.musicData)
                     .catch(e => {
                         return reject(`failed to set music data: ${e}`);
                     });
@@ -122,9 +122,9 @@ async function channel_empty_check(
 
             updateMusicMessage(
                 old_channel.guild,
-                guild_object,
-                guild_object.musicQueue.length > 0
-                    ? guild_object.musicQueue[0]
+                pGuild,
+                pGuild.musicQueue.length > 0
+                    ? pGuild.musicQueue[0]
                     : undefined,
                 'left last',
                 false
@@ -133,13 +133,13 @@ async function channel_empty_check(
                     return reject(`failed to update music message: ${e}`);
                 });
 
-            updateMusicLyricsMessage(old_channel.guild, guild_object, '')
+            updateMusicLyricsMessage(old_channel.guild, pGuild, '')
                 .catch(e => {
                     return reject(`failed to update music lyrics: ${e}`);
                 });
 
-            if (includedInVoiceList(old_channel.id, guild_object.pChannels)) {
-                delete_voice_channel(old_channel, guild_object)
+            if (includedInVoiceList(old_channel.id, pGuild.pChannels)) {
+                delete_voice_channel(old_channel, pGuild)
                     .then(response => {
                         return resolve(response);
                     })
@@ -155,12 +155,12 @@ async function channel_empty_check(
 }
 
 async function from_null(
-    new_channel: VoiceChannel | null, guild_object: PGuild, newState: VoiceState
+    new_channel: VoiceChannel | null, pGuild: PGuild, newState: VoiceState
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (new_channel) { // joined from null
-            if (includedInPChannels(new_channel.id, guild_object.pChannels)) { // joined portal channel
-                const portal_object = guild_object.pChannels
+            if (includedInPChannels(new_channel.id, pGuild.pChannels)) { // joined portal channel
+                const portal_object = pGuild.pChannels
                     .find(p => p.id === new_channel.id);
 
                 if (!portal_object) {
@@ -169,7 +169,7 @@ async function from_null(
 
                 createVoiceChannel(newState, portal_object)
                     .then(() => {
-                        update_timestamp(newState, guild_object) // points for voice
+                        update_timestamp(newState, pGuild) // points for voice
                             .then(level => {
                                 if (level) {
                                     newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
@@ -188,9 +188,9 @@ async function from_null(
                         return reject(`null->existing (source: null | dest: portal_list): ${e}`);
                     });
             }
-            else if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // joined voice channel
-                five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
-                update_timestamp(newState, guild_object) // points for voice
+            else if (includedInVoiceList(new_channel.id, pGuild.pChannels)) { // joined voice channel
+                five_min_refresher(new_channel, pGuild.pChannels, newState.guild, 5);
+                update_timestamp(newState, pGuild) // points for voice
                     .then(level => {
                         if (level) {
                             newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
@@ -206,7 +206,7 @@ async function from_null(
                 return resolve('null->existing (source: null | dest: voice_list)');
             }
             else { // joined other channel
-                update_timestamp(newState, guild_object) // points for voice
+                update_timestamp(newState, pGuild) // points for voice
                     .then(level => {
                         if (level) {
                             newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
@@ -229,11 +229,11 @@ async function from_null(
 
 async function from_existing(
     old_channel: VoiceChannel, new_channel: VoiceChannel | null, client: Client,
-    guild_object: PGuild, newState: VoiceState
+    pGuild: PGuild, newState: VoiceState
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         if (new_channel === null) {
-            update_timestamp(newState, guild_object) // points for voice
+            update_timestamp(newState, pGuild) // points for voice
                 .then(level => {
                     if (level) {
                         newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
@@ -246,7 +246,7 @@ async function from_existing(
                     logger.error(new Error(`failed to send message: ${e}`));
                 });
 
-            channel_empty_check(old_channel, guild_object, client)
+            channel_empty_check(old_channel, pGuild, client)
                 .catch(e => {
                     logger.error(new Error(`failed to check channel state: ${e}`));
                 });
@@ -254,7 +254,7 @@ async function from_existing(
             return resolve('existing->null');
         }
         else if (new_channel !== null) { // Moved from channel to channel
-            update_timestamp(newState, guild_object) // points for voice
+            update_timestamp(newState, pGuild) // points for voice
                 .then(level => {
                     if (level) {
                         newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
@@ -267,23 +267,23 @@ async function from_existing(
                     logger.error(new Error(`failed to send message: ${e}`));
                 });
 
-            if (includedInPChannels(old_channel.id, guild_object.pChannels)) {
-                if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // has been handled before
-                    five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
+            if (includedInPChannels(old_channel.id, pGuild.pChannels)) {
+                if (includedInVoiceList(new_channel.id, pGuild.pChannels)) { // has been handled before
+                    five_min_refresher(new_channel, pGuild.pChannels, newState.guild, 5);
 
                     return resolve('existing->existing (source: portal_list | dest: voice_list) / has been handled before');
                 } else {
                     return resolve('not handled by portal');
                 }
             }
-            else if (includedInVoiceList(old_channel.id, guild_object.pChannels)) {
-                channel_empty_check(old_channel, guild_object, client)
+            else if (includedInVoiceList(old_channel.id, pGuild.pChannels)) {
+                channel_empty_check(old_channel, pGuild, client)
                     .catch(e => {
                         logger.error(new Error(`failed to check channel state: ${e}`));
                     });
 
-                if (includedInPChannels(new_channel.id, guild_object.pChannels)) { // moved from voice to portal
-                    const portal_object = guild_object.pChannels
+                if (includedInPChannels(new_channel.id, pGuild.pChannels)) { // moved from voice to portal
+                    const portal_object = pGuild.pChannels
                         .find(p => p.id === new_channel.id);
 
                     if (!portal_object) {
@@ -298,20 +298,20 @@ async function from_existing(
                             return reject(`an error occurred while creating voice channel: ${e}`);
                         });
                 }
-                else if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // moved from voice to voice
-                    five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
+                else if (includedInVoiceList(new_channel.id, pGuild.pChannels)) { // moved from voice to voice
+                    five_min_refresher(new_channel, pGuild.pChannels, newState.guild, 5);
 
                     return resolve('existing->existing (source: voice_list | dest: voice_list)');
                 }
-                else { // moved from voice to otherefresher(new_channel, guild_object.portal_list, newState.guild, 5);
+                else { // moved from voice to otherefresher(new_channel, pGuild.portal_list, newState.guild, 5);
 
                     return resolve('existing->existing (source: voice_list | dest: other)');
                 }
             }
             else {
                 // Joined portal channel
-                if (includedInPChannels(new_channel.id, guild_object.pChannels)) {
-                    const portal_object = guild_object.pChannels
+                if (includedInPChannels(new_channel.id, pGuild.pChannels)) {
+                    const portal_object = pGuild.pChannels
                         .find(p => p.id === new_channel.id);
 
                     if (!portal_object) {
@@ -326,8 +326,8 @@ async function from_existing(
                             return reject(`existing->existing (source: other voice | dest: portal_list ): ${e}`);
                         });
                 }
-                else if (includedInVoiceList(new_channel.id, guild_object.pChannels)) { // left created channel and joins another created
-                    five_min_refresher(new_channel, guild_object.pChannels, newState.guild, 5);
+                else if (includedInVoiceList(new_channel.id, pGuild.pChannels)) { // left created channel and joins another created
+                    five_min_refresher(new_channel, pGuild.pChannels, newState.guild, 5);
 
                     return resolve('existing->existing (source: other voice | dest: voice_list)');
                 }
@@ -344,12 +344,12 @@ module.exports = async (
             const new_channel = args.newState.channel; // join channel
             const old_channel = args.oldState.channel; // left channel
 
-            fetch_guild(args.newState?.guild.id)
-                .then(guild_object => {
-                    if (guild_object) {
+            fetchGuild(args.newState?.guild.id)
+                .then(pGuild => {
+                    if (pGuild) {
                         if (new_channel) {
-                            for (let i = 0; i < guild_object.pChannels.length; i++) {
-                                const p = guild_object.pChannels[i];
+                            for (let i = 0; i < pGuild.pChannels.length; i++) {
+                                const p = pGuild.pChannels[i];
 
                                 if (p.id === new_channel.id) {
                                     if (p.noBots && args.newState.member?.user.bot) {
@@ -359,7 +359,7 @@ module.exports = async (
                                                 return reject(`failed to kick: ${e}`);
                                             });
 
-                                        channel_empty_check(new_channel as VoiceChannel, guild_object, args.client)
+                                        channel_empty_check(new_channel as VoiceChannel, pGuild, args.client)
                                             .catch(e => {
                                                 logger.error(new Error(`failed to check channel state: ${e}`));
                                             });
@@ -379,7 +379,7 @@ module.exports = async (
                                                     return reject(`failed to kick: ${e}`);
                                                 });
 
-                                            channel_empty_check(new_channel as VoiceChannel, guild_object, args.client)
+                                            channel_empty_check(new_channel as VoiceChannel, pGuild, args.client)
                                                 .catch(e => {
                                                     logger.error(new Error(`failed to check channel state: ${e}`));
                                                 });
@@ -397,7 +397,7 @@ module.exports = async (
                         //             !!new_channel && connection.channel.id === new_channel.id);
 
                         //     if (new_voice_connection && !args.newState.member.user.bot) {
-                        //         client_talk(args.client, guild_object, 'user_connected');
+                        //         client_talk(args.client, pGuild, 'user_connected');
                         //     }
 
                         //     const old_voice_connection = args.client.voice.connections
@@ -405,12 +405,12 @@ module.exports = async (
                         //             !!old_channel && connection.channel.id === old_channel.id);
 
                         //     if (old_voice_connection && !args.newState.member.user.bot) {
-                        //         client_talk(args.client, guild_object, 'user_disconnected');
+                        //         client_talk(args.client, pGuild, 'user_disconnected');
                         //     }
                         // }
 
                         if (!old_channel) {
-                            from_null(new_channel as VoiceChannel | null, guild_object, args.newState)
+                            from_null(new_channel as VoiceChannel | null, pGuild, args.newState)
                                 .then(r => {
                                     return resolve(r);
                                 })
@@ -418,7 +418,7 @@ module.exports = async (
                                     return reject(e);
                                 })
                         } else {
-                            from_existing(old_channel as VoiceChannel, new_channel as VoiceChannel | null, args.client, guild_object, args.newState)
+                            from_existing(old_channel as VoiceChannel, new_channel as VoiceChannel | null, args.client, pGuild, args.newState)
                                 .then(r => {
                                     return resolve(r);
                                 })

@@ -1,6 +1,6 @@
 import { GuildMember, TextChannel } from "discord.js";
 import { createEmbed } from "../libraries/help.library";
-import { fetch_guild_announcement, insertMember } from "../libraries/mongo.library";
+import { fetchGuildAnnouncement, insertMember } from "../libraries/mongo.library";
 
 module.exports = async (
     args: { member: GuildMember }
@@ -13,12 +13,12 @@ module.exports = async (
                         return reject(`failed to add member ${args.member.id} to ${args.member.guild.id}`);
                     }
 
-                    fetch_guild_announcement(args.member.guild.id)
-                        .then(guild_object => {
-                            if (guild_object) {
-                                if (guild_object.initialRole && guild_object.initialRole !== 'null') {
+                    fetchGuildAnnouncement(args.member.guild.id)
+                        .then(pGuild => {
+                            if (pGuild) {
+                                if (pGuild.initialRole && pGuild.initialRole !== 'null') {
                                     const initial_role = args.member.guild.roles.cache
-                                        .find(r => r.id === guild_object.initialRole);
+                                        .find(r => r.id === pGuild.initialRole);
 
                                     if (initial_role) {
                                         try {
@@ -39,7 +39,7 @@ module.exports = async (
                                     `\thas joined ${args.member.guild}`;
 
                                 const announcement_channel = <TextChannel>args.member.guild.channels.cache
-                                    .find(channel => channel.id === guild_object.announcement);
+                                    .find(channel => channel.id === pGuild.announcement);
 
                                 if (announcement_channel) {
                                     announcement_channel

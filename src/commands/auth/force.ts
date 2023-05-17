@@ -2,7 +2,7 @@ import { Message, VoiceChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
 import { delete_channel, includedInVoiceList, regex_interpreter } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
-import { update_voice } from "../../libraries/mongo.library";
+import { updateVoice } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -12,7 +12,7 @@ module.exports = {
         .setName('force')
         .setDescription('force updates channel you are in to force a rename'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.member) {
@@ -29,7 +29,7 @@ module.exports = {
                 });
             }
 
-            if (!includedInVoiceList(message.member.voice.channel.id, guild_object.pChannels)) {
+            if (!includedInVoiceList(message.member.voice.channel.id, pGuild.pChannels)) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'force', 'the channel you are in is not handled by Portal')
@@ -46,7 +46,7 @@ module.exports = {
             const current_member = message.member;
             const current_voice = message.member.voice.channel as VoiceChannel;
 
-            guild_object.pChannels.some(p => {
+            pGuild.pChannels.some(p => {
                 return p.voiceList.some(v => {
                     if (v.id === current_voice.id) {
                         if (v.creator_id === current_member.id) {
@@ -55,8 +55,8 @@ module.exports = {
                                     v.regex,
                                     current_voice,
                                     v,
-                                    guild_object.pChannels,
-                                    guild_object,
+                                    pGuild.pChannels,
+                                    pGuild,
                                     message.guild,
                                     message.author.id
                                 );
@@ -76,7 +76,7 @@ module.exports = {
                                                 }
                                             });
 
-                                            update_voice(guild_object.id, p.id, current_voice.id, 'id', clone.id)
+                                            updateVoice(pGuild.id, p.id, current_voice.id, 'id', clone.id)
                                                 .then(r => {
                                                     delete_channel(PortalChannelTypes.voice, current_voice, message, true)
                                                         .catch((e: any) => {

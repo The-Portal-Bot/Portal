@@ -1,6 +1,6 @@
 import { Channel, ChannelType, PartialDMChannel, TextChannel, VoiceChannel } from "discord.js";
 import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
-import { deleted_channel_sync } from "../libraries/mongo.library";
+import { deletedChannelSync } from "../libraries/mongo.library";
 
 module.exports = async (
 	args: { channel: Channel | PartialDMChannel }
@@ -15,7 +15,7 @@ module.exports = async (
 			? <VoiceChannel>args.channel
 			: <TextChannel>args.channel;
 
-		deleted_channel_sync(current_channel)
+		deletedChannelSync(current_channel)
 			.then(r => {
 				if (r > 0) {
 					return resolve(`${PortalChannelTypes[r].toString()} channel removed from ` +

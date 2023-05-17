@@ -10,7 +10,7 @@ module.exports = {
 		.setName('focus')
 		.setDescription('creates a dedicated channel for two users to privately talk in'),
 	async execute(
-		message: Message, args: string[], guild_object: PGuild
+		message: Message, args: string[], pGuild: PGuild
 	): Promise<ReturnPromise> {
 		if (!message.member) {
 			return Promise.reject('message author could not be fetched');
@@ -20,7 +20,7 @@ module.exports = {
 			return Promise.reject(messageHelp('commands', 'focus', 'you must be in a channel handled by Portal'));
 		}
 
-		if (!includedInVoiceList(message.member.voice.channel.id, guild_object.pChannels)) {
+		if (!includedInVoiceList(message.member.voice.channel.id, pGuild.pChannels)) {
 			return Promise.reject(messageHelp('commands', 'focus', 'the channel you are in is not handled by Portal'));
 		}
 
@@ -88,7 +88,7 @@ module.exports = {
 			return Promise.reject('could not fetch message\'s member');
 		}
 
-		const portal_object = guild_object.pChannels.find(p =>
+		const portal_object = pGuild.pChannels.find(p =>
 			p.voiceList.some(v => v.id === message.member?.voice.channel?.id)
 		);
 

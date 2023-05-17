@@ -9,10 +9,10 @@ module.exports = {
         .setName('level')
         .setDescription('returns your level'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
-            const member_object = guild_object.pMembers.find(m => m.id === message.member?.id);
+            const member_object = pGuild.pMembers.find(m => m.id === message.member?.id);
             if (!member_object) {
                 return resolve({
                     result: true,

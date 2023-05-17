@@ -18,23 +18,23 @@ module.exports = {
                 });
             }
 
-            const bulk_delete_length = +args[0];
+            const bulkDeleteLength = +args[0];
 
-            if (typeof bulk_delete_length !== "number") { // isNaN ?
+            if (typeof bulkDeleteLength !== "number") { // isNaN ?
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'delete', 'argument must always be number')
                 });
             }
 
-            if (bulk_delete_length <= 0) {
+            if (bulkDeleteLength <= 0) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'delete', 'you can delete one or more messages')
                 });
             }
 
-            if (bulk_delete_length > 97) {
+            if (bulkDeleteLength > 97) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'delete', 'you can delete up-to 97 messages')
@@ -52,12 +52,12 @@ module.exports = {
                 message,
                 message.member,
                 `*${message.author}, are you sure you want to delete ` +
-                `**${bulk_delete_length}** messages*, do you **(yes / no)** ?`
+                `**${bulkDeleteLength}** messages*, do you **(yes / no)** ?`
             )
                 .then(result => {
                     if (result) {
                         (<TextChannel>message.channel)
-                            .bulkDelete(bulk_delete_length + 3)
+                            .bulkDelete(bulkDeleteLength + 3)
                             .then(messages => {
                                 return resolve({
                                     result: true,

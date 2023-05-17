@@ -149,14 +149,14 @@ export const console_text: LocalisationOption[] = [
 ]
 
 // export function client_talk(
-// 	client: Client, guild_object: GuildPrtl, context: string
+// 	client: Client, pGuild: GuildPrtl, context: string
 // ): boolean {
 // 	const voice_connection = client?.voice?.connections
-// 		.find(connection => connection.channel.guild.id === guild_object.id);
+// 		.find(connection => connection.channel.guild.id === pGuild.id);
 
 // 	if (voice_connection) {
 // 		if (!voice_connection.dispatcher) {
-// 			return guild_object.portal_list.some(p =>
+// 			return pGuild.portal_list.some(p =>
 // 				p.voice_list.some(v => {
 
 // 					if (type_of_announcement.includes(context) && v.ann_announce) {
@@ -225,7 +225,7 @@ export function get_function(
 }
 
 export function client_write(
-	message: Message, guild_object: PGuild, context: string
+	message: Message, pGuild: PGuild, context: string
 ): string {
 	if (!message) return 'could not fetch message';
 	if (!message.member) return 'could not fetch member';
@@ -234,7 +234,7 @@ export function client_write(
 
 	let return_value = 'could not find data';
 
-	const found = guild_object.pChannels.some(p =>
+	const found = pGuild.pChannels.some(p =>
 		p.voiceList.some(v => {
 			if (message.member && message.member.voice.channel) {
 				if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {

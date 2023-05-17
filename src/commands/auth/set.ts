@@ -10,7 +10,7 @@ module.exports = {
         .setName('set')
         .setDescription('set the value of an attribute'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
@@ -35,7 +35,7 @@ module.exports = {
                     .filter(val => val !== '\n')
                     .join(' ');
 
-                setAttribute(message.member.voice.channel as VoiceChannel, guild_object, args[0], value, message.member, message)
+                setAttribute(message.member.voice.channel as VoiceChannel, pGuild, args[0], value, message.member, message)
                     .then(r => {
                         return resolve(r);
                     })

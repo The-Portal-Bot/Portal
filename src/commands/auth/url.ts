@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { createChannel, getOptions, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
-import { insert_url, remove_url } from "../../libraries/mongo.library";
+import { insertURL, removeURL } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -11,7 +11,7 @@ module.exports = {
         .setName('url')
         .setDescription('create URL only channel'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild)
@@ -21,8 +21,8 @@ module.exports = {
                 });
 
             if (args.length === 0) {
-                if (isUrlOnlyChannel(message.channel.id, guild_object)) {
-                    remove_url(guild_object.id, message.channel.id)
+                if (isUrlOnlyChannel(message.channel.id, pGuild)) {
+                    removeURL(pGuild.id, message.channel.id)
                         .then((r: boolean) => {
                             return resolve({
                                 result: r,
@@ -38,20 +38,20 @@ module.exports = {
                             });
                         });
                 }
-                else if (isAnnouncementChannel(message.channel.id, guild_object)) {
+                else if (isAnnouncementChannel(message.channel.id, pGuild)) {
                     return resolve({
                         result: false,
                         value: 'this can\'t be set as a URL channel for it is the Announcement channel'
                     });
                 }
-                else if (isMusicChannel(message.channel.id, guild_object)) {
+                else if (isMusicChannel(message.channel.id, pGuild)) {
                     return resolve({
                         result: true,
                         value: 'this can\'t be set as a URL channel for it is the Music channel'
                     });
                 }
                 else {
-                    insert_url(guild_object.id, message.channel.id)
+                    insertURL(pGuild.id, message.channel.id)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -82,7 +82,7 @@ module.exports = {
                     message.guild, url_channel, url_options, url_category
                 )
                     .then(r_create => {
-                        insert_url(guild_object.id, r_create)
+                        insertURL(pGuild.id, r_create)
                             .then(r_url => {
                                 return resolve({
                                     result: r_url,

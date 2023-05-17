@@ -4,7 +4,7 @@ import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
 import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
 import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
 import { createEmbed, getKeyFromEnum, isUserAuthorised, isMod } from '../../libraries/help.library';
-import { updateGuild, updateMember, update_portal, update_voice } from '../../libraries/mongo.library';
+import { updateGuild, updateMember, updatePortal, updateVoice } from '../../libraries/mongo.library';
 import { PGuild } from '../classes/PGuild.class';
 import { PMember } from '../classes/PMember.class';
 import { PChannel } from '../classes/PPortalChannel.class';
@@ -52,7 +52,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_portal(guildObject.id, portal_object.id, attribute, true)
+                    updatePortal(guildObject.id, portal_object.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -69,7 +69,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_portal(guildObject.id, portal_object.id, attribute, false)
+                    updatePortal(guildObject.id, portal_object.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -116,7 +116,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -133,7 +133,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -193,7 +193,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_portal(guildObject.id, portal_object.id, attribute, true)
+                    updatePortal(guildObject.id, portal_object.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -210,7 +210,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_portal(guildObject.id, portal_object.id, attribute, false)
+                    updatePortal(guildObject.id, portal_object.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -257,7 +257,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -274,7 +274,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -488,7 +488,7 @@ const attributes: InterfaceBlueprint[] = [
                         : message.mentions.roles.map(r => r.id);
 
                     if (allowed_roles) {
-                        update_portal(guildObject.id, portal_object.id, attribute, allowed_roles)
+                        updatePortal(guildObject.id, portal_object.id, attribute, allowed_roles)
                             .then(r => {
                                 const roles = message.mentions.everyone
                                     ? '@everyone'
@@ -665,7 +665,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_portal(guildObject.id, portal_object.id, attribute, true)
+                    updatePortal(guildObject.id, portal_object.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -682,7 +682,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_portal(guildObject.id, portal_object.id, attribute, false)
+                    updatePortal(guildObject.id, portal_object.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -729,7 +729,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -746,7 +746,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -806,7 +806,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_portal(guildObject.id, portal_object.id, attribute, true)
+                    updatePortal(guildObject.id, portal_object.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -823,7 +823,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_portal(guildObject.id, portal_object.id, attribute, false)
+                    updatePortal(guildObject.id, portal_object.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -870,7 +870,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -887,7 +887,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -1431,7 +1431,7 @@ const attributes: InterfaceBlueprint[] = [
                 const locale = getKeyFromEnum(value, LocaleEnum);
 
                 if (locale !== undefined) {
-                    update_portal(guildObject.id, portal_object.id, attribute, locale)
+                    updatePortal(guildObject.id, portal_object.id, attribute, locale)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -1481,7 +1481,7 @@ const attributes: InterfaceBlueprint[] = [
                 const locale = getKeyFromEnum(value, LocaleEnum);
 
                 if (locale !== undefined) {
-                    update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, locale)
+                    updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, locale)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -1591,7 +1591,7 @@ const attributes: InterfaceBlueprint[] = [
 
             return new Promise((resolve) => {
                 if (value === 'true') {
-                    update_portal(guildObject.id, portal_object.id, attribute, true)
+                    updatePortal(guildObject.id, portal_object.id, attribute, true)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -1608,7 +1608,7 @@ const attributes: InterfaceBlueprint[] = [
                         });
                 }
                 else if (value === 'false') {
-                    update_portal(guildObject.id, portal_object.id, attribute, false)
+                    updatePortal(guildObject.id, portal_object.id, attribute, false)
                         .then(r => {
                             return resolve({
                                 result: r,
@@ -1667,7 +1667,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'regex_portal';
 
             return new Promise((resolve) => {
-                update_portal(guildObject.id, portal_object.id, attribute, value)
+                updatePortal(guildObject.id, portal_object.id, attribute, value)
                     .then(r => {
                         return resolve({
                             result: r,
@@ -1720,7 +1720,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'regex_voice';
 
             return new Promise((resolve) => {
-                update_portal(guildObject.id, portal_object.id, attribute, value)
+                updatePortal(guildObject.id, portal_object.id, attribute, value)
                     .then(r => {
                         return resolve({
                             result: r,
@@ -1760,7 +1760,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'regex';
 
             return new Promise((resolve) => {
-                update_voice(guildObject.id, portal_object.id, voiceObject.id, attribute, value)
+                updateVoice(guildObject.id, portal_object.id, voiceObject.id, attribute, value)
                     .then(r => {
                         return resolve({
                             result: r,
@@ -1869,7 +1869,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
 
                 if (value >= 0) {
-                    update_portal(guildObject.id, portal_object.id, 'user_limit_portal', new_user_limit)
+                    updatePortal(guildObject.id, portal_object.id, 'user_limit_portal', new_user_limit)
                         .then(r => {
                             return resolve({
                                 result: r,

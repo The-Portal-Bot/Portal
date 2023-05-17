@@ -9,7 +9,7 @@ module.exports = {
         .setName('football')
         .setDescription('returns football data'),
     async execute(
-        // message: Message, args: string[], guild_object: GuildPrtl
+        // message: Message, args: string[], pGuild: GuildPrtl
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             // if (args.length < 3) {

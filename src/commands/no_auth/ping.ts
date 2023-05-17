@@ -9,7 +9,7 @@ module.exports = {
 		.setName('ping')
 		.setDescription('returns time to reply with \'pong\''),
 	async execute(
-		message: Message, args: string[], guild_object: PGuild, client: Client
+		message: Message, args: string[], pGuild: PGuild, client: Client
 	): Promise<ReturnPromise> {
 		return new Promise((resolve) => {
 			message.channel

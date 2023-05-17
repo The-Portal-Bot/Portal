@@ -1,7 +1,7 @@
 import { ChannelType, GuildChannelCreateOptions, Message } from "discord.js";
 import { createChannel } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
-import { insert_portal } from "../../libraries/mongo.library";
+import { insertPortal } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { IPChannel, PChannel } from "../../types/classes/PPortalChannel.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
@@ -12,7 +12,7 @@ module.exports = {
         .setName('portal')
         .setDescription('create portal channel'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length === 0) {
@@ -55,7 +55,7 @@ module.exports = {
                 userLimit: 1
             };
 
-            const voice_regex = guild_object.premium
+            const voice_regex = pGuild.premium
                 // ? 'G$#-P$member_count | $status_list'
                 ? `$#:$member_count {{
                 "if": "$status_count", "is": "===", "with": "1",
@@ -66,9 +66,9 @@ module.exports = {
             createChannel(current_guild, portal_channel, portal_options, portal_category)
                 .then(r_channel => {
                     const new_portal = new PChannel(r_channel, current_member.id,
-                        true, portal_channel, voice_regex, [], false, null, guild_object.locale, true, true, 0, false);
+                        true, portal_channel, voice_regex, [], false, null, pGuild.locale, true, true, 0, false);
 
-                    insert_portal(guild_object.id, new_portal as IPChannel)
+                    insertPortal(pGuild.id, new_portal as IPChannel)
                         .then(r_portal => {
                             if (r_portal) {
                                 return resolve({

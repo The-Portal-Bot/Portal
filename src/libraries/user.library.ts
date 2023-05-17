@@ -77,11 +77,11 @@ export function add_points_time(
 }
 
 export function update_timestamp(
-    voiceState: VoiceState, guild_object: PGuild
+    voiceState: VoiceState, pGuild: PGuild
 ): Promise<number | boolean> {
     return new Promise((resolve, reject) => {
         if (voiceState.member && !voiceState.member.user.bot) {
-            const pMember = guild_object.pMembers
+            const pMember = pGuild.pMembers
                 .find(m =>
                     voiceState && voiceState.member && m.id === voiceState.member.id
                 );
@@ -90,9 +90,9 @@ export function update_timestamp(
                 return resolve(false);
             }
 
-            const ranks = guild_object.ranks;
+            const ranks = pGuild.ranks;
             const member = voiceState.member;
-            const speed = guild_object.rankSpeed;
+            const speed = pGuild.rankSpeed;
             const cached_level = pMember.level;
 
             if (!pMember.timestamp) {

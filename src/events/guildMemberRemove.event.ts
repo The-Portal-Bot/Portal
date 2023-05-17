@@ -1,28 +1,28 @@
 import { GuildMember, TextChannel } from "discord.js";
 import { createEmbed } from "../libraries/help.library";
-import { fetch_guild_announcement, remove_member } from "../libraries/mongo.library";
+import { fetchGuildAnnouncement, removeMember } from "../libraries/mongo.library";
 
 module.exports = async (
 	args: { member: GuildMember }
 ): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		if (!args.member.user.bot) {
-			remove_member(args.member.id, args.member.guild.id)
+			removeMember(args.member.id, args.member.guild.id)
 				.then(r => {
 					if (!r) {
 						return reject(`failed to remove member ${args.member.id} to ${args.member.guild.id}`);
 					}
 
-					fetch_guild_announcement(args.member.guild.id)
-						.then(guild_object => {
-							if (guild_object) {
+					fetchGuildAnnouncement(args.member.guild.id)
+						.then(pGuild => {
+							if (pGuild) {
 								const leave_message = `member: ${args.member.presence?.user}\n` +
 									`id: ${args.member.guild.id}\n` +
 									`\thas left ${args.member.guild}`;
 
-								if (guild_object) {
+								if (pGuild) {
 									const announcement_channel = <TextChannel>args.member.guild.channels.cache
-										.find(channel => channel.id === guild_object.announcement)
+										.find(channel => channel.id === pGuild.announcement)
 
 									if (announcement_channel) {
 										announcement_channel

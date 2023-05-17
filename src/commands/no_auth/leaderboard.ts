@@ -20,10 +20,10 @@ module.exports = {
         .setName('leaderboard')
         .setDescription('returns server\'s leaderboard'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
-            const member_list = guild_object.pMembers;
+            const member_list = pGuild.pMembers;
 
             if (!member_list) {
                 return resolve({
@@ -61,7 +61,7 @@ module.exports = {
                 });
             }
 
-            if (guild_object.pMembers) {
+            if (pGuild.pMembers) {
                 const member_levels: Field[] = [];
                 member_list
                     .sort(compare)

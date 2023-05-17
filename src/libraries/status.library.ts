@@ -4,10 +4,10 @@ import { ProgramNames } from "../data/lists/program_names.static";
 import { PVoiceChannel } from "../types/classes/PVoiceChannel.class";
 import { LocaleEnum } from "../data/enums/Locales.enum";
 
-function status_aliases(
+function statusAliases(
 	activities: Activity[], locale: number
 ): string[] {
-	const new_status: string[] = [];
+	const newStatus: string[] = [];
 
 	activities.forEach(activity => {
 		let found = false;
@@ -17,16 +17,16 @@ function status_aliases(
 		}
 
 		if (!found) {
-			for (let l = 0; l < GameNames.game_attributes.length; l++) {
-				if (activity.name.trim() == GameNames.game_attributes[l].status) {
+			for (let l = 0; l < GameNames.gameAttributes.length; l++) {
+				if (activity.name.trim() == GameNames.gameAttributes[l].status) {
 					if (locale === LocaleEnum.gr) {
-						new_status.push(GameNames.game_attributes[l].locale.gr);
+						newStatus.push(GameNames.gameAttributes[l].locale.gr);
 					}
 					else if (locale === LocaleEnum.de) {
-						new_status.push(GameNames.game_attributes[l].locale.de);
+						newStatus.push(GameNames.gameAttributes[l].locale.de);
 					}
 					else {
-						new_status.push(GameNames.game_attributes[l].locale.en);
+						newStatus.push(GameNames.gameAttributes[l].locale.en);
 					}
 
 					found = true;
@@ -35,16 +35,16 @@ function status_aliases(
 		}
 
 		if (!found) {
-			for (let l = 0; l < ProgramNames.program_attributes.length; l++) {
-				if (activity.name.trim() == ProgramNames.program_attributes[l].status) {
+			for (let l = 0; l < ProgramNames.programAttributes.length; l++) {
+				if (activity.name.trim() == ProgramNames.programAttributes[l].status) {
 					if (locale === LocaleEnum.gr) {
-						new_status.push(ProgramNames.program_attributes[l].locale.gr);
+						newStatus.push(ProgramNames.programAttributes[l].locale.gr);
 					}
 					else if (locale === LocaleEnum.de) {
-						new_status.push(ProgramNames.program_attributes[l].locale.de);
+						newStatus.push(ProgramNames.programAttributes[l].locale.de);
 					}
 					else {
-						new_status.push(ProgramNames.program_attributes[l].locale.en);
+						newStatus.push(ProgramNames.programAttributes[l].locale.en);
 					}
 
 					found = true;
@@ -53,27 +53,27 @@ function status_aliases(
 		}
 
 		if (!found) {
-			new_status.push(activity.name);
+			newStatus.push(activity.name);
 		}
 	});
 
-	return new_status;
+	return newStatus;
 }
 
-export function get_status_list(
+export function getStatusList(
 	voice_channel: VoiceChannel, voice_object: PVoiceChannel
 ): string[] {
-	const array_of_statuses: string[] = [];
+	const arrayOfStatuses: string[] = [];
 
 	voice_channel.members.forEach((member: GuildMember) => {
 		if (member.presence) {
 			if (!member.user.bot) {
 				if (member.presence.activities !== undefined) {
 					if (member.presence.activities.length > 0) {
-						status_aliases(member.presence.activities, voice_object.locale)
+						statusAliases(member.presence.activities, voice_object.locale)
 							.forEach(stat => {
-								if (!array_of_statuses.includes(stat)) {
-									array_of_statuses.push(stat);
+								if (!arrayOfStatuses.includes(stat)) {
+									arrayOfStatuses.push(stat);
 								}
 							});
 					}
@@ -82,17 +82,17 @@ export function get_status_list(
 		}
 	});
 
-	if (array_of_statuses.length === 0) {
+	if (arrayOfStatuses.length === 0) {
 		if (voice_object.locale === LocaleEnum.gr) {
-			array_of_statuses.push('Άραγμα');
+			arrayOfStatuses.push('Άραγμα');
 		}
 		else if (voice_object.locale === LocaleEnum.de) {
-			array_of_statuses.push('Chillen');
+			arrayOfStatuses.push('Chillen');
 		}
 		else {
-			array_of_statuses.push('Chilling');
+			arrayOfStatuses.push('Chilling');
 		}
 	}
 
-	return array_of_statuses;
+	return arrayOfStatuses;
 }

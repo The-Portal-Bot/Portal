@@ -2,7 +2,7 @@ import { Channel, ChannelType, Client, Guild, GuildMember, Message, MessageReact
 import event_config_json from '../config.event.json';
 import { isMessageDeleted, isUserAuthorised, logger, markMessageAsDeleted, messageReply } from "../libraries/help.library";
 import { messageSpamCheck } from "../libraries/mod.library";
-import { fetchGuildPredata, fetchGuildRest, insertMember } from "../libraries/mongo.library";
+import { fetchGuildPreData, fetchGuildRest, insertMember } from "../libraries/mongo.library";
 import { portalPreprocessor, commandDecypher } from "../libraries/preprocessor.library";
 import { ActiveCooldowns, ReturnPromise, SpamCache } from "../types/classes/PTypes.interface";
 import { commandLoader } from "./command.handler";
@@ -116,14 +116,14 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
     if (!message || !message.member || !message.guild) return;
     if (message.channel.type === ChannelType.DM || message.author.bot) return;
 
-    fetchGuildPredata(message.guild.id, message.author.id)
-        .then(async guild_object => {
-            if (!guild_object) {
+    fetchGuildPreData(message.guild.id, message.author.id)
+        .then(async pGuild => {
+            if (!pGuild) {
                 logger.error(new Error(`guild does not exist in Portal`));
                 return false;
             }
 
-            if (guild_object.pMembers.length === 0 && message.guild) {
+            if (pGuild.pMembers.length === 0 && message.guild) {
                 insertMember(message.guild.id, message.author.id)
                     .then(() => {
                         if (message.guild) {
@@ -137,18 +137,18 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                 return true;
             }
 
-            if (await portalPreprocessor(message, guild_object)) {
+            if (await portalPreprocessor(message, pGuild)) {
                 // preprocessor has handled the message
-                messageSpamCheck(message, guild_object, spam_cache);
+                messageSpamCheck(message, pGuild, spam_cache);
 
                 return true;
             } else {
-                messageSpamCheck(message, guild_object, spam_cache);
+                messageSpamCheck(message, pGuild, spam_cache);
 
                 // Ignore any message that does not start with prefix
-                if (message.content.indexOf(guild_object.prefix) !== 0) {
+                if (message.content.indexOf(pGuild.prefix) !== 0) {
                     if (message.content === 'prefix') {
-                        messageReply(true, message, `portal's prefix is \`${guild_object.prefix}\``)
+                        messageReply(true, message, `portal's prefix is \`${pGuild.prefix}\``)
                             .catch((e: any) => {
                                 logger.error(new Error(`failed to send message: ${e}`));
                             });
@@ -169,7 +169,7 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                     return false;
                 }
 
-                const command = commandDecypher(message, guild_object);
+                const command = commandDecypher(message, pGuild);
 
                 if (!command.command_options) {
                     return false;
@@ -205,14 +205,14 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                             return false;
                         }
 
-                        guild_object.pMembers = guild_object_rest.pMembers;
-                        guild_object.pollList = guild_object_rest.pollList;
-                        guild_object.ranks = guild_object_rest.ranks;
-                        guild_object.musicQueue = guild_object_rest.musicQueue;
-                        guild_object.announcement = guild_object_rest.announcement;
-                        guild_object.locale = guild_object_rest.locale;
-                        guild_object.announce = guild_object_rest.announce;
-                        guild_object.premium = guild_object_rest.premium;
+                        pGuild.pMembers = guild_object_rest.pMembers;
+                        pGuild.pollList = guild_object_rest.pollList;
+                        pGuild.ranks = guild_object_rest.ranks;
+                        pGuild.musicQueue = guild_object_rest.musicQueue;
+                        pGuild.announcement = guild_object_rest.announcement;
+                        pGuild.locale = guild_object_rest.locale;
+                        pGuild.announce = guild_object_rest.announce;
+                        pGuild.premium = guild_object_rest.premium;
 
                         if (!command.command_options) {
                             return false;
@@ -226,7 +226,7 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                             command.type,
                             command.command_options,
                             command.path_to_command,
-                            guild_object,
+                            pGuild,
                             active_cooldowns
                         ).catch();
                     })

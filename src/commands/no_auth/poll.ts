@@ -1,6 +1,6 @@
 import { ColorResolvable, Message, TextChannel } from "discord.js";
 import { createEmbed, getJsonFromString, messageHelp } from "../../libraries/help.library";
-import { insert_poll } from "../../libraries/mongo.library";
+import { insertPoll } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { PPoll } from "../../types/classes/PPoll.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
@@ -9,7 +9,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
 function create_role_message(
-    channel: TextChannel, guild_object: PGuild, title: string, desc: string,
+    channel: TextChannel, pGuild: PGuild, title: string, desc: string,
     colour: ColorResolvable, poll_map: Field[], memberId: string
 ): Promise<ReturnPromise> {
     return new Promise((resolve) => {
@@ -50,7 +50,7 @@ function create_role_message(
                 }
 
                 const poll: PPoll = { messageId: sent_message.id, memberId: memberId }
-                insert_poll(guild_object.id, poll)
+                insertPoll(pGuild.id, poll)
                     .then(r => {
                         return resolve({
                             result: r,
@@ -80,7 +80,7 @@ module.exports = {
         .setName('poll')
         .setDescription('create a poll'),
     async execute(
-        message: Message, args: string[], guild_object: PGuild
+        message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (!message.guild) {
@@ -148,7 +148,7 @@ module.exports = {
 
             create_role_message(
                 <TextChannel>message.channel,
-                guild_object,
+                pGuild,
                 title,
                 '',
                 '#9900ff',

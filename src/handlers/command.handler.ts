@@ -6,14 +6,14 @@ import { ActiveCooldowns, CommandOptions, ReturnPromise } from "../types/classes
 
 export async function commandLoader(
     client: Client, message: Message, command: string, args: string[], type: string, command_options: CommandOptions,
-    path_to_command: string, guild_object: PGuild, active_cooldowns: ActiveCooldowns
+    path_to_command: string, pGuild: PGuild, active_cooldowns: ActiveCooldowns
 ): Promise<void> {
     if (process.env.DEBUG!) {
         logger.info(`[command-debug] ${command}`);
     }
 
     if (type === 'none' && command_options.time === 0) {
-        const commandReturn: ReturnPromise = await require(`../commands/${path_to_command}/${command}.js`).execute(message, args, guild_object, client)
+        const commandReturn: ReturnPromise = await require(`../commands/${path_to_command}/${command}.js`).execute(message, args, pGuild, client)
             .catch((e: string) => {
                 messageReply(false, message, e, command_options.delete.source, command_options.delete.reply)
                     .catch((e: any) => logger.error(new Error('failed to send message')));
@@ -65,7 +65,7 @@ export async function commandLoader(
         return;
     }
 
-    const commandReturn: ReturnPromise = await require(`../commands/${path_to_command}/${command}.js`).execute(message, args, guild_object, client)
+    const commandReturn: ReturnPromise = await require(`../commands/${path_to_command}/${command}.js`).execute(message, args, pGuild, client)
         .catch((e: any) => logger.error(new Error(`in ${command} got error ${e}`)));
 
     if (commandReturn) {
