@@ -146,8 +146,8 @@ export async function fetchGuildReactionData(
                     return resolve(<PGuild>{
                         id: r.id,
                         pMembers: r.member_list,
-                        roleList: r.role_list,
-                        pollList: r.poll_list,
+                        pRoles: r.role_list,
+                        pPolls: r.poll_list,
                         musicData: r.musicData,
                         musicQueue: r.music_queue
                     });
@@ -296,7 +296,7 @@ export async function fetchGuildRest(
                     return resolve(<PGuild>{
                         id: r.id,
                         pMembers: r.member_list,
-                        pollList: r.poll_list,
+                        pPolls: r.poll_list,
                         ranks: r.ranks,
                         musicQueue: r.music_queue,
                         announcement: r.announcement,

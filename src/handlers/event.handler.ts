@@ -206,7 +206,7 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                         }
 
                         pGuild.pMembers = guild_object_rest.pMembers;
-                        pGuild.pollList = guild_object_rest.pollList;
+                        pGuild.pPolls = guild_object_rest.pPolls;
                         pGuild.ranks = guild_object_rest.ranks;
                         pGuild.musicQueue = guild_object_rest.musicQueue;
                         pGuild.announcement = guild_object_rest.announcement;

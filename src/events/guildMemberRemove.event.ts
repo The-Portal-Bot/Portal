@@ -16,21 +16,21 @@ module.exports = async (
 					fetchGuildAnnouncement(args.member.guild.id)
 						.then(pGuild => {
 							if (pGuild) {
-								const leave_message = `member: ${args.member.presence?.user}\n` +
+								const leaveMessage = `member: ${args.member.presence?.user}\n` +
 									`id: ${args.member.guild.id}\n` +
 									`\thas left ${args.member.guild}`;
 
 								if (pGuild) {
-									const announcement_channel = <TextChannel>args.member.guild.channels.cache
+									const announcementChannel = <TextChannel>args.member.guild.channels.cache
 										.find(channel => channel.id === pGuild.announcement)
 
-									if (announcement_channel) {
-										announcement_channel
+									if (announcementChannel) {
+										announcementChannel
 											.send({
 												embeds: [
 													createEmbed(
 														'member left',
-														leave_message,
+														leaveMessage,
 														'#FC0303',
 														[],
 														args.member.user.avatarURL(),

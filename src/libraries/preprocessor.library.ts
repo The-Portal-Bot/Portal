@@ -4,7 +4,7 @@ import { CommandOptions } from "../types/classes/PTypes.interface";
 import { isUrlOnlyChannel, includedInIgnoreList } from "./guild.library";
 import { logger, isUserIgnored, isMessageDeleted, markMessageAsDeleted, messageReply } from "./help.library";
 import { removeURL, removeIgnore, setMusicData } from "./mongo.library";
-import { add_points_message } from "./user.library";
+import { addPointsMessage } from "./user.library";
 import command_config_json from '../config.command.json';
 
 /*
@@ -133,7 +133,7 @@ export function commandDecypher(
 export function handleRankingSystem(
     message: Message, pGuild: PGuild
 ): void {
-    add_points_message(message, pGuild.pMembers[0], pGuild.rankSpeed)
+    addPointsMessage(message, pGuild.pMembers[0], pGuild.rankSpeed)
         .then(level => {
             if (level) {
                 messageReply(true, message, `you reached level ${level}!`)

@@ -11,22 +11,22 @@ module.exports = async (
 			return reject(`only voice and text channels are handled`);
 		}
 
-		const current_channel = (typeof args.channel === typeof VoiceChannel)
+		const currentChannel = (typeof args.channel === typeof VoiceChannel)
 			? <VoiceChannel>args.channel
 			: <TextChannel>args.channel;
 
-		deletedChannelSync(current_channel)
+		deletedChannelSync(currentChannel)
 			.then(r => {
 				if (r > 0) {
 					return resolve(`${PortalChannelTypes[r].toString()} channel removed from ` +
-						`${current_channel.guild.name}|${current_channel.guild.id}`);
+						`${currentChannel.guild.name}|${currentChannel.guild.id}`);
 				} else {
-					return resolve(`${current_channel.name} channel is not controlled by Portal`);
+					return resolve(`${currentChannel.name} channel is not controlled by Portal`);
 				}
 			})
 			.catch(e => {
 				return reject(`error syncing deleted channel from ` +
-					`${current_channel.guild.name}|${current_channel.guild.id}: ${e}`);
+					`${currentChannel.guild.name}|${currentChannel.guild.id}: ${e}`);
 			});
 	});
 };

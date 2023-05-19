@@ -62,10 +62,10 @@ export function messageSpamCheck(
         spamCache
             .push({
                 memberId: message.author.id,
-                last_message: message.content,
+                lastMessage: message.content,
                 timestamp: new Date(),
-                spam_fouls: 1,
-                duplicate_fouls: 1
+                spamFouls: 1,
+                duplicateFouls: 1
             });
 
         return;
@@ -73,10 +73,10 @@ export function messageSpamCheck(
 
     if (!memberSpamCache.timestamp) {
         memberSpamCache.memberId = message.author.id;
-        memberSpamCache.last_message = message.content;
+        memberSpamCache.lastMessage = message.content;
         memberSpamCache.timestamp = new Date();
-        memberSpamCache.spam_fouls = 0;
-        memberSpamCache.duplicate_fouls = 0;
+        memberSpamCache.spamFouls = 0;
+        memberSpamCache.duplicateFouls = 0;
 
         return;
     }
@@ -85,28 +85,28 @@ export function messageSpamCheck(
 
     if (elapsed_time.asSeconds() > config_spam.MESSAGE_INTERVAL / 1000) {
         memberSpamCache.timestamp = null;
-        memberSpamCache.spam_fouls = 0;
-        memberSpamCache.duplicate_fouls = 0;
+        memberSpamCache.spamFouls = 0;
+        memberSpamCache.duplicateFouls = 0;
 
         return;
     }
 
-    if (memberSpamCache.last_message === message.content) {
-        memberSpamCache.spam_fouls++;
-        memberSpamCache.duplicate_fouls++;
+    if (memberSpamCache.lastMessage === message.content) {
+        memberSpamCache.spamFouls++;
+        memberSpamCache.duplicateFouls++;
     } else {
-        memberSpamCache.spam_fouls++;
-        memberSpamCache.duplicate_fouls = 0;
+        memberSpamCache.spamFouls++;
+        memberSpamCache.duplicateFouls = 0;
     }
 
-    if (config_spam.DUPLICATE_AFTER !== 0 && memberSpamCache.duplicate_fouls === config_spam.DUPLICATE_AFTER) {
+    if (config_spam.DUPLICATE_AFTER !== 0 && memberSpamCache.duplicateFouls === config_spam.DUPLICATE_AFTER) {
         messageReply(false, message, `warning: please stop spamming the same message`, false, true)
             .catch((e: any) => {
                 logger.error(new Error(`failed to reply to message: ${e}`));
             });
 
         memberSpamCache.timestamp = new Date();
-    } else if (config_spam.WARN_AFTER !== 0 && memberSpamCache.spam_fouls === config_spam.WARN_AFTER) {
+    } else if (config_spam.WARN_AFTER !== 0 && memberSpamCache.spamFouls === config_spam.WARN_AFTER) {
         messageReply(false, message, `warning: please stop spamming messages`, false, true)
             .catch((e: any) => {
                 logger.error(new Error(`failed to reply to message: ${e}`));
@@ -115,9 +115,9 @@ export function messageSpamCheck(
         memberSpamCache.timestamp = new Date();
     }
 
-    if (config_spam.MUTE_AFTER !== 0 && memberSpamCache.spam_fouls === config_spam.MUTE_AFTER) {
+    if (config_spam.MUTE_AFTER !== 0 && memberSpamCache.spamFouls === config_spam.MUTE_AFTER) {
         memberSpamCache.timestamp = null;
-        memberSpamCache.spam_fouls = 0;
+        memberSpamCache.spamFouls = 0;
 
         if (pGuild.pMembers[0].penalties) {
             pGuild.pMembers[0].penalties++;

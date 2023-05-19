@@ -13,23 +13,23 @@ module.exports = async (
 						return reject('could not find guild');
 					}
 
-					const role_list = pGuild.roleList;
-					const music_data = pGuild.musicData;
+					const pRoles = pGuild.pRoles;
+					const pMusicData = pGuild.musicData;
 
-					if (music_data.messageId === args.message.id) {
-						const music_channel = <TextChannel>args.message.guild?.channels.cache
+					if (pMusicData.messageId === args.message.id) {
+						const musicChannel = <TextChannel>args.message.guild?.channels.cache
 							.find(channel => channel.id === pGuild.musicData.channelId);
 
-						if (music_channel) {
-							createMusicMessage(music_channel, pGuild)
+						if (musicChannel) {
+							createMusicMessage(musicChannel, pGuild)
 								.then(() => {
 									if (pGuild.musicData.messageLyricsId) {
-										if (music_channel) {
-											music_channel.messages
+										if (musicChannel) {
+											musicChannel.messages
 												.fetch(pGuild.musicData.messageLyricsId)
-												.then(async (message_lyrics: Message) => {
-													if (isMessageDeleted(message_lyrics)) {
-														const deletedMessage = await message_lyrics
+												.then(async (messageLyrics: Message) => {
+													if (isMessageDeleted(messageLyrics)) {
+														const deletedMessage = await messageLyrics
 															.delete()
 															.catch((e: any) => {
 																return reject(`failed to delete message: ${e}`);
@@ -53,12 +53,12 @@ module.exports = async (
 						} else {
 							return reject('could not find channel');
 						}
-					} else if (music_data.messageLyricsId === args.message.id) {
-						const music_channel = <TextChannel>args.message?.guild?.channels.cache
+					} else if (pMusicData.messageLyricsId === args.message.id) {
+						const musicChannel = <TextChannel>args.message?.guild?.channels.cache
 							.find(channel => channel.id === pGuild.musicData.channelId);
 
-						if (music_channel && pGuild.musicData.messageId) {
-							createMusicLyricsMessage(music_channel, pGuild, pGuild.musicData.messageId)
+						if (musicChannel && pGuild.musicData.messageId) {
+							createMusicLyricsMessage(musicChannel, pGuild, pGuild.musicData.messageId)
 								.then(() => {
 									return resolve('created lyrics message');
 								})
@@ -66,8 +66,8 @@ module.exports = async (
 									return reject(`error creating lyrics message: ${e}`);
 								});
 						}
-					} else if (pGuild.pollList.some(p => p.messageId === args.message.id)) {
-						const poll = pGuild.pollList.find(p => p.messageId === args.message.id);
+					} else if (pGuild.pPolls.some(p => p.messageId === args.message.id)) {
+						const poll = pGuild.pPolls.find(p => p.messageId === args.message.id);
 
 						if (poll) {
 							removePoll(pGuild.id, args.message.id)
@@ -83,9 +83,9 @@ module.exports = async (
 								});
 						}
 					} else {
-						role_list.find(role_giver => {
-							if (role_giver.messageId === args.message.id) {
-								removeVendor(pGuild.id, role_giver.messageId)
+						pRoles.find(roleGiver => {
+							if (roleGiver.messageId === args.message.id) {
+								removeVendor(pGuild.id, roleGiver.messageId)
 									.then(r => {
 										if (r) {
 											return resolve('successfully deleted role message');

@@ -34,8 +34,8 @@ export class PGuild {
 	public pMembers: PMember[];
 	public ignoreList: string[];
 	public urlList: string[];
-	public roleList: PGiveRole[];
-	public pollList: PPoll[];
+	public pRoles: PGiveRole[];
+	public pPolls: PPoll[];
 	public initialRole: string | null;
 	public ranks: Rank[];
 	public musicData: MusicData;
@@ -79,8 +79,8 @@ export class PGuild {
 		this.pMembers = memberList;
 		this.ignoreList = ignoreList;
 		this.urlList = urlList;
-		this.roleList = roleList;
-		this.pollList = pollList;
+		this.pRoles = roleList;
+		this.pPolls = pollList;
 		this.initialRole = initialRole;
 		this.ranks = ranks;
 		this.musicData = musicData;

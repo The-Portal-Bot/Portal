@@ -17,13 +17,13 @@ module.exports = async (
                         .then(pGuild => {
                             if (pGuild) {
                                 if (pGuild.initialRole && pGuild.initialRole !== 'null') {
-                                    const initial_role = args.member.guild.roles.cache
+                                    const initialRole = args.member.guild.roles.cache
                                         .find(r => r.id === pGuild.initialRole);
 
-                                    if (initial_role) {
+                                    if (initialRole) {
                                         try {
                                             args.member.roles
-                                                .add(initial_role)
+                                                .add(initialRole)
                                                 .catch(e => {
                                                     return reject(`failed to give role to member: ${e}`);
                                                 });
@@ -34,20 +34,20 @@ module.exports = async (
                                     }
                                 }
 
-                                const join_message = `member: ${args.member.presence?.user}\n` +
+                                const joinMessage = `member: ${args.member.presence?.user}\n` +
                                     `id: ${args.member.guild.id}\n` +
                                     `\thas joined ${args.member.guild}`;
 
-                                const announcement_channel = <TextChannel>args.member.guild.channels.cache
+                                const announcementChannel = <TextChannel>args.member.guild.channels.cache
                                     .find(channel => channel.id === pGuild.announcement);
 
-                                if (announcement_channel) {
-                                    announcement_channel
+                                if (announcementChannel) {
+                                    announcementChannel
                                         .send({
                                             embeds: [
                                                 createEmbed(
                                                     'member joined',
-                                                    join_message,
+                                                    joinMessage,
                                                     '#00C70D',
                                                     [],
                                                     args.member.user.avatarURL(),

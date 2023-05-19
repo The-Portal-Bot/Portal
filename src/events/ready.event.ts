@@ -5,18 +5,18 @@ import { getFunction } from "../libraries/localisation.library";
 import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from "../libraries/mongo.library";
 import { PMember } from "../types/classes/PMember.class";
 
-function added_when_down(
-    guild: Guild, member_list: PMember[]
+function addedWhenDown(
+    guild: Guild, pMembers: PMember[]
 ): Promise<string> {
     return new Promise((resolve) => {
         const guildMembers: GuildMember[] = guild.members.cache.map(m => m);
 
         for (let j = 0; j < guildMembers.length; j++) {
             if (!guildMembers[j].user.bot) {
-                const already_in_db = member_list
+                const alreadyInDatabase = pMembers
                     .find(m => m.id === guildMembers[j].id);
 
-                if (!already_in_db) { // if inside guild but not in portal db, add member
+                if (!alreadyInDatabase) { // if inside guild but not in portal db, add member
                     insertMember(guild.id, guildMembers[j].id)
                         .then(() => {
                             logger.info(`late-insert ${guildMembers[j].id} to ${guild.name} [${guild.id}]`);
@@ -32,19 +32,19 @@ function added_when_down(
     });
 }
 
-function removed_when_down(
-    guild: Guild, member_list: PMember[]
+function removedWhenDown(
+    guild: Guild, pMembers: PMember[]
 ): Promise<string> {
     return new Promise((resolve) => {
-        for (let j = 0; j < member_list.length; j++) {
-            const member_in_guild = guild.members.cache
-                .map(m => m)
-                .find(m => m.id === member_list[j].id);
+        for (let j = 0; j < pMembers.length; j++) {
+            const member = guild.members.cache
+                .map(member => member)
+                .find(m => m.id === pMembers[j].id);
 
-            if (!member_in_guild) {
-                removeMember(member_list[j].id, guild.id)
+            if (!member) {
+                removeMember(pMembers[j].id, guild.id)
                     .then(() => {
-                        logger.info(`late-remove ${member_list[j].id} to ${guild.name} [${guild.id}]`);
+                        logger.info(`late-remove ${pMembers[j].id} to ${guild.name} [${guild.id}]`);
                     })
                     .catch(e => {
                         logger.error(new Error(`failed to late-remove member: ${e}`));
@@ -56,7 +56,7 @@ function removed_when_down(
     });
 }
 
-async function add_guild_again(
+async function addGuildAgain(
     guild: Guild, client: Client
 ): Promise<boolean> {
     return new Promise((resolve) => {
@@ -73,10 +73,10 @@ async function add_guild_again(
                 }
                 else {
                     fetchGuildMembers(guild.id)
-                        .then(async member_list => {
-                            if (member_list) {
-                                await added_when_down(guild, member_list);
-                                await removed_when_down(guild, member_list);
+                        .then(async pMembers => {
+                            if (pMembers) {
+                                await addedWhenDown(guild, pMembers);
+                                await removedWhenDown(guild, pMembers);
 
                                 return resolve(true);
                             } else {
@@ -115,12 +115,12 @@ module.exports = async (
         args.client.guilds.cache.forEach((guild: Guild) => {
             logger.info(`${guild} | ${guild.id}`);
 
-            add_guild_again(guild, args.client)
+            addGuildAgain(guild, args.client)
                 .catch(e => {
                     return reject(`failed to add guild again: ${e}`);
                 });
-            // remove_deleted_channels(guild);
-            // remove_empty_voice_channels(guild);
+            // removeDeletedChannels(guild);
+            // removeEmptyVoiceChannels(guild);
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

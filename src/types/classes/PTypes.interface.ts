@@ -70,25 +70,25 @@ export interface ActiveCooldowns {
 
 export interface SpamCache {
 	memberId: string;
-	last_message: string;
+	lastMessage: string;
 	timestamp: Date | null;
-	spam_fouls: number;
-	duplicate_fouls: number;
+	spamFouls: number;
+	duplicateFouls: number;
 }
 
 export interface TimeElapsed {
-	timeout_min: number;
-	timeout_sec: number;
-	remaining_hrs: number;
-	remaining_min: number;
-	remaining_sec: number;
+	timeoutMin: number;
+	timeoutSec: number;
+	remainingHrs: number;
+	remainingMin: number;
+	remainingSec: number;
 }
 
 export interface TimeRemaining {
-	timeout_min: number;
-	timeout_sec: number;
-	remaining_min: number;
-	remaining_sec: number;
+	timeoutMin: number;
+	timeoutSec: number;
+	remainingMin: number;
+	remainingSec: number;
 }
 
 export interface InterfaceBlueprint {

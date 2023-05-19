@@ -713,7 +713,7 @@ export async function messageReply(
 }
 
 export function isUrl(
-	potential_url: string
+	potentialURL: string
 ): boolean {
 	const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -722,7 +722,7 @@ export function isUrl(
 		'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
 		'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
 
-	return pattern.test(potential_url);
+	return pattern.test(potentialURL);
 }
 
 export function pad(
@@ -736,7 +736,7 @@ export function pad(
 export function timeElapsed(
 	timestamp: Date | number, timeout: number
 ): TimeElapsed {
-	const timeout_time = timeout * 60 * 1000;
+	const timeoutTime = timeout * 60 * 1000;
 	const el = moment
 		.duration(moment()
 			.diff(
@@ -747,13 +747,13 @@ export function timeElapsed(
 			)
 		);
 
-	const timeout_min = moment(timeout_time).minutes();
-	const timeout_sec = moment(timeout_time).seconds();
-	const remaining_hrs = el.hours();
-	const remaining_min = el.minutes();
-	const remaining_sec = el.seconds();
+	const timeoutMin = moment(timeoutTime).minutes();
+	const timeoutSec = moment(timeoutTime).seconds();
+	const remainingHrs = el.hours();
+	const remainingMin = el.minutes();
+	const remainingSec = el.seconds();
 
-	return { timeout_min, timeout_sec, remaining_hrs, remaining_min, remaining_sec }
+	return { timeoutMin, timeoutSec, remainingHrs, remainingMin, remainingSec }
 }
 
 // must get updated
@@ -784,7 +784,7 @@ export function removeDeletedChannels(
 						return false;
 					});
 
-					pGuild.roleList.forEach((r, index_r) => {
+					pGuild.pRoles.forEach((r, index_r) => {
 						!guild.channels.cache.some(c => {
 							if (c instanceof TextChannel) {
 								let found = false;
@@ -795,7 +795,7 @@ export function removeDeletedChannels(
 										found = true;
 									})
 									.catch(() => {
-										pGuild.roleList.splice(index_r, 1);
+										pGuild.pRoles.splice(index_r, 1);
 									});
 
 								return found;
