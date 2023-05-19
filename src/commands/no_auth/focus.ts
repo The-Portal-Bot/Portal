@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { create_focus_channel, includedInVoiceList, moveMembersBack } from "../../libraries/guild.library";
+import { createFocusChannel, includedInVoiceList, moveMembersBack } from "../../libraries/guild.library";
 import { askForApproval, messageHelp } from "../../libraries/help.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
@@ -28,13 +28,13 @@ module.exports = {
 			return Promise.reject(messageHelp('commands', 'focus', 'you can *only* use focus in channels with *more* than 2 members'));
 		}
 
-		const arg_a = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1).replace(/\s/g, ' ');
-		const arg_b = args.join(' ').substring(args.join(' ').indexOf('|')).replace(/\s/g, ' ');
+		const argA = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1).replace(/\s/g, ' ');
+		const argB = args.join(' ').substring(args.join(' ').indexOf('|')).replace(/\s/g, ' ');
 
-		const focus_name = (arg_a === '' ? arg_b : arg_a).trim();
-		const focus_time = arg_a === '' ? 0 : parseFloat(arg_b);
+		const focusName = (argA === '' ? argB : argA).trim();
+		const focusTime = argA === '' ? 0 : parseFloat(argB);
 
-		if (isNaN(focus_time)) {
+		if (isNaN(focusTime)) {
 			return Promise.reject(messageHelp('commands', 'focus', 'focus time must be a number'));
 		}
 
@@ -54,25 +54,25 @@ module.exports = {
 			return Promise.reject(messageHelp('commands', 'focus', 'you must tag a member'));
 		}
 
-		const member_to_focus = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+		const memberToFocus = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
-		if (!member_to_focus) {
-			return Promise.reject(`could not find "**${focus_name}**" in current voice channel`);
+		if (!memberToFocus) {
+			return Promise.reject(`could not find "**${focusName}**" in current voice channel`);
 		}
 
-		if (message.member === member_to_focus) {
+		if (message.member === memberToFocus) {
 			return Promise.reject(messageHelp('commands', 'focus', 'you can\'t focus on yourself'));
 		}
 
-		if (message.member.voice.channel !== member_to_focus.voice.channel) {
+		if (message.member.voice.channel !== memberToFocus.voice.channel) {
 			return Promise.reject(messageHelp('commands', 'focus', 'you can\'t focus on user from another channel'));
 		}
 
 		const gotApproval = await askForApproval(
 			message,
-			member_to_focus,
-			`*${member_to_focus.user}, member ${message.author}, would like to talk in ` +
-			`private${focus_time === 0 ? '' : ` for ${focus_time}'`}*, do you **(yes / no)** ?`
+			memberToFocus,
+			`*${memberToFocus.user}, member ${message.author}, would like to talk in ` +
+			`private${focusTime === 0 ? '' : ` for ${focusTime}'`}*, do you **(yes / no)** ?`
 		)
 			.catch(e => { return Promise.reject(`failed to get approval: ${e}`); });
 
@@ -88,16 +88,16 @@ module.exports = {
 			return Promise.reject('could not fetch message\'s member');
 		}
 
-		const portal_object = pGuild.pChannels.find(p =>
-			p.voiceList.some(v => v.id === message.member?.voice.channel?.id)
+		const pChannel = pGuild.pChannels.find(p =>
+			p.pVoiceChannels.some(v => v.id === message.member?.voice.channel?.id)
 		);
 
-		if (!portal_object) {
+		if (!pChannel) {
 			return Promise.reject('could not find member\'s portal channel');
 		}
 
 		const oldChannel = message.member.voice.channel;
-		const focusChannelOutcome = await create_focus_channel(message.guild, message.member, member_to_focus, focus_time, portal_object)
+		const focusChannelOutcome = await createFocusChannel(message.guild, message.member, memberToFocus, focusTime, pChannel)
 			.catch(e => {
 				return Promise.reject(`error while creating focus channel ${e}`);
 			});
@@ -107,13 +107,13 @@ module.exports = {
 				return Promise.reject('could not fetch message\'s member');
 			}
 
-			const movedMembers = await moveMembersBack(oldChannel, message.member, member_to_focus)
+			const movedMembers = await moveMembersBack(oldChannel, message.member, memberToFocus)
 				.catch(e => { return Promise.reject(e); });
 
 			if (!movedMembers) {
 				return Promise.reject('could not move members back');
 			}
-		}, focus_time * 60 * 1000);
+		}, focusTime * 60 * 1000);
 
 		return {
 			result: true,

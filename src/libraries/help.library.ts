@@ -768,9 +768,9 @@ export function removeDeletedChannels(
 						if (!guild.channels.cache.some(c => c.id === p.id)) {
 							pGuild.pChannels.splice(index_p, 1);
 						}
-						p.voiceList.forEach((v, index_v) => {
+						p.pVoiceChannels.forEach((v, index_v) => {
 							if (!guild.channels.cache.some(c => c.id === v.id)) {
-								p.voiceList.splice(index_v, 1);
+								p.pVoiceChannels.splice(index_v, 1);
 							}
 						});
 					});
@@ -848,12 +848,12 @@ export async function removeEmptyVoiceChannels(
 	guild.channels.cache.forEach(channel => {
 		guild_list.some(g =>
 			g.pChannels.some(p =>
-				p.voiceList.some((v, index) => {
+				p.pVoiceChannels.some((v, index) => {
 					if (v.id === channel.id && (<Collection<string, GuildMember>>channel.members).size === 0) {
 						channel
 							.delete()
 							.then(() => {
-								p.voiceList.splice(index, 1);
+								p.pVoiceChannels.splice(index, 1);
 								logger.log({
 									level: 'info', type: 'none', message: `deleted empty channel: ${channel.name} ` +
 										`(${channel.id}) from ${channel.guild.name}`

@@ -3,7 +3,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import { NYTCategories } from '../../data/lists/news_categories.static';
 import { createEmbed, getJsonFromString, maxString, messageHelp } from '../../libraries/help.library';
-import { https_fetch } from '../../libraries/http.library';
+import { httpsFetch } from '../../libraries/http.library';
 import { News } from '../../types/classes/NewYorkTime.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -68,7 +68,7 @@ module.exports = {
 				}
 			};
 
-			https_fetch(options)
+			httpsFetch(options)
 				.then((response: Buffer) => {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
@@ -91,10 +91,10 @@ module.exports = {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					const news: News = json;
 
-					const top_news: Field[] = [];
+					const topNews: Field[] = [];
 
 					news.results.some((n, i) => {
-						top_news.push(<Field>{
+						topNews.push(<Field>{
 							emote: `${n.title}`,
 							role: `_[${maxString(n.abstract, 256)}](${n.url})_`,
 							inline: false
@@ -111,7 +111,7 @@ module.exports = {
 									`News ${args[0]} | ${moment(json.last_updated).format('DD/MM/YY hh:mm')}`,
 									'powered by NYTimes',
 									'#000000',
-									top_news,
+									topNews,
 									null,
 									null,
 									true,

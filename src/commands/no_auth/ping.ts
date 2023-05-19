@@ -32,8 +32,8 @@ module.exports = {
 							}
 						)]
 				})
-				.then((message_sent: Message) => {
-					message_sent
+				.then((messageSent: Message) => {
+					messageSent
 						.edit({
 							embeds: [
 								createEmbed(
@@ -48,7 +48,7 @@ module.exports = {
 									null,
 									undefined,
 									{
-										name: `RTT latency\t${message_sent.createdTimestamp - message.createdTimestamp} ms\n` +
+										name: `RTT latency\t${messageSent.createdTimestamp - message.createdTimestamp} ms\n` +
 											`Portal latency\t${client.ws.ping} ms`,
 										icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/ping.gif'
 									}

@@ -4,8 +4,8 @@ import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
-const interpreterURL = '/interpreter/objects';
-export const structurePrefix = '{{';
+const INTERPRETER_URL = '/interpreter/objects';
+export const STRUCTURE_PREFIX = '{{';
 
 const structures: InterfaceBlueprint[] = [
 	{
@@ -61,7 +61,7 @@ export function getStructureGuide(): EmbedBuilder {
 
 	return createEmbed(
 		'Structure Guide',
-		'[Structures](' + PORTAL_URL + interpreterURL + '/structures/description) ' +
+		'[Structures](' + PORTAL_URL + INTERPRETER_URL + '/structures/description) ' +
 		'conditional flow manipulators (if this do that, or if that do this).\n' +
 		'How to use structures with the Text Interpreter',
 		'#EEB902',
@@ -74,7 +74,7 @@ export function getStructureGuide(): EmbedBuilder {
 	);
 }
 
-export function get_structure_help(): EmbedBuilder[] {
+export function getStructureHelp(): EmbedBuilder[] {
 	const structArray: Field[][] = [];
 
 	for (let l = 0; l <= structures.length / 25; l++) {
@@ -82,7 +82,7 @@ export function get_structure_help(): EmbedBuilder[] {
 		for (let i = (24 * l); i < structures.length && i < 24 * (l + 1); i++) {
 			structArray[l].push({
 				emote: `${i + 1}. ${structures[i].name}`,
-				role: `[hover or click](${PORTAL_URL}${interpreterURL}` +
+				role: `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
 					`/structures/detailed/${(structures[i].name)} "${(structures[i].hover)}")`,
 				inline: true
 			});
@@ -93,9 +93,9 @@ export function get_structure_help(): EmbedBuilder[] {
 		if (index === 0) {
 			return createEmbed(
 				'Structures',
-				'[Structures](' + PORTAL_URL + interpreterURL + '/structures/description) ' +
+				'[Structures](' + PORTAL_URL + INTERPRETER_URL + '/structures/description) ' +
 				'conditional flow manipulators (if this do that, or if that do this).\n' +
-				'Prefix: ' + structurePrefix,
+				'Prefix: ' + STRUCTURE_PREFIX,
 				'#EEB902',
 				structArray[0],
 				null,
@@ -120,7 +120,7 @@ export function get_structure_help(): EmbedBuilder[] {
 	});
 }
 
-export function get_structure_help_super(candidate: string): EmbedBuilder | boolean {
+export function getStructureHelpSuper(candidate: string): EmbedBuilder | boolean {
 	for (let i = 0; i < structures.length; i++) {
 		if (structures[i].name === candidate) {
 			return createEmbed(
@@ -129,9 +129,9 @@ export function get_structure_help_super(candidate: string): EmbedBuilder | bool
 				'#EEB902',
 				[
 					{ emote: `Type`, role: `structures`, inline: true },
-					{ emote: `Prefix`, role: `${structurePrefix}`, inline: true },
+					{ emote: `Prefix`, role: `${STRUCTURE_PREFIX}`, inline: true },
 					{
-						emote: `Description`, role: `[hover or click](${PORTAL_URL}${interpreterURL}` +
+						emote: `Description`, role: `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
 							`/structures/detailed/${candidate} "${(structures[i].name)}")`, inline: true
 					}
 				],

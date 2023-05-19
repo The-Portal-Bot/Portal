@@ -1,6 +1,6 @@
 import { Message, VoiceChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
-import { delete_channel, includedInVoiceList, regex_interpreter } from "../../libraries/guild.library";
+import { deleteChannel, includedInVoiceList, regexInterpreter } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { updateVoice } from "../../libraries/mongo.library";
 import { PGuild } from "../../types/classes/PGuild.class";
@@ -47,11 +47,11 @@ module.exports = {
             const current_voice = message.member.voice.channel as VoiceChannel;
 
             pGuild.pChannels.some(p => {
-                return p.voiceList.some(v => {
+                return p.pVoiceChannels.some(v => {
                     if (v.id === current_voice.id) {
-                        if (v.creator_id === current_member.id) {
+                        if (v.creatorId === current_member.id) {
                             if (message.guild) {
-                                const updated_name = regex_interpreter(
+                                const updated_name = regexInterpreter(
                                     v.regex,
                                     current_voice,
                                     v,
@@ -78,7 +78,7 @@ module.exports = {
 
                                             updateVoice(pGuild.id, p.id, current_voice.id, 'id', clone.id)
                                                 .then(r => {
-                                                    delete_channel(PortalChannelTypes.voice, current_voice, message, true)
+                                                    deleteChannel(PortalChannelTypes.voice, current_voice, message, true)
                                                         .catch((e: any) => {
                                                             return resolve({
                                                                 result: false,

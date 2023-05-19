@@ -17,7 +17,7 @@ async function delete_voice_channel(
             return reject(`channel ${channel.name} (${channel.id}) is not deletable`);
         } else {
             pGuild.pChannels.some(p =>
-                p.voiceList.some(v => {
+                p.pVoiceChannels.some(v => {
                     if (v.id === channel.id) {
                         channel
                             .delete()
@@ -368,11 +368,11 @@ module.exports = async (
                                     }
                                 }
 
-                                for (let i = 0; i < p.voiceList.length; i++) {
-                                    const v = p.voiceList[i];
+                                for (let i = 0; i < p.pVoiceChannels.length; i++) {
+                                    const v = p.pVoiceChannels[i];
 
                                     if (v.id === new_channel.id) {
-                                        if (v.no_bots) {
+                                        if (v.noBots) {
                                             args.newState
                                                 .disconnect('voice channel does not allow bots')
                                                 .catch(e => {

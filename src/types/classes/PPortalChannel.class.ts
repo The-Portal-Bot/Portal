@@ -7,7 +7,7 @@ export class PChannel {
 	public render: boolean;
 	public regexPortal: string;
 	public regexVoice: string;
-	public voiceList: PVoiceChannel[];
+	public pVoiceChannels: PVoiceChannel[];
 	public noBots: boolean;
 	public allowedRoles: [string] | null;
 	public locale: number;
@@ -36,7 +36,7 @@ export class PChannel {
 		this.render = render;
 		this.regexPortal = regexPortal;
 		this.regexVoice = regexVoice;
-		this.voiceList = voiceList;
+		this.pVoiceChannels = voiceList;
 		this.noBots = noBots;
 		this.allowedRoles = allowedRoles;
 		this.locale = locale;

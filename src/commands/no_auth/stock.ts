@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-// import { CountryCodes } from '../../data/lists/country_codes_iso.static';
 import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
-import { https_fetch } from '../../libraries/http.library';
+import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
+// import { CountryCodes } from '../../data/lists/country_codes_iso.static';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
 
@@ -48,7 +46,7 @@ module.exports = {
                 }
             };
 
-            https_fetch(options)
+            httpsFetch(options)
                 .then((response: Buffer) => {
 
                     const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));

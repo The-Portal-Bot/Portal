@@ -1,5 +1,5 @@
 import { Message, VoiceChannel } from "discord.js";
-import { regex_interpreter } from "../../libraries/guild.library";
+import { regexInterpreter } from "../../libraries/guild.library";
 import { createEmbed, maxString } from "../../libraries/help.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { PVoiceChannel } from "../../types/classes/PVoiceChannel.class";
@@ -28,16 +28,16 @@ module.exports = {
                 });
             }
 
-            const current_voice = message.member.voice;
-            const current_voice_channel = current_voice.channel;
+            const currentVoice = message.member.voice;
+            const currentVoiceChannel = currentVoice.channel;
 
-            let voice_object: PVoiceChannel | null = null;
+            let pVoice: PVoiceChannel | null = null;
 
-            if (current_voice_channel) {
+            if (currentVoiceChannel) {
                 for (let i = 0; i < pGuild.pChannels.length; i++) {
-                    for (let j = 0; j < pGuild.pChannels[i].voiceList.length; j++) {
-                        if (pGuild.pChannels[i].voiceList[j].id === current_voice_channel.id) {
-                            voice_object = pGuild.pChannels[i].voiceList[j];
+                    for (let j = 0; j < pGuild.pChannels[i].pVoiceChannels.length; j++) {
+                        if (pGuild.pChannels[i].pVoiceChannels[j].id === currentVoiceChannel.id) {
+                            pVoice = pGuild.pChannels[i].pVoiceChannels[j];
                             break;
                         }
                     }
@@ -61,9 +61,9 @@ module.exports = {
                     )
                 ]
             })
-                .then(sent_message => {
+                .then(sentMessage => {
                     if (message.guild) {
-                        sent_message
+                        sentMessage
                             .edit({
                                 embeds: [
                                     createEmbed(
@@ -81,10 +81,10 @@ module.exports = {
                                         {
                                             emote: 'output',
                                             role: maxString(
-                                                `\`\`\`\n${regex_interpreter(
+                                                `\`\`\`\n${regexInterpreter(
                                                     args.join(' '),
-                                                    current_voice_channel as VoiceChannel,
-                                                    voice_object,
+                                                    currentVoiceChannel as VoiceChannel,
+                                                    pVoice,
                                                     pGuild.pChannels,
                                                     pGuild,
                                                     message.guild,
@@ -111,7 +111,7 @@ module.exports = {
                                 });
                             });
                     } else {
-                        sent_message
+                        sentMessage
                             .edit('could not fetch guild of message')
                             .catch(e => {
                                 return resolve({

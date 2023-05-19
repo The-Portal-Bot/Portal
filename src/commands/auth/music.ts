@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message, TextChannel } from "discord.js";
 import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
-import { create_music_channel, delete_channel, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
+import { createMusicChannel, deleteChannel, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
 import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
 import { setMusicData } from "../../libraries/mongo.library";
 import { PGuild, MusicData } from "../../types/classes/PGuild.class";
@@ -57,7 +57,7 @@ module.exports = {
                 channel.id == pGuild.musicData.channelId);
 
             if (music) {
-                delete_channel(PortalChannelTypes.music, <TextChannel>music, message)
+                deleteChannel(PortalChannelTypes.music, <TextChannel>music, message)
                     .catch((e: any) => {
                         return resolve({
                             result: false,
@@ -118,7 +118,7 @@ module.exports = {
                 let value = null;
 
                 if (music_channel !== '') {
-                    create_music_channel(message.guild, music_channel, music_category, pGuild)
+                    createMusicChannel(message.guild, music_channel, music_category, pGuild)
                         .catch((e: any) => {
                             return resolve({
                                 result: false,
@@ -129,7 +129,7 @@ module.exports = {
                     value = 'music channel and category have been created';
                 }
                 else if (music_channel === '' && music_category !== '') {
-                    create_music_channel(message.guild, music_category, null, pGuild)
+                    createMusicChannel(message.guild, music_category, null, pGuild)
                         .catch((e: any) => {
                             return resolve({
                                 result: false,

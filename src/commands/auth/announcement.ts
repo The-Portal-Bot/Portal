@@ -1,7 +1,7 @@
 import { ChannelType, Message, VoiceChannel } from 'discord.js';
 import {
     createChannel,
-    delete_channel,
+    deleteChannel,
     getOptions,
     isAnnouncementChannel,
     isMusicChannel,
@@ -83,7 +83,7 @@ module.exports = {
         );
 
         if (announcement) {
-            delete_channel(PortalChannelTypes.announcement, announcement, message).catch((e: any) => {
+            deleteChannel(PortalChannelTypes.announcement, announcement, message).catch((e: any) => {
                 return {
                     result: false,
                     value: `failed to delete channel: ${e}`,

@@ -1,6 +1,6 @@
 import { getVoiceConnection } from "@discordjs/voice";
 import { Client, Message } from "discord.js";
-import { client_write } from "../../libraries/localisation.library";
+import { clientWrite } from "../../libraries/localisation.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -23,7 +23,7 @@ module.exports = {
 
 		voiceConnection.disconnect();
 
-		// client_talk(client, pGuild, 'leave');
+		// clientTalk(client, pGuild, 'leave');
 		// setTimeout(
 		// 	function () {
 		// 		voiceConnection.disconnect();
@@ -32,6 +32,6 @@ module.exports = {
 		// );
 
 
-		return client_write(message, pGuild, 'leave');
+		return clientWrite(message, pGuild, 'leave');
 	}
 };

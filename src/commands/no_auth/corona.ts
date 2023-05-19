@@ -5,17 +5,17 @@ import moment from 'moment';
 import voca from 'voca';
 import { CountryCodes } from '../../data/lists/country_codes_iso.static';
 import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
-import { https_fetch } from '../../libraries/http.library';
+import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
-const country_codes: { name: string; code: string; }[] = CountryCodes;
+const countryCodes: { name: string; code: string; }[] = CountryCodes;
 
-const get_country_code = function (country: string): string | null {
-    for (let i = 0; i < country_codes.length; i++) {
-        if (voca.lowerCase(country_codes[i].name) === voca.lowerCase(country))
-            return country_codes[i].name;
-        else if (voca.lowerCase(country_codes[i].code) === voca.lowerCase(country))
-            return country_codes[i].name;
+const getCountryCode = function (country: string): string | null {
+    for (let i = 0; i < countryCodes.length; i++) {
+        if (voca.lowerCase(countryCodes[i].name) === voca.lowerCase(country))
+            return countryCodes[i].name;
+        else if (voca.lowerCase(countryCodes[i].code) === voca.lowerCase(country))
+            return countryCodes[i].name;
     }
 
     return null;
@@ -32,7 +32,7 @@ module.exports = {
             let code: string | null = null;
 
             if (args.length === 1) {
-                code = get_country_code(args[0]);
+                code = getCountryCode(args[0]);
                 if (code === null) {
                     return resolve({
                         result: false,
@@ -63,7 +63,7 @@ module.exports = {
                 },
             };
 
-            https_fetch(options)
+            httpsFetch(options)
                 .then((response: Buffer) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
@@ -76,9 +76,9 @@ module.exports = {
                     }
 
                     if (json.errors.length === 0) {
-                        const country_data = json.response.find((data: any) => data.country === code);
+                        const countryData = json.response.find((data: any) => data.country === code);
 
-                        if (!country_data) {
+                        if (!countryData) {
                             return resolve({
                                 result: false,
                                 value: `${args[0]} is neither a country name nor code`
@@ -89,55 +89,55 @@ module.exports = {
                             .send({
                                 embeds: [
                                     createEmbed(
-                                        `${country_data.country} | ${moment(country_data.time).format('DD/MM/YY')}`,
+                                        `${countryData.country} | ${moment(countryData.time).format('DD/MM/YY')}`,
                                         'Covid19 stats by covid-193',
                                         '#FF0000',
                                         [
                                             {
                                                 emote: 'NEW cases',
-                                                role: `${country_data.cases.new ? country_data.cases.new : 'N/A'}`,
+                                                role: `${countryData.cases.new ? countryData.cases.new : 'N/A'}`,
                                                 inline: true
                                             },
                                             {
                                                 emote: 'NEW deaths',
-                                                role: `${country_data.deaths.new ? country_data.deaths.new : 'N/A'}`,
+                                                role: `${countryData.deaths.new ? countryData.deaths.new : 'N/A'}`,
                                                 inline: true
                                             },
                                             {
                                                 emote: 'Tests P1M',
-                                                role: `${country_data.tests['1M_pop']}`,
+                                                role: `${countryData.tests['1M_pop']}`,
                                                 inline: true
                                             },
                                             {
                                                 emote: 'Cases',
-                                                role: `${country_data.cases.total}`,
+                                                role: `${countryData.cases.total}`,
                                                 inline: true
                                             },
                                             {
                                                 emote: 'Deaths',
-                                                role: `${country_data.deaths.total}`,
+                                                role: `${countryData.deaths.total}`,
                                                 inline: true
                                             },
                                             {
                                                 emote: 'Recovered',
-                                                role: `${country_data.cases.recovered}`,
+                                                role: `${countryData.cases.recovered}`,
                                                 inline: true
                                             },
                                             {
                                                 emote: '%Recovered',
-                                                role: `${((country_data.cases.recovered / country_data.cases.total) * 100)
+                                                role: `${((countryData.cases.recovered / countryData.cases.total) * 100)
                                                     .toFixed(2)}%`,
                                                 inline: true
                                             },
                                             {
                                                 emote: '%Diseased',
-                                                role: `${((country_data.deaths.total / country_data.cases.total) * 100)
+                                                role: `${((countryData.deaths.total / countryData.cases.total) * 100)
                                                     .toFixed(2)}%`,
                                                 inline: true
                                             },
                                             {
                                                 emote: 'Critical',
-                                                role: `${country_data.cases.critical}`,
+                                                role: `${countryData.cases.critical}`,
                                                 inline: true
                                             }
                                         ],

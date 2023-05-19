@@ -13,11 +13,11 @@ module.exports = {
 	): Promise<ReturnPromise> {
 		return new Promise((resolve) => {
 			if (pGuild.ranks && pGuild.ranks.length > 0) {
-				const ranks_msg: Field[] = [];
+				const ranksMessage: Field[] = [];
 
 				pGuild.ranks.forEach(rank => {
 					const role = message.guild?.roles.cache.find(r => r.id === rank.role);
-					ranks_msg.push({
+					ranksMessage.push({
 						emote: `At level ${rank.level}, you get role`,
 						role: `${role ? role : rank.role}`,
 						inline: false,
@@ -31,7 +31,7 @@ module.exports = {
 								'Ranking System',
 								null,
 								'#FF4500',
-								ranks_msg,
+								ranksMessage,
 								null,
 								null,
 								true,

@@ -1,10 +1,9 @@
 import { Client, Message, TextChannel } from "discord.js";
-import { delay } from "lodash";
-import { createEmbed, isMessageDeleted, markMessageAsDeleted, messageHelp } from "../../libraries/help.library";
-// import { client_talk } from "../../libraries/localisation.library";
+import { createEmbed, messageHelp } from "../../libraries/help.library";
+// import { clientTalk } from "../../libraries/localisation.library";
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -35,10 +34,10 @@ module.exports = {
                 });
             }
 
-            const announcement_channel = <TextChannel>message.guild.channels.cache
+            const announcementChannel = <TextChannel>message.guild.channels.cache
                 .find(c => c.id === pGuild.announcement);
 
-            if (!announcement_channel) {
+            if (!announcementChannel) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'announce', 'announcements channel does not exist')
@@ -53,7 +52,7 @@ module.exports = {
                 title = '';
             }
 
-            const rich_message = createEmbed(
+            const richMessage = createEmbed(
                 title,
                 `@here ${body}`,
                 '#022E4E',
@@ -65,10 +64,10 @@ module.exports = {
                 null
             );
 
-            announcement_channel
-                .send({ embeds: [rich_message] })
+            announcementChannel
+                .send({ embeds: [richMessage] })
                 .then(() => {
-                    // client_talk(client, pGuild, 'announce');
+                    // clientTalk(client, pGuild, 'announce');
                     return resolve({
                         result: true,
                         value: 'announcement was sent successfully'

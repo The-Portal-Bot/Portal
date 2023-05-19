@@ -7,21 +7,21 @@ import { GiveRole, PGiveRole } from "../../types/classes/PGiveRole.class";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 
-function create_role_message(
+function createRoleMessage(
     channel: TextChannel, pGuild: PGuild, title: string, desc: string,
-    colour: ColorResolvable, role_emb: Field[], role_map: GiveRole[]
+    colour: ColorResolvable, roleEmb: Field[], roleMap: GiveRole[]
 ): Promise<ReturnPromise> {
     return new Promise((resolve) => {
-        const role_message_emb = createEmbed(
-            title, desc, colour, role_emb, null, null, null, null, null
+        const roleMessageEmb = createEmbed(
+            title, desc, colour, roleEmb, null, null, null, null, null
         );
 
         channel
-            .send({ embeds: [role_message_emb] })
-            .then(sent_message => {
-                for (let i = 0; i < role_map.length; i++) {
-                    sent_message
-                        .react(role_map[i].emote)
+            .send({ embeds: [roleMessageEmb] })
+            .then(sentMessage => {
+                for (let i = 0; i < roleMap.length; i++) {
+                    sentMessage
+                        .react(roleMap[i].emote)
                         .catch((e: any) => {
                             return resolve({
                                 result: false,
@@ -30,7 +30,7 @@ function create_role_message(
                         });
                 }
 
-                insertVendor(pGuild.id, new PGiveRole(sent_message.id, role_map))
+                insertVendor(pGuild.id, new PGiveRole(sentMessage.id, roleMap))
                     .then(r => {
                         return resolve({
                             result: r,
@@ -56,12 +56,12 @@ function create_role_message(
     });
 }
 
-function multiple_same_emote(
-    emote_map: GiveRole[]
+function multipleSameEmote(
+    emoteMap: GiveRole[]
 ) {
-    for (let i = 0; i < emote_map.length; i++) {
-        for (let j = i + 1; j < emote_map.length; j++) {
-            if (emote_map[i].emote === emote_map[j].emote) {
+    for (let i = 0; i < emoteMap.length; i++) {
+        for (let j = i + 1; j < emoteMap.length; j++) {
+            if (emoteMap[i].emote === emoteMap[j].emote) {
                 return true;
             }
         }
@@ -92,65 +92,65 @@ module.exports = {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const role_map_json = getJsonFromString(args.join(' '));
+            const roleMapJson = getJsonFromString(args.join(' '));
 
-            if (!role_map_json) {
+            if (!roleMapJson) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'vendor', 'must be an array in JSON format (even for one role)')
                 });
             }
 
-            const role_map = <GiveRole[]>role_map_json;
-            if (!Array.isArray(role_map)) {
+            const roleMap = <GiveRole[]>roleMapJson;
+            if (!Array.isArray(roleMap)) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'vendor', 'must be an array in JSON format (even for one role)')
                 });
             }
-            if (multiple_same_emote(role_map)) {
+            if (multipleSameEmote(roleMap)) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'vendor', 'can not have the same emote for multiple actions')
                 });
             }
-            if (!role_map.every(rm => rm.emote && rm.role)) {
+            if (!roleMap.every(rm => rm.emote && rm.role)) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'vendor', 'JSON syntax has spelling errors')
                 });
             }
 
-            role_map
+            roleMap
                 .forEach(r => {
                     r.emote = r.emote.trim();
                     r.role.forEach(role => role.trim());
                 });
 
-            const role_emb_display: Field[] = [];
+            const roleEmbDisplay: Field[] = [];
 
-            let return_value = '';
+            let returnValue = '';
             // give roles
-            const failed = role_map
+            const failed = roleMap
                 .some(r => {
                     if (message.guild) {
-                        const role_fetched = r.role.map(role => getRole(message.guild, role));
+                        const roleFetched = r.role.map(role => getRole(message.guild, role));
 
-                        if (role_fetched.some(role => !role)) {
-                            return_value = `some of the given roles do not exist`;
+                        if (roleFetched.some(role => !role)) {
+                            returnValue = `some of the given roles do not exist`;
                             return true;
                         }
 
-                        role_emb_display.push(
+                        roleEmbDisplay.push(
                             new Field(
                                 r.emote,
-                                `\`\`\`${role_fetched.map(role =>
+                                `\`\`\`${roleFetched.map(role =>
                                     `@${role ? role.name : 'undefined'}`).join(', ')}\`\`\``,
                                 true
                             )
                         );
                     } else {
-                        return_value = `could not fetch guild of message`;
+                        returnValue = `could not fetch guild of message`;
                         return true;
                     }
                 });
@@ -158,18 +158,18 @@ module.exports = {
             if (failed) {
                 return resolve({
                     result: false,
-                    value: return_value
+                    value: returnValue
                 });
             }
 
-            create_role_message(
+            createRoleMessage(
                 <TextChannel>message.channel,
                 pGuild,
                 'Role Assigner',
                 'React with emote to get or remove mentioned role',
                 '#FF7F00',
-                role_emb_display,
-                role_map
+                roleEmbDisplay,
+                roleMap
             )
                 .then(r => {
                     return resolve(r);

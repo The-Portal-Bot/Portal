@@ -5,7 +5,7 @@ import { PGuild } from "../../types/classes/PGuild.class";
 import { PMember } from "../../types/classes/PMember.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 
-const embeds = (message: Message, member_object: PMember) => [
+const embeds = (message: Message, pMember: PMember) => [
     createEmbed(
         message.member
             ? message.member?.displayName
@@ -15,24 +15,24 @@ const embeds = (message: Message, member_object: PMember) => [
         [
             {
                 emote: 'Level',
-                role: member_object.level,
+                role: pMember.level,
                 inline: true
             },
             {
                 emote: 'Regex',
-                role: (!member_object.regex || member_object.regex === 'null')
+                role: (!pMember.regex || pMember.regex === 'null')
                     ? 'not set'
-                    : member_object.regex,
+                    : pMember.regex,
                 inline: true
             },
             {
                 emote: 'Penalties',
-                role: `${member_object.penalties ? member_object.penalties : 0}`,
+                role: `${pMember.penalties ? pMember.penalties : 0}`,
                 inline: true
             },
             {
                 emote: 'Id',
-                role: member_object.id,
+                role: pMember.id,
                 inline: false
             }
         ],
@@ -52,8 +52,8 @@ module.exports = {
         message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve, reject) => {
-            const member_object = pGuild.pMembers.find(m => m.id === message.member?.id);
-            if (!member_object) {
+            const pMember = pGuild.pMembers.find(m => m.id === message.member?.id);
+            if (!pMember) {
                 return resolve({
                     result: false,
                     value: 'could not find guild'
@@ -61,7 +61,7 @@ module.exports = {
             }
 
             message.channel
-                .send({ embeds: embeds(message, member_object) })
+                .send({ embeds: embeds(message, pMember) })
                 .then(() => {
                     return resolve({
                         result: true,

@@ -6,14 +6,12 @@ import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 function compare(
-    member_a: PMember, member_b: PMember
+    memberA: PMember, memberB: PMember
 ) {
-    return member_b.level === member_a.level
-        ? member_b.points > member_a.points ? 1 : -1
-        : member_b.level > member_a.level ? 1 : -1;
+    return memberB.level === memberA.level
+        ? memberB.points > memberA.points ? 1 : -1
+        : memberB.level > memberA.level ? 1 : -1;
 }
-
-
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -23,33 +21,33 @@ module.exports = {
         message: Message, args: string[], pGuild: PGuild
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
-            const member_list = pGuild.pMembers;
+            const pMembers = pGuild.pMembers;
 
-            if (!member_list) {
+            if (!pMembers) {
                 return resolve({
                     result: false,
                     value: 'server has no members'
                 });
             }
 
-            const requested_number = +args[0];
-            if (args.length > 0 && isNaN(requested_number)) {
+            const requestedNumber = +args[0];
+            if (args.length > 0 && isNaN(requestedNumber)) {
                 return resolve({
                     result: false,
                     value: `${args[0]} is not a number`
                 });
             }
 
-            if (requested_number <= 0) {
+            if (requestedNumber <= 0) {
                 return resolve({
                     result: false,
                     value: `${args[0]} must be at least 1`
                 });
             }
 
-            let entries = member_list.length >= requested_number
-                ? requested_number > 25 ? 24 : requested_number
-                : member_list.length > 25 ? 24 : member_list.length;
+            let entries = pMembers.length >= requestedNumber
+                ? requestedNumber > 25 ? 24 : requestedNumber
+                : pMembers.length > 25 ? 24 : pMembers.length;
 
             if (entries <= 0) {
                 return resolve({
@@ -62,19 +60,19 @@ module.exports = {
             }
 
             if (pGuild.pMembers) {
-                const member_levels: Field[] = [];
-                member_list
+                const memberLevels: Field[] = [];
+                pMembers
                     .sort(compare)
-                    .forEach((member_object, i) => {
+                    .forEach((pMember, i) => {
                         if (message.guild && entries > i) {
-                            const this_member = message.guild.members.cache
-                                .find(member => member.id === member_object.id);
+                            const thisPMember = message.guild.members.cache
+                                .find(member => member.id === pMember.id);
 
-                            if (this_member) {
-                                member_levels.push(
+                            if (thisPMember) {
+                                memberLevels.push(
                                     {
-                                        emote: `${i + 1}. ${this_member.displayName}`,
-                                        role: `level ${member_object.level}\t|\tpoints: ${Math.round(member_object.points)}`,
+                                        emote: `${i + 1}. ${thisPMember.displayName}`,
+                                        role: `level ${pMember.level}\t|\tpoints: ${Math.round(pMember.points)}`,
                                         inline: false
                                     }
                                 );
@@ -96,7 +94,7 @@ module.exports = {
                                 'LEADERBOARD',
                                 '[Ranking System](https://portal-bot.xyz/docs/ranking)',
                                 '#00FFFF',
-                                member_levels,
+                                memberLevels,
                                 null,
                                 null,
                                 true,

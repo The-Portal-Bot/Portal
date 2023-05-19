@@ -4,7 +4,7 @@ import { RequestOptions } from 'https';
 import moment from 'moment';
 import { OpapGameIdEnum } from '../../data/enums/OpapGames.enum';
 import { createEmbed, getJsonFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
-import { https_fetch } from '../../libraries/http.library';
+import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -16,7 +16,7 @@ module.exports = {
         message: Message, args: string[]
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
-            let game_code: number | undefined = undefined;
+            let gameCode: number | undefined = undefined;
 
             if (args.length === 2) {
                 if (args[0].toLowerCase() !== 'opap') {
@@ -26,10 +26,10 @@ module.exports = {
                     });
                 } else {
                     if (isNaN(+args[1])) {
-                        game_code = <number>getKeyFromEnum(args[1].toLowerCase(), OpapGameIdEnum);
+                        gameCode = <number>getKeyFromEnum(args[1].toLowerCase(), OpapGameIdEnum);
                     }
 
-                    if (!game_code) {
+                    if (!gameCode) {
                         return resolve({
                             result: false,
                             value: messageHelp('commands', 'bet', `${args[1]} does not exist in ${args[0]}`)
@@ -47,14 +47,14 @@ module.exports = {
                 'method': 'GET',
                 'hostname': `api.opap.gr`,
                 'port': undefined,
-                'path': `/draws/v3.0/${game_code}/last-result-and-active`,
+                'path': `/draws/v3.0/${gameCode}/last-result-and-active`,
                 'headers': {
                     'x-opap-host': 'api.opap.gr',
                     'useQueryString': 1
                 }
             };
 
-            https_fetch(options)
+            httpsFetch(options)
                 .then((response: Buffer) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     const json = getJsonFromString(response.toString()

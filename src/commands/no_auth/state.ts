@@ -1,8 +1,8 @@
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { Client, Message } from "discord.js";
 import { createEmbed } from "../../libraries/help.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,7 +22,7 @@ module.exports = {
                 });
             }
 
-            let portal_state = [<Field>{
+            let portalState = [<Field>{
                 emote: 'Portal Channels',
                 role: '',
                 inline: false
@@ -30,30 +30,30 @@ module.exports = {
 
             const portals = pGuild.pChannels
                 .map(p => {
-                    const portal_channel = guild.channels.cache
+                    const portalChannel = guild.channels.cache
                         .find(c => c.id === p.id);
 
-                    const voices = p.voiceList
-                        .map((v, index_v) => {
-                            const voice_channel = guild.channels.cache
+                    const voices = p.pVoiceChannels
+                        .map((v, indexV) => {
+                            const voiceChannel = guild.channels.cache
                                 .find(c => c.id === v.id);
 
-                            return `${index_v + 1}. ${voice_channel ? voice_channel.name : 'unavailable'}`;
+                            return `${indexV + 1}. ${voiceChannel ? voiceChannel.name : 'unavailable'}`;
                         })
                         .join('\n');
 
                     return <Field>{
-                        emote: `${portal_channel ? portal_channel.name : 'unavailable'}`,
+                        emote: `${portalChannel ? portalChannel.name : 'unavailable'}`,
                         role: `\`\`\`\n${voices ? voices : 'no voice'}\n\`\`\``,
                         inline: true
                     }
                 });
 
             if (portals) {
-                portal_state = portal_state.concat(portals);
+                portalState = portalState.concat(portals);
             }
 
-            portal_state
+            portalState
                 .push(<Field>{
                     emote: '',
                     role: '',
@@ -64,14 +64,14 @@ module.exports = {
                 c.id === pGuild.musicData.channelId);
 
             if (music) {
-                portal_state
+                portalState
                     .push(<Field>{
                         emote: `Music channel`,
                         role: `\`\`\`\n${music ? music.name : 'unavailable'}\n\`\`\``,
                         inline: true
                     });
             } else {
-                portal_state
+                portalState
                     .push(<Field>{
                         emote: `Music channel`,
                         role: `\`\`\`\nnone\n\`\`\``,
@@ -83,14 +83,14 @@ module.exports = {
                 c.id === pGuild.announcement);
 
             if (announcement) {
-                portal_state
+                portalState
                     .push(<Field>{
                         emote: 'Announcement channel',
                         role: `\`\`\`\n${announcement ? announcement.name : 'unavailable'}\n\`\`\``,
                         inline: true
                     });
             } else {
-                portal_state
+                portalState
                     .push(<Field>{
                         emote: `Announcement channel`,
                         role: `\`\`\`\nnone\n\`\`\``,
@@ -98,28 +98,28 @@ module.exports = {
                     });
             }
 
-            portal_state
+            portalState
                 .push(<Field>{
                     emote: '',
                     role: '',
                     inline: false
                 });
 
-            const urls = pGuild.urlList.map((u_id, index_u) => {
-                const channel = guild.channels.cache.find(c => c.id === u_id);
-                return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
+            const urls = pGuild.urlList.map((uId, indexU) => {
+                const channel = guild.channels.cache.find(c => c.id === uId);
+                return `${indexU + 1}. ${channel ? channel.name : 'unavailable'}`;
             });
 
             if (urls.length > 0) {
-                const url_sum = <Field>{
+                const urlSum = <Field>{
                     emote: `URL channels`,
                     role: `\`\`\`\n${urls ? urls.join('\n') : 'unavailable'}\n\`\`\``,
                     inline: true
                 };
 
-                portal_state = portal_state.concat(url_sum);
+                portalState = portalState.concat(urlSum);
             } else {
-                portal_state
+                portalState
                     .push(<Field>{
                         emote: `URL channels`,
                         role: `\`\`\`\nnone\n\`\`\``,
@@ -127,21 +127,21 @@ module.exports = {
                     });
             }
 
-            const ignore = pGuild.ignoreList.map((u_id, index_u) => {
-                const channel = guild.channels.cache.find(c => c.id === u_id);
-                return `${index_u + 1}. ${channel ? channel.name : 'unavailable'}`;
+            const ignore = pGuild.ignoreList.map((uId, indexU) => {
+                const channel = guild.channels.cache.find(c => c.id === uId);
+                return `${indexU + 1}. ${channel ? channel.name : 'unavailable'}`;
             });
 
             if (ignore.length > 0) {
-                const ignore_sum = <Field>{
+                const ignoreSum = <Field>{
                     emote: `Ignored channels`,
                     role: `\`\`\`\n${ignore ? ignore.join('\n') : 'unavailable'}\n\`\`\``,
                     inline: true
                 };
 
-                portal_state = portal_state.concat(ignore_sum);
+                portalState = portalState.concat(ignoreSum);
             } else {
-                portal_state
+                portalState
                     .push(<Field>{
                         emote: `Ignored channels`,
                         role: `\`\`\`\nnone\n\`\`\``,
@@ -156,7 +156,7 @@ module.exports = {
                             'State of Portal',
                             null,
                             '#eba000',
-                            portal_state,
+                            portalState,
                             null,
                             null,
                             true,

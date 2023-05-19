@@ -83,7 +83,7 @@ export function messageSpamCheck(
 
     const elapsed_time = moment.duration(moment().diff(moment(memberSpamCache.timestamp.getTime())));
 
-    if (elapsed_time.asSeconds() > config_spam.message_interval / 1000) {
+    if (elapsed_time.asSeconds() > config_spam.MESSAGE_INTERVAL / 1000) {
         memberSpamCache.timestamp = null;
         memberSpamCache.spam_fouls = 0;
         memberSpamCache.duplicate_fouls = 0;
@@ -99,14 +99,14 @@ export function messageSpamCheck(
         memberSpamCache.duplicate_fouls = 0;
     }
 
-    if (config_spam.dupl_after !== 0 && memberSpamCache.duplicate_fouls === config_spam.dupl_after) {
+    if (config_spam.DUPLICATE_AFTER !== 0 && memberSpamCache.duplicate_fouls === config_spam.DUPLICATE_AFTER) {
         messageReply(false, message, `warning: please stop spamming the same message`, false, true)
             .catch((e: any) => {
                 logger.error(new Error(`failed to reply to message: ${e}`));
             });
 
         memberSpamCache.timestamp = new Date();
-    } else if (config_spam.warn_after !== 0 && memberSpamCache.spam_fouls === config_spam.warn_after) {
+    } else if (config_spam.WARN_AFTER !== 0 && memberSpamCache.spam_fouls === config_spam.WARN_AFTER) {
         messageReply(false, message, `warning: please stop spamming messages`, false, true)
             .catch((e: any) => {
                 logger.error(new Error(`failed to reply to message: ${e}`));
@@ -115,7 +115,7 @@ export function messageSpamCheck(
         memberSpamCache.timestamp = new Date();
     }
 
-    if (config_spam.mute_after !== 0 && memberSpamCache.spam_fouls === config_spam.mute_after) {
+    if (config_spam.MUTE_AFTER !== 0 && memberSpamCache.spam_fouls === config_spam.MUTE_AFTER) {
         memberSpamCache.timestamp = null;
         memberSpamCache.spam_fouls = 0;
 
@@ -202,7 +202,7 @@ function mute_user(
                 .add(mute_role)
                 .then(() => {
                     channel
-                        .send(`user ${message.author}, has been muted for ${config_spam.mute_period} minutes`)
+                        .send(`user ${message.author}, has been muted for ${config_spam.MUTE_PERIOD} minutes`)
                         .then(message => delete_message(message))
                         .catch((e: any) => {
                             logger.error(new Error(`failed to reply to message: ${e}`));
@@ -235,7 +235,7 @@ function mute_user(
                                 logger.error(new Error(`failed to give role to member: ${e}`));
                             }
                         }
-                    }, config_spam.mute_period * 60 * 1000);
+                    }, config_spam.MUTE_PERIOD * 60 * 1000);
                 })
                 .catch(e => {
                     logger.error(new Error(`failed to give role to member: ${e}`));

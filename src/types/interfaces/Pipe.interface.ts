@@ -4,9 +4,9 @@ import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 import { EmbedBuilder } from 'discord.js';
 
-const portal_url = 'https://portal-bot.xyz/docs';
-const interpreter_url = '/interpreter/objects';
-export const pipe_prefix = '|';
+const PORTAL_URL = 'https://portal-bot.xyz/docs';
+const INTERPRETER_URL = '/interpreter/objects';
+export const PIPE_PREFIX = '|';
 
 const pipes: InterfaceBlueprint[] = [
 	{
@@ -14,9 +14,9 @@ const pipes: InterfaceBlueprint[] = [
 		hover: 'make acronym',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
-				? is_acronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
+				? isAcronym(str) ? str : str.replace(/[-_,.:*=+]/g, ' ').split(' ').map(s => s[0]).join('')
 				: (typeof str === 'object')
-					? str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => is_acronym(sm) ? sm : sm[0]).join('')).join(',')
+					? str.map(s => s.replace(/[-_,.:*=+]/g, ' ').split(' ').map(sm => isAcronym(sm) ? sm : sm[0]).join('')).join(',')
 					: str;
 		},
 		set: null,
@@ -27,9 +27,9 @@ const pipes: InterfaceBlueprint[] = [
 		hover: 'keep only vowels',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
-				? get_vowels(str).join('')
+				? getVowels(str).join('')
 				: (typeof str === 'object')
-					? str.map(s => get_vowels(s).join('')).join(',')
+					? str.map(s => getVowels(s).join('')).join(',')
 					: str;
 		},
 		set: null,
@@ -40,9 +40,9 @@ const pipes: InterfaceBlueprint[] = [
 		hover: 'keep only consonants',
 		get: (str: string | string[]): string => {
 			return (typeof str === 'string')
-				? get_constants(str).join('')
+				? getConstants(str).join('')
 				: (typeof str === 'object')
-					? str.map(s => get_constants(s).join('')).join(',')
+					? str.map(s => getConstants(s).join('')).join(',')
 					: str;
 		},
 		set: null,
@@ -120,7 +120,7 @@ const pipes: InterfaceBlueprint[] = [
 			return (typeof str === 'string')
 				? 1
 				: (typeof str === 'object')
-					? <number>most_frequent(str, true)
+					? <number>mostFrequent(str, true)
 					: str;
 		},
 		set: null,
@@ -133,7 +133,7 @@ const pipes: InterfaceBlueprint[] = [
 			return (typeof str === 'string')
 				? str
 				: (typeof str === 'object')
-					? <string>most_frequent(str, false)
+					? <string>mostFrequent(str, false)
 					: str;
 		},
 		set: null,
@@ -206,12 +206,12 @@ const pipes: InterfaceBlueprint[] = [
 	},
 ];
 
-export function is_pipe(candidate: string): string {
+export function isPipe(candidate: string): string {
 	for (let i = 0; i < pipes.length; i++) {
-		const sub_str = String(candidate)
+		const subString = String(candidate)
 			.substring(1, (String(pipes[i].name).length + 1));
 
-		if (sub_str == pipes[i].name) {
+		if (subString == pipes[i].name) {
 			return pipes[i].name;
 		}
 	}
@@ -219,7 +219,7 @@ export function is_pipe(candidate: string): string {
 	return '';
 }
 
-export function get_pipe_guide(): EmbedBuilder {
+export function getPipeGuide(): EmbedBuilder {
 	const pipe_array: Field[] = [
 		{
 			emote: 'Used in Regex Interpreter',
@@ -250,7 +250,7 @@ export function get_pipe_guide(): EmbedBuilder {
 
 	return createEmbed(
 		'Pipe Guide',
-		'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
+		'[Pipes](' + PORTAL_URL + INTERPRETER_URL + '/pipes/description) ' +
 		'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
 		'How to use pipes with the Text Interpreter',
 		'#6EEB83',
@@ -263,30 +263,30 @@ export function get_pipe_guide(): EmbedBuilder {
 	);
 }
 
-export function get_pipe_help(): EmbedBuilder[] {
-	const pipe_array: Field[][] = [];
+export function getPipeHelp(): EmbedBuilder[] {
+	const pipeArray: Field[][] = [];
 
 	for (let l = 0; l <= pipes.length / 25; l++) {
-		pipe_array[l] = []
+		pipeArray[l] = []
 		for (let i = (24 * l); i < pipes.length && i < 24 * (l + 1); i++) {
-			pipe_array[l].push({
+			pipeArray[l].push({
 				emote: `${i + 1}. ${pipes[i].name}`,
-				role: `[hover or click](${portal_url}${interpreter_url}` +
+				role: `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
 					`/pipes/detailed/${(pipes[i].name)} "${(pipes[i].hover)}")`,
 				inline: true
 			});
 		}
 	}
 
-	return pipe_array.map((command, index): EmbedBuilder => {
+	return pipeArray.map((command, index): EmbedBuilder => {
 		if (index === 0) {
 			return createEmbed(
 				'Pipes',
-				'[Pipes](' + portal_url + interpreter_url + '/pipes/description) ' +
+				'[Pipes](' + PORTAL_URL + INTERPRETER_URL + '/pipes/description) ' +
 				'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
-				'Prefix: ' + pipe_prefix,
+				'Prefix: ' + PIPE_PREFIX,
 				'#6EEB83',
-				pipe_array[0],
+				pipeArray[0],
 				null,
 				null,
 				null,
@@ -298,7 +298,7 @@ export function get_pipe_help(): EmbedBuilder[] {
 				null,
 				null,
 				'#6EEB83',
-				pipe_array[index],
+				pipeArray[index],
 				null,
 				null,
 				null,
@@ -309,7 +309,7 @@ export function get_pipe_help(): EmbedBuilder[] {
 	});
 }
 
-export function get_pipe_help_super(candidate: string): EmbedBuilder | boolean {
+export function getPipeHelpSuper(candidate: string): EmbedBuilder | boolean {
 	for (let i = 0; i < pipes.length; i++) {
 		if (pipes[i].name === candidate) {
 			return createEmbed(
@@ -318,9 +318,9 @@ export function get_pipe_help_super(candidate: string): EmbedBuilder | boolean {
 				'#6EEB83',
 				[
 					{ emote: `Type`, role: `Pipe`, inline: true },
-					{ emote: `Prefix`, role: `${pipe_prefix}`, inline: true },
+					{ emote: `Prefix`, role: `${PIPE_PREFIX}`, inline: true },
 					{
-						emote: `Description`, role: `[hover or click](${portal_url}${interpreter_url}` +
+						emote: `Description`, role: `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
 							`/pipes/detailed/${candidate} "${(pipes[i].hover)}")`, inline: true
 					}
 				],
@@ -336,7 +336,7 @@ export function get_pipe_help_super(candidate: string): EmbedBuilder | boolean {
 	return false;
 }
 
-export function get_pipe(str: string | string[], pipe: string): string | number {
+export function getPipe(str: string | string[], pipe: string): string | number {
 	for (let l = 0; l < pipes.length; l++) {
 		if (pipe === pipes[l].name) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
@@ -347,7 +347,7 @@ export function get_pipe(str: string | string[], pipe: string): string | number 
 	return -1;
 }
 
-function most_frequent(array: string[], return_number: boolean): string | number {
+function mostFrequent(array: string[], return_number: boolean): string | number {
 	if (array.length == 0) {
 		return 'no statuses';
 	}
@@ -375,17 +375,17 @@ function most_frequent(array: string[], return_number: boolean): string | number
 	return return_number ? maxCount : maxEl;
 }
 
-function is_acronym(candidate: string): boolean {
+function isAcronym(candidate: string): boolean {
 	const word_exp = new RegExp(`\\b[A-Z]*[a-z]*[A-Z]s?\\d*[A-Z]*[\\-\\w+]\\b`);
 	return word_exp.test(candidate);
 }
 
-function get_vowels(str: string): string[] {
+function getVowels(str: string): string[] {
 	const new_str = str.toLowerCase().match(/[aeiouy]/gi);
 	return new_str ? new_str : [];
 }
 
-function get_constants(str: string): string[] {
+function getConstants(str: string): string[] {
 	const new_str = str.toLowerCase().match(/[bcdfghjklmnpqrstvwxz]/gi);
 	return new_str ? new_str : [];
 }

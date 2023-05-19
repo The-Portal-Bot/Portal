@@ -5,11 +5,11 @@ import { PGuild } from "../../types/classes/PGuild.class";
 import { Rank, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-function is_rank(rank: Rank) {
+function isRank(rank: Rank) {
     return !!rank.level && !!rank.role;
 }
 
-function is_role(rank: Rank, roles: Role[]) {
+function isRole(rank: Rank, roles: Role[]) {
     return roles.some(role => {
         return role.id === rank.role || role.name === rank.role;
     });
@@ -17,7 +17,7 @@ function is_role(rank: Rank, roles: Role[]) {
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('set_ranks')
+        .setName('setRanks')
         .setDescription('create ranks for the server'),
     async execute(
         message: Message, args: string[], pGuild: PGuild
@@ -33,42 +33,42 @@ module.exports = {
 
             if (args.length > 0) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const new_ranks_json = getJsonFromString(args.join(' '));
-                if (!new_ranks_json || !Array.isArray(new_ranks_json)) {
+                const newRanksJSON = getJsonFromString(args.join(' '));
+                if (!newRanksJSON || !Array.isArray(newRanksJSON)) {
                     return resolve({
                         result: false,
-                        value: messageHelp('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')
+                        value: messageHelp('commands', 'setRanks', 'ranking must be an array in JSON format (even for one role)')
                     });
                 }
 
-                const new_ranks = <Rank[]>new_ranks_json;
+                const newRanks = <Rank[]>newRanksJSON;
 
-                if (!new_ranks.every(r => r.level && r.role)) {
+                if (!newRanks.every(r => r.level && r.role)) {
                     return resolve({
                         result: false,
-                        value: messageHelp('commands', 'set_ranks', 'JSON syntax has spelling errors`')
+                        value: messageHelp('commands', 'setRanks', 'JSON syntax has spelling errors`')
                     });
                 }
-                if (!new_ranks.every(is_rank)) {
+                if (!newRanks.every(isRank)) {
                     return resolve({
                         result: false,
-                        value: messageHelp('commands', 'set_ranks', 'rankings must be a key-pair from level and role')
+                        value: messageHelp('commands', 'setRanks', 'rankings must be a key-pair from level and role')
                     });
                 }
-                if (!new_ranks.every(r => is_role(r, roles))) {
+                if (!newRanks.every(r => isRole(r, roles))) {
                     return resolve({
                         result: false,
-                        value: messageHelp('commands', 'set_ranks', 'a role given does not exist in server')
+                        value: messageHelp('commands', 'setRanks', 'a role given does not exist in server')
                     });
                 }
 
-                new_ranks.forEach(rank => {
+                newRanks.forEach(rank => {
                     rank.level = +rank.level;
                     const role = roles.find(role => role.name === rank.role);
                     if (role) rank.role = role.id;
                 });
 
-                setRanks(pGuild.id, new_ranks)
+                setRanks(pGuild.id, newRanks)
                     .then(r => {
                         return resolve({
                             result: r,
@@ -87,7 +87,7 @@ module.exports = {
             else {
                 return resolve({
                     result: false,
-                    value: messageHelp('commands', 'set_ranks')
+                    value: messageHelp('commands', 'setRanks')
                 });
             }
 

@@ -28,10 +28,10 @@ module.exports = {
             }
 
             if (args.length >= 2) {
-                const value_array = [...args];
-                value_array.shift();
+                const valueArray = [...args];
+                valueArray.shift();
 
-                const value = value_array
+                const value = valueArray
                     .filter(val => val !== '\n')
                     .join(' ');
 

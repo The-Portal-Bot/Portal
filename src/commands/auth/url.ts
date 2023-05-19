@@ -68,25 +68,25 @@ module.exports = {
                         });
                 }
             } else if (args.length > 0) {
-                let url_channel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
-                let url_category: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
+                let urlChannel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
+                let urlCategory: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
 
-                if (url_channel === '' && url_category !== '') {
-                    url_channel = url_category;
-                    url_category = null;
+                if (urlChannel === '' && urlCategory !== '') {
+                    urlChannel = urlCategory;
+                    urlCategory = null;
                 }
 
-                const url_options = getOptions(message.guild, 'url only channel');
+                const urlOptions = getOptions(message.guild, 'url only channel');
 
                 createChannel(
-                    message.guild, url_channel, url_options, url_category
+                    message.guild, urlChannel, urlOptions, urlCategory
                 )
-                    .then(r_create => {
-                        insertURL(pGuild.id, r_create)
-                            .then(r_url => {
+                    .then(rCreate => {
+                        insertURL(pGuild.id, rCreate)
+                            .then(rUrl => {
                                 return resolve({
-                                    result: r_url,
-                                    value: r_url
+                                    result: rUrl,
+                                    value: rUrl
                                         ? 'created url channel and category successfully'
                                         : 'failed to create a url channel'
                                 });

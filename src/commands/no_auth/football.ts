@@ -1,6 +1,6 @@
 import { RequestOptions } from 'https';
 import { getJsonFromString } from '../../libraries/help.library';
-import { https_fetch } from '../../libraries/http.library';
+import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -38,7 +38,7 @@ module.exports = {
                 },
             };
 
-            https_fetch(options)
+            httpsFetch(options)
                 .then((response: Buffer) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));

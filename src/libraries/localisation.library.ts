@@ -183,7 +183,7 @@ export const console_text: LocalisationOption[] = [
 // 	return false;
 // }
 
-export function get_function(
+export function getFunction(
 	output: string, locale: number, context: string
 ): any {
 	let func: any = null;
@@ -224,18 +224,18 @@ export function get_function(
 	return func;
 }
 
-export function client_write(
+export function clientWrite(
 	message: Message, pGuild: PGuild, context: string
 ): string {
 	if (!message) return 'could not fetch message';
 	if (!message.member) return 'could not fetch member';
-	if (!message.member.voice) return 'coud not fetch voice';
-	if (!message.member.voice) return 'coud not fetch voice';
+	if (!message.member.voice) return 'could not fetch voice';
+	if (!message.member.voice) return 'could not fetch voice';
 
 	let return_value = 'could not find data';
 
 	const found = pGuild.pChannels.some(p =>
-		p.voiceList.some(v => {
+		p.pVoiceChannels.some(v => {
 			if (message.member && message.member.voice.channel) {
 				if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 					switch (v.locale) {
@@ -259,7 +259,7 @@ export function client_write(
 	}
 }
 
-export function client_log(
+export function clientLog(
 	message: Message | null, guild_list: PGuild[], context: string, args: any
 ): string {
 	if (message === null || message.member === null) {
@@ -272,7 +272,7 @@ export function client_log(
 
 	guild_list.some(g =>
 		g.pChannels.some(p =>
-			p.voiceList.some(v => {
+			p.pVoiceChannels.some(v => {
 				if (message.member && message.member.voice.channel) {
 					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 						switch (v.locale) {

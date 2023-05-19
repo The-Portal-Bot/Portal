@@ -1252,7 +1252,7 @@ export async function deletedChannelSync(
                                 return true;
                             }
 
-                            p.voiceList.some(v => {
+                            p.pVoiceChannels.some(v => {
                                 if (v.id === currentVoice.id) {
                                     removeVoice(currentVoice.guild.id, p.id, v.id)
                                         .then(r => {

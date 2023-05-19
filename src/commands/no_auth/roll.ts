@@ -13,23 +13,23 @@ module.exports = {
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
             if (args.length > 0) {
-                let roll_command: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-                let roll_options: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+                let rollCommand: string = args.join(' ').substring(0, args.join(' ').indexOf('|'));
+                let rollOptions: string | null = args.join(' ').substring(args.join(' ').indexOf('|') + 1);
 
-                if (roll_command === '' && roll_options !== '') {
-                    roll_command = roll_options;
-                    roll_options = null;
+                if (rollCommand === '' && rollOptions !== '') {
+                    rollCommand = rollOptions;
+                    rollOptions = null;
                 }
 
-                roll_command = roll_command.replace(/\s/g, '');
+                rollCommand = rollCommand.replace(/\s/g, '');
 
                 try {
-                    const roll_lib = new Roll();
-                    const roll = roll_lib.roll(roll_command)
-                    const show = (roll_options && roll_options.trim() === 'show')
-                        ? ` (${roll.rolled} from ${roll_command})`
+                    const rollLibrary = new Roll();
+                    const roll = rollLibrary.roll(rollCommand)
+                    const show = (rollOptions && rollOptions.trim() === 'show')
+                        ? ` (${roll.rolled} from ${rollCommand})`
                         : ``;
-                    const roll_msg = `${message.member?.displayName} rolled ${roll.result}${show}`;
+                    const rollMsg = `${message.member?.displayName} rolled ${roll.result}${show}`;
 
                     message.channel
                         .send({
@@ -46,7 +46,7 @@ module.exports = {
                                     null,
                                     undefined,
                                     {
-                                        name: maxString(roll_msg, 256),
+                                        name: maxString(rollMsg, 256),
                                         icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif'
                                     }
                                 )

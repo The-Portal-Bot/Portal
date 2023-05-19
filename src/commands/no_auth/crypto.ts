@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import voca from 'voca';
 import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
-import { https_fetch } from '../../libraries/http.library';
+import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 module.exports = {
@@ -26,10 +26,10 @@ module.exports = {
                 });
             }
 
-            const crypto_name = args.join(' ').substr(0, args.join(' ').indexOf('|')).replace(/\s/g, ' ').trim();
-            const currnc_name = args.join(' ').substr(args.join(' ').indexOf('|') + 1).replace(/\s/g, ' ').trim();
+            const cryptoName = args.join(' ').substr(0, args.join(' ').indexOf('|')).replace(/\s/g, ' ').trim();
+            const currencyName = args.join(' ').substr(args.join(' ').indexOf('|') + 1).replace(/\s/g, ' ').trim();
 
-            if (crypto_name === '') {
+            if (cryptoName === '') {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'crypto', 'you must give an authority currency like usd')
@@ -40,7 +40,7 @@ module.exports = {
                 'method': 'GET',
                 'hostname': 'coingecko.p.rapidapi.com',
                 'port': undefined,
-                'path': `/simple/price?ids=${crypto_name}&vs_currencies=${currnc_name}`,
+                'path': `/simple/price?ids=${cryptoName}&vs_currencies=${currencyName}`,
                 'headers': {
                     'x-rapidapi-host': 'coingecko.p.rapidapi.com',
                     'x-rapidapi-key': process.env.COINGECKO,
@@ -48,9 +48,8 @@ module.exports = {
                 }
             };
 
-            https_fetch(options)
+            httpsFetch(options)
                 .then((response: Buffer) => {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
 
                     if (!json) {
@@ -76,7 +75,7 @@ module.exports = {
                                     undefined,
                                     {
                                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                                        name: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price is ${json[crypto_name][currnc_name]}`,
+                                        name: `${voca.titleCase(cryptoName)} to ${voca.titleCase(currencyName)} price is ${json[cryptoName][currencyName]}`,
                                         icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/coin.gif'
                                     }
                                 )

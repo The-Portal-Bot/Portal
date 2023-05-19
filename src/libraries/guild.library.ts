@@ -10,9 +10,9 @@ import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
-import { ATTRIBUTE_PREFIX as attributePrefix, getAttribute, isAttribute } from '../types/interfaces/Attribute.interface';
-import { get_pipe, is_pipe, pipe_prefix } from '../types/interfaces/Pipe.interface';
-import { get_variable, is_variable, variable_prefix } from '../types/interfaces/Variable.interface';
+import { ATTRIBUTE_PREFIX, getAttribute, isAttribute } from '../types/interfaces/Attribute.interface';
+import { getPipe, isPipe, PIPE_PREFIX } from '../types/interfaces/Pipe.interface';
+import { getVariable, isVariable, VARIABLE_PREFIX } from '../types/interfaces/Variable.interface';
 import { createMusicLyricsMessage, createMusicMessage, getJsonFromString, logger, maxString } from './help.library';
 import { insertVoice } from "./mongo.library";
 
@@ -57,8 +57,8 @@ export function getOptions(
 	} as GuildChannelCreateOptions;
 }
 
-export function includedInPortalGuilds(guild_id: string, guild_list: PGuild[]): boolean {
-	return guild_list ? guild_list.some(g => g.id === guild_id) : false;
+export function includedInPortalGuilds(guildId: string, pGuilds: PGuild[]): boolean {
+	return pGuilds ? pGuilds.some(pGuild => pGuild.id === guildId) : false;
 }
 
 export function includedInPChannels(channelId: string, pChannels: PChannel[]): boolean {
@@ -66,7 +66,7 @@ export function includedInPChannels(channelId: string, pChannels: PChannel[]): b
 }
 
 export function includedInVoiceList(channelId: string, pChannels: PChannel[]): boolean {
-	return pChannels ? pChannels.some(p => p.voiceList.some(v => v.id === channelId)) : false;
+	return pChannels ? pChannels.some(p => p.pVoiceChannels.some(v => v.id === channelId)) : false;
 }
 
 export function includedInIgnoreList(channelId: string, pGuild: PGuild): boolean {
@@ -86,9 +86,7 @@ export function isAnnouncementChannel(channelId: string, pGuild: PGuild): boolea
 }
 
 export function getRole(guild: Guild | null, roleIdOrName: string): Role | undefined {
-	return guild?.roles.cache.find(cached_role =>
-		cached_role.id === roleIdOrName || cached_role.name === roleIdOrName
-	);
+	return guild?.roles.cache.find(role => role.id === roleIdOrName || role.name === roleIdOrName);
 }
 
 export async function createChannel(
@@ -165,9 +163,9 @@ export async function createVoiceChannel(
 		return Promise.reject(`state has no member`);
 	}
 
-	let voice_options: GuildChannelCreateOptions = createVoiceOptions(state, portalObject);
+	let voiceOptions: GuildChannelCreateOptions = createVoiceOptions(state, portalObject);
 
-	const newGuildVoiceChannel = await state.guild.channels.create({ ...voice_options, name: 'loading..' });
+	const newGuildVoiceChannel = await state.guild.channels.create({ ...voiceOptions, name: 'loading..' });
 	if (!newGuildVoiceChannel) {
 		return false;
 	}
@@ -187,26 +185,26 @@ export async function createVoiceChannel(
 	return `created channel and moved member to new voice`;
 }
 
-export async function create_music_channel(
-	guild: Guild, music_channel: string, music_category: string | CategoryChannel | null, pGuild: PGuild
+export async function createMusicChannel(
+	guild: Guild, musicChannel: string, musicCategory: string | CategoryChannel | null, pGuild: PGuild
 ): Promise<boolean> {
 	let newMusicCategoryGuildChannel: CategoryChannel | undefined;
-	if (music_category && typeof music_category === 'string') { // with category		
+	if (musicCategory && typeof musicCategory === 'string') { // with category		
 		newMusicCategoryGuildChannel = await guild.channels
-			.create({ name: music_category, type: ChannelType.GuildCategory })
+			.create({ name: musicCategory, type: ChannelType.GuildCategory })
 			.catch(e => {
 				return Promise.reject(`failed to create music category: ${e}`);
 			});
 	}
-	else if (music_category) { // with category object given
-		newMusicCategoryGuildChannel = music_category as CategoryChannel;
+	else if (musicCategory) { // with category object given
+		newMusicCategoryGuildChannel = musicCategory as CategoryChannel;
 	}
 
 	const newMusicGuildChannel = await guild.channels
 		.create(
 
 			{
-				name: `${music_channel}`,
+				name: `${musicChannel}`,
 				parent: newMusicCategoryGuildChannel,
 				type: ChannelType.GuildText,
 				topic: 'play:▶️, pause:⏸, skip:⏭, pin last:📌, lyrics:📄, queue text:⬇️, clear queue:🧹, leave:🚪' // , vol dwn ➖, vol up ➕
@@ -241,7 +239,7 @@ export async function create_music_channel(
 }
 
 export async function moveMembersBack(
-	oldChannel: VoiceBasedChannel, member: GuildMember, member_found: GuildMember
+	oldChannel: VoiceBasedChannel, member: GuildMember, memberFound: GuildMember
 ): Promise<string> {
 	if (!oldChannel.deletable) {
 		return Promise.reject('could not move to original voice channel because it was deleted');
@@ -254,7 +252,7 @@ export async function moveMembersBack(
 		return Promise.reject(`did not move requester back to original channel`);
 	}
 
-	const setUserFocusBackToOriginalChannel = await member_found.voice.setChannel(oldChannel)
+	const setUserFocusBackToOriginalChannel = await memberFound.voice.setChannel(oldChannel)
 		.catch(e => { return Promise.reject(`focus did not end properly: ${e}`); });
 
 	if (!setUserFocusBackToOriginalChannel) {
@@ -264,18 +262,18 @@ export async function moveMembersBack(
 	return 'focus ended properly';
 }
 
-export async function create_focus_channel(
-	guild: Guild, member: GuildMember, member_found: GuildMember,
-	focus_time: number, portalObject: PChannel
+export async function createFocusChannel(
+	guild: Guild, member: GuildMember, memberFound: GuildMember,
+	focusTime: number, portalObject: PChannel
 ): Promise<string> {
 	if (!member.voice.channel) {
 		return Promise.reject(`member is not in a voice channel`);
 	}
 
-	const chatRoomName = `${focus_time === 0
+	const chatRoomName = `${focusTime === 0
 		? 'Private Room'
-		: `PR-${focus_time}' $hour:$minute/${moment()
-			.add(focus_time, focus_time === 1 ? "minute" : "minutes")
+		: `PR-${focusTime}' $hour:$minute/${moment()
+			.add(focusTime, focusTime === 1 ? "minute" : "minutes")
 			.format('hh:mm')}`
 		}`;
 
@@ -298,7 +296,7 @@ export async function create_focus_channel(
 	member.voice.setChannel(newVoiceChannel as unknown as VoiceBasedChannel) // as VoiceBasedChannel)
 		.catch(e => { return Promise.reject(`failed to set member to new channel: ${e}`); });
 
-	member_found.voice.setChannel(newVoiceChannel as unknown as VoiceBasedChannel) // as VoiceBasedChannel)
+	memberFound.voice.setChannel(newVoiceChannel as unknown as VoiceBasedChannel) // as VoiceBasedChannel)
 		.catch(e => { return Promise.reject(`failed to set member to new channel: ${e}`); });
 
 
@@ -308,21 +306,21 @@ export async function create_focus_channel(
 	))
 		.catch(e => { return Promise.reject(`failed to store voice channel: ${e}`); });
 
-	if (focus_time === 0) {
+	if (focusTime === 0) {
 		return 'private room successfully created';
 	}
 
-	return focus_time === 0
+	return focusTime === 0
 		? 'private room successfully created'
 		: 'focus channel successfully created';
 }
 
-export async function delete_channel(
-	type: PortalChannelTypes, channel_to_delete: VoiceChannel | TextChannel,
+export async function deleteChannel(
+	type: PortalChannelTypes, channelToDelete: VoiceChannel | TextChannel,
 	message: Message | null, isPortal = false
 ): Promise<boolean> {
-	if (isPortal && channel_to_delete.deletable) {
-		const channelDeleted = await channel_to_delete
+	if (isPortal && channelToDelete.deletable) {
+		const channelDeleted = await channelToDelete
 			.delete()
 			.catch(e => {
 				return Promise.reject(`failed to delete channel: ${e}`);
@@ -336,13 +334,13 @@ export async function delete_channel(
 	}
 
 	const author = message.author;
-	const channel_to_delete_name = channel_to_delete.name;
-	let replied_with_yes = false;
+	const channelToDeleteName = channelToDelete.name;
+	let repliedWithYes = false;
 
 	const messageQuestion = await message.channel
 		.send(
 			`${message.author}, do you wish to delete old ` +
-			`${PortalChannelTypes[type].toString()} channel **${channel_to_delete}** (yes / no) ?`
+			`${PortalChannelTypes[type].toString()} channel **${channelToDelete}** (yes / no) ?`
 		)
 		.catch(e => {
 			return Promise.reject(`failed to send message: ${e}`);
@@ -355,15 +353,15 @@ export async function delete_channel(
 
 	collector.on('collect', (m: Message) => {
 		if (m.content === 'yes' || m.content === 'no') {
-			replied_with_yes = m.content === 'yes' ? true : false;
+			repliedWithYes = m.content === 'yes' ? true : false;
 			collector.stop();
 		}
 	});
 
 	collector.on('end', (collected: Collection<string, Message>) => {
-		collected.forEach((reply_message: Message) => {
-			if (reply_message.deletable) {
-				reply_message
+		collected.forEach((replyMessage: Message) => {
+			if (replyMessage.deletable) {
+				replyMessage
 					.delete()
 					.catch(e => {
 						return Promise.reject(`failed to delete message: ${e}`);
@@ -371,9 +369,9 @@ export async function delete_channel(
 			}
 		});
 
-		if (!replied_with_yes) {
+		if (!repliedWithYes) {
 			messageQuestion
-				.edit(`channel **"${channel_to_delete}"** will not be deleted`)
+				.edit(`channel **"${channelToDelete}"** will not be deleted`)
 				.then(msg => {
 					setTimeout(() =>
 						msg
@@ -388,15 +386,15 @@ export async function delete_channel(
 					return Promise.reject(`failed to send message: ${e}`);
 				});
 		} else {
-			if (channel_to_delete.deletable) {
-				channel_to_delete
+			if (channelToDelete.deletable) {
+				channelToDelete
 					.delete()
 					.then(() => {
 						messageQuestion
-							.edit(`channel **"${channel_to_delete_name}"** deleted`)
-							.then(edit_message => {
+							.edit(`channel **"${channelToDeleteName}"** deleted`)
+							.then(editMessage => {
 								setTimeout(() =>
-									edit_message
+									editMessage
 										.delete()
 										.then(() => {
 											return true;
@@ -417,10 +415,10 @@ export async function delete_channel(
 			}
 			else {
 				messageQuestion
-					.edit(`channel **"${channel_to_delete}"** is not deletable`)
-					.then(edit_message => {
+					.edit(`channel **"${channelToDelete}"** is not deletable`)
+					.then(editMessage => {
 						setTimeout(() =>
-							edit_message
+							editMessage
 								.delete()
 								.then(() => {
 									return true;
@@ -446,43 +444,42 @@ export async function generateChannelName(
 	pGuild: PGuild, guild: Guild
 ): Promise<boolean> {
 	for (let i = 0; i < pChannels.length; i++) {
-		for (let j = 0; j < pChannels[i].voiceList.length; j++) {
-			if (pChannels[i].voiceList[j].id === voiceChannel.id) {
+		for (let j = 0; j < pChannels[i].pVoiceChannels.length; j++) {
+			if (pChannels[i].pVoiceChannels[j].id === voiceChannel.id) {
 				// I choose not to fetch the voice regex from database
 				// if it changed users can create a new one instead of
 				// me creating an database spam 
-				let regex = pChannels[i].voiceList[j].regex;
+				let regex = pChannels[i].pVoiceChannels[j].regex;
 				if (pChannels[i].regexOverwrite) {
 					const member = voiceChannel.members
-						.find(m => m.id === pChannels[i].voiceList[j].creator_id);
+						.find(m => m.id === pChannels[i].pVoiceChannels[j].creatorId);
 
 					if (member) {
-						const member_object = pGuild.pMembers
-							.find(m => m.id === member.id);
+						const pMember = pGuild.pMembers.find(m => m.id === member.id);
 
-						if (member_object?.regex && member_object.regex !== 'null') {
-							regex = member_object.regex;
+						if (pMember?.regex && pMember.regex !== 'null') {
+							regex = pMember.regex;
 						}
 					}
 				}
 
-				const new_name = pChannels[i].voiceList[j].render
-					? regex_interpreter(
+				const newName = pChannels[i].pVoiceChannels[j].render
+					? regexInterpreter(
 						regex,
 						voiceChannel,
-						pChannels[i].voiceList[j],
+						pChannels[i].pVoiceChannels[j],
 						pChannels,
 						pGuild,
 						guild,
-						pChannels[i].voiceList[j].creator_id
+						pChannels[i].pVoiceChannels[j].creatorId
 					)
 					: regex;
 
-				if (new_name.length >= 1) {
-					const capped_new_name = maxString(new_name, 99);
-					if (voiceChannel.name !== capped_new_name) {
+				if (newName.length >= 1) {
+					const newNameCapped = maxString(newName, 99);
+					if (voiceChannel.name !== newNameCapped) {
 						await voiceChannel
-							.edit({ name: capped_new_name })
+							.edit({ name: newNameCapped })
 							.catch(e => {
 								return Promise.reject(`failed to edit voice channel: ${e}`);
 							});
@@ -503,8 +500,8 @@ export async function generateChannelName(
 	return true;
 }
 
-export function regex_interpreter(
-	regex: string, voiceChannel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
+export function regexInterpreter(
+	regex: string, voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
 	pChannels: PChannel[] | undefined | null, pGuild: PGuild, guild: Guild, memberId: string
 ): string {
 	let lastSpaceIndex = 0;
@@ -516,12 +513,12 @@ export function regex_interpreter(
 	let newChannelName = '';
 
 	for (let i = 0; i < regex.length; i++) {
-		if (regex[i] === variable_prefix) {
-			const variable = is_variable(regex.substring(i));
+		if (regex[i] === VARIABLE_PREFIX) {
+			const variable = isVariable(regex.substring(i));
 
 			if (variable.length !== 0) {
-				const returnValue: string | number = <string>get_variable( // maybe make any ?
-					voiceChannel, voice_object, pChannels, pGuild, guild, variable
+				const returnValue: string | number = <string>getVariable( // maybe make any ?
+					voiceChannel, pVoiceChannel, pChannels, pGuild, guild, variable
 				);
 
 				if (returnValue !== null) {
@@ -538,15 +535,15 @@ export function regex_interpreter(
 				newChannelName += regex[i];
 			}
 		}
-		else if (regex[i] === attributePrefix) {
+		else if (regex[i] === ATTRIBUTE_PREFIX) {
 			const attr = isAttribute(regex.substring(i));
 
 			if (attr.length !== 0) {
-				// const member_object = pGuild.member_list.find(m => m.id === memberId);
+				// const pMember = pGuild.member_list.find(m => m.id === memberId);
 
 				const returnValue = getAttribute(
-					voiceChannel, voice_object, pChannels, pGuild, guild, attr //, member_object
-					// voiceChannel, voice_object, p, pGuild, attr, member_object
+					voiceChannel, pVoiceChannel, pChannels, pGuild, guild, attr //, pMember
+					// voiceChannel, pVoiceChannel, p, pGuild, attr, pMember
 				);
 
 
@@ -564,12 +561,12 @@ export function regex_interpreter(
 				newChannelName += regex[i];
 			}
 		}
-		else if (regex[i] === pipe_prefix) {
-			const pipe = is_pipe(regex.substring(i));
+		else if (regex[i] === PIPE_PREFIX) {
+			const pipe = isPipe(regex.substring(i));
 
 			if (pipe.length !== 0) {
 				if (lastVariableEndIndex + 1 === i) {
-					const returnValue = get_pipe(lastVariable, pipe);
+					const returnValue = getPipe(lastVariable, pipe);
 
 					if (returnValue !== null) {
 						newChannelName = newChannelName.substring(0,
@@ -582,7 +579,7 @@ export function regex_interpreter(
 					}
 				}
 				else if (lastAttributeEndIndex + 1 === i) {
-					const returnValue = get_pipe(lastAttribute, pipe);
+					const returnValue = getPipe(lastAttribute, pipe);
 
 					if (returnValue !== null) {
 						newChannelName = newChannelName.substring(0,
@@ -595,7 +592,7 @@ export function regex_interpreter(
 					}
 				}
 				else {
-					const returnValue = get_pipe(newChannelName.substring(lastSpaceIndex, newChannelName.length), pipe);
+					const returnValue = getPipe(newChannelName.substring(lastSpaceIndex, newChannelName.length), pipe);
 
 					if (returnValue !== null) {
 						const str_for_pipe = returnValue;
@@ -642,16 +639,16 @@ export function regex_interpreter(
 						statement.is === ">" || statement.is === "<" || statement.is === ">=" || statement.is === "<=") {
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 						if (inlineOperator(statement.is)(
-							regex_interpreter(statement.if, voiceChannel, voice_object, pChannels, pGuild, guild, memberId),
-							regex_interpreter(statement.with, voiceChannel, voice_object, pChannels, pGuild, guild, memberId)
+							regexInterpreter(statement.if, voiceChannel, pVoiceChannel, pChannels, pGuild, guild, memberId),
+							regexInterpreter(statement.with, voiceChannel, pVoiceChannel, pChannels, pGuild, guild, memberId)
 						)) {
-							const value = regex_interpreter(statement.yes, voiceChannel, voice_object, pChannels, pGuild, guild, memberId);
+							const value = regexInterpreter(statement.yes, voiceChannel, pVoiceChannel, pChannels, pGuild, guild, memberId);
 							if (value !== '--') {
 								newChannelName += value;
 							}
 						}
 						else {
-							const value = regex_interpreter(statement.no, voiceChannel, voice_object, pChannels, pGuild, guild, memberId);
+							const value = regexInterpreter(statement.no, voiceChannel, pVoiceChannel, pChannels, pGuild, guild, memberId);
 							if (value !== '--') {
 								newChannelName += value;
 							}

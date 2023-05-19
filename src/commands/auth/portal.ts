@@ -36,18 +36,18 @@ module.exports = {
                 });
             }
 
-            const current_guild = message.guild;
-            const current_member = message.member;
+            const currentGuild = message.guild;
+            const currentMember = message.member;
 
-            let portal_channel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-            let portal_category: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+            let pPortalChannel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+            let pPortalCategory: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
-            if (portal_channel === '' && portal_category !== '') {
-                portal_channel = portal_category;
-                portal_category = null;
+            if (pPortalChannel === '' && pPortalCategory !== '') {
+                pPortalChannel = pPortalCategory;
+                pPortalCategory = null;
             }
 
-            const portal_options: GuildChannelCreateOptions = {
+            const portalOptions: GuildChannelCreateOptions = {
                 name: 'portal',
                 topic: `by Portal, channels on demand`,
                 type: ChannelType.GuildVoice,
@@ -55,22 +55,22 @@ module.exports = {
                 userLimit: 1
             };
 
-            const voice_regex = pGuild.premium
-                // ? 'G$#-P$member_count | $status_list'
-                ? `$#:$member_count {{
-                "if": "$status_count", "is": "===", "with": "1",
-                "yes": "$status_list", "no": "$status_list|acronym"
+            const voiceRegex = pGuild.premium
+                // ? 'G$#-P$memberCount | $statusList'
+                ? `$#:$memberCount {{
+                "if": "$statusCount", "is": "===", "with": "1",
+                "yes": "$statusList", "no": "$statusList|acronym"
             }}`
                 : 'Channel $#';
 
-            createChannel(current_guild, portal_channel, portal_options, portal_category)
-                .then(r_channel => {
-                    const new_portal = new PChannel(r_channel, current_member.id,
-                        true, portal_channel, voice_regex, [], false, null, pGuild.locale, true, true, 0, false);
+            createChannel(currentGuild, pPortalChannel, portalOptions, pPortalCategory)
+                .then(rChannel => {
+                    const pChannel = new PChannel(rChannel, currentMember.id,
+                        true, pPortalChannel, voiceRegex, [], false, null, pGuild.locale, true, true, 0, false);
 
-                    insertPortal(pGuild.id, new_portal as IPChannel)
-                        .then(r_portal => {
-                            if (r_portal) {
+                    insertPortal(pGuild.id, pChannel as unknown as IPChannel)
+                        .then(rPortal => {
+                            if (rPortal) {
                                 return resolve({
                                     result: true,
                                     value: 'portal channel has been created.\n' +

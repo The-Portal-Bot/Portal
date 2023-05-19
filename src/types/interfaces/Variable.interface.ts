@@ -10,33 +10,33 @@ import { PVoiceChannel } from '../classes/PVoiceChannel.class';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
-export const variable_prefix = '$';
+export const VARIABLE_PREFIX = '$';
 
 const variables: InterfaceBlueprint[] = [
 	{
 		name: '##',
 		hover: 'number of voice channel with #',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			portal_object_list: PChannel[] | undefined | null // , pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			pChannels: PChannel[] | undefined | null // , pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return 'N/A';
 			}
-			if (!portal_object_list) {
+			if (!pChannels) {
 				return 'N/A';
 			}
 
-			const portal_object = portal_object_list.find(portal =>
-				portal.voiceList.some(voice =>
-					voice.id === voice_object.id)
+			const pChannel = pChannels.find(portal =>
+				portal.pVoiceChannels.some(voice =>
+					voice.id === pVoiceChannel.id)
 			);
 
-			if (portal_object !== undefined) {
+			if (pChannel !== undefined) {
 				let i = 0;
-				portal_object.voiceList.some(voice => {
+				pChannel.pVoiceChannels.some(voice => {
 					i++;
-					return voice.id === voice_object.id;
+					return voice.id === pVoiceChannel.id;
 				});
 				return `#${i}`;
 			}
@@ -49,26 +49,26 @@ const variables: InterfaceBlueprint[] = [
 		name: '#',
 		hover: 'number of voice channel',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			portal_object_list: PChannel[] | undefined | null // , pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			pChannels: PChannel[] | undefined | null // , pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return 'N/A';
 			}
-			if (!portal_object_list) {
+			if (!pChannels) {
 				return 'N/A';
 			}
 
-			const portal_object = portal_object_list.find(portal =>
-				portal.voiceList.some(voice =>
-					voice.id === voice_object.id)
+			const pChannel = pChannels.find(portal =>
+				portal.pVoiceChannels.some(voice =>
+					voice.id === pVoiceChannel.id)
 			);
 
-			if (portal_object !== undefined) {
+			if (pChannel !== undefined) {
 				let i = 0;
-				portal_object.voiceList.some(voice => {
+				pChannel.pVoiceChannels.some(voice => {
 					i++;
-					return voice.id === voice_object.id;
+					return voice.id === pVoiceChannel.id;
 				});
 				return `${i}`;
 			}
@@ -78,26 +78,26 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'creator_portal',
+		name: 'creatorPortal',
 		hover: 'creator of portal channel',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			portal_object_list: PChannel[] | undefined | null // , pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			pChannels: PChannel[] | undefined | null // , pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return 'N/A';
 			}
-			if (!portal_object_list) {
+			if (!pChannels) {
 				return 'N/A';
 			}
 
-			const portal_object = portal_object_list.find(portal =>
-				portal.voiceList.some(voice =>
-					voice.id === voice_object.id)
+			const pChannel = pChannels.find(portal =>
+				portal.pVoiceChannels.some(voice =>
+					voice.id === pVoiceChannel.id)
 			);
 
-			if (portal_object !== undefined) {
-				return '' + portal_object.creatorId;
+			if (pChannel !== undefined) {
+				return '' + pChannel.creatorId;
 			}
 
 			return '?';
@@ -106,17 +106,17 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'creator_voice',
+		name: 'creatorVoice',
 		hover: 'creator of voice channel',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return 'N/A';
 			}
 
-			return voice_object.creator_id;
+			return pVoiceChannel.creatorId;
 		},
 		set: null,
 		auth: AuthEnum.none
@@ -125,10 +125,10 @@ const variables: InterfaceBlueprint[] = [
 		name: 'date',
 		hover: 'current date',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().subtract(10, 'days').calendar();
 			}
 
@@ -138,13 +138,13 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'day_number',
+		name: 'dayNumber',
 		hover: 'current day in number format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().date();
 			}
 
@@ -154,13 +154,13 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'day_name',
+		name: 'dayName',
 		hover: 'current day in text format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().format('dddd');
 			}
 			return moment().format('dddd');
@@ -169,13 +169,13 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'month_number',
+		name: 'monthNumber',
 		hover: 'current month in number format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().format('M');
 			}
 			return moment().format('M');
@@ -184,13 +184,13 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'month_name',
+		name: 'monthName',
 		hover: 'current month in text format',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().startOf('month').format('MMMM');
 			}
 			return moment().startOf('month')
@@ -203,10 +203,10 @@ const variables: InterfaceBlueprint[] = [
 		name: 'year',
 		hover: 'current year',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().format('yyyy');
 			}
 			return moment().format('yyyy');
@@ -218,10 +218,10 @@ const variables: InterfaceBlueprint[] = [
 		name: 'time',
 		hover: 'current time',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().format('hh:mm:ss');
 			}
 			return moment().format('hh:mm:ss');
@@ -233,10 +233,10 @@ const variables: InterfaceBlueprint[] = [
 		name: 'hour',
 		hover: 'current hour',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().format('hh');
 			}
 			return moment().format('hh');
@@ -248,10 +248,10 @@ const variables: InterfaceBlueprint[] = [
 		name: 'minute',
 		hover: 'current minute',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().format('mm');
 			}
 			return moment().format('mm');
@@ -263,10 +263,10 @@ const variables: InterfaceBlueprint[] = [
 		name: 'second',
 		hover: 'current second',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return moment().format('ss');
 			}
 			return moment().format('ss');
@@ -275,15 +275,15 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'member_active_count',
+		name: 'memberActiveCount',
 		hover: 'number of members with status',
 		get: (
-			voice_channel: VoiceChannel | undefined | null // , voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'N/A'
+			if (!voiceChannel) return 'N/A'
 			let cnt = 0;
-			voice_channel.members.forEach((member) => {
+			voiceChannel.members.forEach((member) => {
 				if (member.presence?.activities !== null && !member.user.bot) {
 					cnt++;
 				}
@@ -295,15 +295,15 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'member_count',
+		name: 'memberCount',
 		hover: 'number of members in channel',
 		get: (
-			voice_channel: VoiceChannel | undefined | null // , voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'N/A'
+			if (!voiceChannel) return 'N/A'
 			let cnt = 0;
-			voice_channel.members.forEach((member) => {
+			voiceChannel.members.forEach((member) => {
 				if (!member.user.bot) {
 					cnt++;
 				}
@@ -315,27 +315,27 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'member_history',
+		name: 'memberHistory',
 		hover: 'all members to ever pass through channel',
 		get: (
-			// voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			// voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			return 'no_yet_implemented';
+			return 'noYetImplemented';
 		},
 		set: null,
 		auth: AuthEnum.none
 	},
 	{
-		name: 'member_list',
+		name: 'memberList',
 		hover: 'current members names',
 		get: (
-			voice_channel: VoiceChannel | undefined | null // , voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'N/A'
+			if (!voiceChannel) return 'N/A'
 			const memberList: string[] = [];
-			voice_channel.members.forEach(member => {
+			voiceChannel.members.forEach(member => {
 				memberList.push(member.displayName);
 			});
 
@@ -345,15 +345,15 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'member_with_status',
+		name: 'memberWithStatus',
 		hover: 'names of members with statuses',
 		get: (
-			voice_channel: VoiceChannel | undefined | null// , voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null// , pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_channel) return 'N/A'
+			if (!voiceChannel) return 'N/A'
 			const memberList: string[] = [];
-			voice_channel.members.forEach(member => {
+			voiceChannel.members.forEach(member => {
 				if (member.presence?.activities !== null) {
 					memberList.push(member.displayName);
 				}
@@ -365,66 +365,66 @@ const variables: InterfaceBlueprint[] = [
 		auth: AuthEnum.none
 	},
 	{
-		name: 'status_count',
+		name: 'statusCount',
 		hover: 'number of unique statuses',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_channel) {
+			if (!voiceChannel) {
 				return 'N/A';
 			}
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return 'N/A';
 			}
 
 			// can be faster
-			const status_list: string[] = getStatusList(voice_channel, voice_object);
+			const statusList: string[] = getStatusList(voiceChannel, pVoiceChannel);
 
-			return status_list.length;
+			return statusList.length;
 		},
 		set: null,
 		auth: AuthEnum.none
 	},
 	{
-		name: 'status_history',
+		name: 'statusHistory',
 		hover: 'all statuses from start',
 		get: (
-			// voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			// voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			return 'no_yet_implemented';
+			return 'noYetImplemented';
 		},
 		set: null,
 		auth: AuthEnum.none
 	},
 	{
-		name: 'status_list',
+		name: 'statusList',
 		hover: 'all statuses names',
 		get: (
-			voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-			// portal_object_list: PChannel[] | undefined | null, pGuild: any, guild: Guild
+			voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+			// pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
 		) => {
-			if (!voice_channel) {
+			if (!voiceChannel) {
 				return 'N/A';
 			}
-			if (!voice_object) {
+			if (!pVoiceChannel) {
 				return 'N/A';
 			}
 
-			return getStatusList(voice_channel, voice_object);
+			return getStatusList(voiceChannel, pVoiceChannel);
 		},
 		set: null,
 		auth: AuthEnum.none
 	}
 ];
 
-export function is_variable(candidate: string): string {
+export function isVariable(candidate: string): string {
 	for (let i = 0; i < variables.length; i++) {
-		const sub_str = String(candidate)
+		const subString = String(candidate)
 			.substring(1, (String(variables[i].name).length + 1));
 
-		if (sub_str === variables[i].name) {
+		if (subString === variables[i].name) {
 			return variables[i].name;
 		}
 	}
@@ -432,11 +432,11 @@ export function is_variable(candidate: string): string {
 	return '';
 }
 
-export function get_variable_guide(): EmbedBuilder {
+export function getVariableGuide(): EmbedBuilder {
 	const structArray: Field[] = [
 		{
 			emote: 'Used in Regex Interpreter',
-			role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
+			role: '*used by channel name (regex, regexVoice, regexPortal) and run command*',
 			inline: true
 		},
 		{
@@ -476,18 +476,18 @@ export function get_variable_guide(): EmbedBuilder {
 	);
 }
 
-function get_link(variable: string): string {
+function getLink(variable: string): string {
 	const url = PORTAL_URL + INTERPRETER_URL + '/variables';
-	const general = ['creator_portal', 'creator_voice', '##', '#'];
-	const member = ['member_list', 'member_count', 'member_active_count', 'member_with_status', 'member_history'];
-	const status = ['status_list', 'status_count', 'status_history'];
-	const time = ['date', 'day_number', 'day_name', 'month_number', 'month_name', 'year', 'time', 'hour', 'minute', 'second'];
+	const general = ['creatorPortal', 'creatorVoice', '##', '#'];
+	const member = ['memberList', 'memberCount', 'memberActiveCount', 'memberWithStatus', 'memberHistory'];
+	const status = ['statusList', 'statusCount', 'statusHistory'];
+	const time = ['date', 'dayNumber', 'dayName', 'monthNumber', 'monthName', 'year', 'time', 'hour', 'minute', 'second'];
 
 	if (general.includes(variable)) {
 		if (variable === '##') {
 			return `${url}/detailed/general/slash`
 		} else if (variable === '#') {
-			return `${url}/detailed/general/double_slash`
+			return `${url}/detailed/general/doubleSlash`
 		} else {
 			return `${url}/detailed/general/${variable}`
 		}
@@ -502,7 +502,7 @@ function get_link(variable: string): string {
 	}
 }
 
-export function get_variable_help(): EmbedBuilder[] {
+export function getVariableHelp(): EmbedBuilder[] {
 	const variableArray: Field[][] = [];
 
 	for (let l = 0; l <= variables.length / 24; l++) {
@@ -510,7 +510,7 @@ export function get_variable_help(): EmbedBuilder[] {
 		for (let i = (24 * l); i < variables.length && i < 24 * (l + 1); i++) {
 			variableArray[l].push({
 				emote: `${i + 1}. ${variables[i].name}`,
-				role: `[hover or click](${get_link(variables[i].name)} "${get_link(variables[i].hover)}")`,
+				role: `[hover or click](${getLink(variables[i].name)} "${getLink(variables[i].hover)}")`,
 				inline: true
 			});
 		}
@@ -522,7 +522,7 @@ export function get_variable_help(): EmbedBuilder[] {
 				'Variables',
 				'[Variables](' + PORTAL_URL + INTERPRETER_URL + '/variables/description) ' +
 				'are immutable and live data that return information about your current voice channel.\n' +
-				'Prefix: ' + variable_prefix,
+				'Prefix: ' + VARIABLE_PREFIX,
 				'#1BE7FF',
 				variableArray[0],
 				null,
@@ -547,7 +547,7 @@ export function get_variable_help(): EmbedBuilder[] {
 	});
 }
 
-export function get_variable_help_super(candidate: string): EmbedBuilder | boolean {
+export function getVariableHelpSuper(candidate: string): EmbedBuilder | boolean {
 	for (let i = 0; i < variables.length; i++) {
 		if (variables[i].name === candidate) {
 			return createEmbed(
@@ -556,8 +556,8 @@ export function get_variable_help_super(candidate: string): EmbedBuilder | boole
 				'#1BE7FF',
 				[
 					{ emote: `Type`, role: `Variables`, inline: true },
-					{ emote: `Prefix`, role: `${variable_prefix}`, inline: true },
-					{ emote: `Description`, role: `[hover or click](${get_link(candidate)} "${variables[i].hover}")`, inline: true }
+					{ emote: `Prefix`, role: `${VARIABLE_PREFIX}`, inline: true },
+					{ emote: `Description`, role: `[hover or click](${getLink(candidate)} "${variables[i].hover}")`, inline: true }
 				],
 				null,
 				null,
@@ -571,14 +571,14 @@ export function get_variable_help_super(candidate: string): EmbedBuilder | boole
 	return false;
 }
 
-export function get_variable(
-	voice_channel: VoiceChannel | undefined | null, voice_object: PVoiceChannel | undefined | null,
-	portal_object_list: PChannel[] | undefined | null, pGuild: PGuild, guild: Guild, variable: string
+export function getVariable(
+	voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+	pChannels: PChannel[] | undefined | null, pGuild: PGuild, guild: Guild, variable: string
 ): any {
 	for (let l = 0; l < variables.length; l++) {
 		if (variable === variables[l].name) {
 			return variables[l].get(
-				voice_channel, voice_object, portal_object_list, pGuild, guild
+				voiceChannel, pVoiceChannel, pChannels, pGuild, guild
 			);
 		}
 	}

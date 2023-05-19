@@ -2,7 +2,7 @@ import { Client, Message } from "discord.js";
 import { createEmbed } from "../../libraries/help.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
-import spam_config from "../../config.spam.json";
+import SPAM_CONFIG from "../../config.spam.json";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
@@ -23,16 +23,16 @@ module.exports = {
                 });
             }
 
-            const rules = `**Duplicate spam warning after ${spam_config.dupl_after}.**\n` +
-                `**Spam warning after ${spam_config.warn_after}.**\n` +
-                `**Mute after ${spam_config.mute_after} ${spam_config.mute_after === 1 ? `warning` : `warnings`} ` +
-                `for ${spam_config.mute_period} ${spam_config.mute_period === 1 ? `minute` : `minutes`}.**\n\n` +
+            const rules = `**Duplicate spam warning after ${SPAM_CONFIG.DUPLICATE_AFTER}.**\n` +
+                `**Spam warning after ${SPAM_CONFIG.WARN_AFTER}.**\n` +
+                `**Mute after ${SPAM_CONFIG.MUTE_AFTER} ${SPAM_CONFIG.MUTE_AFTER === 1 ? `warning` : `warnings`} ` +
+                `for ${SPAM_CONFIG.MUTE_PERIOD} ${SPAM_CONFIG.MUTE_PERIOD === 1 ? `minute` : `minutes`}.**\n\n` +
                 `${pGuild.kickAfter && pGuild.kickAfter > 0
-                    ? `***Member kicked after ${pGuild.kickAfter} ${spam_config.mute_after === 1 ? `penalty` : `penalties`}.***\n`
+                    ? `***Member kicked after ${pGuild.kickAfter} ${SPAM_CONFIG.MUTE_AFTER === 1 ? `penalty` : `penalties`}.***\n`
                     : `***Automatic kick has not been set yet.***\n`
                 }` +
                 `${pGuild.banAfter && pGuild.banAfter > 0
-                    ? `***Member banned after ${pGuild.banAfter} ${spam_config.mute_after === 1 ? `penalty` : `penalties`}.***`
+                    ? `***Member banned after ${pGuild.banAfter} ${SPAM_CONFIG.MUTE_AFTER === 1 ? `penalty` : `penalties`}.***`
                     : `***Automatic ban has not been set yet.***`
                 }`
                 ;

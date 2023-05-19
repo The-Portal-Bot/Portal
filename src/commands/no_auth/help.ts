@@ -3,12 +3,12 @@ import { createEmbed, messageHelp } from "../../libraries/help.library";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { getAttributeGuide, getAttributeHelp, getAttributeHelpSuper } from "../../types/interfaces/Attribute.interface";
 import { getCommandGuide, getCommandHelp, getCommandHelpSuper } from "../../types/interfaces/Command.interface";
-import { get_pipe_guide, get_pipe_help, get_pipe_help_super } from "../../types/interfaces/Pipe.interface";
-import { getStructureGuide, get_structure_help, get_structure_help_super } from "../../types/interfaces/Structure.interface";
-import { get_variable_guide, get_variable_help, get_variable_help_super } from "../../types/interfaces/Variable.interface";
+import { getPipeGuide, getPipeHelp, getPipeHelpSuper } from "../../types/interfaces/Pipe.interface";
+import { getStructureGuide, getStructureHelp, getStructureHelpSuper } from "../../types/interfaces/Structure.interface";
+import { getVariableGuide, getVariableHelp, getVariableHelpSuper } from "../../types/interfaces/Variable.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-const help_array: Field[] = [
+const helpArray: Field[] = [
 	{
 		emote: null,
 		role: '**[Commands](https://portal-bot.xyz/docs/commands/description)**',
@@ -79,7 +79,7 @@ async function simpleReply(message: Message) {
 				'> to **ignore** a member, give role `p.ignore`\n' +
 				'> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
 				'#05d1ff',
-				help_array,
+				helpArray,
 				null,
 				null,
 				true,
@@ -91,28 +91,28 @@ async function simpleReply(message: Message) {
 }
 
 async function propertyReply(message: Message, args: string[]) {
-	let embed_array: EmbedBuilder[] | null = null;
+	let embedArray: EmbedBuilder[] | null = null;
 
 	switch (args[0]) {
 		case 'commands':
-			embed_array = getCommandHelp();
+			embedArray = getCommandHelp();
 			break;
 		case 'variables':
-			embed_array = get_variable_help();
+			embedArray = getVariableHelp();
 			break;
 		case 'pipes':
-			embed_array = get_pipe_help();
+			embedArray = getPipeHelp();
 			break;
 		case 'attributes':
-			embed_array = getAttributeHelp();
+			embedArray = getAttributeHelp();
 			break;
 		case 'structures':
-			embed_array = get_structure_help();
+			embedArray = getStructureHelp();
 			break;
 	}
 
-	if (embed_array) {
-		embed_array.forEach(async embed => {
+	if (embedArray) {
+		embedArray.forEach(async embed => {
 			await message.author.send({ embeds: [embed] })
 				.catch(e => { return Promise.reject(e) });
 		});
@@ -121,13 +121,13 @@ async function propertyReply(message: Message, args: string[]) {
 	} else {
 		let detailed = getCommandHelpSuper(args[0]);
 		if (!detailed) {
-			detailed = get_variable_help_super(args[0]);
+			detailed = getVariableHelpSuper(args[0]);
 			if (!detailed) {
-				detailed = get_pipe_help_super(args[0]);
+				detailed = getPipeHelpSuper(args[0]);
 				if (!detailed) {
 					detailed = getAttributeHelpSuper(args[0]);
 					if (!detailed) {
-						detailed = get_structure_help_super(args[0]);
+						detailed = getStructureHelpSuper(args[0]);
 						if (!detailed) {
 							return Promise.reject(messageHelp('commands', 'help', `*${args[0]}* does not exist in portal`));
 						}
@@ -153,10 +153,10 @@ async function guideReply(message: Message, args: string[]) {
 			guide = getCommandGuide();
 			break;
 		case 'variables':
-			guide = get_variable_guide();
+			guide = getVariableGuide();
 			break;
 		case 'pipes':
-			guide = get_pipe_guide();
+			guide = getPipeGuide();
 			break;
 		case 'attributes':
 			guide = getAttributeGuide();

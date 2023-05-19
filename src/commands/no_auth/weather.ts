@@ -4,23 +4,23 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
-import { https_fetch } from '../../libraries/http.library';
+import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-function kelvin_to_celsius(kelvin: number): number {
+function kelvinToCelsius(kelvin: number): number {
     return Math.round(kelvin - 273.15);
 }
 
-function kelvin_to_fahrenheit(kelvin: number): number {
+function kelvinToFahrenheit(kelvin: number): number {
     return Math.round(((kelvin - 273.15) * (9 / 5)) + 32);
 }
 
-function ms_to_ks(ms: number): number {
+function msToKs(ms: number): number {
     return Math.round(ms * 3.6);
 }
 
-function ms_to_mlh(ms: number): number {
+function msToMlh(ms: number): number {
     return Math.round(ms * 2.237);
 }
 
@@ -46,9 +46,9 @@ module.exports = {
                 "path": `/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP}`,
             };
 
-            https_fetch(options)
-                .then((rspns: Buffer) => {
-                    const json = getJsonFromString(rspns.toString().substring(rspns.toString().indexOf('{')));
+            httpsFetch(options)
+                .then((response: Buffer) => {
+                    const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
                     if (json === null) {
                         return resolve({
                             result: false,
@@ -74,12 +74,12 @@ module.exports = {
                                         [
                                             {
                                                 emote: 'Temperature',
-                                                role: `${kelvin_to_celsius(json.main.temp)}°C / ${kelvin_to_fahrenheit(json.main.temp)}°F`,
+                                                role: `${kelvinToCelsius(json.main.temp)}°C / ${kelvinToFahrenheit(json.main.temp)}°F`,
                                                 inline: true
                                             },
                                             {
                                                 emote: 'Feels like',
-                                                role: `${kelvin_to_celsius(json.main.feels_like)}°C / ${kelvin_to_fahrenheit(json.main.feels_like)}°F`,
+                                                role: `${kelvinToCelsius(json.main.feels_like)}°C / ${kelvinToFahrenheit(json.main.feels_like)}°F`,
                                                 inline: true
                                             },
                                             {
@@ -94,7 +94,7 @@ module.exports = {
                                             },
                                             {
                                                 emote: 'Wind Speed',
-                                                role: `${ms_to_ks(json.wind.speed)}kmh / ${ms_to_mlh(json.wind.speed)}mlh`,
+                                                role: `${msToKs(json.wind.speed)}kmh / ${msToMlh(json.wind.speed)}mlh`,
                                                 inline: true
                                             },
                                             {

@@ -4,8 +4,8 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 // const translate = require('translate')
-// translate.engine = config.api_keys.translate.engine;
-// translate.key = config.api_keys.translate.key;
+// translate.engine = config.apiKeys.translate.engine;
+// translate.key = config.apiKeys.translate.key;
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,18 +26,18 @@ module.exports = {
                     value: messageHelp('commands', 'translate', '1 you can run `./help translate` for help')
                 });
 
-            const language_options = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-            const string_to_tranlate = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+            const languageOptions = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+            const stringToTranslate = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
-            if (!language_options || !string_to_tranlate)
+            if (!languageOptions || !stringToTranslate)
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'translate', '2 you can run `./help translate` for help')
                 });
 
-            const language_duplet = language_options.split(',');
-            if (language_duplet.length === 2) {
-                // translate(string_to_tranlate, { from: language_duplet[0], to: language_duplet[1] })
+            const languageDuplet = languageOptions.split(',');
+            if (languageDuplet.length === 2) {
+                // translate(stringToTranslate, { from: languageDuplet[0], to: languageDuplet[1] })
                 //     .then((response: string) => {
                 //         return resolve({
                 //             result: true,
@@ -47,11 +47,11 @@ module.exports = {
                 //     .catch((error: any) => {
                 //         return resolve({
                 //             result: false,
-                //             value: message_help('commands', 'translate', `server responded with error: ${error}`)
+                //             value: messageHelp('commands', 'translate', `server responded with error: ${error}`)
                 //         });
                 //     });
-            } else if (language_duplet.length === 1) {
-                // translate(string_to_tranlate, { to: language_duplet[0] })
+            } else if (languageDuplet.length === 1) {
+                // translate(stringToTranslate, { to: languageDuplet[0] })
                 //     .then((response: string) => {
                 //         return resolve({
                 //             result: true,
@@ -61,7 +61,7 @@ module.exports = {
                 //     .catch((error: any) => {
                 //         return resolve({
                 //             result: false,
-                //             value: message_help('commands', 'translate', `server responded with error: ${error}`)
+                //             value: messageHelp('commands', 'translate', `server responded with error: ${error}`)
                 //         });
                 //     });
             } else {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ActivityOptions, ActivityType, Client, Guild, GuildMember, PresenceData } from "discord.js";
 import { logger } from "../libraries/help.library";
-import { get_function } from "../libraries/localisation.library";
+import { getFunction } from "../libraries/localisation.library";
 import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from "../libraries/mongo.library";
 import { PMember } from "../types/classes/PMember.class";
 
@@ -124,7 +124,7 @@ module.exports = async (
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const func = get_function('console', 1, 'ready');
+        const func = getFunction('console', 1, 'ready');
 
         return resolve(func
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call

@@ -3,7 +3,7 @@ import https, { RequestOptions } from 'https';
 import fetch from 'node-fetch';
 import { URL } from 'url';
 
-export async function https_fetch(
+export async function httpsFetch(
 	options: string | RequestOptions | URL
 ): Promise<Buffer> {
 	return new Promise((resolve, reject) => {
@@ -27,7 +27,7 @@ export async function https_fetch(
 	});
 }
 
-export async function scrape_lyrics(
+export async function scrapeLyrics(
 	url: string
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
