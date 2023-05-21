@@ -1,4 +1,4 @@
-export enum LocaleEnum {
+export enum Locale {
     gr,
     en,
     de

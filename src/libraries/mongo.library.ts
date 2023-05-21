@@ -2,8 +2,8 @@ import { ChannelType, Client, TextChannel, VoiceChannel } from 'discord.js';
 import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
 import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
-import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
-import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
+import { ProfanityLevel } from '../data/enums/ProfanityLevel.enum';
+import { RankSpeed } from '../data/enums/RankSpeed.enum';
 import { PGiveRole } from '../types/classes/PGiveRole.class';
 import { PGuild, IPGuild, MusicData } from '../types/classes/PGuild.class';
 import { PMember } from '../types/classes/PMember.class';
@@ -71,15 +71,16 @@ export async function fetchGuildChannelDelete(
                     urlList: 1,
                     ignoreList: 1
                 })
+                // needs fixing
             .then((r: any) => {
                 if (r) {
                     return resolve({
                         id: r.id,
-                        pChannels: r.portal_list,
+                        pChannels: r.pChannels,
                         announcement: r.announcement,
                         musicData: r.musicData,
-                        urlList: r.url_list,
-                        ignoreList: r.ignore_lis
+                        urlList: r.urlList,
+                        ignoreList: r.ignoreList
                     } as PGuild);
                 } else {
                     return resolve(undefined);
@@ -461,8 +462,8 @@ export async function insertGuild(
     const muteRole: string | null = 'null';
     const locale = 1;
     const announce = true;
-    const rankSpeed: number = RankSpeedEnum.default;
-    const profanityLevel: number = ProfanityLevelEnum.default;
+    const rankSpeed: number = RankSpeed.default;
+    const profanityLevel: number = ProfanityLevel.default;
     const kickAfter = 0;
     const banAfter = 0;
     const premium = true; // as it is not a paid service anymore

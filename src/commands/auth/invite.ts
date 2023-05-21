@@ -40,18 +40,18 @@ module.exports = {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const invite_options_json = getJsonFromString(args.join(' '));
+            const inviteOptionsJSON = getJsonFromString(args.join(' '));
 
-            if (!invite_options_json) {
+            if (!inviteOptionsJSON) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'invite', 'must be in JSON format')
                 });
             }
 
-            const invite_options = invite_options_json;
-            if (!(invite_options.temporary || invite_options.maxAge || invite_options.maxUses &&
-                invite_options.unique || invite_options.reason)) {
+            const inviteOptions = inviteOptionsJSON;
+            if (!(inviteOptions.temporary || inviteOptions.maxAge || inviteOptions.maxUses &&
+                inviteOptions.unique || inviteOptions.reason)) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'invite', 'JSON syntax has spelling errors')
@@ -59,7 +59,7 @@ module.exports = {
             }
 
             (<TextChannel>message.channel)
-                .createInvite(invite_options)
+                .createInvite(inviteOptions)
                 .then(invite => {
                     message
                         .member

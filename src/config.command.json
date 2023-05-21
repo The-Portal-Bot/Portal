@@ -1,6 +1,6 @@
 [
     {
-        "path": "no_auth",
+        "path": "noAuth",
         "commands": [
             {
                 "name": "about",
@@ -255,7 +255,7 @@
                 }
             },
             {
-                "name": "spam_rules",
+                "name": "spamRules",
                 "range": "none",
                 "time": 0,
                 "auth": false,
@@ -416,7 +416,7 @@
                 }
             },
             {
-                "name": "set_ranks",
+                "name": "setRanks",
                 "range": "none",
                 "time": 0,
                 "auth": true,

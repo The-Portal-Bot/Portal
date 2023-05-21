@@ -1,8 +1,8 @@
 import { Activity, GuildMember, VoiceChannel } from "discord.js";
-import { GameNames } from "../data/lists/game_names.static";
-import { ProgramNames } from "../data/lists/program_names.static";
+import { GameNames } from "../data/lists/gameNames.static";
+import { ProgramNames } from "../data/lists/programNames.static";
 import { PVoiceChannel } from "../types/classes/PVoiceChannel.class";
-import { LocaleEnum } from "../data/enums/Locales.enum";
+import { Locale } from "../data/enums/Locales.enum";
 
 function statusAliases(
 	activities: Activity[], locale: number
@@ -19,10 +19,10 @@ function statusAliases(
 		if (!found) {
 			for (let l = 0; l < GameNames.gameAttributes.length; l++) {
 				if (activity.name.trim() == GameNames.gameAttributes[l].status) {
-					if (locale === LocaleEnum.gr) {
+					if (locale === Locale.gr) {
 						newStatus.push(GameNames.gameAttributes[l].locale.gr);
 					}
-					else if (locale === LocaleEnum.de) {
+					else if (locale === Locale.de) {
 						newStatus.push(GameNames.gameAttributes[l].locale.de);
 					}
 					else {
@@ -37,10 +37,10 @@ function statusAliases(
 		if (!found) {
 			for (let l = 0; l < ProgramNames.programAttributes.length; l++) {
 				if (activity.name.trim() == ProgramNames.programAttributes[l].status) {
-					if (locale === LocaleEnum.gr) {
+					if (locale === Locale.gr) {
 						newStatus.push(ProgramNames.programAttributes[l].locale.gr);
 					}
-					else if (locale === LocaleEnum.de) {
+					else if (locale === Locale.de) {
 						newStatus.push(ProgramNames.programAttributes[l].locale.de);
 					}
 					else {
@@ -61,16 +61,16 @@ function statusAliases(
 }
 
 export function getStatusList(
-	voice_channel: VoiceChannel, voice_object: PVoiceChannel
+	voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel
 ): string[] {
 	const arrayOfStatuses: string[] = [];
 
-	voice_channel.members.forEach((member: GuildMember) => {
+	voiceChannel.members.forEach((member: GuildMember) => {
 		if (member.presence) {
 			if (!member.user.bot) {
 				if (member.presence.activities !== undefined) {
 					if (member.presence.activities.length > 0) {
-						statusAliases(member.presence.activities, voice_object.locale)
+						statusAliases(member.presence.activities, pVoiceChannel.locale)
 							.forEach(stat => {
 								if (!arrayOfStatuses.includes(stat)) {
 									arrayOfStatuses.push(stat);
@@ -83,10 +83,10 @@ export function getStatusList(
 	});
 
 	if (arrayOfStatuses.length === 0) {
-		if (voice_object.locale === LocaleEnum.gr) {
+		if (pVoiceChannel.locale === Locale.gr) {
 			arrayOfStatuses.push('Άραγμα');
 		}
-		else if (voice_object.locale === LocaleEnum.de) {
+		else if (pVoiceChannel.locale === Locale.de) {
 			arrayOfStatuses.push('Chillen');
 		}
 		else {

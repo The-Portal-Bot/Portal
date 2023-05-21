@@ -5,7 +5,7 @@ import moment from 'moment';
 import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-// import { CountryCodes } from '../../data/lists/country_codes_iso.static';
+// import { CountryCodes } from '../../data/lists/countryCodesISO.static';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
 

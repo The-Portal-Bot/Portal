@@ -33,14 +33,15 @@ module.exports = {
                 });
             }
 
-            let kick_reason = args
+            let kickReason = args
                 .join(' ')
-                .substr(args.join(' ').indexOf('|') + 1)
+                .substring(args.join(' ').indexOf('|') + 1)
                 .replace(/\s/g, ' ')
                 .trim();
 
-            if (kick_reason === '') {
-                kick_reason = 'kicked by admin'
+
+            if (kickReason === '') {
+                kickReason = 'kicked by admin'
             }
 
             if (message.mentions && message.mentions.members) {
@@ -51,10 +52,10 @@ module.exports = {
                     });
                 }
 
-                const member_to_kick = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+                const memberToKick = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
-                if (member_to_kick) {
-                    if (message.member === member_to_kick) {
+                if (memberToKick) {
+                    if (message.member === memberToKick) {
                         return resolve({
                             result: false,
                             value: messageHelp('commands', 'kick', `you can't kick on yourself`)
@@ -65,31 +66,31 @@ module.exports = {
                         message,
                         message.member,
                         `*${message.member}, are you sure you want to kick ` +
-                        `user ${member_to_kick}*, do you **(yes / no)** ?`
+                        `user ${memberToKick}*, do you **(yes / no)** ?`
                     )
                         .then(result => {
                             if (result) {
-                                kick(member_to_kick, kick_reason)
+                                kick(memberToKick, kickReason)
                                     .then(r => {
                                         return resolve({
                                             result: r,
                                             value: r
-                                                ? `${member_to_kick} has been kicked by ${message.author} ` +
-                                                `because: *${kick_reason}*`
-                                                : `${member_to_kick} is not kickable`
+                                                ? `${memberToKick} has been kicked by ${message.author} ` +
+                                                `because: *${kickReason}*`
+                                                : `${memberToKick} is not kickable`
                                         });
                                     })
                                     .catch(e => {
                                         return resolve({
                                             result: false,
-                                            value: `failed to kick member ${member_to_kick}, ` +
+                                            value: `failed to kick member ${memberToKick}, ` +
                                                 `Portal's role must be higher than member you want to kick: ${e}`
                                         });
                                     });
                             } else {
                                 return resolve({
                                     result: false,
-                                    value: `user ${member_to_kick} will not be kicked`
+                                    value: `user ${memberToKick} will not be kicked`
                                 });
                             }
                         })

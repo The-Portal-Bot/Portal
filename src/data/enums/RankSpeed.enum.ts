@@ -1,4 +1,4 @@
-export enum RankSpeedEnum {
+export enum RankSpeed {
     none,
     slow,
     default,

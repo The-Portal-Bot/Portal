@@ -24,8 +24,8 @@ module.exports = {
 
             if (args.length === 0) {
                 if (isMusicChannel(message.channel.id, pGuild)) {
-                    const music_data = new MusicData('null', 'null', 'null', [], false);
-                    setMusicData(pGuild.id, music_data)
+                    const musicData = new MusicData('null', 'null', 'null', [], false);
+                    setMusicData(pGuild.id, musicData)
                         .then(() => {
                             return resolve({
                                 result: true,
@@ -68,22 +68,22 @@ module.exports = {
 
             if (args.length === 0) {
                 pGuild.musicData.channelId = message.channel.id;
-                const new_music = <TextChannel>message.guild.channels.cache.find(channel =>
+                const newMusic = <TextChannel>message.guild.channels.cache.find(channel =>
                     channel.id == pGuild.musicData.channelId);
 
-                if (!new_music) {
+                if (!newMusic) {
                     return resolve({
                         result: false,
                         value: 'channel could not be fetched'
                     });
                 }
 
-                createMusicMessage(new_music, pGuild)
-                    .then(music_message_id => {
-                        logger.log({ level: 'info', type: 'none', message: `created music message ${music_message_id}` });
-                        createMusicLyricsMessage(new_music, pGuild, music_message_id)
-                            .then(lyrics_message_id => {
-                                logger.log({ level: 'info', type: 'none', message: `created lyrics message ${lyrics_message_id}` });
+                createMusicMessage(newMusic, pGuild)
+                    .then(musicMessageId => {
+                        logger.log({ level: 'info', type: 'none', message: `created music message ${musicMessageId}` });
+                        createMusicLyricsMessage(newMusic, pGuild, musicMessageId)
+                            .then(lyricsMessageId => {
+                                logger.log({ level: 'info', type: 'none', message: `created lyrics message ${lyricsMessageId}` });
                                 return resolve({
                                     result: false,
                                     value: `created lyrics message`,
@@ -111,14 +111,14 @@ module.exports = {
                 });
             }
             else if (args.length > 0) {
-                const music_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-                const music_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+                const musicChannel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
+                const musicCategory = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
 
                 let result = false;
                 let value = null;
 
-                if (music_channel !== '') {
-                    createMusicChannel(message.guild, music_channel, music_category, pGuild)
+                if (musicChannel !== '') {
+                    createMusicChannel(message.guild, musicChannel, musicCategory, pGuild)
                         .catch((e: any) => {
                             return resolve({
                                 result: false,
@@ -128,8 +128,8 @@ module.exports = {
                     result = true;
                     value = 'music channel and category have been created';
                 }
-                else if (music_channel === '' && music_category !== '') {
-                    createMusicChannel(message.guild, music_category, null, pGuild)
+                else if (musicChannel === '' && musicCategory !== '') {
+                    createMusicChannel(message.guild, musicCategory, null, pGuild)
                         .catch((e: any) => {
                             return resolve({
                                 result: false,

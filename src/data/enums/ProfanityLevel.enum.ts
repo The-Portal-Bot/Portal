@@ -1,4 +1,4 @@
-export enum ProfanityLevelEnum {
+export enum ProfanityLevel {
     none,
     default,
     strict

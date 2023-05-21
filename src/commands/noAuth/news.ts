@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import { NYTCategories } from '../../data/lists/news_categories.static';
+import { NYTCategories } from '../../data/lists/newsCategories.static';
 import { createEmbed, getJsonFromString, maxString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { News } from '../../types/classes/NewYorkTime.class';

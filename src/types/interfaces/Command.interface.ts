@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { AuthEnum } from '../../data/enums/Admin.enum';
+import { AuthType } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
@@ -10,210 +10,210 @@ const commands: InterfaceBlueprint[] = [
 	{
 		name: 'about',
 		hover: 'about Portal',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'announce',
 		hover: 'make an announcement',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'announcement',
 		hover: 'create an announcement channel',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'bet',
 		hover: 'get betting information',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ban',
 		hover: 'ban a member',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'corona',
 		hover: 'get the latest covid19 data',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'crypto',
 		hover: 'get the latest crypto currency data',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'delete',
 		hover: 'bulk delete message',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'focus',
 		hover: 'talk exclusively with a member',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'force',
 		hover: 'force refresh your current channel',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'help',
 		hover: 'get help about Portal',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'join',
 		hover: 'make Portal join your current voice channel',
-		auth: AuthEnum.voice,
+		auth: AuthType.voice,
 		get: null,
 		set: null
 	},
 	{
 		name: 'joke',
 		hover: 'get a joke',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'kick',
 		hover: 'kick a member',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'leader board',
 		hover: 'get current leader board',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'leave',
 		hover: 'make Portal leave your current voice channel',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'level',
 		hover: 'get your current level information',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'music',
 		hover: 'create a music channel',
-		auth: AuthEnum.voice,
+		auth: AuthType.voice,
 		get: null,
 		set: null
 	},
 	{
 		name: 'news',
 		hover: 'get the latest news',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ignore',
 		hover: 'ignore current channel',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ping',
 		hover: 'ping Portal',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'poll',
 		hover: 'create a Poll',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'portal',
 		hover: 'create a portal channel',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'ranks',
 		hover: 'get current ranks',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'vendor',
 		hover: 'create roll assigning message',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'roll',
 		hover: 'roll a dice',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'run',
 		hover: 'run text through Text Interpreter',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
-		name: 'set_ranks',
+		name: 'setRanks',
 		hover: 'set new ranks',
-		auth: AuthEnum.admin,
+		auth: AuthType.admin,
 		get: null,
 		set: null
 	},
 	{
 		name: 'set',
 		hover: 'update an attribute\'s value',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'state',
 		hover: 'get current state of Portal visualised',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
@@ -227,21 +227,21 @@ const commands: InterfaceBlueprint[] = [
 	{
 		name: 'url',
 		hover: 'create a url-only channel',
-		auth: AuthEnum.voice,
+		auth: AuthType.voice,
 		get: null,
 		set: null
 	},
 	{
 		name: 'weather',
 		hover: 'get current weather forecast',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	},
 	{
 		name: 'whoami',
 		hover: 'get current information about you',
-		auth: AuthEnum.none,
+		auth: AuthType.none,
 		get: null,
 		set: null
 	}

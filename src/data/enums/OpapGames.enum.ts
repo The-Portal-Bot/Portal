@@ -1,4 +1,4 @@
-export enum OpapGameIdEnum {
+export enum OpapGameId {
     kino = 1100,
     powerspin = 1110,
     super3 = 2100,

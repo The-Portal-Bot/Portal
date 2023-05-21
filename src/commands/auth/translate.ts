@@ -20,11 +20,12 @@ module.exports = {
                 value: messageHelp('commands', 'translate', 'work in progress')
             });
 
-            if (args.length <= 1)
+            if (args.length <= 1) {
                 return resolve({
                     result: false,
                     value: messageHelp('commands', 'translate', '1 you can run `./help translate` for help')
                 });
+            }
 
             const languageOptions = args.join(' ').substr(0, args.join(' ').indexOf('|'));
             const stringToTranslate = args.join(' ').substr(args.join(' ').indexOf('|') + 1);

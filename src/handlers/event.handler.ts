@@ -1,9 +1,9 @@
 import { Channel, ChannelType, Client, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from "discord.js";
-import event_config_json from '../config.event.json';
+import eventConfigJson from '../config.event.json';
 import { isMessageDeleted, isUserAuthorised, logger, markMessageAsDeleted, messageReply } from "../libraries/help.library";
 import { messageSpamCheck } from "../libraries/mod.library";
 import { fetchGuildPreData, fetchGuildRest, insertMember } from "../libraries/mongo.library";
-import { portalPreprocessor, commandDecypher } from "../libraries/preprocessor.library";
+import { portalPreprocessor, commandDecipher } from "../libraries/preprocessor.library";
 import { ActiveCooldowns, ReturnPromise, SpamCache } from "../types/classes/PTypes.interface";
 import { commandLoader } from "./command.handler";
 
@@ -14,7 +14,7 @@ async function eventLoader(event: string, args: any): Promise<void> {
         });
 
     if (commandReturn) {
-        if ((event_config_json.find(e => e.name === event))) {
+        if ((eventConfigJson.find(e => e.name === event))) {
             logger.info(`[event-accepted] ${event} | ${commandReturn}`);
         } else if (process.env.DEBUG) {
             logger.info(`[event-accepted-debug] ${event} | ${commandReturn}`);
@@ -22,7 +22,7 @@ async function eventLoader(event: string, args: any): Promise<void> {
     }
 }
 
-export async function eventHandler(client: Client, active_cooldowns: ActiveCooldowns = { guild: [], member: [] }, spam_cache: SpamCache[] = []) {
+export async function eventHandler(client: Client, activeCooldowns: ActiveCooldowns = { guild: [], member: [] }, spamCache: SpamCache[] = []) {
     // This event will run if the bot starts, and logs in, successfully.
     client.once('ready', () =>
         eventLoader('ready', {
@@ -85,11 +85,11 @@ export async function eventHandler(client: Client, active_cooldowns: ActiveCoold
 
     // This event triggers when a member joins or leaves a voice channel
     client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
-        const new_channel = newState.channel; // join channel
-        const old_channel = oldState.channel; // left channel
+        const newChannel = newState.channel; // join channel
+        const oldChannel = oldState.channel; // left channel
 
-        // mute / unmute  defean user are ignored
-        if ((old_channel && new_channel) && (new_channel.id === old_channel.id)) {
+        // mute / unmute deafen user are ignored
+        if ((oldChannel && newChannel) && (newChannel.id === oldChannel.id)) {
             return;
         }
 
@@ -108,11 +108,11 @@ export async function eventHandler(client: Client, active_cooldowns: ActiveCoold
 
     // runs on every single message received, from anywhere
     client.on('messageCreate', async (message: Message) => {
-        handleCommand(client, message, active_cooldowns, spam_cache);
+        handleCommand(client, message, activeCooldowns, spamCache);
     });
 }
 
-async function handleCommand(client: Client, message: Message, active_cooldowns: ActiveCooldowns = { guild: [], member: [] }, spam_cache: SpamCache[] = []) {
+async function handleCommand(client: Client, message: Message, activeCooldowns: ActiveCooldowns = { guild: [], member: [] }, spamCache: SpamCache[] = []) {
     if (!message || !message.member || !message.guild) return;
     if (message.channel.type === ChannelType.DM || message.author.bot) return;
 
@@ -139,11 +139,11 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
 
             if (await portalPreprocessor(message, pGuild)) {
                 // preprocessor has handled the message
-                messageSpamCheck(message, pGuild, spam_cache);
+                messageSpamCheck(message, pGuild, spamCache);
 
                 return true;
             } else {
-                messageSpamCheck(message, pGuild, spam_cache);
+                messageSpamCheck(message, pGuild, spamCache);
 
                 // Ignore any message that does not start with prefix
                 if (message.content.indexOf(pGuild.prefix) !== 0) {
@@ -169,13 +169,13 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                     return false;
                 }
 
-                const command = commandDecypher(message, pGuild);
+                const command = commandDecipher(message, pGuild);
 
-                if (!command.command_options) {
+                if (!command.commandOptions) {
                     return false;
                 }
 
-                if (command.command_options.auth && message.member) {
+                if (command.commandOptions.auth && message.member) {
                     if (!isUserAuthorised(message.member)) {
                         messageReply(false, message, 'you are not authorised to use this command', true, true)
                             .catch((e: any) => {
@@ -194,8 +194,8 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                 }
 
                 fetchGuildRest(message.guild.id)
-                    .then(guild_object_rest => {
-                        if (!guild_object_rest) {
+                    .then(pGuild => {
+                        if (!pGuild) {
                             logger.error(new Error('server is not in database'));
                             messageReply(false, message, 'server is not in database')
                                 .catch((e: any) => {
@@ -205,16 +205,16 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                             return false;
                         }
 
-                        pGuild.pMembers = guild_object_rest.pMembers;
-                        pGuild.pPolls = guild_object_rest.pPolls;
-                        pGuild.ranks = guild_object_rest.ranks;
-                        pGuild.musicQueue = guild_object_rest.musicQueue;
-                        pGuild.announcement = guild_object_rest.announcement;
-                        pGuild.locale = guild_object_rest.locale;
-                        pGuild.announce = guild_object_rest.announce;
-                        pGuild.premium = guild_object_rest.premium;
+                        pGuild.pMembers = pGuild.pMembers;
+                        pGuild.pPolls = pGuild.pPolls;
+                        pGuild.ranks = pGuild.ranks;
+                        pGuild.musicQueue = pGuild.musicQueue;
+                        pGuild.announcement = pGuild.announcement;
+                        pGuild.locale = pGuild.locale;
+                        pGuild.announce = pGuild.announce;
+                        pGuild.premium = pGuild.premium;
 
-                        if (!command.command_options) {
+                        if (!command.commandOptions) {
                             return false;
                         }
 
@@ -224,10 +224,10 @@ async function handleCommand(client: Client, message: Message, active_cooldowns:
                             command.cmd,
                             command.args,
                             command.type,
-                            command.command_options,
-                            command.path_to_command,
+                            command.commandOptions,
+                            command.pathToCommand,
                             pGuild,
-                            active_cooldowns
+                            activeCooldowns
                         ).catch();
                     })
                     .catch(e => {

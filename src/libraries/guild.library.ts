@@ -116,17 +116,17 @@ export async function createChannel(
 }
 
 function createVoiceOptions(
-	state: VoiceState, portalObject: PChannel
+	state: VoiceState, pChannel: PChannel
 ): GuildChannelCreateOptions {
 	let permissionOverwrites = null;
-	if (portalObject.allowedRoles) {
-		permissionOverwrites = portalObject.allowedRoles
+	if (pChannel.allowedRoles) {
+		permissionOverwrites = pChannel.allowedRoles
 			.map(id => <OverwriteResolvable>{
 				id,
 				allow: PermissionsBitField.Flags.Connect, // ['CONNECT']
 			});
 
-		if (!portalObject.allowedRoles.some(id => id === state.guild.roles.everyone.id)) {
+		if (!pChannel.allowedRoles.some(id => id === state.guild.roles.everyone.id)) {
 			permissionOverwrites.push({
 				id: state.guild.roles.everyone.id,
 				deny: PermissionsBitField.Flags.Connect, // ['CONNECT']
@@ -144,7 +144,7 @@ function createVoiceOptions(
 	return {
 		type: ChannelType.GuildVoice,
 		bitrate: 96000,
-		userLimit: portalObject.userLimitPortal,
+		userLimit: pChannel.userLimitPortal,
 		parent: state.channel?.parent
 			? state.channel?.parent
 			: undefined,
@@ -153,7 +153,7 @@ function createVoiceOptions(
 }
 
 export async function createVoiceChannel(
-	state: VoiceState, portalObject: PChannel
+	state: VoiceState, pChannel: PChannel
 ): Promise<string | boolean> {
 	if (!state) {
 		return Promise.reject(`there is no state`);
@@ -163,7 +163,7 @@ export async function createVoiceChannel(
 		return Promise.reject(`state has no member`);
 	}
 
-	let voiceOptions: GuildChannelCreateOptions = createVoiceOptions(state, portalObject);
+	let voiceOptions: GuildChannelCreateOptions = createVoiceOptions(state, pChannel);
 
 	const newGuildVoiceChannel = await state.guild.channels.create({ ...voiceOptions, name: 'loading..' });
 	if (!newGuildVoiceChannel) {
@@ -171,11 +171,11 @@ export async function createVoiceChannel(
 	}
 
 	const newVoice = new PVoiceChannel(
-		newGuildVoiceChannel.id, state.member.id, portalObject.render, portalObject.regexVoice, portalObject.noBots,
-		portalObject.locale, portalObject.annAnnounce, portalObject.annUser
+		newGuildVoiceChannel.id, state.member.id, pChannel.render, pChannel.regexVoice, pChannel.noBots,
+		pChannel.locale, pChannel.annAnnounce, pChannel.annUser
 	);
 
-	insertVoice(state.member.guild.id, portalObject.id, newVoice)
+	insertVoice(state.member.guild.id, pChannel.id, newVoice)
 		.catch(e => {
 			return Promise.reject(`failed to store voice channel: ${e}`);
 		});
@@ -189,7 +189,7 @@ export async function createMusicChannel(
 	guild: Guild, musicChannel: string, musicCategory: string | CategoryChannel | null, pGuild: PGuild
 ): Promise<boolean> {
 	let newMusicCategoryGuildChannel: CategoryChannel | undefined;
-	if (musicCategory && typeof musicCategory === 'string') { // with category		
+	if (musicCategory && typeof musicCategory === 'string') { // with category
 		newMusicCategoryGuildChannel = await guild.channels
 			.create({ name: musicCategory, type: ChannelType.GuildCategory })
 			.catch(e => {
@@ -264,7 +264,7 @@ export async function moveMembersBack(
 
 export async function createFocusChannel(
 	guild: Guild, member: GuildMember, memberFound: GuildMember,
-	focusTime: number, portalObject: PChannel
+	focusTime: number, pChannel: PChannel
 ): Promise<string> {
 	if (!member.voice.channel) {
 		return Promise.reject(`member is not in a voice channel`);
@@ -300,9 +300,9 @@ export async function createFocusChannel(
 		.catch(e => { return Promise.reject(`failed to set member to new channel: ${e}`); });
 
 
-	insertVoice(guild.id, portalObject.id, new PVoiceChannel(
-		newVoiceChannel.id, member.id, portalObject.render, chatRoomName, portalObject.noBots,
-		portalObject.locale, portalObject.annAnnounce, portalObject.annUser
+	insertVoice(guild.id, pChannel.id, new PVoiceChannel(
+		newVoiceChannel.id, member.id, pChannel.render, chatRoomName, pChannel.noBots,
+		pChannel.locale, pChannel.annAnnounce, pChannel.annUser
 	))
 		.catch(e => { return Promise.reject(`failed to store voice channel: ${e}`); });
 

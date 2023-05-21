@@ -1,4 +1,4 @@
-export enum JokeEnum {
+export enum JokeType {
     blonde,
     dad,
     chuck,
@@ -7,7 +7,7 @@ export enum JokeEnum {
     knock
 }
 
-export const JokeList = [
+export const JokeTypeList = [
     'blonde',
     'dad',
     'chuck',

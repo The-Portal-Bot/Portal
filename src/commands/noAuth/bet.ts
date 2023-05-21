@@ -2,7 +2,7 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import { OpapGameIdEnum } from '../../data/enums/OpapGames.enum';
+import { OpapGameId } from '../../data/enums/OpapGames.enum';
 import { createEmbed, getJsonFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
@@ -26,7 +26,7 @@ module.exports = {
                     });
                 } else {
                     if (isNaN(+args[1])) {
-                        gameCode = <number>getKeyFromEnum(args[1].toLowerCase(), OpapGameIdEnum);
+                        gameCode = <number>getKeyFromEnum(args[1].toLowerCase(), OpapGameId);
                     }
 
                     if (!gameCode) {

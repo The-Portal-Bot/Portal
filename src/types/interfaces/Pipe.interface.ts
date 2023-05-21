@@ -1,5 +1,5 @@
 import voca from 'voca';
-import { AuthEnum } from '../../data/enums/Admin.enum';
+import { AuthType } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 import { EmbedBuilder } from 'discord.js';
@@ -20,7 +20,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'vowels',
@@ -33,7 +33,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'consonants',
@@ -46,7 +46,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'camelCase',
@@ -59,7 +59,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'capitalise',
@@ -72,7 +72,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'decapitalise',
@@ -85,7 +85,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'lowerCase',
@@ -98,7 +98,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'upperCase',
@@ -111,7 +111,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'populous_count',
@@ -124,7 +124,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'populous',
@@ -137,7 +137,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'snakeCase',
@@ -150,7 +150,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'souvlakiCase',
@@ -163,7 +163,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'words',
@@ -176,7 +176,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'titleCase',
@@ -189,7 +189,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'length',
@@ -202,7 +202,7 @@ const pipes: InterfaceBlueprint[] = [
 					: str;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 ];
 

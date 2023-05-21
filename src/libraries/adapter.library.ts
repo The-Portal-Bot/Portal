@@ -7,7 +7,7 @@ const trackedClients = new Set<Client>();
 
 /**
  * Tracks a Discord.js client, listening to VOICE_SERVER_UPDATE and VOICE_STATE_UPDATE events
- * 
+ *
  * @param client - The Discord.js Client to track
  */
 function trackClient(client: Client) {

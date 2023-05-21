@@ -1,16 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Client, Message, User } from "discord.js";
-import { LocaleEnum } from "../data/enums/Locales.enum";
+import { Locale } from "../data/enums/Locales.enum";
 import { PGuild } from "../types/classes/PGuild.class";
 import { LocalisationOption } from "../types/classes/PTypes.interface";
 
-const type_of_announcement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
-const type_of_action = ['user_connected', 'user_disconnected'];
+const typeOfAnnouncement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
+const typeOfAction = ['user_connected', 'user_disconnected'];
 
 export const portal: LocalisationOption[] = [
 	{
@@ -159,14 +153,14 @@ export const console_text: LocalisationOption[] = [
 // 			return pGuild.portal_list.some(p =>
 // 				p.voice_list.some(v => {
 
-// 					if (type_of_announcement.includes(context) && v.ann_announce) {
+// 					if (typeOfAnnouncement.includes(context) && v.ann_announce) {
 // 						const locale = v.locale;
 // 						const random = Math.floor(Math.random() * Math.floor(3));
 
 // 						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
 // 						return true;
 // 					}
-// 					else if (type_of_action.includes(context) && v.ann_user) {
+// 					else if (typeOfAction.includes(context) && v.ann_user) {
 // 						const locale = v.locale;
 // 						const random = Math.floor(Math.random() * Math.floor(3));
 
@@ -192,13 +186,13 @@ export function getFunction(
 		portal.some(ct => {
 			if (ct.name === context) {
 				switch (locale) {
-					case LocaleEnum.gr:
+					case Locale.gr:
 						func = ct.lang.gr;
 						return true;
-					case LocaleEnum.en:
+					case Locale.en:
 						func = ct.lang.en;
 						return true;
-					case LocaleEnum.de:
+					case Locale.de:
 						func = ct.lang.de;
 						return true;
 				}
@@ -208,13 +202,13 @@ export function getFunction(
 	else if (output === 'console') {
 		console_text.some(ct => {
 			switch (locale) {
-				case LocaleEnum.gr:
+				case Locale.gr:
 					func = ct.lang.gr;
 					return true;
-				case LocaleEnum.en:
+				case Locale.en:
 					func = ct.lang.en;
 					return true;
-				case LocaleEnum.de:
+				case Locale.de:
 					func = ct.lang.de;
 					return true;
 			}
@@ -239,9 +233,9 @@ export function clientWrite(
 			if (message.member && message.member.voice.channel) {
 				if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 					switch (v.locale) {
-						case LocaleEnum.gr: return_value = portal.find(p => p.name === context)?.lang.gr(); break;
-						case LocaleEnum.en: return_value = portal.find(p => p.name === context)?.lang.en(); break;
-						case LocaleEnum.de: return_value = portal.find(p => p.name === context)?.lang.de(); break;
+						case Locale.gr: return_value = portal.find(p => p.name === context)?.lang.gr(); break;
+						case Locale.en: return_value = portal.find(p => p.name === context)?.lang.en(); break;
+						case Locale.de: return_value = portal.find(p => p.name === context)?.lang.de(); break;
 					}
 
 					return true;
@@ -276,11 +270,11 @@ export function clientLog(
 				if (message.member && message.member.voice.channel) {
 					if (v.id === message.member.voice.channel.id) { // message.author.presence.member.voice.channel.id) {
 						switch (v.locale) {
-							case LocaleEnum.gr:
+							case Locale.gr:
 								return console_text.find(c => c.name === context)?.lang.gr(args);
-							case LocaleEnum.en:
+							case Locale.en:
 								return console_text.find(c => c.name === context)?.lang.en(args);
-							case LocaleEnum.de:
+							case Locale.de:
 								return console_text.find(c => c.name === context)?.lang.de(args);
 						}
 					}

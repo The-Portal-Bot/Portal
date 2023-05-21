@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { AuthEnum } from '../../data/enums/Admin.enum';
+import { AuthType } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 
@@ -13,7 +13,7 @@ const structures: InterfaceBlueprint[] = [
 		hover: 'if statement flow control',
 		get: null,
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	}
 ];
 

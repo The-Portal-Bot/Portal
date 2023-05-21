@@ -1,5 +1,5 @@
 import { BanOptions, Guild, GuildMember, Message, VoiceState } from "discord.js";
-import { RankSpeedEnum, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
+import { RankSpeed, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
 import { PGuild } from "../types/classes/PGuild.class";
 import { PMember } from "../types/classes/PMember.class";
 import { Rank } from "../types/classes/PTypes.interface";
@@ -137,7 +137,7 @@ export function addPointsMessage(
     message: Message, member: PMember, rankSpeed: number
 ): Promise<number | boolean> {
     return new Promise((resolve, reject) => {
-        if (rankSpeed === RankSpeedEnum.none) {
+        if (rankSpeed === RankSpeed.none) {
             return false
         }
 

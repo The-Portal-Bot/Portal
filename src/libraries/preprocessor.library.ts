@@ -5,7 +5,7 @@ import { isUrlOnlyChannel, includedInIgnoreList } from "./guild.library";
 import { logger, isUserIgnored, isMessageDeleted, markMessageAsDeleted, messageReply } from "./help.library";
 import { removeURL, removeIgnore, setMusicData } from "./mongo.library";
 import { addPointsMessage } from "./user.library";
-import command_config_json from '../config.command.json';
+import commandConfigJson from '../config.command.json';
 
 /*
 * Returns: true/false if processing must continue
@@ -56,9 +56,9 @@ export async function portalPreprocessor(
         } else {
             handleRankingSystem(message, pGuild);
 
-            // if (pGuild.profanity_level !== ProfanityLevelEnum.none) {
+            // if (pGuild.profanityLevel !== ProfanityLevelEnum.none) {
             //     // profanity check
-            //     const profanities = isProfane(message.content, pGuild.profanity_level);
+            //     const profanities = isProfane(message.content, pGuild.profanityLevel);
             //     if (profanities.length > 0) {
             //         message
             //             .react('🚩')
@@ -79,13 +79,13 @@ export async function portalPreprocessor(
     }
 }
 
-export function commandDecypher(
+export function commandDecipher(
     message: Message, pGuild: PGuild
 ): {
     args: string[],
     cmd: string,
-    path_to_command: string,
-    command_options: CommandOptions | undefined,
+    pathToCommand: string,
+    commandOptions: CommandOptions | undefined,
     type: string
 } {
     // separate command name and arguments
@@ -96,24 +96,24 @@ export function commandDecypher(
         return {
             args: [],
             cmd: '',
-            path_to_command: '',
-            command_options: undefined,
+            pathToCommand: '',
+            commandOptions: undefined,
             type: ''
         };
     }
     const cmd = commandOnly.toLowerCase();
 
-    let path_to_command = '';
-    let command_options: CommandOptions | undefined = undefined;
+    let pathToCommand = '';
+    let commandOptions: CommandOptions | undefined = undefined;
     let type = 'none';
 
-    command_config_json.some(category => {
-        command_options = category.commands.
+    commandConfigJson.some(category => {
+        commandOptions = category.commands.
             find(command => command.name === cmd);
 
-        if (command_options) {
-            type = command_options.range;
-            path_to_command = category.path;
+        if (commandOptions) {
+            type = commandOptions.range;
+            pathToCommand = category.path;
 
             return true;
         }
@@ -124,8 +124,8 @@ export function commandDecypher(
     return {
         args: args,
         cmd: cmd,
-        path_to_command: path_to_command,
-        command_options: command_options,
+        pathToCommand: pathToCommand,
+        commandOptions: commandOptions,
         type: type
     };
 }
@@ -222,8 +222,8 @@ export function handleMusicChannels(
                 return true;
             }
 
-            const music_data = new MusicData('null', 'null', 'null', [], false);
-            setMusicData(pGuild.id, music_data)
+            const musicData = new MusicData('null', 'null', 'null', [], false);
+            setMusicData(pGuild.id, musicData)
                 .then(r => {
                     messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
                         .catch((e: any) => logger.error(new Error(`failed to send message: ${e}`)));
@@ -240,24 +240,24 @@ export function handleMusicChannels(
             //     return false;
             // }
 
-            // const portal_voice_connection = client.voice?.connections
+            // const portalVoiceConnection = client.voice?.connections
             //     .find(c => c.channel.guild.id === message.guild?.id);
 
-            // if (portal_voice_connection) {
-            //     if (!portal_voice_connection.channel.members.has(message.member.id)) {
+            // if (portalVoiceConnection) {
+            //     if (!portalVoiceConnection.channel.members.has(message.member.id)) {
             //         if (message.guild) {
-            //             const portal_voice_connection = client.voice?.connections
+            //             const portalVoiceConnection = client.voice?.connections
             //                 .find(c => c.channel.guild.id === message.guild?.id);
 
-            //             const animate = portal_voice_connection?.dispatcher
-            //                 ? !portal_voice_connection?.dispatcher.paused
+            //             const animate = portalVoiceConnection?.dispatcher
+            //                 ? !portalVoiceConnection?.dispatcher.paused
             //                 : false;
 
-            //             update_music_message(
+            //             updateMusicMessage(
             //                 message.guild,
             //                 pGuild,
-            //                 pGuild.music_queue.length > 0
-            //                     ? pGuild.music_queue[0]
+            //                 pGuild.musicQueue.length > 0
+            //                     ? pGuild.musicQueue[0]
             //                     : undefined,
             //                 'you must be in the same channel as Portal',
             //                 animate
@@ -279,23 +279,23 @@ export function handleMusicChannels(
             // }
 
             // start(
-            //     voice_connection, client, message.member.user, message,
+            //     voiceConnection, client, message.member.user, message,
             //     message.guild, pGuild, message.content
             // )
             //     .then(r => {
             //         if (message.guild) {
-            //             const portal_voice_connection = client.voice?.connections
+            //             const portalVoiceConnection = client.voice?.connections
             //                 .find(c => c.channel.guild.id === message.guild?.id);
 
-            //             const animate = portal_voice_connection?.dispatcher
-            //                 ? !portal_voice_connection?.dispatcher.paused
+            //             const animate = portalVoiceConnection?.dispatcher
+            //                 ? !portalVoiceConnection?.dispatcher.paused
             //                 : false;
 
-            //             update_music_message(
+            //             updateMusicMessage(
             //                 message.guild,
             //                 pGuild,
-            //                 pGuild.music_queue.length > 0
-            //                     ? pGuild.music_queue[0]
+            //                 pGuild.musicQueue.length > 0
+            //                     ? pGuild.musicQueue[0]
             //                     : undefined,
             //                 r,
             //                 animate
@@ -314,11 +314,11 @@ export function handleMusicChannels(
             //     })
             //     .catch(e => {
             //         if (message.guild) {
-            //             update_music_message(
+            //             updateMusicMessage(
             //                 message.guild,
             //                 pGuild,
-            //                 pGuild.music_queue.length > 0
-            //                     ? pGuild.music_queue[0]
+            //                 pGuild.musicQueue.length > 0
+            //                     ? pGuild.musicQueue[0]
             //                     : undefined,
             //                 `error while starting playback: ${e}`
             //             ).catch(e => {

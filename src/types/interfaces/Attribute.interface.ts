@@ -1,8 +1,8 @@
 import { BaseGuildTextChannel, EmbedBuilder, Guild, GuildMember, Message, OverwriteResolvable, OverwriteType, VoiceChannel } from 'discord.js';
-import { AuthEnum } from '../../data/enums/Admin.enum';
-import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
-import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
-import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
+import { AuthType } from '../../data/enums/Admin.enum';
+import { Locale, LocaleList } from '../../data/enums/Locales.enum';
+import { ProfanityLevel, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
+import { RankSpeed, RankSpeedList } from '../../data/enums/RankSpeed.enum';
 import { createEmbed, getKeyFromEnum, isUserAuthorised, isMod } from '../../libraries/help.library';
 import { updateGuild, updateMember, updatePortal, updateVoice } from '../../libraries/mongo.library';
 import { PGuild } from '../classes/PGuild.class';
@@ -92,7 +92,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.annAnnounce',
@@ -156,7 +156,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'p.noBots',
@@ -233,7 +233,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.noBots',
@@ -297,7 +297,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'p.allowedRoles',
@@ -421,7 +421,7 @@ const attributes: InterfaceBlueprint[] = [
                 value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'p.v.allowedRoles',
@@ -518,7 +518,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.allowedRoles',
@@ -628,7 +628,7 @@ const attributes: InterfaceBlueprint[] = [
                 value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'p.render',
@@ -705,7 +705,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.render',
@@ -769,7 +769,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'p.annUser',
@@ -846,7 +846,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.annUser',
@@ -910,7 +910,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'v.bitrate',
@@ -961,7 +961,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'g.kickAfter',
@@ -1011,7 +1011,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     }, {
         name: 'g.banAfter',
         hover: 'Portals banAfter',
@@ -1060,7 +1060,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     },
 
 
@@ -1099,7 +1099,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     },
     {
         name: 'g.muteRole',
@@ -1163,7 +1163,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     },
     {
         name: 'g.rankSpeed',
@@ -1172,7 +1172,7 @@ const attributes: InterfaceBlueprint[] = [
             voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
             pChannels: PChannel[] | undefined | null, pGuild: PGuild // , guild: Guild
         ): string => {
-            return RankSpeedEnum[pGuild.rankSpeed];
+            return RankSpeed[pGuild.rankSpeed];
         },
         set: (
             voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel, pChannel: PChannel,
@@ -1182,7 +1182,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'rankSpeed';
 
             return new Promise((resolve) => {
-                const speed = getKeyFromEnum(value, RankSpeedEnum);
+                const speed = getKeyFromEnum(value, RankSpeed);
 
                 if (speed !== undefined) {
                     updateGuild(pGuild.id, attribute, speed)
@@ -1210,7 +1210,7 @@ const attributes: InterfaceBlueprint[] = [
 
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     },
     {
         name: 'g.profanityLevel',
@@ -1219,7 +1219,7 @@ const attributes: InterfaceBlueprint[] = [
             voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
             pChannels: PChannel[] | undefined | null, pGuild: PGuild // , guild: Guild
         ): string => {
-            return ProfanityLevelEnum[pGuild.profanityLevel];
+            return ProfanityLevel[pGuild.profanityLevel];
         },
         set: (
             voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel, pChannel: PChannel,
@@ -1229,7 +1229,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'profanityLevel';
 
             return new Promise((resolve) => {
-                const level = getKeyFromEnum(value, ProfanityLevelEnum);
+                const level = getKeyFromEnum(value, ProfanityLevel);
 
                 if (level !== undefined) {
                     updateGuild(pGuild.id, attribute, level)
@@ -1257,7 +1257,7 @@ const attributes: InterfaceBlueprint[] = [
 
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     },
     {
         name: 'g.initialRole',
@@ -1346,7 +1346,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     },
     {
         name: 'g.locale',
@@ -1355,7 +1355,7 @@ const attributes: InterfaceBlueprint[] = [
             voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
             pChannels: PChannel[] | undefined | null, pGuild: PGuild // , guild: Guild
         ): string => {
-            return LocaleEnum[pGuild.locale];
+            return Locale[pGuild.locale];
         },
         set: (
             voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel, pChannel: PChannel,
@@ -1365,7 +1365,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'locale';
 
             return new Promise((resolve) => {
-                const locale = getKeyFromEnum(value, LocaleEnum);
+                const locale = getKeyFromEnum(value, Locale);
 
                 if (locale !== undefined) {
                     updateGuild(pGuild.id, attribute, locale)
@@ -1392,7 +1392,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.admin
+        auth: AuthType.admin
     },
     {
         name: 'p.locale',
@@ -1415,7 +1415,7 @@ const attributes: InterfaceBlueprint[] = [
             );
 
             if (pChannel) {
-                return LocaleEnum[pChannel.locale];
+                return Locale[pChannel.locale];
             }
 
             return 'N/A';
@@ -1428,7 +1428,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'locale';
 
             return new Promise((resolve) => {
-                const locale = getKeyFromEnum(value, LocaleEnum);
+                const locale = getKeyFromEnum(value, Locale);
 
                 if (locale !== undefined) {
                     updatePortal(pGuild.id, pChannel.id, attribute, locale)
@@ -1455,7 +1455,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.locale',
@@ -1468,7 +1468,7 @@ const attributes: InterfaceBlueprint[] = [
                 return 'N/A';
             }
 
-            return LocaleEnum[pVoiceChannel.locale];
+            return Locale[pVoiceChannel.locale];
         },
         set: (
             voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel, pChannel: PChannel,
@@ -1478,7 +1478,7 @@ const attributes: InterfaceBlueprint[] = [
             const attribute = 'locale';
 
             return new Promise((resolve) => {
-                const locale = getKeyFromEnum(value, LocaleEnum);
+                const locale = getKeyFromEnum(value, Locale);
 
                 if (locale !== undefined) {
                     updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, locale)
@@ -1506,7 +1506,7 @@ const attributes: InterfaceBlueprint[] = [
 
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'v.position',
@@ -1554,7 +1554,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'p.regexOverwrite',
@@ -1631,7 +1631,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'p.regex',
@@ -1684,7 +1684,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'p.v.regex',
@@ -1737,7 +1737,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.regex',
@@ -1777,7 +1777,7 @@ const attributes: InterfaceBlueprint[] = [
                     });
             });
         },
-        auth: AuthEnum.voice
+        auth: AuthType.voice
     },
     {
         name: 'm.regex',
@@ -1823,7 +1823,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.none
+        auth: AuthType.none
     },
     {
         name: 'p.userLimit',
@@ -1892,7 +1892,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.portal
+        auth: AuthType.portal
     },
     {
         name: 'v.userLimit',
@@ -1940,7 +1940,7 @@ const attributes: InterfaceBlueprint[] = [
                 }
             });
         },
-        auth: AuthEnum.voice,
+        auth: AuthType.voice,
     }
 ];
 
@@ -2127,7 +2127,7 @@ export function setAttribute(
         for (let l = 0; l < attributes.length; l++) {
             if (candidate === attributes[l].name) {
                 switch (attributes[l].auth) {
-                    case AuthEnum.admin:
+                    case AuthType.admin:
                         if (!isUserAuthorised(member)) {
                             return resolve({
                                 result: false,
@@ -2136,7 +2136,7 @@ export function setAttribute(
                         }
 
                         break;
-                    case AuthEnum.none:
+                    case AuthType.none:
                         // passes through no checks needed
                         break;
                     default:
@@ -2165,14 +2165,14 @@ export function setAttribute(
                             });
                         }
 
-                        if (attributes[l].auth === AuthEnum.portal) {
+                        if (attributes[l].auth === AuthType.portal) {
                             if (pChannel.creatorId !== member.id) {
                                 return resolve({
                                     result: false,
                                     value: `attribute ${candidate} can only be **set by the portal creator**`
                                 });
                             }
-                        } else if (attributes[l].auth === AuthEnum.voice) {
+                        } else if (attributes[l].auth === AuthType.voice) {
                             if (pVoiceChannel.creatorId !== member.id) {
                                 return resolve({
                                     result: false,

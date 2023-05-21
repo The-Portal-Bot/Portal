@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Message } from "discord.js";
-import { JokeEnum } from "../../data/enums/Joke.enum";
+import { JokeType } from "../../data/enums/Joke.enum";
 import { getKeyFromEnum } from "../../libraries/help.library";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -18,27 +18,27 @@ module.exports = {
         message: Message, args: string[]
     ): Promise<ReturnPromise> {
         return new Promise((resolve) => {
-            const category = getKeyFromEnum(args[0], JokeEnum);
+            const category = getKeyFromEnum(args[0], JokeType);
 
             if (args.length === 1) {
                 switch (category) {
-                    case JokeEnum.dad:
+                    case JokeType.dad:
                         giveMeAJoke.getRandomDadJoke((joke: string) =>
                             message.channel.send(joke));
                         break;
-                    case JokeEnum.chuck:
+                    case JokeType.chuck:
                         giveMeAJoke.getRandomCNJoke((joke: string) =>
                             message.channel.send(joke));
                         break;
-                    case JokeEnum.blonde:
+                    case JokeType.blonde:
                         giveMeAJoke.getRandomJokeOfTheDay('blonde', (joke: string) =>
                             message.channel.send(joke));
                         break;
-                    case JokeEnum.knock:
+                    case JokeType.knock:
                         giveMeAJoke.getRandomJokeOfTheDay('knock-knock', (joke: string) =>
                             message.channel.send(joke));
                         break;
-                    case JokeEnum.animal:
+                    case JokeType.animal:
                         giveMeAJoke.getRandomJokeOfTheDay('animal', (joke: string) =>
                             message.channel.send(joke));
                         break;

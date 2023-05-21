@@ -7,7 +7,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('spam_rules')
+        .setName('spamRules')
         .setDescription('returns the current spam rules'),
     async execute(
         message: Message, args: string[], pGuild: PGuild, client: Client

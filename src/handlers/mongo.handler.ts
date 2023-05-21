@@ -12,7 +12,7 @@ export async function mongoHandler(mongoUrl: string) {
     const connectOptions = {
         dbName: 'portal',
         compressors: 'zlib',
-        maxPoolSize: 50, 
+        maxPoolSize: 50,
         wtimeoutMS: 2500,
         useNewUrlParser: true
     }

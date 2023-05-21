@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
-import { CountryCodes } from '../../data/lists/country_codes_iso.static';
+import { CountryCodes } from '../../data/lists/countryCodesISO.static';
 import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';

@@ -1,6 +1,6 @@
 import { Guild, EmbedBuilder, VoiceChannel } from 'discord.js';
 import moment from 'moment';
-import { AuthEnum } from '../../data/enums/Admin.enum';
+import { AuthType } from '../../data/enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { getStatusList } from '../../libraries/status.library';
 import { PGuild } from '../classes/PGuild.class';
@@ -43,7 +43,7 @@ const variables: InterfaceBlueprint[] = [
 			return '#-';
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: '#',
@@ -75,7 +75,7 @@ const variables: InterfaceBlueprint[] = [
 			return '-';
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'creatorPortal',
@@ -103,7 +103,7 @@ const variables: InterfaceBlueprint[] = [
 			return '?';
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'creatorVoice',
@@ -119,7 +119,7 @@ const variables: InterfaceBlueprint[] = [
 			return pVoiceChannel.creatorId;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'date',
@@ -135,7 +135,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().subtract(10, 'days').calendar();
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'dayNumber',
@@ -151,7 +151,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().date();
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'dayName',
@@ -166,7 +166,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().format('dddd');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'monthNumber',
@@ -181,7 +181,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().format('M');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'monthName',
@@ -197,7 +197,7 @@ const variables: InterfaceBlueprint[] = [
 				.format('MMMM');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'year',
@@ -212,7 +212,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().format('yyyy');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'time',
@@ -227,7 +227,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().format('hh:mm:ss');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'hour',
@@ -242,7 +242,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().format('hh');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'minute',
@@ -257,7 +257,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().format('mm');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'second',
@@ -272,7 +272,7 @@ const variables: InterfaceBlueprint[] = [
 			return moment().format('ss');
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'memberActiveCount',
@@ -292,7 +292,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'memberCount',
@@ -312,7 +312,7 @@ const variables: InterfaceBlueprint[] = [
 			return cnt;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'memberHistory',
@@ -324,7 +324,7 @@ const variables: InterfaceBlueprint[] = [
 			return 'noYetImplemented';
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'memberList',
@@ -342,7 +342,7 @@ const variables: InterfaceBlueprint[] = [
 			return memberList;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'memberWithStatus',
@@ -362,7 +362,7 @@ const variables: InterfaceBlueprint[] = [
 			return memberList;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'statusCount',
@@ -384,7 +384,7 @@ const variables: InterfaceBlueprint[] = [
 			return statusList.length;
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'statusHistory',
@@ -396,7 +396,7 @@ const variables: InterfaceBlueprint[] = [
 			return 'noYetImplemented';
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	},
 	{
 		name: 'statusList',
@@ -415,7 +415,7 @@ const variables: InterfaceBlueprint[] = [
 			return getStatusList(voiceChannel, pVoiceChannel);
 		},
 		set: null,
-		auth: AuthEnum.none
+		auth: AuthType.none
 	}
 ];
 

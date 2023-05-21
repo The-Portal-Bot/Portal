@@ -101,15 +101,15 @@ module.exports = {
                     : 'failed to set this as the announcement channel',
             };
         } else if (args.length > 0) {
-            let announcement_channel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
-            let announcement_category: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
+            let announcementChannel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
+            let announcementCategory: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
 
-            if (announcement_channel === '' && announcement_category !== '') {
-                announcement_channel = announcement_category;
-                announcement_category = null;
+            if (announcementChannel === '' && announcementCategory !== '') {
+                announcementChannel = announcementCategory;
+                announcementCategory = null;
             }
 
-            const announcement_options = getOptions(
+            const announcementOptions = getOptions(
                 message.guild,
                 'announcements channel (Portal/Users/Admins)',
                 false,
@@ -120,9 +120,9 @@ module.exports = {
             try {
                 createdChannelId = await createChannel(
                     message.guild,
-                    announcement_channel,
-                    announcement_options,
-                    announcement_category
+                    announcementChannel,
+                    announcementOptions,
+                    announcementCategory
                 );
             } catch (e) {
                 return Promise.reject(e);

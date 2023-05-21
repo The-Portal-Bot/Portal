@@ -43,17 +43,17 @@ module.exports = {
                 });
             }
 
-            const current_member = message.member;
-            const current_voice = message.member.voice.channel as VoiceChannel;
+            const currentMember = message.member;
+            const currentVoice = message.member.voice.channel as VoiceChannel;
 
             pGuild.pChannels.some(p => {
                 return p.pVoiceChannels.some(v => {
-                    if (v.id === current_voice.id) {
-                        if (v.creatorId === current_member.id) {
+                    if (v.id === currentVoice.id) {
+                        if (v.creatorId === currentMember.id) {
                             if (message.guild) {
-                                const updated_name = regexInterpreter(
+                                const updatedName = regexInterpreter(
                                     v.regex,
-                                    current_voice,
+                                    currentVoice,
                                     v,
                                     pGuild.pChannels,
                                     pGuild,
@@ -61,10 +61,10 @@ module.exports = {
                                     message.author.id
                                 );
 
-                                current_voice.clone({ name: updated_name })
+                                currentVoice.clone({ name: updatedName })
                                     .then(clone => {
-                                        if (current_voice) {
-                                            current_voice.members.forEach(member => {
+                                        if (currentVoice) {
+                                            currentVoice.members.forEach(member => {
                                                 if (member.voice) {
                                                     member.voice.setChannel(clone, 'portal force update')
                                                         .catch((e: any) => {
@@ -76,9 +76,9 @@ module.exports = {
                                                 }
                                             });
 
-                                            updateVoice(pGuild.id, p.id, current_voice.id, 'id', clone.id)
+                                            updateVoice(pGuild.id, p.id, currentVoice.id, 'id', clone.id)
                                                 .then(r => {
-                                                    deleteChannel(PortalChannelTypes.voice, current_voice, message, true)
+                                                    deleteChannel(PortalChannelTypes.voice, currentVoice, message, true)
                                                         .catch((e: any) => {
                                                             return resolve({
                                                                 result: false,
