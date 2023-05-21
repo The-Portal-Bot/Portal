@@ -1,6 +1,6 @@
 import { Guild, EmbedBuilder, VoiceChannel } from 'discord.js';
 import moment from 'moment';
-import { AuthType } from '../../data/enums/Admin.enum';
+import { AuthType } from '../enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { getStatusList } from '../../libraries/status.library';
 import { PGuild } from '../classes/PGuild.class';
@@ -18,7 +18,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'number of voice channel with #',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: any, guild: Guild
+      pChannels: PChannel[] | undefined | null // , pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -50,7 +50,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'number of voice channel',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: any, guild: Guild
+      pChannels: PChannel[] | undefined | null // , pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -82,7 +82,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'creator of portal channel',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: any, guild: Guild
+      pChannels: PChannel[] | undefined | null // , pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -110,7 +110,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'creator of voice channel',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -126,7 +126,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current date',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().subtract(10, 'days').calendar();
@@ -142,7 +142,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current day in number format',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().date();
@@ -158,7 +158,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current day in text format',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().format('dddd');
@@ -173,7 +173,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current month in number format',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().format('M');
@@ -188,7 +188,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current month in text format',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().startOf('month').format('MMMM');
@@ -204,7 +204,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current year',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().format('yyyy');
@@ -219,7 +219,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current time',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().format('hh:mm:ss');
@@ -234,7 +234,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current hour',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().format('hh');
@@ -249,7 +249,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current minute',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().format('mm');
@@ -264,7 +264,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current second',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
         return moment().format('ss');
@@ -279,7 +279,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'number of members with status',
     get: (
       voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!voiceChannel) return 'N/A'
       let cnt = 0;
@@ -299,7 +299,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'number of members in channel',
     get: (
       voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!voiceChannel) return 'N/A'
       let cnt = 0;
@@ -319,7 +319,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'all members to ever pass through channel',
     get: (
       // voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       return 'noYetImplemented';
     },
@@ -331,7 +331,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'current members names',
     get: (
       voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!voiceChannel) return 'N/A'
       const memberList: string[] = [];
@@ -349,7 +349,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'names of members with statuses',
     get: (
       voiceChannel: VoiceChannel | undefined | null// , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!voiceChannel) return 'N/A'
       const memberList: string[] = [];
@@ -369,7 +369,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'number of unique statuses',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!voiceChannel) {
         return 'N/A';
@@ -391,7 +391,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'all statuses from start',
     get: (
       // voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       return 'noYetImplemented';
     },
@@ -403,7 +403,7 @@ const variables: InterfaceBlueprint[] = [
     hover: 'all statuses names',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild: any, guild: Guild
+      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!voiceChannel) {
         return 'N/A';
@@ -574,13 +574,18 @@ export function getVariableHelpSuper(candidate: string): EmbedBuilder | boolean 
 export function getVariable(
   voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
   pChannels: PChannel[] | undefined | null, pGuild: PGuild, guild: Guild, variable: string
-): any {
+) {
+  let variableIndex = -1;
   for (let l = 0; l < variables.length; l++) {
     if (variable === variables[l].name) {
-      return variables[l].get(
-        voiceChannel, pVoiceChannel, pChannels, pGuild, guild
-      );
+      variableIndex = l;
+      break;
     }
   }
-  return -1;
+
+  if (variableIndex === -1) {
+    return -1;
+  }
+
+  return variables[variableIndex].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
 }

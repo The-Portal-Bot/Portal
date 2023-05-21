@@ -4,7 +4,7 @@ import { createEmbed, maxString, messageHelp } from "../../libraries/help.librar
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('roll')
     .setDescription('rolls dice'),

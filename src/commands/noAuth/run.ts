@@ -6,7 +6,7 @@ import { PVoiceChannel } from "../../types/classes/PVoiceChannel.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('run')
     .setDescription('runs string given'),

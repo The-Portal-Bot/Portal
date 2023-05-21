@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import moment from "moment";
 import voca from 'voca';
-import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../types/enums/PortalChannel.enum";
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
@@ -18,7 +18,7 @@ import { insertVoice } from "./mongo.library";
 
 function inlineOperator(
   str: string
-): any {
+) {
   switch (str) {
   case '==':
     return (a: string, b: string) => a == b;

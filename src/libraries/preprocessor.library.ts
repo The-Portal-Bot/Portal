@@ -23,14 +23,14 @@ export async function portalPreprocessor(
       if (pGuild.musicData.channelId === message.channel.id) {
         message.member
           .send('you can\'t play music when ignored')
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to send message: ${e}`));
           });
 
         if (isMessageDeleted(message)) {
           const deletedMessage = await message
             .delete()
-            .catch((e: any) => {
+            .catch((e) => {
               logger.error(new Error(`failed to delete message: ${e}`));
             });
 
@@ -62,7 +62,7 @@ export async function portalPreprocessor(
       //     if (profanities.length > 0) {
       //         message
       //             .react('🚩')
-      //             .catch((e: any) => {
+      //             .catch((e) => {
       //                 logger.error(new Error(`failed to react message: ${e}`));
       //             });
 
@@ -137,7 +137,7 @@ export function handleRankingSystem(
     .then(level => {
       if (level) {
         messageReply(true, message, `you reached level ${level}!`)
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to send message: ${e}`));
           });
       }
@@ -155,7 +155,7 @@ export async function handleUrlChannels(
       removeURL(pGuild.id, message.channel.id)
         .then(r => {
           messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`)
-            .catch((e: any) => {
+            .catch((e) => {
               logger.error(new Error(`failed to send message: ${e}`));
             });
         })
@@ -173,7 +173,7 @@ export async function handleUrlChannels(
       if (isMessageDeleted(message)) {
         const deletedMessage = await message
           .delete()
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to delete message: ${e}`));
           });
 
@@ -197,7 +197,7 @@ export function handleIgnoredChannels(
       removeIgnore(pGuild.id, message.channel.id)
         .then(r => {
           messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
-            .catch((e: any) => {
+            .catch((e) => {
               logger.error(new Error(`failed to send message: ${e}`));
             });
         })
@@ -226,7 +226,7 @@ export function handleMusicChannels(
       setMusicData(pGuild.id, musicData)
         .then(r => {
           messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
-            .catch((e: any) => logger.error(new Error(`failed to send message: ${e}`)));
+            .catch((e) => logger.error(new Error(`failed to send message: ${e}`)));
         })
         .catch(e => logger.error(new Error(`failed to remove music channel: ${e}`)));
     } else {
@@ -234,7 +234,7 @@ export function handleMusicChannels(
       //     if (message.deletable) {
       //         message
       //             .delete()
-      //             .catch((e: any) => logger.error(new Error(`failed to delete message: ${e}`)));
+      //             .catch((e) => logger.error(new Error(`failed to delete message: ${e}`)));
       //     }
 
       //     return false;
@@ -269,7 +269,7 @@ export function handleMusicChannels(
       //         if (message.deletable) {
       //             message
       //                 .delete()
-      //                 .catch((e: any) => {
+      //                 .catch((e) => {
       //                     logger.error(new Error(`failed to send message: ${e}`));
       //                 });
       //         }
@@ -307,7 +307,7 @@ export function handleMusicChannels(
       //         if (message.deletable) {
       //             message
       //                 .delete()
-      //                 .catch((e: any) => {
+      //                 .catch((e) => {
       //                     logger.error(new Error(`failed to send message: ${e}`));
       //                 });
       //         }
@@ -329,7 +329,7 @@ export function handleMusicChannels(
       //         if (message.deletable) {
       //             message
       //                 .delete()
-      //                 .catch((e: any) => {
+      //                 .catch((e) => {
       //                     logger.error(new Error(`failed to send message: ${e}`));
       //                 });
       //         }

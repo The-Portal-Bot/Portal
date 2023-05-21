@@ -4,7 +4,7 @@ import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('football')
     .setDescription('returns football data'),
@@ -56,7 +56,7 @@ module.exports = {
           }
 
           // if (json.errors.length === 0) {
-          //     const country_data = json.response.find((data: any) => data.country === code);
+          //     const country_data = json.response.find((data) => data.country === code);
 
           //     if (!country_data) {
           //         return resolve({
@@ -138,7 +138,7 @@ module.exports = {
           //     });
           // }
         })
-        .catch((error: any) => {
+        .catch((error) => {
           return resolve({
             result: false,
             value: `could not access the server\nerror: ${error}`

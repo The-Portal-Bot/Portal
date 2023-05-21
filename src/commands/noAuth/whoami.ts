@@ -44,14 +44,14 @@ const embeds = (message: Message, pMember: PMember) => [
   )
 ]
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('whoami')
     .setDescription('returns who am I information'),
   async execute(
     message: Message, args: string[], pGuild: PGuild
   ): Promise<ReturnPromise> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const pMember = pGuild.pMembers.find(m => m.id === message.member?.id);
       if (!pMember) {
         return resolve({

@@ -4,7 +4,7 @@ import { PGuild } from "../../types/classes/PGuild.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('ranks')
     .setDescription('returns server ranks'),

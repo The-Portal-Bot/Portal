@@ -16,7 +16,7 @@ function trackClient(client: Client) {
   client.ws.on(GatewayDispatchEvents.VoiceServerUpdate, (payload: GatewayVoiceServerUpdateDispatchData) => {
     adapters.get(payload.guild_id)?.onVoiceServerUpdate(payload);
   });
-  client.ws.on(GatewayDispatchEvents.VoiceStateUpdate, (payload: any) => {
+  client.ws.on(GatewayDispatchEvents.VoiceStateUpdate, (payload) => {
     if (payload.d.guild_id && payload.d.session_id && payload.d.user_id === client.user?.id) {
       adapters.get(payload.d.guild_id)?.onVoiceStateUpdate(payload);
     }

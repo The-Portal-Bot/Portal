@@ -4,7 +4,7 @@ import { createEmbed } from "../../libraries/help.library";
 import { PGuild } from "../../types/classes/PGuild.class";
 import { Field, ReturnPromise } from "../../types/classes/PTypes.interface";
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('state')
     .setDescription('returns server\'s state'),

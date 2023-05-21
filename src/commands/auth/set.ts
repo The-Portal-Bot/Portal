@@ -5,7 +5,7 @@ import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { setAttribute } from "../../types/interfaces/Attribute.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('set')
     .setDescription('set the value of an attribute'),

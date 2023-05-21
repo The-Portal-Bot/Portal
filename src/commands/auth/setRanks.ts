@@ -15,7 +15,7 @@ function isRole(rank: Rank, roles: Role[]) {
   });
 }
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('setRanks')
     .setDescription('create ranks for the server'),

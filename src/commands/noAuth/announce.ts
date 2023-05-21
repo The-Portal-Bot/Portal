@@ -5,7 +5,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('announce')
     .setDescription('send an announcement to the announcement channel'),

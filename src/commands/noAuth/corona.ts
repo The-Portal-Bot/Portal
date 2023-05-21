@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import voca from 'voca';
-import { CountryCodes } from '../../data/lists/countryCodesISO.static';
+import { CountryCodes } from '../../assets/lists/countryCodesISO.static';
 import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
@@ -21,7 +21,7 @@ const getCountryCode = function (country: string): string | null {
   return null;
 };
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('corona')
     .setDescription('returns data about COVID19'),
@@ -76,7 +76,7 @@ module.exports = {
           }
 
           if (json.errors.length === 0) {
-            const countryData = json.response.find((data: any) => data.country === code);
+            const countryData = json.response.find((data) => data.country === code);
 
             if (!countryData) {
               return resolve({
@@ -149,7 +149,7 @@ module.exports = {
                   )
                 ]
               })
-              .catch((e: any) => {
+              .catch((e) => {
                 return resolve({
                   result: false,
                   value: `failed to send message: ${e}`

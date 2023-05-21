@@ -1,28 +1,30 @@
-import { GuildMember, TextChannel } from "discord.js";
-import { createEmbed } from "../libraries/help.library";
-import { fetchGuildAnnouncement, removeMember } from "../libraries/mongo.library";
+import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
+import { createEmbed } from '../libraries/help.library';
+import { fetchGuildAnnouncement, removeMember } from '../libraries/mongo.library';
 
-module.exports = async (
-  args: { member: GuildMember }
-): Promise<string> => {
+export default async (args: { member: GuildMember | PartialGuildMember }): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!args.member.user.bot) {
       removeMember(args.member.id, args.member.guild.id)
-        .then(r => {
+        .then((r) => {
           if (!r) {
             return reject(`failed to remove member ${args.member.id} to ${args.member.guild.id}`);
           }
 
           fetchGuildAnnouncement(args.member.guild.id)
-            .then(pGuild => {
+            .then((pGuild) => {
               if (pGuild) {
-                const leaveMessage = `member: ${args.member.presence?.user}\n` +
-									`id: ${args.member.guild.id}\n` +
-									`\thas left ${args.member.guild}`;
+                const leaveMessage =
+                                    `member: ${args.member.presence?.user}\n` +
+                                    `id: ${args.member.guild.id}\n` +
+                                    `\thas left ${args.member.guild}`;
 
                 if (pGuild) {
-                  const announcementChannel = <TextChannel>args.member.guild.channels.cache
-                    .find(channel => channel.id === pGuild.announcement)
+                  const announcementChannel = <TextChannel>(
+                                        args.member.guild.channels.cache.find(
+                                          (channel) => channel.id === pGuild.announcement
+                                        )
+                                    );
 
                   if (announcementChannel) {
                     announcementChannel
@@ -38,10 +40,10 @@ module.exports = async (
                             true,
                             null,
                             null
-                          )
-                        ]
+                          ),
+                        ],
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         return reject(`failed to send message: ${e}`);
                       });
                   }
@@ -52,11 +54,11 @@ module.exports = async (
                 return resolve(`no announcement channel in database`);
               }
             })
-            .catch(e => {
+            .catch((e) => {
               return reject(`failed to get announcement channel in database: ${e}`);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           return reject(`failed to remove member ${args.member.id} to ${args.member.guild.id}: ${e}`);
         });
     } else {

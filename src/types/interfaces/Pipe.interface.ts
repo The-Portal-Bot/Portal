@@ -1,5 +1,5 @@
 import voca from 'voca';
-import { AuthType } from '../../data/enums/Admin.enum';
+import { AuthType } from '../enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 import { EmbedBuilder } from 'discord.js';
@@ -352,7 +352,7 @@ function mostFrequent(array: string[], return_number: boolean): string | number 
     return 'no statuses';
   }
 
-  const modeMap: any = {};
+  const modeMap = {};
   let maxEl: string = array[0]
   let maxCount = 1;
 

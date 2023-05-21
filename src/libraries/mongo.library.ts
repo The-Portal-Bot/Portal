@@ -1,9 +1,9 @@
 import { ChannelType, Client, TextChannel, VoiceChannel } from 'discord.js';
 import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
-import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
-import { ProfanityLevel } from '../data/enums/ProfanityLevel.enum';
-import { RankSpeed } from '../data/enums/RankSpeed.enum';
+import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
+import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import { PGiveRole } from '../types/classes/PGiveRole.class';
 import { PGuild, IPGuild, MusicData } from '../types/classes/PGuild.class';
 import { PMember } from '../types/classes/PMember.class';
@@ -25,7 +25,7 @@ export async function fetchGuildList(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -48,7 +48,7 @@ export async function fetchGuild(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -72,7 +72,7 @@ export async function fetchGuildChannelDelete(
           ignoreList: 1
         })
     // needs fixing
-      .then((r: any) => {
+      .then((r) => {
         if (r) {
           return resolve({
             id: r.id,
@@ -86,7 +86,7 @@ export async function fetchGuildChannelDelete(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -105,7 +105,7 @@ export async function fetchGuildAnnouncement(
           announcement: 1,
           initialRole: 1
         })
-      .then((r: any) => {
+      .then((r) => {
         if (r) {
           return resolve(<PGuild>{
             announcement: r.announcement,
@@ -115,7 +115,7 @@ export async function fetchGuildAnnouncement(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -142,7 +142,7 @@ export async function fetchGuildReactionData(
           musicData: 1,
           musicQueue: 1
         })
-      .then((r: any) => {
+      .then((r) => {
         if (r) {
           return resolve(<PGuild>{
             id: r.id,
@@ -156,7 +156,7 @@ export async function fetchGuildReactionData(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -174,14 +174,14 @@ export async function fetchGuildMembers(
         {
           memberList: 1
         })
-      .then((r: any) => {
+      .then((r) => {
         if (r) {
           return resolve(<PMember[]>r.member_list);
         } else {
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -200,7 +200,7 @@ export async function fetchGuildMusicQueue(
           musicData: 1,
           musicQueue: 1
         })
-      .then((r: any) => {
+      .then((r) => {
         if (r) {
           return resolve(<{ queue: VideoSearchResult[], data: MusicData }>{
             data: r.musicData,
@@ -210,7 +210,7 @@ export async function fetchGuildMusicQueue(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -245,7 +245,7 @@ export async function fetchGuildPreData(
           kickAfter: 1,
           banAfter: 1
         })
-      .then((r: any) => {
+      .then((r) => {
         if (r) {
           return resolve(<PGuild>{
             id: r.id,
@@ -267,7 +267,7 @@ export async function fetchGuildPreData(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -292,7 +292,7 @@ export async function fetchGuildRest(
           rankSpeed: 0,
           profanityLevel: 0
         })
-      .then((r: any) => {
+      .then((r) => {
         if (r) {
           return resolve(<PGuild>{
             id: r.id,
@@ -309,7 +309,7 @@ export async function fetchGuildRest(
           return resolve(undefined);
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -328,7 +328,7 @@ export async function guildExists(
       .then((count: number) => {
         return resolve(count > 0);
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -352,17 +352,17 @@ export async function memberExists(
       .then((count: number) => {
         return resolve(count > 0);
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
 }
 
 export async function updateGuild(
-  guildId: string, key: string, value: any
+  guildId: string, key: string, value
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const placeholder: any = {}
+    const placeholder = {}
     placeholder[key] = value;
     PGuildModel
       .updateOne(
@@ -383,7 +383,7 @@ export async function updateGuild(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -496,7 +496,7 @@ export async function insertGuild(
       .then((r: Document<any>) => {
         return resolve(!!r);
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -510,24 +510,24 @@ export async function removeGuild(
       .deleteOne({
         id: guildId
       })
-      .then((r: any) => {
+      .then((r) => {
         if ((r && r.id === guildId)) {
           return resolve(true);
         } else {
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
 }
 
 export async function updateMember(
-  guildId: string, memberId: string, key: string, value: any
+  guildId: string, memberId: string, key: string, value
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const placeholder: any = {}
+    const placeholder = {}
     placeholder['member_list.$[m].' + key] = value;
 
     PGuildModel
@@ -554,7 +554,7 @@ export async function updateMember(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -564,7 +564,7 @@ export async function updateEntireMember(
   guildId: string, memberId: string, member: PMember
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const placeholder: any = {}
+    const placeholder = {}
     placeholder['member_list.$[m]'] = member;
 
     PGuildModel
@@ -591,7 +591,7 @@ export async function updateEntireMember(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -627,7 +627,7 @@ export async function insertMember(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -656,17 +656,17 @@ export async function removeMember(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
 }
 
 export async function updatePortal(
-  guildId: string, portalId: string, key: string, value: any
+  guildId: string, portalId: string, key: string, value
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const placeholder: any = {}
+    const placeholder = {}
     placeholder['portal_list.$[p].' + key] = value;
 
     PGuildModel
@@ -691,7 +691,7 @@ export async function updatePortal(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -719,7 +719,7 @@ export async function insertPortal(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -749,17 +749,17 @@ export async function removePortal(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
 }
 
 export async function updateVoice(
-  guildId: string, portalId: string, voiceId: string, key: string, value: any
+  guildId: string, portalId: string, voiceId: string, key: string, value
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const placeholder: any = {}
+    const placeholder = {}
     placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
 
     PGuildModel
@@ -785,7 +785,7 @@ export async function updateVoice(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -819,7 +819,7 @@ export async function insertVoice(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         reject(e);
       });
   });
@@ -859,7 +859,7 @@ export async function removeVoice(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         reject(e);
       });
   });
@@ -887,7 +887,7 @@ export async function insertURL(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -914,7 +914,7 @@ export async function removeURL(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(`did not execute database transaction: ${e}`);
       });
   });
@@ -942,7 +942,7 @@ export async function insertIgnore( // channel
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -969,7 +969,7 @@ export async function removeIgnore( // channel
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -994,7 +994,7 @@ export async function setRanks(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1022,7 +1022,7 @@ export async function insertPoll(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1052,7 +1052,7 @@ export async function removePoll(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1080,7 +1080,7 @@ export async function insertVendor(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1110,7 +1110,7 @@ export async function removeVendor(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1138,7 +1138,7 @@ export async function insertMusicVideo(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1166,7 +1166,7 @@ export async function clearMusicVote(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1194,7 +1194,7 @@ export async function insertMusicVote(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });
@@ -1222,7 +1222,7 @@ export async function setMusicData(
           return reject('did not execute database transaction');
         }
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });

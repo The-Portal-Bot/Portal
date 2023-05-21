@@ -1,11 +1,11 @@
-// /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+// 
 // // const ytdl = require('ytdl-core');
 // import ytdl from 'discord-ytdl-core';
 // import { Client, Guild, Message, MessageAttachment, User } from "discord.js";
 // import { RequestOptions } from 'https';
 // import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
 // import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-// import { get_json, is_url, join_by_reaction, join_user_voice, update_music_lyrics_message, update_music_message } from './help.library';
+// import { get_json, is_url, join_by_reaction, joinUserVoiceChannelByReaction, update_music_lyrics_message, update_music_message } from './help.library';
 // import { https_fetch, scrape_lyrics } from './http.library';
 // import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library';
 
@@ -143,7 +143,7 @@
 // 						return resolve('already playing, song added to queue');
 // 					}
 // 				} else {
-// 					join_user_voice(client, message, pGuild, false)
+// 					joinUserVoiceChannelByReaction(client, message, pGuild, false)
 // 						.then(r => {
 // 							if (!r) {
 // 								return reject(`could not join your voice channel`);
@@ -254,7 +254,7 @@
 // 								return reject(`error while starting music player: ${e}`);
 // 							});
 // 					})
-// 					.catch((e: any) => {
+// 					.catch((e) => {
 // 						return reject(`could not access the server: ${e}`);
 // 					});
 // 			} else {
@@ -798,15 +798,15 @@
 // 								.then(() => {
 // 									return resolve(`displayed lyrics`);
 // 								})
-// 								.catch((e: any) => {
+// 								.catch((e) => {
 // 									return reject(`failed to update lyrics message: ${e}`);
 // 								});
 // 						})
-// 						.catch((e: any) => {
+// 						.catch((e) => {
 // 							return reject(`failed to scrap genius page: ${e}`);
 // 						});
 // 				})
-// 				.catch((e: any) => {
+// 				.catch((e) => {
 // 					return reject(`could not access the server: ${e}`);
 // 				});
 // 		} else {

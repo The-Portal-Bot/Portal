@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { AuthType } from '../../data/enums/Admin.enum';
+import { AuthType } from '../enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 

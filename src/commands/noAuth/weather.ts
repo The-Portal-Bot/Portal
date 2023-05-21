@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
@@ -24,7 +23,7 @@ function msToMlh(ms: number): number {
   return Math.round(ms * 2.237);
 }
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('weather')
     .setDescription('returns data information'),
@@ -105,7 +104,7 @@ module.exports = {
                       {
                         emote: 'Condition',
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                        role: `${json.weather.map((w: any) => {
+                        role: `${json.weather.map((w) => {
                           return `${w.main} (${w.description})`;
                         }).join(', ')}`,
                         inline: false
@@ -138,7 +137,7 @@ module.exports = {
             });
           }
         })
-        .catch((e: any) => {
+        .catch((e) => {
           return resolve({
             result: false,
             value: `could not access the server: ${e}`

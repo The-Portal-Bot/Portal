@@ -9,7 +9,7 @@ import {
 } from '../../libraries/guild.library';
 import { updateGuild } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { PortalChannelTypes } from '../../data/enums/PortalChannel.enum';
+import { PortalChannelTypes } from '../../types/enums/PortalChannel.enum';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { messageHelp } from '../../libraries/help.library';
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -49,7 +49,7 @@ async function doesChannelHaveUsage(message: Message, pGuild: PGuild) {
   };
 }
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('announcement')
     .setDescription('makes an announcement channel')
@@ -83,7 +83,7 @@ module.exports = {
         );
 
     if (announcement) {
-      deleteChannel(PortalChannelTypes.announcement, announcement, message).catch((e: any) => {
+      deleteChannel(PortalChannelTypes.announcement, announcement, message).catch((e) => {
         return {
           result: false,
           value: `failed to delete channel: ${e}`,

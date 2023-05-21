@@ -1,16 +1,35 @@
-import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
-import { Client, Collection, ColorResolvable, EmbedAuthorOptions, EmbedBuilder, Guild, GuildBasedChannel, GuildMember, Message, PermissionResolvable, TextBasedChannel, TextChannel, User, VoiceChannel } from "discord.js";
-import moment from "moment";
-import { createLogger, format } from "winston";
-import { VideoSearchResult } from "yt-search";
-import { PGuild, MusicData } from "../types/classes/PGuild.class";
-import { Field, TimeElapsed } from "../types/classes/PTypes.interface";
-import { createDiscordJSAdapter } from "./adapter.library";
+import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from '@discordjs/voice';
+import {
+  Client,
+  Collection,
+  ColorResolvable,
+  EmbedAuthorOptions,
+  EmbedBuilder,
+  Guild,
+  GuildBasedChannel,
+  GuildMember,
+  Message,
+  PermissionResolvable,
+  TextBasedChannel,
+  TextChannel,
+  User,
+  VoiceChannel,
+} from 'discord.js';
+import moment from 'moment';
+import { createLogger, format } from 'winston';
+import { VideoSearchResult } from 'yt-search';
+import { PGuild, MusicData } from '../types/classes/PGuild.class';
+import { Field, TimeElapsed } from '../types/classes/PTypes.interface';
+import { createDiscordJSAdapter } from './adapter.library';
 // import { client_talk } from "./localisation.library";
-import { fetchGuild, fetchGuildList, setMusicData } from "./mongo.library";
+import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
+import { JokeType } from '../types/enums/Joke.enum';
+import { OpapGameId } from '../types/enums/OpapGames.enum';
+import { RankSpeed } from '../types/enums/RankSpeed.enum';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
+import { Locale } from '../types/enums/Locales.enum';
 
-const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' +
-	'Portal/master/src/assets/img/empty_queue.png';
+const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' + 'Portal/master/src/assets/img/empty_queue.png';
 
 const deletedMessages = new WeakSet<Message>();
 const deletedChannel = new WeakSet<GuildBasedChannel | TextBasedChannel>();
@@ -43,7 +62,7 @@ export function markGuildAsDeleted(guild: Guild) {
 export const logger = createLogger({
   format: format.combine(
     format.timestamp({
-      format: 'DD-MM-YY HH:mm:ss'
+      format: 'DD-MM-YY HH:mm:ss',
     }),
     format.errors({ stack: true }),
     format.splat(),
@@ -52,40 +71,33 @@ export const logger = createLogger({
   defaultMeta: { service: 'portal' },
   // you can also add a mongo transport to store logs
   // in the database (there is a performance penalty)
-  transports: []
+  transports: [],
 });
 
-
-export async function askForApproval(
-  message: Message, requester: GuildMember, question: string
-): Promise<boolean> {
+export async function askForApproval(message: Message, requester: GuildMember, question: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     message.channel
       .send(question)
-      .then(question_msg => {
+      .then((question_msg) => {
         let accepted = false;
         const filter = (m: Message) => m.author.id === requester.user.id;
-        const collector = message.channel
-          .createMessageCollector({ filter, time: 10000 });
+        const collector = message.channel.createMessageCollector({ filter, time: 10000 });
 
         collector.on('collect', (m: Message) => {
           if (m.content === 'yes') {
             accepted = true;
             collector.stop();
-          }
-          else if (m.content === 'no') {
+          } else if (m.content === 'no') {
             collector.stop();
           }
         });
 
-        collector.on('end', async collected => {
+        collector.on('end', async (collected) => {
           for (const reply_message of collected.values()) {
             if (isMessageDeleted(reply_message)) {
-              const deletedMessage = await reply_message
-                .delete()
-                .catch((e: any) => {
-                  return reject(`failed to delete message: ${e}`);
-                });
+              const deletedMessage = await reply_message.delete().catch((e) => {
+                return reject(`failed to delete message: ${e}`);
+              });
 
               if (deletedMessage) {
                 markMessageAsDeleted(deletedMessage);
@@ -94,11 +106,9 @@ export async function askForApproval(
           }
 
           if (isMessageDeleted(question_msg)) {
-            const deletedMessage = await question_msg
-              .delete()
-              .catch((e: any) => {
-                return reject(`failed to delete message: ${e}`);
-              });
+            const deletedMessage = await question_msg.delete().catch((e) => {
+              return reject(`failed to delete message: ${e}`);
+            });
 
             if (deletedMessage) {
               markMessageAsDeleted(deletedMessage);
@@ -108,22 +118,19 @@ export async function askForApproval(
           return resolve(accepted);
         });
       })
-      .catch(e => {
+      .catch((e) => {
         return reject(e);
       });
   });
 }
 
-export function getJsonFromString(
-  str: string
-): any | unknown {
+export function getJsonFromString(str: string) {
   let data = null;
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     data = JSON.parse(str);
-  }
-  catch (error) {
+  } catch (error) {
     return null;
   }
 
@@ -131,31 +138,25 @@ export function getJsonFromString(
   return data;
 }
 
-export function maxString(
-  abstract: string, max: number
-): string {
-  return abstract.length < max
-    ? abstract
-    : abstract.substring(0, max - 3) + '...';
+export function maxString(abstract: string, max: number): string {
+  return abstract.length < max ? abstract : abstract.substring(0, max - 3) + '...';
 }
 
 export function getKeyFromEnum(
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  value: string, enumeration: any
+  value: string,
+  enumeration: JokeType | OpapGameId | RankSpeed | ProfanityLevel | Locale
 ): string | number | undefined {
-  for (const e in enumeration) {
+  const enumerationArray = Array(enumeration);
+  for (const e in enumerationArray) {
     if (e === value) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-      return enumeration[e];
+      return enumerationArray[e];
     }
   }
 
   return undefined;
 }
 
-export function createMusicMessage(
-  channel: TextChannel, pGuild: PGuild
-): Promise<string> {
+export function createMusicMessage(channel: TextChannel, pGuild: PGuild): Promise<string> {
   return new Promise((resolve, reject) => {
     const music_message_emb = createEmbed(
       'Music Player',
@@ -166,7 +167,7 @@ export function createMusicMessage(
         { emote: 'Views', role: '-', inline: true },
         { emote: 'Pinned', role: pGuild.musicData.pinned ? 'yes' : 'no', inline: true },
         { emote: 'Queue', role: 'empty', inline: false },
-        { emote: 'Latest Action', role: '```music message created```', inline: false }
+        { emote: 'Latest Action', role: '```music message created```', inline: false },
       ],
       null,
       null,
@@ -178,54 +179,43 @@ export function createMusicMessage(
 
     channel
       .send({ embeds: [music_message_emb] })
-      .then(sent_message => {
-        sent_message.react('▶️')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
-        sent_message.react('⏸')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
-        sent_message.react('⏭')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
-        sent_message.react('📌')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
-        sent_message.react('📄')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
-        sent_message.react('⬇️')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
-        sent_message.react('🧹')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
-        sent_message.react('🚪')
-          .catch((e: any) => {
-            return reject(`failed to set remote: ${e}`);
-          });
+      .then((sent_message) => {
+        sent_message.react('▶️').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
+        sent_message.react('⏸').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
+        sent_message.react('⏭').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
+        sent_message.react('📌').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
+        sent_message.react('📄').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
+        sent_message.react('⬇️').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
+        sent_message.react('🧹').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
+        sent_message.react('🚪').catch((e) => {
+          return reject(`failed to set remote: ${e}`);
+        });
 
         const music_data = new MusicData(
           channel.id,
           sent_message.id,
-          pGuild.musicData.messageLyricsId
-            ? pGuild.musicData.messageLyricsId
-            : 'null',
+          pGuild.musicData.messageLyricsId ? pGuild.musicData.messageLyricsId : 'null',
           [],
           false
         );
 
-        setMusicData(pGuild.id, music_data)
-          .catch((e: any) => {
-            return reject(`failed to set music data: ${e}`);
-          });
+        setMusicData(pGuild.id, music_data).catch((e) => {
+          return reject(`failed to set music data: ${e}`);
+        });
 
         return resolve(sent_message.id);
       })
@@ -235,53 +225,38 @@ export function createMusicMessage(
   });
 }
 
-export function createMusicLyricsMessage(
-  channel: TextChannel, pGuild: PGuild, messageId: string
-): Promise<string> {
+export function createMusicLyricsMessage(channel: TextChannel, pGuild: PGuild, messageId: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const music_lyrics_message_emb = createEmbed(
-      'Lyrics 📄',
-      '',
-      '#e60026',
-      null,
-      null,
-      null,
-      false,
-      null,
-      null
-    );
+    const music_lyrics_message_emb = createEmbed('Lyrics 📄', '', '#e60026', null, null, null, false, null, null);
 
     channel
       .send({ embeds: [music_lyrics_message_emb] })
-      .then(sent_message_lyrics => {
-        const music_data = new MusicData(
-          channel.id,
-          messageId,
-          sent_message_lyrics.id,
-          [],
-          false
-        );
+      .then((sent_message_lyrics) => {
+        const music_data = new MusicData(channel.id, messageId, sent_message_lyrics.id, [], false);
 
-        setMusicData(pGuild.id, music_data)
-          .catch((e: any) => {
-            return reject(`failed to set music data: ${e}`);
-          });
+        setMusicData(pGuild.id, music_data).catch((e) => {
+          return reject(`failed to set music data: ${e}`);
+        });
 
         return resolve(sent_message_lyrics.id);
       })
-      .catch(e => {
+      .catch((e) => {
         return reject(`failed to send message to channel: ${e}`);
       });
   });
 }
 
 export function updateMusicMessage(
-  guild: Guild, pGuild: PGuild, yts: VideoSearchResult | undefined,
-  status: string, animated = true
+  guild: Guild,
+  pGuild: PGuild,
+  yts: VideoSearchResult | undefined,
+  status: string,
+  animated = true
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const guild_channel: GuildBasedChannel | undefined = guild.channels.cache
-      .find(c => c.id === pGuild.musicData.channelId);
+    const guild_channel: GuildBasedChannel | undefined = guild.channels.cache.find(
+      (c) => c.id === pGuild.musicData.channelId
+    );
 
     if (!guild_channel) {
       return reject(`could not fetch channel`);
@@ -293,17 +268,17 @@ export function updateMusicMessage(
       return reject(`could not find channel`);
     }
 
-    const music_queue = pGuild.musicQueue ?
-      pGuild.musicQueue.length > 1
+    const music_queue = pGuild.musicQueue
+      ? pGuild.musicQueue.length > 1
         ? pGuild.musicQueue
           .map((v, i) => {
             if (i !== 0 && i < 6) {
-              return (`${i}. ${maxString(v.title, 61)}`);
+              return `${i}. ${maxString(v.title, 61)}`;
             } else if (i === 6) {
               return `_...${pGuild.musicQueue.length - 6} more_`;
             }
           })
-          .filter(v => !!v)
+          .filter((v) => !!v)
           .join('\n')
         : 'empty'
       : 'empty';
@@ -319,7 +294,7 @@ export function updateMusicMessage(
         // { emote: null, role: null, inline: true },
         { emote: 'Queue', role: music_queue, inline: false },
         // { emote: null, role: null, inline: true },
-        { emote: 'Latest Action', role: '```' + status + '```', inline: false }
+        { emote: 'Latest Action', role: '```' + status + '```', inline: false },
       ],
       null,
       null,
@@ -341,11 +316,11 @@ export function updateMusicMessage(
               .then(() => {
                 return resolve(true);
               })
-              .catch(e => {
+              .catch((e) => {
                 return reject(`failed to edit messages: ${e}`);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             return reject(`failed to fetch messages: ${e}`);
           });
       }
@@ -353,12 +328,11 @@ export function updateMusicMessage(
   });
 }
 
-export function updateMusicLyricsMessage(
-  guild: Guild, pGuild: PGuild, lyrics: string, url?: string
-): Promise<boolean> {
+export function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyrics: string, url?: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    const guild_channel: GuildBasedChannel | undefined = guild.channels.cache
-      .find(c => c.id === pGuild.musicData.channelId);
+    const guild_channel: GuildBasedChannel | undefined = guild.channels.cache.find(
+      (c) => c.id === pGuild.musicData.channelId
+    );
 
     if (!guild_channel) {
       return reject(`could not fetch channel`);
@@ -387,15 +361,16 @@ export function updateMusicLyricsMessage(
         channel.messages
           .fetch(pGuild.musicData.messageLyricsId)
           .then((message: Message) => {
-            message.edit({ embeds: [music_message_emb] })
+            message
+              .edit({ embeds: [music_message_emb] })
               .then(() => {
                 return resolve(true);
               })
-              .catch(e => {
+              .catch((e) => {
                 return reject(`failed to edit messages: ${e}`);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             return reject(`failed to fetch messages: ${e}`);
           });
       }
@@ -404,7 +379,11 @@ export function updateMusicLyricsMessage(
 }
 
 export async function joinUserVoiceChannelByReaction(
-  guild: Guild, client: Client, pGuild: PGuild, user: User, announce_entrance: boolean
+  guild: Guild,
+  client: Client,
+  pGuild: PGuild,
+  user: User,
+  announce_entrance: boolean
 ): Promise<VoiceConnection> {
   const guildMembers = await guild.members.fetch();
 
@@ -412,7 +391,7 @@ export async function joinUserVoiceChannelByReaction(
     return Promise.reject(`could not fetch members`);
   }
 
-  const member = guildMembers.find(guildMember => !guildMember.user?.bot && guildMember.id === user.id);
+  const member = guildMembers.find((guildMember) => !guildMember.user?.bot && guildMember.id === user.id);
 
   if (!member) {
     return Promise.reject(`could not find member`);
@@ -453,7 +432,10 @@ export async function joinUserVoiceChannelByReaction(
 }
 
 export async function joinUserVoiceChannelByMessage(
-  client: Client, message: Message, pGuild: PGuild, join = false
+  client: Client,
+  message: Message,
+  pGuild: PGuild,
+  join = false
 ): Promise<VoiceConnection> {
   if (!message.member) {
     return Promise.reject('user could not be fetched for message');
@@ -464,7 +446,7 @@ export async function joinUserVoiceChannelByMessage(
   }
 
   if (!message.member.voice.channel) {
-    return Promise.reject('you aren\'t in a channel');
+    return Promise.reject("you aren't in a channel");
   }
 
   if (!message.guild) {
@@ -480,7 +462,7 @@ export async function joinUserVoiceChannelByMessage(
   }
 
   if (!client.voice) {
-    return Promise.reject('could not fetch portal\'s voice connections');
+    return Promise.reject("could not fetch portal's voice connections");
   }
 
   let voiceConnection = await getVoiceConnection(message.member.voice.channel.id);
@@ -520,11 +502,11 @@ export function createEmbed(
   url: string | null | undefined,
   image: string | null | undefined,
   custom_gif?: string,
-  author?: { name: string, icon: string },
-  footer?: string,
+  author?: { name: string; icon: string },
+  footer?: string
 ): EmbedBuilder {
-  const portal_icon_url: string = 'https://raw.githubusercontent.com/keybraker' +
-		'/Portal/master/src/assets/img/portal_logo_spinr.gif';
+  const portal_icon_url: string =
+        'https://raw.githubusercontent.com/keybraker' + '/Portal/master/src/assets/img/portal_logo_spinr.gif';
 
   const rich_message = new EmbedBuilder();
 
@@ -533,55 +515,44 @@ export function createEmbed(
   if (colour) rich_message.setColor(colour);
   if (description) rich_message.setDescription(description);
   if (footer) rich_message.setFooter({ text: footer });
-  if (from_bot) rich_message.setFooter({
-    text: footer
-      ? footer
-      : 'Portal',
-    iconURL: custom_gif
-      ? custom_gif
-      : portal_icon_url
-  }).setTimestamp();
+  if (from_bot)
+    rich_message
+      .setFooter({
+        text: footer ? footer : 'Portal',
+        iconURL: custom_gif ? custom_gif : portal_icon_url,
+      })
+      .setTimestamp();
   if (thumbnail) rich_message.setThumbnail(thumbnail);
   if (image) rich_message.setImage(image);
-  if (author) rich_message.setAuthor({
-    name: author.name,
-    iconURL: author.icon
-    // url: 'https://discord.js.org'
-  });
+  if (author)
+    rich_message.setAuthor({
+      name: author.name,
+      iconURL: author.icon,
+      // url: 'https://discord.js.org'
+    });
   if (field_array) {
-    field_array.forEach(row => {
-      rich_message
-        .addFields({
-          name: row.emote === '' || !row.emote
-            ? `\u200b`
-            : `__${row.emote}__`,
-          value: row.role === '' || !row.role
-            ? `\u200b`
-            : `${row.role}`,
-          inline: row.inline
-        }
-        );
+    field_array.forEach((row) => {
+      rich_message.addFields({
+        name: row.emote === '' || !row.emote ? `\u200b` : `__${row.emote}__`,
+        value: row.role === '' || !row.role ? `\u200b` : `${row.role}`,
+        inline: row.inline,
+      });
     });
   }
   if (member && !author) {
-    const url = member.user.avatarURL()
-      ? member.user.avatarURL()
-      : undefined;
+    const url = member.user.avatarURL() ? member.user.avatarURL() : undefined;
 
     rich_message.setAuthor({
       name: member.displayName,
       value: url ? url.toString() : undefined,
-      inline: undefined
-    } as EmbedAuthorOptions
-    );
+      inline: undefined,
+    } as EmbedAuthorOptions);
   }
 
   return rich_message;
 }
 
-export function isUserAuthorised(
-  member: GuildMember
-): boolean {
+export function isUserAuthorised(member: GuildMember): boolean {
   const administrator: PermissionResolvable = 'Administrator';
 
   if (member.permissions.has(administrator, true)) {
@@ -589,59 +560,46 @@ export function isUserAuthorised(
   }
 
   if (member.roles.cache) {
-    return member.roles.cache.some(r =>
-      r.name.toLowerCase() === 'p.admin');
+    return member.roles.cache.some((r) => r.name.toLowerCase() === 'p.admin');
   }
 
   return false;
 }
 
-export function isUserDj(
-  member: GuildMember
-): boolean {
+export function isUserDj(member: GuildMember): boolean {
   if (member.roles.cache) {
-    return member.roles.cache.some(r =>
-      r.name.toLowerCase() === 'p.dj');
+    return member.roles.cache.some((r) => r.name.toLowerCase() === 'p.dj');
   }
 
   return false;
 }
 
-export function isUserIgnored(
-  member: GuildMember
-): boolean {
-  return member.roles.cache.some(r =>
-    r.name.toLowerCase() === 'p.ignore');
+export function isUserIgnored(member: GuildMember): boolean {
+  return member.roles.cache.some((r) => r.name.toLowerCase() === 'p.ignore');
 }
 
-export function isMod(
-  member: GuildMember | null
-): boolean {
+export function isMod(member: GuildMember | null): boolean {
   if (member && member.roles.cache) {
-    return member.roles.cache.some(r =>
-      r.name.toLowerCase() === 'p.mod');
+    return member.roles.cache.some((r) => r.name.toLowerCase() === 'p.mod');
   }
 
   return false;
 }
 
-export function isWhitelist(
-  member: GuildMember | null
-): boolean {
+export function isWhitelist(member: GuildMember | null): boolean {
   if (member && member.roles.cache) {
-    return member.roles.cache.some(r =>
-      r.name.toLowerCase() === 'p.whitelist');
+    return member.roles.cache.some((r) => r.name.toLowerCase() === 'p.whitelist');
   }
 
   return false;
 }
 
-export function messageHelp(
-  type: string, argument: string, info = ''
-): string {
+export function messageHelp(type: string, argument: string, info = ''): string {
   if (info !== '') info += '\n';
-  return `${info} get help by typing \`./help ${argument}\`\n` +
-		`*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`;
+  return (
+    `${info} get help by typing \`./help ${argument}\`\n` +
+        `*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`
+  );
 }
 
 export async function messageReply(
@@ -658,8 +616,9 @@ export async function messageReply(
   }
 
   if (!isChannelDeleted(message.channel) && replyString !== null && replyString !== '') {
-    const sentMessage = await message.reply(replyString)
-      .catch(e => { return Promise.reject(`failed to send message: ${e}`); });
+    const sentMessage = await message.reply(replyString).catch((e) => {
+      return Promise.reject(`failed to send message: ${e}`);
+    });
 
     if (!sentMessage) {
       return Promise.reject(`failed to send message`);
@@ -669,11 +628,9 @@ export async function messageReply(
       const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
       setTimeout(async () => {
         if (isMessageDeleted(sentMessage)) {
-          const deletedMessage = await sentMessage
-            .delete()
-            .catch((e: any) => {
-              return Promise.reject(`failed to delete message: ${e}`);
-            });
+          const deletedMessage = await sentMessage.delete().catch((e) => {
+            return Promise.reject(`failed to delete message: ${e}`);
+          });
 
           if (deletedMessage) {
             markMessageAsDeleted(deletedMessage);
@@ -684,8 +641,9 @@ export async function messageReply(
   }
 
   if (deleteSource) {
-    const reaction = await message.react(status ? emotePass : emoteFail)
-      .catch(e => { return Promise.reject(`failed to react to message: ${e}`); });
+    const reaction = await message.react(status ? emotePass : emoteFail).catch((e) => {
+      return Promise.reject(`failed to react to message: ${e}`);
+    });
 
     if (!reaction) {
       return Promise.reject(`failed to react to message`);
@@ -694,11 +652,9 @@ export async function messageReply(
     const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
     setTimeout(async () => {
       if (isMessageDeleted(message)) {
-        const deletedMessage = await message
-          .delete()
-          .catch((e: any) => {
-            return Promise.reject(`failed to delete message: ${e}`);
-          });
+        const deletedMessage = await message.delete().catch((e) => {
+          return Promise.reject(`failed to delete message: ${e}`);
+        });
 
         if (deletedMessage) {
           markMessageAsDeleted(deletedMessage);
@@ -712,40 +668,27 @@ export async function messageReply(
   return false;
 }
 
-export function isUrl(
-  potentialURL: string
-): boolean {
-  const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-		'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-		'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-		'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+export function isUrl(potentialURL: string): boolean {
+  const pattern = new RegExp(
+    '^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$',
+    'i'
+  ); // fragment locator
 
   return pattern.test(potentialURL);
 }
 
-export function pad(
-  num: number
-): string {
-  return num.toString().length >= 2
-    ? `${num}`
-    : `0${num}`;
+export function pad(num: number): string {
+  return num.toString().length >= 2 ? `${num}` : `0${num}`;
 }
 
-export function timeElapsed(
-  timestamp: Date | number, timeout: number
-): TimeElapsed {
+export function timeElapsed(timestamp: Date | number, timeout: number): TimeElapsed {
   const timeoutTime = timeout * 60 * 1000;
-  const el = moment
-    .duration(moment()
-      .diff(
-        moment(typeof timestamp === 'number'
-          ? timestamp
-          : timestamp.getTime()
-        )
-      )
-    );
+  const el = moment.duration(moment().diff(moment(typeof timestamp === 'number' ? timestamp : timestamp.getTime())));
 
   const timeoutMin = moment(timeoutTime).minutes();
   const timeoutSec = moment(timeoutTime).seconds();
@@ -753,30 +696,28 @@ export function timeElapsed(
   const remainingMin = el.minutes();
   const remainingSec = el.seconds();
 
-  return { timeoutMin, timeoutSec, remainingHrs, remainingMin, remainingSec }
+  return { timeoutMin, timeoutSec, remainingHrs, remainingMin, remainingSec };
 }
 
 // must get updated
-export function removeDeletedChannels(
-  guild: Guild
-): Promise<boolean> {
+export function removeDeletedChannels(guild: Guild): Promise<boolean> {
   return new Promise((resolve) => {
     fetchGuild(guild.id)
-      .then(pGuild => {
+      .then((pGuild) => {
         if (pGuild) {
           pGuild.pChannels.forEach((p, index_p) => {
-            if (!guild.channels.cache.some(c => c.id === p.id)) {
+            if (!guild.channels.cache.some((c) => c.id === p.id)) {
               pGuild.pChannels.splice(index_p, 1);
             }
             p.pVoiceChannels.forEach((v, index_v) => {
-              if (!guild.channels.cache.some(c => c.id === v.id)) {
+              if (!guild.channels.cache.some((c) => c.id === v.id)) {
                 p.pVoiceChannels.splice(index_v, 1);
               }
             });
           });
 
           pGuild.urlList.some((u_id, index_u) => {
-            if (!guild.channels.cache.some(c => c.id === u_id)) {
+            if (!guild.channels.cache.some((c) => c.id === u_id)) {
               pGuild.urlList.splice(index_u, 1);
               return true;
             }
@@ -785,7 +726,7 @@ export function removeDeletedChannels(
           });
 
           pGuild.pRoles.forEach((r, index_r) => {
-            !guild.channels.cache.some(c => {
+            !guild.channels.cache.some((c) => {
               if (c instanceof TextChannel) {
                 let found = false;
                 c.messages
@@ -806,18 +747,18 @@ export function removeDeletedChannels(
           });
 
           pGuild.pMembers.forEach((m, index_m) => {
-            if (!guild.members.cache.some(m => m.id === m.id)) {
+            if (!guild.members.cache.some((m) => m.id === m.id)) {
               pGuild.urlList.splice(index_m, 1);
             }
           });
 
-          if (!guild.channels.cache.some(c => c.id === pGuild.musicData.channelId)) {
+          if (!guild.channels.cache.some((c) => c.id === pGuild.musicData.channelId)) {
             pGuild.musicData.channelId = undefined;
             pGuild.musicData.messageId = undefined;
             pGuild.musicData.votes = undefined;
           }
 
-          if (!guild.channels.cache.some(c => c.id === pGuild.announcement)) {
+          if (!guild.channels.cache.some((c) => c.id === pGuild.announcement)) {
             pGuild.announcement = null;
           }
 
@@ -833,9 +774,7 @@ export function removeDeletedChannels(
 }
 
 // must get updated
-export async function removeEmptyVoiceChannels(
-  guild: Guild
-): Promise<boolean> {
+export async function removeEmptyVoiceChannels(guild: Guild): Promise<boolean> {
   const guild_list = await fetchGuildList();
   if (!guild_list) {
     return false;
@@ -845,9 +784,9 @@ export async function removeEmptyVoiceChannels(
     return true;
   }
 
-  guild.channels.cache.forEach(channel => {
-    guild_list.some(g =>
-      g.pChannels.some(p =>
+  guild.channels.cache.forEach((channel) => {
+    guild_list.some((g) =>
+      g.pChannels.some((p) =>
         p.pVoiceChannels.some((v, index) => {
           if (v.id === channel.id && (<Collection<string, GuildMember>>channel.members).size === 0) {
             channel
@@ -855,16 +794,19 @@ export async function removeEmptyVoiceChannels(
               .then(() => {
                 p.pVoiceChannels.splice(index, 1);
                 logger.log({
-                  level: 'info', type: 'none', message: `deleted empty channel: ${channel.name} ` +
-										`(${channel.id}) from ${channel.guild.name}`
+                  level: 'info',
+                  type: 'none',
+                  message:
+                                        `deleted empty channel: ${channel.name} ` +
+                                        `(${channel.id}) from ${channel.guild.name}`,
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 logger.log({ level: 'error', type: 'none', message: `failed to send message: ${e}` });
               });
             return true;
           }
-          return false
+          return false;
         })
       )
     );

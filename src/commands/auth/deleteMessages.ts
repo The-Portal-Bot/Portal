@@ -3,9 +3,9 @@ import { askForApproval, messageHelp } from "../../libraries/help.library";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
-    .setName('delete')
+    .setName('deleteMessages')
     .setDescription('delete n number of messages'),
   async execute(
     message: Message, args: string[]

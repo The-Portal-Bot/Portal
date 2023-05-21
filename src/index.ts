@@ -31,12 +31,11 @@ if (process.env.LOG) {
   logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
 
-//
 // const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 // const spam_cache: SpamCache[] = [];
 const client: Client = clientHandler();
 
-const commands: any[] = [];
+const commands: unknown[] = [];
 commandConfig.forEach(category => {
   category.commands.forEach(async command => {
     const commandFile = require(`./commands/${category.path}/${command.name}.js`);
@@ -48,16 +47,15 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 (async () => {
   try {
-    console.log('Started refreshing application (/) commands.');
-
+    // console.log('Started refreshing application (/) commands.');
     await rest.put(
       Routes.applicationGuildCommands('755825870102593626', '710746690650374208'),
       { body: commands },
     );
 
-    console.log('Successfully reloaded application (/) commands.');
+    // console.log('Successfully reloaded application (/) commands.');
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 })();
 

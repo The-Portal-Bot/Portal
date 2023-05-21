@@ -1,7 +1,7 @@
 import { Guild } from "discord.js";
 import { removeGuild } from "../libraries/mongo.library";
 
-module.exports = async (
+export default async (
   args: { guild: Guild }
 ): Promise<string> => {
   return new Promise((resolve, reject) => {

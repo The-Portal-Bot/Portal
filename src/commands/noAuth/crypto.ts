@@ -6,7 +6,7 @@ import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/hel
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('crypto')
     .setDescription('returns information about crypto currencies'),
@@ -26,8 +26,8 @@ module.exports = {
         });
       }
 
-      const cryptoName = args.join(' ').substr(0, args.join(' ').indexOf('|')).replace(/\s/g, ' ').trim();
-      const currencyName = args.join(' ').substr(args.join(' ').indexOf('|') + 1).replace(/\s/g, ' ').trim();
+      const cryptoName = args.join(' ').substring(0, args.join(' ').indexOf('|')).replace(/\s/g, ' ').trim();
+      const currencyName = args.join(' ').substring(args.join(' ').indexOf('|') + 1).replace(/\s/g, ' ').trim();
 
       if (cryptoName === '') {
         return resolve({
@@ -87,18 +87,19 @@ module.exports = {
                 value: ''
               });
             })
-            .catch((e: any) => {
+            .catch((e) => {
               return resolve({
                 result: false,
                 value: `failed to send message: ${e}`
               });
             });
         })
-        .catch((e: any) => {
+        .catch(() => {
           return resolve({
             result: false,
             value: `crypto-currency or fiat-currency does not exist`
           });
+          // log error
         });
     });
   }

@@ -1,5 +1,5 @@
 import { BanOptions, Guild, GuildMember, Message, VoiceState } from "discord.js";
-import { RankSpeed, RankSpeedValueList } from "../data/enums/RankSpeed.enum";
+import { RankSpeed, RankSpeedValueList } from "../types/enums/RankSpeed.enum";
 import { PGuild } from "../types/classes/PGuild.class";
 import { PMember } from "../types/classes/PMember.class";
 import { Rank } from "../types/classes/PTypes.interface";

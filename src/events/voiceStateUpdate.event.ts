@@ -1,4 +1,4 @@
-import { getVoiceConnection, VoiceConnection } from "@discordjs/voice";
+import { getVoiceConnection } from "@discordjs/voice";
 import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from "discord.js";
 import { createVoiceChannel, generateChannelName, includedInPChannels, includedInVoiceList } from "../libraries/guild.library";
 import { isChannelDeleted, isGuildDeleted, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
@@ -56,14 +56,14 @@ function fiveMinuteRefresher(
     .then(pGuild => {
       if (pGuild) {
         generateChannelName(voiceChannel, portalList, pGuild, guild)
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to generate channel name: ${e}`));
           });
 
         setTimeout(() => {
           if (!isGuildDeleted(guild) && !isChannelDeleted(voiceChannel)) {
             generateChannelName(voiceChannel, portalList, pGuild, guild)
-              .catch((e: any) => {
+              .catch((e) => {
                 logger.error(new Error(`failed to generate channel name: ${e}`));
               });
 
@@ -72,7 +72,7 @@ function fiveMinuteRefresher(
         }, minutes * 60 * 1000);
       }
     })
-    .catch((e: any) => {
+    .catch((e) => {
       logger.error(new Error(`failed to fetch guild: ${e}`));
     });
 }
@@ -173,12 +173,12 @@ async function fromNull(
               .then(level => {
                 if (level) {
                   newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
-                    .catch((e: any) => {
+                    .catch((e) => {
                       logger.error(new Error(`failed to send message: ${e}`));
                     });
                 }
               })
-              .catch((e: any) => {
+              .catch((e) => {
                 logger.error(new Error(`failed to send message: ${e}`));
               });
 
@@ -194,12 +194,12 @@ async function fromNull(
           .then(level => {
             if (level) {
               newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
-                .catch((e: any) => {
+                .catch((e) => {
                   logger.error(new Error(`failed to send message: ${e}`));
                 });
             }
           })
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to send message: ${e}`));
           });
 
@@ -210,12 +210,12 @@ async function fromNull(
           .then(level => {
             if (level) {
               newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
-                .catch((e: any) => {
+                .catch((e) => {
                   logger.error(new Error(`failed to send message: ${e}`));
                 });
             }
           })
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to send message: ${e}`));
           });
 
@@ -237,12 +237,12 @@ async function fromExisting(
         .then(level => {
           if (level) {
             newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
-              .catch((e: any) => {
+              .catch((e) => {
                 logger.error(new Error(`failed to send message: ${e}`));
               });
           }
         })
-        .catch((e: any) => {
+        .catch((e) => {
           logger.error(new Error(`failed to send message: ${e}`));
         });
 
@@ -258,12 +258,12 @@ async function fromExisting(
         .then(level => {
           if (level) {
             newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
-              .catch((e: any) => {
+              .catch((e) => {
                 logger.error(new Error(`failed to send message: ${e}`));
               });
           }
         })
-        .catch((e: any) => {
+        .catch((e) => {
           logger.error(new Error(`failed to send message: ${e}`));
         });
 
@@ -336,7 +336,7 @@ async function fromExisting(
   });
 }
 
-module.exports = async (
+export default async (
   args: { client: Client, newState: VoiceState, oldState: VoiceState }
 ): Promise<string> => {
   return new Promise((resolve, reject) => {

@@ -1,5 +1,5 @@
 import { Message, VoiceChannel } from "discord.js";
-import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../../types/enums/PortalChannel.enum";
 import { deleteChannel, includedInVoiceList, regexInterpreter } from "../../libraries/guild.library";
 import { messageHelp } from "../../libraries/help.library";
 import { updateVoice } from "../../libraries/mongo.library";
@@ -7,7 +7,7 @@ import { PGuild } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('force')
     .setDescription('force updates channel you are in to force a rename'),
@@ -67,7 +67,7 @@ module.exports = {
                       currentVoice.members.forEach(member => {
                         if (member.voice) {
                           member.voice.setChannel(clone, 'portal force update')
-                            .catch((e: any) => {
+                            .catch((e) => {
                               return resolve({
                                 result: false,
                                 value: `failed to se messages channel: ${e}`
@@ -79,7 +79,7 @@ module.exports = {
                       updateVoice(pGuild.id, p.id, currentVoice.id, 'id', clone.id)
                         .then(r => {
                           deleteChannel(PortalChannelTypes.voice, currentVoice, message, true)
-                            .catch((e: any) => {
+                            .catch((e) => {
                               return resolve({
                                 result: false,
                                 value: `failed to delete channel: ${e}`

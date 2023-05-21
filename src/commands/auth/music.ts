@@ -1,13 +1,13 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Message, TextChannel } from "discord.js";
-import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../../types/enums/PortalChannel.enum";
 import { createMusicChannel, deleteChannel, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
 import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
 import { setMusicData } from "../../libraries/mongo.library";
 import { PGuild, MusicData } from "../../types/classes/PGuild.class";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('music')
     .setDescription('create music channel'),
@@ -58,7 +58,7 @@ module.exports = {
 
       if (music) {
         deleteChannel(PortalChannelTypes.music, <TextChannel>music, message)
-          .catch((e: any) => {
+          .catch((e) => {
             return resolve({
               result: false,
               value: `failed to delete channel: ${e}`
@@ -119,7 +119,7 @@ module.exports = {
 
         if (musicChannel !== '') {
           createMusicChannel(message.guild, musicChannel, musicCategory, pGuild)
-            .catch((e: any) => {
+            .catch((e) => {
               return resolve({
                 result: false,
                 value: `failed to create music channel: ${e}`
@@ -130,7 +130,7 @@ module.exports = {
         }
         else if (musicChannel === '' && musicCategory !== '') {
           createMusicChannel(message.guild, musicCategory, null, pGuild)
-            .catch((e: any) => {
+            .catch((e) => {
               return resolve({
                 result: false,
                 value: `failed to create music channel: ${e}`

@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import { OpapGameId } from '../../data/enums/OpapGames.enum';
+import { OpapGameId } from '../../types/enums/OpapGames.enum';
 import { createEmbed, getJsonFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('bet')
     .setDescription('returns betting data'),
@@ -115,7 +115,7 @@ module.exports = {
                 )
               ]
             })
-            .catch((e: any) => {
+            .catch((e) => {
               return resolve({
                 result: false,
                 value: `failed to send message: ${e}`
@@ -129,7 +129,7 @@ module.exports = {
           });
 
         })
-        .catch((e: any) => {
+        .catch((e) => {
           return resolve({
             result: false,
             value: `could not access the server: ${e}`

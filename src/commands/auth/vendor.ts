@@ -22,7 +22,7 @@ function createRoleMessage(
         for (let i = 0; i < roleMap.length; i++) {
           sentMessage
             .react(roleMap[i].emote)
-            .catch((e: any) => {
+            .catch((e) => {
               return resolve({
                 result: false,
                 value: `failed to react to message: ${e}`
@@ -70,7 +70,7 @@ function multipleSameEmote(
   return false;
 }
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('vendor')
     .setDescription('remove user from role'),

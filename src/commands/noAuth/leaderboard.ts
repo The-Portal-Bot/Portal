@@ -13,7 +13,7 @@ function compare(
     : memberB.level > memberA.level ? 1 : -1;
 }
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('leaderboard')
     .setDescription('returns server\'s leaderboard'),

@@ -4,7 +4,7 @@ import { ban } from '../../libraries/user.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder().setName('ban').setDescription('bans given user'),
   async execute(message: Message, args: string[]): Promise<ReturnPromise> {
     return new Promise((resolve) => {

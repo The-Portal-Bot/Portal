@@ -1,16 +1,13 @@
-import { getVoiceConnection } from "@discordjs/voice";
-import { Client, Message } from "discord.js";
-import { clientWrite } from "../../libraries/localisation.library";
-import { PGuild } from "../../types/classes/PGuild.class";
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { getVoiceConnection } from '@discordjs/voice';
+import { Client, Message } from 'discord.js';
+import { clientWrite } from '../../libraries/localisation.library';
+import { PGuild } from '../../types/classes/PGuild.class';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('leave')
-    .setDescription('tell Portal to leave your voice channel'),
-  async execute(
-    message: Message, args: string[], pGuild: PGuild, client: Client
-  ): Promise<string> {
+export = {
+  data: new SlashCommandBuilder().setName('leave').setDescription('tell Portal to leave your voice channel'),
+  async execute(message: Message, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     if (!message.guild) {
       return Promise.reject('message has no guild');
     }
@@ -21,7 +18,11 @@ module.exports = {
       return Promise.reject('Portal must be connected to a voice channel with you');
     }
 
-    voiceConnection.disconnect();
+    try {
+      voiceConnection.disconnect();
+    } catch (e) {
+      return Promise.reject('failed to disconnect from voice channel');
+    }
 
     // clientTalk(client, pGuild, 'leave');
     // setTimeout(
@@ -31,7 +32,9 @@ module.exports = {
     // 	4000
     // );
 
-
-    return clientWrite(message, pGuild, 'leave');
-  }
+    return {
+      value: clientWrite(message, pGuild, 'leave'),
+      result: true,
+    };
+  },
 };

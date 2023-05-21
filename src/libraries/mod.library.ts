@@ -1,8 +1,8 @@
 import { BanOptions, Message } from 'discord.js';
 import moment from "moment";
 import configSpam from '../config.spam.json';
-import { ProfanityLevel } from '../data/enums/ProfanityLevel.enum';
-import { ProfaneWords } from '../data/lists/profaneWords.static';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
+import { ProfaneWords } from '../assets/lists/profaneWords.static';
 import { PGuild } from '../types/classes/PGuild.class';
 import { Language, SpamCache } from '../types/classes/PTypes.interface';
 import { getRole } from './guild.library';
@@ -101,14 +101,14 @@ export function messageSpamCheck(
 
   if (configSpam.DUPLICATE_AFTER !== 0 && memberSpamCache.duplicateFouls === configSpam.DUPLICATE_AFTER) {
     messageReply(false, message, `warning: please stop spamming the same message`, false, true)
-      .catch((e: any) => {
+      .catch((e) => {
         logger.error(new Error(`failed to reply to message: ${e}`));
       });
 
     memberSpamCache.timestamp = new Date();
   } else if (configSpam.WARN_AFTER !== 0 && memberSpamCache.spamFouls === configSpam.WARN_AFTER) {
     messageReply(false, message, `warning: please stop spamming messages`, false, true)
-      .catch((e: any) => {
+      .catch((e) => {
         logger.error(new Error(`failed to reply to message: ${e}`));
       });
 
@@ -134,7 +134,7 @@ export function messageSpamCheck(
               : `member ${message.author} cannot be kicked`;
 
             messageReply(false, message, replyMessage, false, true)
-              .catch((e: any) => {
+              .catch((e) => {
                 logger.error(new Error(`failed to reply to message: ${e}`));
               });
           })
@@ -143,7 +143,7 @@ export function messageSpamCheck(
           });
       } else {
         messageReply(false, message, `could not kick ${message.author}`, false, true)
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to reply to message: ${e}`));
           });
       }
@@ -161,7 +161,7 @@ export function messageSpamCheck(
               : `member ${message.author} cannot be banned`;
 
             messageReply(false, message, replyMessage, false, true)
-              .catch((e: any) => {
+              .catch((e) => {
                 logger.error(new Error(`failed to reply to message: ${e}`));
               });
           })
@@ -170,7 +170,7 @@ export function messageSpamCheck(
           });
       } else {
         messageReply(false, message, `could not kick ${message.author}`, false, true)
-          .catch((e: any) => {
+          .catch((e) => {
             logger.error(new Error(`failed to reply to message: ${e}`));
           });
       }
@@ -204,7 +204,7 @@ function muteUser(
           channel
             .send(`user ${message.author}, has been muted for ${configSpam.MUTE_PERIOD} minutes`)
             .then(message => deleteMessage(message))
-            .catch((e: any) => {
+            .catch((e) => {
               logger.error(new Error(`failed to reply to message: ${e}`));
             });
 
@@ -223,7 +223,7 @@ function muteUser(
                           deleteMessage(message);
                         }
                       })
-                      .catch((e: any) => {
+                      .catch((e) => {
                         logger.error(new Error(`failed to reply to message: ${e}`));
                       });
                   })
@@ -257,7 +257,7 @@ function deleteMessage(message: Message): void {
       if (isMessageDeleted(message)) {
         const deletedMessage = await message
           .delete()
-          .catch((e: any) => {
+          .catch((e) => {
             return Promise.reject(`failed to delete message: ${e}`);
           });
 

@@ -4,7 +4,7 @@ import { kick } from "../../libraries/user.library";
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('kick')
     .setDescription('kick a user'),

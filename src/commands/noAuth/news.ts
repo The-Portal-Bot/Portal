@@ -1,14 +1,14 @@
 import { Message } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import { NYTCategories } from '../../data/lists/newsCategories.static';
+import { NYTCategories } from '../../assets/lists/newsCategories.static';
 import { createEmbed, getJsonFromString, maxString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { News } from '../../types/classes/NewYorkTime.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('news')
     .setDescription('returns news from New York Times'),
@@ -133,7 +133,7 @@ module.exports = {
           });
 
         })
-        .catch((e: any) => {
+        .catch((e) => {
           return resolve({
             result: false,
             value: `could not access the server: ${e}`

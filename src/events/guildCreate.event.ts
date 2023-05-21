@@ -1,7 +1,7 @@
 import { Client, Guild } from "discord.js";
 import { guildExists, insertGuild } from "../libraries/mongo.library";
 
-module.exports = async (
+export default async (
   args: { client: Client, guild: Guild }
 ): Promise<string> => {
   return new Promise((resolve, reject) => {

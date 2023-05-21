@@ -1,8 +1,8 @@
 import { Channel, ChannelType, PartialDMChannel, TextChannel, VoiceChannel } from "discord.js";
-import { PortalChannelTypes } from "../data/enums/PortalChannel.enum";
+import { PortalChannelTypes } from "../types/enums/PortalChannel.enum";
 import { deletedChannelSync } from "../libraries/mongo.library";
 
-module.exports = async (
+export default async (
   args: { channel: Channel | PartialDMChannel }
 ): Promise<string> => {
   return new Promise((resolve, reject) => {

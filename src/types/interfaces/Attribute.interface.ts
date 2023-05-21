@@ -1,8 +1,8 @@
-import { BaseGuildTextChannel, EmbedBuilder, Guild, GuildMember, Message, OverwriteResolvable, OverwriteType, VoiceChannel } from 'discord.js';
-import { AuthType } from '../../data/enums/Admin.enum';
-import { Locale, LocaleList } from '../../data/enums/Locales.enum';
-import { ProfanityLevel, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
-import { RankSpeed, RankSpeedList } from '../../data/enums/RankSpeed.enum';
+import { BaseGuildTextChannel, EmbedBuilder, Guild, GuildMember, Message, OverwriteType, VoiceChannel } from 'discord.js';
+import { AuthType } from '../enums/Admin.enum';
+import { Locale, LocaleList } from '../enums/Locales.enum';
+import { ProfanityLevel, ProfanityLevelList } from '../enums/ProfanityLevel.enum';
+import { RankSpeed, RankSpeedList } from '../enums/RankSpeed.enum';
 import { createEmbed, getKeyFromEnum, isUserAuthorised, isMod } from '../../libraries/help.library';
 import { updateGuild, updateMember, updatePortal, updateVoice } from '../../libraries/mongo.library';
 import { PGuild } from '../classes/PGuild.class';
@@ -99,7 +99,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'if voice channel will make announcements',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -109,7 +108,7 @@ const attributes: InterfaceBlueprint[] = [
     },
     set: (
       voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel, pChannel: PChannel,
-      pGuild: PGuild, value: string // , pMember: MemberPrtl | undefined
+      pGuild: PGuild, value: string
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'annAnnounce';
@@ -240,7 +239,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'if bots can join voice channel',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -525,7 +523,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'the role allowed join the voice channel',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): string[] | string => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -712,7 +709,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'if voice channel will use the text interpreter',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -853,7 +849,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'if voice channel will make join/leave announcements',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -1462,7 +1457,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'voice channels locale',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): string => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -1513,7 +1507,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'voice channels position in Discord',
     get: (
       voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: VoiceChannelPrtl | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): number | string => {
       if (!voiceChannel) {
         return 'N/A';
@@ -1744,7 +1737,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'voice channels regex',
     get: (
       voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): string => {
       if (!pVoiceChannel) {
         return 'N/A';
@@ -1899,7 +1891,6 @@ const attributes: InterfaceBlueprint[] = [
     hover: 'voice channels user limit',
     get: (
       voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: VoiceChannelPrtl | undefined | null,
-      // pChannels: PortalChannelPrtl[] | undefined | null, pGuild: PGuilt, guild: Guild
     ): number | string => {
       if (!voiceChannel) {
         return 'N/A';
@@ -2192,7 +2183,7 @@ export function setAttribute(
           .then((r: ReturnPromise) => {
             return resolve(r);
           })
-          .catch((e: any) => {
+          .catch((e) => {
             return resolve({
               result: false,
               value: `attribute ${candidate} failed to be set: ${e}`

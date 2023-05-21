@@ -14,7 +14,7 @@ export async function httpsFetch(
         chunks.push(chunk);
       });
 
-      res.on('end', function () { // (chunk: any) {
+      res.on('end', function () { // (chunk) {
         return resolve(Buffer.concat(chunks));
       });
 
@@ -32,18 +32,18 @@ export async function scrapeLyrics(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     fetch(url)
-      .then((response: any) => {
+      .then((response) => {
         response
           .text()
-          .then((text: any) => {
+          .then((text) => {
             const $ = cheerio.load(text);
             return resolve($('.lyrics').text().trim());
           })
-          .catch((e: any) => {
+          .catch((e) => {
             return reject(e);
           });
       })
-      .catch((e: any) => {
+      .catch((e) => {
         return reject(e);
       });
   });

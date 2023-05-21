@@ -75,7 +75,7 @@ function createRoleMessage(
   });
 }
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('poll')
     .setDescription('create a poll'),

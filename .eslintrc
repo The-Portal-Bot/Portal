@@ -8,6 +8,7 @@
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended"
     ],
+    "ignorePatterns": "**/*.d.ts",
     "parserOptions": {
         "ecmaVersion": 8,
         "sourceType": "module",

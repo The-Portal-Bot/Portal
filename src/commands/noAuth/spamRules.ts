@@ -5,7 +5,7 @@ import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import SPAM_CONFIG from "../../config.spam.json";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('spamRules')
     .setDescription('returns the current spam rules'),

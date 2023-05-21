@@ -19,7 +19,7 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 //     return null;
 // };
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('stock')
     .setDescription('returns stock data'),
@@ -117,7 +117,7 @@ module.exports = {
             value: messageHelp('commands', 'stock', `${json} crypto stats`)
           });
         })
-        .catch((e: any) => {
+        .catch((e) => {
           return resolve({
             result: false,
             value: `could not access the server: ${e}`

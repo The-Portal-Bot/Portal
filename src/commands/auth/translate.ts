@@ -7,7 +7,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 // translate.engine = config.apiKeys.translate.engine;
 // translate.key = config.apiKeys.translate.key;
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('translate')
     .setDescription('translate given text'),
@@ -45,7 +45,7 @@ module.exports = {
         //             value: response
         //         });
         //     })
-        //     .catch((error: any) => {
+        //     .catch((error) => {
         //         return resolve({
         //             result: false,
         //             value: messageHelp('commands', 'translate', `server responded with error: ${error}`)
@@ -59,7 +59,7 @@ module.exports = {
         //             value: response
         //         });
         //     })
-        //     .catch((error: any) => {
+        //     .catch((error) => {
         //         return resolve({
         //             result: false,
         //             value: messageHelp('commands', 'translate', `server responded with error: ${error}`)

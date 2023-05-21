@@ -33,9 +33,9 @@ export interface Rank {
 }
 
 export interface Language {
-	gr: any;
-	en: any;
-	de: any;
+	gr;
+	en;
+	de;
 }
 
 export interface LocalisationOption {

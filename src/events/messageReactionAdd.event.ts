@@ -1,10 +1,12 @@
-import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
-import { Client, MessageReaction, Role, User } from "discord.js";
-import { getRole } from "../libraries/guild.library";
-import { createEmbed, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
-import { clearMusicVote, fetchGuildReactionData, insertMusicVote, removePoll, setMusicData, updateGuild } from "../libraries/mongo.library";
-// import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
-import { PGuild } from "../types/classes/PGuild.class";
+// import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
+// import { Client, MessageReaction, Role, User } from "discord.js";
+// import { getRole } from "../libraries/guild.library";
+// import { createEmbed, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
+// import { clearMusicVote, fetchGuildReactionData, insertMusicVote, removePoll, setMusicData, updateGuild } from "../libraries/mongo.library";
+// // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
+// import { PGuild } from "../types/classes/PGuild.class";
+
+import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 
 // function clear_user_reactions(
 //     messageReaction: MessageReaction, user: User
@@ -456,9 +458,11 @@ import { PGuild } from "../types/classes/PGuild.class";
 //     }
 // }
 
-module.exports = async (
-  args: { client: Client, messageReaction: MessageReaction, user: User }
-): Promise<string> => {
+export default async (args: {
+    client: Client;
+    messageReaction: MessageReaction | PartialMessageReaction;
+    user: User | PartialUser;
+}): Promise<string> => {
   return new Promise((resolve, reject) => {
     return reject(`under construction`);
     // if (args.user.bot) {
@@ -484,7 +488,7 @@ module.exports = async (
     //                     reaction_role_manager(pGuild, args.messageReaction, args.user)
     //                         .then(r => {
     //                             clear_user_reactions(args.messageReaction, args.user)
-    //                                 .catch((e: any) => {
+    //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
     //                             args.messageReaction.message.channel
@@ -506,7 +510,7 @@ module.exports = async (
     //                         })
     //                         .catch(e => {
     //                             clear_user_reactions(args.messageReaction, args.user)
-    //                                 .catch((e: any) => {
+    //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
     //                             args.messageReaction.message.channel
@@ -552,7 +556,7 @@ module.exports = async (
     //                             }
 
     //                             clear_user_reactions(args.messageReaction, args.user)
-    //                                 .catch((e: any) => {
+    //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
 
@@ -574,7 +578,7 @@ module.exports = async (
     //                             }
 
     //                             clear_user_reactions(args.messageReaction, args.user)
-    //                                 .catch((e: any) => {
+    //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
 
@@ -661,4 +665,4 @@ module.exports = async (
     //     return reject(`could not fetch guild`);
     // }
   });
-}
+};

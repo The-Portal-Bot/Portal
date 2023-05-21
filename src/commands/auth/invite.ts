@@ -3,7 +3,7 @@ import { getJsonFromString, isMod, messageHelp } from "../../libraries/help.libr
 import { ReturnPromise } from "../../types/classes/PTypes.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
-module.exports = {
+export = {
   data: new SlashCommandBuilder()
     .setName('invite')
     .setDescription('generate an invite link'),
