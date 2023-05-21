@@ -20,109 +20,109 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 // };
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('stock')
-        .setDescription('returns stock data'),
-    async execute(
-        message: Message, args: string[]
-    ): Promise<ReturnPromise> {
-        return new Promise((resolve) => {
-            if (args.length === 0 || args.length > 1) {
-                return resolve({
-                    result: false,
-                    value: messageHelp('commands', 'stock')
-                });
-            }
-
-            const options: RequestOptions = {
-                'method': 'GET',
-                'hostname': 'yahoo-finance-low-latency.p.rapidapi.com',
-                'port': undefined,
-                'path': `/v8/finance/chart/${args[0]}?events=div%2Csplit`,
-                'headers': {
-                    'x-rapidapi-host': 'yahoo-finance-low-latency.p.rapidapi.com',
-                    'x-rapidapi-key': process.env.YAHOO_FINANCE,
-                    'useQueryString': 1
-                }
-            };
-
-            httpsFetch(options)
-                .then((response: Buffer) => {
-
-                    const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
-                    if (json === null) {
-                        return resolve({
-                            result: false,
-                            value: 'data from source was corrupted'
-                        });
-                    }
-
-                    const chart = json.chart;
-
-                    if (chart === null) {
-                        return resolve({
-                            result: false,
-                            value: 'could not find any stock'
-                        });
-                    }
-
-                    const result = chart.result;
-
-                    if (result === null) {
-                        return resolve({
-                            result: false,
-                            value: 'there were no results'
-                        });
-                    }
-
-                    const meta = result[0];
-
-                    if (meta === null) {
-                        return resolve({
-                            result: false,
-                            value: 'there were no meta data'
-                        });
-                    }
-                    message.channel
-                        .send({
-                            embeds: [
-                                createEmbed(
-                                    `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${moment().format('DD/MM/YY')}`,
-                                    'powered by yahoo finance',
-                                    '#FF0000', [],
-                                    // [
-                                    //     {
-                                    //         emote: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price`,
-                                    //         role: `${json[crypto_name][currnc_name]}`,
-                                    //         inline: false
-                                    //     }
-                                    // ],
-                                    null,
-                                    null,
-                                    true,
-                                    null,
-                                    null
-                                )
-                            ]
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: true,
-                                value: `failed to send message: ${e}`
-                            });
-                        });
-
-                    return resolve({
-                        result: true,
-                        value: messageHelp('commands', 'stock', `${json} crypto stats`)
-                    });
-                })
-                .catch((e: any) => {
-                    return resolve({
-                        result: false,
-                        value: `could not access the server: ${e}`
-                    });
-                });
+  data: new SlashCommandBuilder()
+    .setName('stock')
+    .setDescription('returns stock data'),
+  async execute(
+    message: Message, args: string[]
+  ): Promise<ReturnPromise> {
+    return new Promise((resolve) => {
+      if (args.length === 0 || args.length > 1) {
+        return resolve({
+          result: false,
+          value: messageHelp('commands', 'stock')
         });
-    }
+      }
+
+      const options: RequestOptions = {
+        'method': 'GET',
+        'hostname': 'yahoo-finance-low-latency.p.rapidapi.com',
+        'port': undefined,
+        'path': `/v8/finance/chart/${args[0]}?events=div%2Csplit`,
+        'headers': {
+          'x-rapidapi-host': 'yahoo-finance-low-latency.p.rapidapi.com',
+          'x-rapidapi-key': process.env.YAHOO_FINANCE,
+          'useQueryString': 1
+        }
+      };
+
+      httpsFetch(options)
+        .then((response: Buffer) => {
+
+          const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
+          if (json === null) {
+            return resolve({
+              result: false,
+              value: 'data from source was corrupted'
+            });
+          }
+
+          const chart = json.chart;
+
+          if (chart === null) {
+            return resolve({
+              result: false,
+              value: 'could not find any stock'
+            });
+          }
+
+          const result = chart.result;
+
+          if (result === null) {
+            return resolve({
+              result: false,
+              value: 'there were no results'
+            });
+          }
+
+          const meta = result[0];
+
+          if (meta === null) {
+            return resolve({
+              result: false,
+              value: 'there were no meta data'
+            });
+          }
+          message.channel
+            .send({
+              embeds: [
+                createEmbed(
+                  `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${moment().format('DD/MM/YY')}`,
+                  'powered by yahoo finance',
+                  '#FF0000', [],
+                  // [
+                  //     {
+                  //         emote: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price`,
+                  //         role: `${json[crypto_name][currnc_name]}`,
+                  //         inline: false
+                  //     }
+                  // ],
+                  null,
+                  null,
+                  true,
+                  null,
+                  null
+                )
+              ]
+            })
+            .catch(e => {
+              return resolve({
+                result: true,
+                value: `failed to send message: ${e}`
+              });
+            });
+
+          return resolve({
+            result: true,
+            value: messageHelp('commands', 'stock', `${json} crypto stats`)
+          });
+        })
+        .catch((e: any) => {
+          return resolve({
+            result: false,
+            value: `could not access the server: ${e}`
+          });
+        });
+    });
+  }
 };

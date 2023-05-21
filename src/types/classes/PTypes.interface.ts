@@ -12,19 +12,19 @@ export interface ReturnPromise {
 }
 
 export class Field {
-	emote: string | null | undefined | boolean;
-	role: string | number | null | undefined | boolean;
-	inline: boolean;
+  emote: string | null | undefined | boolean;
+  role: string | number | null | undefined | boolean;
+  inline: boolean;
 
-	constructor(
-		emote: string | null | undefined | boolean,
-		role: string | number | null | undefined | boolean,
-		inline: boolean
-	) {
-		this.emote = emote;
-		this.role = role;
-		this.inline = inline;
-	}
+  constructor(
+    emote: string | null | undefined | boolean,
+    role: string | number | null | undefined | boolean,
+    inline: boolean
+  ) {
+    this.emote = emote;
+    this.role = role;
+    this.inline = inline;
+  }
 }
 
 export interface Rank {

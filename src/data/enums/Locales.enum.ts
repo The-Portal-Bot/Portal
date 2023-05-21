@@ -5,7 +5,7 @@ export enum Locale {
 }
 
 export const LocaleList = [
-    'gr',
-    'en',
-    'de'
+  'gr',
+  'en',
+  'de'
 ];

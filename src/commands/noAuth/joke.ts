@@ -11,50 +11,50 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 const giveMeAJoke = require('give-me-a-joke');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('joke')
-        .setDescription('returns a joke'),
-    async execute(
-        message: Message, args: string[]
-    ): Promise<ReturnPromise> {
-        return new Promise((resolve) => {
-            const category = getKeyFromEnum(args[0], JokeType);
+  data: new SlashCommandBuilder()
+    .setName('joke')
+    .setDescription('returns a joke'),
+  async execute(
+    message: Message, args: string[]
+  ): Promise<ReturnPromise> {
+    return new Promise((resolve) => {
+      const category = getKeyFromEnum(args[0], JokeType);
 
-            if (args.length === 1) {
-                switch (category) {
-                    case JokeType.dad:
-                        giveMeAJoke.getRandomDadJoke((joke: string) =>
-                            message.channel.send(joke));
-                        break;
-                    case JokeType.chuck:
-                        giveMeAJoke.getRandomCNJoke((joke: string) =>
-                            message.channel.send(joke));
-                        break;
-                    case JokeType.blonde:
-                        giveMeAJoke.getRandomJokeOfTheDay('blonde', (joke: string) =>
-                            message.channel.send(joke));
-                        break;
-                    case JokeType.knock:
-                        giveMeAJoke.getRandomJokeOfTheDay('knock-knock', (joke: string) =>
-                            message.channel.send(joke));
-                        break;
-                    case JokeType.animal:
-                        giveMeAJoke.getRandomJokeOfTheDay('animal', (joke: string) =>
-                            message.channel.send(joke));
-                        break;
-                    default:
-                        giveMeAJoke.getCustomJoke('', args[0], (joke: string) =>
-                            message.channel.send(joke));
-                }
-            } else {
-                giveMeAJoke.getCustomJoke('', message.author.username, (joke: string) =>
-                    message.channel.send(joke));
-            }
+      if (args.length === 1) {
+        switch (category) {
+        case JokeType.dad:
+          giveMeAJoke.getRandomDadJoke((joke: string) =>
+            message.channel.send(joke));
+          break;
+        case JokeType.chuck:
+          giveMeAJoke.getRandomCNJoke((joke: string) =>
+            message.channel.send(joke));
+          break;
+        case JokeType.blonde:
+          giveMeAJoke.getRandomJokeOfTheDay('blonde', (joke: string) =>
+            message.channel.send(joke));
+          break;
+        case JokeType.knock:
+          giveMeAJoke.getRandomJokeOfTheDay('knock-knock', (joke: string) =>
+            message.channel.send(joke));
+          break;
+        case JokeType.animal:
+          giveMeAJoke.getRandomJokeOfTheDay('animal', (joke: string) =>
+            message.channel.send(joke));
+          break;
+        default:
+          giveMeAJoke.getCustomJoke('', args[0], (joke: string) =>
+            message.channel.send(joke));
+        }
+      } else {
+        giveMeAJoke.getCustomJoke('', message.author.username, (joke: string) =>
+          message.channel.send(joke));
+      }
 
-            return resolve({
-                result: true,
-                value: ''
-            });
-        });
-    }
+      return resolve({
+        result: true,
+        value: ''
+      });
+    });
+  }
 };

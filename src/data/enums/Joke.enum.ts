@@ -8,10 +8,10 @@ export enum JokeType {
 }
 
 export const JokeTypeList = [
-    'blonde',
-    'dad',
-    'chuck',
-    'animal',
-    'job',
-    'knock'
+  'blonde',
+  'dad',
+  'chuck',
+  'animal',
+  'job',
+  'knock'
 ];

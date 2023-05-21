@@ -9,11 +9,11 @@ export enum OpapGameId {
 }
 
 export const OpapGameIdList = [
-    'kino',
-    'powerspin',
-    'super3',
-    'proto',
-    'lotto',
-    'tzoker',
-    'extra5'
+  'kino',
+  'powerspin',
+  'super3',
+  'proto',
+  'lotto',
+  'tzoker',
+  'extra5'
 ];

@@ -6,8 +6,8 @@ export enum AuthType {
 }
 
 export const AuthTypeList = [
-    'none',
-    'portal',
-    'voice',
-    'admin'
+  'none',
+  'portal',
+  'voice',
+  'admin'
 ];

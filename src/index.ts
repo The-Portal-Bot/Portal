@@ -12,23 +12,23 @@ import { logger } from './libraries/help.library';
 dotenv.config();
 
 if (process.env.DEBUG) {
-    logger.add(new transports.Console());
+  logger.add(new transports.Console());
 }
 
 if (!process.env.MONGO_URL) {
-    logger.error(new Error('mongo url is not defined'));
-    process.exit(3);
+  logger.error(new Error('mongo url is not defined'));
+  process.exit(3);
 }
 
 if (!process.env.TOKEN) {
-    logger.error(new Error('Discord token is not defined'));
-    process.exit(4);
+  logger.error(new Error('Discord token is not defined'));
+  process.exit(4);
 }
 
 if (process.env.LOG) {
-    logger.add(new transports.File({ filename: '/logs/portal-error.log.json', level: 'error' }));
-    logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info' }));
-    logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
+  logger.add(new transports.File({ filename: '/logs/portal-error.log.json', level: 'error' }));
+  logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info' }));
+  logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
 
 //
@@ -38,27 +38,27 @@ const client: Client = clientHandler();
 
 const commands: any[] = [];
 commandConfig.forEach(category => {
-    category.commands.forEach(async command => {
-        const commandFile = require(`./commands/${category.path}/${command.name}.js`);
-        commands.push(commandFile.data.toJSON());
-    });
+  category.commands.forEach(async command => {
+    const commandFile = require(`./commands/${category.path}/${command.name}.js`);
+    commands.push(commandFile.data.toJSON());
+  });
 });
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 (async () => {
-    try {
-        console.log('Started refreshing application (/) commands.');
+  try {
+    console.log('Started refreshing application (/) commands.');
 
-        await rest.put(
-            Routes.applicationGuildCommands('755825870102593626', '710746690650374208'),
-            { body: commands },
-        );
+    await rest.put(
+      Routes.applicationGuildCommands('755825870102593626', '710746690650374208'),
+      { body: commands },
+    );
 
-        console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
-        console.error(error);
-    }
+    console.log('Successfully reloaded application (/) commands.');
+  } catch (error) {
+    console.error(error);
+  }
 })();
 
 //
@@ -67,10 +67,10 @@ const mongo = mongoHandler(process.env.MONGO_URL);
 const discord = connectToDiscord(client, process.env.TOKEN);
 
 Promise.all([mongo, discord])
-    .then(() => {
-        logger.info('[portal] ready');
-    })
-    .catch(e => {
-        logger.error(new Error(e));
-        process.exit(1);
-    });
+  .then(() => {
+    logger.info('[portal] ready');
+  })
+  .catch(e => {
+    logger.error(new Error(e));
+    process.exit(1);
+  });
