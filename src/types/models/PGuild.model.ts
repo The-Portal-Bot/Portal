@@ -66,12 +66,12 @@ const MusicData = new Schema(
 const PGuildSchema = new Schema(
   {
     id: { type: String, required: true },
-    pPortalChannels: { type: [PPortalChannelSchema], required: true },
+    pChannels: { type: [PPortalChannelSchema], required: true },
     pMembers: { type: [PMemberSchema], required: true },
-    ignoreList: { type: [String], required: true },
-    urlList: { type: [String], required: true },
-    roleList: { type: [PGiveRoleSchema], required: true },
-    pollList: { type: [PPollSchema], required: true },
+    pIgnores: { type: [String], required: true },
+    pURLs: { type: [String], required: true },
+    pRoles: { type: [PGiveRoleSchema], required: true },
+    pPolls: { type: [PPollSchema], required: true },
     initialRole: { type: String, required: true },
     ranks: { type: [Rank], required: true },
     musicData: { type: MusicData, required: true },
@@ -92,4 +92,4 @@ const PGuildSchema = new Schema(
   }
 );
 
-export default model < IPGuild > ('PGuildSchema', PGuildSchema);
+export default model<IPGuild>('PGuildSchema', PGuildSchema);

@@ -41,7 +41,7 @@ import setRanks from '../commands/auth/setRanks';
 import set from '../commands/auth/set';
 import url from '../commands/auth/url';
 
-type noAuthCommands =
+export type noAuthCommands =
     | 'about'
     | 'ai'
     | 'announce'
@@ -66,7 +66,7 @@ type noAuthCommands =
     | 'spamRules'
     | 'weather'
     | 'whoami';
-type authCommands =
+export type authCommands =
     | 'announcement'
     | 'ban'
     | 'deleteMessages'
@@ -88,7 +88,6 @@ export async function commandLoader(
   args: string[],
   type: string,
   commandOptions: CommandOptions,
-  pathToCommand: 'auth' | 'noAuth',
   pGuild: PGuild,
   activeCooldowns: ActiveCooldowns
 ) {
@@ -98,7 +97,7 @@ export async function commandLoader(
   }
 
   if (type === 'none' && commandOptions.time === 0) {
-    const commandReturn: ReturnPromise = await commandResolver(command)
+    const commandReturn = await commandResolver(command)
       .execute(message, args, pGuild, client)
       .catch((e: string) => {
         messageReply(false, message, e, commandOptions.delete.source, commandOptions.delete.reply).catch((e) =>
@@ -156,7 +155,7 @@ export async function commandLoader(
     return;
   }
 
-  const commandReturn: ReturnPromise = await require(`../commands/${pathToCommand}/${command}.js`)
+  const commandReturn = await commandResolver(command)
     .execute(message, args, pGuild, client)
     .catch((e) => logger.error(new Error(`in ${command} got error ${e}`)));
 
@@ -194,7 +193,7 @@ export async function commandLoader(
   }
 }
 
-function commandResolver(command: authCommands | noAuthCommands) {
+export function commandResolver(command: authCommands | noAuthCommands) {
   let commandFile = undefined;
 
   switch (command) {

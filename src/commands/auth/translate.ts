@@ -8,22 +8,18 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 // translate.key = config.apiKeys.translate.key;
 
 export = {
-  data: new SlashCommandBuilder()
-    .setName('translate')
-    .setDescription('translate given text'),
-  async execute(
-    message: Message, args: string[]
-  ): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder().setName('translate').setDescription('translate given text'),
+  async execute(message: Message, args: string[]): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       return resolve({
         result: true,
-        value: messageHelp('commands', 'translate', 'work in progress')
+        value: messageHelp('commands', 'translate', 'work in progress'),
       });
 
       if (args.length <= 1) {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'translate', '1 you can run `./help translate` for help')
+          value: messageHelp('commands', 'translate', '1 you can run `./help translate` for help'),
         });
       }
 
@@ -33,7 +29,7 @@ export = {
       if (!languageOptions || !stringToTranslate)
         return resolve({
           result: false,
-          value: messageHelp('commands', 'translate', '2 you can run `./help translate` for help')
+          value: messageHelp('commands', 'translate', '2 you can run `./help translate` for help'),
         });
 
       const languageDuplet = languageOptions.split(',');
@@ -68,9 +64,9 @@ export = {
       } else {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'translate', '3 you can run `./help translate` for help')
+          value: messageHelp('commands', 'translate', '3 you can run `./help translate` for help'),
         });
       }
     });
-  }
+  },
 };

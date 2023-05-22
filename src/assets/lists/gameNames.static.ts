@@ -100,12 +100,12 @@ export const GameNames = {
       },
     },
     {
-      status: 'Don\'t Starve Together',
+      status: "Don't Starve Together",
       type: 'game',
       locale: {
-        en: 'Don\'t Starve Together',
-        de: 'Don\'t Starve Together',
-        gr: 'Don\'t Starve Together',
+        en: "Don't Starve Together",
+        de: "Don't Starve Together",
+        gr: "Don't Starve Together",
       },
     },
     {
@@ -199,11 +199,11 @@ export const GameNames = {
       },
     },
     {
-      status: 'Assassin\'s Creed® Odyssey',
+      status: "Assassin's Creed® Odyssey",
       type: 'game',
       locale: {
-        en: 'Assassin\'s Creed Odyssey',
-        de: 'Assassin\'s Creed Odyssey',
+        en: "Assassin's Creed Odyssey",
+        de: "Assassin's Creed Odyssey",
         gr: 'Δολοφονικό Θρήσκευμα: Οδύσσεια',
       },
     },
@@ -478,11 +478,11 @@ export const GameNames = {
       },
     },
     {
-      status: 'Garry\'s Mod',
+      status: "Garry's Mod",
       type: 'game',
       locale: {
-        en: 'Garry\'s Mod',
-        de: 'Garry\'s Mod',
+        en: "Garry's Mod",
+        de: "Garry's Mod",
         gr: 'Η Μόντα του Γκάρι',
       },
     },
@@ -739,7 +739,7 @@ export const GameNames = {
       },
     },
     {
-      status: 'PLAYERUNKNOWN\'S BATTLEGROUNDS',
+      status: "PLAYERUNKNOWN'S BATTLEGROUNDS",
       type: 'game',
       locale: {
         en: 'PUBG',
@@ -883,7 +883,7 @@ export const GameNames = {
       },
     },
     {
-      status: 'Tom Clancy\'s Rainbow Six® Siege',
+      status: "Tom Clancy's Rainbow Six® Siege",
       type: 'game',
       locale: {
         en: 'Rainbow Six Siege',

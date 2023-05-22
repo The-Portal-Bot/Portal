@@ -1,15 +1,13 @@
-import { Activity, GuildMember, VoiceChannel } from "discord.js";
-import { GameNames } from "../assets/lists/gameNames.static";
-import { ProgramNames } from "../assets/lists/programNames.static";
-import { PVoiceChannel } from "../types/classes/PVoiceChannel.class";
-import { Locale } from "../types/enums/Locales.enum";
+import { Activity, GuildMember, VoiceChannel } from 'discord.js';
+import { GameNames } from '../assets/lists/gameNames.static';
+import { ProgramNames } from '../assets/lists/programNames.static';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import { Locale } from '../types/enums/Locales.enum';
 
-function statusAliases(
-  activities: Activity[], locale: number
-): string[] {
+function statusAliases(activities: Activity[], locale: number): string[] {
   const newStatus: string[] = [];
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     let found = false;
 
     if (activity.name.toLowerCase() === 'custom status') {
@@ -21,11 +19,9 @@ function statusAliases(
         if (activity.name.trim() == GameNames.gameAttributes[l].status) {
           if (locale === Locale.gr) {
             newStatus.push(GameNames.gameAttributes[l].locale.gr);
-          }
-          else if (locale === Locale.de) {
+          } else if (locale === Locale.de) {
             newStatus.push(GameNames.gameAttributes[l].locale.de);
-          }
-          else {
+          } else {
             newStatus.push(GameNames.gameAttributes[l].locale.en);
           }
 
@@ -39,11 +35,9 @@ function statusAliases(
         if (activity.name.trim() == ProgramNames.programAttributes[l].status) {
           if (locale === Locale.gr) {
             newStatus.push(ProgramNames.programAttributes[l].locale.gr);
-          }
-          else if (locale === Locale.de) {
+          } else if (locale === Locale.de) {
             newStatus.push(ProgramNames.programAttributes[l].locale.de);
-          }
-          else {
+          } else {
             newStatus.push(ProgramNames.programAttributes[l].locale.en);
           }
 
@@ -60,9 +54,7 @@ function statusAliases(
   return newStatus;
 }
 
-export function getStatusList(
-  voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel
-): string[] {
+export function getStatusList(voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel): string[] {
   const arrayOfStatuses: string[] = [];
 
   voiceChannel.members.forEach((member: GuildMember) => {
@@ -70,12 +62,11 @@ export function getStatusList(
       if (!member.user.bot) {
         if (member.presence.activities !== undefined) {
           if (member.presence.activities.length > 0) {
-            statusAliases(member.presence.activities, pVoiceChannel.locale)
-              .forEach(stat => {
-                if (!arrayOfStatuses.includes(stat)) {
-                  arrayOfStatuses.push(stat);
-                }
-              });
+            statusAliases(member.presence.activities, pVoiceChannel.locale).forEach((stat) => {
+              if (!arrayOfStatuses.includes(stat)) {
+                arrayOfStatuses.push(stat);
+              }
+            });
           }
         }
       }
@@ -85,11 +76,9 @@ export function getStatusList(
   if (arrayOfStatuses.length === 0) {
     if (pVoiceChannel.locale === Locale.gr) {
       arrayOfStatuses.push('Άραγμα');
-    }
-    else if (pVoiceChannel.locale === Locale.de) {
+    } else if (pVoiceChannel.locale === Locale.de) {
       arrayOfStatuses.push('Chillen');
-    }
-    else {
+    } else {
       arrayOfStatuses.push('Chilling');
     }
   }

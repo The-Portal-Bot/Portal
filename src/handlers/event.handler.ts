@@ -15,6 +15,15 @@ import {
   VoiceState,
 } from 'discord.js';
 import eventConfigJson from '../config.event.json';
+import channelDelete from '../events/channelDelete.event';
+import guildCreate from '../events/guildCreate.event';
+import guildDelete from '../events/guildDelete.event';
+import guildMemberAdd from '../events/guildMemberAdd.event';
+import guildMemberRemove from '../events/guildMemberRemove.event';
+import messageDelete from '../events/messageDelete.event';
+import messageReactionAdd from '../events/messageReactionAdd.event';
+import ready from '../events/ready.event';
+import voiceStateUpdate from '../events/voiceStateUpdate.event';
 import {
   isMessageDeleted,
   isUserAuthorised,
@@ -25,18 +34,8 @@ import {
 import { messageSpamCheck } from '../libraries/mod.library';
 import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
 import { commandDecipher, portalPreprocessor } from '../libraries/preprocessor.library';
-import { PGuild } from '../types/classes/PGuild.class';
 import { ActiveCooldowns, ReturnPromise, SpamCache } from '../types/classes/PTypes.interface';
 import { commandLoader } from './command.handler';
-import ready from '../events/ready.event';
-import channelDelete from '../events/channelDelete.event';
-import guildCreate from '../events/guildCreate.event';
-import guildDelete from '../events/guildDelete.event';
-import guildMemberAdd from '../events/guildMemberAdd.event';
-import guildMemberRemove from '../events/guildMemberRemove.event';
-import messageDelete from '../events/messageDelete.event';
-import messageReactionAdd from '../events/messageReactionAdd.event';
-import voiceStateUpdate from '../events/voiceStateUpdate.event';
 
 type HandledEvents =
     | 'ready'
@@ -97,7 +96,7 @@ async function eventLoader(
   const eventResponse: ReturnPromise | undefined = undefined;
 
   try {
-    // eslint-disable-next-line
+    // @ts-expect-error
     eventFunction(args);
   } catch (e) {
     logger.error(`[event-rejected] ${event} | ${e}`);
@@ -294,7 +293,7 @@ async function handleCommand(
   pGuild.announce = pGuildRest.announce;
   pGuild.premium = pGuildRest.premium;
 
-  if (!command.commandOptions) {
+  if (!command.commandOptions || !command?.cmd) {
     return false;
   }
 
@@ -305,7 +304,6 @@ async function handleCommand(
     command.args,
     command.type,
     command.commandOptions,
-    command.pathToCommand,
     pGuild,
     activeCooldowns
   ).catch();

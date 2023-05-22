@@ -142,14 +142,33 @@ export function maxString(abstract: string, max: number): string {
   return abstract.length < max ? abstract : abstract.substring(0, max - 3) + '...';
 }
 
-export function getKeyFromEnum(
-  value: string,
-  enumeration: JokeType | OpapGameId | RankSpeed | ProfanityLevel | Locale
-): string | number | undefined {
-  const enumerationArray = Array(enumeration);
-  for (const e in enumerationArray) {
-    if (e === value) {
-      return enumerationArray[e];
+type enumTypes = typeof JokeType | typeof OpapGameId | typeof RankSpeed | typeof ProfanityLevel | typeof Locale;
+export function getKeyFromEnum(value: string, enumeration: enumTypes): string | number | undefined {
+  let enumerationArray;
+
+  switch (enumeration) {
+  case JokeType:
+    enumerationArray = Object.values(JokeType);
+    break;
+  case OpapGameId:
+    enumerationArray = Object.values(OpapGameId);
+    break;
+  case RankSpeed:
+    enumerationArray = Object.values(RankSpeed);
+    break;
+  case ProfanityLevel:
+    enumerationArray = Object.values(ProfanityLevel);
+    break;
+  case Locale:
+    enumerationArray = Object.values(Locale);
+    break;
+  default:
+    return undefined;
+  }
+
+  for (const enumerationValue of enumerationArray) {
+    if (enumerationValue === value) {
+      return enumerationValue;
     }
   }
 
@@ -382,8 +401,8 @@ export async function joinUserVoiceChannelByReaction(
   guild: Guild,
   client: Client,
   pGuild: PGuild,
-  user: User,
-  announce_entrance: boolean
+  user: User
+  // announceEntrance: boolean
 ): Promise<VoiceConnection> {
   const guildMembers = await guild.members.fetch();
 
@@ -434,8 +453,8 @@ export async function joinUserVoiceChannelByReaction(
 export async function joinUserVoiceChannelByMessage(
   client: Client,
   message: Message,
-  pGuild: PGuild,
-  join = false
+  pGuild: PGuild
+  // join = false
 ): Promise<VoiceConnection> {
   if (!message.member) {
     return Promise.reject('user could not be fetched for message');
@@ -716,9 +735,9 @@ export function removeDeletedChannels(guild: Guild): Promise<boolean> {
             });
           });
 
-          pGuild.urlList.some((u_id, index_u) => {
+          pGuild.pURLs.some((u_id, index_u) => {
             if (!guild.channels.cache.some((c) => c.id === u_id)) {
-              pGuild.urlList.splice(index_u, 1);
+              pGuild.pURLs.splice(index_u, 1);
               return true;
             }
 
@@ -748,7 +767,7 @@ export function removeDeletedChannels(guild: Guild): Promise<boolean> {
 
           pGuild.pMembers.forEach((m, index_m) => {
             if (!guild.members.cache.some((m) => m.id === m.id)) {
-              pGuild.urlList.splice(index_m, 1);
+              pGuild.pURLs.splice(index_m, 1);
             }
           });
 
@@ -775,7 +794,7 @@ export function removeDeletedChannels(guild: Guild): Promise<boolean> {
 
 // must get updated
 export async function removeEmptyVoiceChannels(guild: Guild): Promise<boolean> {
-  const guild_list = await fetchGuildList();
+  const guild_list = await fetchGuildList({});
   if (!guild_list) {
     return false;
   }

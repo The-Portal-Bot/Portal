@@ -21,10 +21,8 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
 
           if (pMusicData.messageId === args.message.id) {
             const musicChannel = <TextChannel>(
-                            args.message.guild?.channels.cache.find(
-                              (channel) => channel.id === pGuild.musicData.channelId
-                            )
-                        );
+              args.message.guild?.channels.cache.find((channel) => channel.id === pGuild.musicData.channelId)
+            );
 
             if (musicChannel) {
               createMusicMessage(musicChannel, pGuild)
@@ -35,11 +33,9 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
                         .fetch(pGuild.musicData.messageLyricsId)
                         .then(async (messageLyrics: Message) => {
                           if (isMessageDeleted(messageLyrics)) {
-                            const deletedMessage = await messageLyrics
-                              .delete()
-                              .catch((e) => {
-                                return reject(`failed to delete message: ${e}`);
-                              });
+                            const deletedMessage = await messageLyrics.delete().catch((e) => {
+                              return reject(`failed to delete message: ${e}`);
+                            });
 
                             if (deletedMessage) {
                               markMessageAsDeleted(deletedMessage);
@@ -61,10 +57,8 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
             }
           } else if (pMusicData.messageLyricsId === args.message.id) {
             const musicChannel = <TextChannel>(
-                            args.message?.guild?.channels.cache.find(
-                              (channel) => channel.id === pGuild.musicData.channelId
-                            )
-                        );
+              args.message?.guild?.channels.cache.find((channel) => channel.id === pGuild.musicData.channelId)
+            );
 
             if (musicChannel && pGuild.musicData.messageId) {
               createMusicLyricsMessage(musicChannel, pGuild, pGuild.musicData.messageId)

@@ -2,12 +2,13 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { Client } from 'discord.js';
 import dotenv from 'dotenv';
-import { transports } from "winston";
-import commandConfig from "./config.command.json";
-import { clientHandler, connectToDiscord } from "./handlers/discord.handler";
-import { eventHandler } from "./handlers/event.handler";
-import { mongoHandler } from "./handlers/mongo.handler";
+import { transports } from 'winston';
+import commandConfig from './config.command.json';
+import { clientHandler, connectToDiscord } from './handlers/discord.handler';
+import { eventHandler } from './handlers/event.handler';
+import { mongoHandler } from './handlers/mongo.handler';
 import { logger } from './libraries/help.library';
+import { authCommands, commandResolver, noAuthCommands } from './handlers/command.handler';
 
 dotenv.config();
 
@@ -36,9 +37,9 @@ if (process.env.LOG) {
 const client: Client = clientHandler();
 
 const commands: unknown[] = [];
-commandConfig.forEach(category => {
-  category.commands.forEach(async command => {
-    const commandFile = require(`./commands/${category.path}/${command.name}.js`);
+commandConfig.forEach((category) => {
+  category.commands.forEach(async (command) => {
+    const commandFile = commandResolver(command.name as authCommands | noAuthCommands);
     commands.push(commandFile.data.toJSON());
   });
 });
@@ -48,10 +49,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 (async () => {
   try {
     // console.log('Started refreshing application (/) commands.');
-    await rest.put(
-      Routes.applicationGuildCommands('755825870102593626', '710746690650374208'),
-      { body: commands },
-    );
+    await rest.put(Routes.applicationGuildCommands('755825870102593626', '710746690650374208'), { body: commands });
 
     // console.log('Successfully reloaded application (/) commands.');
   } catch (error) {
@@ -68,7 +66,7 @@ Promise.all([mongo, discord])
   .then(() => {
     logger.info('[portal] ready');
   })
-  .catch(e => {
+  .catch((e) => {
     logger.error(new Error(e));
     process.exit(1);
   });

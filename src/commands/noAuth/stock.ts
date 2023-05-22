@@ -20,40 +20,35 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 // };
 
 export = {
-  data: new SlashCommandBuilder()
-    .setName('stock')
-    .setDescription('returns stock data'),
-  async execute(
-    message: Message, args: string[]
-  ): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder().setName('stock').setDescription('returns stock data'),
+  async execute(message: Message, args: string[]): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       if (args.length === 0 || args.length > 1) {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'stock')
+          value: messageHelp('commands', 'stock'),
         });
       }
 
       const options: RequestOptions = {
-        'method': 'GET',
-        'hostname': 'yahoo-finance-low-latency.p.rapidapi.com',
-        'port': undefined,
-        'path': `/v8/finance/chart/${args[0]}?events=div%2Csplit`,
-        'headers': {
+        method: 'GET',
+        hostname: 'yahoo-finance-low-latency.p.rapidapi.com',
+        port: undefined,
+        path: `/v8/finance/chart/${args[0]}?events=div%2Csplit`,
+        headers: {
           'x-rapidapi-host': 'yahoo-finance-low-latency.p.rapidapi.com',
           'x-rapidapi-key': process.env.YAHOO_FINANCE,
-          'useQueryString': 1
-        }
+          useQueryString: 1,
+        },
       };
 
       httpsFetch(options)
         .then((response: Buffer) => {
-
           const json = getJsonFromString(response.toString().substring(response.toString().indexOf('{')));
           if (json === null) {
             return resolve({
               result: false,
-              value: 'data from source was corrupted'
+              value: 'data from source was corrupted',
             });
           }
 
@@ -62,7 +57,7 @@ export = {
           if (chart === null) {
             return resolve({
               result: false,
-              value: 'could not find any stock'
+              value: 'could not find any stock',
             });
           }
 
@@ -71,7 +66,7 @@ export = {
           if (result === null) {
             return resolve({
               result: false,
-              value: 'there were no results'
+              value: 'there were no results',
             });
           }
 
@@ -80,7 +75,7 @@ export = {
           if (meta === null) {
             return resolve({
               result: false,
-              value: 'there were no meta data'
+              value: 'there were no meta data',
             });
           }
           message.channel
@@ -89,7 +84,8 @@ export = {
                 createEmbed(
                   `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${moment().format('DD/MM/YY')}`,
                   'powered by yahoo finance',
-                  '#FF0000', [],
+                  '#FF0000',
+                  [],
                   // [
                   //     {
                   //         emote: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price`,
@@ -102,27 +98,27 @@ export = {
                   true,
                   null,
                   null
-                )
-              ]
+                ),
+              ],
             })
-            .catch(e => {
+            .catch((e) => {
               return resolve({
                 result: true,
-                value: `failed to send message: ${e}`
+                value: `failed to send message: ${e}`,
               });
             });
 
           return resolve({
             result: true,
-            value: messageHelp('commands', 'stock', `${json} crypto stats`)
+            value: messageHelp('commands', 'stock', `${json} crypto stats`),
           });
         })
         .catch((e) => {
           return resolve({
             result: false,
-            value: `could not access the server: ${e}`
+            value: `could not access the server: ${e}`,
           });
         });
     });
-  }
+  },
 };

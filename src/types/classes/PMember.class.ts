@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document } from 'mongoose';
 
 export class PMember {
   public id: string;
@@ -32,12 +32,12 @@ export class PMember {
 }
 
 export interface IPMember extends Document {
-	id: string;
-	level: number;
-	rank: number;
-	tier: number;
-	points: number;
-	penalties: number;
-	timestamp: Date | null;
-	regex: string | null;
+  id: string;
+  level: number;
+  rank: number;
+  tier: number;
+  points: number;
+  penalties: number;
+  timestamp: Date | null;
+  regex: string | null;
 }

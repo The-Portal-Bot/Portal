@@ -70,7 +70,7 @@ export = {
             message,
             message.member,
             `*${message.member}, are you sure you want to ban ` +
-                            `member ${memberToBan}*, do you **(yes / no)** ? reason : ${banReason}`
+              `member ${memberToBan}*, do you **(yes / no)** ? reason : ${banReason}`
           )
             .then((result) => {
               if (result) {
@@ -85,9 +85,7 @@ export = {
                       result: r,
                       value: r
                         ? `${memberToBan} has been banned by ${message.author} ` +
-                                                  `for ${banDays} ${
-                                                    banDays > 1 ? 'days' : 'day'
-                                                  }, because: *${banReason}*`
+                          `for ${banDays} ${banDays > 1 ? 'days' : 'day'}, because: *${banReason}*`
                         : `${memberToBan} is not bannable`,
                     });
                   })
@@ -95,8 +93,8 @@ export = {
                     return resolve({
                       result: false,
                       value:
-                                                `failed to ban member ${memberToBan}\n` +
-                                                `Portal's role must be higher than member you want to ban: ${e}`,
+                        `failed to ban member ${memberToBan}\n` +
+                        `Portal's role must be higher than member you want to ban: ${e}`,
                     });
                   });
               } else {

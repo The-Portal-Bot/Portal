@@ -1,14 +1,17 @@
 import { Message, Presence, User } from 'discord.js';
 import { Locale } from '../types/enums/Locales.enum';
 import { PGuild } from '../types/classes/PGuild.class';
-import { LocalisationOption } from '../types/classes/PTypes.interface';
+import {
+  LocalisationConsoleOption,
+  LocalisationPortalOption,
+  announcementAction,
+  eventAction,
+  logActions,
+} from '../types/classes/PTypes.interface';
 
-// const typeOfAnnouncement = ['fail', 'announce', 'spotify', 'url', 'read_only', 'join', 'leave'];
-// const typeOfAction = ['user_connected', 'user_disconnected'];
-
-export const portal: LocalisationOption[] = [
+export const portal: LocalisationPortalOption[] = [
   {
-    name: 'join',
+    name: announcementAction.join,
     lang: {
       gr: () => {
         return '> Γειά σας, το Πόρταλ είναι εδώ';
@@ -22,7 +25,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'leave',
+    name: announcementAction.leave,
     lang: {
       gr: () => {
         return '> Αποχαιρετώ, καλή συνέχεια σε όλους';
@@ -36,7 +39,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'announce',
+    name: announcementAction.announce,
     lang: {
       gr: (user: User) => {
         return `o ${user} έκανε μια ανακοίνωση`;
@@ -50,7 +53,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'spotify',
+    name: announcementAction.spotify,
     lang: {
       gr: (user: User) => {
         return `o ${user} έβαλε νέο κομμάτι`;
@@ -64,7 +67,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'url',
+    name: announcementAction.url,
     lang: {
       gr: (user: User) => {
         return `o ${user} ανέβασε έναν νέο σύνδεσμο`;
@@ -78,7 +81,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'read_only',
+    name: announcementAction.readOnly,
     lang: {
       gr: (user: User) => {
         return `${user}, το κανάλι είναι μόνο για ανάγνωση`;
@@ -92,7 +95,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'fail',
+    name: announcementAction.fail,
     lang: {
       gr: (user: User) => {
         return `${user}, κάτι δεν πήγε καλά`;
@@ -106,7 +109,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'user_connected',
+    name: eventAction.userConnected,
     lang: {
       gr: (user: User) => {
         return `ο χρήστης ${user} συνδέθηκε στο κανάλι`;
@@ -120,7 +123,7 @@ export const portal: LocalisationOption[] = [
     },
   },
   {
-    name: 'user_disconnected',
+    name: eventAction.userDisconnected,
     lang: {
       gr: (user: User) => {
         return `ο χρήστης ${user} αποχώρησε από το κανάλι`;
@@ -135,37 +138,40 @@ export const portal: LocalisationOption[] = [
   },
 ];
 
-export const console_text: LocalisationOption[] = [
+export const consoleText: LocalisationConsoleOption[] = [
   {
-    name: 'ready',
+    name: logActions.ready,
     lang: {
-      gr: (member_length: number, channel_length: number, guild_length: number) => {
-        return `το ρομποτ ξεκίνησε, με ${member_length} χρήστες, μέσα σε ${channel_length} κανάλια σε ${guild_length} συντεχνίες`;
+      gr: (args: { memberLength: number; channelLength: number; guildLength: number }) => {
+        return `το ρομπότ ξεκίνησε, με ${args.memberLength} χρήστες, μέσα σε ${args.channelLength} κανάλια σε ${args.guildLength} συντεχνίες`;
       },
-      en: (member_length: number, channel_length: number, guild_length: number) => {
-        return `bot has started, with ${member_length} users, in ${channel_length} channels from ${guild_length} guilds`;
+      en: (args: { memberLength: number; channelLength: number; guildLength: number }) => {
+        return `bot has started, with ${args.memberLength} users, in ${args.channelLength} channels from ${args.guildLength} guilds`;
       },
-      de: (member_length: number, channel_length: number, guild_length: number) => {
-        return `bot hat ${member_length} Mitglieder in ${channel_length} Kanälen von ${guild_length} Gilden gestartet`;
+      de: (args: { memberLength: number; channelLength: number; guildLength: number }) => {
+        return `bot hat ${args.memberLength} Mitglieder in ${args.channelLength} Kanälen von ${args.guildLength} Gilden gestartet`;
       },
     },
   },
   {
-    name: 'updating_guild', // remove
+    name: logActions.updatingGuild, // remove
     lang: {
-      gr: () => { // args: unknown
+      gr: () => {
+        // args: unknown
         return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε';
       },
-      en: () => { // args: unknown
+      en: () => {
+        // args: unknown
         return '> Guild JSON file has been updated';
       },
-      de: () => { // args: unknown
+      de: () => {
+        // args: unknown
         return '> Die JSON Datei der Gilde wurde aktualisiert';
       },
     },
   },
   {
-    name: 'presence_controlled_away',
+    name: logActions.presenceControlledAway,
     lang: {
       gr: (args: { newPresence: Presence }) => {
         return (
@@ -189,7 +195,7 @@ export const console_text: LocalisationOption[] = [
     },
   },
   {
-    name: 'presence_controlled',
+    name: logActions.presenceControlled,
     lang: {
       gr: (displayName: string, name: string) => {
         return `ο χρήστης ${displayName} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${name})`;
@@ -203,7 +209,7 @@ export const console_text: LocalisationOption[] = [
     },
   },
   {
-    name: 'could_not_fetch_data',
+    name: logActions.couldNotFetchData,
     lang: {
       gr: (data: string, source: string) => {
         return `δεν κατάφερα να πάρω το ${data} από το ${source}`;
@@ -218,33 +224,33 @@ export const console_text: LocalisationOption[] = [
   },
 ];
 
-// export function client_talk(
+// export function clientTalk(
 // 	client: Client, pGuild: GuildPrtl, context: string
 // ): boolean {
-// 	const voice_connection = client?.voice?.connections
+// 	const voiceConnection = client?.voice?.connections
 // 		.find(connection => connection.channel.guild.id === pGuild.id);
 
-// 	if (voice_connection) {
-// 		if (!voice_connection.dispatcher) {
-// 			return pGuild.portal_list.some(p =>
-// 				p.voice_list.some(v => {
+// 	if (voiceConnection) {
+// 		if (!voiceConnection.dispatcher) {
+// 			return pGuild.portalList.some(p =>
+// 				p.voiceList.some(v => {
 
-// 					if (typeOfAnnouncement.includes(context) && v.ann_announce) {
+// 					if (typeOfAnnouncement.includes(context) && v.annAnnounce) {
 // 						const locale = v.locale;
 // 						const random = Math.floor(Math.random() * Math.floor(3));
 
-// 						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+// 						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}${random}.mp3`);
 // 						return true;
 // 					}
-// 					else if (typeOfAction.includes(context) && v.ann_user) {
+// 					else if (typeOfAction.includes(context) && v.annUser) {
 // 						const locale = v.locale;
 // 						const random = Math.floor(Math.random() * Math.floor(3));
 
-// 						voice_connection.play(`src/assets/mp3s/${locale}/${context}/${context}_${random}.mp3`);
+// 						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}${random}.mp3`);
 // 						return true;
 // 					}
 
-// 					return v.id === voice_connection.channel.id;
+// 					return v.id === voiceConnection.channel.id;
 // 				})
 // 			);
 // 		}
@@ -253,7 +259,7 @@ export const console_text: LocalisationOption[] = [
 // 	return false;
 // }
 
-export function getFunction(output: string, locale: number, context: string) {
+export function getFunction(output: string, locale: number, context: eventAction | announcementAction | logActions) {
   let func = null;
 
   if (output === 'portal') {
@@ -273,7 +279,7 @@ export function getFunction(output: string, locale: number, context: string) {
       }
     });
   } else if (output === 'console') {
-    console_text.some((ct) => {
+    consoleText.some((ct) => {
       switch (locale) {
       case Locale.gr:
         func = ct.lang.gr;
@@ -291,13 +297,17 @@ export function getFunction(output: string, locale: number, context: string) {
   return func;
 }
 
-export function clientWrite(message: Message, pGuild: PGuild, context: string): string {
+export function clientWrite(
+  message: Message,
+  pGuild: PGuild,
+  context: eventAction | announcementAction | logActions
+): string {
   if (!message) return 'could not fetch message';
   if (!message.member) return 'could not fetch member';
   if (!message.member.voice) return 'could not fetch voice';
   if (!message.member.voice) return 'could not fetch voice';
 
-  let return_value = 'could not find data';
+  let returnValue = 'could not find data';
 
   const found = pGuild.pChannels.some((p) =>
     p.pVoiceChannels.some((v) => {
@@ -306,13 +316,19 @@ export function clientWrite(message: Message, pGuild: PGuild, context: string): 
           // message.author.presence.member.voice.channel.id) {
           switch (v.locale) {
           case Locale.gr:
-            return_value = portal.find((p) => p.name === context)?.lang.gr();
+            returnValue = portal
+              .find((p) => p.name === context)
+              ?.lang.gr({} as User) as unknown as string;
             break;
           case Locale.en:
-            return_value = portal.find((p) => p.name === context)?.lang.en();
+            returnValue = portal
+              .find((p) => p.name === context)
+              ?.lang.en({} as User) as unknown as string;
             break;
           case Locale.de:
-            return_value = portal.find((p) => p.name === context)?.lang.de();
+            returnValue = portal
+              .find((p) => p.name === context)
+              ?.lang.de({} as User) as unknown as string;
             break;
           }
 
@@ -325,13 +341,18 @@ export function clientWrite(message: Message, pGuild: PGuild, context: string): 
   );
 
   if (found) {
-    return return_value;
+    return returnValue;
   } else {
-    return portal.find((p) => p.name === context)?.lang.en();
+    return portal.find((p) => p.name === context)?.lang.en({} as User) as unknown as string;
   }
 }
 
-export function clientLog(message: Message | null, guild_list: PGuild[], context: string, args: unknown): string {
+export function clientLog(
+  message: Message | null,
+  guildList: PGuild[],
+  context: eventAction | announcementAction | logActions,
+  args: unknown
+): string {
   if (message === null || message.member === null) {
     return 'there was an error';
   }
@@ -340,7 +361,7 @@ export function clientLog(message: Message | null, guild_list: PGuild[], context
     return 'there was an error';
   }
 
-  guild_list.some((g) =>
+  guildList.some((g) =>
     g.pChannels.some((p) =>
       p.pVoiceChannels.some((v) => {
         if (message.member && message.member.voice.channel) {
@@ -348,11 +369,11 @@ export function clientLog(message: Message | null, guild_list: PGuild[], context
             // message.author.presence.member.voice.channel.id) {
             switch (v.locale) {
             case Locale.gr:
-              return console_text.find((c) => c.name === context)?.lang.gr(args);
+              return consoleText.find((c) => c.name === context)?.lang.gr(args);
             case Locale.en:
-              return console_text.find((c) => c.name === context)?.lang.en(args);
+              return consoleText.find((c) => c.name === context)?.lang.en(args);
             case Locale.de:
-              return console_text.find((c) => c.name === context)?.lang.de(args);
+              return consoleText.find((c) => c.name === context)?.lang.de(args);
             }
           }
         }
@@ -360,5 +381,5 @@ export function clientLog(message: Message | null, guild_list: PGuild[], context
     )
   );
 
-  return console_text.find((c) => c.name === context)?.lang.en(args);
+  return consoleText.find((c) => c.name === context)?.lang.en(args);
 }

@@ -1,401 +1,201 @@
-import { ChannelType, Client, TextChannel, VoiceChannel } from 'discord.js';
-import { Document } from 'mongoose';
+import { ChannelType, Client, Guild, TextChannel, VoiceChannel } from 'discord.js';
+import { Document, FilterQuery } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
-import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
-import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
-import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import { PGiveRole } from '../types/classes/PGiveRole.class';
-import { PGuild, IPGuild, MusicData } from '../types/classes/PGuild.class';
+import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { PMember } from '../types/classes/PMember.class';
 import { PPoll } from '../types/classes/PPoll.class';
 import { IPChannel, PChannel } from '../types/classes/PPortalChannel.class';
 import { Rank } from '../types/classes/PTypes.interface';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
+import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import PGuildModel from '../types/models/PGuild.model';
 
-export async function fetchGuildList(
-): Promise<PGuild[] | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .find({})
-      .then((guilds: IPGuild[]) => {
-        if (guilds) {
-          return resolve(guilds as unknown as PGuild[]);
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function fetchGuildList(filter: FilterQuery<PGuild>): Promise<PGuild[]> {
+  return (await PGuildModel.find(filter).exec()) as unknown as PGuild[];
 }
 
-export async function fetchGuild(
+export async function fetchGuild(guildId: string): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne({ id: guildId }).exec()) as unknown as PGuild;
+}
+
+export async function fetchGuildChannelDelete(guildId: string): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 1,
+      pChannels: 1,
+      announcement: 1,
+      musicData: 1,
+      pURLs: 1,
+      pIgnores: 1,
+    }
+  ).exec()) as unknown as PGuild;
+}
+
+export async function fetchAnnouncementChannelByGuildId(
   guildId: string
-): Promise<PGuild | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
-        }
-      )
-      .then((guild: IPGuild | null) => {
-        if (guild) {
-          return resolve(guild as unknown as PGuild);
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+): Promise<Partial<PGuild | 'announcement' | 'initialRole'> | undefined> {
+  const pGuild = (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      announcement: 1,
+      initialRole: 1,
+    }
+  ).exec()) as unknown as PGuild;
+
+  return {
+    announcement: pGuild.announcement,
+    initialRole: pGuild.initialRole,
+  };
 }
 
-export async function fetchGuildChannelDelete(
-  guildId: string
-): Promise<PGuild | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
+export async function fetchGuildReactionData(guildId: string, memberId: string): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 1,
+      pMembers: {
+        $elemMatch: {
+          id: memberId,
         },
-        {
-          id: 1,
-          portalList: 1,
-          announcement: 1,
-          musicData: 1,
-          urlList: 1,
-          ignoreList: 1
-        })
-    // needs fixing
-      .then((r) => {
-        if (r) {
-          return resolve({
-            id: r.id,
-            pChannels: r.pChannels,
-            announcement: r.announcement,
-            musicData: r.musicData,
-            urlList: r.urlList,
-            ignoreList: r.ignoreList
-          } as PGuild);
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+      },
+      pRoles: 1,
+      pPolls: 1,
+      musicData: 1,
+      musicQueue: 1,
+    }
+  ).exec()) as unknown as PGuild;
 }
 
-export async function fetchGuildAnnouncement(
-  guildId: string
-): Promise<PGuild | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
-        },
-        {
-          announcement: 1,
-          initialRole: 1
-        })
-      .then((r) => {
-        if (r) {
-          return resolve(<PGuild>{
-            announcement: r.announcement,
-            initialRole: r.initial_role
-          });
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
-}
+export async function fetchGuildMembers(guildId: string): Promise<PMember[] | undefined> {
+  const pGuild = (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      pMembers: 1,
+    }
+  ).exec()) as unknown as PGuild;
 
-export async function fetchGuildReactionData(
-  guildId: string, memberId: string
-): Promise<PGuild | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
-        },
-        {
-          id: 1,
-          memberList: {
-            $elemMatch: {
-              id: memberId
-            }
-          },
-          roleList: 1,
-          pollList: 1,
-          musicData: 1,
-          musicQueue: 1
-        })
-      .then((r) => {
-        if (r) {
-          return resolve(<PGuild>{
-            id: r.id,
-            pMembers: r.member_list,
-            pRoles: r.role_list,
-            pPolls: r.poll_list,
-            musicData: r.musicData,
-            musicQueue: r.music_queue
-          });
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
-}
-
-export async function fetchGuildMembers(
-  guildId: string
-): Promise<PMember[] | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
-        },
-        {
-          memberList: 1
-        })
-      .then((r) => {
-        if (r) {
-          return resolve(<PMember[]>r.member_list);
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+  return pGuild.pMembers;
 }
 
 export async function fetchGuildMusicQueue(
   guildId: string
-): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
-        },
-        {
-          musicData: 1,
-          musicQueue: 1
-        })
-      .then((r) => {
-        if (r) {
-          return resolve(<{ queue: VideoSearchResult[], data: MusicData }>{
-            data: r.musicData,
-            queue: r.music_queue
-          });
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+): Promise<{ queue: VideoSearchResult[]; data: MusicData } | undefined> {
+  const pGuild = (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      musicData: 1,
+      musicQueue: 1,
+    }
+  ).exec()) as unknown as PGuild;
+
+  return {
+    data: pGuild.musicData,
+    queue: pGuild.musicQueue,
+  };
 }
 
-export async function fetchGuildPreData(
-  guildId: string, memberId: string
-): Promise<PGuild | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
+export async function fetchGuildPreData(guildId: string, memberId: string): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 1,
+      prefix: 1,
+      pChannels: 1,
+      pMembers: {
+        $elemMatch: {
+          id: memberId,
         },
-        {
-          id: 1,
-          prefix: 1,
-          portalList: 1,
-          memberList: {
-            $elemMatch: {
-              id: memberId
-            }
-          },
-          ignoreList: 1,
-          urlList: 1,
-          muteRole: 1,
-          musicData: 1,
-          musicQueue: 1,
-          initialRole: 1,
-          rankSpeed: 1,
-          profanityLevel: 1,
-          kickAfter: 1,
-          banAfter: 1
-        })
-      .then((r) => {
-        if (r) {
-          return resolve(<PGuild>{
-            id: r.id,
-            prefix: r.prefix,
-            pChannels: r.portal_list,
-            pMembers: r.member_list,
-            ignoreList: r.ignore_list,
-            urlList: r.url_list,
-            muteRole: r.mute_role,
-            musicData: r.musicData,
-            musicQueue: r.music_queue,
-            initialRole: r.initial_role,
-            rankSpeed: r.rank_speed,
-            profanityLevel: r.profanity_level,
-            kickAfter: r.kick_after,
-            banAfter: r.ban_after
-          });
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+      },
+      pIgnores: 1,
+      pURLs: 1,
+      muteRole: 1,
+      musicData: 1,
+      musicQueue: 1,
+      initialRole: 1,
+      rankSpeed: 1,
+      profanityLevel: 1,
+      kickAfter: 1,
+      banAfter: 1,
+    }
+  ).exec()) as unknown as PGuild;
 }
 
-export async function fetchGuildRest(
-  guildId: string
-): Promise<PGuild | undefined> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .findOne(
-        {
-          id: guildId
-        },
-        {
-          id: 0,
-          prefix: 0,
-          portalList: 0,
-          ignoreList: 0,
-          urlList: 0,
-          musicData: 0,
-          rankSpeed: 0,
-          profanityLevel: 0
-        })
-      .then((r) => {
-        if (r) {
-          return resolve(<PGuild>{
-            id: r.id,
-            pMembers: r.member_list,
-            pPolls: r.poll_list,
-            ranks: r.ranks,
-            musicQueue: r.music_queue,
-            announcement: r.announcement,
-            locale: r.locale,
-            announce: r.announce,
-            premium: r.premium
-          });
-        } else {
-          return resolve(undefined);
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function fetchGuildRest(guildId: string): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 0,
+      prefix: 0,
+      pChannels: 0,
+      pIgnores: 0,
+      pURLs: 0,
+      musicData: 0,
+      rankSpeed: 0,
+      profanityLevel: 0,
+    }
+  ).exec()) as unknown as PGuild;
 }
 
-export async function guildExists(
-  guildId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .countDocuments(
-        {
-          id: guildId
-        }
-      )
-      .then((count: number) => {
-        return resolve(count > 0);
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function guildExists(guildId: string): Promise<boolean> {
+  return (await PGuildModel.countDocuments({ id: guildId }).exec()) > 0;
 }
 
-export async function memberExists(
-  guildId: string, memberId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .countDocuments(
-        {
-          id: guildId,
-          memberList: {
-            $elemMatch: {
-              id: memberId
-            }
-          }
-        }
-      )
-      .then((count: number) => {
-        return resolve(count > 0);
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function memberExists(guildId: string, memberId: string): Promise<boolean> {
+  return (
+    (await PGuildModel.countDocuments({
+      id: guildId,
+      pMembers: {
+        $elemMatch: {
+          id: memberId,
+        },
+      },
+    })) > 0
+  );
 }
 
-export async function updateGuild(
-  guildId: string, key: string, value
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const placeholder = {}
-    placeholder[key] = value;
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $set: placeholder
-        },
-        {
-          'new': true
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function updateGuild(guildId: string, key: string, value: unknown): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        [key]: value,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
 // CRUD guilds
-function createMemberList(guildId: string, client: Client): PMember[] {
-  const member_list: PMember[] = [];
+function createMembers(guildId: string, client: Client): PMember[] {
+  const pMembers: PMember[] = [];
 
-  const guild = client.guilds.cache.find(guild => guild.id === guildId);
+  const guild = client.guilds.cache.find((guild) => guild.id === guildId) as Guild;
   if (!guild) {
-    return member_list;
+    return pMembers;
   }
 
   // const member_array = guild.members.cache.array();
@@ -417,37 +217,24 @@ function createMemberList(guildId: string, client: Client): PMember[] {
   //     }
   // }
 
-  guild.members.cache.forEach(member => {
+  guild.members.cache.forEach((member) => {
     if (!member.user.bot) {
       if (client.user && member.id !== client.user.id) {
-        member_list.push(
-          new PMember(
-            member.id,
-            1,
-            0,
-            1,
-            0,
-            0,
-            new Date('1 January, 1970, 00:00:00 UTC'),
-            'null'
-          )
-        );
+        pMembers.push(new PMember(member.id, 1, 0, 1, 0, 0, new Date('1 January, 1970, 00:00:00 UTC'), 'null'));
       }
     }
   });
 
-  return member_list;
+  return pMembers;
 }
 
-export async function insertGuild(
-  guildId: string, client: Client
-): Promise<boolean> {
+export async function insertGuild(guildId: string, client: Client): Promise<boolean> {
   const id: string = guildId;
   const pChannels: PChannel[] = [];
-  const pMembers: PMember[] = createMemberList(guildId, client);
-  const URLList: string[] = [];
+  const pMembers: PMember[] = createMembers(guildId, client);
+  const pURLs: string[] = [];
   const pRoles: PGiveRole[] = [];
-  const polls: string[] = [];
+  const pPolls: string[] = [];
   const ranks: Rank[] = [];
   const initialRole: string | null = 'null';
   const musicData: MusicData = {
@@ -455,8 +242,8 @@ export async function insertGuild(
     messageId: 'null',
     messageLyricsId: 'null',
     votes: [],
-    pinned: false
-  }
+    pinned: false,
+  };
   const musicQueue: VideoSearchResult[] = [];
   const announcement: string | null = 'null';
   const muteRole: string | null = 'null';
@@ -469,868 +256,476 @@ export async function insertGuild(
   const premium = true; // as it is not a paid service anymore
   const prefix: string = process.env.PREFIX as unknown as string;
 
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .create({
-        id: id,
-        portalList: pChannels,
-        memberList: pMembers,
-        urlList: URLList,
-        roleList: pRoles,
-        pollList: polls,
-        initialRole: initialRole,
-        ranks: ranks,
-        musicData: musicData,
-        musicQueue: musicQueue,
-        announcement: announcement,
-        muteRole: muteRole,
-        locale: locale,
-        announce: announce,
-        rankSpeed: rankSpeed,
-        profanityLevel: profanityLevel,
-        kickAfter: kickAfter,
-        banAfter: banAfter,
-        premium: premium,
-        prefix: prefix
-      })
-      .then((r: Document<any>) => {
-        return resolve(!!r);
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+  return !!(await PGuildModel.create({
+    id: id,
+    pChannels: pChannels,
+    pMembers: pMembers,
+    pURLs: pURLs,
+    pRoles: pRoles,
+    pPolls: pPolls,
+    initialRole: initialRole,
+    ranks: ranks,
+    musicData: musicData,
+    musicQueue: musicQueue,
+    announcement: announcement,
+    muteRole: muteRole,
+    locale: locale,
+    announce: announce,
+    rankSpeed: rankSpeed,
+    profanityLevel: profanityLevel,
+    kickAfter: kickAfter,
+    banAfter: banAfter,
+    premium: premium,
+    prefix: prefix,
+  }));
 }
 
-export async function removeGuild(
-  guildId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .deleteOne({
-        id: guildId
-      })
-      .then((r) => {
-        if ((r && r.id === guildId)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function removeGuild(guildId: string): Promise<boolean> {
+  return !!(await PGuildModel.deleteOne({ id: guildId }));
 }
 
-export async function updateMember(
-  guildId: string, memberId: string, key: string, value
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const placeholder = {}
-    placeholder['member_list.$[m].' + key] = value;
-
-    PGuildModel
-      .updateOne(
+export async function updateMember(guildId: string, memberId: string, key: string, value: unknown): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pMembers.$[m].' + key]: value,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [
         {
-          id: guildId
+          'm.id': memberId,
         },
-        {
-          $set: placeholder
-        },
-        {
-          'new': true,
-          'arrayFilters': [
-            {
-              'm.id': memberId
-            }
-          ]
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
-}
-
-export async function updateEntireMember(
-  guildId: string, memberId: string, member: PMember
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const placeholder = {}
-    placeholder['member_list.$[m]'] = member;
-
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $set: placeholder
-        },
-        {
-          'new': true,
-          'arrayFilters': [
-            {
-              'm.id': memberId
-            }
-          ]
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
-}
-
-export async function insertMember(
-  guildId: string, memberId: string
-): Promise<boolean> {
-  const newPMember = new PMember(
-    memberId,
-    1,
-    0,
-    1,
-    0,
-    0,
-    null,
-    'null'
+      ],
+    }
   );
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        { id: guildId },
-        {
-          $push: {
-            memberList: newPMember
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeMember(
-  memberId: string, guildId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
+export async function updateEntireMember(guildId: string, memberId: string, member: PMember): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pMembers.$[m]']: member,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [
         {
-          id: guildId
+          'm.id': memberId,
         },
-        {
-          $pull: {
-            memberList: {
-              id: memberId
-            }
-          }
-        })
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+      ],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function updatePortal(
-  guildId: string, portalId: string, key: string, value
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const placeholder = {}
-    placeholder['portal_list.$[p].' + key] = value;
+export async function insertMember(guildId: string, memberId: string): Promise<boolean> {
+  const newPMember = new PMember(memberId, 1, 0, 1, 0, 0, null, 'null');
 
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $set: placeholder
-        },
-        {
-          'new': true,
-          'arrayFilters': [
-            { 'p.id': portalId }
-          ]
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    { id: guildId },
+    {
+      $push: {
+        pMembers: newPMember,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertPortal(
-  guildId: string, newPortal: IPChannel
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
+export async function removeMember(memberId: string, guildId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pMembers: {
+          id: memberId,
         },
-        {
-          $push: {
-            portalList: newPortal
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removePortal(
-  guildId: string, portalId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
+export async function updatePortal(guildId: string, portalId: string, key: string, value: unknown): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pChannels.$[p].' + key]: value,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [{ 'p.id': portalId }],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertPortal(guildId: string, newPortal: IPChannel): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pChannels: newPortal,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removePortal(guildId: string, portalId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pChannels: {
+          id: portalId,
         },
-        {
-          $pull: {
-            portalList: {
-              id: portalId
-            }
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function updateVoice(
-  guildId: string, portalId: string, voiceId: string, key: string, value
+  guildId: string,
+  portalId: string,
+  voiceId: string,
+  key: string,
+  value: unknown
 ): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const placeholder = {}
-    placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pChannels.$[p].pVoiceChannels.$[v].' + key]: value,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [{ 'p.id': portalId }, { 'v.id': voiceId }],
+    }
+  );
 
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $set: placeholder
-        },
-        {
-          'new': true,
-          'arrayFilters': [
-            { 'p.id': portalId },
-            { 'v.id': voiceId }
-          ]
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertVoice(
-  guildId: string, portalId: string, newVoice: PVoiceChannel
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $push: {
-            'portal_list.$[p].voice_list': newVoice
-          }
-        },
-        {
-          'new': true,
-          'arrayFilters': [
-            { 'p.id': portalId }
-          ]
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
+export async function insertVoice(guildId: string, portalId: string, newVoice: PVoiceChannel): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        'portal_list.$[p].voice_list': newVoice,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [{ 'p.id': portalId }],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeVoice(
-  guildId: string, portalId: string, voiceId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
+export async function removeVoice(guildId: string, portalId: string, voiceId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        'portal_list.$[p].voice_list': {
+          id: voiceId,
         },
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [
         {
-          $pull: {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            'portal_list.$[p].voice_list': {
-              id: voiceId
-            }
-          }
+          'p.id': portalId,
         },
-        {
-          'new': true,
-          'arrayFilters': [
-            {
-              'p.id': portalId
-            }
-          ]
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
+      ],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertURL(
-  guildId: string, new_url: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $push: {
-            urlList: new_url
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function insertURL(guildId: string, new_url: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pURLs: new_url,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeURL(
-  guildId: string, remove_url: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $pull: {
-            urlList: remove_url
-          }
-        })
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(`did not execute database transaction: ${e}`);
-      });
-  });
+export async function removeURL(guildId: string, remove_url: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pURLs: remove_url,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertIgnore( // channel
-  guildId: string, new_ignore: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $push: {
-            ignoreList: new_ignore
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function insertIgnore(guildId: string, new_ignore: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pIgnores: new_ignore,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeIgnore( // channel
-  guildId: string, remove_ignore: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $pull: {
-            ignoreList: remove_ignore
-          }
-        })
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function removeIgnore(guildId: string, remove_ignore: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pIgnores: remove_ignore,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function setRanks(
-  guildId: string, new_ranks: Rank[]): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          ranks: new_ranks
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function setRanks(guildId: string, new_ranks: Rank[]): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      ranks: new_ranks,
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertPoll(
-  guildId: string, poll: PPoll
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $push: {
-            pollList: poll
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function insertPoll(guildId: string, poll: PPoll): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pPolls: poll,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removePoll(
-  guildId: string, messageId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
+export async function removePoll(guildId: string, messageId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pPolls: {
+          messageId: messageId,
         },
-        {
-          $pull: {
-            pollList: {
-              messageId: messageId
-            }
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertVendor(
-  guildId: string, new_vendor: PGiveRole
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $push: {
-            roleList: new_vendor
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function insertVendor(guildId: string, new_vendor: PGiveRole): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pRoles: new_vendor,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeVendor(
-  guildId: string, messageId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
+export async function removeVendor(guildId: string, messageId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pRoles: {
+          messageId: messageId,
         },
-        {
-          $pull: {
-            roleList: {
-              messageId: messageId
-            }
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertMusicVideo(
-  guildId: string, video: VideoSearchResult
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $push: {
-            musicQueue: video
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function insertMusicVideo(guildId: string, video: VideoSearchResult): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        musicQueue: video,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function clearMusicVote(
-  guildId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $set: {
-            'musicData.votes': []
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function clearMusicVote(guildId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        'musicData.votes': [],
+      },
+    }
+  );
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertMusicVote(
-  guildId: string, user_id: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $push: {
-            'musicData.votes': user_id
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function insertMusicVote(guildId: string, user_id: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        'musicData.votes': user_id,
+      },
+    }
+  );
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function setMusicData(
-  guildId: string, newMusicData: MusicData
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    PGuildModel
-      .updateOne(
-        {
-          id: guildId
-        },
-        {
-          $set: {
-            musicData: newMusicData
-          }
-        }
-      )
-      .then((r) => {
-        if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-          return resolve(true);
-        } else {
-          return reject('did not execute database transaction');
-        }
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+export async function setMusicData(guildId: string, newMusicData: MusicData): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        musicData: newMusicData,
+      },
+    }
+  );
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function deletedChannelSync(
-  channelToRemove: VoiceChannel | TextChannel
-): Promise<number> {
-  return new Promise((resolve) => {
-    fetchGuildChannelDelete(channelToRemove.guild.id)
-      .then(pGuild => {
-        if (pGuild) {
-          // check if it is a portal or portal-voice channel
-          if (channelToRemove.type !== ChannelType.GuildText) {
-            const currentVoice = channelToRemove;
-            pGuild.pChannels.some(p => {
-              if (p.id === currentVoice.id) {
-                removePortal(currentVoice.guild.id, p.id)
-                  .then(r => {
-                    return r
-                      ? resolve(PortalChannelTypes.portal)
-                      : resolve(PortalChannelTypes.unknown)
-                  })
-                  .catch(() => {
-                    return resolve(PortalChannelTypes.unknown)
-                  });
+export async function deletedChannelSync(channelToRemove: VoiceChannel | TextChannel): Promise<PortalChannelTypes> {
+  const pGuild = await fetchGuildChannelDelete(channelToRemove.guild.id);
 
-                return true;
-              }
+  if (!pGuild) {
+    return PortalChannelTypes.unknown;
+  }
 
-              p.pVoiceChannels.some(v => {
-                if (v.id === currentVoice.id) {
-                  removeVoice(currentVoice.guild.id, p.id, v.id)
-                    .then(r => {
-                      return r
-                        ? resolve(PortalChannelTypes.voice)
-                        : resolve(PortalChannelTypes.unknown)
-                    })
-                    .catch(() => {
-                      return resolve(PortalChannelTypes.unknown)
-                    });
+  // check if it is a portal or portal-voice channel
+  if (channelToRemove.type !== ChannelType.GuildText) {
+    const currentVoice = channelToRemove;
 
-                  return true;
-                }
-              });
-            });
-          } else {
-            const currentText = channelToRemove;
+    for (const pChannel of pGuild.pChannels) {
+      if (pChannel.id === currentVoice.id) {
+        const channelDeleted = await removePortal(currentVoice.guild.id, pChannel.id);
+        return channelDeleted ? PortalChannelTypes.portal : PortalChannelTypes.unknown;
+      }
 
-            if (pGuild.announcement === currentText.id) {
-              updateGuild(currentText.guild.id, 'announcement', 'null')
-                .then(r => {
-                  return r
-                    ? resolve(PortalChannelTypes.announcement)
-                    : resolve(PortalChannelTypes.unknown);
-                })
-                .catch(() => {
-                  return resolve(PortalChannelTypes.unknown);
-                });
-            } else if (pGuild.musicData.channelId === currentText.id) {
-              const musicData = new MusicData('null', 'null', 'null', [], false);
-              setMusicData(pGuild.id, musicData)
-                .then(r => {
-                  return r
-                    ? resolve(PortalChannelTypes.music)
-                    : resolve(PortalChannelTypes.unknown)
-                })
-                .catch(() => {
-                  return resolve(PortalChannelTypes.unknown);
-                });
-            } else {
-              for (let i = 0; i < pGuild.urlList.length; i++) {
-                if (pGuild.urlList[i] === currentText.id) {
-                  removeURL(currentText.guild.id, currentText.id)
-                    .then(r => {
-                      return r
-                        ? resolve(PortalChannelTypes.url)
-                        : resolve(PortalChannelTypes.unknown);
-                    })
-                    .catch(() => {
-                      return resolve(PortalChannelTypes.unknown);
-                    });
-                  break;
-                }
-              }
-
-              for (let i = 0; i < pGuild.ignoreList.length; i++) {
-                if (pGuild.ignoreList[i] === currentText.id) {
-                  removeIgnore(currentText.guild.id, currentText.id)
-                    .then(r => {
-                      return r
-                        ? resolve(PortalChannelTypes.url)
-                        : resolve(PortalChannelTypes.unknown);
-                    })
-                    .catch(() => {
-                      return resolve(PortalChannelTypes.unknown);
-                    });
-                  break;
-                }
-              }
-            }
-          }
-        } else {
-          return resolve(PortalChannelTypes.unknown);
+      for (const pVoiceChannel of pChannel.pVoiceChannels) {
+        if (pVoiceChannel.id === currentVoice.id) {
+          const channelDeleted = await removeVoice(currentVoice.guild.id, pChannel.id, pVoiceChannel.id);
+          return channelDeleted ? PortalChannelTypes.voice : PortalChannelTypes.unknown;
         }
-      })
-      .catch(() => {
-        return resolve(PortalChannelTypes.unknown);
-      });
-  });
+      }
+    }
+  } else {
+    const currentText = channelToRemove;
+
+    if (pGuild.announcement === currentText.id) {
+      const channelUpdated = await updateGuild(currentText.guild.id, 'announcement', 'null');
+      return channelUpdated ? PortalChannelTypes.announcement : PortalChannelTypes.unknown;
+    } else if (pGuild.musicData.channelId === currentText.id) {
+      const musicData = new MusicData('null', 'null', 'null', [], false);
+      const musicDataSet = await setMusicData(pGuild.id, musicData);
+      return musicDataSet ? PortalChannelTypes.music : PortalChannelTypes.unknown;
+    } else {
+      for (let i = 0; i < pGuild.pURLs.length; i++) {
+        if (pGuild.pURLs[i] === currentText.id) {
+          const removedURL = await removeURL(currentText.guild.id, currentText.id);
+          return removedURL ? PortalChannelTypes.url : PortalChannelTypes.unknown;
+        }
+      }
+
+      for (let i = 0; i < pGuild.pIgnores.length; i++) {
+        if (pGuild.pIgnores[i] === currentText.id) {
+          const removedIgnore = await removeIgnore(currentText.guild.id, currentText.id);
+          return removedIgnore ? PortalChannelTypes.url : PortalChannelTypes.unknown;
+        }
+      }
+    }
+  }
+
+  return PortalChannelTypes.unknown;
 }

@@ -459,9 +459,9 @@ import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } fr
 // }
 
 export default async (args: {
-    client: Client;
-    messageReaction: MessageReaction | PartialMessageReaction;
-    user: User | PartialUser;
+  client: Client;
+  messageReaction: MessageReaction | PartialMessageReaction;
+  user: User | PartialUser;
 }): Promise<string> => {
   return new Promise((resolve, reject) => {
     return reject(`under construction`);

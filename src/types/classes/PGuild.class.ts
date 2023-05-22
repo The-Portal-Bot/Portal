@@ -1,10 +1,10 @@
-import { Document } from "mongoose";
-import { VideoSearchResult } from "yt-search";
-import { PGiveRole } from "./PGiveRole.class";
-import { PPoll } from "./PPoll.class";
-import { IPChannel, PChannel } from "./PPortalChannel.class";
-import { Rank } from "./PTypes.interface";
-import { PMember } from "./PMember.class";
+import { Document } from 'mongoose';
+import { VideoSearchResult } from 'yt-search';
+import { PGiveRole } from './PGiveRole.class';
+import { PPoll } from './PPoll.class';
+import { IPChannel, PChannel } from './PPortalChannel.class';
+import { Rank } from './PTypes.interface';
+import { PMember } from './PMember.class';
 
 export class MusicData {
   public channelId: string | undefined;
@@ -13,13 +13,7 @@ export class MusicData {
   public votes: string[] | undefined;
   public pinned: boolean;
 
-  constructor(
-    channelId: string,
-    messageId: string,
-    messageLyricsId: string,
-    votes: string[],
-    pinned: boolean
-  ) {
+  constructor(channelId: string, messageId: string, messageLyricsId: string, votes: string[], pinned: boolean) {
     this.channelId = channelId;
     this.messageId = messageId;
     this.messageLyricsId = messageLyricsId;
@@ -32,8 +26,8 @@ export class PGuild {
   public id: string;
   public pChannels: PChannel[];
   public pMembers: PMember[];
-  public ignoreList: string[];
-  public urlList: string[];
+  public pIgnores: string[];
+  public pURLs: string[];
   public pRoles: PGiveRole[];
   public pPolls: PPoll[];
   public initialRole: string | null;
@@ -53,12 +47,12 @@ export class PGuild {
 
   constructor(
     id: string,
-    portalList: PChannel[],
-    memberList: PMember[],
-    ignoreList: string[],
-    urlList: string[],
-    roleList: PGiveRole[],
-    pollList: PPoll[],
+    pChannels: PChannel[],
+    pMembers: PMember[],
+    pIgnores: string[],
+    pURLs: string[],
+    pRoles: PGiveRole[],
+    pPolls: PPoll[],
     initialRole: string | null,
     ranks: Rank[],
     musicData: MusicData,
@@ -75,12 +69,12 @@ export class PGuild {
     prefix: string
   ) {
     this.id = id;
-    this.pChannels = portalList;
-    this.pMembers = memberList;
-    this.ignoreList = ignoreList;
-    this.urlList = urlList;
-    this.pRoles = roleList;
-    this.pPolls = pollList;
+    this.pChannels = pChannels;
+    this.pMembers = pMembers;
+    this.pIgnores = pIgnores;
+    this.pURLs = pURLs;
+    this.pRoles = pRoles;
+    this.pPolls = pPolls;
     this.initialRole = initialRole;
     this.ranks = ranks;
     this.musicData = musicData;
@@ -99,25 +93,25 @@ export class PGuild {
 }
 
 export interface IPGuild extends Document {
-	id: string;
-	portalList: [IPChannel];
-	memberList: PMember[];
-	ignoreList: string[];
-	urlList: string[];
-	roleList: PGiveRole[];
-	pollList: PPoll[];
-	initialRole: string | null;
-	ranks: Rank[];
-	musicData: MusicData;
-	musicQueue: VideoSearchResult[];
-	announcement: string | null;
-	locale: number;
-	announce: boolean;
-	muteRole: string | null;
-	rankSpeed: number;
-	kickAfter: number;
-	banAfter: number;
-	profanityLevel: number;
-	premium: boolean;
-	prefix: string;
+  id: string;
+  pChannels: [IPChannel];
+  pMembers: PMember[];
+  pIgnores: string[];
+  pURLs: string[];
+  pRoles: PGiveRole[];
+  pPolls: PPoll[];
+  initialRole: string | null;
+  ranks: Rank[];
+  musicData: MusicData;
+  musicQueue: VideoSearchResult[];
+  announcement: string | null;
+  locale: number;
+  announce: boolean;
+  muteRole: string | null;
+  rankSpeed: number;
+  kickAfter: number;
+  banAfter: number;
+  profanityLevel: number;
+  premium: boolean;
+  prefix: string;
 }

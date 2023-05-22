@@ -78,9 +78,9 @@ export = {
       }
     }
 
-    const announcement = <VoiceChannel>(
-            message.guild.channels.cache.find((channel) => channel.id == pGuild.announcement)
-        );
+    const announcement = message.guild.channels.cache.find(
+      (channel) => channel.id == pGuild.announcement
+    ) as VoiceChannel;
 
     if (announcement) {
       deleteChannel(PortalChannelTypes.announcement, announcement, message).catch((e) => {

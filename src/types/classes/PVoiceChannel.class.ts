@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document } from 'mongoose';
 
 export class PVoiceChannel {
   public id: string;
@@ -32,12 +32,12 @@ export class PVoiceChannel {
 }
 
 export interface IPVoiceChannel extends Document {
-	id: string;
-	creatorId: string;
-	render: boolean;
-	regex: string;
-	noBots: boolean;
-	locale: number;
-	annAnnounce: boolean;
-	annUser: boolean;
+  id: string;
+  creatorId: string;
+  render: boolean;
+  regex: string;
+  noBots: boolean;
+  locale: number;
+  annAnnounce: boolean;
+  annUser: boolean;
 }

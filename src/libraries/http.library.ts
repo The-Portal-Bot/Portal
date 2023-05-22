@@ -3,9 +3,7 @@ import https, { RequestOptions } from 'https';
 import fetch from 'node-fetch';
 import { URL } from 'url';
 
-export async function httpsFetch(
-  options: string | RequestOptions | URL
-): Promise<Buffer> {
+export async function httpsFetch(options: string | RequestOptions | URL): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const req = https.request(options, function (res) {
       const chunks: Uint8Array[] = [];
@@ -14,11 +12,13 @@ export async function httpsFetch(
         chunks.push(chunk);
       });
 
-      res.on('end', function () { // (chunk) {
+      res.on('end', function () {
+        // (chunk) {
         return resolve(Buffer.concat(chunks));
       });
 
-      res.on('error', function () { // (error) {
+      res.on('error', function () {
+        // (error) {
         return reject(false);
       });
     });
@@ -27,9 +27,7 @@ export async function httpsFetch(
   });
 }
 
-export async function scrapeLyrics(
-  url: string
-): Promise<string> {
+export async function scrapeLyrics(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fetch(url)
       .then((response) => {

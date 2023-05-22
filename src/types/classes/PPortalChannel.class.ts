@@ -1,5 +1,5 @@
-import { Document } from "mongoose";
-import { PVoiceChannel } from "./PVoiceChannel.class";
+import { Document } from 'mongoose';
+import { PVoiceChannel } from './PVoiceChannel.class';
 
 export class PChannel {
   public id: string;
@@ -48,17 +48,17 @@ export class PChannel {
 }
 
 export interface IPChannel extends Document {
-	id: string;
-	creatorId: string;
-	render: boolean;
-	regexPortal: string;
-	regexVoice: string;
-	voiceList: [PVoiceChannel];
-	noBots: boolean;
-	allowedRoles: [string] | null;
-	locale: number;
-	annAnnounce: boolean;
-	annUser: boolean;
-	userLimitPortal: number;
-	regexOverwrite: boolean;
+  id: string;
+  creatorId: string;
+  render: boolean;
+  regexPortal: string;
+  regexVoice: string;
+  voiceList: [PVoiceChannel];
+  noBots: boolean;
+  allowedRoles: [string] | null;
+  locale: number;
+  annAnnounce: boolean;
+  annUser: boolean;
+  userLimitPortal: number;
+  regexOverwrite: boolean;
 }

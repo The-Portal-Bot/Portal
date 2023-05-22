@@ -8,26 +8,20 @@ import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/hel
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
-const countryCodes: { name: string; code: string; }[] = CountryCodes;
+const countryCodes: { name: string; code: string }[] = CountryCodes;
 
 const getCountryCode = function (country: string): string | null {
   for (let i = 0; i < countryCodes.length; i++) {
-    if (voca.lowerCase(countryCodes[i].name) === voca.lowerCase(country))
-      return countryCodes[i].name;
-    else if (voca.lowerCase(countryCodes[i].code) === voca.lowerCase(country))
-      return countryCodes[i].name;
+    if (voca.lowerCase(countryCodes[i].name) === voca.lowerCase(country)) return countryCodes[i].name;
+    else if (voca.lowerCase(countryCodes[i].code) === voca.lowerCase(country)) return countryCodes[i].name;
   }
 
   return null;
 };
 
 export = {
-  data: new SlashCommandBuilder()
-    .setName('corona')
-    .setDescription('returns data about COVID19'),
-  async execute(
-    message: Message, args: string[]
-  ): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder().setName('corona').setDescription('returns data about COVID19'),
+  async execute(message: Message, args: string[]): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       let code: string | null = null;
 
@@ -36,30 +30,30 @@ export = {
         if (code === null) {
           return resolve({
             result: false,
-            value: messageHelp('commands', 'corona', `${args[0]} is neither a country name nor code`)
+            value: messageHelp('commands', 'corona', `${args[0]} is neither a country name nor code`),
           });
         }
       } else if (args.length > 1) {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'corona', 'you must give only one argument')
+          value: messageHelp('commands', 'corona', 'you must give only one argument'),
         });
       } else {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'corona')
+          value: messageHelp('commands', 'corona'),
         });
       }
 
       const options: RequestOptions = {
-        'method': 'GET',
-        'hostname': 'covid-193.p.rapidapi.com',
-        'port': undefined,
-        'path': '/statistics',
-        'headers': {
+        method: 'GET',
+        hostname: 'covid-193.p.rapidapi.com',
+        port: undefined,
+        path: '/statistics',
+        headers: {
           'x-rapidapi-host': 'covid-193.p.rapidapi.com',
           'x-rapidapi-key': process.env.COVID_193,
-          'useQueryString': 1
+          useQueryString: 1,
         },
       };
 
@@ -71,7 +65,7 @@ export = {
           if (json === null) {
             return resolve({
               result: false,
-              value: 'data from source was corrupted'
+              value: 'data from source was corrupted',
             });
           }
 
@@ -81,7 +75,7 @@ export = {
             if (!countryData) {
               return resolve({
                 result: false,
-                value: `${args[0]} is neither a country name nor code`
+                value: `${args[0]} is neither a country name nor code`,
               });
             }
 
@@ -96,84 +90,81 @@ export = {
                       {
                         emote: 'NEW cases',
                         role: `${countryData.cases.new ? countryData.cases.new : 'N/A'}`,
-                        inline: true
+                        inline: true,
                       },
                       {
                         emote: 'NEW deaths',
                         role: `${countryData.deaths.new ? countryData.deaths.new : 'N/A'}`,
-                        inline: true
+                        inline: true,
                       },
                       {
                         emote: 'Tests P1M',
                         role: `${countryData.tests['1M_pop']}`,
-                        inline: true
+                        inline: true,
                       },
                       {
                         emote: 'Cases',
                         role: `${countryData.cases.total}`,
-                        inline: true
+                        inline: true,
                       },
                       {
                         emote: 'Deaths',
                         role: `${countryData.deaths.total}`,
-                        inline: true
+                        inline: true,
                       },
                       {
                         emote: 'Recovered',
                         role: `${countryData.cases.recovered}`,
-                        inline: true
+                        inline: true,
                       },
                       {
                         emote: '%Recovered',
-                        role: `${((countryData.cases.recovered / countryData.cases.total) * 100)
-                          .toFixed(2)}%`,
-                        inline: true
+                        role: `${((countryData.cases.recovered / countryData.cases.total) * 100).toFixed(2)}%`,
+                        inline: true,
                       },
                       {
                         emote: '%Diseased',
-                        role: `${((countryData.deaths.total / countryData.cases.total) * 100)
-                          .toFixed(2)}%`,
-                        inline: true
+                        role: `${((countryData.deaths.total / countryData.cases.total) * 100).toFixed(2)}%`,
+                        inline: true,
                       },
                       {
                         emote: 'Critical',
                         role: `${countryData.cases.critical}`,
-                        inline: true
-                      }
+                        inline: true,
+                      },
                     ],
                     null,
                     null,
                     true,
                     null,
                     null
-                  )
-                ]
+                  ),
+                ],
               })
               .catch((e) => {
                 return resolve({
                   result: false,
-                  value: `failed to send message: ${e}`
+                  value: `failed to send message: ${e}`,
                 });
               });
 
             return resolve({
               result: true,
-              value: ''
+              value: '',
             });
-          }
-          else {
+          } else {
             return resolve({
               result: false,
-              value: `fetched data had errors`
+              value: `fetched data had errors`,
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           return resolve({
             result: false,
-            value: `could not access the server: ${e}`
+            value: `could not access the server: ${e}`,
           });
         });
     });
-  }
+  },
 };

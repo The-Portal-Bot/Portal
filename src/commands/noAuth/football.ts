@@ -5,12 +5,9 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder()
-    .setName('football')
-    .setDescription('returns football data'),
-  async execute(
-  // message: Message, args: string[], pGuild: GuildPrtl
-  ): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder().setName('football').setDescription('returns football data'),
+  async execute(): // message: Message, args: string[], pGuild: GuildPrtl
+  Promise<ReturnPromise> {
     return new Promise((resolve) => {
       // if (args.length < 3) {
       //     return resolve({
@@ -28,13 +25,13 @@ export = {
       const day = '22';
 
       const options: RequestOptions = {
-        'method': 'GET',
-        'hostname': `http://api.football-data.org/v2/competitions/${league}/matches/?matchday=${day}`,
-        'port': undefined,
-        'path': '/statistics',
-        'headers': {
+        method: 'GET',
+        hostname: `http://api.football-data.org/v2/competitions/${league}/matches/?matchday=${day}`,
+        port: undefined,
+        path: '/statistics',
+        headers: {
           'X-Auth-Token': process.env.FOOTBALL_DATA,
-          'useQueryString': 1
+          useQueryString: 1,
         },
       };
 
@@ -45,13 +42,13 @@ export = {
 
           return resolve({
             result: true,
-            value: 'yolo ?'
+            value: 'yolo ?',
           });
 
           if (json === null) {
             return resolve({
               result: false,
-              value: 'data from source was corrupted'
+              value: 'data from source was corrupted',
             });
           }
 
@@ -141,9 +138,9 @@ export = {
         .catch((error) => {
           return resolve({
             result: false,
-            value: `could not access the server\nerror: ${error}`
+            value: `could not access the server\nerror: ${error}`,
           });
         });
     });
-  }
+  },
 };

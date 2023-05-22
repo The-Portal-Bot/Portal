@@ -9,41 +9,37 @@ import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder()
-    .setName('news')
-    .setDescription('returns news from New York Times'),
-  async execute(
-    message: Message, args: string[]
-  ): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder().setName('news').setDescription('returns news from New York Times'),
+  async execute(message: Message, args: string[]): Promise<ReturnPromise> {
     return new Promise((resolve) => {
-      const category = NYTCategories.find(c => c === args[0]);
+      const category = NYTCategories.find((c) => c === args[0]);
       let count = 4;
 
       if (args.length === 1) {
         if (!category) {
           return resolve({
             result: false,
-            value: messageHelp('commands', 'news', `${args[0]} is not a news category`)
+            value: messageHelp('commands', 'news', `${args[0]} is not a news category`),
           });
         }
       } else if (args.length === 2) {
         if (!category) {
           return resolve({
             result: false,
-            value: messageHelp('commands', 'news', `${args[0]} is not a news category`)
+            value: messageHelp('commands', 'news', `${args[0]} is not a news category`),
           });
         } else {
           count = +args[1];
           if (isNaN(count)) {
             return resolve({
               result: false,
-              value: messageHelp('commands', 'news', `${args[1]} is not a number`)
+              value: messageHelp('commands', 'news', `${args[1]} is not a number`),
             });
           }
           if (count > 15) {
             return resolve({
               result: false,
-              value: messageHelp('commands', 'news', `can display up to 15 articles`)
+              value: messageHelp('commands', 'news', `can display up to 15 articles`),
             });
           }
           --count;
@@ -51,21 +47,21 @@ export = {
       } else {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'news')
+          value: messageHelp('commands', 'news'),
         });
       }
 
       const options: RequestOptions = {
-        'method': 'GET',
-        'hostname': `api.nytimes.com`,
-        'port': undefined,
-        'path': `/svc/topstories/v2/${category}.json?api-key=${process.env.NEW_YORK_TIMES}`,
-        'headers': {
+        method: 'GET',
+        hostname: `api.nytimes.com`,
+        port: undefined,
+        path: `/svc/topstories/v2/${category}.json?api-key=${process.env.NEW_YORK_TIMES}`,
+        headers: {
           'x-api-host': 'api.nytimes.com',
           // 'api-key': process.env.NEW_YORK_TIMES,
-          "Accept": "application/json",
-          'useQueryString': 1
-        }
+          Accept: 'application/json',
+          useQueryString: 1,
+        },
       };
 
       httpsFetch(options)
@@ -76,7 +72,7 @@ export = {
           if (json === null) {
             return resolve({
               result: false,
-              value: 'data from source was corrupted'
+              value: 'data from source was corrupted',
             });
           }
 
@@ -84,7 +80,7 @@ export = {
           if (json.status !== 'OK') {
             return resolve({
               result: false,
-              value: 'NYTimes replied with an error'
+              value: 'NYTimes replied with an error',
             });
           }
 
@@ -97,7 +93,7 @@ export = {
             topNews.push(<Field>{
               emote: `${n.title}`,
               role: `_[${maxString(n.abstract, 256)}](${n.url})_`,
-              inline: false
+              inline: false,
             });
 
             return i === count;
@@ -117,28 +113,27 @@ export = {
                   true,
                   null,
                   null
-                )
-              ]
+                ),
+              ],
             })
-            .catch(e => {
+            .catch((e) => {
               return resolve({
                 result: true,
-                value: `failed to send message: ${e}`
+                value: `failed to send message: ${e}`,
               });
             });
 
           return resolve({
             result: true,
-            value: ''
+            value: '',
           });
-
         })
         .catch((e) => {
           return resolve({
             result: false,
-            value: `could not access the server: ${e}`
+            value: `could not access the server: ${e}`,
           });
         });
     });
-  }
+  },
 };

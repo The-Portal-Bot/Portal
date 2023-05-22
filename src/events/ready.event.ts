@@ -116,8 +116,7 @@ export default async (args: { client: Client }): Promise<string> => {
 
     return resolve(
       func
-        ? 
-        // ts-ignore
+        ? // ts-ignore
         func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
         : 'error with localisation'
     );

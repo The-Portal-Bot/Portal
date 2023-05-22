@@ -1,18 +1,17 @@
-import { Message } from "discord.js";
-import { PGuild, MusicData } from "../types/classes/PGuild.class";
-import { CommandOptions } from "../types/classes/PTypes.interface";
-import { isUrlOnlyChannel, includedInIgnoreList } from "./guild.library";
-import { logger, isUserIgnored, isMessageDeleted, markMessageAsDeleted, messageReply } from "./help.library";
-import { removeURL, removeIgnore, setMusicData } from "./mongo.library";
-import { addPointsMessage } from "./user.library";
+import { Message } from 'discord.js';
 import commandConfigJson from '../config.command.json';
+import { authCommands, noAuthCommands } from '../handlers/command.handler';
+import { MusicData, PGuild } from '../types/classes/PGuild.class';
+import { CommandOptions } from '../types/classes/PTypes.interface';
+import { includedInIgnoreList, isUrlOnlyChannel } from './guild.library';
+import { isMessageDeleted, isUserIgnored, logger, markMessageAsDeleted, messageReply } from './help.library';
+import { removeIgnore, removeURL, setMusicData } from './mongo.library';
+import { addPointsMessage } from './user.library';
 
 /*
-* Returns: true/false if processing must continue
-*/
-export async function portalPreprocessor(
-  message: Message, pGuild: PGuild
-): Promise<boolean> {
+ * Returns: true/false if processing must continue
+ */
+export async function portalPreprocessor(message: Message, pGuild: PGuild): Promise<boolean> {
   if (!message.member) {
     logger.error(new Error('could not get member'));
     return true;
@@ -21,18 +20,14 @@ export async function portalPreprocessor(
   if (isUserIgnored(message.member)) {
     if (!handleUrlChannels(message, pGuild)) {
       if (pGuild.musicData.channelId === message.channel.id) {
-        message.member
-          .send('you can\'t play music when ignored')
-          .catch((e) => {
-            logger.error(new Error(`failed to send message: ${e}`));
-          });
+        message.member.send("you can't play music when ignored").catch((e) => {
+          logger.error(new Error(`failed to send message: ${e}`));
+        });
 
         if (isMessageDeleted(message)) {
-          const deletedMessage = await message
-            .delete()
-            .catch((e) => {
-              logger.error(new Error(`failed to delete message: ${e}`));
-            });
+          const deletedMessage = await message.delete().catch((e) => {
+            logger.error(new Error(`failed to delete message: ${e}`));
+          });
 
           if (deletedMessage) {
             markMessageAsDeleted(deletedMessage);
@@ -45,12 +40,10 @@ export async function portalPreprocessor(
   } else {
     if (await handleUrlChannels(message, pGuild)) {
       return true;
-    }
-    else if (handleIgnoredChannels(message, pGuild)) {
+    } else if (handleIgnoredChannels(message, pGuild)) {
       handleRankingSystem(message, pGuild);
       return true;
-    }
-    else if (handleMusicChannels(message, pGuild)) {
+    } else if (handleMusicChannels(message, pGuild)) {
       handleRankingSystem(message, pGuild);
       return true;
     } else {
@@ -80,13 +73,14 @@ export async function portalPreprocessor(
 }
 
 export function commandDecipher(
-  message: Message, pGuild: PGuild
+  message: Message,
+  pGuild: PGuild
 ): {
-    args: string[],
-    cmd: string,
-    pathToCommand: string,
-    commandOptions: CommandOptions | undefined,
-    type: string
+    args: string[];
+    cmd: authCommands | noAuthCommands | undefined;
+    pathToCommand: string;
+    commandOptions: CommandOptions | undefined;
+    type: string;
 } {
   // separate command name and arguments
   const args = message.content.slice(pGuild.prefix.length).trim().split(/ +/g);
@@ -95,21 +89,20 @@ export function commandDecipher(
   if (!commandOnly) {
     return {
       args: [],
-      cmd: '',
+      cmd: undefined,
       pathToCommand: '',
       commandOptions: undefined,
-      type: ''
+      type: '',
     };
   }
-  const cmd = commandOnly.toLowerCase();
+  const cmd = commandOnly.toLowerCase() as authCommands | noAuthCommands;
 
   let pathToCommand = '';
   let commandOptions: CommandOptions | undefined = undefined;
   let type = 'none';
 
-  commandConfigJson.some(category => {
-    commandOptions = category.commands.
-      find(command => command.name === cmd);
+  commandConfigJson.some((category) => {
+    commandOptions = category.commands.find((command) => command.name === cmd);
 
     if (commandOptions) {
       type = commandOptions.range;
@@ -126,56 +119,47 @@ export function commandDecipher(
     cmd: cmd,
     pathToCommand: pathToCommand,
     commandOptions: commandOptions,
-    type: type
+    type: type,
   };
 }
 
-export function handleRankingSystem(
-  message: Message, pGuild: PGuild
-): void {
+export function handleRankingSystem(message: Message, pGuild: PGuild): void {
   addPointsMessage(message, pGuild.pMembers[0], pGuild.rankSpeed)
-    .then(level => {
+    .then((level) => {
       if (level) {
-        messageReply(true, message, `you reached level ${level}!`)
-          .catch((e) => {
-            logger.error(new Error(`failed to send message: ${e}`));
-          });
+        messageReply(true, message, `you reached level ${level}!`).catch((e) => {
+          logger.error(new Error(`failed to send message: ${e}`));
+        });
       }
     })
-    .catch(e => {
+    .catch((e) => {
       logger.error(new Error(e));
     });
 }
 
-export async function handleUrlChannels(
-  message: Message, pGuild: PGuild
-): Promise<boolean> {
+export async function handleUrlChannels(message: Message, pGuild: PGuild): Promise<boolean> {
   if (isUrlOnlyChannel(message.channel.id, pGuild)) {
     if (message.content === './url') {
       removeURL(pGuild.id, message.channel.id)
-        .then(r => {
-          messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`)
-            .catch((e) => {
+        .then((r) => {
+          messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`).catch(
+            (e) => {
               logger.error(new Error(`failed to send message: ${e}`));
-            });
+            }
+          );
         })
-        .catch(e => {
+        .catch((e) => {
           logger.error(new Error(`failed to remove url channel: ${e}`));
         });
-    }
-    else {
-      message.author
-        .send(`${message.channel} is a url-only channel`)
-        .catch(e => {
-          logger.error(new Error(`failed to remove url channel: ${e}`));
-        });
+    } else {
+      message.author.send(`${message.channel} is a url-only channel`).catch((e) => {
+        logger.error(new Error(`failed to remove url channel: ${e}`));
+      });
 
       if (isMessageDeleted(message)) {
-        const deletedMessage = await message
-          .delete()
-          .catch((e) => {
-            logger.error(new Error(`failed to delete message: ${e}`));
-          });
+        const deletedMessage = await message.delete().catch((e) => {
+          logger.error(new Error(`failed to delete message: ${e}`));
+        });
 
         if (deletedMessage) {
           markMessageAsDeleted(deletedMessage);
@@ -189,19 +173,20 @@ export async function handleUrlChannels(
   return false;
 }
 
-export function handleIgnoredChannels(
-  message: Message, pGuild: PGuild
-): boolean {
+export function handleIgnoredChannels(message: Message, pGuild: PGuild): boolean {
   if (includedInIgnoreList(message.channel.id, pGuild)) {
     if (message.content === './ignore') {
       removeIgnore(pGuild.id, message.channel.id)
-        .then(r => {
-          messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
-            .catch((e) => {
-              logger.error(new Error(`failed to send message: ${e}`));
-            });
+        .then((r) => {
+          messageReply(
+            true,
+            message,
+            `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`
+          ).catch((e) => {
+            logger.error(new Error(`failed to send message: ${e}`));
+          });
         })
-        .catch(e => {
+        .catch((e) => {
           logger.error(new Error(`failed to remove ignored channel: ${e}`));
         });
     }
@@ -212,9 +197,7 @@ export function handleIgnoredChannels(
   return false;
 }
 
-export function handleMusicChannels(
-  message: Message, pGuild: PGuild
-): boolean {
+export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
   if (pGuild.musicData.channelId === message.channel.id) {
     if (message.content === './music') {
       if (!message.guild) {
@@ -224,11 +207,14 @@ export function handleMusicChannels(
 
       const musicData = new MusicData('null', 'null', 'null', [], false);
       setMusicData(pGuild.id, musicData)
-        .then(r => {
-          messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`)
-            .catch((e) => logger.error(new Error(`failed to send message: ${e}`)));
+        .then((r) => {
+          messageReply(
+            true,
+            message,
+            `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`
+          ).catch((e) => logger.error(new Error(`failed to send message: ${e}`)));
         })
-        .catch(e => logger.error(new Error(`failed to remove music channel: ${e}`)));
+        .catch((e) => logger.error(new Error(`failed to remove music channel: ${e}`)));
     } else {
       // if (!message.guild || !message.member) {
       //     if (message.deletable) {
@@ -236,23 +222,18 @@ export function handleMusicChannels(
       //             .delete()
       //             .catch((e) => logger.error(new Error(`failed to delete message: ${e}`)));
       //     }
-
       //     return false;
       // }
-
       // const portalVoiceConnection = client.voice?.connections
       //     .find(c => c.channel.guild.id === message.guild?.id);
-
       // if (portalVoiceConnection) {
       //     if (!portalVoiceConnection.channel.members.has(message.member.id)) {
       //         if (message.guild) {
       //             const portalVoiceConnection = client.voice?.connections
       //                 .find(c => c.channel.guild.id === message.guild?.id);
-
       //             const animate = portalVoiceConnection?.dispatcher
       //                 ? !portalVoiceConnection?.dispatcher.paused
       //                 : false;
-
       //             updateMusicMessage(
       //                 message.guild,
       //                 pGuild,
@@ -265,7 +246,6 @@ export function handleMusicChannels(
       //                 logger.error(new Error(e));
       //             });
       //         }
-
       //         if (message.deletable) {
       //             message
       //                 .delete()
@@ -273,11 +253,9 @@ export function handleMusicChannels(
       //                     logger.error(new Error(`failed to send message: ${e}`));
       //                 });
       //         }
-
       //         return false;
       //     }
       // }
-
       // start(
       //     voiceConnection, client, message.member.user, message,
       //     message.guild, pGuild, message.content
@@ -286,11 +264,9 @@ export function handleMusicChannels(
       //         if (message.guild) {
       //             const portalVoiceConnection = client.voice?.connections
       //                 .find(c => c.channel.guild.id === message.guild?.id);
-
       //             const animate = portalVoiceConnection?.dispatcher
       //                 ? !portalVoiceConnection?.dispatcher.paused
       //                 : false;
-
       //             updateMusicMessage(
       //                 message.guild,
       //                 pGuild,
@@ -303,7 +279,6 @@ export function handleMusicChannels(
       //                 logger.error(new Error(e));
       //             });
       //         }
-
       //         if (message.deletable) {
       //             message
       //                 .delete()
@@ -325,7 +300,6 @@ export function handleMusicChannels(
       //                 logger.error(new Error(e));
       //             });
       //         }
-
       //         if (message.deletable) {
       //             message
       //                 .delete()

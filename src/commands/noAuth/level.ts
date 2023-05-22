@@ -1,22 +1,18 @@
-import { Message } from "discord.js";
-import { createEmbed } from "../../libraries/help.library";
-import { PGuild } from "../../types/classes/PGuild.class";
-import { ReturnPromise } from "../../types/classes/PTypes.interface";
+import { Message } from 'discord.js';
+import { createEmbed } from '../../libraries/help.library';
+import { PGuild } from '../../types/classes/PGuild.class';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder()
-    .setName('level')
-    .setDescription('returns your level'),
-  async execute(
-    message: Message, args: string[], pGuild: PGuild
-  ): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder().setName('level').setDescription('returns your level'),
+  async execute(message: Message, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
     return new Promise((resolve) => {
-      const pMember = pGuild.pMembers.find(m => m.id === message.member?.id);
+      const pMember = pGuild.pMembers.find((m) => m.id === message.member?.id);
       if (!pMember) {
         return resolve({
           result: true,
-          value: 'could not find member'
+          value: 'could not find member',
         });
       }
 
@@ -39,20 +35,20 @@ export = {
               true,
               null,
               null
-            )
-          ]
+            ),
+          ],
         })
-        .catch(e => {
+        .catch((e) => {
           return resolve({
             result: true,
-            value: `failed to send message: ${e}`
+            value: `failed to send message: ${e}`,
           });
         });
 
       return resolve({
         result: true,
-        value: ''
+        value: '',
       });
     });
-  }
+  },
 };

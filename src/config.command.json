@@ -1,456 +1,456 @@
 [
-    {
-        "path": "noAuth",
-        "commands": [
-            {
-                "name": "about",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "ai",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": false
-                }
-            },
-            {
-                "name": "announce",
-                "range": "member",
-                "time": 2,
-                "auth": false,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "bet",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": false,
-                    "reply": true
-                }
-            },
-            {
-                "name": "corona",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "crypto",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "focus",
-                "range": "member",
-                "time": 1,
-                "auth": false,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "football",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "help",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "join",
-                "range": "member",
-                "time": 1,
-                "auth": false,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "joke",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": true,
-                "delete": {
-                    "source": false,
-                    "reply": false
-                }
-            },
-            {
-                "name": "leaderboard",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "leave",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "level",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "news",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": false,
-                    "reply": false
-                }
-            },
-            {
-                "name": "ping",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "poll",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "ranks",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "roll",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "run",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": false,
-                    "reply": false
-                }
-            },
-            {
-                "name": "state",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "spamRules",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "weather",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "whoami",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": false,
-                "reply": false,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            }
-        ]
-    },
-    {
-        "path": "auth",
-        "commands": [
-            {
-                "name": "announcement",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "ban",
-                "range": "member",
-                "time": 1,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": false,
-                    "reply": false
-                }
-            },
-            {
-                "name": "delete",
-                "range": "member",
-                "time": 1,
-                "auth": true,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": false,
-                    "reply": true
-                }
-            },
-            {
-                "name": "force",
-                "range": "member",
-                "time": 5,
-                "auth": true,
-                "premium": true,
-                "reply": false,
-                "delete": {
-                    "source": false,
-                    "reply": false
-                }
-            },
-            {
-                "name": "ignore",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "invite",
-                "range": "member",
-                "time": 1,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "kick",
-                "range": "member",
-                "time": 1,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": false,
-                    "reply": false
-                }
-            },
-            {
-                "name": "music",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "portal",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": false,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "vendor",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "setRanks",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "set",
-                "range": "none",
-                "time": 0,
-                "auth": false,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            },
-            {
-                "name": "url",
-                "range": "none",
-                "time": 0,
-                "auth": true,
-                "premium": true,
-                "reply": true,
-                "delete": {
-                    "source": true,
-                    "reply": true
-                }
-            }
-        ]
-    }
+  {
+    "path": "noAuth",
+    "commands": [
+      {
+        "name": "about",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "ai",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": false
+        }
+      },
+      {
+        "name": "announce",
+        "range": "member",
+        "time": 2,
+        "auth": false,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "bet",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": false,
+          "reply": true
+        }
+      },
+      {
+        "name": "corona",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "crypto",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "focus",
+        "range": "member",
+        "time": 1,
+        "auth": false,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "football",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "help",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "join",
+        "range": "member",
+        "time": 1,
+        "auth": false,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "joke",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": true,
+        "delete": {
+          "source": false,
+          "reply": false
+        }
+      },
+      {
+        "name": "leaderboard",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "leave",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "level",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "news",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": false,
+          "reply": false
+        }
+      },
+      {
+        "name": "ping",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "poll",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "ranks",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "roll",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "run",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": false,
+          "reply": false
+        }
+      },
+      {
+        "name": "state",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "spamRules",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "weather",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "whoami",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": false,
+        "reply": false,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      }
+    ]
+  },
+  {
+    "path": "auth",
+    "commands": [
+      {
+        "name": "announcement",
+        "range": "none",
+        "time": 0,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "ban",
+        "range": "member",
+        "time": 1,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": false,
+          "reply": false
+        }
+      },
+      {
+        "name": "delete",
+        "range": "member",
+        "time": 1,
+        "auth": true,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": false,
+          "reply": true
+        }
+      },
+      {
+        "name": "force",
+        "range": "member",
+        "time": 5,
+        "auth": true,
+        "premium": true,
+        "reply": false,
+        "delete": {
+          "source": false,
+          "reply": false
+        }
+      },
+      {
+        "name": "ignore",
+        "range": "none",
+        "time": 0,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "invite",
+        "range": "member",
+        "time": 1,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "kick",
+        "range": "member",
+        "time": 1,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": false,
+          "reply": false
+        }
+      },
+      {
+        "name": "music",
+        "range": "none",
+        "time": 0,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "portal",
+        "range": "none",
+        "time": 0,
+        "auth": true,
+        "premium": false,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "vendor",
+        "range": "none",
+        "time": 0,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "setRanks",
+        "range": "none",
+        "time": 0,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "set",
+        "range": "none",
+        "time": 0,
+        "auth": false,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      },
+      {
+        "name": "url",
+        "range": "none",
+        "time": 0,
+        "auth": true,
+        "premium": true,
+        "reply": true,
+        "delete": {
+          "source": true,
+          "reply": true
+        }
+      }
+    ]
+  }
 ]

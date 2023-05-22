@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import PVoiceChanel from './PVoiceChannel.schema';
+import PVoiceChannelSchema from './PVoiceChannel.schema';
 
 const PPortalChannelSchema = new Schema(
   {
@@ -8,7 +8,7 @@ const PPortalChannelSchema = new Schema(
     render: { type: Boolean, required: true },
     regexPortal: { type: String, required: true },
     regexVoice: { type: String, required: true },
-    voiceList: { type: [PVoiceChanel], required: true },
+    pVoiceChannels: { type: [PVoiceChannelSchema], required: true },
     noBots: { type: Boolean, required: true },
     allowedRoles: { type: [String] },
     locale: { type: Number, required: true },

@@ -27,29 +27,29 @@ const helpArray: Field[] = [
   {
     emote: '`./help variables` or `./help variables guide`',
     role:
-            'Variables are live data about the current state of things\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/variables/description)_',
+      'Variables are live data about the current state of things\n' +
+      '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/variables/description)_',
     inline: false,
   },
   {
     emote: '`./help pipes` or `./help pipes guide`',
     role:
-            'Pipes are mini-programs that manipulate text or even variables and attributes\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)_',
+      'Pipes are mini-programs that manipulate text or even variables and attributes\n' +
+      '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)_',
     inline: false,
   },
   {
     emote: '`./help attributes` or `./help attributes guide`',
     role:
-            'Attributes are options that can be altered with **[set](https://portal-bot.xyz/docs/commands/detailed/set)** command\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)_',
+      'Attributes are options that can be altered with **[set](https://portal-bot.xyz/docs/commands/detailed/set)** command\n' +
+      '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)_',
     inline: false,
   },
   {
     emote: '`./help structures` or `./help structures guide`',
     role:
-            'Structures are rules to further manipulate the text outcome\n' +
-            '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/structures/description)_',
+      'Structures are rules to further manipulate the text outcome\n' +
+      '_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/structures/description)_',
     inline: false,
   },
   {
@@ -60,8 +60,8 @@ const helpArray: Field[] = [
   {
     emote: '`./help <specific_property_name>`',
     role:
-            'If you want to get a complete description of any property\n' +
-            '_(lets say you want to learn more about variables year, just type **./help year**)_',
+      'If you want to get a complete description of any property\n' +
+      '_(lets say you want to learn more about variables year, just type **./help year**)_',
     inline: false,
   },
   {
@@ -78,12 +78,12 @@ async function simpleReply(message: Message) {
         createEmbed(
           'Help Card',
           'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
-                        '> make a member an **admin**, give role `p.admin`\n' +
-                        '> make a member an **moderator**, give role `p.mod`\n' +
-                        '> make a member a **dj**, give role `p.dj`\n' +
-                        '> to **whitelist** a member, give role `p.mod`\n' +
-                        '> to **ignore** a member, give role `p.ignore`\n' +
-                        '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
+            '> make a member an **admin**, give role `p.admin`\n' +
+            '> make a member an **moderator**, give role `p.mod`\n' +
+            '> make a member a **dj**, give role `p.dj`\n' +
+            '> to **whitelist** a member, give role `p.mod`\n' +
+            '> to **ignore** a member, give role `p.ignore`\n' +
+            '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
           '#05d1ff',
           helpArray,
           null,
@@ -139,9 +139,7 @@ async function propertyReply(message: Message, args: string[]) {
           if (!detailed) {
             detailed = getStructureHelpSuper(args[0]);
             if (!detailed) {
-              return Promise.reject(
-                messageHelp('commands', 'help', `*${args[0]}* does not exist in portal`)
-              );
+              return Promise.reject(messageHelp('commands', 'help', `*${args[0]}* does not exist in portal`));
             }
           }
         }

@@ -1,6 +1,6 @@
 import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
 import { createEmbed } from '../libraries/help.library';
-import { fetchGuildAnnouncement, removeMember } from '../libraries/mongo.library';
+import { fetchAnnouncementChannelByGuildId, removeMember } from '../libraries/mongo.library';
 
 export default async (args: { member: GuildMember | PartialGuildMember }): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -11,20 +11,18 @@ export default async (args: { member: GuildMember | PartialGuildMember }): Promi
             return reject(`failed to remove member ${args.member.id} to ${args.member.guild.id}`);
           }
 
-          fetchGuildAnnouncement(args.member.guild.id)
+          fetchAnnouncementChannelByGuildId(args.member.guild.id)
             .then((pGuild) => {
               if (pGuild) {
                 const leaveMessage =
-                                    `member: ${args.member.presence?.user}\n` +
-                                    `id: ${args.member.guild.id}\n` +
-                                    `\thas left ${args.member.guild}`;
+                  `member: ${args.member.presence?.user}\n` +
+                  `id: ${args.member.guild.id}\n` +
+                  `\thas left ${args.member.guild}`;
 
                 if (pGuild) {
                   const announcementChannel = <TextChannel>(
-                                        args.member.guild.channels.cache.find(
-                                          (channel) => channel.id === pGuild.announcement
-                                        )
-                                    );
+                    args.member.guild.channels.cache.find((channel) => channel.id === pGuild.announcement)
+                  );
 
                   if (announcementChannel) {
                     announcementChannel

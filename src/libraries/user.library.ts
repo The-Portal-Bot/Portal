@@ -1,26 +1,31 @@
-import { BanOptions, Guild, GuildMember, Message, VoiceState } from "discord.js";
-import { RankSpeed, RankSpeedValueList } from "../types/enums/RankSpeed.enum";
-import { PGuild } from "../types/classes/PGuild.class";
-import { PMember } from "../types/classes/PMember.class";
-import { Rank } from "../types/classes/PTypes.interface";
+import { BanOptions, Guild, GuildMember, Message, VoiceState } from 'discord.js';
+import { RankSpeed, RankSpeedValueList } from '../types/enums/RankSpeed.enum';
+import { PGuild } from '../types/classes/PGuild.class';
+import { PMember } from '../types/classes/PMember.class';
+import { Rank } from '../types/classes/PTypes.interface';
 import { timeElapsed } from './help.library';
-import { updateEntireMember, updateMember } from "./mongo.library";
+import { updateEntireMember, updateMember } from './mongo.library';
 
-async function giveRoleFromRankUp(pMember: PMember, member: GuildMember, ranks: Rank[], guild: Guild): Promise<boolean> {
+async function giveRoleFromRankUp(
+  pMember: PMember,
+  member: GuildMember,
+  ranks: Rank[],
+  guild: Guild
+): Promise<boolean> {
   if (!ranks) {
-    throw Error('At least one rank must be given')
+    throw Error('At least one rank must be given');
   }
 
-  const newRank = await ranks.find(r => r.level === pMember.level);
+  const newRank = await ranks.find((r) => r.level === pMember.level);
 
   if (!newRank) {
-    throw Error('Could not find rank.')
+    throw Error('Could not find rank.');
   }
 
-  const newRole = await guild.roles.cache.find(role => role.id === newRank.role);
+  const newRole = await guild.roles.cache.find((role) => role.id === newRank.role);
 
   if (!newRole) {
-    throw Error('Could not find role.')
+    throw Error('Could not find role.');
   }
 
   try {
@@ -33,9 +38,7 @@ async function giveRoleFromRankUp(pMember: PMember, member: GuildMember, ranks: 
   return true;
 }
 
-export function calculateRank(
-  member: PMember
-): number {
+export function calculateRank(member: PMember): number {
   if (member.tier === 0) {
     member.tier = 1; // must be removed
   }
@@ -52,9 +55,7 @@ export function calculateRank(
   return member.level;
 }
 
-export function addPointsTime(
-  pMember: PMember, rankSpeed: number
-): number {
+export function addPointsTime(pMember: PMember, rankSpeed: number): number {
   if (!pMember.timestamp) {
     return pMember.points;
   }
@@ -70,15 +71,10 @@ export function addPointsTime(
   return pMember.points;
 }
 
-export function updateTimestamp(
-  voiceState: VoiceState, pGuild: PGuild
-): Promise<number | boolean> {
+export function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): Promise<number | boolean> {
   return new Promise((resolve, reject) => {
     if (voiceState.member && !voiceState.member.user.bot) {
-      const pMember = pGuild.pMembers
-        .find(m =>
-          voiceState && voiceState.member && m.id === voiceState.member.id
-        );
+      const pMember = pGuild.pMembers.find((m) => voiceState && voiceState.member && m.id === voiceState.member.id);
 
       if (!pMember) {
         return resolve(false);
@@ -95,7 +91,7 @@ export function updateTimestamp(
           .then(() => {
             return resolve(false);
           })
-          .catch(e => {
+          .catch((e) => {
             return reject(`failed to update member: ${e}`);
           });
       } else {
@@ -113,11 +109,11 @@ export function updateTimestamp(
                   return resolve(false);
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 return reject(`failed to give role: ${e}`);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             return reject(`failed to update member: ${e}`);
           });
       }
@@ -127,42 +123,36 @@ export function updateTimestamp(
   });
 }
 
-export function addPointsMessage(
-  message: Message, member: PMember, rankSpeed: number
-): Promise<number | boolean> {
+export function addPointsMessage(message: Message, member: PMember, rankSpeed: number): Promise<number | boolean> {
   return new Promise((resolve, reject) => {
     if (rankSpeed === RankSpeed.none) {
-      return false
+      return false;
     }
 
     if (!message.guild) {
-      return false
+      return false;
     }
 
     const points = message.content.length * RankSpeedValueList[rankSpeed];
     member.points += points > 5 ? 5 : points;
 
-    updateMember(message.guild.id, member.id, 'points', member.points)
-      .catch(e => {
-        return reject(`failed to update member: ${e}`);
-      });
+    updateMember(message.guild.id, member.id, 'points', member.points).catch((e) => {
+      return reject(`failed to update member: ${e}`);
+    });
 
     const level = calculateRank(member);
 
     if (level) {
-      updateMember(message.guild.id, member.id, 'level', level)
-        .catch(e => {
-          return reject(`failed to update member: ${e}`);
-        });
+      updateMember(message.guild.id, member.id, 'level', level).catch((e) => {
+        return reject(`failed to update member: ${e}`);
+      });
     }
 
     return level ? level : false;
   });
 }
 
-export function kick(
-  memberToKick: GuildMember, kickReason: string
-): Promise<boolean> {
+export function kick(memberToKick: GuildMember, kickReason: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     if (memberToKick.kickable) {
       memberToKick
@@ -170,7 +160,7 @@ export function kick(
         .then(() => {
           return resolve(true);
         })
-        .catch(e => {
+        .catch((e) => {
           return reject(e);
         });
     } else {
@@ -179,9 +169,7 @@ export function kick(
   });
 }
 
-export function ban(
-  memberToBan: GuildMember, banOptions: BanOptions
-): Promise<boolean> {
+export function ban(memberToBan: GuildMember, banOptions: BanOptions): Promise<boolean> {
   return new Promise((resolve, reject) => {
     if (memberToBan.bannable) {
       memberToBan
@@ -189,7 +177,7 @@ export function ban(
         .then(() => {
           return resolve(true);
         })
-        .catch(e => {
+        .catch((e) => {
           return reject(e);
         });
     } else {

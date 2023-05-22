@@ -1,23 +1,25 @@
-import { Message } from "discord.js";
-import { createChannel, getOptions, isAnnouncementChannel, isMusicChannel, isUrlOnlyChannel } from "../../libraries/guild.library";
-import { messageHelp } from "../../libraries/help.library";
-import { insertURL, removeURL } from "../../libraries/mongo.library";
-import { PGuild } from "../../types/classes/PGuild.class";
-import { ReturnPromise } from "../../types/classes/PTypes.interface";
+import { Message } from 'discord.js';
+import {
+  createChannel,
+  getOptions,
+  isAnnouncementChannel,
+  isMusicChannel,
+  isUrlOnlyChannel,
+} from '../../libraries/guild.library';
+import { messageHelp } from '../../libraries/help.library';
+import { insertURL, removeURL } from '../../libraries/mongo.library';
+import { PGuild } from '../../types/classes/PGuild.class';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder()
-    .setName('url')
-    .setDescription('create URL only channel'),
-  async execute(
-    message: Message, args: string[], pGuild: PGuild
-  ): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder().setName('url').setDescription('create URL only channel'),
+  async execute(message: Message, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       if (!message.guild)
         return resolve({
           result: false,
-          value: 'guild could not be fetched'
+          value: 'guild could not be fetched',
         });
 
       if (args.length === 0) {
@@ -26,44 +28,37 @@ export = {
             .then((r: boolean) => {
               return resolve({
                 result: r,
-                value: r
-                  ? 'successfully removed url channel'
-                  : 'failed to remove url channel'
+                value: r ? 'successfully removed url channel' : 'failed to remove url channel',
               });
             })
             .catch((e: string) => {
               return resolve({
                 result: false,
-                value: `failed to remove url channel: ${e}`
+                value: `failed to remove url channel: ${e}`,
               });
             });
-        }
-        else if (isAnnouncementChannel(message.channel.id, pGuild)) {
+        } else if (isAnnouncementChannel(message.channel.id, pGuild)) {
           return resolve({
             result: false,
-            value: 'this can\'t be set as a URL channel for it is the Announcement channel'
+            value: "this can't be set as a URL channel for it is the Announcement channel",
           });
-        }
-        else if (isMusicChannel(message.channel.id, pGuild)) {
+        } else if (isMusicChannel(message.channel.id, pGuild)) {
           return resolve({
             result: true,
-            value: 'this can\'t be set as a URL channel for it is the Music channel'
+            value: "this can't be set as a URL channel for it is the Music channel",
           });
-        }
-        else {
+        } else {
           insertURL(pGuild.id, message.channel.id)
-            .then(r => {
+            .then((r) => {
               return resolve({
                 result: r,
-                value: r
-                  ? 'set as an url channel successfully'
-                  : 'failed to set as an url channel'
+                value: r ? 'set as an url channel successfully' : 'failed to set as an url channel',
               });
             })
-            .catch(e => {
+            .catch((e) => {
               return resolve({
                 result: false,
-                value: `failed to set as an url channel: ${e}`
+                value: `failed to set as an url channel: ${e}`,
               });
             });
         }
@@ -78,36 +73,31 @@ export = {
 
         const urlOptions = getOptions(message.guild, 'url only channel');
 
-        createChannel(
-          message.guild, urlChannel, urlOptions, urlCategory
-        )
-          .then(rCreate => {
+        createChannel(message.guild, urlChannel, urlOptions, urlCategory)
+          .then((rCreate) => {
             insertURL(pGuild.id, rCreate)
-              .then(rUrl => {
+              .then((rUrl) => {
                 return resolve({
                   result: rUrl,
-                  value: rUrl
-                    ? 'created url channel and category successfully'
-                    : 'failed to create a url channel'
+                  value: rUrl ? 'created url channel and category successfully' : 'failed to create a url channel',
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 return resolve({
                   result: false,
-                  value: `failed to create a url channel: ${e}`
+                  value: `failed to create a url channel: ${e}`,
                 });
               });
           })
           .catch((e) => {
             return resolve(e);
           });
-      }
-      else {
+      } else {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'url')
+          value: messageHelp('commands', 'url'),
         });
       }
     });
-  }
+  },
 };
