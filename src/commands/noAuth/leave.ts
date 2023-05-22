@@ -3,7 +3,7 @@ import { getVoiceConnection } from '@discordjs/voice';
 import { Client, Message } from 'discord.js';
 import { clientWrite } from '../../libraries/localisation.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { AnnouncementAction, ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
   data: new SlashCommandBuilder().setName('leave').setDescription('tell Portal to leave your voice channel'),
@@ -33,7 +33,7 @@ export = {
     // );
 
     return {
-      value: clientWrite(message, pGuild, 'leave'),
+      value: clientWrite(message, pGuild, AnnouncementAction.leave),
       result: true,
     };
   },

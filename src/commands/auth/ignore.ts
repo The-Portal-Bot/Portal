@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { includedInIgnoreList } from '../../libraries/guild.library';
+import { includedInPIgnores } from '../../libraries/guild.library';
 import { messageHelp } from '../../libraries/help.library';
 import { insertIgnore, removeIgnore } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
@@ -19,7 +19,7 @@ export = {
 
       if (args.length === 0) {
         // channel ignore
-        if (includedInIgnoreList(message.channel.id, pGuild)) {
+        if (includedInPIgnores(message.channel.id, pGuild)) {
           removeIgnore(pGuild.id, message.channel.id)
             .then((r) => {
               return resolve({

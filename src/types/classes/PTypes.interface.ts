@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 
-export enum announcementAction {
+export enum AnnouncementAction {
     fail,
     announce,
     spotify,
@@ -10,12 +10,12 @@ export enum announcementAction {
     leave,
 }
 
-export enum eventAction {
+export enum EventAction {
     userConnected,
     userDisconnected,
 }
 
-export enum logActions {
+export enum LogActions {
     ready,
     updatingGuild,
     presenceControlledAway,
@@ -70,12 +70,12 @@ export type LanguageConsole = {
 };
 
 export type LocalisationPortalOption = {
-    name: eventAction | announcementAction;
+    name: EventAction | AnnouncementAction;
     lang: LanguagePortal;
 };
 
 export type LocalisationConsoleOption = {
-    name: logActions;
+    name: LogActions;
     lang: any; // LanguageConsole;
 };
 

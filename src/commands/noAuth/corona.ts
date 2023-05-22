@@ -70,7 +70,7 @@ export = {
           }
 
           if (json.errors.length === 0) {
-            const countryData = json.response.find((data) => data.country === code);
+            const countryData = json.response.find((data: { country: string }) => data.country === code);
 
             if (!countryData) {
               return resolve({

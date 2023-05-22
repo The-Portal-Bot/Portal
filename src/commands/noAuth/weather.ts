@@ -102,8 +102,8 @@ export = {
                         emote: 'Condition',
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                         role: `${json.weather
-                          .map((w) => {
-                            return `${w.main} (${w.description})`;
+                          .map((weather: { main: string; description: string }) => {
+                            return `${weather.main} (${weather.description})`;
                           })
                           .join(', ')}`,
                         inline: false,

@@ -155,9 +155,13 @@ export async function commandLoader(
     return;
   }
 
-  const commandReturn = await commandResolver(command)
-    .execute(message, args, pGuild, client)
-    .catch((e) => logger.error(new Error(`in ${command} got error ${e}`)));
+  let commandReturn: ReturnPromise;
+  try {
+    commandReturn = await commandResolver(command).execute(message, args, pGuild, client);
+  } catch (e) {
+    logger.error(new Error(`in ${command} got error ${e}`));
+    throw Error('Got error in command execution');
+  }
 
   if (commandReturn) {
     if (commandReturn.result) {

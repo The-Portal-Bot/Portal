@@ -3,7 +3,7 @@ import commandConfigJson from '../config.command.json';
 import { authCommands, noAuthCommands } from '../handlers/command.handler';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { CommandOptions } from '../types/classes/PTypes.interface';
-import { includedInIgnoreList, isUrlOnlyChannel } from './guild.library';
+import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
 import { isMessageDeleted, isUserIgnored, logger, markMessageAsDeleted, messageReply } from './help.library';
 import { removeIgnore, removeURL, setMusicData } from './mongo.library';
 import { addPointsMessage } from './user.library';
@@ -174,7 +174,7 @@ export async function handleUrlChannels(message: Message, pGuild: PGuild): Promi
 }
 
 export function handleIgnoredChannels(message: Message, pGuild: PGuild): boolean {
-  if (includedInIgnoreList(message.channel.id, pGuild)) {
+  if (includedInPIgnores(message.channel.id, pGuild)) {
     if (message.content === './ignore') {
       removeIgnore(pGuild.id, message.channel.id)
         .then((r) => {

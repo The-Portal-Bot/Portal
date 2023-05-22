@@ -47,6 +47,8 @@ function inlineOperator(str: string) {
     return (a: string, b: string) => a >= b;
   case '<=':
     return (a: string, b: string) => a <= b;
+  default:
+    return (a: string, b: string) => a == b;
   }
 }
 
@@ -85,8 +87,8 @@ export function includedInVoiceList(channelId: string, pChannels: PChannel[]): b
   return pChannels ? pChannels.some((p) => p.pVoiceChannels.some((v) => v.id === channelId)) : false;
 }
 
-export function includedInIgnoreList(channelId: string, pGuild: PGuild): boolean {
-  return pGuild.ignoreList ? pGuild.ignoreList.some((i) => i === channelId) : false;
+export function includedInPIgnores(channelId: string, pGuild: PGuild): boolean {
+  return pGuild.pIgnores ? pGuild.pIgnores.some((i) => i === channelId) : false;
 }
 
 export function isUrlOnlyChannel(channelId: string, pGuild: PGuild): boolean {
@@ -690,7 +692,6 @@ export function regexInterpreter(
                         statement.is === '<='
           ) {
             if (
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
               inlineOperator(statement.is)(
                 regexInterpreter(
                   statement.if,

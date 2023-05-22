@@ -4,6 +4,7 @@ import { logger } from '../libraries/help.library';
 import { getFunction } from '../libraries/localisation.library';
 import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library';
 import { PMember } from '../types/classes/PMember.class';
+import { LogActions } from '../types/classes/PTypes.interface';
 
 function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<string> {
   return new Promise((resolve) => {
@@ -111,13 +112,11 @@ export default async (args: { client: Client }): Promise<string> => {
       // removeEmptyVoiceChannels(guild);
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const func = getFunction('console', 1, 'ready');
+    const func = getFunction('console', 1, LogActions.ready) as unknown as (a: number, b: number, c: number) => string;
 
     return resolve(
       func
-        ? // ts-ignore
-        func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
+        ? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
         : 'error with localisation'
     );
   });

@@ -39,7 +39,7 @@ export async function fetchGuildChannelDelete(guildId: string): Promise<PGuild |
 
 export async function fetchAnnouncementChannelByGuildId(
   guildId: string
-): Promise<Partial<PGuild | 'announcement' | 'initialRole'> | undefined> {
+): Promise<Pick<PGuild, 'announcement' | 'initialRole'> | undefined> {
   const pGuild = (await PGuildModel.findOne(
     {
       id: guildId,

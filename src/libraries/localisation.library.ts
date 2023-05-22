@@ -4,14 +4,14 @@ import { PGuild } from '../types/classes/PGuild.class';
 import {
   LocalisationConsoleOption,
   LocalisationPortalOption,
-  announcementAction,
-  eventAction,
-  logActions,
+  AnnouncementAction,
+  EventAction,
+  LogActions,
 } from '../types/classes/PTypes.interface';
 
 export const portal: LocalisationPortalOption[] = [
   {
-    name: announcementAction.join,
+    name: AnnouncementAction.join,
     lang: {
       gr: () => {
         return '> Γειά σας, το Πόρταλ είναι εδώ';
@@ -25,7 +25,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: announcementAction.leave,
+    name: AnnouncementAction.leave,
     lang: {
       gr: () => {
         return '> Αποχαιρετώ, καλή συνέχεια σε όλους';
@@ -39,7 +39,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: announcementAction.announce,
+    name: AnnouncementAction.announce,
     lang: {
       gr: (user: User) => {
         return `o ${user} έκανε μια ανακοίνωση`;
@@ -53,7 +53,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: announcementAction.spotify,
+    name: AnnouncementAction.spotify,
     lang: {
       gr: (user: User) => {
         return `o ${user} έβαλε νέο κομμάτι`;
@@ -67,7 +67,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: announcementAction.url,
+    name: AnnouncementAction.url,
     lang: {
       gr: (user: User) => {
         return `o ${user} ανέβασε έναν νέο σύνδεσμο`;
@@ -81,7 +81,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: announcementAction.readOnly,
+    name: AnnouncementAction.readOnly,
     lang: {
       gr: (user: User) => {
         return `${user}, το κανάλι είναι μόνο για ανάγνωση`;
@@ -95,7 +95,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: announcementAction.fail,
+    name: AnnouncementAction.fail,
     lang: {
       gr: (user: User) => {
         return `${user}, κάτι δεν πήγε καλά`;
@@ -109,7 +109,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: eventAction.userConnected,
+    name: EventAction.userConnected,
     lang: {
       gr: (user: User) => {
         return `ο χρήστης ${user} συνδέθηκε στο κανάλι`;
@@ -123,7 +123,7 @@ export const portal: LocalisationPortalOption[] = [
     },
   },
   {
-    name: eventAction.userDisconnected,
+    name: EventAction.userDisconnected,
     lang: {
       gr: (user: User) => {
         return `ο χρήστης ${user} αποχώρησε από το κανάλι`;
@@ -140,7 +140,7 @@ export const portal: LocalisationPortalOption[] = [
 
 export const consoleText: LocalisationConsoleOption[] = [
   {
-    name: logActions.ready,
+    name: LogActions.ready,
     lang: {
       gr: (args: { memberLength: number; channelLength: number; guildLength: number }) => {
         return `το ρομπότ ξεκίνησε, με ${args.memberLength} χρήστες, μέσα σε ${args.channelLength} κανάλια σε ${args.guildLength} συντεχνίες`;
@@ -154,7 +154,7 @@ export const consoleText: LocalisationConsoleOption[] = [
     },
   },
   {
-    name: logActions.updatingGuild, // remove
+    name: LogActions.updatingGuild, // remove
     lang: {
       gr: () => {
         // args: unknown
@@ -171,7 +171,7 @@ export const consoleText: LocalisationConsoleOption[] = [
     },
   },
   {
-    name: logActions.presenceControlledAway,
+    name: LogActions.presenceControlledAway,
     lang: {
       gr: (args: { newPresence: Presence }) => {
         return (
@@ -195,7 +195,7 @@ export const consoleText: LocalisationConsoleOption[] = [
     },
   },
   {
-    name: logActions.presenceControlled,
+    name: LogActions.presenceControlled,
     lang: {
       gr: (displayName: string, name: string) => {
         return `ο χρήστης ${displayName} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${name})`;
@@ -209,7 +209,7 @@ export const consoleText: LocalisationConsoleOption[] = [
     },
   },
   {
-    name: logActions.couldNotFetchData,
+    name: LogActions.couldNotFetchData,
     lang: {
       gr: (data: string, source: string) => {
         return `δεν κατάφερα να πάρω το ${data} από το ${source}`;
@@ -259,7 +259,7 @@ export const consoleText: LocalisationConsoleOption[] = [
 // 	return false;
 // }
 
-export function getFunction(output: string, locale: number, context: eventAction | announcementAction | logActions) {
+export function getFunction(output: string, locale: number, context: EventAction | AnnouncementAction | LogActions) {
   let func = null;
 
   if (output === 'portal') {
@@ -300,7 +300,7 @@ export function getFunction(output: string, locale: number, context: eventAction
 export function clientWrite(
   message: Message,
   pGuild: PGuild,
-  context: eventAction | announcementAction | logActions
+  context: EventAction | AnnouncementAction | LogActions
 ): string {
   if (!message) return 'could not fetch message';
   if (!message.member) return 'could not fetch member';
@@ -350,7 +350,7 @@ export function clientWrite(
 export function clientLog(
   message: Message | null,
   guildList: PGuild[],
-  context: eventAction | announcementAction | logActions,
+  context: EventAction | AnnouncementAction | LogActions,
   args: unknown
 ): string {
   if (message === null || message.member === null) {
