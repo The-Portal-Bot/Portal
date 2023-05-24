@@ -43,30 +43,35 @@ commandConfig.forEach((category) => {
     commands.push(commandFile.data.toJSON());
   });
 });
-
-const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+console.log('commands :>> ', commands);
+const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
 (async () => {
   try {
-    // console.log('Started refreshing application (/) commands.');
-    await rest.put(Routes.applicationGuildCommands('755825870102593626', '710746690650374208'), { body: commands });
+    logger.info('Started refreshing application (/) commands.');
 
-    // console.log('Successfully reloaded application (/) commands.');
+    if (!process.env.CLIENT_ID) {
+      logger.error(new Error('Discord client id is not defined'));
+      process.exit(4);
+    }
+
+    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
+
+    logger.info('Successfully reloaded application (/) commands.');
   } catch (error) {
-    // console.error(error);
+    logger.error(error);
   }
 })();
 
-//
 eventHandler(client);
 const mongo = mongoHandler(process.env.MONGO_URL);
 const discord = connectToDiscord(client, process.env.TOKEN);
 
 Promise.all([mongo, discord])
   .then(() => {
-    logger.info('[portal] ready');
+    logger.info('ready');
   })
-  .catch((e) => {
-    logger.error(new Error(e));
+  .catch((error) => {
+    logger.error(error);
     process.exit(1);
   });

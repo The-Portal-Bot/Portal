@@ -42,44 +42,44 @@ import set from '../commands/auth/set';
 import url from '../commands/auth/url';
 
 export type noAuthCommands =
-    | 'about'
-    | 'ai'
-    | 'announce'
-    | 'bet'
-    | 'corona'
-    | 'crypto'
-    | 'focus'
-    | 'football'
-    | 'help'
-    | 'join'
-    | 'joke'
-    | 'leaderboard'
-    | 'leave'
-    | 'level'
-    | 'news'
-    | 'ping'
-    | 'poll'
-    | 'ranks'
-    | 'roll'
-    | 'run'
-    | 'state'
-    | 'spam_rules'
-    | 'weather'
-    | 'whoami';
+  | 'about'
+  | 'ai'
+  | 'announce'
+  | 'bet'
+  | 'corona'
+  | 'crypto'
+  | 'focus'
+  | 'football'
+  | 'help'
+  | 'join'
+  | 'joke'
+  | 'leaderboard'
+  | 'leave'
+  | 'level'
+  | 'news'
+  | 'ping'
+  | 'poll'
+  | 'ranks'
+  | 'roll'
+  | 'run'
+  | 'state'
+  | 'spam_rules'
+  | 'weather'
+  | 'whoami';
 export type authCommands =
-    | 'announcement'
-    | 'ban'
-    | 'delete_messages'
-    | 'force'
-    | 'ignore'
-    | 'invite'
-    | 'kick'
-    | 'music'
-    | 'portal'
-    | 'vendor'
-    | 'set_ranks'
-    | 'set'
-    | 'url';
+  | 'announcement'
+  | 'ban'
+  | 'delete_messages'
+  | 'force'
+  | 'ignore'
+  | 'invite'
+  | 'kick'
+  | 'music'
+  | 'portal'
+  | 'vendor'
+  | 'set_ranks'
+  | 'set'
+  | 'url';
 
 export async function commandLoader(
   client: Client,
@@ -91,8 +91,8 @@ export async function commandLoader(
   pGuild: PGuild,
   activeCooldowns: ActiveCooldowns
 ) {
-  if (process.env.DEBUG!) {
-    logger.info(`[command-debug] ${command}`);
+  if (process.env.DEBUG) {
+    logger.debug(`[command-debug] ${command}`);
   }
 
   if (type === 'none' && commandOptions.time === 0) {
@@ -111,7 +111,7 @@ export async function commandLoader(
         commandReturn.value,
         commandOptions.delete.source,
         commandOptions.delete.reply
-      ).catch((e) => logger.error(new Error('failed to send message')));
+      ).catch(() => logger.error(new Error('failed to send message')));
     }
 
     return;
@@ -143,9 +143,9 @@ export async function commandLoader(
     const typeForMsg = type !== 'member' ? `, as it was used again in* **${message.guild?.name}**` : `.*`;
 
     const mustWaitMsg =
-            `you need to wait **${pad(time.remainingMin)}:` +
-            `${pad(time.remainingSec)}/${pad(time.timeoutMin)}:` +
-            `${pad(time.timeoutSec)}** *to use* **${command}** *again${typeForMsg}`;
+      `you need to wait **${pad(time.remainingMin)}:` +
+      `${pad(time.remainingSec)}/${pad(time.timeoutMin)}:` +
+      `${pad(time.timeoutSec)}** *to use* **${command}** *again${typeForMsg}`;
 
     messageReply(false, message, mustWaitMsg, true, true).catch((e) =>
       logger.error(new Error(`failed to reply to message: ${e}`))
@@ -174,9 +174,7 @@ export async function commandLoader(
 
         if (commandOptions) {
           setTimeout(() => {
-            activeCooldowns[typeString] = activeCooldowns[typeString].filter(
-              (active) => active.command !== command
-            );
+            activeCooldowns[typeString] = activeCooldowns[typeString].filter((active) => active.command !== command);
           }, commandOptions.time * 60 * 1000);
         }
       }

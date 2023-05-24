@@ -72,31 +72,40 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
   }
 }
 
-export function commandDecipher(
-  message: Message,
+export function messageContentDecipher(
+  messageContent: Message['content'],
   pGuild: PGuild
 ): {
-    args: string[];
-    cmd: authCommands | noAuthCommands | undefined;
-    pathToCommand: string;
-    commandOptions: CommandOptions | undefined;
-    type: string;
+  cmd: authCommands | noAuthCommands | undefined;
+  args: string[];
 } {
   // separate command name and arguments
-  const args = message.content.slice(pGuild.prefix.length).trim().split(/ +/g);
-
+  const args = messageContent.slice(pGuild.prefix.length).trim().split(/ +/g);
   const commandOnly = args.shift();
+
   if (!commandOnly) {
     return {
-      args: [],
       cmd: undefined,
-      pathToCommand: '',
-      commandOptions: undefined,
-      type: '',
+      args: [],
     };
   }
-  const cmd = commandOnly.toLowerCase() as authCommands | noAuthCommands;
 
+  return {
+    cmd: commandOnly.toLowerCase() as authCommands | noAuthCommands,
+    args: args,
+  };
+}
+
+export function commandFetcher(
+  cmd: authCommands | noAuthCommands,
+  args: string[]
+): {
+  args: string[];
+  cmd: authCommands | noAuthCommands | undefined;
+  pathToCommand: string;
+  commandOptions: CommandOptions | undefined;
+  type: string;
+} {
   let pathToCommand = '';
   let commandOptions: CommandOptions | undefined = undefined;
   let type = 'none';
@@ -115,11 +124,11 @@ export function commandDecipher(
   });
 
   return {
-    args: args,
-    cmd: cmd,
-    pathToCommand: pathToCommand,
-    commandOptions: commandOptions,
-    type: type,
+    args,
+    cmd,
+    pathToCommand,
+    commandOptions,
+    type,
   };
 }
 
@@ -142,11 +151,9 @@ export async function handleUrlChannels(message: Message, pGuild: PGuild): Promi
     if (message.content === './url') {
       removeURL(pGuild.id, message.channel.id)
         .then((r) => {
-          messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`).catch(
-            (e) => {
-              logger.error(new Error(`failed to send message: ${e}`));
-            }
-          );
+          messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`).catch((e) => {
+            logger.error(new Error(`failed to send message: ${e}`));
+          });
         })
         .catch((e) => {
           logger.error(new Error(`failed to remove url channel: ${e}`));
@@ -178,13 +185,11 @@ export function handleIgnoredChannels(message: Message, pGuild: PGuild): boolean
     if (message.content === './ignore') {
       removeIgnore(pGuild.id, message.channel.id)
         .then((r) => {
-          messageReply(
-            true,
-            message,
-            `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`
-          ).catch((e) => {
-            logger.error(new Error(`failed to send message: ${e}`));
-          });
+          messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
+            (e) => {
+              logger.error(new Error(`failed to send message: ${e}`));
+            }
+          );
         })
         .catch((e) => {
           logger.error(new Error(`failed to remove ignored channel: ${e}`));
@@ -208,11 +213,9 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
       const musicData = new MusicData('null', 'null', 'null', [], false);
       setMusicData(pGuild.id, musicData)
         .then((r) => {
-          messageReply(
-            true,
-            message,
-            `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`
-          ).catch((e) => logger.error(new Error(`failed to send message: ${e}`)));
+          messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
+            (e) => logger.error(new Error(`failed to send message: ${e}`))
+          );
         })
         .catch((e) => logger.error(new Error(`failed to remove music channel: ${e}`)));
     } else {

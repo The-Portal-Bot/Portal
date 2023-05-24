@@ -191,46 +191,21 @@ export async function updateGuild(guildId: string, key: string, value: unknown):
 
 // CRUD guilds
 function createMembers(guildId: string, client: Client): PMember[] {
-  const pMembers: PMember[] = [];
-
   const guild = client.guilds.cache.find((guild) => guild.id === guildId) as Guild;
   if (!guild) {
-    return pMembers;
+    return [];
   }
 
-  // const member_array = guild.members.cache.array();
-  // for(let i = 0; i < member_array.length; i++) {
-  //     if (!member_array[i].user.bot) {
-  //         if (client.user && member_array[i].id !== client.user.id) {
-  //             member_list.push(
-  //                 new MemberPrtl(
-  //                     member_array[i].id,
-  //                     1,
-  //                     0,
-  //                     1,
-  //                     0,
-  //                     new Date('1 January, 1970, 00:00:00 UTC'),
-  //                     'null'
-  //                 )
-  //             );
-  //         }
-  //     }
-  // }
-
-  guild.members.cache.forEach((member) => {
-    if (!member.user.bot) {
-      if (client.user && member.id !== client.user.id) {
-        pMembers.push(new PMember(member.id, 1, 0, 1, 0, 0, new Date('1 January, 1970, 00:00:00 UTC'), 'null'));
-      }
-    }
-  });
-
-  return pMembers;
+  return guild.members.cache
+    .filter((member) => !member.user.bot)
+    .filter((member) => member.id !== client?.user?.id)
+    .map((member) => new PMember(member.id, 1, 0, 1, 0, 0, new Date('1 January, 1970, 00:00:00 UTC'), 'null'));
 }
 
 export async function insertGuild(guildId: string, client: Client): Promise<boolean> {
   const id: string = guildId;
   const pChannels: PChannel[] = [];
+  console.log('createMembers(guildId, client) :>> ', createMembers(guildId, client));
   const pMembers: PMember[] = createMembers(guildId, client);
   const pURLs: string[] = [];
   const pRoles: PGiveRole[] = [];

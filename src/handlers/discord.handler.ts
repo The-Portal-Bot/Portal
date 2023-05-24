@@ -9,7 +9,7 @@ export function clientHandler() {
   const clientOptions: ClientOptions = {
     makeCache: cacheFactory,
     partials,
-    intents: intents,
+    intents,
   };
 
   return new Client(clientOptions);

@@ -11,9 +11,9 @@ import { updateMember } from './mongo.library';
 import { ban, kick } from './user.library';
 
 const profaneWords = ProfaneWords as {
-    gr: string[];
-    de: string[];
-    en: string[];
+  gr: string[];
+  de: string[];
+  en: string[];
 };
 
 /**
@@ -46,7 +46,7 @@ export function isProfane(candidate: string, profanityLevel: number): string[] {
 }
 
 /**
- * Determine if a user is spamming
+ * Determines if a user is spamming
  */
 export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: SpamCache[]): void {
   if (isWhitelist(message.member)) {
