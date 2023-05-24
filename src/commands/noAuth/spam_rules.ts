@@ -6,7 +6,7 @@ import SPAM_CONFIG from '../../config.spam.json';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder().setName('spamRules').setDescription('returns the current spam rules'),
+  data: new SlashCommandBuilder().setName('spam_rules').setDescription('returns the current spam rules'),
   async execute(message: Message, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       const guild = client.guilds.cache.find((g) => g.id === message?.guild?.id);

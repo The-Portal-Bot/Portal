@@ -4,13 +4,13 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder().setName('deleteMessages').setDescription('delete n number of messages'),
+  data: new SlashCommandBuilder().setName('delete_messages').setDescription('delete n number of messages'),
   async execute(message: Message, args: string[]): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       if (args.length !== 1) {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'delete', 'you can only give one number as argument'),
+          value: messageHelp('commands', 'delete_messages', 'you can only give one number as argument'),
         });
       }
 
@@ -20,21 +20,21 @@ export = {
         // isNaN ?
         return resolve({
           result: false,
-          value: messageHelp('commands', 'delete', 'argument must always be number'),
+          value: messageHelp('commands', 'delete_messages', 'argument must always be number'),
         });
       }
 
       if (bulkDeleteLength <= 0) {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'delete', 'you can delete one or more messages'),
+          value: messageHelp('commands', 'delete_messages', 'you can delete one or more messages'),
         });
       }
 
       if (bulkDeleteLength > 97) {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'delete', 'you can delete up-to 97 messages'),
+          value: messageHelp('commands', 'delete_messages', 'you can delete up-to 97 messages'),
         });
       }
 
@@ -49,7 +49,7 @@ export = {
         message,
         message.member,
         `*${message.author}, are you sure you want to delete ` +
-          `**${bulkDeleteLength}** messages*, do you **(yes / no)** ?`
+        `**${bulkDeleteLength}** messages*, do you **(yes / no)** ?`
       )
         .then((result) => {
           if (result) {

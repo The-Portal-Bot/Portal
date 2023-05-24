@@ -1,6 +1,6 @@
 import { Message, Role } from 'discord.js';
 import { getJsonFromString, messageHelp } from '../../libraries/help.library';
-import { setRanks } from '../../libraries/mongo.library';
+import { set_ranks } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Rank, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -16,7 +16,7 @@ function isRole(rank: Rank, roles: Role[]) {
 }
 
 export = {
-  data: new SlashCommandBuilder().setName('setRanks').setDescription('create ranks for the server'),
+  data: new SlashCommandBuilder().setName('set_ranks').setDescription('create ranks for the server'),
   async execute(message: Message, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       if (!message.guild)
@@ -33,7 +33,7 @@ export = {
         if (!newRanksJSON || !Array.isArray(newRanksJSON)) {
           return resolve({
             result: false,
-            value: messageHelp('commands', 'setRanks', 'ranking must be an array in JSON format (even for one role)'),
+            value: messageHelp('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)'),
           });
         }
 
@@ -42,19 +42,19 @@ export = {
         if (!newRanks.every((r) => r.level && r.role)) {
           return resolve({
             result: false,
-            value: messageHelp('commands', 'setRanks', 'JSON syntax has spelling errors`'),
+            value: messageHelp('commands', 'set_ranks', 'JSON syntax has spelling errors`'),
           });
         }
         if (!newRanks.every(isRank)) {
           return resolve({
             result: false,
-            value: messageHelp('commands', 'setRanks', 'rankings must be a key-pair from level and role'),
+            value: messageHelp('commands', 'set_ranks', 'rankings must be a key-pair from level and role'),
           });
         }
         if (!newRanks.every((r) => isRole(r, roles))) {
           return resolve({
             result: false,
-            value: messageHelp('commands', 'setRanks', 'a role given does not exist in server'),
+            value: messageHelp('commands', 'set_ranks', 'a role given does not exist in server'),
           });
         }
 
@@ -64,7 +64,7 @@ export = {
           if (role) rank.role = role.id;
         });
 
-        setRanks(pGuild.id, newRanks)
+        set_ranks(pGuild.id, newRanks)
           .then((r) => {
             return resolve({
               result: r,
@@ -80,7 +80,7 @@ export = {
       } else {
         return resolve({
           result: false,
-          value: messageHelp('commands', 'setRanks'),
+          value: messageHelp('commands', 'set_ranks'),
         });
       }
 

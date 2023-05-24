@@ -57,7 +57,7 @@ const commands: InterfaceBlueprint[] = [
     set: null,
   },
   {
-    name: 'delete',
+    name: 'delete_messages',
     hover: 'bulk delete message',
     auth: AuthType.admin,
     get: null,
@@ -197,7 +197,7 @@ const commands: InterfaceBlueprint[] = [
     set: null,
   },
   {
-    name: 'setRanks',
+    name: 'set_ranks',
     hover: 'set new ranks',
     auth: AuthType.admin,
     get: null,
@@ -281,10 +281,10 @@ export function getCommandGuide(): EmbedBuilder {
   return createEmbed(
     'Command Guide',
     '[Commands](' +
-      PORTAL_URL +
-      '/commands/description) ' +
-      'are the way you communicate with Portal.\n' +
-      'how to use commands',
+    PORTAL_URL +
+    '/commands/description) ' +
+    'are the way you communicate with Portal.\n' +
+    'how to use commands',
     '#9775A9',
     commandArray,
     null,
@@ -314,11 +314,11 @@ export function getCommandHelp(): EmbedBuilder[] {
       return createEmbed(
         'Commands',
         '[Commands](' +
-          PORTAL_URL +
-          '/commands/description) ' +
-          'are the way you communicate with Portal.\n' +
-          'Prefix: ' +
-          COMMAND_PREFIX,
+        PORTAL_URL +
+        '/commands/description) ' +
+        'are the way you communicate with Portal.\n' +
+        'Prefix: ' +
+        COMMAND_PREFIX,
         '#9775A9',
         commandArray[0],
         null,

@@ -24,12 +24,12 @@ import ranks from '../commands/noAuth/ranks';
 import roll from '../commands/noAuth/roll';
 import run from '../commands/noAuth/run';
 import state from '../commands/noAuth/state';
-import spamRules from '../commands/noAuth/spamRules';
+import spam_rules from '../commands/noAuth/spam_rules';
 import weather from '../commands/noAuth/weather';
 import whoami from '../commands/noAuth/whoami';
 import announcement from '../commands/auth/announcement';
 import ban from '../commands/auth/ban';
-import deleteMessages from '../commands/auth/deleteMessages';
+import delete_messages from '../commands/auth/delete_messages';
 import force from '../commands/auth/force';
 import ignore from '../commands/auth/ignore';
 import invite from '../commands/auth/invite';
@@ -37,7 +37,7 @@ import kick from '../commands/auth/kick';
 import music from '../commands/auth/music';
 import portal from '../commands/auth/portal';
 import vendor from '../commands/auth/vendor';
-import setRanks from '../commands/auth/setRanks';
+import set_ranks from '../commands/auth/set_ranks';
 import set from '../commands/auth/set';
 import url from '../commands/auth/url';
 
@@ -63,13 +63,13 @@ export type noAuthCommands =
     | 'roll'
     | 'run'
     | 'state'
-    | 'spamRules'
+    | 'spam_rules'
     | 'weather'
     | 'whoami';
 export type authCommands =
     | 'announcement'
     | 'ban'
-    | 'deleteMessages'
+    | 'delete_messages'
     | 'force'
     | 'ignore'
     | 'invite'
@@ -77,7 +77,7 @@ export type authCommands =
     | 'music'
     | 'portal'
     | 'vendor'
-    | 'setRanks'
+    | 'set_ranks'
     | 'set'
     | 'url';
 
@@ -91,7 +91,6 @@ export async function commandLoader(
   pGuild: PGuild,
   activeCooldowns: ActiveCooldowns
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   if (process.env.DEBUG!) {
     logger.info(`[command-debug] ${command}`);
   }
@@ -264,8 +263,8 @@ export function commandResolver(command: authCommands | noAuthCommands) {
   case 'state':
     commandFile = state;
     break;
-  case 'spamRules':
-    commandFile = spamRules;
+  case 'spam_rules':
+    commandFile = spam_rules;
     break;
   case 'weather':
     commandFile = weather;
@@ -279,8 +278,8 @@ export function commandResolver(command: authCommands | noAuthCommands) {
   case 'ban':
     commandFile = ban;
     break;
-  case 'deleteMessages':
-    commandFile = deleteMessages;
+  case 'delete_messages':
+    commandFile = delete_messages;
     break;
   case 'force':
     commandFile = force;
@@ -303,8 +302,8 @@ export function commandResolver(command: authCommands | noAuthCommands) {
   case 'vendor':
     commandFile = vendor;
     break;
-  case 'setRanks':
-    commandFile = setRanks;
+  case 'set_ranks':
+    commandFile = set_ranks;
     break;
   case 'set':
     commandFile = set;
@@ -313,6 +312,7 @@ export function commandResolver(command: authCommands | noAuthCommands) {
     commandFile = url;
     break;
   default:
+    console.log('command: ', command);
     throw Error(`command ${command} not found`);
   }
 

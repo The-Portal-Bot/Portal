@@ -16,7 +16,7 @@ import {
   VoiceChannel,
 } from 'discord.js';
 import moment from 'moment';
-import { createLogger, format } from 'winston';
+import { createLogger, format, transports } from 'winston';
 import { VideoSearchResult } from 'yt-search';
 import { PGuild, MusicData } from '../types/classes/PGuild.class';
 import { Field, TimeElapsed } from '../types/classes/PTypes.interface';
@@ -69,9 +69,11 @@ export const logger = createLogger({
     format.json()
   ),
   defaultMeta: { service: 'portal' },
-  // you can also add a mongo transport to store logs
-  // in the database (there is a performance penalty)
-  transports: [],
+  transports: [
+    new transports.Console(),
+    new transports.File({ filename: 'error.log', level: 'error' }),
+    new transports.File({ filename: 'combined.log' })
+  ]
 });
 
 export async function askForApproval(message: Message, requester: GuildMember, question: string): Promise<boolean> {

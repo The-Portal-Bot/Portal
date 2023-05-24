@@ -542,7 +542,7 @@ export async function removeIgnore(guildId: string, remove_ignore: string): Prom
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function setRanks(guildId: string, new_ranks: Rank[]): Promise<boolean> {
+export async function set_ranks(guildId: string, new_ranks: Rank[]): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
