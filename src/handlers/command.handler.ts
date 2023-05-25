@@ -1,8 +1,16 @@
 // import eventConfigJson from '../config.event.json';
-import { Client, Message } from 'discord.js';
+import { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import { logger, messageReply, pad, timeElapsed } from '../libraries/help.library';
 import { PGuild } from '../types/classes/PGuild.class';
-import { ActiveCooldowns, CommandOptions, ReturnPromise } from '../types/classes/PTypes.interface';
+import {
+  CommandOptions,
+  ReturnPromise,
+  AuthCommands,
+  NoAuthCommands,
+  ScopeLimit,
+  ActiveCooldowns,
+  ActiveCooldown,
+} from '../types/classes/PTypes.interface';
 import about from '../commands/noAuth/about';
 import ai from '../commands/noAuth/ai';
 import announce from '../commands/noAuth/announce';
@@ -41,160 +49,174 @@ import set_ranks from '../commands/auth/set_ranks';
 import set from '../commands/auth/set';
 import url from '../commands/auth/url';
 
-export type noAuthCommands =
-  | 'about'
-  | 'ai'
-  | 'announce'
-  | 'bet'
-  | 'corona'
-  | 'crypto'
-  | 'focus'
-  | 'football'
-  | 'help'
-  | 'join'
-  | 'joke'
-  | 'leaderboard'
-  | 'leave'
-  | 'level'
-  | 'news'
-  | 'ping'
-  | 'poll'
-  | 'ranks'
-  | 'roll'
-  | 'run'
-  | 'state'
-  | 'spam_rules'
-  | 'weather'
-  | 'whoami';
-export type authCommands =
-  | 'announcement'
-  | 'ban'
-  | 'delete_messages'
-  | 'force'
-  | 'ignore'
-  | 'invite'
-  | 'kick'
-  | 'music'
-  | 'portal'
-  | 'vendor'
-  | 'set_ranks'
-  | 'set'
-  | 'url';
-
 export async function commandLoader(
-  client: Client,
-  message: Message,
-  command: authCommands | noAuthCommands,
+  interaction: ChatInputCommandInteraction,
+  command: AuthCommands | NoAuthCommands,
   args: string[],
-  type: string,
-  commandOptions: CommandOptions,
   pGuild: PGuild,
+  client: Client,
+  scopeLimit: ScopeLimit,
+  commandOptions: CommandOptions,
   activeCooldowns: ActiveCooldowns
 ) {
-  if (process.env.DEBUG) {
-    logger.debug(`[command-debug] ${command}`);
+  if (scopeLimit === 'none' && commandOptions.time === 0) {
+    return await commandExecution(interaction, command, args, pGuild, client);
   }
 
-  if (type === 'none' && commandOptions.time === 0) {
-    const commandReturn = await commandResolver(command)
-      .execute(message, args, pGuild, client)
-      .catch((e: string) => {
-        messageReply(false, message, e, commandOptions.delete.source, commandOptions.delete.reply).catch((e) =>
-          logger.error(new Error('failed to send message'))
-        );
-      });
+  const cooldown = hasActiveCooldown(interaction, command, scopeLimit, activeCooldowns);
 
-    if (commandReturn) {
-      messageReply(
-        commandReturn.result,
-        message,
-        commandReturn.value,
-        commandOptions.delete.source,
-        commandOptions.delete.reply
-      ).catch(() => logger.error(new Error('failed to send message')));
-    }
+  if (cooldown) {
+    logger.info(`User ${interaction.user.id} tried to use ${command} but is on cooldown`);
 
-    return;
-  }
+    const time = timeElapsed(cooldown.timestamp, commandOptions.time);
 
-  const typeString = type === 'guild' ? 'guild' : 'member';
+    const typeForMessage =
+      scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : `.*`;
 
-  const active = activeCooldowns[typeString].find((activeCurrent) => {
-    if (activeCurrent.command === command) {
-      if (type === 'member' && activeCurrent.member === message.author.id) {
-        if (message.guild && activeCurrent.guild === message.guild.id) {
-          return true;
-        }
-      }
-
-      if (type === 'guild') {
-        if (message.guild && activeCurrent.guild === message.guild.id) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  });
-
-  if (active) {
-    const time = timeElapsed(active.timestamp, commandOptions.time);
-
-    const typeForMsg = type !== 'member' ? `, as it was used again in* **${message.guild?.name}**` : `.*`;
-
-    const mustWaitMsg =
+    const mustWaitMessage =
       `you need to wait **${pad(time.remainingMin)}:` +
       `${pad(time.remainingSec)}/${pad(time.timeoutMin)}:` +
-      `${pad(time.timeoutSec)}** *to use* **${command}** *again${typeForMsg}`;
+      `${pad(time.timeoutSec)}** *to use* **${command}** *again${typeForMessage}`;
 
-    messageReply(false, message, mustWaitMsg, true, true).catch((e) =>
-      logger.error(new Error(`failed to reply to message: ${e}`))
-    );
-
-    return;
+    return mustWaitMessage;
   }
 
-  let commandReturn: ReturnPromise;
-  try {
-    commandReturn = await commandResolver(command).execute(message, args, pGuild, client);
-  } catch (e) {
-    logger.error(new Error(`in ${command} got error ${e}`));
-    throw Error('Got error in command execution');
-  }
+  const commandReturn = await commandExecution(interaction, command, args, pGuild, client);
 
-  if (commandReturn) {
-    if (commandReturn.result) {
-      if (message.guild) {
-        activeCooldowns[typeString].push({
-          member: message.author.id,
-          guild: message.guild.id,
-          command: command,
-          timestamp: Date.now(),
-        });
+  if (commandReturn.result && interaction.guild) {
+    const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns['guild'] : activeCooldowns['member'];
 
-        if (commandOptions) {
-          setTimeout(() => {
-            activeCooldowns[typeString] = activeCooldowns[typeString].filter((active) => active.command !== command);
-          }, commandOptions.time * 60 * 1000);
-        }
-      }
-    }
-
-    messageReply(
-      commandReturn.result,
-      message,
-      commandReturn.value,
-      commandOptions.delete.source,
-      commandOptions.delete.reply
-    ).catch((e) => {
-      logger.error(new Error(`in ${command} got error ${e}`));
+    activeCooldown.push({
+      member: interaction.user.id,
+      guild: interaction.guild.id,
+      command: command,
+      timestamp: Date.now(),
     });
-  } else {
-    logger.error(new Error(`did not get response from command: ${command}`));
+
+    if (commandOptions) {
+      setTimeout(() => {
+        const updatedCooldown = activeCooldown.filter((active) => active.command !== command);
+        if (scopeLimit === ScopeLimit.GUILD) {
+          activeCooldowns['guild'] = updatedCooldown;
+        } else {
+          activeCooldowns['member'] = updatedCooldown;
+        }
+      }, commandOptions.time * 60 * 1000);
+    }
   }
+
+  return commandReturn;
 }
 
-export function commandResolver(command: authCommands | noAuthCommands) {
+// export async function commandLoaderOld(
+//   client: Client,
+//   message: Message,
+//   command: AuthCommands | NoAuthCommands,
+//   args: string[],
+//   scopeLimit: ScopeLimit,
+//   commandOptions: CommandOptions,
+//   pGuild: PGuild
+//   // activeCooldowns: ActiveCooldowns
+// ) {
+//   if (scopeLimit === 'none' && commandOptions.time === 0) {
+//     const commandReturn = await commandResolver(command)
+//       .execute(message, args, pGuild, client)
+//       .catch((e: string) => {
+//         messageReply(false, message, e, commandOptions.delete.source, commandOptions.delete.reply).catch((e) =>
+//           logger.error(new Error('failed to send message'))
+//         );
+//       });
+
+//     if (commandReturn) {
+//       messageReply(
+//         commandReturn.result,
+//         message,
+//         commandReturn.value,
+//         commandOptions.delete.source,
+//         commandOptions.delete.reply
+//       ).catch(() => logger.error(new Error('failed to send message')));
+//     }
+
+//     return;
+//   }
+
+//   const active = activeCooldowns[scopeLimit].find((activeCurrent) => {
+//     if (activeCurrent.command === command) {
+//       if (scopeLimit === ScopeLimit.MEMBER && activeCurrent.member === message.author.id) {
+//         if (message.guild && activeCurrent.guild === message.guild.id) {
+//           return true;
+//         }
+//       }
+
+//       if (scopeLimit === ScopeLimit.GUILD) {
+//         if (message.guild && activeCurrent.guild === message.guild.id) {
+//           return true;
+//         }
+//       }
+//     }
+
+//     return false;
+//   });
+
+//   if (active) {
+//     const time = timeElapsed(active.timestamp, commandOptions.time);
+
+//     const typeForMessage =
+//       scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${message.guild?.name}**` : `.*`;
+
+//     const mustWaitMessage =
+//       `you need to wait **${pad(time.remainingMin)}:` +
+//       `${pad(time.remainingSec)}/${pad(time.timeoutMin)}:` +
+//       `${pad(time.timeoutSec)}** *to use* **${command}** *again${typeForMessage}`;
+
+//     messageReply(false, message, mustWaitMessage, true, true).catch((e) =>
+//       logger.error(new Error(`failed to reply to message: ${e}`))
+//     );
+
+//     return;
+//   }
+
+//   let commandReturn: ReturnPromise;
+//   try {
+//     commandReturn = await commandResolver(command).execute(message, args, pGuild, client);
+//   } catch (e) {
+//     logger.error(new Error(`in ${command} got error ${e}`));
+//     throw Error('Got error in command execution');
+//   }
+
+//   if (commandReturn) {
+//     if (commandReturn.result) {
+//       if (message.guild) {
+//         activeCooldowns[scopeLimit].push({
+//           member: message.author.id,
+//           guild: message.guild.id,
+//           command: command,
+//           timestamp: Date.now(),
+//         });
+
+//         if (commandOptions) {
+//           setTimeout(() => {
+//             activeCooldowns[scopeLimit] = activeCooldowns[scopeLimit].filter((active) => active.command !== command);
+//           }, commandOptions.time * 60 * 1000);
+//         }
+//       }
+//     }
+
+//     messageReply(
+//       commandReturn.result,
+//       message,
+//       commandReturn.value,
+//       commandOptions.delete.source,
+//       commandOptions.delete.reply
+//     ).catch((e) => {
+//       logger.error(new Error(`in ${command} got error ${e}`));
+//     });
+//   } else {
+//     logger.error(new Error(`did not get response from command: ${command}`));
+//   }
+// }
+
+export function commandResolver(command: AuthCommands | NoAuthCommands) {
   let commandFile = undefined;
 
   switch (command) {
@@ -310,9 +332,50 @@ export function commandResolver(command: authCommands | noAuthCommands) {
     commandFile = url;
     break;
   default:
-    console.log('command: ', command);
     throw Error(`command ${command} not found`);
   }
 
   return commandFile;
+}
+
+function hasActiveCooldown(
+  interaction: ChatInputCommandInteraction,
+  command: AuthCommands | NoAuthCommands,
+  scopeLimit: Omit<ScopeLimit, ScopeLimit.NONE>,
+  activeCooldowns: ActiveCooldowns
+) {
+  const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns['guild'] : activeCooldowns['member'];
+
+  return activeCooldown.find((activeCurrent) => {
+    if (activeCurrent.command === command) {
+      if (scopeLimit === ScopeLimit.MEMBER && activeCurrent.member === interaction?.user.id) {
+        if (interaction.guild && activeCurrent.guild === interaction.guild.id) {
+          return true;
+        }
+      }
+
+      if (scopeLimit === ScopeLimit.GUILD) {
+        if (interaction.guild && activeCurrent.guild === interaction.guild.id) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  });
+}
+
+async function commandExecution(
+  interaction: ChatInputCommandInteraction,
+  command: AuthCommands | NoAuthCommands,
+  args: string[],
+  pGuild: PGuild,
+  client: Client
+) {
+  try {
+    return await commandResolver(command).execute(interaction, args, pGuild, client);
+  } catch (e) {
+    logger.error(new Error(`in ${command} got error ${e}`));
+    throw Error('Got error in command execution');
+  }
 }

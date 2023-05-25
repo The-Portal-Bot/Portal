@@ -4,7 +4,7 @@
     "commands": [
       {
         "name": "about",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -16,7 +16,7 @@
       },
       {
         "name": "ai",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -28,7 +28,7 @@
       },
       {
         "name": "announce",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 2,
         "auth": false,
         "premium": true,
@@ -40,7 +40,7 @@
       },
       {
         "name": "bet",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -52,7 +52,7 @@
       },
       {
         "name": "corona",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -64,7 +64,7 @@
       },
       {
         "name": "crypto",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
@@ -76,7 +76,7 @@
       },
       {
         "name": "focus",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 1,
         "auth": false,
         "premium": true,
@@ -88,7 +88,7 @@
       },
       {
         "name": "football",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
@@ -100,7 +100,7 @@
       },
       {
         "name": "help",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -112,7 +112,7 @@
       },
       {
         "name": "join",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 1,
         "auth": false,
         "premium": true,
@@ -124,7 +124,7 @@
       },
       {
         "name": "joke",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -136,7 +136,7 @@
       },
       {
         "name": "leaderboard",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -148,7 +148,7 @@
       },
       {
         "name": "leave",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
@@ -160,7 +160,7 @@
       },
       {
         "name": "level",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -172,7 +172,7 @@
       },
       {
         "name": "news",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -184,7 +184,7 @@
       },
       {
         "name": "ping",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -196,7 +196,7 @@
       },
       {
         "name": "poll",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -208,7 +208,7 @@
       },
       {
         "name": "ranks",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
@@ -220,7 +220,7 @@
       },
       {
         "name": "roll",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -232,7 +232,7 @@
       },
       {
         "name": "run",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -244,7 +244,7 @@
       },
       {
         "name": "state",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
@@ -256,7 +256,7 @@
       },
       {
         "name": "spam_rules",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
@@ -268,7 +268,7 @@
       },
       {
         "name": "weather",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -280,7 +280,7 @@
       },
       {
         "name": "whoami",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
@@ -297,7 +297,7 @@
     "commands": [
       {
         "name": "announcement",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
@@ -309,7 +309,7 @@
       },
       {
         "name": "ban",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
@@ -321,7 +321,7 @@
       },
       {
         "name": "delete_messages",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
@@ -333,7 +333,7 @@
       },
       {
         "name": "force",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 5,
         "auth": true,
         "premium": true,
@@ -345,7 +345,7 @@
       },
       {
         "name": "ignore",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
@@ -357,7 +357,7 @@
       },
       {
         "name": "invite",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
@@ -369,7 +369,7 @@
       },
       {
         "name": "kick",
-        "range": "member",
+        "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
@@ -381,7 +381,7 @@
       },
       {
         "name": "music",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
@@ -393,7 +393,7 @@
       },
       {
         "name": "portal",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": false,
@@ -405,7 +405,7 @@
       },
       {
         "name": "vendor",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
@@ -417,7 +417,7 @@
       },
       {
         "name": "set_ranks",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
@@ -429,7 +429,7 @@
       },
       {
         "name": "set",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
@@ -441,7 +441,7 @@
       },
       {
         "name": "url",
-        "range": "none",
+        "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,

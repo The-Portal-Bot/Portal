@@ -8,7 +8,8 @@ import { clientHandler, connectToDiscord } from './handlers/discord.handler';
 import { eventHandler } from './handlers/event.handler';
 import { mongoHandler } from './handlers/mongo.handler';
 import { logger } from './libraries/help.library';
-import { authCommands, commandResolver, noAuthCommands } from './handlers/command.handler';
+import { commandResolver } from './handlers/command.handler';
+import { AuthCommands, NoAuthCommands } from './types/classes/PTypes.interface';
 
 dotenv.config();
 
@@ -39,11 +40,11 @@ const client: Client = clientHandler();
 const commands: unknown[] = [];
 commandConfig.forEach((category) => {
   category.commands.forEach(async (command) => {
-    const commandFile = commandResolver(command.name as authCommands | noAuthCommands);
+    const commandFile = commandResolver(command.name as AuthCommands | NoAuthCommands);
     commands.push(commandFile.data.toJSON());
   });
 });
-console.log('commands :>> ', commands);
+
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
 (async () => {

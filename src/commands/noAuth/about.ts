@@ -1,7 +1,19 @@
-import { Message } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { createEmbed } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
+
+export = {
+  data: new SlashCommandBuilder().setName('about').setDescription('returns about Portal information'),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const outcome = await interaction.channel?.send({ embeds });
+
+    return {
+      result: true,
+      value: outcome ? '' : `failed to send about message`,
+    };
+  },
+};
 
 const embeds = [
   createEmbed(
@@ -50,20 +62,3 @@ const embeds = [
     // 'since 2020'
   ),
 ];
-
-export = {
-  data: new SlashCommandBuilder().setName('about').setDescription('returns about Portal information'),
-  async execute(message: Message): Promise<ReturnPromise> {
-    await message.channel.send({ embeds }).catch((e) => {
-      return {
-        result: true,
-        value: `failed to send about message ${e}`,
-      };
-    });
-
-    return {
-      result: true,
-      value: '',
-    };
-  },
-};

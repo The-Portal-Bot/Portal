@@ -1,6 +1,4 @@
 import {
-  APIInteractionGuildMember,
-  BaseInteraction,
   Channel,
   ChannelType,
   ChatInputCommandInteraction,
@@ -27,18 +25,11 @@ import messageDelete from '../events/messageDelete.event';
 import messageReactionAdd from '../events/messageReactionAdd.event';
 import ready from '../events/ready.event';
 import voiceStateUpdate from '../events/voiceStateUpdate.event';
-import {
-  isMessageDeleted,
-  isUserAuthorised,
-  logger,
-  markMessageAsDeleted,
-  messageReply,
-} from '../libraries/help.library';
-import { messageSpamCheck } from '../libraries/mod.library';
+import { isUserAuthorised, logger } from '../libraries/help.library';
 import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
-import { commandFetcher, messageContentDecipher, portalPreprocessor } from '../libraries/preprocessor.library';
-import { ActiveCooldowns, ReturnPromise, SpamCache } from '../types/classes/PTypes.interface';
-import { authCommands, commandLoader, noAuthCommands } from './command.handler';
+import { commandFetcher } from '../libraries/preprocessor.library';
+import { ActiveCooldowns, AuthCommands, NoAuthCommands, ReturnPromise } from '../types/classes/PTypes.interface';
+import { commandLoader } from './command.handler';
 
 type HandledEvents =
   | 'ready'
@@ -115,9 +106,9 @@ async function eventLoader(
 }
 
 export async function eventHandler(
-  client: Client,
+  client: Client
   activeCooldowns: ActiveCooldowns = { guild: [], member: [] },
-  spamCache: SpamCache[] = []
+  // spamCache: SpamCache[] = []
 ) {
   // This event will run if the bot starts, and logs in, successfully.
   client.once('ready', () => eventLoader('ready', { client }));
@@ -196,7 +187,7 @@ export async function eventHandler(
     if (!interaction.isCommand()) return;
     logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
 
-    const reply = await handleInteractionCommand(interaction as ChatInputCommandInteraction);
+    const reply = await handleInteractionCommand(client, interaction as ChatInputCommandInteraction, activeCooldowns);
 
     if (reply) {
       await interaction.reply({ content: reply, ephemeral: true });
@@ -204,132 +195,13 @@ export async function eventHandler(
       await interaction.reply({ content: ' Please retry', ephemeral: true });
     }
   });
-
-  // runs on every single message received, from anywhere
-  client.on('messageCreate', async (message: Message) => {
-    handleMessageCommand(client, message, activeCooldowns, spamCache);
-  });
 }
 
-async function handleMessageCommand(
+async function handleInteractionCommand(
   client: Client,
-  message: Message,
-  activeCooldowns: ActiveCooldowns = { guild: [], member: [] },
-  spamCache: SpamCache[] = []
-) {
-  logger.log('handleCommand: ', message.content);
-  if (!message || !message.member || !message.guild) return;
-  if (message.channel.type === ChannelType.DM || message.author.bot) return;
-
-  const pGuild = await fetchGuildPreData(message.guild.id, message.author.id);
-
-  if (!pGuild) {
-    logger.error(new Error(`Fetching guild pre data failed`));
-    return false;
-  }
-
-  if (pGuild.pMembers.length === 0 && message.guild) {
-    insertMember(message.guild.id, message.author.id)
-      .then(() => {
-        if (message.guild) {
-          logger.info(`late-insert ${message.author.id} to ${message.guild.name} [${message.guild.id}]`);
-        }
-      })
-      .catch((e) => {
-        logger.error(new Error(`failed to late-insert member: ${e}`));
-      });
-
-    return true;
-  }
-
-  messageSpamCheck(message, pGuild, spamCache);
-
-  if (await portalPreprocessor(message, pGuild)) {
-    // preprocessor has handled the message
-    return true;
-  }
-
-  // Ignore any message that does not start with prefix
-  if (message.content.indexOf(pGuild.prefix) !== 0) {
-    if (message.content === 'prefix') {
-      messageReply(true, message, `portal's prefix is \`${pGuild.prefix}\``).catch((e) => {
-        logger.error(new Error(`failed to send message: ${e}`));
-      });
-
-      if (isMessageDeleted(message)) {
-        const deletedMessage = await message.delete().catch((e) => {
-          logger.error(new Error(`failed to delete message: ${e}`));
-        });
-
-        if (deletedMessage) {
-          markMessageAsDeleted(deletedMessage);
-        }
-      }
-    }
-
-    return false;
-  }
-
-  const { cmd, args } = messageContentDecipher(message.content, pGuild);
-
-  if (!cmd) {
-    return false;
-  }
-
-  const command = commandFetcher(cmd, args);
-
-  if (!command.commandOptions) {
-    return false;
-  }
-
-  if (command.commandOptions.auth && message.member) {
-    if (!isUserAuthorised(message.member)) {
-      messageReply(false, message, 'you are not authorised to use this command', true, true).catch((e) => {
-        logger.error(new Error(`failed to send message: ${e}`));
-      });
-
-      return false;
-    }
-  }
-
-  if (!message.guild) {
-    logger.error(new Error('could not fetch guild of message'));
-    return false;
-  }
-
-  const pGuildRest = await fetchGuildRest(message.guild.id);
-
-  if (!pGuildRest) {
-    logger.error(new Error(`Fetching guild rest data failed`));
-    return false;
-  }
-
-  pGuild.pMembers = pGuildRest.pMembers;
-  pGuild.pPolls = pGuildRest.pPolls;
-  pGuild.ranks = pGuildRest.ranks;
-  pGuild.musicQueue = pGuildRest.musicQueue;
-  pGuild.announcement = pGuildRest.announcement;
-  pGuild.locale = pGuildRest.locale;
-  pGuild.announce = pGuildRest.announce;
-  pGuild.premium = pGuildRest.premium;
-
-  if (!command.commandOptions || !command?.cmd) {
-    return false;
-  }
-
-  commandLoader(
-    client,
-    message,
-    command.cmd,
-    command.args,
-    command.type,
-    command.commandOptions,
-    pGuild,
-    activeCooldowns
-  ).catch();
-}
-
-async function handleInteractionCommand(interaction: ChatInputCommandInteraction): Promise<string | undefined> {
+  interaction: ChatInputCommandInteraction,
+  activeCooldowns: ActiveCooldowns,
+): Promise<string | undefined> {
   if (!interaction || !interaction.user || !interaction.member || !interaction.guild || !interaction.channel) return;
   if (interaction.channel.type === ChannelType.DM || interaction.user.bot) return;
 
@@ -358,7 +230,7 @@ async function handleInteractionCommand(interaction: ChatInputCommandInteraction
   const messageContent = interaction.options.getString('message');
 
   const command = commandFetcher(
-    interaction.commandName as authCommands | noAuthCommands,
+    interaction.commandName as AuthCommands | NoAuthCommands,
     messageContent?.split(/ +/g) ?? []
   );
 
@@ -366,14 +238,12 @@ async function handleInteractionCommand(interaction: ChatInputCommandInteraction
     return;
   }
 
-  if (command.commandOptions.auth && interaction.member) {
-    // needs better implementation
-    if (!isUserAuthorised(interaction.member as GuildMember)) {
-      // messageReply(false, interaction, 'you are not authorised to use this command', true, true).catch((e) => {
-      //   logger.error(new Error(`failed to send message: ${e}`));
-      // });
-      return;
-    }
+  if (
+    command.commandOptions.auth &&
+    interaction.member &&
+    !isUserAuthorised(interaction.member as GuildMember /* needs better implementation */)
+  ) {
+    return `You are not authorised to use ${interaction.commandName}`;
   }
 
   const pGuildRest = await fetchGuildRest(interaction.guild.id);
@@ -392,20 +262,20 @@ async function handleInteractionCommand(interaction: ChatInputCommandInteraction
   pGuild.announce = pGuildRest.announce;
   pGuild.premium = pGuildRest.premium;
 
-  return `Command ${interaction.commandName} is not yet implemented`;
+  if (!command.commandOptions || !command?.cmd) {
+    return;
+  }
 
-  // if (!command.commandOptions || !command?.cmd) {
-  //   return;
-  // }
-  //
-  // commandLoader(
-  //   client,
-  //   interaction,
-  //   command.cmd,
-  //   command.args,
-  //   command.type,
-  //   command.commandOptions,
-  //   pGuild,
-  //   activeCooldowns
-  // ).catch();
+  // return `Command ${interaction.commandName} is not yet implemented`;
+
+  commandLoader(
+    interaction,
+    command.cmd,
+    command.args,
+    pGuild,
+    client,
+    command.scopeLimit,
+    command.commandOptions,
+    activeCooldowns,
+  );
 }

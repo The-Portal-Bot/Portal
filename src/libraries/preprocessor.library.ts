@@ -1,8 +1,7 @@
 import { Message } from 'discord.js';
-import commandConfigJson from '../config.command.json';
-import { authCommands, noAuthCommands } from '../handlers/command.handler';
+import commandConfigJSON from '../config.command.json';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
-import { CommandOptions } from '../types/classes/PTypes.interface';
+import { AuthCommands, CommandOptions, NoAuthCommands, ScopeLimit } from '../types/classes/PTypes.interface';
 import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
 import { isMessageDeleted, isUserIgnored, logger, markMessageAsDeleted, messageReply } from './help.library';
 import { removeIgnore, removeURL, setMusicData } from './mongo.library';
@@ -72,11 +71,11 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
   }
 }
 
-export function messageContentDecipher(
+export function commandDecipher(
   messageContent: Message['content'],
   pGuild: PGuild
 ): {
-  cmd: authCommands | noAuthCommands | undefined;
+  cmd: AuthCommands | NoAuthCommands | undefined;
   args: string[];
 } {
   // separate command name and arguments
@@ -91,30 +90,30 @@ export function messageContentDecipher(
   }
 
   return {
-    cmd: commandOnly.toLowerCase() as authCommands | noAuthCommands,
+    cmd: commandOnly.toLowerCase() as AuthCommands | NoAuthCommands,
     args: args,
   };
 }
 
 export function commandFetcher(
-  cmd: authCommands | noAuthCommands,
+  cmd: AuthCommands | NoAuthCommands,
   args: string[]
 ): {
   args: string[];
-  cmd: authCommands | noAuthCommands | undefined;
+  cmd: AuthCommands | NoAuthCommands | undefined;
   pathToCommand: string;
   commandOptions: CommandOptions | undefined;
-  type: string;
+  scopeLimit: ScopeLimit;
 } {
   let pathToCommand = '';
   let commandOptions: CommandOptions | undefined = undefined;
-  let type = 'none';
+  let scopeLimit = ScopeLimit.NONE;
 
-  commandConfigJson.some((category) => {
-    commandOptions = category.commands.find((command) => command.name === cmd);
+  commandConfigJSON.some((category) => {
+    commandOptions = category.commands.find((command) => command.name === cmd) as CommandOptions;
 
     if (commandOptions) {
-      type = commandOptions.range;
+      scopeLimit = commandOptions.scopeLimit;
       pathToCommand = category.path;
 
       return true;
@@ -128,7 +127,7 @@ export function commandFetcher(
     cmd,
     pathToCommand,
     commandOptions,
-    type,
+    scopeLimit,
   };
 }
 

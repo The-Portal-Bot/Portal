@@ -1,4 +1,4 @@
-import { Client, Message, TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, Client, GuildMember, Message, TextChannel } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
 // import { clientTalk } from "../../libraries/localisation.library";
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -9,7 +9,12 @@ export = {
   data: new SlashCommandBuilder()
     .setName('announce')
     .setDescription('send an announcement to the announcement channel'),
-  async execute(message: Message, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    args: string[],
+    pGuild: PGuild,
+    client: Client
+  ): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       if (args.length === 0) {
         return resolve({
@@ -25,14 +30,16 @@ export = {
         });
       }
 
-      if (!message.guild) {
+      if (!interaction.guild) {
         return resolve({
           result: false,
           value: "message's guild could not be fetched",
         });
       }
 
-      const announcementChannel = <TextChannel>message.guild.channels.cache.find((c) => c.id === pGuild.announcement);
+      const announcementChannel = <TextChannel>(
+        interaction.guild.channels.cache.find((channel) => channel.id === pGuild.announcement)
+      );
 
       if (!announcementChannel) {
         return resolve({
@@ -49,7 +56,17 @@ export = {
         title = '';
       }
 
-      const richMessage = createEmbed(title, `@here ${body}`, '#022E4E', [], null, message.member, null, null, null);
+      const richMessage = createEmbed(
+        title,
+        `@here ${body}`,
+        '#022E4E',
+        [],
+        null,
+        interaction.member as GuildMember,
+        null,
+        null,
+        null
+      );
 
       announcementChannel
         .send({ embeds: [richMessage] })
