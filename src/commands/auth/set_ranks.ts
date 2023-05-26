@@ -1,5 +1,5 @@
 import { Message, Role } from 'discord.js';
-import { getJsonFromString, messageHelp } from '../../libraries/help.library';
+import { getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { set_ranks } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Rank, ReturnPromise } from '../../types/classes/PTypes.interface';
@@ -29,7 +29,7 @@ export = {
 
       if (args.length > 0) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const newRanksJSON = getJsonFromString(args.join(' '));
+        const newRanksJSON = getJSONFromString(args.join(' '));
         if (!newRanksJSON || !Array.isArray(newRanksJSON)) {
           return resolve({
             result: false,

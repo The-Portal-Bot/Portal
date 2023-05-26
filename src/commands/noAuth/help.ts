@@ -1,4 +1,5 @@
-import { EmbedBuilder, Message } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { getAttributeGuide, getAttributeHelp, getAttributeHelpSuper } from '../../types/interfaces/Attribute.interface';
@@ -6,7 +7,30 @@ import { getCommandGuide, getCommandHelp, getCommandHelpSuper } from '../../type
 import { getPipeGuide, getPipeHelp, getPipeHelpSuper } from '../../types/interfaces/Pipe.interface';
 import { getStructureGuide, getStructureHelp, getStructureHelpSuper } from '../../types/interfaces/Structure.interface';
 import { getVariableGuide, getVariableHelp, getVariableHelpSuper } from '../../types/interfaces/Variable.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
+
+export = {
+  data: new SlashCommandBuilder().setName('help').setDescription('returns help message'),
+  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
+    if (args.length === 0) {
+      const reply = await simpleReply(interaction).catch((e) => {
+        return Promise.reject(e);
+      });
+      return { result: !!reply, value: '' };
+    } else if (args.length === 1) {
+      const reply = await propertyReply(interaction, args).catch((e) => {
+        return Promise.reject(e);
+      });
+      return { result: !!reply, value: '' };
+    } else if (args.length === 2 && args[1] === 'guide') {
+      const reply = await guideReply(interaction, args).catch((e) => {
+        return Promise.reject(e);
+      });
+      return { result: !!reply, value: '' };
+    }
+
+    return { result: false, value: messageHelp('commands', 'help') };
+  },
+};
 
 const helpArray: Field[] = [
   {
@@ -71,8 +95,8 @@ const helpArray: Field[] = [
   },
 ];
 
-async function simpleReply(message: Message) {
-  return !!(await message
+async function simpleReply(interaction: ChatInputCommandInteraction) {
+  return !!(await interaction
     .reply({
       embeds: [
         createEmbed(
@@ -99,7 +123,7 @@ async function simpleReply(message: Message) {
     }));
 }
 
-async function propertyReply(message: Message, args: string[]) {
+async function propertyReply(interaction: ChatInputCommandInteraction, args: string[]) {
   let embedArray: EmbedBuilder[] | null = null;
 
   switch (args[0]) {
@@ -122,7 +146,7 @@ async function propertyReply(message: Message, args: string[]) {
 
   if (embedArray) {
     embedArray.forEach(async (embed) => {
-      await message.author.send({ embeds: [embed] }).catch((e) => {
+      await interaction.user.send({ embeds: [embed] }).catch((e) => {
         return Promise.reject(e);
       });
     });
@@ -147,7 +171,7 @@ async function propertyReply(message: Message, args: string[]) {
     }
 
     if (detailed instanceof EmbedBuilder) {
-      return !!message.author.send({ embeds: [detailed] }).catch(() => {
+      return !!interaction.user.send({ embeds: [detailed] }).catch(() => {
         return Promise.reject('failed to send message');
       });
     } else {
@@ -156,7 +180,7 @@ async function propertyReply(message: Message, args: string[]) {
   }
 }
 
-async function guideReply(message: Message, args: string[]) {
+async function guideReply(interaction: ChatInputCommandInteraction, args: string[]) {
   let guide: EmbedBuilder | null = null;
 
   switch (args[0]) {
@@ -178,34 +202,10 @@ async function guideReply(message: Message, args: string[]) {
   }
 
   if (guide) {
-    return !!message.author.send({ embeds: [guide] }).catch(() => {
+    return !!interaction.user.send({ embeds: [guide] }).catch(() => {
       return Promise.reject('failed to send message');
     });
   } else {
     return Promise.reject(messageHelp('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`));
   }
 }
-
-export = {
-  data: new SlashCommandBuilder().setName('help').setDescription('returns help message'),
-  async execute(message: Message, args: string[]): Promise<ReturnPromise> {
-    if (args.length === 0) {
-      const reply = await simpleReply(message).catch((e) => {
-        return Promise.reject(e);
-      });
-      return { result: !!reply, value: '' };
-    } else if (args.length === 1) {
-      const reply = await propertyReply(message, args).catch((e) => {
-        return Promise.reject(e);
-      });
-      return { result: !!reply, value: '' };
-    } else if (args.length === 2 && args[1] === 'guide') {
-      const reply = await guideReply(message, args).catch((e) => {
-        return Promise.reject(e);
-      });
-      return { result: !!reply, value: '' };
-    }
-
-    return { result: false, value: messageHelp('commands', 'help') };
-  },
-};

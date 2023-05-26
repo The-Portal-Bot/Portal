@@ -1,15 +1,13 @@
-import { Client, Message } from 'discord.js';
-import { joinUserVoiceChannelByMessage } from '../../libraries/help.library';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, Client } from 'discord.js';
+import { joinUserVoiceChannelByInteraction } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
   data: new SlashCommandBuilder().setName('join').setDescription('tell Portal to join your voice channel'),
-  async execute(message: Message, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
-    const voiceConnection = await joinUserVoiceChannelByMessage(client, message, pGuild /*, true*/).catch((e) => {
-      return Promise.reject(e);
-    });
+  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
+    const voiceConnection = await joinUserVoiceChannelByInteraction(client, interaction, pGuild /*, true*/);
 
     if (!voiceConnection) {
       return Promise.reject('failed to join voice channel');

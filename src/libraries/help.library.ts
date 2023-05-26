@@ -1,5 +1,6 @@
 import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from '@discordjs/voice';
 import {
+  ChatInputCommandInteraction,
   Client,
   Collection,
   ColorResolvable,
@@ -18,16 +19,16 @@ import {
 import moment from 'moment';
 import { createLogger, format, transports } from 'winston';
 import { VideoSearchResult } from 'yt-search';
-import { PGuild, MusicData } from '../types/classes/PGuild.class';
+import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { Field, TimeElapsed } from '../types/classes/PTypes.interface';
 import { createDiscordJSAdapter } from './adapter.library';
 // import { client_talk } from "./localisation.library";
-import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
 import { JokeType } from '../types/enums/Joke.enum';
-import { OpapGameId } from '../types/enums/OpapGames.enum';
-import { RankSpeed } from '../types/enums/RankSpeed.enum';
-import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { Locale } from '../types/enums/Locales.enum';
+import { OpapGameId } from '../types/enums/OpapGames.enum';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
+import { RankSpeed } from '../types/enums/RankSpeed.enum';
+import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
 
 const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' + 'Portal/master/src/assets/img/empty_queue.png';
 
@@ -72,29 +73,33 @@ export const logger = createLogger({
   transports: [
     new transports.Console(),
     new transports.File({ filename: 'error.log', level: 'error' }),
-    new transports.File({ filename: 'combined.log' })
-  ]
+    new transports.File({ filename: 'combined.log' }),
+  ],
 });
 
-export async function askForApproval(message: Message, requester: GuildMember, question: string): Promise<boolean> {
+export async function askForApproval(
+  interaction: ChatInputCommandInteraction,
+  requester: GuildMember,
+  question: string
+): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    message.channel
-      .send(question)
-      .then((question_msg) => {
+    interaction.channel
+      ?.send(question)
+      .then((questionMessage) => {
         let accepted = false;
         const filter = (m: Message) => m.author.id === requester.user.id;
-        const collector = message.channel.createMessageCollector({ filter, time: 10000 });
+        const collector = interaction.channel?.createMessageCollector({ filter, time: 10000 });
 
-        collector.on('collect', (m: Message) => {
+        collector?.on('collect', (m: Message) => {
           if (m.content === 'yes') {
             accepted = true;
-            collector.stop();
+            collector?.stop();
           } else if (m.content === 'no') {
-            collector.stop();
+            collector?.stop();
           }
         });
 
-        collector.on('end', async (collected) => {
+        collector?.on('end', async (collected) => {
           for (const reply_message of collected.values()) {
             if (isMessageDeleted(reply_message)) {
               const deletedMessage = await reply_message.delete().catch((e) => {
@@ -107,8 +112,8 @@ export async function askForApproval(message: Message, requester: GuildMember, q
             }
           }
 
-          if (isMessageDeleted(question_msg)) {
-            const deletedMessage = await question_msg.delete().catch((e) => {
+          if (isMessageDeleted(questionMessage)) {
+            const deletedMessage = await questionMessage.delete().catch((e) => {
               return reject(`failed to delete message: ${e}`);
             });
 
@@ -126,7 +131,7 @@ export async function askForApproval(message: Message, requester: GuildMember, q
   });
 }
 
-export function getJsonFromString(str: string) {
+export function getJSONFromString(str: string) {
   let data = null;
 
   try {
@@ -149,23 +154,23 @@ export function getKeyFromEnum(value: string, enumeration: enumTypes): string | 
   let enumerationArray;
 
   switch (enumeration) {
-  case JokeType:
-    enumerationArray = Object.values(JokeType);
-    break;
-  case OpapGameId:
-    enumerationArray = Object.values(OpapGameId);
-    break;
-  case RankSpeed:
-    enumerationArray = Object.values(RankSpeed);
-    break;
-  case ProfanityLevel:
-    enumerationArray = Object.values(ProfanityLevel);
-    break;
-  case Locale:
-    enumerationArray = Object.values(Locale);
-    break;
-  default:
-    return undefined;
+    case JokeType:
+      enumerationArray = Object.values(JokeType);
+      break;
+    case OpapGameId:
+      enumerationArray = Object.values(OpapGameId);
+      break;
+    case RankSpeed:
+      enumerationArray = Object.values(RankSpeed);
+      break;
+    case ProfanityLevel:
+      enumerationArray = Object.values(ProfanityLevel);
+      break;
+    case Locale:
+      enumerationArray = Object.values(Locale);
+      break;
+    default:
+      return undefined;
   }
 
   for (const enumerationValue of enumerationArray) {
@@ -451,30 +456,31 @@ export async function joinUserVoiceChannelByReaction(
 
   return voiceConnection;
 }
-
-export async function joinUserVoiceChannelByMessage(
+export async function joinUserVoiceChannelByInteraction(
   client: Client,
-  message: Message,
+  interaction: ChatInputCommandInteraction,
   pGuild: PGuild
   // join = false
 ): Promise<VoiceConnection> {
-  if (!message.member) {
+  const member = interaction.member as GuildMember;
+
+  if (!member) {
     return Promise.reject('user could not be fetched for message');
   }
 
-  if (!message.member.voice) {
+  if (!member.voice) {
     return Promise.reject('voice could not be fetched for member');
   }
 
-  if (!message.member.voice.channel) {
+  if (!member.voice.channel) {
     return Promise.reject("you aren't in a channel");
   }
 
-  if (!message.guild) {
+  if (!interaction.guild) {
     return Promise.reject('guild could not be fetched for message');
   }
 
-  if (!message.guild.voiceAdapterCreator) {
+  if (!interaction.guild.voiceAdapterCreator) {
     return Promise.reject('voiceAdapterCreator could not be fetched for guild');
   }
 
@@ -486,17 +492,17 @@ export async function joinUserVoiceChannelByMessage(
     return Promise.reject("could not fetch portal's voice connections");
   }
 
-  let voiceConnection = await getVoiceConnection(message.member.voice.channel.id);
-  const clientVoiceState = message.guild.voiceStates.cache.get(message.guild.client.user.id);
+  let voiceConnection = await getVoiceConnection(member.voice.channel.id);
+  const clientVoiceState = interaction.guild.voiceStates.cache.get(interaction.guild.client.user.id);
 
-  if (voiceConnection && clientVoiceState?.channelId === message.member.voice.channel?.id) {
+  if (voiceConnection && clientVoiceState?.channelId === member.voice.channel?.id) {
     // message.guild.me?.voice.setDeaf();
     clientVoiceState.setDeaf(true);
   } else {
     voiceConnection = await joinVoiceChannel({
-      channelId: message.member.voice.channel.id,
-      guildId: message.guild.id,
-      adapterCreator: createDiscordJSAdapter(message.member.voice.channel as VoiceChannel),
+      channelId: member.voice.channel.id,
+      guildId: interaction.guild.id,
+      adapterCreator: createDiscordJSAdapter(member.voice.channel as VoiceChannel),
     });
 
     if (!voiceConnection) {
@@ -527,7 +533,7 @@ export function createEmbed(
   footer?: string
 ): EmbedBuilder {
   const portal_icon_url: string =
-        'https://raw.githubusercontent.com/keybraker' + '/Portal/master/src/assets/img/portal_logo_spinr.gif';
+    'https://raw.githubusercontent.com/keybraker' + '/Portal/master/src/assets/img/portal_logo_spinr.gif';
 
   const rich_message = new EmbedBuilder();
 
@@ -618,8 +624,7 @@ export function isWhitelist(member: GuildMember | null): boolean {
 export function messageHelp(type: string, argument: string, info = ''): string {
   if (info !== '') info += '\n';
   return (
-    `${info} get help by typing \`./help ${argument}\`\n` +
-        `*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`
+    `${info} get help by typing \`./help ${argument}\`\n` + `*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`
   );
 }
 
@@ -692,11 +697,11 @@ export async function messageReply(
 export function isUrl(potentialURL: string): boolean {
   const pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$',
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+    '(\\#[-a-z\\d_]*)?$',
     'i'
   ); // fragment locator
 
@@ -817,9 +822,7 @@ export async function removeEmptyVoiceChannels(guild: Guild): Promise<boolean> {
                 logger.log({
                   level: 'info',
                   type: 'none',
-                  message:
-                                        `deleted empty channel: ${channel.name} ` +
-                                        `(${channel.id}) from ${channel.guild.name}`,
+                  message: `deleted empty channel: ${channel.name} ` + `(${channel.id}) from ${channel.guild.name}`,
                 });
               })
               .catch((e) => {

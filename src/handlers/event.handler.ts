@@ -106,8 +106,8 @@ async function eventLoader(
 }
 
 export async function eventHandler(
-  client: Client
-  activeCooldowns: ActiveCooldowns = { guild: [], member: [] },
+  client: Client,
+  activeCooldowns: ActiveCooldowns = { guild: [], member: [] }
   // spamCache: SpamCache[] = []
 ) {
   // This event will run if the bot starts, and logs in, successfully.
@@ -200,7 +200,7 @@ export async function eventHandler(
 async function handleInteractionCommand(
   client: Client,
   interaction: ChatInputCommandInteraction,
-  activeCooldowns: ActiveCooldowns,
+  activeCooldowns: ActiveCooldowns
 ): Promise<string | undefined> {
   if (!interaction || !interaction.user || !interaction.member || !interaction.guild || !interaction.channel) return;
   if (interaction.channel.type === ChannelType.DM || interaction.user.bot) return;
@@ -276,6 +276,6 @@ async function handleInteractionCommand(
     client,
     command.scopeLimit,
     command.commandOptions,
-    activeCooldowns,
+    activeCooldowns
   );
 }

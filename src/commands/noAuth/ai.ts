@@ -1,18 +1,19 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Message } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Configuration, OpenAIApi } from 'openai';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
   data: new SlashCommandBuilder().setName('ai').setDescription('returns a response to you question'),
-  async execute(message: Message, args: string[]): Promise<ReturnPromise> {
+  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
     if (process.env.OPEN_AI_API_KEY) {
       return {
         result: false,
         value: messageHelp('commands', 'ai', `there is no OpenAi API key`),
       };
     }
+
     if (args.length < 1) {
       return {
         result: false,
@@ -20,11 +21,11 @@ export = {
       };
     }
 
-    const model = 'text-davinci-002';
     const configuration = new Configuration({
       apiKey: process.env.OPEN_AI_API_KEY,
     });
     const openAI = new OpenAIApi(configuration);
+    const model = 'text-davinci-002';
 
     let response = undefined;
     try {
@@ -41,7 +42,7 @@ export = {
     } catch (e) {
       return {
         result: false,
-        value: `failed to get openai response`,
+        value: `failed to get OpenAi response`,
       };
       // log error
     }
@@ -94,7 +95,7 @@ export = {
     };
 
     try {
-      message.channel.send(messageOptions);
+      interaction.channel?.send(messageOptions);
     } catch (e) {
       return {
         result: false,

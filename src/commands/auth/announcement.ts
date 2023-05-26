@@ -1,4 +1,5 @@
-import { ChannelType, Message, VoiceChannel } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChannelType, ChatInputCommandInteraction, VoiceChannel } from 'discord.js';
 import {
   createChannel,
   deleteChannel,
@@ -7,47 +8,11 @@ import {
   isMusicChannel,
   isUrlOnlyChannel,
 } from '../../libraries/guild.library';
+import { messageHelp } from '../../libraries/help.library';
 import { updateGuild } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { PortalChannelTypes } from '../../types/enums/PortalChannel.enum';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { messageHelp } from '../../libraries/help.library';
-import { SlashCommandBuilder } from '@discordjs/builders';
-
-async function doesChannelHaveUsage(message: Message, pGuild: PGuild) {
-  if (isAnnouncementChannel(message.channel.id, pGuild)) {
-    const response = await updateGuild(pGuild.id, 'announcement', 'null').catch(() => {
-      return {
-        result: true,
-        value: 'failed to remove announcement channel',
-      };
-    });
-
-    return {
-      result: true,
-      value: response ? 'successfully removed announcement channel' : 'failed to remove announcement channel',
-    };
-  }
-
-  if (isMusicChannel(message.channel.id, pGuild)) {
-    return {
-      result: true,
-      value: "this can't be set as an announcement channel for it is the music channel",
-    };
-  }
-
-  if (isUrlOnlyChannel(message.channel.id, pGuild)) {
-    return {
-      result: true,
-      value: "this can't be set as the announcement channel for it is an url channel",
-    };
-  }
-
-  return {
-    result: false,
-    value: '',
-  };
-}
+import { PortalChannelTypes } from '../../types/enums/PortalChannel.enum';
 
 export = {
   data: new SlashCommandBuilder()
@@ -60,8 +25,10 @@ export = {
         .setRequired(true)
         .setAutocomplete(true)
     ),
-  async execute(message: Message, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
-    if (!message.guild) {
+  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+    const channelId = interaction.channel?.id;
+
+    if (!interaction.guild) {
       return {
         result: false,
         value: 'message guild could not be fetched',
@@ -69,7 +36,7 @@ export = {
     }
 
     if (args.length === 0) {
-      const response = await doesChannelHaveUsage(message, pGuild);
+      const response = await doesChannelHaveUsage(interaction, pGuild);
       if (response.result) {
         return {
           result: false,
@@ -78,12 +45,12 @@ export = {
       }
     }
 
-    const announcement = message.guild.channels.cache.find(
+    const announcement = interaction.guild.channels.cache.find(
       (channel) => channel.id == pGuild.announcement
     ) as VoiceChannel;
 
     if (announcement) {
-      deleteChannel(PortalChannelTypes.announcement, announcement, message).catch((e) => {
+      deleteChannel(PortalChannelTypes.announcement, announcement, interaction).catch((e) => {
         return {
           result: false,
           value: `failed to delete channel: ${e}`,
@@ -92,7 +59,7 @@ export = {
     }
 
     if (args.length === 0) {
-      const response = await updateGuild(pGuild.id, 'announcement', message.channel.id);
+      const response = await updateGuild(pGuild.id, 'announcement', channelId);
 
       return {
         result: response,
@@ -110,7 +77,7 @@ export = {
       }
 
       const announcementOptions = getOptions(
-        message.guild,
+        interaction.guild,
         'announcements channel (Portal/Users/Admins)',
         false,
         undefined,
@@ -119,7 +86,7 @@ export = {
       let createdChannelId: string;
       try {
         createdChannelId = await createChannel(
-          message.guild,
+          interaction.guild,
           announcementChannel,
           announcementOptions,
           announcementCategory
@@ -150,3 +117,47 @@ export = {
     };
   },
 };
+
+async function doesChannelHaveUsage(interaction: ChatInputCommandInteraction, pGuild: PGuild) {
+  const channelId = interaction.channel?.id;
+
+  if (!channelId) {
+    return {
+      result: false,
+      value: 'could not get channel id',
+    };
+  }
+
+  if (isAnnouncementChannel(channelId, pGuild)) {
+    const response = await updateGuild(pGuild.id, 'announcement', 'null').catch(() => {
+      return {
+        result: true,
+        value: 'failed to remove announcement channel',
+      };
+    });
+
+    return {
+      result: true,
+      value: response ? 'successfully removed announcement channel' : 'failed to remove announcement channel',
+    };
+  }
+
+  if (isMusicChannel(channelId, pGuild)) {
+    return {
+      result: true,
+      value: "this can't be set as an announcement channel for it is the music channel",
+    };
+  }
+
+  if (isUrlOnlyChannel(channelId, pGuild)) {
+    return {
+      result: true,
+      value: "this can't be set as the announcement channel for it is an url channel",
+    };
+  }
+
+  return {
+    result: false,
+    value: '',
+  };
+}

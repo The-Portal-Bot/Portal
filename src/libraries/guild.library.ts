@@ -2,6 +2,7 @@ import {
   CategoryChannel,
   CategoryChannelResolvable,
   ChannelType,
+  ChatInputCommandInteraction,
   Collection,
   Guild,
   GuildChannelCreateOptions,
@@ -26,29 +27,29 @@ import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import { ATTRIBUTE_PREFIX, getAttribute, isAttribute } from '../types/interfaces/Attribute.interface';
 import { getPipe, isPipe, PIPE_PREFIX } from '../types/interfaces/Pipe.interface';
 import { getVariable, isVariable, VARIABLE_PREFIX } from '../types/interfaces/Variable.interface';
-import { createMusicLyricsMessage, createMusicMessage, getJsonFromString, logger, maxString } from './help.library';
+import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, logger, maxString } from './help.library';
 import { insertVoice } from './mongo.library';
 
 function inlineOperator(str: string) {
   switch (str) {
-  case '==':
-    return (a: string, b: string) => a == b;
-  case '===':
-    return (a: string, b: string) => a === b;
-  case '!=':
-    return (a: string, b: string) => a != b;
-  case '!==':
-    return (a: string, b: string) => a !== b;
-  case '>':
-    return (a: string, b: string) => a > b;
-  case '<':
-    return (a: string, b: string) => a < b;
-  case '>=':
-    return (a: string, b: string) => a >= b;
-  case '<=':
-    return (a: string, b: string) => a <= b;
-  default:
-    return (a: string, b: string) => a == b;
+    case '==':
+      return (a: string, b: string) => a == b;
+    case '===':
+      return (a: string, b: string) => a === b;
+    case '!=':
+      return (a: string, b: string) => a != b;
+    case '!==':
+      return (a: string, b: string) => a !== b;
+    case '>':
+      return (a: string, b: string) => a > b;
+    case '<':
+      return (a: string, b: string) => a < b;
+    case '>=':
+      return (a: string, b: string) => a >= b;
+    case '<=':
+      return (a: string, b: string) => a <= b;
+    default:
+      return (a: string, b: string) => a == b;
   }
 }
 
@@ -143,10 +144,10 @@ function createVoiceOptions(state: VoiceState, pChannel: PChannel): GuildChannel
   if (pChannel.allowedRoles) {
     permissionOverwrites = pChannel.allowedRoles.map(
       (id) =>
-                <OverwriteResolvable>{
-                  id,
-                  allow: PermissionsBitField.Flags.Connect, // ['CONNECT']
-                }
+        <OverwriteResolvable>{
+          id,
+          allow: PermissionsBitField.Flags.Connect, // ['CONNECT']
+        }
     );
 
     if (!pChannel.allowedRoles.some((id) => id === state.guild.roles.everyone.id)) {
@@ -300,13 +301,12 @@ export async function createFocusChannel(
     return Promise.reject(`member is not in a voice channel`);
   }
 
-  const chatRoomName = `${
-    focusTime === 0
-      ? 'Private Room'
-      : `PR-${focusTime}' $hour:$minute/${moment()
-        .add(focusTime, focusTime === 1 ? 'minute' : 'minutes')
-        .format('hh:mm')}`
-  }`;
+  const chatRoomName = `${focusTime === 0
+    ? 'Private Room'
+    : `PR-${focusTime}' $hour:$minute/${moment()
+      .add(focusTime, focusTime === 1 ? 'minute' : 'minutes')
+      .format('hh:mm')}`
+    }`;
 
   const voiceOptions: GuildChannelCreateOptions = {
     name: chatRoomName,
@@ -362,7 +362,7 @@ export async function createFocusChannel(
 export async function deleteChannel(
   type: PortalChannelTypes,
   channelToDelete: VoiceChannel | TextChannel,
-  message: Message | null,
+  interaction: ChatInputCommandInteraction | null,
   isPortal = false
 ): Promise<boolean> {
   if (isPortal && channelToDelete.deletable) {
@@ -373,25 +373,30 @@ export async function deleteChannel(
     return !!channelDeleted;
   }
 
-  if (!message) {
+  if (!interaction) {
     return Promise.reject(`message is undefined`);
   }
 
-  const author = message.author;
+  const author = interaction.user;
   const channelToDeleteName = channelToDelete.name;
   let repliedWithYes = false;
 
-  const messageQuestion = await message.channel
-    .send(
-      `${message.author}, do you wish to delete old ` +
-                `${PortalChannelTypes[type].toString()} channel **${channelToDelete}** (yes / no) ?`
+  const sentMessage = await interaction.channel
+    ?.send(
+      `${interaction.user}, do you wish to delete old ` +
+      `${PortalChannelTypes[type].toString()} channel **${channelToDelete}** (yes / no) ?`
     )
-    .catch((e) => {
-      return Promise.reject(`failed to send message: ${e}`);
-    });
 
-  const filter = (m: Message) => m.author.id === author.id;
-  const collector: MessageCollector = message.channel.createMessageCollector({ filter, time: 10000 });
+  if (!sentMessage) {
+    return Promise.reject('failed to send message');
+  }
+
+  const filter = (message: Message) => message.author.id === author.id;
+  const collector = interaction?.channel?.createMessageCollector({ filter, time: 10000 });
+
+  if (!collector) {
+    return Promise.reject('failed to send message');
+  }
 
   collector.on('collect', (m: Message) => {
     if (m.content === 'yes' || m.content === 'no') {
@@ -410,7 +415,7 @@ export async function deleteChannel(
     });
 
     if (!repliedWithYes) {
-      messageQuestion
+      sentMessage
         .edit(`channel **"${channelToDelete}"** will not be deleted`)
         .then((msg) => {
           setTimeout(
@@ -429,7 +434,7 @@ export async function deleteChannel(
         channelToDelete
           .delete()
           .then(() => {
-            messageQuestion
+            sentMessage
               .edit(`channel **"${channelToDeleteName}"** deleted`)
               .then((editMessage) => {
                 setTimeout(
@@ -453,7 +458,7 @@ export async function deleteChannel(
             return Promise.reject(`failed to delete channel: ${e}`);
           });
       } else {
-        messageQuestion
+        sentMessage
           .edit(`channel **"${channelToDelete}"** is not deletable`)
           .then((editMessage) => {
             setTimeout(
@@ -657,7 +662,7 @@ export function regexInterpreter(
         // did not put into structure_list due to many unnecessary function calls
         let isValid = false;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const statement = getJsonFromString(
+        const statement = getJSONFromString(
           regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1)
         );
 
@@ -683,13 +688,13 @@ export function regexInterpreter(
         } else {
           if (
             statement.is === '==' ||
-                        statement.is === '===' ||
-                        statement.is === '!=' ||
-                        statement.is === '!==' ||
-                        statement.is === '>' ||
-                        statement.is === '<' ||
-                        statement.is === '>=' ||
-                        statement.is === '<='
+            statement.is === '===' ||
+            statement.is === '!=' ||
+            statement.is === '!==' ||
+            statement.is === '>' ||
+            statement.is === '<' ||
+            statement.is === '>=' ||
+            statement.is === '<='
           ) {
             if (
               inlineOperator(statement.is)(

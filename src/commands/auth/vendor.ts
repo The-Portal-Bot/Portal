@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ColorResolvable, Message, TextChannel } from 'discord.js';
 import { getRole } from '../../libraries/guild.library';
-import { createEmbed, getJsonFromString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { insertVendor } from '../../libraries/mongo.library';
 import { GiveRole, PGiveRole } from '../../types/classes/PGiveRole.class';
 import { PGuild } from '../../types/classes/PGuild.class';
@@ -87,7 +87,7 @@ export = {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const roleMapJson = getJsonFromString(args.join(' '));
+      const roleMapJson = getJSONFromString(args.join(' '));
 
       if (!roleMapJson) {
         return resolve({
