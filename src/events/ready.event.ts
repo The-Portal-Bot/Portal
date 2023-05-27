@@ -6,86 +6,6 @@ import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember
 import { PMember } from '../types/classes/PMember.class';
 import { LogActions } from '../types/classes/PTypes.interface';
 
-function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<string> {
-  return new Promise((resolve) => {
-    const guildMembers: GuildMember[] = guild.members.cache.map((m) => m);
-
-    for (let j = 0; j < guildMembers.length; j++) {
-      if (!guildMembers[j].user.bot) {
-        const alreadyInDatabase = pMembers.find((m) => m.id === guildMembers[j].id);
-
-        if (!alreadyInDatabase) {
-          // if inside guild but not in portal db, add member
-          insertMember(guild.id, guildMembers[j].id)
-            .then(() => {
-              logger.info(`late-insert ${guildMembers[j].id} to ${guild.name} [${guild.id}]`);
-            })
-            .catch((e) => {
-              logger.error(new Error(`failed to late-insert member: ${e}`));
-            });
-        }
-      }
-    }
-
-    return resolve('finished');
-  });
-}
-
-function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<string> {
-  return new Promise((resolve) => {
-    for (let j = 0; j < pMembers.length; j++) {
-      const member = guild.members.cache.map((member) => member).find((m) => m.id === pMembers[j].id);
-
-      if (!member) {
-        removeMember(pMembers[j].id, guild.id)
-          .then(() => {
-            logger.info(`late-remove ${pMembers[j].id} to ${guild.name} [${guild.id}]`);
-          })
-          .catch((e) => {
-            logger.error(new Error(`failed to late-remove member: ${e}`));
-          });
-      }
-    }
-
-    return resolve('finished');
-  });
-}
-
-async function addGuildAgain(guild: Guild, client: Client): Promise<boolean> {
-  return new Promise((resolve) => {
-    guildExists(guild.id)
-      .then((exists) => {
-        if (!exists) {
-          insertGuild(guild.id, client)
-            .then((response) => {
-              return resolve(response);
-            })
-            .catch(() => {
-              return resolve(false);
-            });
-        } else {
-          fetchGuildMembers(guild.id)
-            .then(async (pMembers) => {
-              if (pMembers) {
-                await addedWhenDown(guild, pMembers);
-                await removedWhenDown(guild, pMembers);
-
-                return resolve(true);
-              } else {
-                return resolve(false);
-              }
-            })
-            .catch(() => {
-              return resolve(false);
-            });
-        }
-      })
-      .catch(() => {
-        return resolve(false);
-      });
-  });
-}
-
 export default async (args: { client: Client }): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!args.client.user) {
@@ -121,3 +41,66 @@ export default async (args: { client: Client }): Promise<string> => {
     );
   });
 };
+
+async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
+  const members = guild.members.cache.map((m) => m);
+
+  for (let j = 0; j < members.length; j++) {
+    if (members[j].user.bot) {
+      continue;
+    }
+
+    const alreadyInDatabase = pMembers.find((m) => m.id === members[j].id);
+
+    if (alreadyInDatabase) {
+      continue;
+    }
+
+    logger.info(`inserting member: ${members[j].id} to ${guild.name} [${guild.id}]`);
+
+    // if member is inside guild but not in portal db, add member
+    const memberInserted = await insertMember(guild.id, members[j].id);
+
+    if (!memberInserted) {
+      logger.error(new Error(`failed to late-insert member`));
+    }
+
+    logger.info(`late-insert ${members[j].id} to ${guild.name} [${guild.id}]`);
+  }
+}
+
+async function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
+  for (let j = 0; j < pMembers.length; j++) {
+    const member = guild.members.cache.map((member) => member).find((m) => m.id === pMembers[j].id);
+
+    if (member) {
+      continue;
+    }
+
+    logger.info(`removing member: ${pMembers[j].id} from ${guild.name} [${guild.id}]`);
+
+    const memberRemoved = await removeMember(pMembers[j].id, guild.id);
+
+    if (!memberRemoved) {
+      logger.error(new Error(`failed to late-remove member`));
+    }
+
+    logger.info(`late-remove ${pMembers[j].id} to ${guild.name} [${guild.id}]`);
+  }
+}
+
+async function addGuildAgain(guild: Guild, client: Client): Promise<boolean> {
+  if (!await guildExists(guild.id)) {
+    return await insertGuild(guild.id, client);
+  } else {
+    const pMembers = await fetchGuildMembers(guild.id);
+    if (!pMembers) {
+      return false;
+    }
+    logger.info(`pMembers: [${pMembers.map((m) => m.id).join(', ')}}]}`);
+    await addedWhenDown(guild, pMembers);
+    await removedWhenDown(guild, pMembers);
+
+    return true;
+  }
+}

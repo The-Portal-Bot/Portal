@@ -56,35 +56,35 @@ async function eventLoader(
 ) {
   let eventFunction = undefined;
   switch (event) {
-  case 'ready':
-    eventFunction = ready;
-    break;
-  case 'channelDelete':
-    eventFunction = channelDelete;
-    break;
-  case 'guildCreate':
-    eventFunction = guildCreate;
-    break;
-  case 'guildDelete':
-    eventFunction = guildDelete;
-    break;
-  case 'guildMemberAdd':
-    eventFunction = guildMemberAdd;
-    break;
-  case 'guildMemberRemove':
-    eventFunction = guildMemberRemove;
-    break;
-  case 'messageDelete':
-    eventFunction = messageDelete;
-    break;
-  case 'messageReactionAdd':
-    eventFunction = messageReactionAdd;
-    break;
-  case 'voiceStateUpdate':
-    eventFunction = voiceStateUpdate;
-    break;
-  default:
-    return;
+    case 'ready':
+      eventFunction = ready;
+      break;
+    case 'channelDelete':
+      eventFunction = channelDelete;
+      break;
+    case 'guildCreate':
+      eventFunction = guildCreate;
+      break;
+    case 'guildDelete':
+      eventFunction = guildDelete;
+      break;
+    case 'guildMemberAdd':
+      eventFunction = guildMemberAdd;
+      break;
+    case 'guildMemberRemove':
+      eventFunction = guildMemberRemove;
+      break;
+    case 'messageDelete':
+      eventFunction = messageDelete;
+      break;
+    case 'messageReactionAdd':
+      eventFunction = messageReactionAdd;
+      break;
+    case 'voiceStateUpdate':
+      eventFunction = voiceStateUpdate;
+      break;
+    default:
+      return;
   }
 
   const eventResponse: ReturnPromise | undefined = undefined;
@@ -187,13 +187,9 @@ export async function eventHandler(
     if (!interaction.isCommand()) return;
     logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
 
-    const reply = await handleInteractionCommand(client, interaction as ChatInputCommandInteraction, activeCooldowns);
+    const content = await handleInteractionCommand(client, interaction as ChatInputCommandInteraction, activeCooldowns);
 
-    if (reply) {
-      await interaction.reply({ content: reply, ephemeral: true });
-    } else {
-      await interaction.reply({ content: ' Please retry', ephemeral: true });
-    }
+    await interaction.reply({ content, ephemeral: true });
   });
 }
 
@@ -201,30 +197,30 @@ async function handleInteractionCommand(
   client: Client,
   interaction: ChatInputCommandInteraction,
   activeCooldowns: ActiveCooldowns
-): Promise<string | undefined> {
-  if (!interaction || !interaction.user || !interaction.member || !interaction.guild || !interaction.channel) return;
-  if (interaction.channel.type === ChannelType.DM || interaction.user.bot) return;
+): Promise<string> {
+  if (!interaction || !interaction.user || !interaction.member || !interaction.guild || !interaction.channel) return 'interaction is missing data';
+  if (interaction.channel.type === ChannelType.DM || interaction.user.bot) return 'interaction was made in DM or by bot';
 
   const pGuild = await fetchGuildPreData(interaction.guild.id, interaction.user.id);
 
   if (!pGuild) {
-    logger.error(new Error(`Fetching guild pre data failed`));
-    return;
+    logger.error(new Error('fetching guild pre data failed'));
+    return 'fetching guild pre data failed';
   }
 
   if (!pGuild.pMembers.some((pMember) => pMember.id === interaction.user.id)) {
     const insertResponse = await insertMember(interaction.guild.id, interaction.user.id);
 
     if (!insertResponse) {
-      logger.error(new Error(`failed to late-insert member`));
-      return;
+      logger.error(new Error('failed to late-insert member'));
+      return 'failed to late-insert member';
     }
 
     if (interaction.guild) {
       logger.info(`late-insert ${interaction.user.id} to ${interaction.guild.name} [${interaction.guild.id}]`);
     }
 
-    return;
+    return 'late-inserted member';
   }
 
   const messageContent = interaction.options.getString('message');
@@ -235,7 +231,7 @@ async function handleInteractionCommand(
   );
 
   if (!command.commandOptions) {
-    return;
+    return `command ${interaction.commandName} does not exist`;
   }
 
   if (
@@ -243,14 +239,14 @@ async function handleInteractionCommand(
     interaction.member &&
     !isUserAuthorised(interaction.member as GuildMember /* needs better implementation */)
   ) {
-    return `You are not authorised to use ${interaction.commandName}`;
+    return `you are not authorised to use ${interaction.commandName}`;
   }
 
   const pGuildRest = await fetchGuildRest(interaction.guild.id);
 
   if (!pGuildRest) {
-    logger.error(new Error(`Fetching guild rest data failed`));
-    return;
+    logger.error(new Error('fetching guild rest data failed'));
+    return 'fetching guild rest data failed';
   }
 
   pGuild.pMembers = pGuildRest.pMembers;
@@ -262,13 +258,11 @@ async function handleInteractionCommand(
   pGuild.announce = pGuildRest.announce;
   pGuild.premium = pGuildRest.premium;
 
-  if (!command.commandOptions || !command?.cmd) {
-    return;
+  if (!command?.cmd) {
+    return `command ${interaction.commandName} does not exist`;
   }
 
-  // return `Command ${interaction.commandName} is not yet implemented`;
-
-  commandLoader(
+  const commandResponse = await commandLoader(
     interaction,
     command.cmd,
     command.args,
@@ -278,4 +272,14 @@ async function handleInteractionCommand(
     command.commandOptions,
     activeCooldowns
   );
+
+  logger.info('commandResponse: ', commandResponse);
+
+  if (!commandResponse) {
+    return 'something went wrong';
+  } else if (commandResponse.result) {
+    return commandResponse.value !== '' ? commandResponse.value : 'command succeeded'
+  } else {
+    return commandResponse.value !== '' ? commandResponse.value : 'command failed'
+  }
 }

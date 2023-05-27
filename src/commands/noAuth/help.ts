@@ -12,20 +12,15 @@ export = {
   data: new SlashCommandBuilder().setName('help').setDescription('returns help message'),
   async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
     if (args.length === 0) {
-      const reply = await simpleReply(interaction).catch((e) => {
-        return Promise.reject(e);
-      });
-      return { result: !!reply, value: '' };
-    } else if (args.length === 1) {
-      const reply = await propertyReply(interaction, args).catch((e) => {
-        return Promise.reject(e);
-      });
-      return { result: !!reply, value: '' };
-    } else if (args.length === 2 && args[1] === 'guide') {
-      const reply = await guideReply(interaction, args).catch((e) => {
-        return Promise.reject(e);
-      });
-      return { result: !!reply, value: '' };
+      return { result: !!(await simpleReply(interaction)), value: '' };
+    }
+
+    if (args.length === 1) {
+      return { result: !!(await propertyReply(interaction, args)), value: '' };
+    }
+
+    if (args.length === 2 && args[1] === 'guide') {
+      return { result: !!(await guideReply(interaction, args)), value: '' };
     }
 
     return { result: false, value: messageHelp('commands', 'help') };
@@ -96,18 +91,18 @@ const helpArray: Field[] = [
 ];
 
 async function simpleReply(interaction: ChatInputCommandInteraction) {
-  return !!(await interaction
-    .reply({
+  return !!(await interaction.channel
+    ?.send({
       embeds: [
         createEmbed(
           'Help Card',
           'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
-            '> make a member an **admin**, give role `p.admin`\n' +
-            '> make a member an **moderator**, give role `p.mod`\n' +
-            '> make a member a **dj**, give role `p.dj`\n' +
-            '> to **whitelist** a member, give role `p.mod`\n' +
-            '> to **ignore** a member, give role `p.ignore`\n' +
-            '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
+          '> make a member an **admin**, give role `p.admin`\n' +
+          '> make a member an **moderator**, give role `p.mod`\n' +
+          '> make a member a **dj**, give role `p.dj`\n' +
+          '> to **whitelist** a member, give role `p.mod`\n' +
+          '> to **ignore** a member, give role `p.ignore`\n' +
+          '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
           '#05d1ff',
           helpArray,
           null,
@@ -127,21 +122,21 @@ async function propertyReply(interaction: ChatInputCommandInteraction, args: str
   let embedArray: EmbedBuilder[] | null = null;
 
   switch (args[0]) {
-  case 'commands':
-    embedArray = getCommandHelp();
-    break;
-  case 'variables':
-    embedArray = getVariableHelp();
-    break;
-  case 'pipes':
-    embedArray = getPipeHelp();
-    break;
-  case 'attributes':
-    embedArray = getAttributeHelp();
-    break;
-  case 'structures':
-    embedArray = getStructureHelp();
-    break;
+    case 'commands':
+      embedArray = getCommandHelp();
+      break;
+    case 'variables':
+      embedArray = getVariableHelp();
+      break;
+    case 'pipes':
+      embedArray = getPipeHelp();
+      break;
+    case 'attributes':
+      embedArray = getAttributeHelp();
+      break;
+    case 'structures':
+      embedArray = getStructureHelp();
+      break;
   }
 
   if (embedArray) {
@@ -184,21 +179,21 @@ async function guideReply(interaction: ChatInputCommandInteraction, args: string
   let guide: EmbedBuilder | null = null;
 
   switch (args[0]) {
-  case 'commands':
-    guide = getCommandGuide();
-    break;
-  case 'variables':
-    guide = getVariableGuide();
-    break;
-  case 'pipes':
-    guide = getPipeGuide();
-    break;
-  case 'attributes':
-    guide = getAttributeGuide();
-    break;
-  case 'structures':
-    guide = getStructureGuide();
-    break;
+    case 'commands':
+      guide = getCommandGuide();
+      break;
+    case 'variables':
+      guide = getVariableGuide();
+      break;
+    case 'pipes':
+      guide = getPipeGuide();
+      break;
+    case 'attributes':
+      guide = getAttributeGuide();
+      break;
+    case 'structures':
+      guide = getStructureGuide();
+      break;
   }
 
   if (guide) {

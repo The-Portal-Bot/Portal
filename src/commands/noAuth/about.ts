@@ -4,7 +4,7 @@ import { createEmbed } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('about').setDescription('returns about Portal information'),
+  data: new SlashCommandBuilder().setName('about').setDescription('returns information on Portal'),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const outcome = await interaction.channel?.send({ embeds });
 
