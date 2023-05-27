@@ -32,24 +32,24 @@ import { insertVoice } from './mongo.library';
 
 function inlineOperator(str: string) {
   switch (str) {
-    case '==':
-      return (a: string, b: string) => a == b;
-    case '===':
-      return (a: string, b: string) => a === b;
-    case '!=':
-      return (a: string, b: string) => a != b;
-    case '!==':
-      return (a: string, b: string) => a !== b;
-    case '>':
-      return (a: string, b: string) => a > b;
-    case '<':
-      return (a: string, b: string) => a < b;
-    case '>=':
-      return (a: string, b: string) => a >= b;
-    case '<=':
-      return (a: string, b: string) => a <= b;
-    default:
-      return (a: string, b: string) => a == b;
+  case '==':
+    return (a: string, b: string) => a == b;
+  case '===':
+    return (a: string, b: string) => a === b;
+  case '!=':
+    return (a: string, b: string) => a != b;
+  case '!==':
+    return (a: string, b: string) => a !== b;
+  case '>':
+    return (a: string, b: string) => a > b;
+  case '<':
+    return (a: string, b: string) => a < b;
+  case '>=':
+    return (a: string, b: string) => a >= b;
+  case '<=':
+    return (a: string, b: string) => a <= b;
+  default:
+    return (a: string, b: string) => a == b;
   }
 }
 
@@ -306,7 +306,7 @@ export async function createFocusChannel(
     : `PR-${focusTime}' $hour:$minute/${moment()
       .add(focusTime, focusTime === 1 ? 'minute' : 'minutes')
       .format('hh:mm')}`
-    }`;
+  }`;
 
   const voiceOptions: GuildChannelCreateOptions = {
     name: chatRoomName,

@@ -154,23 +154,23 @@ export function getKeyFromEnum(value: string, enumeration: enumTypes): string | 
   let enumerationArray;
 
   switch (enumeration) {
-    case JokeType:
-      enumerationArray = Object.values(JokeType);
-      break;
-    case OpapGameId:
-      enumerationArray = Object.values(OpapGameId);
-      break;
-    case RankSpeed:
-      enumerationArray = Object.values(RankSpeed);
-      break;
-    case ProfanityLevel:
-      enumerationArray = Object.values(ProfanityLevel);
-      break;
-    case Locale:
-      enumerationArray = Object.values(Locale);
-      break;
-    default:
-      return undefined;
+  case JokeType:
+    enumerationArray = Object.values(JokeType);
+    break;
+  case OpapGameId:
+    enumerationArray = Object.values(OpapGameId);
+    break;
+  case RankSpeed:
+    enumerationArray = Object.values(RankSpeed);
+    break;
+  case ProfanityLevel:
+    enumerationArray = Object.values(ProfanityLevel);
+    break;
+  case Locale:
+    enumerationArray = Object.values(Locale);
+    break;
+  default:
+    return undefined;
   }
 
   for (const enumerationValue of enumerationArray) {

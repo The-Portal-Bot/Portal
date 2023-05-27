@@ -266,21 +266,6 @@ export function getFunction(output: string, locale: number, context: EventAction
     portal.some((ct) => {
       if (ct.name === context) {
         switch (locale) {
-          case Locale.gr:
-            func = ct.lang.gr;
-            return true;
-          case Locale.en:
-            func = ct.lang.en;
-            return true;
-          case Locale.de:
-            func = ct.lang.de;
-            return true;
-        }
-      }
-    });
-  } else if (output === 'console') {
-    consoleText.some((ct) => {
-      switch (locale) {
         case Locale.gr:
           func = ct.lang.gr;
           return true;
@@ -290,6 +275,21 @@ export function getFunction(output: string, locale: number, context: EventAction
         case Locale.de:
           func = ct.lang.de;
           return true;
+        }
+      }
+    });
+  } else if (output === 'console') {
+    consoleText.some((ct) => {
+      switch (locale) {
+      case Locale.gr:
+        func = ct.lang.gr;
+        return true;
+      case Locale.en:
+        func = ct.lang.en;
+        return true;
+      case Locale.de:
+        func = ct.lang.de;
+        return true;
       }
     });
   }
@@ -314,21 +314,21 @@ export function clientWrite(
       if (member && member.voice.channel) {
         if (v.id === member.voice.channel.id) {
           switch (v.locale) {
-            case Locale.gr:
-              returnValue = portal
-                .find((p) => p.name === context)
-                ?.lang.gr({} as User) as unknown as string;
-              break;
-            case Locale.en:
-              returnValue = portal
-                .find((p) => p.name === context)
-                ?.lang.en({} as User) as unknown as string;
-              break;
-            case Locale.de:
-              returnValue = portal
-                .find((p) => p.name === context)
-                ?.lang.de({} as User) as unknown as string;
-              break;
+          case Locale.gr:
+            returnValue = portal
+              .find((p) => p.name === context)
+              ?.lang.gr({} as User) as unknown as string;
+            break;
+          case Locale.en:
+            returnValue = portal
+              .find((p) => p.name === context)
+              ?.lang.en({} as User) as unknown as string;
+            break;
+          case Locale.de:
+            returnValue = portal
+              .find((p) => p.name === context)
+              ?.lang.de({} as User) as unknown as string;
+            break;
           }
 
           return true;
@@ -367,12 +367,12 @@ export function clientLog(
           if (v.id === message.member.voice.channel.id) {
             // message.author.presence.member.voice.channel.id) {
             switch (v.locale) {
-              case Locale.gr:
-                return consoleText.find((c) => c.name === context)?.lang.gr(args);
-              case Locale.en:
-                return consoleText.find((c) => c.name === context)?.lang.en(args);
-              case Locale.de:
-                return consoleText.find((c) => c.name === context)?.lang.de(args);
+            case Locale.gr:
+              return consoleText.find((c) => c.name === context)?.lang.gr(args);
+            case Locale.en:
+              return consoleText.find((c) => c.name === context)?.lang.en(args);
+            case Locale.de:
+              return consoleText.find((c) => c.name === context)?.lang.de(args);
             }
           }
         }
