@@ -42,8 +42,8 @@ export = {
       };
     }
 
-    let body = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-    let title = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+    let body = args.join(' ').substring(0, args.join(' ').indexOf('|'));
+    let title = args.join(' ').substring(args.join(' ').indexOf('|') + 1);
 
     if (body === '' && title !== '') {
       body = title;

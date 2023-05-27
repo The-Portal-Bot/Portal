@@ -237,7 +237,7 @@ function muteUser(message: Message, muteRoleId: string): void {
  */
 function deleteMessage(message: Message): void {
   if (message.deletable) {
-    const delay = (process.env.DELETEDELAY as unknown as number) * 1000;
+    const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
     setTimeout(async () => {
       if (isMessageDeleted(message)) {
         const deletedMessage = await message.delete().catch((e) => {

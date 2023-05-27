@@ -420,7 +420,7 @@ export async function insertVoice(guildId: string, portalId: string, newVoice: P
     },
     {
       $push: {
-        'portal_list.$[p].voice_list': newVoice,
+        'pChannels.$[p].pVoiceChannels': newVoice,
       },
     },
     {
@@ -439,7 +439,7 @@ export async function removeVoice(guildId: string, portalId: string, voiceId: st
     },
     {
       $pull: {
-        'portal_list.$[p].voice_list': {
+        'pChannels.$[p].pVoiceChannels': {
           id: voiceId,
         },
       },
@@ -457,14 +457,14 @@ export async function removeVoice(guildId: string, portalId: string, voiceId: st
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertURL(guildId: string, new_url: string): Promise<boolean> {
+export async function insertURL(guildId: string, newUrl: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
     },
     {
       $push: {
-        pURLs: new_url,
+        pURLs: newUrl,
       },
     }
   );
@@ -472,14 +472,14 @@ export async function insertURL(guildId: string, new_url: string): Promise<boole
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeURL(guildId: string, remove_url: string): Promise<boolean> {
+export async function removeURL(guildId: string, removeUrl: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
     },
     {
       $pull: {
-        pURLs: remove_url,
+        pURLs: removeUrl,
       },
     }
   );
@@ -487,14 +487,14 @@ export async function removeURL(guildId: string, remove_url: string): Promise<bo
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertIgnore(guildId: string, new_ignore: string): Promise<boolean> {
+export async function insertIgnore(guildId: string, newIgnore: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
     },
     {
       $push: {
-        pIgnores: new_ignore,
+        pIgnores: newIgnore,
       },
     }
   );
@@ -502,14 +502,14 @@ export async function insertIgnore(guildId: string, new_ignore: string): Promise
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeIgnore(guildId: string, remove_ignore: string): Promise<boolean> {
+export async function removeIgnore(guildId: string, removeIgnore: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
     },
     {
       $pull: {
-        pIgnores: remove_ignore,
+        pIgnores: removeIgnore,
       },
     }
   );
@@ -517,13 +517,13 @@ export async function removeIgnore(guildId: string, remove_ignore: string): Prom
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function set_ranks(guildId: string, new_ranks: Rank[]): Promise<boolean> {
+export async function setRanks(guildId: string, newRanks: Rank[]): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
     },
     {
-      ranks: new_ranks,
+      ranks: newRanks,
     }
   );
 
@@ -562,14 +562,14 @@ export async function removePoll(guildId: string, messageId: string): Promise<bo
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertVendor(guildId: string, new_vendor: PGiveRole): Promise<boolean> {
+export async function insertVendor(guildId: string, newVendor: PGiveRole): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
     },
     {
       $push: {
-        pRoles: new_vendor,
+        pRoles: newVendor,
       },
     }
   );
@@ -623,14 +623,14 @@ export async function clearMusicVote(guildId: string): Promise<boolean> {
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertMusicVote(guildId: string, user_id: string): Promise<boolean> {
+export async function insertMusicVote(guildId: string, userId: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
     },
     {
       $push: {
-        'musicData.votes': user_id,
+        'musicData.votes': userId,
       },
     }
   );

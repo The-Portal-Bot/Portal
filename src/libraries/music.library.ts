@@ -213,7 +213,7 @@
 // 			const attachment = message.attachments.find(a => !!a);
 
 // 			if (attachment) {
-// 				const url_path = attachment.url.substr(26);
+// 				const url_path = attachment.url.substring(26);
 
 // 				const options: RequestOptions = {
 // 					'method': 'GET',
@@ -266,9 +266,9 @@
 // 			const video_index = search_term.indexOf('?v=');
 
 // 			if (plist_index > 0) {
-// 				const listId = search_term.substr(plist_index + 5, 34);
+// 				const listId = search_term.substring(plist_index + 5, 34);
 // 				const index_str = pindx_index > 0
-// 					? search_term.substr(pindx_index + 6)
+// 					? search_term.substring(pindx_index + 6)
 // 					: '0';
 // 				const index = isNaN(+index_str)
 // 					? 0
@@ -353,7 +353,7 @@
 // 						return reject(`error while searching youtube playlist: ${e}`);
 // 					});
 // 			} else if (video_index > 0) {
-// 				const videoId = search_term.substr(video_index + 3, 11);
+// 				const videoId = search_term.substring(video_index + 3, 11);
 
 // 				yts({ videoId: videoId })
 // 					.then((yts_attempt: VideoMetadataResult) => {

@@ -1,15 +1,15 @@
-import { ChannelType, GuildChannelCreateOptions, Message } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChannelType, ChatInputCommandInteraction, Guild, GuildChannelCreateOptions, GuildMember } from 'discord.js';
 import { createChannel } from '../../libraries/guild.library';
 import { messageHelp } from '../../libraries/help.library';
 import { insertPortal } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { IPChannel, PChannel } from '../../types/classes/PPortalChannel.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
   data: new SlashCommandBuilder().setName('portal').setDescription('create portal channel'),
-  async execute(message: Message, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
     return new Promise((resolve) => {
       if (args.length === 0) {
         return resolve({
@@ -18,25 +18,25 @@ export = {
         });
       }
 
-      if (!message.guild) {
+      if (!interaction.guild) {
         return resolve({
           result: true,
           value: 'guild could not be fetched',
         });
       }
 
-      if (!message.member) {
+      if (!interaction.member) {
         return resolve({
           result: true,
           value: 'member could not be fetched',
         });
       }
 
-      const currentGuild = message.guild;
-      const currentMember = message.member;
+      const currentGuild = interaction.guild as Guild;
+      const currentMember = interaction.member as GuildMember;
 
-      let pPortalChannel: string = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-      let pPortalCategory: string | null = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+      let pPortalChannel: string = args.join(' ').substring(0, args.join(' ').indexOf('|'));
+      let pPortalCategory: string | null = args.join(' ').substring(args.join(' ').indexOf('|') + 1);
 
       if (pPortalChannel === '' && pPortalCategory !== '') {
         pPortalChannel = pPortalCategory;
