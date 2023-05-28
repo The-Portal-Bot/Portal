@@ -8,39 +8,39 @@ import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/hel
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
-const countryCodes: { name: string; code: string }[] = CountryCodes;
-
-const getCountryCode = function (country: string): string | null {
-  for (let i = 0; i < countryCodes.length; i++) {
-    if (voca.lowerCase(countryCodes[i].name) === voca.lowerCase(country)) return countryCodes[i].name;
-    else if (voca.lowerCase(countryCodes[i].code) === voca.lowerCase(country)) return countryCodes[i].name;
-  }
-
-  return null;
-};
-
 export = {
-  data: new SlashCommandBuilder().setName('corona').setDescription('returns data about COVID19'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    let code: string | null = null;
-
-    if (args.length === 1) {
-      code = getCountryCode(args[0]);
-      if (code === null) {
-        return {
-          result: false,
-          value: messageHelp('commands', 'corona', `${args[0]} is neither a country name nor code`),
-        };
-      }
-    } else if (args.length > 1) {
+  data: new SlashCommandBuilder().setName('corona')
+    .setDescription('returns data on COVID19')
+    .addStringOption(option =>
+      option
+        .setName('country')
+        .setDescription('The country you want to get data for')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    if (!process.env.COVID_193) {
       return {
         result: false,
-        value: messageHelp('commands', 'corona', 'you must give only one argument'),
+        value: 'COVID_193 API key is not set up',
       };
-    } else {
+    }
+
+    let code: string | null = null;
+    const country = interaction.options.getString('country');
+
+    if (!country) {
       return {
         result: false,
-        value: messageHelp('commands', 'corona'),
+        value: messageHelp('commands', 'corona', 'country must be provided'),
+      };
+    }
+
+    code = getCountryCode(country);
+
+    if (!code) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'corona', `could not fetch code for country ${country}`),
       };
     }
 
@@ -67,17 +67,31 @@ export = {
 
     const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
 
-    if (json === null) {
+    if (json.message === 'You are not subscribed to this API.') {
+      return {
+        result: false,
+        value: 'you are not subscribed to this API.',
+      };
+    }
+
+    if (!json) {
       return {
         result: false,
         value: 'data from source was corrupted',
       };
     }
 
-    if (json.errors.length !== 0) {
+    if (json.errors && json.errors.length !== 0) {
       return {
         result: false,
         value: 'source responded with errors',
+      };
+    }
+
+    if (!json.response) {
+      return {
+        result: false,
+        value: 'source responded without data',
       };
     }
 
@@ -86,7 +100,7 @@ export = {
     if (!countryData) {
       return {
         result: false,
-        value: `${args[0]} is neither a country name nor code`,
+        value: `${country} is neither a country name nor code`,
       };
     }
 
@@ -157,4 +171,15 @@ export = {
       value: outcome ? '' : `failed to send message`,
     };
   },
+};
+
+const countryCodes: { name: string; code: string }[] = CountryCodes;
+
+const getCountryCode = function (country: string): string | null {
+  for (let i = 0; i < countryCodes.length; i++) {
+    if (voca.lowerCase(countryCodes[i].name) === voca.lowerCase(country)) return countryCodes[i].name;
+    else if (voca.lowerCase(countryCodes[i].code) === voca.lowerCase(country)) return countryCodes[i].name;
+  }
+
+  return null;
 };

@@ -9,18 +9,191 @@ import { getStructureGuide, getStructureHelp, getStructureHelpSuper } from '../.
 import { getVariableGuide, getVariableHelp, getVariableHelpSuper } from '../../types/interfaces/Variable.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('help').setDescription('returns help message'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    if (args.length === 0) {
+  data: new SlashCommandBuilder()
+    .setName('help')
+    .setDescription('returns help message')
+    .addStringOption(option =>
+      option.setName('category')
+        .setDescription('Category to get help for')
+        .setRequired(true)
+        .addChoices(
+          { name: 'All', value: 'all' },
+          { name: 'Command description', value: 'description_commands' },
+          { name: 'Variable description', value: 'description_variables' },
+          { name: 'Pipe description', value: 'description_pipes' },
+          { name: 'Attribute description', value: 'description_attributes' },
+          { name: 'Structure description', value: 'description_structures' },
+          { name: 'Command guide', value: 'guide_commands' },
+          { name: 'Variable guide', value: 'guide_variables' },
+          { name: 'Pipe guide', value: 'guide_pipes' },
+          { name: 'Attribute guide', value: 'guide_attributes' },
+          { name: 'Structure guide', value: 'guide_structures' },
+        ))
+    .addStringOption(option =>
+      option.setName('command_unauthorised')
+        .setDescription('Command to get help for')
+        .setRequired(false)
+        .addChoices(
+          { name: 'about', value: 'about' },
+          { name: 'announce', value: 'announce' },
+          { name: 'bet', value: 'bet' },
+          { name: 'corona', value: 'corona' },
+          { name: 'crypto', value: 'crypto' },
+          { name: 'help', value: 'help' },
+          { name: 'joke', value: 'joke' },
+          { name: 'leader', value: 'leader' },
+          { name: 'leave', value: 'leave' },
+          { name: 'level', value: 'level' },
+          { name: 'news', value: 'news' },
+          { name: 'ping', value: 'ping' },
+          { name: 'poll', value: 'poll' },
+          { name: 'portal', value: 'portal' },
+          { name: 'ranks', value: 'ranks' },
+          { name: 'roll', value: 'roll' },
+          { name: 'set', value: 'set' },
+          { name: 'state', value: 'state' },
+          { name: 'weather', value: 'weather' },
+          { name: 'whoami', value: 'whoami' },
+        ))
+    .addStringOption(option =>
+      option.setName('command_authorised')
+        .setDescription('Command to get help for')
+        .setRequired(false)
+        .addChoices(
+          { name: 'announcement', value: 'announcement', },
+          { name: 'ban', value: 'ban', },
+          { name: 'delete_messages', value: 'delete_messages', },
+          { name: 'focus', value: 'focus', },
+          { name: 'force', value: 'force', },
+          { name: 'kick', value: 'kick', },
+          { name: 'ignore', value: 'ignore', },
+          { name: 'vendor', value: 'vendor', },
+          { name: 'run', value: 'run', },
+          { name: 'set_ranks', value: 'set_ranks', },
+          { name: 'join', value: 'join', },
+          { name: 'music', value: 'music', },
+          { name: 'url', value: 'url', },
+        ))
+    .addStringOption(option =>
+      option.setName('variable')
+        .setDescription('Variable to get help for')
+        .setRequired(false)
+        .addChoices(
+          { name: '##', value: '##' },
+          { name: '#', value: '#' },
+          { name: 'creatorPortal', value: 'creatorPortal' },
+          { name: 'creatorVoice', value: 'creatorVoice' },
+          { name: 'date', value: 'date' },
+          { name: 'dayNumber', value: 'dayNumber' },
+          { name: 'dayName', value: 'dayName' },
+          { name: 'monthNumber', value: 'monthNumber' },
+          { name: 'monthName', value: 'monthName' },
+          { name: 'year', value: 'year' },
+          { name: 'time', value: 'time' },
+          { name: 'hour', value: 'hour' },
+          { name: 'minute', value: 'minute' },
+          { name: 'second', value: 'second' },
+          { name: 'memberActiveCount', value: 'memberActiveCount' },
+          { name: 'memberCount', value: 'memberCount' },
+          { name: 'memberHistory', value: 'memberHistory' },
+          { name: 'pMembers', value: 'pMembers' },
+          { name: 'memberWithStatus', value: 'memberWithStatus' },
+          { name: 'statusCount', value: 'statusCount' },
+          { name: 'statusHistory', value: 'statusHistory' },
+          { name: 'statusList', value: 'statusList' },
+        ))
+    .addStringOption(option =>
+      option.setName('pipe')
+        .setDescription('Pipe to get help for')
+        .setRequired(false)
+        .addChoices(
+          { name: 'acronym', value: 'acronym' },
+          { name: 'vowels', value: 'vowels' },
+          { name: 'consonants', value: 'consonants' },
+          { name: 'camelCase', value: 'camelCase' },
+          { name: 'capitalise', value: 'capitalise' },
+          { name: 'decapitalise', value: 'decapitalise' },
+          { name: 'lowerCase', value: 'lowerCase' },
+          { name: 'upperCase', value: 'upperCase' },
+          { name: 'populous_count', value: 'populous_count' },
+          { name: 'populous', value: 'populous' },
+          { name: 'snakeCase', value: 'snakeCase' },
+          { name: 'souvlakiCase', value: 'souvlakiCase' },
+          { name: 'words', value: 'words' },
+          { name: 'titleCase', value: 'titleCase' },
+          { name: 'length', value: 'length' },
+        ))
+    .addStringOption(option =>
+      option.setName('attribute')
+        .setDescription('Attribute to get help for')
+        .setRequired(false)
+        .addChoices(
+          { name: 'All', value: 'all' },
+          { name: 'Command description', value: 'description_commands' },
+          { name: 'Variable description', value: 'description_variables' },
+          { name: 'Pipe description', value: 'description_pipes' },
+          { name: 'Attribute description', value: 'description_attributes' },
+          { name: 'Structure description', value: 'description_structures' },
+          { name: 'Command guide', value: 'guide_commands' },
+          { name: 'Variable guide', value: 'guide_variables' },
+          { name: 'Pipe guide', value: 'guide_pipes' },
+          { name: 'Attribute guide', value: 'guide_attributes' },
+          { name: 'Structure guide', value: 'guide_structures' },
+        ))
+    .addStringOption(option =>
+      option.setName('structure')
+        .setDescription('Structure to get help for')
+        .setRequired(false)
+        .addChoices(
+          { name: 'annAnnounce', value: 'annAnnounce' },
+          { name: 'noBots', value: 'noBots' },
+          { name: 'allowedRoles', value: 'allowedRoles' },
+          { name: 'render', value: 'render' },
+          { name: 'annUser', value: 'annUser' },
+          { name: 'bitrate', value: 'bitrate' },
+          { name: 'kickAfter', value: 'kickAfter' },
+          { name: 'banAfter', value: 'banAfter' },
+          { name: 'prefix', value: 'prefix' },
+          { name: 'muteRole', value: 'muteRole' },
+          { name: 'rankSpeed', value: 'rankSpeed' },
+          { name: 'profanityLevel', value: 'profanityLevel' },
+          { name: 'initialRole', value: 'initialRole' },
+          { name: 'locale', value: 'locale' },
+          { name: 'position', value: 'position' },
+          { name: 'regexOverwrite', value: 'regexOverwrite' },
+          { name: 'regexPortal', value: 'regexPortal' },
+          { name: 'regexVoice', value: 'regexVoice' },
+          { name: 'regex', value: 'regex' },
+          { name: 'userLimitPortal', value: 'userLimitPortal' },
+          { name: 'userLimit', value: 'userLimit' },
+        )),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const category = interaction.options.getString('category');
+    const command_unauthorised = interaction.options.getString('command_unauthorised');
+    const command_authorised = interaction.options.getString('command_authorised');
+    const variable = interaction.options.getString('variable');
+    const pipe = interaction.options.getString('pipe');
+    const attribute = interaction.options.getString('attribute');
+    const structure = interaction.options.getString('structure');
+    const specific = command_unauthorised ?? command_authorised ?? variable ?? pipe ?? attribute ?? structure;
+
+    if (!category) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'help', 'category must be provided'),
+      };
+    }
+
+    if (category === 'all') {
       return { result: !!(await simpleReply(interaction)), value: '' };
     }
 
-    if (args.length === 1) {
-      return { result: !!(await propertyReply(interaction, args)), value: '' };
+    if (category.startsWith('description')) {
+      return { result: !!(await propertyReply(interaction, category.split('_')[1], specific)), value: '' };
     }
 
-    if (args.length === 2 && args[1] === 'guide') {
-      return { result: !!(await guideReply(interaction, args)), value: '' };
+    if (category.startsWith('guide')) {
+      return { result: !!(await guideReply(interaction, category.split('_')[1])), value: '' };
     }
 
     return { result: false, value: messageHelp('commands', 'help') };
@@ -91,37 +264,62 @@ const helpArray: Field[] = [
 ];
 
 async function simpleReply(interaction: ChatInputCommandInteraction) {
-  return !!(await interaction.channel
-    ?.send({
-      embeds: [
-        createEmbed(
-          'Help Card',
-          'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
-          '> make a member an **admin**, give role `p.admin`\n' +
-          '> make a member an **moderator**, give role `p.mod`\n' +
-          '> make a member a **dj**, give role `p.dj`\n' +
-          '> to **whitelist** a member, give role `p.mod`\n' +
-          '> to **ignore** a member, give role `p.ignore`\n' +
-          '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
-          '#05d1ff',
-          helpArray,
-          null,
-          null,
-          true,
-          null,
-          null
-        ),
-      ],
-    })
-    .catch((e) => {
-      return Promise.reject(e);
-    }));
+  const message = {
+    embeds: [
+      createEmbed(
+        'Help Card',
+        'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
+        '> make a member an **admin**, give role `p.admin`\n' +
+        '> make a member an **moderator**, give role `p.mod`\n' +
+        '> make a member a **dj**, give role `p.dj`\n' +
+        '> to **whitelist** a member, give role `p.mod`\n' +
+        '> to **ignore** a member, give role `p.ignore`\n' +
+        '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
+        '#05d1ff',
+        helpArray,
+        null,
+        null,
+        true,
+        null,
+        null
+      ),
+    ],
+  }
+
+  return !!(await interaction.channel?.send(message));
 }
 
-async function propertyReply(interaction: ChatInputCommandInteraction, args: string[]) {
+async function propertyReply(interaction: ChatInputCommandInteraction, type: string, specific: string | null) {
   let embedArray: EmbedBuilder[] | null = null;
 
-  switch (args[0]) {
+  if (specific) {
+    let detailed = getCommandHelpSuper(specific);
+    if (!detailed) {
+      detailed = getVariableHelpSuper(specific);
+      if (!detailed) {
+        detailed = getPipeHelpSuper(specific);
+        if (!detailed) {
+          detailed = getAttributeHelpSuper(specific);
+          if (!detailed) {
+            detailed = getStructureHelpSuper(specific);
+            if (!detailed) {
+              return Promise.reject(messageHelp('commands', 'help', `*${specific}* does not exist in portal`));
+            }
+          }
+        }
+      }
+    }
+
+    if (detailed instanceof EmbedBuilder) {
+      return !!interaction.user.send({ embeds: [detailed] }).catch(() => {
+        return Promise.reject('failed to send message');
+      });
+    } else {
+      return Promise.reject(messageHelp('commands', 'help', `*${type}* does not exist in portal`));
+    }
+  }
+
+  switch (type) {
     case 'commands':
       embedArray = getCommandHelp();
       break;
@@ -147,38 +345,15 @@ async function propertyReply(interaction: ChatInputCommandInteraction, args: str
     });
 
     return true;
-  } else {
-    let detailed = getCommandHelpSuper(args[0]);
-    if (!detailed) {
-      detailed = getVariableHelpSuper(args[0]);
-      if (!detailed) {
-        detailed = getPipeHelpSuper(args[0]);
-        if (!detailed) {
-          detailed = getAttributeHelpSuper(args[0]);
-          if (!detailed) {
-            detailed = getStructureHelpSuper(args[0]);
-            if (!detailed) {
-              return Promise.reject(messageHelp('commands', 'help', `*${args[0]}* does not exist in portal`));
-            }
-          }
-        }
-      }
-    }
-
-    if (detailed instanceof EmbedBuilder) {
-      return !!interaction.user.send({ embeds: [detailed] }).catch(() => {
-        return Promise.reject('failed to send message');
-      });
-    } else {
-      return Promise.reject(messageHelp('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`));
-    }
   }
+
+  return false;
 }
 
-async function guideReply(interaction: ChatInputCommandInteraction, args: string[]) {
+async function guideReply(interaction: ChatInputCommandInteraction, type: string) {
   let guide: EmbedBuilder | null = null;
 
-  switch (args[0]) {
+  switch (type) {
     case 'commands':
       guide = getCommandGuide();
       break;
@@ -201,6 +376,6 @@ async function guideReply(interaction: ChatInputCommandInteraction, args: string
       return Promise.reject('failed to send message');
     });
   } else {
-    return Promise.reject(messageHelp('commands', 'help', `*${args[0]} ${args[1]}* does not exist in portal`));
+    return Promise.reject(messageHelp('commands', 'help', `*${type}* does not exist in portal`));
   }
 }

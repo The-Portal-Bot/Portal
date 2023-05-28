@@ -224,6 +224,10 @@ async function handleInteractionCommand(
   }
 
   const messageContent = interaction.options.getString('message');
+  logger.info(interaction.options);
+  logger.info(interaction.options);
+  logger.info(`messageContent: ${messageContent}`);
+  logger.info(`messageContent?.split(/ +/g): ${messageContent?.split(/ +/g)}`);
 
   const command = commandFetcher(
     interaction.commandName as AuthCommands | NoAuthCommands,
