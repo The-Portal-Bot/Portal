@@ -8,8 +8,10 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { PortalChannelTypes } from '../../types/enums/PortalChannel.enum';
 
 export = {
-  data: new SlashCommandBuilder().setName('force').setDescription('force updates channel you are in to force a rename'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('force')
+    .setDescription('force updates channel you are in to force a rename'),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
     if (!member) {
       return {

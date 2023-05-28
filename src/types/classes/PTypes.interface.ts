@@ -2,7 +2,6 @@ import { User } from 'discord.js';
 
 export type NoAuthCommands =
   | 'about'
-  | 'ai'
   | 'announce'
   | 'bet'
   | 'corona'
@@ -11,11 +10,9 @@ export type NoAuthCommands =
   | 'football'
   | 'help'
   | 'join'
-  | 'joke'
   | 'leaderboard'
   | 'leave'
   | 'level'
-  | 'news'
   | 'ping'
   | 'poll'
   | 'ranks'

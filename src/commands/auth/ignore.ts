@@ -1,25 +1,19 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { includedInPIgnores } from '../../libraries/guild.library';
-import { messageHelp } from '../../libraries/help.library';
 import { insertIgnore, removeIgnore } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('ignore').setDescription('ignore user or channel from spam'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('ignore')
+    .setDescription('ignore user or channel from spam'),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
         result: false,
         value: 'guild could not be fetched',
-      };
-    }
-
-    if (args.length > 0) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'ignore'),
       };
     }
 
@@ -28,7 +22,7 @@ export = {
     if (!channelId) {
       return {
         result: false,
-        value: 'could not fetch channel ',
+        value: 'could not fetch channel',
       };
     }
 

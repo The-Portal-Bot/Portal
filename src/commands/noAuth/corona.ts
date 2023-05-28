@@ -9,12 +9,13 @@ import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('corona')
+  data: new SlashCommandBuilder()
+    .setName('corona')
     .setDescription('returns data on COVID19')
     .addStringOption(option =>
       option
         .setName('country')
-        .setDescription('The country you want to get data for')
+        .setDescription('The country you want to get corona data for')
         .setRequired(true))
     .setDMPermission(false),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {

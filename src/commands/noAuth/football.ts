@@ -1,27 +1,42 @@
 import { RequestOptions } from 'https';
-import { getJSONFromString } from '../../libraries/help.library';
+import { getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 
 export = {
-  data: new SlashCommandBuilder().setName('football').setDescription('returns football data'),
-  async execute():
-    Promise<ReturnPromise> {
-    // if (args.length < 3) {
-    //     return {
-    //         result: false,
-    //         value: 'you can run `./help football` for help'
-    //     };
-    // } else {
-    //     return {
-    //         result: false,
-    //         value: 'you should specify the league and match day, you can run `./help football` for help'
-    //     };
-    // }
+  data: new SlashCommandBuilder()
+    .setName('football')
+    .setDescription('returns football data')
+    .addStringOption(option =>
+      option
+        .setName('league')
+        .setDescription('Football league')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('day')
+        .setDescription('Football match day')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    if (!process.env.FOOTBALL_DATA) {
+      return {
+        result: false,
+        value: 'FOOTBALL_DATA API key is not set up',
+      };
+    }
 
-    const league = 'PL';
-    const day = '22';
+    const league = interaction.options.getString('league');
+    const day = interaction.options.getString('day');
+
+    if (!league || !day) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'football', 'league and day must be provided'),
+      };
+    }
 
     const options: RequestOptions = {
       method: 'GET',
@@ -40,7 +55,7 @@ export = {
 
     return {
       result: true,
-      value: 'yolo ?',
+      value: 'not yet implemented',
     };
 
     // if (json === null) {

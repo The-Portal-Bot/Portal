@@ -8,105 +8,99 @@ import { IPChannel, PChannel } from '../../types/classes/PPortalChannel.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('portal').setDescription('create portal channel'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
-    return new Promise((resolve) => {
-      if (args.length === 0) {
-        return resolve({
-          result: false,
-          value: messageHelp('commands', 'portal'),
-        });
-      }
+  data: new SlashCommandBuilder()
+    .setName('portal')
+    .setDescription('create portal channel')
+    .addChannelOption((option) =>
+      option
+        .setName('portal_channel_name')
+        .setDescription('the name of the portal channel you want to create')
+        .setRequired(true))
+    .addChannelOption((option) =>
+      option
+        .setName('portal_channel_category_name')
+        .setDescription('the name of the portal channel category you want to create')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    const portalChannelName = interaction.options.getString('portal_channel_name');
+    const portalChannelCategoryName = interaction.options.getString('portal_channel_category_name');
 
-      if (!interaction.guild) {
-        return resolve({
-          result: true,
-          value: 'guild could not be fetched',
-        });
-      }
-
-      if (!interaction.member) {
-        return resolve({
-          result: true,
-          value: 'member could not be fetched',
-        });
-      }
-
-      const currentGuild = interaction.guild as Guild;
-      const currentMember = interaction.member as GuildMember;
-
-      let pPortalChannel: string = args.join(' ').substring(0, args.join(' ').indexOf('|'));
-      let pPortalCategory: string | null = args.join(' ').substring(args.join(' ').indexOf('|') + 1);
-
-      if (pPortalChannel === '' && pPortalCategory !== '') {
-        pPortalChannel = pPortalCategory;
-        pPortalCategory = null;
-      }
-
-      const portalOptions: GuildChannelCreateOptions = {
-        name: 'portal',
-        topic: `by Portal, channels on demand`,
-        type: ChannelType.GuildVoice,
-        bitrate: 32000,
-        userLimit: 1,
+    if (!portalChannelName) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'portal', 'portal channel name is required'),
       };
+    }
 
-      const voiceRegex = pGuild.premium
-        ? // ? 'G$#-P$memberCount | $statusList'
-        `$#:$memberCount {{
+    if (!interaction.guild) {
+      return {
+        result: true,
+        value: 'guild could not be fetched',
+      };
+    }
+
+    if (!interaction.member) {
+      return {
+        result: true,
+        value: 'member could not be fetched',
+      };
+    }
+
+    const currentGuild = interaction.guild as Guild;
+    const currentMember = interaction.member as GuildMember;
+
+    const portalOptions: GuildChannelCreateOptions = {
+      name: 'portal',
+      topic: `by Portal, channels on demand`,
+      type: ChannelType.GuildVoice,
+      bitrate: 32000,
+      userLimit: 1,
+    };
+
+    const voiceRegex = pGuild.premium
+      ? // ? 'G$#-P$memberCount | $statusList'
+      `$#:$memberCount {{
                 "if": "$statusCount", "is": "===", "with": "1",
                 "yes": "$statusList", "no": "$statusList|acronym"
             }}`
-        : 'Channel $#';
+      : 'Channel $#';
 
-      createChannel(currentGuild, pPortalChannel, portalOptions, pPortalCategory)
-        .then((rChannel) => {
-          const pChannel = new PChannel(
-            rChannel,
-            currentMember.id,
-            true,
-            pPortalChannel,
-            voiceRegex,
-            [],
-            false,
-            null,
-            pGuild.locale,
-            true,
-            true,
-            0,
-            false
-          );
+    const newPortalChannel = await createChannel(currentGuild, portalChannelName, portalOptions, portalChannelCategoryName);
 
-          insertPortal(pGuild.id, pChannel as unknown as IPChannel)
-            .then((rPortal) => {
-              if (rPortal) {
-                return resolve({
-                  result: true,
-                  value:
-                    'portal channel has been created.\n' +
-                    "Keep in mind that due to Discord's limitations,\n" +
-                    'channel names will be updated on a five minute interval',
-                });
-              } else {
-                return resolve({
-                  result: false,
-                  value: 'portal channel failed to be created',
-                });
-              }
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `portal channel failed to be created: ${e}`,
-              });
-            });
-        })
-        .catch((e) => {
-          return resolve({
-            result: false,
-            value: `an error occurred while creating channel: ${e}`,
-          });
-        });
-    });
+    if (!newPortalChannel) {
+      return {
+        result: false,
+        value: `an error occurred while creating channel}`,
+      };
+    }
+
+    const pChannel = new PChannel(
+      newPortalChannel,
+      currentMember.id,
+      true,
+      portalChannelName,
+      voiceRegex,
+      [],
+      false,
+      null,
+      pGuild.locale,
+      true,
+      true,
+      0,
+      false
+    );
+
+    const portalInserted = await insertPortal(pGuild.id, pChannel as unknown as IPChannel);
+
+    return {
+      result: !!portalInserted,
+      value:
+        portalInserted ? 'Portal channel has been created.\n' +
+          "Keep in mind that due to Discord's limitations,\n" +
+          'channel names will be updated on a five minute interval' :
+          'portal channel failed to be created',
+    };
+
   },
 };

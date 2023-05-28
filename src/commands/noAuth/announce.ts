@@ -1,16 +1,26 @@
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
-// import { clientTalk } from "../../libraries/localisation.library";
-import { SlashCommandBuilder } from '@discordjs/builders';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
   data: new SlashCommandBuilder()
     .setName('announce')
-    .setDescription('send an announcement to the announcement channel'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
-    if (args.length === 0) {
+    .setDescription('send an announcement to the announcement channel')
+    .addStringOption(option =>
+      option.setName('title')
+        .setDescription('Announcement title')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('body')
+        .setDescription('Announcement body')
+        .setRequired(true)),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    const title = interaction.options.getString('title');
+    const body = interaction.options.getString('body');
+
+    if (!title || !body) {
       return {
         result: false,
         value: messageHelp('commands', 'announce'),
@@ -31,23 +41,13 @@ export = {
       };
     }
 
-    const announcementChannel = <TextChannel>(
-      interaction.guild.channels.cache.find((channel) => channel.id === pGuild.announcement)
-    );
+    const announcementChannel = interaction.guild.channels.cache.find((channel) => channel.id === pGuild.announcement) as TextChannel;
 
     if (!announcementChannel) {
       return {
         result: false,
         value: messageHelp('commands', 'announce', 'announcements channel does not exist'),
       };
-    }
-
-    let body = args.join(' ').substring(0, args.join(' ').indexOf('|'));
-    let title = args.join(' ').substring(args.join(' ').indexOf('|') + 1);
-
-    if (body === '' && title !== '') {
-      body = title;
-      title = '';
     }
 
     const richMessage = createEmbed(

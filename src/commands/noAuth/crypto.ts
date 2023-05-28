@@ -7,31 +7,35 @@ import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('crypto').setDescription('returns information about crypto currencies'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    if (args.length === 0) {
+  data: new SlashCommandBuilder()
+    .setName('crypto')
+    .setDescription('returns information about crypto currencies')
+    .addStringOption(option =>
+      option
+        .setName('crypto_name')
+        .setDescription('The `name of the crypto currency`')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('currency_name')
+        .setDescription('The name of the fiat currency to compare to')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    if (!process.env.COIN_GECKO) {
       return {
         result: false,
-        value: messageHelp('commands', 'crypto', 'must add currency to search'),
-      };
-    } else if (args.length > 3) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'crypto'),
+        value: 'COIN_GECKO API key is not set up',
       };
     }
 
-    const cryptoName = args.join(' ').substring(0, args.join(' ').indexOf('|')).replace(/\s/g, ' ').trim();
-    const currencyName = args
-      .join(' ')
-      .substring(args.join(' ').indexOf('|') + 1)
-      .replace(/\s/g, ' ')
-      .trim();
+    const cryptoName = interaction.options.getString('crypto_name');
+    const currencyName = interaction.options.getString('currency_name');
 
-    if (cryptoName === '') {
+    if (!cryptoName || !currencyName) {
       return {
         result: false,
-        value: messageHelp('commands', 'crypto', 'you must give an authority currency like usd'),
+        value: messageHelp('commands', 'crypto', 'crypto and fiat name must be provided'),
       };
     }
 
@@ -42,7 +46,7 @@ export = {
       path: `/simple/price?ids=${cryptoName}&vs_currencies=${currencyName}`,
       headers: {
         'x-rapidapi-host': 'coingecko.p.rapidapi.com',
-        'x-rapidapi-key': process.env.COINGECKO,
+        'x-rapidapi-key': process.env.COIN_GECKO,
         useQueryString: 1,
       },
     };
@@ -68,8 +72,7 @@ export = {
     const outcome = await interaction.channel?.send({
       embeds: [
         createEmbed(null, null, '#FFE600', null, null, null, false, null, null, undefined, {
-          name: `${voca.titleCase(cryptoName)} to ${voca.titleCase(currencyName)} price is ${
-            json[cryptoName][currencyName]
+          name: `${voca.titleCase(cryptoName)} to ${voca.titleCase(currencyName)} price is ${json[cryptoName][currencyName]
           }`,
           icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/coin.gif',
         }),
@@ -77,7 +80,7 @@ export = {
     });
 
     return {
-      result: false,
+      result: !!outcome,
       value: outcome ? '' : 'failed to send message',
     };
   },

@@ -169,10 +169,10 @@ export function kick(memberToKick: GuildMember, kickReason: string): Promise<boo
   });
 }
 
-export function ban(memberToBan: GuildMember, banOptions: BanOptions): Promise<boolean> {
+export function ban(userToBan: GuildMember, banOptions: BanOptions): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    if (memberToBan.bannable) {
-      memberToBan
+    if (userToBan.bannable) {
+      userToBan
         .ban(banOptions)
         .then(() => {
           return resolve(true);

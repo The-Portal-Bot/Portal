@@ -15,18 +15,6 @@
         }
       },
       {
-        "name": "ai",
-        "scopeLimit": "none",
-        "time": 0,
-        "auth": false,
-        "premium": false,
-        "reply": true,
-        "delete": {
-          "source": true,
-          "reply": false
-        }
-      },
-      {
         "name": "announce",
         "scopeLimit": "member",
         "time": 2,
@@ -123,18 +111,6 @@
         }
       },
       {
-        "name": "joke",
-        "scopeLimit": "none",
-        "time": 0,
-        "auth": false,
-        "premium": false,
-        "reply": true,
-        "delete": {
-          "source": false,
-          "reply": false
-        }
-      },
-      {
         "name": "leaderboard",
         "scopeLimit": "none",
         "time": 0,
@@ -168,18 +144,6 @@
         "delete": {
           "source": true,
           "reply": true
-        }
-      },
-      {
-        "name": "news",
-        "scopeLimit": "none",
-        "time": 0,
-        "auth": false,
-        "premium": false,
-        "reply": false,
-        "delete": {
-          "source": false,
-          "reply": false
         }
       },
       {

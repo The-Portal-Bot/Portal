@@ -16,24 +16,34 @@ function isRole(rank: Rank, roles: Role[]) {
 }
 
 export = {
-  data: new SlashCommandBuilder().setName('set_ranks').setDescription('create ranks for the server'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('set_ranks')
+    .setDescription('create ranks for the server')
+    .addStringOption((option) =>
+      option
+        .setName('rank_string')
+        .setDescription('JSON string of ranks to set (even for one rank)')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild)
       return {
         result: true,
         value: 'guild could not be fetched',
       };
 
-    if (args.length === 0) {
+    const rankString = interaction.options.getString('rank_string');
+
+    if (!rankString) {
       return {
         result: false,
-        value: messageHelp('commands', 'set_ranks'),
+        value: messageHelp('commands', 'set_ranks', 'rank string must be provided'),
       };
     }
 
     const roles = interaction.guild.roles.cache.map((cacheRole) => cacheRole);
 
-    const newRanksJSON = getJSONFromString(args.join(' '));
+    const newRanksJSON = getJSONFromString(rankString);
     if (!newRanksJSON || !Array.isArray(newRanksJSON)) {
       return {
         result: false,

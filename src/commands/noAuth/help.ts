@@ -39,19 +39,20 @@ export = {
           { name: 'bet', value: 'bet' },
           { name: 'corona', value: 'corona' },
           { name: 'crypto', value: 'crypto' },
+          { name: 'focus', value: 'focus' },
+          { name: 'football', value: 'football' },
           { name: 'help', value: 'help' },
-          { name: 'joke', value: 'joke' },
-          { name: 'leader', value: 'leader' },
+          { name: 'join', value: 'join' },
+          { name: 'leaderboard', value: 'leaderboard' },
           { name: 'leave', value: 'leave' },
           { name: 'level', value: 'level' },
-          { name: 'news', value: 'news' },
           { name: 'ping', value: 'ping' },
           { name: 'poll', value: 'poll' },
-          { name: 'portal', value: 'portal' },
           { name: 'ranks', value: 'ranks' },
           { name: 'roll', value: 'roll' },
-          { name: 'set', value: 'set' },
+          { name: 'run', value: 'run' },
           { name: 'state', value: 'state' },
+          { name: 'spam_rules', value: 'spam_rules' },
           { name: 'weather', value: 'weather' },
           { name: 'whoami', value: 'whoami' },
         ))
@@ -60,19 +61,19 @@ export = {
         .setDescription('Command to get help for')
         .setRequired(false)
         .addChoices(
-          { name: 'announcement', value: 'announcement', },
-          { name: 'ban', value: 'ban', },
-          { name: 'delete_messages', value: 'delete_messages', },
-          { name: 'focus', value: 'focus', },
-          { name: 'force', value: 'force', },
-          { name: 'kick', value: 'kick', },
-          { name: 'ignore', value: 'ignore', },
-          { name: 'vendor', value: 'vendor', },
-          { name: 'run', value: 'run', },
-          { name: 'set_ranks', value: 'set_ranks', },
-          { name: 'join', value: 'join', },
-          { name: 'music', value: 'music', },
-          { name: 'url', value: 'url', },
+          { name: 'announcement', value: 'announcement' },
+          { name: 'ban', value: 'ban' },
+          { name: 'delete_messages', value: 'delete_messages' },
+          { name: 'force', value: 'force' },
+          { name: 'ignore', value: 'ignore' },
+          { name: 'invite', value: 'invite' },
+          { name: 'kick', value: 'kick' },
+          { name: 'music', value: 'music' },
+          { name: 'portal', value: 'portal' },
+          { name: 'vendor', value: 'vendor' },
+          { name: 'set_ranks', value: 'set_ranks' },
+          { name: 'set', value: 'set' },
+          { name: 'url', value: 'url' },
         ))
     .addStringOption(option =>
       option.setName('variable')
@@ -320,21 +321,21 @@ async function propertyReply(interaction: ChatInputCommandInteraction, type: str
   }
 
   switch (type) {
-    case 'commands':
-      embedArray = getCommandHelp();
-      break;
-    case 'variables':
-      embedArray = getVariableHelp();
-      break;
-    case 'pipes':
-      embedArray = getPipeHelp();
-      break;
-    case 'attributes':
-      embedArray = getAttributeHelp();
-      break;
-    case 'structures':
-      embedArray = getStructureHelp();
-      break;
+  case 'commands':
+    embedArray = getCommandHelp();
+    break;
+  case 'variables':
+    embedArray = getVariableHelp();
+    break;
+  case 'pipes':
+    embedArray = getPipeHelp();
+    break;
+  case 'attributes':
+    embedArray = getAttributeHelp();
+    break;
+  case 'structures':
+    embedArray = getStructureHelp();
+    break;
   }
 
   if (embedArray) {
@@ -354,21 +355,21 @@ async function guideReply(interaction: ChatInputCommandInteraction, type: string
   let guide: EmbedBuilder | null = null;
 
   switch (type) {
-    case 'commands':
-      guide = getCommandGuide();
-      break;
-    case 'variables':
-      guide = getVariableGuide();
-      break;
-    case 'pipes':
-      guide = getPipeGuide();
-      break;
-    case 'attributes':
-      guide = getAttributeGuide();
-      break;
-    case 'structures':
-      guide = getStructureGuide();
-      break;
+  case 'commands':
+    guide = getCommandGuide();
+    break;
+  case 'variables':
+    guide = getVariableGuide();
+    break;
+  case 'pipes':
+    guide = getPipeGuide();
+    break;
+  case 'attributes':
+    guide = getAttributeGuide();
+    break;
+  case 'structures':
+    guide = getStructureGuide();
+    break;
   }
 
   if (guide) {

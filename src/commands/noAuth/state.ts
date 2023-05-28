@@ -6,7 +6,7 @@ import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
   data: new SlashCommandBuilder().setName('state').setDescription("returns server's state"),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const guild = client.guilds.cache.find((g) => g.id === interaction?.guild?.id);
 
     if (!guild) {
@@ -132,13 +132,12 @@ export = {
       });
     }
 
-    const sentMessage = await interaction.channel
-      ?.send({
-        embeds: [createEmbed('State of Portal', null, '#eba000', portalState, null, null, true, null, null)],
-      })
+    const sentMessage = await interaction.channel?.send({
+      embeds: [createEmbed('State of Portal', null, '#eba000', portalState, null, null, true, null, null)],
+    })
 
     return {
-      result: true,
+      result: !!sentMessage,
       value: sentMessage ? '' : 'failed to send message',
     };
   },

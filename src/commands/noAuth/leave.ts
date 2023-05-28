@@ -7,21 +7,30 @@ import { AnnouncementAction, ReturnPromise } from '../../types/classes/PTypes.in
 
 export = {
   data: new SlashCommandBuilder().setName('leave').setDescription('tell Portal to leave your voice channel'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
-      return Promise.reject('message has no guild');
+      return {
+        result: false,
+        value: 'guild could not be fetched',
+      };
     }
 
     const voiceConnection = await getVoiceConnection(interaction.guild.id);
 
     if (!voiceConnection) {
-      return Promise.reject('Portal must be connected to a voice channel with you');
+      return {
+        result: false,
+        value: 'portal must be connected to a voice channel with you',
+      };
     }
 
-    try {
-      voiceConnection.disconnect();
-    } catch (e) {
-      return Promise.reject('failed to disconnect from voice channel');
+    const outcome = await voiceConnection.disconnect();
+
+    if (!outcome) {
+      return {
+        result: false,
+        value: 'failed to disconnect from voice channel',
+      };
     }
 
     // clientTalk(client, pGuild, 'leave');
@@ -33,8 +42,8 @@ export = {
     // );
 
     return {
-      value: clientWrite(interaction, pGuild, AnnouncementAction.leave),
       result: true,
+      value: clientWrite(interaction, pGuild, AnnouncementAction.leave),
     };
   },
 };

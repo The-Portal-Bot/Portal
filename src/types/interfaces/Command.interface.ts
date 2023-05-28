@@ -92,13 +92,6 @@ const commands: InterfaceBlueprint[] = [
     set: null,
   },
   {
-    name: 'joke',
-    hover: 'get a joke',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
     name: 'kick',
     hover: 'kick a member',
     auth: AuthType.admin,
@@ -130,13 +123,6 @@ const commands: InterfaceBlueprint[] = [
     name: 'music',
     hover: 'create a music channel',
     auth: AuthType.voice,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'news',
-    hover: 'get the latest news',
-    auth: AuthType.none,
     get: null,
     set: null,
   },
@@ -217,13 +203,6 @@ const commands: InterfaceBlueprint[] = [
     get: null,
     set: null,
   },
-  // {
-  // 	name: 'translate',
-  //  hover: 'hover me | click me',
-  // 	auth: AuthEnum.none,
-  // 	get: null,
-  // 	set: null
-  // },
   {
     name: 'url',
     hover: 'create a url-only channel',

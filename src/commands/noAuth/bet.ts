@@ -1,39 +1,50 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
-import { OpapGameId } from '../../types/enums/OpapGames.enum';
-import { createEmbed, getJSONFromString, getKeyFromEnum, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder().setName('bet').setDescription('returns betting data'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    let gameCode: number | undefined = undefined;
+  data: new SlashCommandBuilder()
+    .setName('bet')
+    .setDescription('returns betting data')
+    .addStringOption(option =>
+      option.setName('provider')
+        .setDescription('betting provider')
+        .setRequired(true)
+        .addChoices(
+          { name: 'ΟΠΑΠ', value: 'opap' },
+        ))
+    .addNumberOption(option =>
+      option.setName('game')
+        .setDescription('betting game')
+        .setRequired(true)
+        .addChoices(
+          { name: 'ΚΙΝΟ', value: 1100 },
+          { name: 'PoweSpin', value: 1110 },
+          { name: 'Super3', value: 2100 },
+          { name: 'ΠΡΟΤΟ', value: 2101 },
+          { name: 'LOTTO', value: 5103 },
+          { name: 'Tzoker', value: 5104 },
+          { name: 'extra5', value: 5106 },
+        )),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const provider = interaction.options.getString('provider');
+    const gameCode = interaction.options.getNumber('game');
 
-    if (args.length === 2) {
-      if (args[0].toLowerCase() !== 'opap') {
-        return {
-          result: false,
-          value: messageHelp('commands', 'bet', `${args[0]} is not a provider`),
-        };
-      } else {
-        if (isNaN(+args[1])) {
-          gameCode = <number>getKeyFromEnum(args[1].toLowerCase(), OpapGameId);
-        }
-
-        if (!gameCode) {
-          return {
-            result: false,
-            value: messageHelp('commands', 'bet', `${args[1]} does not exist in ${args[0]}`),
-          };
-        }
-      }
-    } else {
+    if (!provider) {
       return {
         result: false,
-        value: messageHelp('commands', 'bet', ''),
+        value: messageHelp('commands', 'bet', 'provider must be provided'),
+      };
+    }
+
+    if (!gameCode) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'bet', 'gameCode must be provided'),
       };
     }
 
@@ -69,8 +80,8 @@ export = {
     const outcome = await interaction.channel?.send({
       embeds: [
         createEmbed(
-          `${args[1]} from ${args[0]} | ${moment(json.last.drawTime).format('DD/MM/YY')}`,
-          `powered by ${args[0]}`,
+          `${gameCode} from ${provider} | ${moment(json.last.drawTime).format('DD/MM/YY')}`,
+          `powered by ${provider}`,
           '#0384fc',
           [
             {
@@ -115,7 +126,7 @@ export = {
     });
 
     return {
-      result: false,
+      result: !!outcome,
       value: outcome ? '' : `failed to send message`,
     };
   },

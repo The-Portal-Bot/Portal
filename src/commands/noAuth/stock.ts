@@ -20,9 +20,24 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 // };
 
 export = {
-  data: new SlashCommandBuilder().setName('stock').setDescription('returns stock data'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    if (args.length === 0 || args.length > 1) {
+  data: new SlashCommandBuilder()
+    .setName('stock')
+    .setDescription('returns stock data')
+    .addStringOption(option =>
+      option.setName('stock')
+        .setDescription('Stock you want to get data for')
+        .setRequired(true)),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    if (!process.env.YAHOO_FINANCE) {
+      return {
+        result: false,
+        value: 'YAHOO_FINANCE API key is not set up',
+      };
+    }
+
+    const stock = interaction.options.getString('stock');
+
+    if (!stock) {
       return {
         result: false,
         value: messageHelp('commands', 'stock'),
@@ -33,7 +48,7 @@ export = {
       method: 'GET',
       hostname: 'yahoo-finance-low-latency.p.rapidapi.com',
       port: undefined,
-      path: `/v8/finance/chart/${args[0]}?events=div%2Csplit`,
+      path: `/v8/finance/chart/${stock}?events=div%2Csplit`,
       headers: {
         'x-rapidapi-host': 'yahoo-finance-low-latency.p.rapidapi.com',
         'x-rapidapi-key': process.env.YAHOO_FINANCE,

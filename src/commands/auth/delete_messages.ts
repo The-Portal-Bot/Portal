@@ -4,16 +4,24 @@ import { askForApproval, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('delete_messages').setDescription('delete n number of messages'),
-  async execute(integration: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    if (args.length !== 1) {
+  data: new SlashCommandBuilder()
+    .setName('delete_messages')
+    .setDescription('delete n number of messages')
+    .addNumberOption(option =>
+      option
+        .setName('delete_length')
+        .setDescription('number of messages to delete')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const bulkDeleteLength = interaction.options.getNumber('delete_length');
+
+    if (!bulkDeleteLength) {
       return {
         result: false,
-        value: messageHelp('commands', 'delete_messages', 'you can only give one number as argument'),
+        value: messageHelp('commands', 'delete_messages', 'deleteLength must be provided'),
       };
     }
-
-    const bulkDeleteLength = +args[0];
 
     if (typeof bulkDeleteLength !== 'number') {
       // isNaN ?
@@ -37,7 +45,7 @@ export = {
       };
     }
 
-    if (!integration.member) {
+    if (!interaction.member) {
       return {
         result: true,
         value: 'message author could not be fetched',
@@ -45,9 +53,9 @@ export = {
     }
 
     const result = askForApproval(
-      integration,
-      (integration.member as GuildMember),
-      `*${integration.user}, are you sure you want to delete ` +
+      interaction,
+      (interaction.member as GuildMember),
+      `*${interaction.user}, are you sure you want to delete ` +
       `**${bulkDeleteLength}** messages*, do you **(yes / no)** ?`
     );
 
@@ -58,7 +66,7 @@ export = {
       };
     }
 
-    const messages = await (<TextChannel>integration.channel)
+    const messages = await (<TextChannel>interaction.channel)
       .bulkDelete(bulkDeleteLength + 3);
 
     if (!messages) {

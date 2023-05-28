@@ -7,7 +7,7 @@ export = {
   data: new SlashCommandBuilder()
     .setName('focus')
     .setDescription('creates a dedicated channel for two users to privately talk in'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     return {
       result: false,
       value: 'focus is currently disabled',

@@ -6,9 +6,11 @@ import { PMember } from '../../types/classes/PMember.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('whoami').setDescription('returns who am I information'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
-    const pMember = pGuild.pMembers.find((m) => m.id === interaction.user.id);
+  data: new SlashCommandBuilder()
+    .setName('whoami')
+    .setDescription('returns who am I information'),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    const pMember = pGuild.pMembers.find((pMember) => pMember.id === interaction.user.id);
     if (!pMember) {
       return {
         result: false,
@@ -16,11 +18,10 @@ export = {
       };
     }
 
-    const sentMessage = await interaction.channel
-      ?.send({ embeds: embeds(interaction, pMember) })
+    const sentMessage = await interaction.channel?.send({ embeds: embeds(interaction, pMember) })
 
     return {
-      result: true,
+      result: !!sentMessage,
       value: sentMessage ? '' : 'could not send message',
     };
   },

@@ -12,7 +12,6 @@ import {
   ActiveCooldown,
 } from '../types/classes/PTypes.interface';
 import about from '../commands/noAuth/about';
-import ai from '../commands/noAuth/ai';
 import announce from '../commands/noAuth/announce';
 import bet from '../commands/noAuth/bet';
 import corona from '../commands/noAuth/corona';
@@ -21,11 +20,9 @@ import focus from '../commands/noAuth/focus';
 import football from '../commands/noAuth/football';
 import help from '../commands/noAuth/help';
 import join from '../commands/noAuth/join';
-import joke from '../commands/noAuth/joke';
 import leaderboard from '../commands/noAuth/leaderboard';
 import leave from '../commands/noAuth/leave';
 import level from '../commands/noAuth/level';
-import news from '../commands/noAuth/news';
 import ping from '../commands/noAuth/ping';
 import poll from '../commands/noAuth/poll';
 import ranks from '../commands/noAuth/ranks';
@@ -223,119 +220,110 @@ export function commandResolver(command: AuthCommands | NoAuthCommands) {
   let commandFile = undefined;
 
   switch (command) {
-    case 'about':
-      commandFile = about;
-      break;
-    case 'ai':
-      commandFile = ai;
-      break;
-    case 'announce':
-      commandFile = announce;
-      break;
-    case 'bet':
-      commandFile = bet;
-      break;
-    case 'corona':
-      commandFile = corona;
-      break;
-    case 'crypto':
-      commandFile = crypto;
-      break;
-    case 'focus':
-      commandFile = focus;
-      break;
-    case 'football':
-      commandFile = football;
-      break;
-    case 'help':
-      commandFile = help;
-      break;
-    case 'join':
-      commandFile = join;
-      break;
-    case 'joke':
-      commandFile = joke;
-      break;
-    case 'leaderboard':
-      commandFile = leaderboard;
-      break;
-    case 'leave':
-      commandFile = leave;
-      break;
-    case 'level':
-      commandFile = level;
-      break;
-    case 'news':
-      commandFile = news;
-      break;
-    case 'ping':
-      commandFile = ping;
-      break;
-    case 'poll':
-      commandFile = poll;
-      break;
-    case 'ranks':
-      commandFile = ranks;
-      break;
-    case 'roll':
-      commandFile = roll;
-      break;
-    case 'run':
-      commandFile = run;
-      break;
-    case 'state':
-      commandFile = state;
-      break;
-    case 'spam_rules':
-      commandFile = spam_rules;
-      break;
-    case 'weather':
-      commandFile = weather;
-      break;
-    case 'whoami':
-      commandFile = whoami;
-      break;
-    case 'announcement':
-      commandFile = announcement;
-      break;
-    case 'ban':
-      commandFile = ban;
-      break;
-    case 'delete_messages':
-      commandFile = delete_messages;
-      break;
-    case 'force':
-      commandFile = force;
-      break;
-    case 'ignore':
-      commandFile = ignore;
-      break;
-    case 'invite':
-      commandFile = invite;
-      break;
-    case 'kick':
-      commandFile = kick;
-      break;
-    case 'music':
-      commandFile = music;
-      break;
-    case 'portal':
-      commandFile = portal;
-      break;
-    case 'vendor':
-      commandFile = vendor;
-      break;
-    case 'set_ranks':
-      commandFile = set_ranks;
-      break;
-    case 'set':
-      commandFile = set;
-      break;
-    case 'url':
-      commandFile = url;
-      break;
-    default:
-      throw Error(`command ${command} not found`);
+  case 'about':
+    commandFile = about;
+    break;
+  case 'announce':
+    commandFile = announce;
+    break;
+  case 'bet':
+    commandFile = bet;
+    break;
+  case 'corona':
+    commandFile = corona;
+    break;
+  case 'crypto':
+    commandFile = crypto;
+    break;
+  case 'focus':
+    commandFile = focus;
+    break;
+  case 'football':
+    commandFile = football;
+    break;
+  case 'help':
+    commandFile = help;
+    break;
+  case 'join':
+    commandFile = join;
+    break;
+  case 'leaderboard':
+    commandFile = leaderboard;
+    break;
+  case 'leave':
+    commandFile = leave;
+    break;
+  case 'level':
+    commandFile = level;
+    break;
+  case 'ping':
+    commandFile = ping;
+    break;
+  case 'poll':
+    commandFile = poll;
+    break;
+  case 'ranks':
+    commandFile = ranks;
+    break;
+  case 'roll':
+    commandFile = roll;
+    break;
+  case 'run':
+    commandFile = run;
+    break;
+  case 'state':
+    commandFile = state;
+    break;
+  case 'spam_rules':
+    commandFile = spam_rules;
+    break;
+  case 'weather':
+    commandFile = weather;
+    break;
+  case 'whoami':
+    commandFile = whoami;
+    break;
+  case 'announcement':
+    commandFile = announcement;
+    break;
+  case 'ban':
+    commandFile = ban;
+    break;
+  case 'delete_messages':
+    commandFile = delete_messages;
+    break;
+  case 'force':
+    commandFile = force;
+    break;
+  case 'ignore':
+    commandFile = ignore;
+    break;
+  case 'invite':
+    commandFile = invite;
+    break;
+  case 'kick':
+    commandFile = kick;
+    break;
+  case 'music':
+    commandFile = music;
+    break;
+  case 'portal':
+    commandFile = portal;
+    break;
+  case 'vendor':
+    commandFile = vendor;
+    break;
+  case 'set_ranks':
+    commandFile = set_ranks;
+    break;
+  case 'set':
+    commandFile = set;
+    break;
+  case 'url':
+    commandFile = url;
+    break;
+  default:
+    throw Error(`command ${command} not found`);
   }
 
   return commandFile;
@@ -376,7 +364,7 @@ async function commandExecution(
   client: Client
 ) {
   try {
-    return await commandResolver(command).execute(interaction, args, pGuild, client);
+    return await commandResolver(command).execute(interaction, pGuild, client);
   } catch (e) {
     logger.error(new Error(`While executing ${command}, got error: ${e}`));
     return {

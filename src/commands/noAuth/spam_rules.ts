@@ -6,9 +6,11 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('spam_rules').setDescription('returns the current spam rules'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
-    const guild = client.guilds.cache.find((g) => g.id === interaction?.guild?.id);
+  data: new SlashCommandBuilder()
+    .setName('spam_rules')
+    .setDescription('returns the current spam rules'),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
+    const guild = client.guilds.cache.find((guild) => guild.id === interaction?.guild?.id);
 
     if (!guild) {
       return {
@@ -32,13 +34,12 @@ export = {
         : `***Automatic ban has not been set yet.***`
       }`;
 
-    const sentMessage = await interaction.channel
-      ?.send({
-        embeds: [createEmbed('Spam Rules', rules, '#006996', null, null, null, true, null, null)],
-      })
+    const sentMessage = await interaction.channel?.send({
+      embeds: [createEmbed('Spam Rules', rules, '#006996', null, null, null, true, null, null)],
+    })
 
     return {
-      result: true,
+      result: !!sentMessage,
       value: sentMessage ? '' : `failed to send message`,
     };
   },

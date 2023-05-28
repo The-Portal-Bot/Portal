@@ -56,35 +56,35 @@ async function eventLoader(
 ) {
   let eventFunction = undefined;
   switch (event) {
-    case 'ready':
-      eventFunction = ready;
-      break;
-    case 'channelDelete':
-      eventFunction = channelDelete;
-      break;
-    case 'guildCreate':
-      eventFunction = guildCreate;
-      break;
-    case 'guildDelete':
-      eventFunction = guildDelete;
-      break;
-    case 'guildMemberAdd':
-      eventFunction = guildMemberAdd;
-      break;
-    case 'guildMemberRemove':
-      eventFunction = guildMemberRemove;
-      break;
-    case 'messageDelete':
-      eventFunction = messageDelete;
-      break;
-    case 'messageReactionAdd':
-      eventFunction = messageReactionAdd;
-      break;
-    case 'voiceStateUpdate':
-      eventFunction = voiceStateUpdate;
-      break;
-    default:
-      return;
+  case 'ready':
+    eventFunction = ready;
+    break;
+  case 'channelDelete':
+    eventFunction = channelDelete;
+    break;
+  case 'guildCreate':
+    eventFunction = guildCreate;
+    break;
+  case 'guildDelete':
+    eventFunction = guildDelete;
+    break;
+  case 'guildMemberAdd':
+    eventFunction = guildMemberAdd;
+    break;
+  case 'guildMemberRemove':
+    eventFunction = guildMemberRemove;
+    break;
+  case 'messageDelete':
+    eventFunction = messageDelete;
+    break;
+  case 'messageReactionAdd':
+    eventFunction = messageReactionAdd;
+    break;
+  case 'voiceStateUpdate':
+    eventFunction = voiceStateUpdate;
+    break;
+  default:
+    return;
   }
 
   const eventResponse: ReturnPromise | undefined = undefined;

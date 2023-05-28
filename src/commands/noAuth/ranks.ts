@@ -5,8 +5,10 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('ranks').setDescription('returns server ranks'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('ranks')
+    .setDescription('returns server ranks'),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!pGuild.ranks || pGuild.ranks.length === 0) {
       return {
         result: true,

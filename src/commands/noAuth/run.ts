@@ -1,14 +1,29 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
 import { regexInterpreter } from '../../libraries/guild.library';
-import { createEmbed, maxString } from '../../libraries/help.library';
+import { createEmbed, maxString, messageHelp } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
 
 export = {
-  data: new SlashCommandBuilder().setName('run').setDescription('runs string given'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('run')
+    .setDescription('runs string given')
+    .addStringOption(option =>
+      option.setName('command')
+        .setDescription('Command to run')
+        .setRequired(true)),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    const command = interaction.options.getString('command');
+
+    if (!command) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'run'),
+      };
+    }
+
     if (!interaction.guild) {
       return {
         result: true,
@@ -40,24 +55,25 @@ export = {
       }
     }
 
-    const sentMessage = await interaction.channel
-      ?.send({
-        embeds: [
-          createEmbed(
-            'executing: ' + args.join(' '),
-            args.join(' '),
-            '#00ffb3',
-            null,
-            null,
-            null,
-            false,
-            null,
-            null,
-            undefined,
-            undefined
-          ),
-        ],
-      });
+    const message = {
+      embeds: [
+        createEmbed(
+          'executing: ' + command,
+          command,
+          '#00ffb3',
+          null,
+          null,
+          null,
+          false,
+          null,
+          null,
+          undefined,
+          undefined
+        ),
+      ],
+    }
+
+    const sentMessage = await interaction.channel?.send(message);
 
     if (!sentMessage) {
       return {
@@ -76,14 +92,14 @@ export = {
             <Field[]>[
               {
                 emote: 'input',
-                role: maxString(`\`\`\`\n${args.join(' ')}\n\`\`\``, 256),
+                role: maxString(`\`\`\`\n${command}\n\`\`\``, 256),
                 inline: false,
               },
               {
                 emote: 'output',
                 role: maxString(
                   `\`\`\`\n${regexInterpreter(
-                    args.join(' '),
+                    command,
                     currentVoiceChannel as VoiceChannel,
                     pVoice,
                     pGuild.pChannels,
@@ -108,7 +124,7 @@ export = {
       });
 
     return {
-      result: true,
+      result: !!editedMessage,
       value: editedMessage ? '' : `failed to edit message`,
     };
   },

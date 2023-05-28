@@ -9,33 +9,35 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
 export = {
-  data: new SlashCommandBuilder().setName('poll').setDescription('create a poll'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('poll')
+    .setDescription('create a poll')
+    .addStringOption(option =>
+      option.setName('title')
+        .setDescription('Poll title')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('poll_json_string')
+        .setDescription('Poll JSON string')
+        .setRequired(true)),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
         result: true,
         value: 'guild could not be fetched',
       };
     }
-    if (args.length <= 1) {
+
+    const title = interaction.options.getString('title');
+    const pollJSONString = interaction.options.getString('body');
+
+    if (!title || !pollJSONString) {
       return {
         result: false,
         value: messageHelp('commands', 'poll'),
       };
     }
 
-    // ! check that they work
-    const title = args.join(' ').substring(0, args.join(' ').indexOf('|'));
-    const pollJSONString = args.join(' ').substring(args.join(' ').indexOf('|') + 1);
-
-    if (title === '' && pollJSONString !== '') {
-      return {
-        result: false,
-        value: messageHelp('commands', 'poll'),
-      };
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const pollJSON = getJSONFromString(pollJSONString);
     if (!pollJSON) {
       return {

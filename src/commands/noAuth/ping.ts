@@ -5,17 +5,20 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder().setName('ping').setDescription("returns time to reply with 'pong'"),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild, client: Client): Promise<ReturnPromise> {
-    const messageSent = await interaction.channel
-      ?.send({
-        embeds: [
-          createEmbed(null, null, '#0093ff', null, null, null, false, null, null, undefined, {
-            name: `Request sent`,
-            icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/ping.gif',
-          }),
-        ],
-      });
+  data: new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription("returns time to reply with 'pong'"),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
+    const message = {
+      embeds: [
+        createEmbed(null, null, '#0093ff', null, null, null, false, null, null, undefined, {
+          name: `Request sent`,
+          icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/ping.gif',
+        }),
+      ],
+    };
+
+    const messageSent = await interaction.channel?.send(message);
 
     if (!messageSent) {
       return {
@@ -36,7 +39,7 @@ export = {
     });
 
     return {
-      result: false,
+      result: !!editMessage,
       value: editMessage ? '' : `error while editing pong message`,
     };
   },

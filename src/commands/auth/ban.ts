@@ -1,130 +1,99 @@
-import { BanOptions, ChatInputCommandInteraction, GuildMember, Message } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { BanOptions, ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
 import { ban } from '../../libraries/user.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder().setName('ban').setDescription('bans given user'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    return {
-      result: false,
-      value: 'not yet implemented',
+  data: new SlashCommandBuilder()
+    .setName('ban')
+    .setDescription('bans given user')
+    .addUserOption(option =>
+      option
+        .setName('user_to_ban')
+        .setDescription('user to ban')
+        .setRequired(true))
+    .addNumberOption(option =>
+      option
+        .setName('ban_days')
+        .setDescription('days to ban user for')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('ban_reason')
+        .setDescription('ban reason')
+        .setRequired(false))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const memberToBan = interaction.options.getMember('user_to_ban') as GuildMember;
+    const banDays = interaction.options.getNumber('ban_days');
+    const banReason = interaction.options.getString('ban_reason');
+
+    if (!memberToBan) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'corona', 'user must be provided'),
+      };
+    }
+
+    if (!banDays) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'corona', 'days to ban must be provided'),
+      };
+    }
+
+    if (!interaction.member) {
+      return {
+        result: false,
+        value: 'message author could not be fetched',
+      };
+    }
+
+    if (!isMod((interaction.member as GuildMember))) {
+      return {
+        result: false,
+        value: `you must be a Portal moderator to ban users`,
+      };
+    }
+
+    if (!interaction.guild) {
+      return {
+        result: false,
+        value: `user guild could not be fetched`,
+      };
+    }
+
+    const deleteMessageDays = banDays ?? 1;
+    const reason = banReason ?? 'banned by admin';
+
+    const approval = await askForApproval(
+      interaction,
+      interaction.member as GuildMember,
+      `*${interaction.member}, are you sure you want to ban ` +
+      `member ${memberToBan}*, do you **(yes / no)** ? reason : ${reason}`
+    );
+
+    if (!approval) {
+      return {
+        result: false,
+        value: `failed to ban ${memberToBan}`,
+      };
+    }
+
+    const banOptions: BanOptions = {
+      deleteMessageDays,
+      reason,
     };
 
-    // if (!interaction.member) {
-    //   return {
-    //     result: false,
-    //     value: 'message author could not be fetched',
-    //   };
-    // }
+    const banResponse = await ban(memberToBan, banOptions);
 
-    // if (!isMod((interaction.member as GuildMember))) {
-    //   return {
-    //     result: false,
-    //     value: `you must be a Portal moderator to ban users`,
-    //   };
-    // }
-
-    // if (!interaction.guild) {
-    //   return {
-    //     result: false,
-    //     value: `user guild could not be fetched`,
-    //   };
-    // }
-
-    // let banReason = args
-    //   .join(' ')
-    //   .substring(args.join(' ').indexOf('|') + 1, args.join(' ').lastIndexOf('|') - 1)
-    //   .replace(/\s/g, ' ')
-    //   .trim();
-
-    // if (banReason === '') {
-    //   banReason = 'banned by admin';
-    // }
-
-    // let banDays = +args
-    //   .join(' ')
-    //   .substring(args.join(' ').lastIndexOf('|') + 1)
-    //   .replace(/\s/g, ' ');
-
-    // if (isNaN(banDays)) {
-    //   banDays = 1;
-    // }
-
-    // if (interaction.mentions && interaction.mentions.members) {
-    //   if (interaction.mentions.members.size === 0) {
-    //     return {
-    //       result: false,
-    //       value: messageHelp('commands', 'ban', `you must tag a member`),
-    //     });
-    //   }
-
-    //   const memberToBan = interaction.mentions.members.first() || interaction.guild.members.cache.get(args[0]);
-
-    //   if (memberToBan) {
-    //     if (interaction.member === memberToBan) {
-    //       return {
-    //         result: false,
-    //         value: messageHelp('commands', 'ban', `you can't ban on yourself`),
-    //       };
-    //     }
-
-    //     askForApproval(
-    //       interaction,
-    //       interaction.member,
-    //       `*${interaction.member}, are you sure you want to ban ` +
-    //       `member ${memberToBan}*, do you **(yes / no)** ? reason : ${banReason}`
-    //     )
-    //       .then((result) => {
-    //         if (result) {
-    //           const banOptions: BanOptions = {
-    //             deleteMessageDays: banDays,
-    //             reason: banReason,
-    //           };
-
-    //           ban(memberToBan, banOptions)
-    //             .then((r) => {
-    //               return {
-    //                 result: r,
-    //                 value: r
-    //                   ? `${memberToBan} has been banned by ${interaction.author} ` +
-    //                   `for ${banDays} ${banDays > 1 ? 'days' : 'day'}, because: *${banReason}*`
-    //                   : `${memberToBan} is not bannable`,
-    //               };
-    //             })
-    //             .catch((e) => {
-    //               return {
-    //                 result: false,
-    //                 value:
-    //                   `failed to ban member ${memberToBan}\n` +
-    //                   `Portal's role must be higher than member you want to ban: ${e}`,
-    //               };
-    //             });
-    //         } else {
-    //           return {
-    //             result: false,
-    //             value: `user ${memberToBan} will not be banned`,
-    //           };
-    //         }
-    //       })
-    //       .catch((e) => {
-    //         return {
-    //           result: false,
-    //           value: `failed to ban: ${e}`,
-    //         };
-    //       });
-    //   } else {
-    //     return {
-    //       result: false,
-    //       value: `could not find member`,
-    //     };
-    //   }
-    // } else {
-    //   return {
-    //     result: false,
-    //     value: `no user mentioned to ban`,
-    //   };
-    // }
+    return {
+      result: !!banResponse,
+      value: banResponse
+        ? `${memberToBan} has been banned by ${interaction.user} ` +
+        `for ${banDays} ${deleteMessageDays > 1 ? 'days' : 'day'}, because: *${reason}*`
+        : `${memberToBan} is not bannable`,
+    };
   },
 };

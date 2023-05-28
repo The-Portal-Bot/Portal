@@ -7,20 +7,38 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder().setName('weather').setDescription('returns data information'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
-    if (args.length < 1)
+  data: new SlashCommandBuilder()
+    .setName('weather')
+    .setDescription('returns data information')
+    .addStringOption(option =>
+      option
+        .setName('country')
+        .setDescription('The country you want to get weather data for')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    if (!process.env.OPEN_WEATHER_MAP) {
+      return {
+        result: false,
+        value: 'OPEN_WEATHER_MAP API key is not set up',
+      };
+    }
+
+    const country = interaction.options.getString('country');
+
+    if (!country) {
       return {
         result: false,
         value: messageHelp('commands', 'weather'),
       };
+    }
 
-    const location = args.join('%2C%20');
+    const location = country.split(' ').join('%2C%20');
     const options: RequestOptions = {
       method: 'GET',
       hostname: 'api.openweathermap.org',
       port: undefined,
-      path: `/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHERMAP}`,
+      path: `/data/2.5/weather?q=${location}&appid=${process.env.OPEN_WEATHER_MAP}`,
     };
 
     const response = await httpsFetch(options);

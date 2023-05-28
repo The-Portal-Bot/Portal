@@ -5,8 +5,10 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
-  data: new SlashCommandBuilder().setName('kick').setDescription('kick a user'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('kick')
+    .setDescription('kick a user'),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     return {
       result: false,
       value: 'not yet implemented',

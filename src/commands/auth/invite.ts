@@ -4,8 +4,25 @@ import { getJSONFromString, isMod, messageHelp } from '../../libraries/help.libr
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('invite').setDescription('generate an invite link'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[]): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('invite')
+    .setDescription('generate an invite link')
+    .addStringOption(option =>
+      option
+        .setName('invite_options_string')
+        .setDescription('JSON string of invite options')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const inviteOptionsString = interaction.options.getString('invite_options_string');
+
+    if (!inviteOptionsString) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'invite', 'invite options string is required'),
+      };
+    }
+
     const member = interaction.member as GuildMember;
     if (!interaction.guild) {
       return {
@@ -28,15 +45,7 @@ export = {
       };
     }
 
-    if (args.length <= 0) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'invite'),
-      };
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const inviteOptionsJSON = getJSONFromString(args.join(' '));
+    const inviteOptionsJSON = getJSONFromString(inviteOptionsString);
 
     if (!inviteOptionsJSON) {
       return {

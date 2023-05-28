@@ -6,8 +6,16 @@ import { PMember } from '../../types/classes/PMember.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('leaderboard').setDescription("returns server's leaderboard"),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('leaderboard')
+    .setDescription("returns server's leaderboard")
+    .addNumberOption(option =>
+      option
+        .setName('requested_number')
+        .setDescription('Number of members to display')
+        .setRequired(false))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const pMembers = pGuild.pMembers;
 
     if (!pMembers) {
@@ -17,23 +25,10 @@ export = {
       };
     }
 
-    const requestedNumber = +args[0];
-    if (args.length > 0 && isNaN(requestedNumber)) {
-      return {
-        result: false,
-        value: `${args[0]} is not a number`,
-      };
-    }
-
-    if (requestedNumber <= 0) {
-      return {
-        result: false,
-        value: `${args[0]} must be at least 1`,
-      };
-    }
+    const requestedNumber = interaction.options.getNumber('requested_number');
 
     let entries =
-      pMembers.length >= requestedNumber
+      requestedNumber && pMembers.length >= requestedNumber
         ? requestedNumber > 25
           ? 24
           : requestedNumber
@@ -95,7 +90,7 @@ export = {
       });
 
     return {
-      result: false,
+      result: !!outcome,
       value: outcome ? '' : `failed to send message`,
     };
   },

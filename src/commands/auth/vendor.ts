@@ -8,8 +8,16 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('vendor').setDescription('remove user from role'),
-  async execute(interaction: ChatInputCommandInteraction, args: string[], pGuild: PGuild): Promise<ReturnPromise> {
+  data: new SlashCommandBuilder()
+    .setName('vendor')
+    .setDescription('remove user from role')
+    .addStringOption((option) =>
+      option
+        .setName('vendor_string')
+        .setDescription('JSON string of vendor roles')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
         result: true,
@@ -17,14 +25,16 @@ export = {
       };
     }
 
-    if (args.length <= 0) {
+    const vendorString = interaction.options.getString('vendor_string');
+
+    if (!vendorString) {
       return {
         result: false,
-        value: messageHelp('commands', 'vendor'),
+        value: messageHelp('commands', 'vendor', 'vendor string must be provided'),
       };
     }
 
-    const roleMapJson = getJSONFromString(args.join(' '));
+    const roleMapJson = getJSONFromString(vendorString);
 
     if (!roleMapJson) {
       return {
