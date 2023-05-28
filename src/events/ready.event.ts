@@ -43,14 +43,11 @@ export default async (args: { client: Client }): Promise<string> => {
 };
 
 async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
-  const members = guild.members.cache.map((m) => m);
+  const membersFetched = await guild.members.fetch();
+  const members = membersFetched.map(member => member).filter((member) => !member.user.bot);
 
   for (let j = 0; j < members.length; j++) {
-    if (members[j].user.bot) {
-      continue;
-    }
-
-    const alreadyInDatabase = pMembers.find((m) => m.id === members[j].id);
+    const alreadyInDatabase = pMembers.find((pMember) => pMember.id === members[j].id);
 
     if (alreadyInDatabase) {
       continue;
@@ -70,8 +67,11 @@ async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
 }
 
 async function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
+  const membersFetched = await guild.members.fetch();
+  const members = membersFetched.map(member => member).filter((member) => !member.user.bot);
+
   for (let j = 0; j < pMembers.length; j++) {
-    const member = guild.members.cache.map((member) => member).find((m) => m.id === pMembers[j].id);
+    const member = members.find((member) => member.id === pMembers[j].id);
 
     if (member) {
       continue;
@@ -92,15 +92,16 @@ async function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void>
 async function addGuildAgain(guild: Guild, client: Client): Promise<boolean> {
   if (!await guildExists(guild.id)) {
     return await insertGuild(guild.id, client);
-  } else {
-    const pMembers = await fetchGuildMembers(guild.id);
-    if (!pMembers) {
-      return false;
-    }
-    logger.info(`pMembers: [${pMembers.map((m) => m.id).join(', ')}}]}`);
-    await addedWhenDown(guild, pMembers);
-    await removedWhenDown(guild, pMembers);
-
-    return true;
   }
+
+  const pMembers = await fetchGuildMembers(guild.id);
+
+  if (!pMembers) {
+    return false;
+  }
+
+  await addedWhenDown(guild, pMembers);
+  await removedWhenDown(guild, pMembers);
+
+  return true;
 }

@@ -17,11 +17,11 @@ export async function fetchGuildList(filter: FilterQuery<PGuild>): Promise<PGuil
   return (await PGuildModel.find(filter).exec()) as unknown as PGuild[];
 }
 
-export async function fetchGuild(guildId: string): Promise<PGuild | undefined> {
+export async function fetchGuild(guildId: PGuild['id']): Promise<PGuild | undefined> {
   return (await PGuildModel.findOne({ id: guildId }).exec()) as unknown as PGuild;
 }
 
-export async function fetchGuildChannelDelete(guildId: string): Promise<PGuild | undefined> {
+export async function fetchGuildChannelDelete(guildId: PGuild['id']): Promise<PGuild | undefined> {
   return (await PGuildModel.findOne(
     {
       id: guildId,
@@ -38,7 +38,7 @@ export async function fetchGuildChannelDelete(guildId: string): Promise<PGuild |
 }
 
 export async function fetchAnnouncementChannelByGuildId(
-  guildId: string
+  guildId: PGuild['id']
 ): Promise<Pick<PGuild, 'announcement' | 'initialRole'> | undefined> {
   const pGuild = (await PGuildModel.findOne(
     {
@@ -56,7 +56,7 @@ export async function fetchAnnouncementChannelByGuildId(
   };
 }
 
-export async function fetchGuildReactionData(guildId: string, memberId: string): Promise<PGuild | undefined> {
+export async function fetchGuildReactionData(guildId: PGuild['id'], memberId: string): Promise<PGuild | undefined> {
   return (await PGuildModel.findOne(
     {
       id: guildId,
@@ -76,7 +76,7 @@ export async function fetchGuildReactionData(guildId: string, memberId: string):
   ).exec()) as unknown as PGuild;
 }
 
-export async function fetchGuildMembers(guildId: string): Promise<PMember[] | undefined> {
+export async function fetchGuildMembers(guildId: PGuild['id']): Promise<PMember[]> {
   const pGuild = (await PGuildModel.findOne(
     {
       id: guildId,
@@ -84,13 +84,13 @@ export async function fetchGuildMembers(guildId: string): Promise<PMember[] | un
     {
       pMembers: 1,
     }
-  ).exec()) as unknown as PGuild;
+  ).exec()) as unknown as PGuild | undefined;
 
-  return pGuild.pMembers;
+  return pGuild?.pMembers ?? [];
 }
 
 export async function fetchGuildMusicQueue(
-  guildId: string
+  guildId: PGuild['id']
 ): Promise<{ queue: VideoSearchResult[]; data: MusicData } | undefined> {
   const pGuild = (await PGuildModel.findOne(
     {
@@ -108,7 +108,7 @@ export async function fetchGuildMusicQueue(
   };
 }
 
-export async function fetchGuildPreData(guildId: string, memberId: string): Promise<PGuild | undefined> {
+export async function fetchGuildPreData(guildId: PGuild['id'], memberId: string): Promise<PGuild | undefined> {
   return (await PGuildModel.findOne(
     {
       id: guildId,
@@ -136,7 +136,7 @@ export async function fetchGuildPreData(guildId: string, memberId: string): Prom
   ).exec()) as unknown as PGuild;
 }
 
-export async function fetchGuildRest(guildId: string): Promise<PGuild | undefined> {
+export async function fetchGuildRest(guildId: PGuild['id']): Promise<PGuild | undefined> {
   return (await PGuildModel.findOne(
     {
       id: guildId,
@@ -154,11 +154,11 @@ export async function fetchGuildRest(guildId: string): Promise<PGuild | undefine
   ).exec()) as unknown as PGuild;
 }
 
-export async function guildExists(guildId: string): Promise<boolean> {
+export async function guildExists(guildId: PGuild['id']): Promise<boolean> {
   return (await PGuildModel.countDocuments({ id: guildId }).exec()) > 0;
 }
 
-export async function memberExists(guildId: string, memberId: string): Promise<boolean> {
+export async function memberExists(guildId: PGuild['id'], memberId: string): Promise<boolean> {
   return (
     (await PGuildModel.countDocuments({
       id: guildId,
@@ -171,7 +171,7 @@ export async function memberExists(guildId: string, memberId: string): Promise<b
   );
 }
 
-export async function updateGuild(guildId: string, key: string, value: unknown): Promise<boolean> {
+export async function updateGuild(guildId: PGuild['id'], key: string, value: unknown): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -190,23 +190,31 @@ export async function updateGuild(guildId: string, key: string, value: unknown):
 }
 
 // CRUD guilds
-function createMembers(guildId: string, client: Client): PMember[] {
+async function createMembers(guildId: PGuild['id'], client: Client): Promise<PMember[]> {
   const guild = client.guilds.cache.find((guild) => guild.id === guildId) as Guild;
+
   if (!guild) {
     return [];
   }
 
-  return guild.members.cache
+  const members = await guild.members.fetch();
+
+  if (!members) {
+    return [];
+  }
+
+  return members
+    .map(member => member)
     .filter((member) => !member.user.bot)
     .filter((member) => member.id !== client?.user?.id)
     .map((member) => new PMember(member.id, 1, 0, 1, 0, 0, new Date('1 January, 1970, 00:00:00 UTC'), 'null'));
 }
 
-export async function insertGuild(guildId: string, client: Client): Promise<boolean> {
+export async function insertGuild(guildId: PGuild['id'], client: Client): Promise<boolean> {
   const id: string = guildId;
   const pChannels: PChannel[] = [];
-  console.log('createMembers(guildId, client) :>> ', createMembers(guildId, client));
-  const pMembers: PMember[] = createMembers(guildId, client);
+  const pMembers: PMember[] = await createMembers(guildId, client);
+  console.log('pMembers :>> ', pMembers);
   const pURLs: string[] = [];
   const pRoles: PGiveRole[] = [];
   const pPolls: string[] = [];
@@ -229,37 +237,37 @@ export async function insertGuild(guildId: string, client: Client): Promise<bool
   const kickAfter = 0;
   const banAfter = 0;
   const premium = true; // as it is not a paid service anymore
-  const prefix: string = process.env.PREFIX as unknown as string;
+  const prefix = process.env.PREFIX ?? './';
 
   return !!(await PGuildModel.create({
-    id: id,
-    pChannels: pChannels,
-    pMembers: pMembers,
-    pURLs: pURLs,
-    pRoles: pRoles,
-    pPolls: pPolls,
-    initialRole: initialRole,
-    ranks: ranks,
-    musicData: musicData,
-    musicQueue: musicQueue,
-    announcement: announcement,
-    muteRole: muteRole,
-    locale: locale,
-    announce: announce,
-    rankSpeed: rankSpeed,
-    profanityLevel: profanityLevel,
-    kickAfter: kickAfter,
-    banAfter: banAfter,
-    premium: premium,
-    prefix: prefix,
+    id,
+    pChannels,
+    pMembers,
+    pURLs,
+    pRoles,
+    pPolls,
+    initialRole,
+    ranks,
+    musicData,
+    musicQueue,
+    announcement,
+    muteRole,
+    locale,
+    announce,
+    rankSpeed,
+    profanityLevel,
+    kickAfter,
+    banAfter,
+    premium,
+    prefix,
   }));
 }
 
-export async function removeGuild(guildId: string): Promise<boolean> {
+export async function removeGuild(guildId: PGuild['id']): Promise<boolean> {
   return !!(await PGuildModel.deleteOne({ id: guildId }));
 }
 
-export async function updateMember(guildId: string, memberId: string, key: string, value: unknown): Promise<boolean> {
+export async function updateMember(guildId: PGuild['id'], memberId: string, key: string, value: unknown): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -282,7 +290,7 @@ export async function updateMember(guildId: string, memberId: string, key: strin
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function updateEntireMember(guildId: string, memberId: string, member: PMember): Promise<boolean> {
+export async function updateEntireMember(guildId: PGuild['id'], memberId: string, member: PMember): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -305,7 +313,7 @@ export async function updateEntireMember(guildId: string, memberId: string, memb
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertMember(guildId: string, memberId: string): Promise<boolean> {
+export async function insertMember(guildId: PGuild['id'], memberId: string): Promise<boolean> {
   const newPMember = new PMember(memberId, 1, 0, 1, 0, 0, null, 'null');
 
   const updateWriteOpResult = await PGuildModel.updateOne(
@@ -320,7 +328,7 @@ export async function insertMember(guildId: string, memberId: string): Promise<b
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeMember(memberId: string, guildId: string): Promise<boolean> {
+export async function removeMember(memberId: string, guildId: PGuild['id']): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -337,7 +345,7 @@ export async function removeMember(memberId: string, guildId: string): Promise<b
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function updatePortal(guildId: string, portalId: string, key: string, value: unknown): Promise<boolean> {
+export async function updatePortal(guildId: PGuild['id'], portalId: string, key: string, value: unknown): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -356,7 +364,7 @@ export async function updatePortal(guildId: string, portalId: string, key: strin
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertPortal(guildId: string, newPortal: IPChannel): Promise<boolean> {
+export async function insertPortal(guildId: PGuild['id'], newPortal: IPChannel): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -371,7 +379,7 @@ export async function insertPortal(guildId: string, newPortal: IPChannel): Promi
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removePortal(guildId: string, portalId: string): Promise<boolean> {
+export async function removePortal(guildId: PGuild['id'], portalId: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -389,7 +397,7 @@ export async function removePortal(guildId: string, portalId: string): Promise<b
 }
 
 export async function updateVoice(
-  guildId: string,
+  guildId: PGuild['id'],
   portalId: string,
   voiceId: string,
   key: string,
@@ -413,7 +421,7 @@ export async function updateVoice(
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertVoice(guildId: string, portalId: string, newVoice: PVoiceChannel): Promise<boolean> {
+export async function insertVoice(guildId: PGuild['id'], portalId: string, newVoice: PVoiceChannel): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -432,7 +440,7 @@ export async function insertVoice(guildId: string, portalId: string, newVoice: P
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeVoice(guildId: string, portalId: string, voiceId: string): Promise<boolean> {
+export async function removeVoice(guildId: PGuild['id'], portalId: string, voiceId: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -457,7 +465,7 @@ export async function removeVoice(guildId: string, portalId: string, voiceId: st
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertURL(guildId: string, newUrl: string): Promise<boolean> {
+export async function insertURL(guildId: PGuild['id'], newUrl: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -472,7 +480,7 @@ export async function insertURL(guildId: string, newUrl: string): Promise<boolea
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeURL(guildId: string, removeUrl: string): Promise<boolean> {
+export async function removeURL(guildId: PGuild['id'], removeUrl: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -487,7 +495,7 @@ export async function removeURL(guildId: string, removeUrl: string): Promise<boo
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertIgnore(guildId: string, newIgnore: string): Promise<boolean> {
+export async function insertIgnore(guildId: PGuild['id'], newIgnore: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -502,7 +510,7 @@ export async function insertIgnore(guildId: string, newIgnore: string): Promise<
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeIgnore(guildId: string, removeIgnore: string): Promise<boolean> {
+export async function removeIgnore(guildId: PGuild['id'], removeIgnore: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -517,7 +525,7 @@ export async function removeIgnore(guildId: string, removeIgnore: string): Promi
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function setRanks(guildId: string, newRanks: Rank[]): Promise<boolean> {
+export async function setRanks(guildId: PGuild['id'], newRanks: Rank[]): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -530,7 +538,7 @@ export async function setRanks(guildId: string, newRanks: Rank[]): Promise<boole
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertPoll(guildId: string, poll: PPoll): Promise<boolean> {
+export async function insertPoll(guildId: PGuild['id'], poll: PPoll): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -545,7 +553,7 @@ export async function insertPoll(guildId: string, poll: PPoll): Promise<boolean>
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removePoll(guildId: string, messageId: string): Promise<boolean> {
+export async function removePoll(guildId: PGuild['id'], messageId: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -562,7 +570,7 @@ export async function removePoll(guildId: string, messageId: string): Promise<bo
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertVendor(guildId: string, newVendor: PGiveRole): Promise<boolean> {
+export async function insertVendor(guildId: PGuild['id'], newVendor: PGiveRole): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -577,7 +585,7 @@ export async function insertVendor(guildId: string, newVendor: PGiveRole): Promi
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function removeVendor(guildId: string, messageId: string): Promise<boolean> {
+export async function removeVendor(guildId: PGuild['id'], messageId: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -594,7 +602,7 @@ export async function removeVendor(guildId: string, messageId: string): Promise<
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertMusicVideo(guildId: string, video: VideoSearchResult): Promise<boolean> {
+export async function insertMusicVideo(guildId: PGuild['id'], video: VideoSearchResult): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -609,7 +617,7 @@ export async function insertMusicVideo(guildId: string, video: VideoSearchResult
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function clearMusicVote(guildId: string): Promise<boolean> {
+export async function clearMusicVote(guildId: PGuild['id']): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -623,7 +631,7 @@ export async function clearMusicVote(guildId: string): Promise<boolean> {
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function insertMusicVote(guildId: string, userId: string): Promise<boolean> {
+export async function insertMusicVote(guildId: PGuild['id'], userId: string): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
@@ -637,7 +645,7 @@ export async function insertMusicVote(guildId: string, userId: string): Promise<
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function setMusicData(guildId: string, newMusicData: MusicData): Promise<boolean> {
+export async function setMusicData(guildId: PGuild['id'], newMusicData: MusicData): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,
