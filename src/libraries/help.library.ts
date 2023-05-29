@@ -244,157 +244,133 @@ export function createMusicMessage(channel: TextChannel, pGuild: PGuild): Promis
   });
 }
 
-export function createMusicLyricsMessage(channel: TextChannel, pGuild: PGuild, messageId: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const music_lyrics_message_emb = createEmbed('Lyrics 📄', '', '#e60026', null, null, null, false, null, null);
+export async function createMusicLyricsMessage(channel: TextChannel, pGuild: PGuild, messageId: string): Promise<string | undefined> {
+  const music_lyrics_message_emb = createEmbed('Lyrics 📄', '', '#e60026', null, null, null, false, null, null);
 
-    channel
-      .send({ embeds: [music_lyrics_message_emb] })
-      .then((sent_message_lyrics) => {
-        const music_data = new MusicData(channel.id, messageId, sent_message_lyrics.id, [], false);
+  const sentMessageLyrics = await channel.send({ embeds: [music_lyrics_message_emb] });
 
-        setMusicData(pGuild.id, music_data).catch((e) => {
-          return reject(`failed to set music data: ${e}`);
-        });
+  if (!sentMessageLyrics) {
+    return undefined;
+  }
 
-        return resolve(sent_message_lyrics.id);
-      })
-      .catch((e) => {
-        return reject(`failed to send message to channel: ${e}`);
-      });
-  });
+  const music_data = new MusicData(channel.id, messageId, sentMessageLyrics.id, [], false);
+  await setMusicData(pGuild.id, music_data);
+
+  return sentMessageLyrics.id;
 }
 
-export function updateMusicMessage(
+export async function updateMusicMessage(
   guild: Guild,
   pGuild: PGuild,
   yts: VideoSearchResult | undefined,
   status: string,
   animated = true
 ): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const guild_channel: GuildBasedChannel | undefined = guild.channels.cache.find(
-      (c) => c.id === pGuild.musicData.channelId
-    );
+  const guild_channel: GuildBasedChannel | undefined = guild.channels.cache.find(
+    (c) => c.id === pGuild.musicData.channelId
+  );
 
-    if (!guild_channel) {
-      return reject(`could not fetch channel`);
-    }
+  if (!guild_channel) {
+    return false
+  }
 
-    const channel: TextChannel = <TextChannel>guild_channel;
+  const channel: TextChannel = <TextChannel>guild_channel;
 
-    if (!channel || !pGuild.musicData.messageId) {
-      return reject(`could not find channel`);
-    }
+  if (!channel || !pGuild.musicData.messageId) {
+    return false
+  }
 
-    const music_queue = pGuild.musicQueue
-      ? pGuild.musicQueue.length > 1
-        ? pGuild.musicQueue
-          .map((v, i) => {
-            if (i !== 0 && i < 6) {
-              return `${i}. ${maxString(v.title, 61)}`;
-            } else if (i === 6) {
-              return `_...${pGuild.musicQueue.length - 6} more_`;
-            }
-          })
-          .filter((v) => !!v)
-          .join('\n')
-        : 'empty'
-      : 'empty';
+  const music_queue = pGuild.musicQueue
+    ? pGuild.musicQueue.length > 1
+      ? pGuild.musicQueue
+        .map((v, i) => {
+          if (i !== 0 && i < 6) {
+            return `${i}. ${maxString(v.title, 61)}`;
+          } else if (i === 6) {
+            return `_...${pGuild.musicQueue.length - 6} more_`;
+          }
+        })
+        .filter((v) => !!v)
+        .join('\n')
+      : 'empty'
+    : 'empty';
 
-    const music_message_emb = createEmbed(
-      yts ? yts.title : 'Music Player',
-      yts ? yts.url : 'Type and Portal will play it !',
-      '#e60026',
-      [
-        { emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
-        { emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
-        { emote: 'Pinned', role: pGuild.musicData.pinned ? 'yes' : 'no', inline: true },
-        // { emote: null, role: null, inline: true },
-        { emote: 'Queue', role: music_queue, inline: false },
-        // { emote: null, role: null, inline: true },
-        { emote: 'Latest Action', role: '```' + status + '```', inline: false },
-      ],
-      null,
-      null,
-      true,
-      null,
-      yts ? yts.thumbnail : idle_thumbnail,
-      animated
-        ? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
-        : 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
-    );
+  const music_message_emb = createEmbed(
+    yts ? yts.title : 'Music Player',
+    yts ? yts.url : 'Type and Portal will play it !',
+    '#e60026',
+    [
+      { emote: 'Duration', role: yts ? yts.timestamp : '-', inline: true },
+      { emote: 'Views', role: (yts ? yts.timestamp : 0) === 0 ? '-' : yts ? yts.views : '-', inline: true },
+      { emote: 'Pinned', role: pGuild.musicData.pinned ? 'yes' : 'no', inline: true },
+      // { emote: null, role: null, inline: true },
+      { emote: 'Queue', role: music_queue, inline: false },
+      // { emote: null, role: null, inline: true },
+      { emote: 'Latest Action', role: '```' + status + '```', inline: false },
+    ],
+    null,
+    null,
+    true,
+    null,
+    yts ? yts.thumbnail : idle_thumbnail,
+    animated
+      ? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
+      : 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
+  );
 
-    if (pGuild.musicData.messageId) {
-      if (channel) {
-        channel.messages
-          .fetch(pGuild.musicData.messageId)
-          .then((message: Message) => {
-            message
-              .edit({ embeds: [music_message_emb] })
-              .then(() => {
-                return resolve(true);
-              })
-              .catch((e) => {
-                return reject(`failed to edit messages: ${e}`);
-              });
-          })
-          .catch((e) => {
-            return reject(`failed to fetch messages: ${e}`);
-          });
-      }
-    }
-  });
+  if (!pGuild.musicData.messageId || !channel) {
+    return false;
+  }
+
+  const message = await channel.messages.fetch(pGuild.musicData.messageId);
+
+  if (!message) {
+    return false;
+  }
+
+  const messageEdit = await message.edit({ embeds: [music_message_emb] });
+
+  return !!messageEdit;
 }
 
-export function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyrics: string, url?: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const guild_channel: GuildBasedChannel | undefined = guild.channels.cache.find(
-      (c) => c.id === pGuild.musicData.channelId
-    );
+export async function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyrics: string, url?: string): Promise<boolean> {
+  const guild_channel = guild.channels.cache.find((c) => c.id === pGuild.musicData.channelId);
 
-    if (!guild_channel) {
-      return reject(`could not fetch channel`);
-    }
+  if (!guild_channel) {
+    return false;
+  }
 
-    const channel: TextChannel = <TextChannel>guild_channel;
+  const channel: TextChannel = <TextChannel>guild_channel;
 
-    if (!channel || !pGuild.musicData.messageId) {
-      return reject(`could not find channel`);
-    }
+  if (!channel || !pGuild.musicData.messageId) {
+    return false;
+  }
 
-    const music_message_emb = createEmbed(
-      `Lyrics 📄 ${url ? `at ${url}` : ''}`,
-      maxString(lyrics, 2000),
-      '#e60026',
-      null,
-      null,
-      null,
-      false,
-      null,
-      null
-    );
+  const music_message_emb = createEmbed(
+    `Lyrics 📄 ${url ? `at ${url}` : ''}`,
+    maxString(lyrics, 2000),
+    '#e60026',
+    null,
+    null,
+    null,
+    false,
+    null,
+    null
+  );
 
-    if (pGuild.musicData.messageLyricsId) {
-      if (channel) {
-        channel.messages
-          .fetch(pGuild.musicData.messageLyricsId)
-          .then((message: Message) => {
-            message
-              .edit({ embeds: [music_message_emb] })
-              .then(() => {
-                return resolve(true);
-              })
-              .catch((e) => {
-                return reject(`failed to edit messages: ${e}`);
-              });
-          })
-          .catch((e) => {
-            return reject(`failed to fetch messages: ${e}`);
-          });
-      }
-    }
-  });
+  if (!pGuild.musicData.messageLyricsId || !channel) {
+    return false;
+  }
+
+  const fetchedMessage = await channel.messages.fetch(pGuild.musicData.messageLyricsId);
+
+  if (!fetchedMessage) {
+    return false;
+  }
+
+  const editedMessage = await fetchedMessage.edit({ embeds: [music_message_emb] });
+
+  return !!editedMessage;
 }
 
 export async function joinUserVoiceChannelByReaction(
