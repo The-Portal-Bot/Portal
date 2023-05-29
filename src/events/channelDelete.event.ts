@@ -8,15 +8,16 @@ export default async (args: { channel: Channel | PartialDMChannel }): Promise<st
       return reject(`only voice and text channels are handled`);
     }
 
-    const currentChannel =
-      typeof args.channel === typeof VoiceChannel ? <VoiceChannel>args.channel : <TextChannel>args.channel;
+    const currentChannel = typeof args.channel === typeof VoiceChannel
+      ? args.channel as VoiceChannel
+      : args.channel as TextChannel;
 
     deletedChannelSync(currentChannel)
-      .then((r) => {
-        if (r > 0) {
+      .then((deletedPChannel) => {
+        if (deletedPChannel > 0) {
           return resolve(
-            `${PortalChannelTypes[r].toString()} channel removed from ` +
-              `${currentChannel.guild.name}|${currentChannel.guild.id}`
+            `${PortalChannelTypes[deletedPChannel].toString()} channel removed from ` +
+            `${currentChannel.guild.name}|${currentChannel.guild.id}`
           );
         } else {
           return resolve(`${currentChannel.name} channel is not controlled by Portal`);

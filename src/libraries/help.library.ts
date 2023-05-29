@@ -21,13 +21,11 @@ import { createLogger, format, transports } from 'winston';
 import { VideoSearchResult } from 'yt-search';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { Field, TimeElapsed } from '../types/classes/PTypes.interface';
-import { createDiscordJSAdapter } from './adapter.library';
-// import { client_talk } from "./localisation.library";
-import { JokeType } from '../types/enums/Joke.enum';
 import { Locale } from '../types/enums/Locales.enum';
 import { OpapGameId } from '../types/enums/OpapGames.enum';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
+import { createDiscordJSAdapter } from './adapter.library';
 import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
 
 const idle_thumbnail = 'https://raw.githubusercontent.com/keybraker/' + 'Portal/master/src/assets/img/empty_queue.png';
@@ -135,13 +133,11 @@ export function getJSONFromString(str: string) {
   let data = null;
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     data = JSON.parse(str);
   } catch (error) {
     return null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return data;
 }
 
@@ -149,28 +145,25 @@ export function maxString(abstract: string, max: number): string {
   return abstract.length < max ? abstract : abstract.substring(0, max - 3) + '...';
 }
 
-type enumTypes = typeof JokeType | typeof OpapGameId | typeof RankSpeed | typeof ProfanityLevel | typeof Locale;
+type enumTypes = typeof OpapGameId | typeof RankSpeed | typeof ProfanityLevel | typeof Locale;
 export function getKeyFromEnum(value: string, enumeration: enumTypes): string | number | undefined {
   let enumerationArray;
 
   switch (enumeration) {
-  case JokeType:
-    enumerationArray = Object.values(JokeType);
-    break;
-  case OpapGameId:
-    enumerationArray = Object.values(OpapGameId);
-    break;
-  case RankSpeed:
-    enumerationArray = Object.values(RankSpeed);
-    break;
-  case ProfanityLevel:
-    enumerationArray = Object.values(ProfanityLevel);
-    break;
-  case Locale:
-    enumerationArray = Object.values(Locale);
-    break;
-  default:
-    return undefined;
+    case OpapGameId:
+      enumerationArray = Object.values(OpapGameId);
+      break;
+    case RankSpeed:
+      enumerationArray = Object.values(RankSpeed);
+      break;
+    case ProfanityLevel:
+      enumerationArray = Object.values(ProfanityLevel);
+      break;
+    case Locale:
+      enumerationArray = Object.values(Locale);
+      break;
+    default:
+      return undefined;
   }
 
   for (const enumerationValue of enumerationArray) {

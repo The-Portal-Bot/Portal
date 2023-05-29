@@ -1,6 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChannelType, ChatInputCommandInteraction, Guild, GuildChannelCreateOptions, GuildMember } from 'discord.js';
-import { createChannel } from '../../libraries/guild.library';
+import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
 import { messageHelp } from '../../libraries/help.library';
 import { insertPortal } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
@@ -16,20 +15,21 @@ export = {
         .setName('portal_channel_name')
         .setDescription('the name of the portal channel you want to create')
         .setRequired(true))
-    .addChannelOption((option) =>
-      option
-        .setName('portal_channel_category_name')
-        .setDescription('the name of the portal channel category you want to create')
-        .setRequired(true))
     .setDMPermission(false),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
-    const portalChannelName = interaction.options.getString('portal_channel_name');
-    const portalChannelCategoryName = interaction.options.getString('portal_channel_category_name');
+    const newPortalChannel = interaction.options.getChannel('portal_channel_name');
 
-    if (!portalChannelName) {
+    if (!newPortalChannel) {
       return {
         result: false,
         value: messageHelp('commands', 'portal', 'portal channel name is required'),
+      };
+    }
+
+    if (!(newPortalChannel instanceof VoiceChannel)) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'portal', 'channel must be voice channel'),
       };
     }
 
@@ -47,16 +47,16 @@ export = {
       };
     }
 
-    const currentGuild = interaction.guild as Guild;
+    // const currentGuild = interaction.guild as Guild;
     const currentMember = interaction.member as GuildMember;
 
-    const portalOptions: GuildChannelCreateOptions = {
-      name: 'portal',
-      topic: `by Portal, channels on demand`,
-      type: ChannelType.GuildVoice,
-      bitrate: 32000,
-      userLimit: 1,
-    };
+    // const portalOptions: GuildChannelCreateOptions = {
+    //   name: 'portal',
+    //   topic: `by Portal, channels on demand`,
+    //   type: ChannelType.GuildVoice,
+    //   bitrate: 32000,
+    //   userLimit: 1,
+    // };
 
     const voiceRegex = pGuild.premium
       ? // ? 'G$#-P$memberCount | $statusList'
@@ -66,20 +66,20 @@ export = {
             }}`
       : 'Channel $#';
 
-    const newPortalChannel = await createChannel(currentGuild, portalChannelName, portalOptions, portalChannelCategoryName);
+    // const newPortalChannelId = await createChannel(currentGuild, portalChannelName, portalOptions, portalChannelCategoryName);
 
-    if (!newPortalChannel) {
-      return {
-        result: false,
-        value: `an error occurred while creating channel}`,
-      };
-    }
+    // if (!newPortalChannelId) {
+    //   return {
+    //     result: false,
+    //     value: `an error occurred while creating channel}`,
+    //   };
+    // }
 
     const pChannel = new PChannel(
-      newPortalChannel,
+      newPortalChannel.id,
       currentMember.id,
       true,
-      portalChannelName,
+      'portal',
       voiceRegex,
       [],
       false,

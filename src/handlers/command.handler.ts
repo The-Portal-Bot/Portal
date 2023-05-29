@@ -1,16 +1,17 @@
-// import eventConfigJson from '../config.event.json';
-import { ChatInputCommandInteraction, Client, Message } from 'discord.js';
-import { logger, messageReply, pad, timeElapsed } from '../libraries/help.library';
-import { PGuild } from '../types/classes/PGuild.class';
-import {
-  CommandOptions,
-  ReturnPromise,
-  AuthCommands,
-  NoAuthCommands,
-  ScopeLimit,
-  ActiveCooldowns,
-  ActiveCooldown,
-} from '../types/classes/PTypes.interface';
+import { ChatInputCommandInteraction, Client } from 'discord.js';
+import announcement from '../commands/auth/announcement';
+import ban from '../commands/auth/ban';
+import delete_messages from '../commands/auth/delete_messages';
+import force from '../commands/auth/force';
+import ignore from '../commands/auth/ignore';
+import invite from '../commands/auth/invite';
+import kick from '../commands/auth/kick';
+import music from '../commands/auth/music';
+import portal from '../commands/auth/portal';
+import set from '../commands/auth/set';
+import set_ranks from '../commands/auth/set_ranks';
+import url from '../commands/auth/url';
+import vendor from '../commands/auth/vendor';
 import about from '../commands/noAuth/about';
 import announce from '../commands/noAuth/announce';
 import bet from '../commands/noAuth/bet';
@@ -28,23 +29,19 @@ import poll from '../commands/noAuth/poll';
 import ranks from '../commands/noAuth/ranks';
 import roll from '../commands/noAuth/roll';
 import run from '../commands/noAuth/run';
-import state from '../commands/noAuth/state';
 import spam_rules from '../commands/noAuth/spam_rules';
+import state from '../commands/noAuth/state';
 import weather from '../commands/noAuth/weather';
 import whoami from '../commands/noAuth/whoami';
-import announcement from '../commands/auth/announcement';
-import ban from '../commands/auth/ban';
-import delete_messages from '../commands/auth/delete_messages';
-import force from '../commands/auth/force';
-import ignore from '../commands/auth/ignore';
-import invite from '../commands/auth/invite';
-import kick from '../commands/auth/kick';
-import music from '../commands/auth/music';
-import portal from '../commands/auth/portal';
-import vendor from '../commands/auth/vendor';
-import set_ranks from '../commands/auth/set_ranks';
-import set from '../commands/auth/set';
-import url from '../commands/auth/url';
+import { logger, pad, timeElapsed } from '../libraries/help.library';
+import { PGuild } from '../types/classes/PGuild.class';
+import {
+  ActiveCooldowns,
+  AuthCommands,
+  CommandOptions,
+  NoAuthCommands,
+  ScopeLimit
+} from '../types/classes/PTypes.interface';
 
 export async function commandLoader(
   interaction: ChatInputCommandInteraction,
@@ -220,110 +217,110 @@ export function commandResolver(command: AuthCommands | NoAuthCommands) {
   let commandFile = undefined;
 
   switch (command) {
-  case 'about':
-    commandFile = about;
-    break;
-  case 'announce':
-    commandFile = announce;
-    break;
-  case 'bet':
-    commandFile = bet;
-    break;
-  case 'corona':
-    commandFile = corona;
-    break;
-  case 'crypto':
-    commandFile = crypto;
-    break;
-  case 'focus':
-    commandFile = focus;
-    break;
-  case 'football':
-    commandFile = football;
-    break;
-  case 'help':
-    commandFile = help;
-    break;
-  case 'join':
-    commandFile = join;
-    break;
-  case 'leaderboard':
-    commandFile = leaderboard;
-    break;
-  case 'leave':
-    commandFile = leave;
-    break;
-  case 'level':
-    commandFile = level;
-    break;
-  case 'ping':
-    commandFile = ping;
-    break;
-  case 'poll':
-    commandFile = poll;
-    break;
-  case 'ranks':
-    commandFile = ranks;
-    break;
-  case 'roll':
-    commandFile = roll;
-    break;
-  case 'run':
-    commandFile = run;
-    break;
-  case 'state':
-    commandFile = state;
-    break;
-  case 'spam_rules':
-    commandFile = spam_rules;
-    break;
-  case 'weather':
-    commandFile = weather;
-    break;
-  case 'whoami':
-    commandFile = whoami;
-    break;
-  case 'announcement':
-    commandFile = announcement;
-    break;
-  case 'ban':
-    commandFile = ban;
-    break;
-  case 'delete_messages':
-    commandFile = delete_messages;
-    break;
-  case 'force':
-    commandFile = force;
-    break;
-  case 'ignore':
-    commandFile = ignore;
-    break;
-  case 'invite':
-    commandFile = invite;
-    break;
-  case 'kick':
-    commandFile = kick;
-    break;
-  case 'music':
-    commandFile = music;
-    break;
-  case 'portal':
-    commandFile = portal;
-    break;
-  case 'vendor':
-    commandFile = vendor;
-    break;
-  case 'set_ranks':
-    commandFile = set_ranks;
-    break;
-  case 'set':
-    commandFile = set;
-    break;
-  case 'url':
-    commandFile = url;
-    break;
-  default:
-    throw Error(`command ${command} not found`);
+    case 'about':
+      commandFile = about;
+      break;
+    case 'announce':
+      commandFile = announce;
+      break;
+    case 'bet':
+      commandFile = bet;
+      break;
+    case 'corona':
+      commandFile = corona;
+      break;
+    case 'crypto':
+      commandFile = crypto;
+      break;
+    case 'focus':
+      commandFile = focus;
+      break;
+    case 'football':
+      commandFile = football;
+      break;
+    case 'help':
+      commandFile = help;
+      break;
+    case 'join':
+      commandFile = join;
+      break;
+    case 'leaderboard':
+      commandFile = leaderboard;
+      break;
+    case 'leave':
+      commandFile = leave;
+      break;
+    case 'level':
+      commandFile = level;
+      break;
+    case 'ping':
+      commandFile = ping;
+      break;
+    case 'poll':
+      commandFile = poll;
+      break;
+    case 'ranks':
+      commandFile = ranks;
+      break;
+    case 'roll':
+      commandFile = roll;
+      break;
+    case 'run':
+      commandFile = run;
+      break;
+    case 'state':
+      commandFile = state;
+      break;
+    case 'spam_rules':
+      commandFile = spam_rules;
+      break;
+    case 'weather':
+      commandFile = weather;
+      break;
+    case 'whoami':
+      commandFile = whoami;
+      break;
+    case 'announcement':
+      commandFile = announcement;
+      break;
+    case 'ban':
+      commandFile = ban;
+      break;
+    case 'delete_messages':
+      commandFile = delete_messages;
+      break;
+    case 'force':
+      commandFile = force;
+      break;
+    case 'ignore':
+      commandFile = ignore;
+      break;
+    case 'invite':
+      commandFile = invite;
+      break;
+    case 'kick':
+      commandFile = kick;
+      break;
+    case 'music':
+      commandFile = music;
+      break;
+    case 'portal':
+      commandFile = portal;
+      break;
+    case 'vendor':
+      commandFile = vendor;
+      break;
+    case 'set_ranks':
+      commandFile = set_ranks;
+      break;
+    case 'set':
+      commandFile = set;
+      break;
+    case 'url':
+      commandFile = url;
+      break;
+    default:
+      throw Error(`command ${command} not found`);
   }
 
   return commandFile;

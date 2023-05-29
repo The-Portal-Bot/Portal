@@ -15,7 +15,7 @@ import {
   User,
   VoiceState,
 } from 'discord.js';
-import eventConfigJson from '../config.event.json';
+import eventConfigJSON from '../config.event.json';
 import channelDelete from '../events/channelDelete.event';
 import guildCreate from '../events/guildCreate.event';
 import guildDelete from '../events/guildDelete.event';
@@ -56,35 +56,36 @@ async function eventLoader(
 ) {
   let eventFunction = undefined;
   switch (event) {
-  case 'ready':
-    eventFunction = ready;
-    break;
-  case 'channelDelete':
-    eventFunction = channelDelete;
-    break;
-  case 'guildCreate':
-    eventFunction = guildCreate;
-    break;
-  case 'guildDelete':
-    eventFunction = guildDelete;
-    break;
-  case 'guildMemberAdd':
-    eventFunction = guildMemberAdd;
-    break;
-  case 'guildMemberRemove':
-    eventFunction = guildMemberRemove;
-    break;
-  case 'messageDelete':
-    eventFunction = messageDelete;
-    break;
-  case 'messageReactionAdd':
-    eventFunction = messageReactionAdd;
-    break;
-  case 'voiceStateUpdate':
-    eventFunction = voiceStateUpdate;
-    break;
-  default:
-    return;
+    case 'ready':
+      eventFunction = ready;
+      break;
+    case 'channelDelete':
+      eventFunction = channelDelete;
+      break;
+    case 'guildCreate':
+      eventFunction = guildCreate;
+      break;
+    case 'guildDelete':
+      eventFunction = guildDelete;
+      break;
+    case 'guildMemberAdd':
+      eventFunction = guildMemberAdd;
+      break;
+    case 'guildMemberRemove':
+      eventFunction = guildMemberRemove;
+      break;
+    case 'messageDelete':
+      eventFunction = messageDelete;
+      break;
+    case 'messageReactionAdd':
+      eventFunction = messageReactionAdd;
+      break;
+    case 'voiceStateUpdate':
+      console.log('voiceStateUpdate :>> ', voiceStateUpdate);
+      eventFunction = voiceStateUpdate;
+      break;
+    default:
+      return;
   }
 
   const eventResponse: ReturnPromise | undefined = undefined;
@@ -97,7 +98,7 @@ async function eventLoader(
   }
 
   if (eventResponse) {
-    if (eventConfigJson.find((e) => e.name === event)) {
+    if (eventConfigJSON.find((configEvent) => configEvent.name === event)) {
       logger.info(`[event-accepted] ${event} | ${eventResponse}`);
     } else if (process.env.DEBUG) {
       logger.info(`[event-accepted-debug] ${event} | ${eventResponse}`);
@@ -165,7 +166,7 @@ export async function eventHandler(
   client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
     const newChannel = newState.channel; // join channel
     const oldChannel = oldState.channel; // left channel
-
+    console.log('1 voiceStateUpdate :>> ', voiceStateUpdate);
     // mute / unmute deafen user are ignored
     if (oldChannel && newChannel && newChannel.id === oldChannel.id) {
       return;

@@ -45,7 +45,7 @@ export = {
       };
     }
 
-    if (!announcementChannel.isTextBased) {
+    if (!announcementChannel.isTextBased()) {
       return {
         result: false,
         value: messageHelp('commands', 'announcement', 'channel must be text channel'),

@@ -425,7 +425,7 @@ export default async (args: { client: Client; newState: VoiceState; oldState: Vo
           return reject(`could not find guild in Portal (${e})`);
         });
     } else {
-      return reject('could fnot find guild in Portal');
+      return reject('could not find guild in Portal');
     }
   });
 };
