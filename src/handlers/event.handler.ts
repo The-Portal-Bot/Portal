@@ -81,14 +81,13 @@ async function eventLoader(
       eventFunction = messageReactionAdd;
       break;
     case 'voiceStateUpdate':
-      console.log('voiceStateUpdate :>> ', voiceStateUpdate);
       eventFunction = voiceStateUpdate;
       break;
     default:
       return;
   }
 
-  const eventResponse: ReturnPromise | undefined = undefined;
+  const eventResponse: string | undefined = undefined;
 
   try {
     // @ts-expect-error Args can be a multitude of things
@@ -166,17 +165,13 @@ export async function eventHandler(
   client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
     const newChannel = newState.channel; // join channel
     const oldChannel = oldState.channel; // left channel
-    console.log('1 voiceStateUpdate :>> ', voiceStateUpdate);
+
     // mute / unmute deafen user are ignored
     if (oldChannel && newChannel && newChannel.id === oldChannel.id) {
       return;
     }
 
-    eventLoader('voiceStateUpdate', {
-      client,
-      oldState: oldState,
-      newState: newState,
-    });
+    eventLoader('voiceStateUpdate', { client, oldState, newState });
   });
 
   // This event will run when a slash command is called.

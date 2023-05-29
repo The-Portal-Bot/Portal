@@ -71,56 +71,46 @@ export function addPointsTime(pMember: PMember, rankSpeed: number): number {
   return pMember.points;
 }
 
-export function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): Promise<number | boolean> {
-  return new Promise((resolve, reject) => {
-    if (voiceState.member && !voiceState.member.user.bot) {
-      const pMember = pGuild.pMembers.find((m) => voiceState && voiceState.member && m.id === voiceState.member.id);
+export async function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): Promise<number | boolean> {
+  if (!voiceState.member || voiceState.member.user.bot) {
+    return false;
+  }
 
-      if (!pMember) {
-        return resolve(false);
-      }
+  const pMember = pGuild.pMembers.find((m) => voiceState && voiceState.member && m.id === voiceState.member.id);
 
-      const ranks = pGuild.ranks;
-      const member = voiceState.member;
-      const speed = pGuild.rankSpeed;
-      const cachedLevel = pMember.level;
+  if (!pMember) {
+    return false;
+  }
 
-      if (!pMember.timestamp) {
-        pMember.timestamp = new Date();
-        updateMember(voiceState.guild.id, member.id, 'timestamp', pMember.timestamp)
-          .then(() => {
-            return resolve(false);
-          })
-          .catch((e) => {
-            return reject(`failed to update member: ${e}`);
-          });
-      } else {
-        pMember.points = addPointsTime(pMember, speed);
-        pMember.level = calculateRank(pMember);
-        pMember.timestamp = null;
+  const ranks = pGuild.ranks;
+  const member = voiceState.member;
+  const speed = pGuild.rankSpeed;
+  const cachedLevel = pMember.level;
 
-        updateEntireMember(voiceState.guild.id, member.id, pMember)
-          .then(() => {
-            giveRoleFromRankUp(pMember, member, ranks, voiceState.guild)
-              .then(() => {
-                if (pMember.level > cachedLevel) {
-                  return resolve(pMember.level);
-                } else {
-                  return resolve(false);
-                }
-              })
-              .catch((e) => {
-                return reject(`failed to give role: ${e}`);
-              });
-          })
-          .catch((e) => {
-            return reject(`failed to update member: ${e}`);
-          });
-      }
-    } else {
-      return resolve(false);
+  if (!pMember.timestamp) {
+    pMember.timestamp = new Date();
+    const updatedMember = await updateMember(voiceState.guild.id, member.id, 'timestamp', pMember.timestamp);
+
+    return updatedMember ? false : pMember.level;
+  } else {
+    pMember.points = addPointsTime(pMember, speed);
+    pMember.level = calculateRank(pMember);
+    pMember.timestamp = null;
+
+    const updatedEntireMember = await updateEntireMember(voiceState.guild.id, member.id, pMember);
+
+    if (!updatedEntireMember) {
+      return false;
     }
-  });
+
+    const roleRankUp = await giveRoleFromRankUp(pMember, member, ranks, voiceState.guild);
+
+    if (!roleRankUp) {
+      return false;
+    }
+
+    return pMember.level > cachedLevel ? pMember.level : false;
+  }
 }
 
 export function addPointsMessage(message: Message, member: PMember, rankSpeed: number): Promise<number | boolean> {
