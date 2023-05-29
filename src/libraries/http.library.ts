@@ -28,21 +28,18 @@ export async function httpsFetch(options: string | RequestOptions | URL): Promis
 }
 
 export async function scrapeLyrics(url: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    fetch(url)
-      .then((response) => {
-        response
-          .text()
-          .then((text) => {
-            const $ = cheerio.load(text);
-            return resolve($('.lyrics').text().trim());
-          })
-          .catch((e) => {
-            return reject(e);
-          });
-      })
-      .catch((e) => {
-        return reject(e);
-      });
-  });
+  const response = await fetch(url);
+
+  if (!response) {
+    return 'no lyrics found';
+  }
+
+  const text = await response.text();
+
+  if (!text) {
+    return 'text not found';
+  }
+
+  const $ = cheerio.load(text);
+  return $('.lyrics').text().trim();
 }

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ActivityOptions, ActivityType, Client, Guild, GuildMember, PresenceData } from 'discord.js';
+import { ActivityOptions, ActivityType, Client, Guild, PresenceData } from 'discord.js';
 import { logger } from '../libraries/help.library';
 import { getFunction } from '../libraries/localisation.library';
 import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library';
@@ -7,39 +6,34 @@ import { PMember } from '../types/classes/PMember.class';
 import { LogActions } from '../types/classes/PTypes.interface';
 
 export default async (args: { client: Client }): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    if (!args.client.user) {
-      return reject('could not fetch user from client');
-    }
+  if (!args.client.user) {
+    return 'could not fetch user from client';
+  }
 
-    const activitiesOptions: ActivityOptions = {
-      name: './help', // `in ${args.client.guilds.cache.size} servers``
-      type: ActivityType.Listening,
-      url: 'https://github.com/keybraker',
-    };
+  const activitiesOptions: ActivityOptions = {
+    name: './help', // `in ${args.client.guilds.cache.size} servers``
+    type: ActivityType.Listening,
+    url: 'https://github.com/keybraker',
+  };
 
-    const data: PresenceData = { activities: [activitiesOptions], status: 'online', afk: false };
+  const data: PresenceData = { activities: [activitiesOptions], status: 'online', afk: false };
 
-    args.client.user.setPresence(data);
+  args.client.user.setPresence(data);
+  args.client.guilds.cache.forEach((guild: Guild) => {
+    logger.info(`${guild} | ${guild.id}`);
 
-    args.client.guilds.cache.forEach((guild: Guild) => {
-      logger.info(`${guild} | ${guild.id}`);
-
-      addGuildAgain(guild, args.client).catch((e) => {
-        return reject(`failed to add guild again: ${e}`);
-      });
-      // removeDeletedChannels(guild);
-      // removeEmptyVoiceChannels(guild);
+    addGuildAgain(guild, args.client).catch((e) => {
+      return `failed to add guild again: ${e}`;
     });
-
-    const func = getFunction('console', 1, LogActions.ready) as unknown as (a: number, b: number, c: number) => string;
-
-    return resolve(
-      func
-        ? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
-        : 'error with localisation'
-    );
+    // removeDeletedChannels(guild);
+    // removeEmptyVoiceChannels(guild);
   });
+
+  const func = getFunction('console', 1, LogActions.ready) as unknown as (a: number, b: number, c: number) => string;
+
+  return func
+    ? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
+    : 'error with localisation';
 };
 
 async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
