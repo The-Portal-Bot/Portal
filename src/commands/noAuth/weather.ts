@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
@@ -76,7 +76,7 @@ export = {
       ?.send({
         embeds: [
           createEmbed(
-            `${json.name}, ${json.sys.country} at ${moment().format('DD/MM/YY')}`,
+            `${json.name}, ${json.sys.country} at ${dayjs().format('DD/MM/YY')}`,
             'powered by OpenWeatherMap',
             '#BFEFFF',
             [

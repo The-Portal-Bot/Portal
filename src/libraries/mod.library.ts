@@ -1,5 +1,5 @@
 import { BanOptions, Message } from 'discord.js';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import configSpam from '../config.spam.json';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { ProfaneWords } from '../assets/lists/profaneWords.static';
@@ -77,7 +77,7 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
     return;
   }
 
-  const elapsedTime = moment.duration(moment().diff(moment(memberSpamCache.timestamp.getTime())));
+  const elapsedTime = dayjs.duration(dayjs().diff(dayjs(memberSpamCache.timestamp.getTime())));
 
   if (elapsedTime.asSeconds() > configSpam.MESSAGE_INTERVAL / 1000) {
     memberSpamCache.timestamp = null;

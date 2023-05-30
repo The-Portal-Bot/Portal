@@ -1,4 +1,7 @@
 import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from '@discordjs/voice';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import {
   ChatInputCommandInteraction,
   Client,
@@ -16,7 +19,6 @@ import {
   User,
   VoiceChannel,
 } from 'discord.js';
-import moment from 'moment';
 import { createLogger, format, transports } from 'winston';
 import { VideoSearchResult } from 'yt-search';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
@@ -652,12 +654,15 @@ export function pad(num: number): string {
   return num.toString().length >= 2 ? `${num}` : `0${num}`;
 }
 
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
 export function timeElapsed(timestamp: Date | number, timeout: number): TimeElapsed {
   const timeoutTime = timeout * 60 * 1000;
-  const el = moment.duration(moment().diff(moment(typeof timestamp === 'number' ? timestamp : timestamp.getTime())));
+  const el = dayjs.duration(dayjs().diff(dayjs(typeof timestamp === 'number' ? timestamp : timestamp.getTime())));
 
-  const timeoutMin = moment(timeoutTime).minutes();
-  const timeoutSec = moment(timeoutTime).seconds();
+  const timeoutMin = dayjs.duration(timeoutTime).minutes();
+  const timeoutSec = dayjs.duration(timeoutTime).seconds();
   const remainingHrs = el.hours();
   const remainingMin = el.minutes();
   const remainingSec = el.seconds();

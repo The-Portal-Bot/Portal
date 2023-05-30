@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import voca from 'voca';
 import { CountryCodes } from '../../assets/lists/countryCodesISO.static';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
@@ -108,7 +108,7 @@ export = {
     const outcome = await interaction.channel?.send({
       embeds: [
         createEmbed(
-          `${countryData.country} | ${moment(countryData.time).format('DD/MM/YY')}`,
+          `${countryData.country} | ${dayjs(countryData.time).format('DD/MM/YY')}`,
           'Covid19 stats by covid-193',
           '#FF0000',
           [

@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
@@ -80,7 +80,7 @@ export = {
     const outcome = await interaction.channel?.send({
       embeds: [
         createEmbed(
-          `${gameCode} from ${provider} | ${moment(json.last.drawTime).format('DD/MM/YY')}`,
+          `${gameCode} from ${provider} | ${dayjs(json.last.drawTime).format('DD/MM/YY')}`,
           `powered by ${provider}`,
           '#0384fc',
           [

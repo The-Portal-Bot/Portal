@@ -77,7 +77,7 @@ export = {
 
     //     message.channel.send(
     //         create_rich_embed(
-    //             `${country_data.country} | ${moment().format('DD/MM/YY')}`,
+    //             `${country_data.country} | ${dayjs().format('DD/MM/YY')}`,
     //             'Covid19 stats powered by api-sports',
     //             '#FF0000',
     //             [

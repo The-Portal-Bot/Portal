@@ -17,7 +17,7 @@ import {
   VoiceChannel,
   VoiceState
 } from 'discord.js';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import voca from 'voca';
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
@@ -302,7 +302,7 @@ export async function createFocusChannel(
 
   const chatRoomName = `${focusTime === 0
     ? 'Private Room'
-    : `PR-${focusTime}' $hour:$minute/${moment()
+    : `PR-${focusTime}' $hour:$minute/${dayjs()
       .add(focusTime, focusTime === 1 ? 'minute' : 'minutes')
       .format('hh:mm')}`
   }`;

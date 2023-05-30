@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
@@ -104,7 +104,7 @@ export = {
       ?.send({
         embeds: [
           createEmbed(
-            `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${moment().format('DD/MM/YY')}`,
+            `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${dayjs().format('DD/MM/YY')}`,
             'powered by yahoo finance',
             '#FF0000',
             [],

@@ -1,5 +1,5 @@
 import { Guild, EmbedBuilder, VoiceChannel } from 'discord.js';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { AuthType } from '../enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { getStatusList } from '../../libraries/status.library';
@@ -7,6 +7,7 @@ import { PGuild } from '../classes/PGuild.class';
 import { PChannel } from '../classes/PPortalChannel.class';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 import { PVoiceChannel } from '../classes/PVoiceChannel.class';
+import calendar from 'dayjs/plugin/calendar';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
@@ -130,11 +131,13 @@ const variables: InterfaceBlueprint[] = [
       pVoiceChannel: PVoiceChannel | undefined | null
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
+      dayjs.extend(calendar);
+
       if (!pVoiceChannel) {
-        return moment().subtract(10, 'days').calendar();
+        return dayjs().subtract(10, 'days').calendar();
       }
 
-      return moment().subtract(10, 'days').calendar();
+      return dayjs().subtract(10, 'days').calendar();
     },
     set: null,
     auth: AuthType.none,
@@ -148,10 +151,10 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().date();
+        return dayjs().date();
       }
 
-      return moment().date();
+      return dayjs().date();
     },
     set: null,
     auth: AuthType.none,
@@ -165,9 +168,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().format('dddd');
+        return dayjs().format('dddd');
       }
-      return moment().format('dddd');
+      return dayjs().format('dddd');
     },
     set: null,
     auth: AuthType.none,
@@ -181,9 +184,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().format('M');
+        return dayjs().format('M');
       }
-      return moment().format('M');
+      return dayjs().format('M');
     },
     set: null,
     auth: AuthType.none,
@@ -197,9 +200,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().startOf('month').format('MMMM');
+        return dayjs().startOf('month').format('MMMM');
       }
-      return moment().startOf('month').format('MMMM');
+      return dayjs().startOf('month').format('MMMM');
     },
     set: null,
     auth: AuthType.none,
@@ -213,9 +216,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().format('yyyy');
+        return dayjs().format('yyyy');
       }
-      return moment().format('yyyy');
+      return dayjs().format('yyyy');
     },
     set: null,
     auth: AuthType.none,
@@ -229,9 +232,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().format('hh:mm:ss');
+        return dayjs().format('hh:mm:ss');
       }
-      return moment().format('hh:mm:ss');
+      return dayjs().format('hh:mm:ss');
     },
     set: null,
     auth: AuthType.none,
@@ -245,9 +248,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().format('hh');
+        return dayjs().format('hh');
       }
-      return moment().format('hh');
+      return dayjs().format('hh');
     },
     set: null,
     auth: AuthType.none,
@@ -261,9 +264,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().format('mm');
+        return dayjs().format('mm');
       }
-      return moment().format('mm');
+      return dayjs().format('mm');
     },
     set: null,
     auth: AuthType.none,
@@ -277,9 +280,9 @@ const variables: InterfaceBlueprint[] = [
       // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
     ) => {
       if (!pVoiceChannel) {
-        return moment().format('ss');
+        return dayjs().format('ss');
       }
-      return moment().format('ss');
+      return dayjs().format('ss');
     },
     set: null,
     auth: AuthType.none,
