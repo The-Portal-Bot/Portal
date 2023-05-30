@@ -42,7 +42,7 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
 
         if (!lyricMessage) {
           return `error creating lyrics message`;
-        };
+        }
 
         if (isMessageDeleted(lyricMessage)) {
           const deletedMessage = await lyricMessage.delete();

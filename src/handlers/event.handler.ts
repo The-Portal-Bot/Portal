@@ -15,7 +15,6 @@ import {
   User,
   VoiceState,
 } from 'discord.js';
-import eventConfigJSON from '../config.event.json';
 import channelDelete from '../events/channelDelete.event';
 import guildCreate from '../events/guildCreate.event';
 import guildDelete from '../events/guildDelete.event';
@@ -28,7 +27,7 @@ import voiceStateUpdate from '../events/voiceStateUpdate.event';
 import { isUserAuthorised, logger } from '../libraries/help.library';
 import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
 import { commandFetcher } from '../libraries/preprocessor.library';
-import { ActiveCooldowns, AuthCommands, NoAuthCommands, ReturnPromise } from '../types/classes/PTypes.interface';
+import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface';
 import { commandLoader } from './command.handler';
 
 type HandledEvents =
@@ -56,52 +55,44 @@ async function eventLoader(
 ) {
   let eventFunction = undefined;
   switch (event) {
-    case 'ready':
-      eventFunction = ready;
-      break;
-    case 'channelDelete':
-      eventFunction = channelDelete;
-      break;
-    case 'guildCreate':
-      eventFunction = guildCreate;
-      break;
-    case 'guildDelete':
-      eventFunction = guildDelete;
-      break;
-    case 'guildMemberAdd':
-      eventFunction = guildMemberAdd;
-      break;
-    case 'guildMemberRemove':
-      eventFunction = guildMemberRemove;
-      break;
-    case 'messageDelete':
-      eventFunction = messageDelete;
-      break;
-    case 'messageReactionAdd':
-      eventFunction = messageReactionAdd;
-      break;
-    case 'voiceStateUpdate':
-      eventFunction = voiceStateUpdate;
-      break;
-    default:
-      return;
+  case 'ready':
+    eventFunction = ready;
+    break;
+  case 'channelDelete':
+    eventFunction = channelDelete;
+    break;
+  case 'guildCreate':
+    eventFunction = guildCreate;
+    break;
+  case 'guildDelete':
+    eventFunction = guildDelete;
+    break;
+  case 'guildMemberAdd':
+    eventFunction = guildMemberAdd;
+    break;
+  case 'guildMemberRemove':
+    eventFunction = guildMemberRemove;
+    break;
+  case 'messageDelete':
+    eventFunction = messageDelete;
+    break;
+  case 'messageReactionAdd':
+    eventFunction = messageReactionAdd;
+    break;
+  case 'voiceStateUpdate':
+    eventFunction = voiceStateUpdate;
+    break;
+  default:
+    return;
   }
 
-  const eventResponse: string | undefined = undefined;
 
   try {
-    // @ts-expect-error Args can be a multitude of things
-    eventFunction(args);
+    // @ts-expect-error args can be a multitude of things
+    const response = await eventFunction(args);
+    logger.info(`[event-handled] ${event} | ${response}`);
   } catch (e) {
     logger.error(new Error(`[event-rejected] ${event} | ${e}`));
-  }
-
-  if (eventResponse) {
-    if (eventConfigJSON.find((configEvent) => configEvent.name === event)) {
-      logger.info(`[event-accepted] ${event} | ${eventResponse}`);
-    } else if (process.env.DEBUG) {
-      logger.info(`[event-accepted-debug] ${event} | ${eventResponse}`);
-    }
   }
 }
 

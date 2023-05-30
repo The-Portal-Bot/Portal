@@ -217,110 +217,110 @@ export function commandResolver(command: AuthCommands | NoAuthCommands) {
   let commandFile = undefined;
 
   switch (command) {
-    case 'about':
-      commandFile = about;
-      break;
-    case 'announce':
-      commandFile = announce;
-      break;
-    case 'bet':
-      commandFile = bet;
-      break;
-    case 'corona':
-      commandFile = corona;
-      break;
-    case 'crypto':
-      commandFile = crypto;
-      break;
-    case 'focus':
-      commandFile = focus;
-      break;
-    case 'football':
-      commandFile = football;
-      break;
-    case 'help':
-      commandFile = help;
-      break;
-    case 'join':
-      commandFile = join;
-      break;
-    case 'leaderboard':
-      commandFile = leaderboard;
-      break;
-    case 'leave':
-      commandFile = leave;
-      break;
-    case 'level':
-      commandFile = level;
-      break;
-    case 'ping':
-      commandFile = ping;
-      break;
-    case 'poll':
-      commandFile = poll;
-      break;
-    case 'ranks':
-      commandFile = ranks;
-      break;
-    case 'roll':
-      commandFile = roll;
-      break;
-    case 'run':
-      commandFile = run;
-      break;
-    case 'state':
-      commandFile = state;
-      break;
-    case 'spam_rules':
-      commandFile = spam_rules;
-      break;
-    case 'weather':
-      commandFile = weather;
-      break;
-    case 'whoami':
-      commandFile = whoami;
-      break;
-    case 'announcement':
-      commandFile = announcement;
-      break;
-    case 'ban':
-      commandFile = ban;
-      break;
-    case 'delete_messages':
-      commandFile = delete_messages;
-      break;
-    case 'force':
-      commandFile = force;
-      break;
-    case 'ignore':
-      commandFile = ignore;
-      break;
-    case 'invite':
-      commandFile = invite;
-      break;
-    case 'kick':
-      commandFile = kick;
-      break;
-    case 'music':
-      commandFile = music;
-      break;
-    case 'portal':
-      commandFile = portal;
-      break;
-    case 'vendor':
-      commandFile = vendor;
-      break;
-    case 'set_ranks':
-      commandFile = set_ranks;
-      break;
-    case 'set':
-      commandFile = set;
-      break;
-    case 'url':
-      commandFile = url;
-      break;
-    default:
-      throw Error(`command ${command} not found`);
+  case 'about':
+    commandFile = about;
+    break;
+  case 'announce':
+    commandFile = announce;
+    break;
+  case 'bet':
+    commandFile = bet;
+    break;
+  case 'corona':
+    commandFile = corona;
+    break;
+  case 'crypto':
+    commandFile = crypto;
+    break;
+  case 'focus':
+    commandFile = focus;
+    break;
+  case 'football':
+    commandFile = football;
+    break;
+  case 'help':
+    commandFile = help;
+    break;
+  case 'join':
+    commandFile = join;
+    break;
+  case 'leaderboard':
+    commandFile = leaderboard;
+    break;
+  case 'leave':
+    commandFile = leave;
+    break;
+  case 'level':
+    commandFile = level;
+    break;
+  case 'ping':
+    commandFile = ping;
+    break;
+  case 'poll':
+    commandFile = poll;
+    break;
+  case 'ranks':
+    commandFile = ranks;
+    break;
+  case 'roll':
+    commandFile = roll;
+    break;
+  case 'run':
+    commandFile = run;
+    break;
+  case 'state':
+    commandFile = state;
+    break;
+  case 'spam_rules':
+    commandFile = spam_rules;
+    break;
+  case 'weather':
+    commandFile = weather;
+    break;
+  case 'whoami':
+    commandFile = whoami;
+    break;
+  case 'announcement':
+    commandFile = announcement;
+    break;
+  case 'ban':
+    commandFile = ban;
+    break;
+  case 'delete_messages':
+    commandFile = delete_messages;
+    break;
+  case 'force':
+    commandFile = force;
+    break;
+  case 'ignore':
+    commandFile = ignore;
+    break;
+  case 'invite':
+    commandFile = invite;
+    break;
+  case 'kick':
+    commandFile = kick;
+    break;
+  case 'music':
+    commandFile = music;
+    break;
+  case 'portal':
+    commandFile = portal;
+    break;
+  case 'vendor':
+    commandFile = vendor;
+    break;
+  case 'set_ranks':
+    commandFile = set_ranks;
+    break;
+  case 'set':
+    commandFile = set;
+    break;
+  case 'url':
+    commandFile = url;
+    break;
+  default:
+    throw Error(`command ${command} not found`);
   }
 
   return commandFile;

@@ -9,8 +9,8 @@
     "start": "node build/index.js",
     "build-start": "npx tsc && node build/index.js",
     "test": "npx tsc && jest",
-    "lint": "npx eslint . --ext .ts --fix",
-    "lint-2": "eslint . --ext .ts",
+    "lint": "eslint --fix --ext .ts .",
+    "lint-2": "eslint --ext .ts .",
     "dev": "tsc --watch"
   },
   "dependencies": {

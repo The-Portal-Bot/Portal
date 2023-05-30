@@ -2,9 +2,9 @@ import { Channel, ChannelType, PartialDMChannel, TextChannel, VoiceChannel } fro
 import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
 import { deletedChannelSync } from '../libraries/mongo.library';
 
-export default async (args: { channel: Channel | PartialDMChannel }): Promise<string> => {
+export default async function channelDelete(args: { channel: Channel | PartialDMChannel }): Promise<string> {
   if (args.channel.type !== ChannelType.GuildText && args.channel.type !== ChannelType.GuildVoice) {
-    return `only voice and text channels are handled`;
+    throw new Error('only voice and text channels are handled');
   }
 
   const currentChannel = typeof args.channel === typeof VoiceChannel
@@ -14,11 +14,11 @@ export default async (args: { channel: Channel | PartialDMChannel }): Promise<st
   const deletedPChannel = await deletedChannelSync(currentChannel);
 
   if (!deletedPChannel) {
-    return `error syncing deleted channel from ` + `${currentChannel.guild.name}|${currentChannel.guild.id}`;
+    throw new Error(`error syncing deleted channel from ${currentChannel.guild.name}|${currentChannel.guild.id}`);
   }
 
   return deletedPChannel > 0
     ? `${PortalChannelTypes[deletedPChannel].toString()} channel removed from ` +
     `${currentChannel.guild.name}|${currentChannel.guild.id}`
     : `${currentChannel.name} channel is not controlled by Portal`;
-};
+}

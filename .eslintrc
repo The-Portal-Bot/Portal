@@ -25,6 +25,7 @@
     "no-console": 1,
     "indent": ["error", 2],
     "global-require": ["error"],
-    "handle-callback-err": ["error"]
+    "handle-callback-err": ["error"],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }]
   }
 }

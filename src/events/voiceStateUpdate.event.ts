@@ -113,7 +113,7 @@ export default async function (args: { client: Client; newState: VoiceState; old
 
     return response;
   }
-};
+}
 
 // delete portal's voice channel
 async function deleteVoiceChannel(channel: VoiceChannel | TextChannel, pGuild: PGuild): Promise<string> {
