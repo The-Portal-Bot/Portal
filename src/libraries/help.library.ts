@@ -147,20 +147,20 @@ export function getKeyFromEnum(value: string, enumeration: enumTypes): string | 
   let enumerationArray;
 
   switch (enumeration) {
-  case OpapGameId:
-    enumerationArray = Object.values(OpapGameId);
-    break;
-  case RankSpeed:
-    enumerationArray = Object.values(RankSpeed);
-    break;
-  case ProfanityLevel:
-    enumerationArray = Object.values(ProfanityLevel);
-    break;
-  case Locale:
-    enumerationArray = Object.values(Locale);
-    break;
-  default:
-    return undefined;
+    case OpapGameId:
+      enumerationArray = Object.values(OpapGameId);
+      break;
+    case RankSpeed:
+      enumerationArray = Object.values(RankSpeed);
+      break;
+    case ProfanityLevel:
+      enumerationArray = Object.values(ProfanityLevel);
+      break;
+    case Locale:
+      enumerationArray = Object.values(Locale);
+      break;
+    default:
+      return undefined;
   }
 
   for (const enumerationValue of enumerationArray) {
@@ -475,7 +475,7 @@ export function createEmbed(
   footer?: string
 ): EmbedBuilder {
   const portalIconUrl: string =
-    'https://raw.githubusercontent.com/keybraker' + '/Portal/master/src/assets/img/portalLogoSpinr.gif';
+    'https://raw.githubusercontent.com/keybraker' + '/Portal/master/src/assets/img/portal_logo_spinr.gif';
 
   const richMessage = new EmbedBuilder();
 
@@ -487,8 +487,8 @@ export function createEmbed(
   if (fromBot)
     richMessage
       .setFooter({
-        text: footer ? footer : 'Portal',
-        iconURL: customGif ? customGif : portalIconUrl,
+        text: footer ?? 'Portal',
+        iconURL: customGif ?? portalIconUrl,
       })
       .setTimestamp();
   if (thumbnail) richMessage.setThumbnail(thumbnail);
