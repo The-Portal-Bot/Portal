@@ -16,7 +16,7 @@ export default async (args: { member: GuildMember | PartialGuildMember }): Promi
   const pGuild = await fetchAnnouncementChannelByGuildId(args.member.guild.id);
 
   if (!pGuild) {
-    return `no announcement channel in database`;
+    return 'no announcement channel in database';
   }
 
   if (pGuild?.initialRole !== 'null') {
@@ -26,7 +26,7 @@ export default async (args: { member: GuildMember | PartialGuildMember }): Promi
       const roleAdded = await args.member.roles.add(initialRole)
 
       if (!roleAdded) {
-        return `failed to give role to member`;
+        return 'failed to give role to member';
       }
     }
   }
@@ -59,7 +59,7 @@ export default async (args: { member: GuildMember | PartialGuildMember }): Promi
     const messageSent = await announcementChannel.send(message);
 
     if (!messageSent) {
-      return `failed to send join message`;
+      return 'failed to send join message';
     }
   }
 

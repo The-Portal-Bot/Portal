@@ -191,7 +191,7 @@ const commands: InterfaceBlueprint[] = [
   },
   {
     name: 'set',
-    hover: "update an attribute's value",
+    hover: 'update an attribute\'s value',
     auth: AuthType.none,
     get: null,
     set: null,
@@ -320,10 +320,10 @@ export function getCommandHelpSuper(candidate: string): EmbedBuilder | boolean {
         null,
         '#9775A9',
         [
-          { emote: `Type`, role: `Command`, inline: true },
-          { emote: `Prefix`, role: `${COMMAND_PREFIX}`, inline: true },
+          { emote: 'Type', role: 'Command', inline: true },
+          { emote: 'Prefix', role: `${COMMAND_PREFIX}`, inline: true },
           {
-            emote: `Description`,
+            emote: 'Description',
             role: `[hover or click](${PORTAL_URL}/commands/detailed/${candidate} "${commands[i].hover}")`,
             inline: true,
           },

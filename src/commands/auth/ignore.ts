@@ -52,7 +52,7 @@ export = {
       } else {
         return {
           result: false,
-          value: `failed to set as an ignore channel`,
+          value: 'failed to set as an ignore channel',
         };
       }
     }

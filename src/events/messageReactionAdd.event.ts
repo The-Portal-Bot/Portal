@@ -464,7 +464,7 @@ export default async (args: {
   user: User | PartialUser;
 }): Promise<string> => {
   return new Promise((resolve, reject) => {
-    return reject(`under construction`);
+    return reject('under construction');
     // if (args.user.bot) {
     //     return resolve(''); // 'not handling bot reactions'
     // } else if (args.messageReaction.message?.guild) {

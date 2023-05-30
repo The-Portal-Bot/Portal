@@ -1,18 +1,18 @@
-import { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, Client } from 'discord.js';
 import { createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription("returns time to reply with 'pong'"),
+    .setDescription('returns time to reply with \'pong\''),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const message = {
       embeds: [
         createEmbed(null, null, '#0093ff', null, null, null, false, null, null, undefined, {
-          name: `Request sent`,
+          name: 'Request sent',
           icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/ping.gif',
         }),
       ],
@@ -23,7 +23,7 @@ export = {
     if (!messageSent) {
       return {
         result: false,
-        value: `error while sending pong message`,
+        value: 'error while sending pong message',
       };
     }
 
@@ -40,7 +40,7 @@ export = {
 
     return {
       result: !!editMessage,
-      value: editMessage ? '' : `error while editing pong message`,
+      value: editMessage ? '' : 'error while editing pong message',
     };
   },
 };

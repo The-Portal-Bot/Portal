@@ -79,7 +79,7 @@ export = {
         const roleFetched = r.role.map((role) => getRole(interaction.guild, role));
 
         if (roleFetched.some((role) => !role)) {
-          returnValue = `some of the given roles do not exist`;
+          returnValue = 'some of the given roles do not exist';
           return true;
         }
 
@@ -91,7 +91,7 @@ export = {
           )
         );
       } else {
-        returnValue = `could not fetch guild of message`;
+        returnValue = 'could not fetch guild of message';
         return true;
       }
     });
@@ -116,7 +116,7 @@ export = {
     if (!roleMessage || !roleMessage.result) {
       return {
         result: false,
-        value: `an error occurred while creating role message`,
+        value: 'an error occurred while creating role message',
       };
     }
 

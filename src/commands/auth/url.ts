@@ -1,16 +1,7 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
-import {
-  createChannel,
-  getOptions,
-  isAnnouncementChannel,
-  isMusicChannel,
-  isUrlOnlyChannel,
-} from '../../libraries/guild.library';
-import { messageHelp } from '../../libraries/help.library';
-import { insertURL, removeURL } from '../../libraries/mongo.library';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
   data: new SlashCommandBuilder().setName('url').setDescription('create URL only channel'),

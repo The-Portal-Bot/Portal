@@ -53,14 +53,14 @@ export = {
     if (!isMod((interaction.member as GuildMember))) {
       return {
         result: false,
-        value: `you must be a Portal moderator to ban users`,
+        value: 'you must be a Portal moderator to ban users',
       };
     }
 
     if (!interaction.guild) {
       return {
         result: false,
-        value: `user guild could not be fetched`,
+        value: 'user guild could not be fetched',
       };
     }
 

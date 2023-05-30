@@ -2044,7 +2044,7 @@ const attributes: InterfaceBlueprint[] = [
         } else {
           return resolve({
             result: false,
-            value: `could not find member`,
+            value: 'could not find member',
           });
         }
       });
@@ -2322,10 +2322,10 @@ export function getAttributeHelpSuper(candidate: string): EmbedBuilder | boolean
         null,
         '#FF5714',
         [
-          { emote: `Type`, role: `Attribute`, inline: true },
-          { emote: `Prefix`, role: `${ATTRIBUTE_PREFIX}`, inline: true },
+          { emote: 'Type', role: 'Attribute', inline: true },
+          { emote: 'Prefix', role: `${ATTRIBUTE_PREFIX}`, inline: true },
           {
-            emote: `Description`,
+            emote: 'Description',
             role: `[hover or click](${getLink(candidate)} "${attributes[i].hover}")`,
             inline: true,
           },
@@ -2450,6 +2450,6 @@ export async function setAttribute(
 
   return {
     result: false,
-    value: `fail`,
+    value: 'fail',
   };
 }

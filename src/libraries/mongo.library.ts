@@ -1,5 +1,5 @@
 import { ChannelType, Client, Guild, TextChannel, VoiceChannel } from 'discord.js';
-import { Document, FilterQuery } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
 import { PGiveRole } from '../types/classes/PGiveRole.class';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
@@ -214,7 +214,6 @@ export async function insertGuild(guildId: PGuild['id'], client: Client): Promis
   const id: string = guildId;
   const pChannels: PChannel[] = [];
   const pMembers: PMember[] = await createMembers(guildId, client);
-  console.log('pMembers :>> ', pMembers);
   const pURLs: string[] = [];
   const pRoles: PGiveRole[] = [];
   const pPolls: string[] = [];

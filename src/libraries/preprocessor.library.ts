@@ -19,7 +19,7 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
   if (isUserIgnored(message.member)) {
     if (!handleUrlChannels(message, pGuild)) {
       if (pGuild.musicData.channelId === message.channel.id) {
-        message.member.send("you can't play music when ignored").catch((e) => {
+        message.member.send('you can\'t play music when ignored').catch((e) => {
           logger.error(new Error(`failed to send message: ${e}`));
         });
 
@@ -205,7 +205,7 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
   if (pGuild.musicData.channelId === message.channel.id) {
     if (message.content === './music') {
       if (!message.guild) {
-        logger.error(new Error(`failed to get guild from message`));
+        logger.error(new Error('failed to get guild from message'));
         return true;
       }
 

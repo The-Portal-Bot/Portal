@@ -9,13 +9,13 @@ import { fetchGuild, removePoll, removeVendor } from '../libraries/mongo.library
 
 export default async (args: { client: Client; message: Message<boolean> | PartialMessage }): Promise<string> => {
   if (!args.message.guild) {
-    return `message's guild could not be fetched`;
+    return 'message\'s guild could not be fetched';
   }
 
   const pGuild = await fetchGuild(args.message.guild.id);
 
   if (!pGuild) {
-    return `failed to fetch guild`;
+    return 'failed to fetch guild';
   }
 
   const pRoles = pGuild.pRoles;
@@ -41,7 +41,7 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
         const lyricMessage = await musicChannel.messages.fetch(pGuild.musicData.messageLyricsId);
 
         if (!lyricMessage) {
-          return `error creating lyrics message`;
+          return 'error creating lyrics message';
         }
 
         if (isMessageDeleted(lyricMessage)) {
@@ -49,7 +49,7 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
 
           if (deletedMessage) {
             markMessageAsDeleted(deletedMessage);
-            return `deleted lyrics message`;
+            return 'deleted lyrics message';
           }
         }
       }
@@ -61,7 +61,7 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
 
     if (musicChannel && pGuild.musicData.messageId) {
       const lyricMessage = await createMusicLyricsMessage(musicChannel, pGuild, pGuild.musicData.messageId);
-      return lyricMessage ? 'created lyrics message' : `error creating lyrics message`;
+      return lyricMessage ? 'created lyrics message' : 'error creating lyrics message';
     }
   } else if (pGuild.pPolls.some((p) => p.messageId === args.message.id)) {
     const poll = pGuild.pPolls.find((p) => p.messageId === args.message.id);

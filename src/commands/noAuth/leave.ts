@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { getVoiceConnection } from '@discordjs/voice';
-import { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { clientWrite } from '../../libraries/localisation.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { AnnouncementAction, ReturnPromise } from '../../types/classes/PTypes.interface';

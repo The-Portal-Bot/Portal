@@ -62,7 +62,7 @@ export = {
     if (!result) {
       return {
         result: false,
-        value: `failed to focus`,
+        value: 'failed to focus',
       };
     }
 

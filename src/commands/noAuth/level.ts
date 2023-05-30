@@ -46,7 +46,7 @@ export = {
 
     return {
       result: !!outcome,
-      value: outcome ? '' : `failed to send message`,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 };

@@ -354,13 +354,13 @@ export async function joinUserVoiceChannelByReaction(
   const guildMembers = await guild.members.fetch();
 
   if (!guildMembers) {
-    return Promise.reject(`could not fetch members`);
+    return Promise.reject('could not fetch members');
   }
 
   const member = guildMembers.find((guildMember) => !guildMember.user?.bot && guildMember.id === user.id);
 
   if (!member) {
-    return Promise.reject(`could not find member`);
+    return Promise.reject('could not find member');
   }
 
   if (!member.voice) {
@@ -413,7 +413,7 @@ export async function joinUserVoiceChannelByInteraction(
   }
 
   if (!member.voice.channel) {
-    return Promise.reject("you aren't in a channel");
+    return Promise.reject('you aren\'t in a channel');
   }
 
   if (!interaction.guild) {
@@ -429,7 +429,7 @@ export async function joinUserVoiceChannelByInteraction(
   }
 
   if (!client.voice) {
-    return Promise.reject("could not fetch portal's voice connections");
+    return Promise.reject('could not fetch portal\'s voice connections');
   }
 
   let voiceConnection = await getVoiceConnection(member.voice.channel.id);
@@ -500,8 +500,8 @@ export function createEmbed(
   if (fieldArray) {
     fieldArray.forEach((row) => {
       richMessage.addFields({
-        name: row.emote === '' || !row.emote ? `\u200b` : `${row.emote}`,
-        value: row.role === '' || !row.role ? `\u200b` : `${row.role}`,
+        name: row.emote === '' || !row.emote ? '\u200b' : `${row.emote}`,
+        value: row.role === '' || !row.role ? '\u200b' : `${row.role}`,
         inline: row.inline,
       });
     });
@@ -578,7 +578,7 @@ export async function messageReply(
   emoteFail = '❌'
 ): Promise<boolean> {
   if (!message) {
-    return Promise.reject(`failed to find message`);
+    return Promise.reject('failed to find message');
   }
 
   if (!isChannelDeleted(message.channel) && replyString !== null && replyString !== '') {
@@ -587,7 +587,7 @@ export async function messageReply(
     });
 
     if (!sentMessage) {
-      return Promise.reject(`failed to send message`);
+      return Promise.reject('failed to send message');
     }
 
     if (deleteReply) {
@@ -612,7 +612,7 @@ export async function messageReply(
     });
 
     if (!reaction) {
-      return Promise.reject(`failed to react to message`);
+      return Promise.reject('failed to react to message');
     }
 
     const delay = (process.env.DELETEDELAY as unknown as number) * 1000;

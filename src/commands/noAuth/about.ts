@@ -10,7 +10,7 @@ export = {
 
     return {
       result: true,
-      value: outcome ? '' : `failed to send about message`,
+      value: outcome ? '' : 'failed to send about message',
     };
   },
 };

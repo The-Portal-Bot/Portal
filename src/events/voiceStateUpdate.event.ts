@@ -52,7 +52,7 @@ export default async function (args: { client: Client; newState: VoiceState; old
               logger.error(new Error(`failed to check channel state: ${e}`));
             });
 
-          return `portal channel does not allow bots`;
+          return 'portal channel does not allow bots';
         }
       }
 
@@ -71,7 +71,7 @@ export default async function (args: { client: Client; newState: VoiceState; old
                 logger.error(new Error(`failed to check channel state: ${e}`));
               });
 
-            return `voice channel does not allow bots`;
+            return 'voice channel does not allow bots';
           }
         }
       }
@@ -141,8 +141,8 @@ async function deleteVoiceChannel(channel: VoiceChannel | TextChannel, pGuild: P
 
 async function fiveMinuteRefresher(voiceChannel: VoiceChannel, portalList: PChannel[], guild: Guild, minutes: number): Promise<void> {
   const pGuild = await fetchGuild(guild.id)
-    .catch((e) => {
-      logger.error(new Error(`ailed to fetch guild`));
+    .catch(() => {
+      logger.error(new Error('failed to fetch guild'));
     });
 
   if (!pGuild) {
@@ -150,15 +150,15 @@ async function fiveMinuteRefresher(voiceChannel: VoiceChannel, portalList: PChan
   }
 
   generateChannelName(voiceChannel, portalList, pGuild, guild)
-    .catch((e) => {
-      logger.error(new Error(`failed to generate channel name`));
+    .catch(() => {
+      logger.error(new Error('failed to generate channel name'));
     });
 
   setTimeout(() => {
     if (!isGuildDeleted(guild) && !isChannelDeleted(voiceChannel)) {
       generateChannelName(voiceChannel, portalList, pGuild, guild)
-        .catch((e) => {
-          logger.error(new Error(`failed to generate channel name`));
+        .catch(() => {
+          logger.error(new Error('failed to generate channel name'));
         });
 
       fiveMinuteRefresher(voiceChannel, portalList, guild, minutes);
@@ -178,13 +178,13 @@ async function channelEmptyCheck(
       });
   } else if (oldChannel.members.size === 1) {
     if (!client.voice) {
-      return `Portal is not connected`;
+      return 'Portal is not connected';
     }
 
     const voiceConnection = getVoiceConnection(oldChannel.guild.id);
 
     if (!voiceConnection) {
-      return `Portal is not connected`;
+      return 'Portal is not connected';
     }
 
     pGuild.musicQueue = [];
@@ -228,7 +228,7 @@ async function channelEmptyCheck(
     }
   }
 
-  return `channel is not handled by Portal`;
+  return 'channel is not handled by Portal';
 }
 
 async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newState: VoiceState): Promise<string> {

@@ -1,8 +1,6 @@
-import { ChatInputCommandInteraction, GuildMember, Message } from 'discord.js';
-import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
-import { kick } from '../../libraries/user.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
   data: new SlashCommandBuilder()

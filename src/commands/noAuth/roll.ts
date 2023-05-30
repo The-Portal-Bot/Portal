@@ -33,7 +33,7 @@ export = {
       const member = interaction.member as GuildMember;
       const rollLibrary = new Roll();
       const roll = rollLibrary.roll(rollCommand);
-      const rollDetail = show ? ` (${roll.rolled} from ${rollCommand})` : ``;
+      const rollDetail = show ? ` (${roll.rolled} from ${rollCommand})` : '';
       const rollMsg = `${member.displayName} rolled ${roll.result}${rollDetail}`;
 
       const sentMessage = await interaction.channel
@@ -48,12 +48,12 @@ export = {
 
       return {
         result: true,
-        value: sentMessage ? '' : `failed to send message`,
+        value: sentMessage ? '' : 'failed to send message',
       };
     } catch (e) {
       return {
         result: false,
-        value: `error while rolling`,
+        value: 'error while rolling',
       };
     }
   },

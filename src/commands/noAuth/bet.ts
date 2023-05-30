@@ -50,7 +50,7 @@ export = {
 
     const options: RequestOptions = {
       method: 'GET',
-      hostname: `api.opap.gr`,
+      hostname: 'api.opap.gr',
       port: undefined,
       path: `/draws/v3.0/${gameCode}/last-result-and-active`,
       headers: {
@@ -64,7 +64,7 @@ export = {
     if (!response) {
       return {
         result: false,
-        value: `could not fetch data from OpenAPI`,
+        value: 'could not fetch data from OpenAPI',
       };
     }
 
@@ -127,7 +127,7 @@ export = {
 
     return {
       result: !!outcome,
-      value: outcome ? '' : `failed to send message`,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 };

@@ -475,11 +475,11 @@ export function getVariableGuide(): EmbedBuilder {
   return createEmbed(
     'Variable Guide',
     '[Variables](' +
-            PORTAL_URL +
-            INTERPRETER_URL +
-            '/variables/description) ' +
-            'are immutable and live data that return information about your current voice channel.\n' +
-            'how to use variables with text interpreter',
+    PORTAL_URL +
+    INTERPRETER_URL +
+    '/variables/description) ' +
+    'are immutable and live data that return information about your current voice channel.\n' +
+    'how to use variables with text interpreter',
     '#1BE7FF',
     structArray,
     null,
@@ -546,12 +546,12 @@ export function getVariableHelp(): EmbedBuilder[] {
       return createEmbed(
         'Variables',
         '[Variables](' +
-                    PORTAL_URL +
-                    INTERPRETER_URL +
-                    '/variables/description) ' +
-                    'are immutable and live data that return information about your current voice channel.\n' +
-                    'Prefix: ' +
-                    VARIABLE_PREFIX,
+        PORTAL_URL +
+        INTERPRETER_URL +
+        '/variables/description) ' +
+        'are immutable and live data that return information about your current voice channel.\n' +
+        'Prefix: ' +
+        VARIABLE_PREFIX,
         '#1BE7FF',
         variableArray[0],
         null,
@@ -574,10 +574,10 @@ export function getVariableHelpSuper(candidate: string): EmbedBuilder | boolean 
         null,
         '#1BE7FF',
         [
-          { emote: `Type`, role: `Variables`, inline: true },
-          { emote: `Prefix`, role: `${VARIABLE_PREFIX}`, inline: true },
+          { emote: 'Type', role: 'Variables', inline: true },
+          { emote: 'Prefix', role: `${VARIABLE_PREFIX}`, inline: true },
           {
-            emote: `Description`,
+            emote: 'Description',
             role: `[hover or click](${getLink(candidate)} "${variables[i].hover}")`,
             inline: true,
           },

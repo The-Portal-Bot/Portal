@@ -1,13 +1,13 @@
 import { ChatInputCommandInteraction, GuildMember, Message, Presence, User } from 'discord.js';
-import { Locale } from '../types/enums/Locales.enum';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
-  LocalisationConsoleOption,
-  LocalisationPortalOption,
   AnnouncementAction,
   EventAction,
+  LocalisationConsoleOption,
+  LocalisationPortalOption,
   LogActions,
 } from '../types/classes/PTypes.interface';
+import { Locale } from '../types/enums/Locales.enum';
 
 export const portal: LocalisationPortalOption[] = [
   {
@@ -17,7 +17,7 @@ export const portal: LocalisationPortalOption[] = [
         return '> Γειά σας, το Πόρταλ είναι εδώ';
       },
       en: () => {
-        return "> Cheers love, Portal's here";
+        return '> Cheers love, Portal\'s here';
       },
       de: () => {
         return '> Hallo, Portal ist da';
@@ -176,7 +176,7 @@ export const consoleText: LocalisationConsoleOption[] = [
       gr: (args: { newPresence: Presence }) => {
         return (
           `ο χρήστης ${args?.newPresence?.member?.displayName} είναι μέλος ` +
-          `μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ` +
+          'μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ' +
           `(${args?.newPresence?.guild?.name})`
         );
       },

@@ -8,7 +8,6 @@ import {
   GuildChannelCreateOptions,
   GuildMember,
   Message,
-  MessageCollector,
   OverwriteResolvable,
   PermissionFlagsBits,
   PermissionsBitField,
@@ -16,17 +15,17 @@ import {
   TextChannel,
   VoiceBasedChannel,
   VoiceChannel,
-  VoiceState,
+  VoiceState
 } from 'discord.js';
 import moment from 'moment';
 import voca from 'voca';
-import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
 import { ATTRIBUTE_PREFIX, getAttribute, isAttribute } from '../types/interfaces/Attribute.interface';
-import { getPipe, isPipe, PIPE_PREFIX } from '../types/interfaces/Pipe.interface';
-import { getVariable, isVariable, VARIABLE_PREFIX } from '../types/interfaces/Variable.interface';
+import { PIPE_PREFIX, getPipe, isPipe } from '../types/interfaces/Pipe.interface';
+import { VARIABLE_PREFIX, getVariable, isVariable } from '../types/interfaces/Variable.interface';
 import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, logger, maxString } from './help.library';
 import { insertVoice } from './mongo.library';
 
@@ -176,11 +175,11 @@ function createVoiceOptions(state: VoiceState, pChannel: PChannel): GuildChannel
 
 export async function createVoiceChannel(state: VoiceState, pChannel: PChannel): Promise<string | boolean> {
   if (!state) {
-    return Promise.reject(`there is no state`);
+    return Promise.reject('there is no state');
   } else if (!state.channel) {
-    return Promise.reject(`state has no channel`);
+    return Promise.reject('state has no channel');
   } else if (!state.member) {
-    return Promise.reject(`state has no member`);
+    return Promise.reject('state has no member');
   }
 
   const voiceOptions: GuildChannelCreateOptions = createVoiceOptions(state, pChannel);
@@ -207,7 +206,7 @@ export async function createVoiceChannel(state: VoiceState, pChannel: PChannel):
 
   await state.member.voice.setChannel(newGuildVoiceChannel as unknown as VoiceBasedChannel); // as VoiceBasedChannel)
 
-  return `created channel and moved member to new voice`;
+  return 'created channel and moved member to new voice';
 }
 
 export async function createMusicChannel(
@@ -276,7 +275,7 @@ export async function moveMembersBack(
   });
 
   if (!setUserBackToOriginalChannel) {
-    return Promise.reject(`did not move requester back to original channel`);
+    return Promise.reject('did not move requester back to original channel');
   }
 
   const setUserFocusBackToOriginalChannel = await memberFound.voice.setChannel(oldChannel).catch((e) => {
@@ -284,7 +283,7 @@ export async function moveMembersBack(
   });
 
   if (!setUserFocusBackToOriginalChannel) {
-    return Promise.reject(`did not move requested back to original channel`);
+    return Promise.reject('did not move requested back to original channel');
   }
 
   return 'focus ended properly';
@@ -298,7 +297,7 @@ export async function createFocusChannel(
   pChannel: PChannel
 ): Promise<string> {
   if (!member.voice.channel) {
-    return Promise.reject(`member is not in a voice channel`);
+    return Promise.reject('member is not in a voice channel');
   }
 
   const chatRoomName = `${focusTime === 0
@@ -320,7 +319,7 @@ export async function createFocusChannel(
   });
 
   if (!newVoiceChannel) {
-    return Promise.reject(`failed to create new voice channel`);
+    return Promise.reject('failed to create new voice channel');
   }
 
   member.voice
@@ -374,7 +373,7 @@ export async function deleteChannel(
   }
 
   if (!interaction) {
-    return Promise.reject(`message is undefined`);
+    return Promise.reject('message is undefined');
   }
 
   const author = interaction.user;

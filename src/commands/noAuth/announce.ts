@@ -37,7 +37,7 @@ export = {
     if (!interaction.guild) {
       return {
         result: false,
-        value: "message's guild could not be fetched",
+        value: 'message\'s guild could not be fetched',
       };
     }
 
@@ -66,7 +66,7 @@ export = {
 
     return {
       result: false,
-      value: outcome ? 'announcement was sent successfully' : `could not send message`,
+      value: outcome ? 'announcement was sent successfully' : 'could not send message',
     };
   },
 };

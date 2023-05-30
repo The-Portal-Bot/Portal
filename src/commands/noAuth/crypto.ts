@@ -56,7 +56,7 @@ export = {
     if (!response) {
       return {
         result: false,
-        value: `could not fetch data from source`,
+        value: 'could not fetch data from source',
       };
     }
 

@@ -92,16 +92,16 @@ export async function addPointsMessage(message: Message, member: PMember, rankSp
   member.points += points > 5 ? 5 : points;
 
   updateMember(message.guild.id, member.id, 'points', member.points)
-    .catch((e) => {
-      return `failed to update member`;
+    .catch(() => {
+      return 'failed to update member';
     });
 
   const level = await calculateRank(member);
 
   if (level) {
     updateMember(message.guild.id, member.id, 'level', level)
-      .catch((e) => {
-        return `failed to update member`;
+      .catch(() => {
+        return 'failed to update member';
       });
   }
 
@@ -152,7 +152,7 @@ async function giveRoleFromRankUp(
   try {
     await member.roles.add(newRole);
   } catch (e) {
-    throw new Error(`failed to give role to member`);
+    throw new Error('failed to give role to member');
   }
 
   return true;

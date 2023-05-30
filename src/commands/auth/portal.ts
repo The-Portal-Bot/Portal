@@ -60,10 +60,7 @@ export = {
 
     const voiceRegex = pGuild.premium
       ? // ? 'G$#-P$memberCount | $statusList'
-      `$#:$memberCount {{
-                "if": "$statusCount", "is": "===", "with": "1",
-                "yes": "$statusList", "no": "$statusList|acronym"
-            }}`
+      '$#:$memberCount {{"if": "$statusCount", "is": "===", "with": "1","yes": "$statusList", "no": "$statusList|acronym"}}'
       : 'Channel $#';
 
     // const newPortalChannelId = await createChannel(currentGuild, portalChannelName, portalOptions, portalChannelCategoryName);
@@ -97,7 +94,7 @@ export = {
       result: !!portalInserted,
       value:
         portalInserted ? 'Portal channel has been created.\n' +
-          "Keep in mind that due to Discord's limitations,\n" +
+          'Keep in mind that due to Discord\'s limitations,\n' +
           'channel names will be updated on a five minute interval' :
           'portal channel failed to be created',
     };

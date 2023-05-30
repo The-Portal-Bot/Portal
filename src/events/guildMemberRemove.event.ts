@@ -16,7 +16,7 @@ export default async (args: { member: GuildMember | PartialGuildMember }): Promi
   const pGuild = await fetchAnnouncementChannelByGuildId(args.member.guild.id);
 
   if (!pGuild) {
-    return `no announcement channel in database`;
+    return 'no announcement channel in database';
   }
 
   const leaveMessage =
@@ -48,7 +48,7 @@ export default async (args: { member: GuildMember | PartialGuildMember }): Promi
     const messageSent = await announcementChannel.send(message);
 
     if (!messageSent) {
-      return `failed to send join message`;
+      return 'failed to send join message';
     }
   }
 

@@ -1,9 +1,7 @@
-import { ChatInputCommandInteraction, GuildMember, Message, VoiceChannel } from 'discord.js';
-import { messageHelp } from '../../libraries/help.library';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { setAttribute } from '../../types/interfaces/Attribute.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
   data: new SlashCommandBuilder().setName('set').setDescription('set the value of an attribute'),

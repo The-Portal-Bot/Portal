@@ -79,14 +79,14 @@ export = {
         if (!currentVoiceClone) {
           return {
             result: false,
-            value: `error while cloning channel`,
+            value: 'error while cloning channel',
           };
         }
 
         if (!currentVoice) {
           return {
             result: false,
-            value: `could not fetch current channel`,
+            value: 'could not fetch current channel',
           };
         }
 
@@ -126,7 +126,7 @@ export = {
 
     return {
       result: false,
-      value: `force failed`,
+      value: 'force failed',
     };
   },
 };

@@ -65,7 +65,7 @@ export async function commandLoader(
     const time = timeElapsed(cooldown.timestamp, commandOptions.time);
 
     const typeForMessage =
-      scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : `.*`;
+      scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : '.*';
 
     const mustWaitMessage =
       `you need to wait **${pad(time.remainingMin)}:` +

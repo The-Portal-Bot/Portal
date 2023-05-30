@@ -34,7 +34,7 @@ export = {
 
     return {
       result: true,
-      value: sentMessage ? '' : `failed to send message`,
+      value: sentMessage ? '' : 'failed to send message',
     };
   },
 };

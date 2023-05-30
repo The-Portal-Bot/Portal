@@ -3,7 +3,6 @@ import { AuthType } from '../enums/Admin.enum';
 import { createEmbed } from '../../libraries/help.library';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 import { EmbedBuilder } from 'discord.js';
-import { string } from 'yargs';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
@@ -253,11 +252,11 @@ export function getPipeGuide(): EmbedBuilder {
   return createEmbed(
     'Pipe Guide',
     '[Pipes](' +
-            PORTAL_URL +
-            INTERPRETER_URL +
-            '/pipes/description) ' +
-            'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
-            'How to use pipes with the Text Interpreter',
+    PORTAL_URL +
+    INTERPRETER_URL +
+    '/pipes/description) ' +
+    'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
+    'How to use pipes with the Text Interpreter',
     '#6EEB83',
     pipe_array,
     null,
@@ -277,8 +276,8 @@ export function getPipeHelp(): EmbedBuilder[] {
       pipeArray[l].push({
         emote: `${i + 1}. ${pipes[i].name}`,
         role:
-                    `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
-                    `/pipes/detailed/${pipes[i].name} "${pipes[i].hover}")`,
+          `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
+          `/pipes/detailed/${pipes[i].name} "${pipes[i].hover}")`,
         inline: true,
       });
     }
@@ -289,12 +288,12 @@ export function getPipeHelp(): EmbedBuilder[] {
       return createEmbed(
         'Pipes',
         '[Pipes](' +
-                    PORTAL_URL +
-                    INTERPRETER_URL +
-                    '/pipes/description) ' +
-                    'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
-                    'Prefix: ' +
-                    PIPE_PREFIX,
+        PORTAL_URL +
+        INTERPRETER_URL +
+        '/pipes/description) ' +
+        'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
+        'Prefix: ' +
+        PIPE_PREFIX,
         '#6EEB83',
         pipeArray[0],
         null,
@@ -317,13 +316,13 @@ export function getPipeHelpSuper(candidate: string): EmbedBuilder | boolean {
         null,
         '#6EEB83',
         [
-          { emote: `Type`, role: `Pipe`, inline: true },
-          { emote: `Prefix`, role: `${PIPE_PREFIX}`, inline: true },
+          { emote: 'Type', role: 'Pipe', inline: true },
+          { emote: 'Prefix', role: `${PIPE_PREFIX}`, inline: true },
           {
-            emote: `Description`,
+            emote: 'Description',
             role:
-                            `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
-                            `/pipes/detailed/${candidate} "${pipes[i].hover}")`,
+              `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
+              `/pipes/detailed/${candidate} "${pipes[i].hover}")`,
             inline: true,
           },
         ],
@@ -378,7 +377,7 @@ function mostFrequent(array: string[], return_number: boolean): string | number 
 }
 
 function isAcronym(candidate: string): boolean {
-  const word_exp = new RegExp(`\\b[A-Z]*[a-z]*[A-Z]s?\\d*[A-Z]*[\\-\\w+]\\b`);
+  const word_exp = new RegExp('\\b[A-Z]*[a-z]*[A-Z]s?\\d*[A-Z]*[\\-\\w+]\\b');
   return word_exp.test(candidate);
 }
 

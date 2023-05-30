@@ -105,14 +105,14 @@ async function doesChannelHaveUsage(textBasedChannelId: TextBasedChannel['id'], 
   if (isMusicChannel(textBasedChannelId, pGuild)) {
     return {
       result: true,
-      value: "this can't be set as an announcement channel for it is the music channel",
+      value: 'this can\'t be set as an announcement channel for it is the music channel',
     };
   }
 
   if (isUrlOnlyChannel(textBasedChannelId, pGuild)) {
     return {
       result: true,
-      value: "this can't be set as the announcement channel for it is an url channel",
+      value: 'this can\'t be set as the announcement channel for it is an url channel',
     };
   }
 

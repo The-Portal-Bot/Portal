@@ -62,11 +62,11 @@ export function getStructureGuide(): EmbedBuilder {
   return createEmbed(
     'Structure Guide',
     '[Structures](' +
-      PORTAL_URL +
-      INTERPRETER_URL +
-      '/structures/description) ' +
-      'conditional flow manipulators (if this do that, or if that do this).\n' +
-      'How to use structures with the Text Interpreter',
+    PORTAL_URL +
+    INTERPRETER_URL +
+    '/structures/description) ' +
+    'conditional flow manipulators (if this do that, or if that do this).\n' +
+    'How to use structures with the Text Interpreter',
     '#EEB902',
     structArray,
     null,
@@ -98,12 +98,12 @@ export function getStructureHelp(): EmbedBuilder[] {
       return createEmbed(
         'Structures',
         '[Structures](' +
-          PORTAL_URL +
-          INTERPRETER_URL +
-          '/structures/description) ' +
-          'conditional flow manipulators (if this do that, or if that do this).\n' +
-          'Prefix: ' +
-          STRUCTURE_PREFIX,
+        PORTAL_URL +
+        INTERPRETER_URL +
+        '/structures/description) ' +
+        'conditional flow manipulators (if this do that, or if that do this).\n' +
+        'Prefix: ' +
+        STRUCTURE_PREFIX,
         '#EEB902',
         structArray[0],
         null,
@@ -126,10 +126,10 @@ export function getStructureHelpSuper(candidate: string): EmbedBuilder | boolean
         null,
         '#EEB902',
         [
-          { emote: `Type`, role: `structures`, inline: true },
-          { emote: `Prefix`, role: `${STRUCTURE_PREFIX}`, inline: true },
+          { emote: 'Type', role: 'structures', inline: true },
+          { emote: 'Prefix', role: `${STRUCTURE_PREFIX}`, inline: true },
           {
-            emote: `Description`,
+            emote: 'Description',
             role:
               `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
               `/structures/detailed/${candidate} "${structures[i].name}")`,

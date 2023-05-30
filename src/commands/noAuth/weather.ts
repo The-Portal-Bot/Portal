@@ -1,10 +1,10 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
 import moment from 'moment';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 export = {
   data: new SlashCommandBuilder()
@@ -46,7 +46,7 @@ export = {
     if (!response) {
       return {
         result: false,
-        value: `could not access the server`,
+        value: 'could not access the server',
       };
     }
 

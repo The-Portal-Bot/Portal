@@ -5,7 +5,9 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
 export = {
-  data: new SlashCommandBuilder().setName('state').setDescription("returns server's state"),
+  data: new SlashCommandBuilder()
+    .setName('state')
+    .setDescription('returns server\'s state'),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const guild = client.guilds.cache.find((g) => g.id === interaction?.guild?.id);
 
@@ -37,7 +39,7 @@ export = {
 
       return <Field>{
         emote: `${portalChannel ? portalChannel.name : 'unavailable'}`,
-        role: `\`\`\`\n${voices ? voices : 'no voice'}\n\`\`\``,
+        role: '```\n' + voices ? voices : 'no voice' + '\n```',
         inline: true,
       };
     });
@@ -56,14 +58,14 @@ export = {
 
     if (music) {
       portalState.push(<Field>{
-        emote: `Music channel`,
-        role: `\`\`\`\n${music ? music.name : 'unavailable'}\n\`\`\``,
+        emote: 'Music channel',
+        role: '```\n' + music ? music.name : 'unavailable' + '\n```',
         inline: true,
       });
     } else {
       portalState.push(<Field>{
-        emote: `Music channel`,
-        role: `\`\`\`\nnone\n\`\`\``,
+        emote: 'Music channel',
+        role: '```\nnone\n```',
         inline: true,
       });
     }
@@ -73,13 +75,13 @@ export = {
     if (announcement) {
       portalState.push(<Field>{
         emote: 'Announcement channel',
-        role: `\`\`\`\n${announcement ? announcement.name : 'unavailable'}\n\`\`\``,
+        role: '```\n' + announcement ? announcement.name : 'unavailable' + '\n```',
         inline: true,
       });
     } else {
       portalState.push(<Field>{
-        emote: `Announcement channel`,
-        role: `\`\`\`\nnone\n\`\`\``,
+        emote: 'Announcement channel',
+        role: '```\nnone\n```',
         inline: true,
       });
     }
@@ -97,16 +99,16 @@ export = {
 
     if (urls.length > 0) {
       const urlSum = <Field>{
-        emote: `URL channels`,
-        role: `\`\`\`\n${urls ? urls.join('\n') : 'unavailable'}\n\`\`\``,
+        emote: 'URL channels',
+        role: '```\n' + urls ? urls.join('\n') : 'unavailable' + '\n```',
         inline: true,
       };
 
       portalState = portalState.concat(urlSum);
     } else {
       portalState.push(<Field>{
-        emote: `URL channels`,
-        role: `\`\`\`\nnone\n\`\`\``,
+        emote: 'URL channels',
+        role: '```\nnone\n```',
         inline: true,
       });
     }
@@ -118,16 +120,16 @@ export = {
 
     if (ignore.length > 0) {
       const ignoreSum = <Field>{
-        emote: `Ignored channels`,
-        role: `\`\`\`\n${ignore ? ignore.join('\n') : 'unavailable'}\n\`\`\``,
+        emote: 'Ignored channels',
+        role: '```\n' + ignore ? ignore.join('\n') : 'unavailable' + '\n```',
         inline: true,
       };
 
       portalState = portalState.concat(ignoreSum);
     } else {
       portalState.push(<Field>{
-        emote: `Ignored channels`,
-        role: `\`\`\`\nnone\n\`\`\``,
+        emote: 'Ignored channels',
+        role: '```\nnone\n```',
         inline: true,
       });
     }

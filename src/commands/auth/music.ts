@@ -1,17 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, NewsChannel, TextChannel } from 'discord.js';
-import {
-  createMusicChannel,
-  deleteChannel,
-  isAnnouncementChannel,
-  isMusicChannel,
-  isUrlOnlyChannel,
-} from '../../libraries/guild.library';
-import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from '../../libraries/help.library';
-import { setMusicData } from '../../libraries/mongo.library';
-import { MusicData, PGuild } from '../../types/classes/PGuild.class';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { PortalChannelTypes } from '../../types/enums/PortalChannel.enum';
 
 export = {
   data: new SlashCommandBuilder()

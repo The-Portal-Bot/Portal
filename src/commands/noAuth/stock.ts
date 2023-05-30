@@ -61,7 +61,7 @@ export = {
     if (!response) {
       return {
         result: false,
-        value: `could not access the server`,
+        value: 'could not access the server',
       };
     }
 
@@ -125,8 +125,8 @@ export = {
       });
 
     return {
-      result: true,
-      value: sentMessage ? '' : `failed to send message`,
+      result: !!sentMessage,
+      value: sentMessage ? '' : 'failed to send message',
     };
   },
 };

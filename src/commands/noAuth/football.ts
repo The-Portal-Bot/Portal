@@ -1,9 +1,9 @@
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
 import { getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
 
 export = {
   data: new SlashCommandBuilder()
@@ -21,6 +21,11 @@ export = {
         .setRequired(true))
     .setDMPermission(false),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    return {
+      result: true,
+      value: 'not yet implemented',
+    };
+
     if (!process.env.FOOTBALL_DATA) {
       return {
         result: false,
@@ -52,11 +57,6 @@ export = {
     const response = await httpsFetch(options);
 
     const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
-
-    return {
-      result: true,
-      value: 'not yet implemented',
-    };
 
     // if (json === null) {
     //   return {

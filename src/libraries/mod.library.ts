@@ -96,13 +96,13 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
   }
 
   if (configSpam.DUPLICATE_AFTER !== 0 && memberSpamCache.duplicateFouls === configSpam.DUPLICATE_AFTER) {
-    messageReply(false, message, `warning: please stop spamming the same message`, false, true).catch((e) => {
+    messageReply(false, message, 'warning: please stop spamming the same message', false, true).catch((e) => {
       logger.error(new Error(`failed to reply to message: ${e}`));
     });
 
     memberSpamCache.timestamp = new Date();
   } else if (configSpam.WARN_AFTER !== 0 && memberSpamCache.spamFouls === configSpam.WARN_AFTER) {
-    messageReply(false, message, `warning: please stop spamming messages`, false, true).catch((e) => {
+    messageReply(false, message, 'warning: please stop spamming messages', false, true).catch((e) => {
       logger.error(new Error(`failed to reply to message: ${e}`));
     });
 

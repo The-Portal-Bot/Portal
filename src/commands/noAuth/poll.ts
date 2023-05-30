@@ -1,10 +1,10 @@
-import { ChatInputCommandInteraction, ColorResolvable, Message, TextChannel } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'discord.js';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { insertPoll } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { PPoll } from '../../types/classes/PPoll.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
-import { SlashCommandBuilder } from '@discordjs/builders';
 
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
@@ -82,7 +82,7 @@ export = {
     if (!response) {
       return {
         result: false,
-        value: `error creating role message`,
+        value: 'error creating role message',
       };
     }
 
@@ -118,7 +118,7 @@ async function createRoleMessage(
   if (!reactionCheckered) {
     return {
       result: true,
-      value: `failed to react to message`,
+      value: 'failed to react to message',
     };
   }
 
@@ -139,7 +139,7 @@ async function createRoleMessage(
   if (!newPoll) {
     return {
       result: false,
-      value: `failed to set new ranks`,
+      value: 'failed to set new ranks',
     };
   }
 

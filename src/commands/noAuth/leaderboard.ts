@@ -8,7 +8,7 @@ import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 export = {
   data: new SlashCommandBuilder()
     .setName('leaderboard')
-    .setDescription("returns server's leaderboard")
+    .setDescription('returns server\'s leaderboard')
     .addNumberOption(option =>
       option
         .setName('requested_number')
@@ -91,7 +91,7 @@ export = {
 
     return {
       result: !!outcome,
-      value: outcome ? '' : `failed to send message`,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 };

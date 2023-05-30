@@ -78,7 +78,7 @@ export = {
     if (!sentMessage) {
       return {
         result: true,
-        value: `failed to send message`,
+        value: 'failed to send message',
       };
     }
 
@@ -125,7 +125,7 @@ export = {
 
     return {
       result: !!editedMessage,
-      value: editedMessage ? '' : `failed to edit message`,
+      value: editedMessage ? '' : 'failed to edit message',
     };
   },
 };

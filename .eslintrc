@@ -26,6 +26,16 @@
     "indent": ["error", 2],
     "global-require": ["error"],
     "handle-callback-err": ["error"],
-    "quotes": ["error", "single", { "allowTemplateLiterals": true }]
+    "quotes": ["error", "single", {
+      "allowTemplateLiterals": true
+    }],
+    "no-template-curly-in-string": ["error"],
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "TemplateLiteral:not([quasis.length > 1])",
+        "message": "Template literals with a single expression should use string concatenation instead"
+      }
+    ]
   }
 }

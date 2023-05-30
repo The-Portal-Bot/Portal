@@ -169,7 +169,7 @@ export = {
 
     return {
       result: false,
-      value: outcome ? '' : `failed to send message`,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 };
