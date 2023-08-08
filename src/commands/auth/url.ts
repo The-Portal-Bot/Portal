@@ -1,113 +1,113 @@
-import { Message } from "discord.js";
-import { create_channel, get_options, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
-import { messageHelp } from "../../libraries/help.library";
-import { insert_url, remove_url } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { PGuild } from '../../types/classes/PGuild.class';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('url')
-        .setDescription('create URL only channel'),
-    async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
-        return new Promise((resolve) => {
-            if (!message.guild)
-                return resolve({
-                    result: false,
-                    value: 'guild could not be fetched'
-                });
+const COMMAND_NAME = 'url';
 
-            if (args.length === 0) {
-                if (is_url_only_channel(message.channel.id, guild_object)) {
-                    remove_url(guild_object.id, message.channel.id)
-                        .then((r: boolean) => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? 'successfully removed url channel'
-                                    : 'failed to remove url channel'
-                            });
-                        })
-                        .catch((e: string) => {
-                            return resolve({
-                                result: false,
-                                value: `failed to remove url channel: ${e}`
-                            });
-                        });
-                }
-                else if (is_announcement_channel(message.channel.id, guild_object)) {
-                    return resolve({
-                        result: false,
-                        value: 'this can\'t be set as a URL channel for it is the Announcement channel'
-                    });
-                }
-                else if (is_music_channel(message.channel.id, guild_object)) {
-                    return resolve({
-                        result: true,
-                        value: 'this can\'t be set as a URL channel for it is the Music channel'
-                    });
-                }
-                else {
-                    insert_url(guild_object.id, message.channel.id)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? 'set as an url channel successfully'
-                                    : 'failed to set as an url channel'
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `failed to set as an url channel: ${e}`
-                            });
-                        });
-                }
-            } else if (args.length > 0) {
-                let url_channel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
-                let url_category: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
+export = {
+  data: new SlashCommandBuilder()
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    return {
+      result: false,
+      value: 'not yet implemented',
+    };
 
-                if (url_channel === '' && url_category !== '') {
-                    url_channel = url_category;
-                    url_category = null;
-                }
+    // if (!interaction.guild) {
+    //   return {
+    //     result: false,
+    //     value: 'guild could not be fetched',
+    //   };
+    // }
 
-                const url_options = get_options(message.guild, 'url only channel');
+    // if (!interaction.channel) {
+    //   return {
+    //     result: false,
+    //     value: 'channel could not be fetched',
+    //   };
+    // }
 
-                create_channel(
-                    message.guild, url_channel, url_options, url_category
-                )
-                    .then(r_create => {
-                        insert_url(guild_object.id, r_create)
-                            .then(r_url => {
-                                return resolve({
-                                    result: r_url,
-                                    value: r_url
-                                        ? 'created url channel and category successfully'
-                                        : 'failed to create a url channel'
-                                });
-                            })
-                            .catch(e => {
-                                return resolve({
-                                    result: false,
-                                    value: `failed to create a url channel: ${e}`
-                                });
-                            });
-                    })
-                    .catch((e: any) => {
-                        return resolve(e);
-                    });
-            }
-            else {
-                return resolve({
-                    result: false,
-                    value: messageHelp('commands', 'url')
-                });
-            }
-        });
-    }
+    // if (args.length === 0) {
+    //   if (isUrlOnlyChannel(interaction.channel.id, pGuild)) {
+    //     removeURL(pGuild.id, interaction.channel.id)
+    //       .then((r: boolean) => {
+    //         return {
+    //           result: r,
+    //           value: r ? 'successfully removed url channel' : 'failed to remove url channel',
+    //         };
+    //       })
+    //       .catch((e: string) => {
+    //         return {
+    //           result: false,
+    //           value: `failed to remove url channel: ${e}`,
+    //         };
+    //       });
+    //   } else if (isAnnouncementChannel(interaction.channel.id, pGuild)) {
+    //     return {
+    //       result: false,
+    //       value: "this can't be set as a URL channel for it is the Announcement channel",
+    //     };
+    //   } else if (isMusicChannel(interaction.channel.id, pGuild)) {
+    //     return {
+    //       result: true,
+    //       value: "this can't be set as a URL channel for it is the Music channel",
+    //     };
+    //   } else {
+    //     insertURL(pGuild.id, interaction.channel.id)
+    //       .then((r) => {
+    //         return {
+    //           result: r,
+    //           value: r ? 'set as an url channel successfully' : 'failed to set as an url channel',
+    //         };
+    //       })
+    //       .catch((e) => {
+    //         return {
+    //           result: false,
+    //           value: `failed to set as an url channel: ${e}`,
+    //         };
+    //       });
+    //   }
+    // } else if (args.length > 0) {
+    //   let urlChannel: string = args.join(' ').substring(0, args.join(' ').indexOf('|') - 1);
+    //   let urlCategory: string | null = args.join(' ').substring(args.join(' ').indexOf('|'));
+
+    //   if (urlChannel === '' && urlCategory !== '') {
+    //     urlChannel = urlCategory;
+    //     urlCategory = null;
+    //   }
+
+    //   const urlOptions = getOptions(interaction.guild, 'url only channel');
+
+    //   createChannel(interaction.guild, urlChannel, urlOptions, urlCategory)
+    //     .then((rCreate) => {
+    //       insertURL(pGuild.id, rCreate)
+    //         .then((rUrl) => {
+    //           return {
+    //             result: rUrl,
+    //             value: rUrl ? 'created url channel and category successfully' : 'failed to create a url channel',
+    //           };
+    //         })
+    //         .catch((e) => {
+    //           return {
+    //             result: false,
+    //             value: `failed to create a url channel: ${e}`,
+    //           };
+    //         });
+    //     })
+    //     .catch((e) => {
+    //       return {
+    //         result: false,
+    //         value: `failed to create a url channel: ${e}`,
+    //       };
+    //     });
+    // }
+
+    // return {
+    //   result: false,
+    //   value: messageHelp('commands', 'url'),
+    // };
+  },
 };

@@ -1,98 +1,87 @@
-import { Activity, GuildMember, VoiceChannel } from "discord.js";
-import { GameNames } from "../data/lists/game_names.static";
-import { ProgramNames } from "../data/lists/program_names.static";
-import { VoiceChannelPrtl } from "../types/classes/VoiceChannelPrtl.class";
-import { LocaleEnum } from "../data/enums/Locales.enum";
+import { Activity, GuildMember, VoiceChannel } from 'discord.js';
+import { GameNames } from '../assets/lists/gameNames.static';
+import { ProgramNames } from '../assets/lists/programNames.static';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import { Locale } from '../types/enums/Locales.enum';
 
-function status_aliases(
-	activities: Activity[], locale: number
-): string[] {
-	const new_status: string[] = [];
+function statusAliases(activities: Activity[], locale: number): string[] {
+  const newStatus: string[] = [];
 
-	activities.forEach(activity => {
-		let found = false;
+  activities.forEach((activity) => {
+    let found = false;
 
-		if (activity.name.toLowerCase() === 'custom status') {
-			found = true;
-		}
+    if (activity.name.toLowerCase() === 'custom status') {
+      found = true;
+    }
 
-		if (!found) {
-			for (let l = 0; l < GameNames.game_attributes.length; l++) {
-				if (activity.name.trim() == GameNames.game_attributes[l].status) {
-					if (locale === LocaleEnum.gr) {
-						new_status.push(GameNames.game_attributes[l].locale.gr);
-					}
-					else if (locale === LocaleEnum.de) {
-						new_status.push(GameNames.game_attributes[l].locale.de);
-					}
-					else {
-						new_status.push(GameNames.game_attributes[l].locale.en);
-					}
+    if (!found) {
+      for (let l = 0; l < GameNames.gameAttributes.length; l++) {
+        if (activity.name.trim() == GameNames.gameAttributes[l].status) {
+          if (locale === Locale.gr) {
+            newStatus.push(GameNames.gameAttributes[l].locale.gr);
+          } else if (locale === Locale.de) {
+            newStatus.push(GameNames.gameAttributes[l].locale.de);
+          } else {
+            newStatus.push(GameNames.gameAttributes[l].locale.en);
+          }
 
-					found = true;
-				}
-			}
-		}
+          found = true;
+        }
+      }
+    }
 
-		if (!found) {
-			for (let l = 0; l < ProgramNames.program_attributes.length; l++) {
-				if (activity.name.trim() == ProgramNames.program_attributes[l].status) {
-					if (locale === LocaleEnum.gr) {
-						new_status.push(ProgramNames.program_attributes[l].locale.gr);
-					}
-					else if (locale === LocaleEnum.de) {
-						new_status.push(ProgramNames.program_attributes[l].locale.de);
-					}
-					else {
-						new_status.push(ProgramNames.program_attributes[l].locale.en);
-					}
+    if (!found) {
+      for (let l = 0; l < ProgramNames.programAttributes.length; l++) {
+        if (activity.name.trim() == ProgramNames.programAttributes[l].status) {
+          if (locale === Locale.gr) {
+            newStatus.push(ProgramNames.programAttributes[l].locale.gr);
+          } else if (locale === Locale.de) {
+            newStatus.push(ProgramNames.programAttributes[l].locale.de);
+          } else {
+            newStatus.push(ProgramNames.programAttributes[l].locale.en);
+          }
 
-					found = true;
-				}
-			}
-		}
+          found = true;
+        }
+      }
+    }
 
-		if (!found) {
-			new_status.push(activity.name);
-		}
-	});
+    if (!found) {
+      newStatus.push(activity.name);
+    }
+  });
 
-	return new_status;
+  return newStatus;
 }
 
-export function get_status_list(
-	voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl
-): string[] {
-	const array_of_statuses: string[] = [];
+export function getStatusList(voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel): string[] {
+  const arrayOfStatuses: string[] = [];
 
-	voice_channel.members.forEach((member: GuildMember) => {
-		if (member.presence) {
-			if (!member.user.bot) {
-				if (member.presence.activities !== undefined) {
-					if (member.presence.activities.length > 0) {
-						status_aliases(member.presence.activities, voice_object.locale)
-							.forEach(stat => {
-								if (!array_of_statuses.includes(stat)) {
-									array_of_statuses.push(stat);
-								}
-							});
-					}
-				}
-			}
-		}
-	});
+  voiceChannel.members.forEach((member: GuildMember) => {
+    if (member.presence) {
+      if (!member.user.bot) {
+        if (member.presence.activities !== undefined) {
+          if (member.presence.activities.length > 0) {
+            statusAliases(member.presence.activities, pVoiceChannel.locale).forEach((stat) => {
+              if (!arrayOfStatuses.includes(stat)) {
+                arrayOfStatuses.push(stat);
+              }
+            });
+          }
+        }
+      }
+    }
+  });
 
-	if (array_of_statuses.length === 0) {
-		if (voice_object.locale === LocaleEnum.gr) {
-			array_of_statuses.push('Άραγμα');
-		}
-		else if (voice_object.locale === LocaleEnum.de) {
-			array_of_statuses.push('Chillen');
-		}
-		else {
-			array_of_statuses.push('Chilling');
-		}
-	}
+  if (arrayOfStatuses.length === 0) {
+    if (pVoiceChannel.locale === Locale.gr) {
+      arrayOfStatuses.push('Άραγμα');
+    } else if (pVoiceChannel.locale === Locale.de) {
+      arrayOfStatuses.push('Chillen');
+    } else {
+      arrayOfStatuses.push('Chilling');
+    }
+  }
 
-	return array_of_statuses;
+  return arrayOfStatuses;
 }

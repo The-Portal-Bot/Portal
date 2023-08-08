@@ -1,244 +1,280 @@
-import { Channel, Client, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from "discord.js";
-import { ChannelTypes } from "discord.js/typings/enums";
-import event_config_json from '../config.event.json';
-import { isMessageDeleted, isUserAuthorised, logger, markMessageAsDeleted, messageReply } from "../libraries/help.library";
-import { messageSpamCheck } from "../libraries/mod.library";
-import { fetchGuildPredata, fetchGuildRest, insertMember } from "../libraries/mongo.library";
-import { portalPreprocessor, commandDecypher } from "../libraries/preprocessor.library";
-import { ActiveCooldowns, ReturnPormise, SpamCache } from "../types/classes/TypesPrtl.interface";
-import { commandLoader } from "./command.handler";
+import {
+  Channel,
+  ChannelType,
+  ChatInputCommandInteraction,
+  Client,
+  EmbedBuilder,
+  Guild,
+  GuildMember,
+  Message,
+  MessageCreateOptions,
+  MessagePayload,
+  MessageReaction,
+  PartialDMChannel,
+  PartialGuildMember,
+  PartialMessage,
+  PartialMessageReaction,
+  PartialUser,
+  User,
+  VoiceState,
+} from 'discord.js';
+import channelDelete from '../events/channelDelete.event';
+import guildCreate from '../events/guildCreate.event';
+import guildDelete from '../events/guildDelete.event';
+import guildMemberAdd from '../events/guildMemberAdd.event';
+import guildMemberRemove from '../events/guildMemberRemove.event';
+import messageDelete from '../events/messageDelete.event';
+import messageReactionAdd from '../events/messageReactionAdd.event';
+import ready from '../events/ready.event';
+import voiceStateUpdate from '../events/voiceStateUpdate.event';
+import { isUserAuthorised, logger } from '../libraries/help.library';
+import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
+import { commandFetcher } from '../libraries/preprocessor.library';
+import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface';
+import { commandLoader } from './command.handler';
 
-async function eventLoader(event: string, args: any): Promise<void> {
-    const commandReturn: ReturnPormise = await require(`../events/${event}.event.js`)(args)
-        .catch((e: string) => {
-            logger.error(`[event-rejected] ${event} | ${e}`);
-        });
+type HandledEvents =
+  | 'ready'
+  | 'channelDelete'
+  | 'guildCreate'
+  | 'guildDelete'
+  | 'guildMemberAdd'
+  | 'guildMemberRemove'
+  | 'messageDelete'
+  | 'messageReactionAdd'
+  | 'voiceStateUpdate';
 
-    if (commandReturn) {
-        if ((event_config_json.find(e => e.name === event))) {
-            logger.info(`[event-accepted] ${event} | ${commandReturn}`);
-        } else if (process.env.DEBUG) {
-            logger.info(`[event-accepted-debug] ${event} | ${commandReturn}`);
-        }
+async function eventLoader(
+  event: HandledEvents,
+  args:
+    | { channel: Channel | PartialDMChannel }
+    | { client: Client; guild: Guild }
+    | { guild: Guild }
+    | { member: GuildMember | PartialGuildMember }
+    | { client: Client; message: Message<boolean> | PartialMessage }
+    | { client: Client; messageReaction: MessageReaction | PartialMessageReaction; user: User | PartialUser }
+    | { client: Client }
+    | { client: Client; newState: VoiceState; oldState: VoiceState }
+) {
+  let eventFunction = undefined;
+  switch (event) {
+    case 'ready':
+      eventFunction = ready;
+      break;
+    case 'channelDelete':
+      eventFunction = channelDelete;
+      break;
+    case 'guildCreate':
+      eventFunction = guildCreate;
+      break;
+    case 'guildDelete':
+      eventFunction = guildDelete;
+      break;
+    case 'guildMemberAdd':
+      eventFunction = guildMemberAdd;
+      break;
+    case 'guildMemberRemove':
+      eventFunction = guildMemberRemove;
+      break;
+    case 'messageDelete':
+      eventFunction = messageDelete;
+      break;
+    case 'messageReactionAdd':
+      eventFunction = messageReactionAdd;
+      break;
+    case 'voiceStateUpdate':
+      eventFunction = voiceStateUpdate;
+      break;
+    default:
+      return;
+  }
+
+
+  try {
+    // @ts-expect-error args can be a multitude of things
+    const response = await eventFunction(args);
+    logger.info(`[event-handled] ${event} | ${response}`);
+  } catch (e) {
+    logger.error(new Error(`[event-rejected] ${event} | ${e}`));
+  }
+}
+
+export async function eventHandler(
+  client: Client,
+  activeCooldowns: ActiveCooldowns = { guild: [], member: [] }
+  // spamCache: SpamCache[] = []
+) {
+  // This event will run if the bot starts, and logs in, successfully.
+  client.once('ready', () => eventLoader('ready', { client }));
+
+  // This event triggers when the bot joins a guild.
+  client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
+    eventLoader('channelDelete', {
+      channel: channel,
+    });
+  });
+
+  // This event triggers when the bot joins a guild
+  client.on('guildCreate', (guild: Guild) =>
+    eventLoader('guildCreate', {
+      client,
+      guild,
+    })
+  );
+
+  // this event triggers when the bot is removed from a guild
+  client.on('guildDelete', (guild: Guild) =>
+    eventLoader('guildDelete', {
+      guild,
+    })
+  );
+
+  // This event triggers when a new member joins a guild.
+  client.on('guildMemberAdd', (member: GuildMember) => {
+    eventLoader('guildMemberAdd', {
+      member: member,
+    });
+  });
+
+  // This event triggers when a new member leaves a guild.
+  client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
+    eventLoader('guildMemberRemove', { member });
+  });
+
+  // This event triggers when a message is deleted
+  client.on('messageDelete', (message: Message | PartialMessage) => eventLoader('messageDelete', { client, message }));
+
+  // This event triggers when a member reacts to a message
+  client.on(
+    'messageReactionAdd',
+    (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
+      eventLoader('messageReactionAdd', {
+        client,
+        messageReaction,
+        user,
+      })
+  );
+
+  // This event triggers when a member joins or leaves a voice channel
+  client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
+    const newChannel = newState.channel; // join channel
+    const oldChannel = oldState.channel; // left channel
+
+    // mute / unmute deafen user are ignored
+    if (oldChannel && newChannel && newChannel.id === oldChannel.id) {
+      return;
     }
+
+    eventLoader('voiceStateUpdate', { client, oldState, newState });
+  });
+
+  // This event will run when a slash command is called.
+  client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+    logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
+
+    const response = await handleInteractionCommand(client, interaction as ChatInputCommandInteraction, activeCooldowns);
+    const reply = typeof response.content === 'string'
+      ? { content: response.content, ephemeral: response.ephemeral }
+      : { embeds: response.content, ephemeral: response.ephemeral };
+
+    await interaction.reply(reply);
+  });
 }
 
-export async function eventHandler(client: Client, active_cooldowns: ActiveCooldowns = { guild: [], member: [] }, spam_cache: SpamCache[] = []) {
-    // This event will run if the bot starts, and logs in, successfully.
-    client.once('ready', () =>
-        eventLoader('ready', {
-            'client': client
-        })
-    );
+async function handleInteractionCommand(
+  client: Client,
+  interaction: ChatInputCommandInteraction,
+  activeCooldowns: ActiveCooldowns
+): Promise<{ content: string | EmbedBuilder[], ephemeral: boolean }> {
+  if (!interaction || !interaction.user || !interaction.member || !interaction.guild || !interaction.channel) {
+    return { content: 'interaction is missing data', ephemeral: false };
+  }
+  if (interaction.channel.type === ChannelType.DM || interaction.user.bot) {
+    return { content: 'interaction was made in DM or by bot', ephemeral: false };
+  }
 
-    // This event triggers when the bot joins a guild.
-    client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
-        eventLoader('channelDelete', {
-            'channel': channel
-        });
-    });
+  const pGuild = await fetchGuildPreData(interaction.guild.id, interaction.user.id);
 
-    // This event triggers when the bot joins a guild
-    client.on('guildCreate', (guild: Guild) =>
-        eventLoader('guildCreate', {
-            'client': client,
-            'guild': guild
-        })
-    );
+  if (!pGuild) {
+    logger.error(new Error('fetching guild pre data failed'));
+    return { content: 'fetching guild pre data failed', ephemeral: false };
+  }
 
-    // this event triggers when the bot is removed from a guild
-    client.on('guildDelete', (guild: Guild) =>
-        eventLoader('guildDelete', {
-            'guild': guild
-        })
-    );
+  if (!pGuild.pMembers.some((pMember) => pMember.id === interaction.user.id)) {
+    const insertResponse = await insertMember(interaction.guild.id, interaction.user.id);
 
-    // This event triggers when a new member joins a guild.
-    client.on('guildMemberAdd', (member: GuildMember) => {
-        eventLoader('guildMemberAdd', {
-            'member': member
-        })
-    });
+    if (!insertResponse) {
+      logger.error(new Error('failed to late-insert member'));
+      return { content: 'failed to late-insert member', ephemeral: false };
+    }
 
-    // This event triggers when a new member leaves a guild.
-    client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
-        eventLoader('guildMemberRemove', {
-            'member': member
-        })
-    });
+    if (interaction.guild) {
+      logger.info(`late-insert ${interaction.user.id} to ${interaction.guild.name} [${interaction.guild.id}]`);
+    }
 
-    // This event triggers when a message is deleted
-    client.on('messageDelete', (message: Message | PartialMessage) =>
-        eventLoader('messageDelete', {
-            'client': client,
-            'message': message
-        })
-    );
+    return { content: 'late-inserted member', ephemeral: false };
+  }
 
-    // This event triggers when a member reacts to a message
-    client.on('messageReactionAdd', (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
-        eventLoader('messageReactionAdd', {
-            'client': client,
-            'messageReaction': messageReaction,
-            'user': user
-        })
-    );
+  const messageContent = interaction.options.getString('message');
 
-    // This event triggers when a member joins or leaves a voice channel
-    client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
-        const new_channel = newState.channel; // join channel
-        const old_channel = oldState.channel; // left channel
+  const command = commandFetcher(
+    interaction.commandName as AuthCommands | NoAuthCommands,
+    messageContent?.split(/ +/g) ?? []
+  );
 
-        // mute / unmute  defean user are ignored
-        if ((old_channel && new_channel) && (new_channel.id === old_channel.id)) {
-            return;
-        }
+  if (!command.commandOptions) {
+    return { content: `command ${interaction.commandName} does not exist`, ephemeral: false };
+  }
 
-        eventLoader('voiceStateUpdate', {
-            'client': client,
-            'oldState': oldState,
-            'newState': newState
-        });
-    });
+  if (
+    command.commandOptions.auth &&
+    interaction.member &&
+    !isUserAuthorised(interaction.member as GuildMember /* needs better implementation */)
+  ) {
+    return { content: `you are not authorised to use ${interaction.commandName}`, ephemeral: false };
+  }
 
-    // This event will run when a slash command is called.
-    client.on('interactionCreate', async interaction => {
-        if (!interaction.isCommand()) return;
-        await interaction.reply({ content: 'Slash commands under construction', ephemeral: true });
-    });
+  const pGuildRest = await fetchGuildRest(interaction.guild.id);
 
-    // runs on every single message received, from anywhere
-    client.on('messageCreate', async (message: Message) => {
-        handleCommand(client, message, active_cooldowns, spam_cache);
-    });
-}
+  if (!pGuildRest) {
+    logger.error(new Error('fetching guild rest data failed'));
+    return { content: 'fetching guild rest data failed', ephemeral: false };
+  }
 
-async function handleCommand(client: Client, message: Message, active_cooldowns: ActiveCooldowns = { guild: [], member: [] }, spam_cache: SpamCache[] = []) {
-    if (!message || !message.member || !message.guild) return;
-    if (message.channel.type === ChannelTypes.DM.toString() || message.author.bot) return;
+  pGuild.pMembers = pGuildRest.pMembers;
+  pGuild.pPolls = pGuildRest.pPolls;
+  pGuild.ranks = pGuildRest.ranks;
+  pGuild.musicQueue = pGuildRest.musicQueue;
+  pGuild.announcement = pGuildRest.announcement;
+  pGuild.locale = pGuildRest.locale;
+  pGuild.announce = pGuildRest.announce;
+  pGuild.premium = pGuildRest.premium;
 
-    fetchGuildPredata(message.guild.id, message.author.id)
-        .then(async guild_object => {
-            if (!guild_object) {
-                logger.error(new Error(`guild does not exist in Portal`));
-                return false;
-            }
+  if (!command?.cmd) {
+    logger.error(new Error(`command ${interaction.commandName} does not exist`));
+    return { content: `command ${interaction.commandName} does not exist`, ephemeral: false };
+  }
 
-            if (guild_object.member_list.length === 0 && message.guild) {
-                insertMember(message.guild.id, message.author.id)
-                    .then(() => {
-                        if (message.guild) {
-                            logger.info(`late-insert ${message.author.id} to ${message.guild.name} [${message.guild.id}]`);
-                        }
-                    })
-                    .catch(e => {
-                        logger.error(new Error(`failed to late-insert member: ${e}`));
-                    });
+  const commandResponse = await commandLoader(
+    interaction,
+    command.cmd,
+    command.args,
+    pGuild,
+    client,
+    command.scopeLimit,
+    command.commandOptions,
+    activeCooldowns
+  );
 
-                return true;
-            }
+  if (!commandResponse) {
+    logger.error(new Error(`something went wrong with command ${interaction.commandName}`));
+    return { content: 'something went wrong', ephemeral: false };
+  }
 
-            if (await portalPreprocessor(message, guild_object)) {
-                // preprocessor has handled the message
-                messageSpamCheck(message, guild_object, spam_cache);
-
-                return true;
-            } else {
-                messageSpamCheck(message, guild_object, spam_cache);
-
-                // Ignore any message that does not start with prefix
-                if (message.content.indexOf(guild_object.prefix) !== 0) {
-                    if (message.content === 'prefix') {
-                        messageReply(true, message, `portal's prefix is \`${guild_object.prefix}\``)
-                            .catch((e: any) => {
-                                logger.error(new Error(`failed to send message: ${e}`));
-                            });
-
-                        if (isMessageDeleted(message)) {
-                            const deletedMessage = await message
-                                .delete()
-                                .catch((e: any) => {
-                                    logger.error(new Error(`failed to delete message: ${e}`));
-                                });
-
-                            if (deletedMessage) {
-                                markMessageAsDeleted(deletedMessage);
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-                const command = commandDecypher(message, guild_object);
-
-                if (!command.command_options) {
-                    return false;
-                }
-
-                if (command.command_options.auth && message.member) {
-                    if (!isUserAuthorised(message.member)) {
-                        messageReply(false, message, 'you are not authorised to use this command', true, true)
-                            .catch((e: any) => {
-                                logger.error(new Error(`failed to send message: ${e}`));
-                            });
-
-
-                        return false;
-                    }
-                }
-
-                if (!message.guild) {
-                    logger.error(new Error('could not fetch guild of message'));
-
-                    return false;
-                }
-
-                fetchGuildRest(message.guild.id)
-                    .then(guild_object_rest => {
-                        if (!guild_object_rest) {
-                            logger.error(new Error('server is not in database'));
-                            messageReply(false, message, 'server is not in database')
-                                .catch((e: any) => {
-                                    logger.error(new Error(`failed to send message: ${e}`));
-                                });
-
-                            return false;
-                        }
-
-                        guild_object.member_list = guild_object_rest.member_list;
-                        guild_object.poll_list = guild_object_rest.poll_list;
-                        guild_object.ranks = guild_object_rest.ranks;
-                        guild_object.music_queue = guild_object_rest.music_queue;
-                        guild_object.announcement = guild_object_rest.announcement;
-                        guild_object.locale = guild_object_rest.locale;
-                        guild_object.announce = guild_object_rest.announce;
-                        guild_object.premium = guild_object_rest.premium;
-
-                        if (!command.command_options) {
-                            return false;
-                        }
-
-                        commandLoader(
-                            client,
-                            message,
-                            command.cmd,
-                            command.args,
-                            command.type,
-                            command.command_options,
-                            command.path_to_command,
-                            guild_object,
-                            active_cooldowns
-                        ).catch();
-                    })
-                    .catch(e => {
-                        logger.error(new Error(`error while fetch guild restdata: ${e}`));
-                        return false;
-                    });
-            }
-        })
-        .catch(e => {
-            logger.error(new Error(`error while fetch guild predata: ${e}`));
-            return false;
-        });
+  if (commandResponse.result) {
+    return { content: commandResponse.value !== '' ? commandResponse.value : 'command succeeded', ephemeral: command.commandOptions.ephemeral };
+  } else {
+    return { content: commandResponse.value !== '' ? commandResponse.value : 'command failed', ephemeral: command.commandOptions.ephemeral };
+  }
 }

@@ -1,3 +1,7 @@
+<p align="center">
+    <strong>Disclaimer:</strong> The transition to Discord.js v14 is still ongoing. Some features may not work as expected until the transition is complete.
+</p>
+
 <h1 align="center">
     <a href="https://portal-bot.xyz" target="_blank">
         Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="Portal logo" width="25" height="25">
@@ -32,12 +36,12 @@
 
 ## Documentation
 
--   **[Commands](https://portal-bot.xyz/docs/commands/description)**, a list of all Portal commands with descriptions, arguments and how to use them.
--   **[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)** is a program used by Portal to generate a channel's name _with four types of data_
-    1. **[Variables](https://portal-bot.xyz/docs/interpreter/objects/variables/description)**, are immutable and live data, that return information.
-    2. **[Attributes](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)**, are mutable options that can be manipulated by whomever has clearance.
-    3. **[Pipes](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)**, are mini functions you can pass text variables or attributes to, that manipulate their outcome.
-    4. **[Structures](https://portal-bot.xyz/docs/interpreter/objects/structures/description)**, are conditional flow manipulators.
+- **[Commands](https://portal-bot.xyz/docs/commands/description)**, a list of all Portal commands with descriptions, arguments and how to use them.
+- **[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)** is a program used by Portal to generate a channel's name _with four types of data_
+  1. **[Variables](https://portal-bot.xyz/docs/interpreter/objects/variables/description)**, are immutable and live data, that return information.
+  2. **[Attributes](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)**, are mutable options that can be manipulated by whomever has clearance.
+  3. **[Pipes](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)**, are mini functions you can pass text variables or attributes to, that manipulate their outcome.
+  4. **[Structures](https://portal-bot.xyz/docs/interpreter/objects/structures/description)**, are conditional flow manipulators.
 
 ## More
 
@@ -48,9 +52,9 @@
 
 #### Disclaimers
 
-> -   Portal will never record conversations or store anything you type
-> -   Discord updated their server rate limit to twice per 10 minutes.<br>
-> -   The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
+> - Portal will never record conversations or store anything you type
+> - Discord updated their server rate limit to twice per 10 minutes.<br>
+> - The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
 
 <br>
 

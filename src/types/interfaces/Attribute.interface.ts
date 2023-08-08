@@ -1,2211 +1,2455 @@
-import { BaseGuildTextChannel, Guild, GuildMember, Message, MessageEmbed, OverwriteResolvable, VoiceChannel } from 'discord.js';
-import { AuthEnum } from '../../data/enums/Admin.enum';
-import { LocaleEnum, LocaleList } from '../../data/enums/Locales.enum';
-import { ProfanityLevelEnum, ProfanityLevelList } from '../../data/enums/ProfanityLevel.enum';
-import { RankSpeedEnum, RankSpeedList } from '../../data/enums/RankSpeed.enum';
-import { createEmded, getKeyFromEnum, isUserAuthorised, isMod } from '../../libraries/help.library';
-import { updateGuild, updateMember, update_portal, update_voice } from '../../libraries/mongo.library';
-import { GuildPrtl } from '../classes/GuildPrtl.class';
-import { MemberPrtl } from '../classes/MemberPrtl.class';
-import { PortalChannelPrtl } from '../classes/PortalChannelPrtl.class';
-import { Field, InterfaceBlueprint, ReturnPormise } from '../classes/TypesPrtl.interface';
-import { VoiceChannelPrtl } from '../classes/VoiceChannelPrtl.class';
+import {
+  BaseGuildTextChannel,
+  EmbedBuilder,
+  Guild,
+  GuildMember,
+  Message,
+  OverwriteType,
+  VoiceChannel,
+} from 'discord.js';
+import { AuthType } from '../enums/Admin.enum';
+import { Locale, LocaleList } from '../enums/Locales.enum';
+import { ProfanityLevel, ProfanityLevelList } from '../enums/ProfanityLevel.enum';
+import { RankSpeed, RankSpeedList } from '../enums/RankSpeed.enum';
+import { createEmbed, getKeyFromEnum, isUserAuthorised, isMod } from '../../libraries/help.library';
+import { updateGuild, updateMember, updatePortal, updateVoice } from '../../libraries/mongo.library';
+import { PGuild } from '../classes/PGuild.class';
+import { PMember } from '../classes/PMember.class';
+import { PChannel } from '../classes/PPortalChannel.class';
+import { Field, InterfaceBlueprint, ReturnPromise } from '../classes/PTypes.interface';
+import { PVoiceChannel } from '../classes/PVoiceChannel.class';
 
-const portal_url = 'https://portal-bot.xyz/docs';
-const interpreter_url = '/interpreter/objects';
-export const attribute_prefix = '&';
+const PORTAL_URL = 'https://portal-bot.xyz/docs';
+const INTERPRETER_URL = '/interpreter/objects';
+export const ATTRIBUTE_PREFIX = '&';
 
 const attributes: InterfaceBlueprint[] = [
-    {
-        name: 'p.ann_announce',
-        hover: 'if voice channels spawned by portal channel will make announcements',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
+  {
+    name: 'p.annAnnounce',
+    hover: 'if voice channels spawned by portal channel will make announcements',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
 
-            if (!portal_object_list) {
-                return 'N/A';
-            }
+      if (!pChannels) {
+        return 'N/A';
+      }
 
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
 
-            if (portal_object) {
-                return portal_object.ann_announce;
-            }
+      if (pChannel) {
+        return pChannel.annAnnounce;
+      }
 
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'ann_announce';
-
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_portal(guild_object.id, portal_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_portal(guild_object.id, portal_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.portal
+      return 'N/A';
     },
-    {
-        name: 'v.ann_announce',
-        hover: 'if voice channel will make announcements',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'annAnnounce';
 
-            return voice_object.ann_announce;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'ann_announce';
-
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.voice
-    },
-    {
-        name: 'p.no_bots',
-        hover: 'if bots can hjoin voice channels spawned by portal channel',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
-
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
-
-            if (portal_object) {
-                return portal_object.no_bots;
-            }
-
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'no_bots';
-
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_portal(guild_object.id, portal_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_portal(guild_object.id, portal_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.portal
-    },
-    {
-        name: 'v.no_bots',
-        hover: 'if bots can join voice channel',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-
-            return voice_object.no_bots;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'no_bots';
-
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.voice
-    },
-    {
-        name: 'p.allowed_roles',
-        hover: 'the role allowed to create a voice channel',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl
-        ): string[] | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!voice_channel) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
-
-            const portal_object = portal_object_list.find(portal => portal.voice_list.some(voice => voice.id === voice_object.id)
-            );
-
-            if (portal_object) {
-                const portal_channel = voice_channel.guild.channels.cache
-                    .find(c => c.id === portal_object.id) as BaseGuildTextChannel;
-
-                if (portal_channel && portal_channel.permissionOverwrites.cache.size > 0) {
-                    return `${portal_channel.permissionOverwrites.cache
-                        .filter(p => p.type === 'role')
-                        .filter(p => p.allow.bitfield === BigInt(1048576))
-                        .map(p => {
-                            const role = voice_channel.guild.roles.cache
-                                .find(r => r.id === p.id);
-
-                            if (role) {
-                                return `${role.name}`;
-                            } else {
-                                return 'N/A';
-                            }
-                        })
-                        .join(', ')}`
-                }
-            }
-
-            return '@everyone';
-        },
-        set: async (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'allowed_roles';
-
-            if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
-                const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-                if (!message.mentions.everyone && mentionRoles.length === 0) {
-                    return Promise.resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
-                    });
-                }
-
-                const portal_channel = voice_channel.guild.channels.cache
-                    .find(c => c.id === portal_object.id) as BaseGuildTextChannel;
-
-                if (!portal_channel) {
-                    return Promise.resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
-                    });
-                }
-
-                const permittedIds = [];
-                const disallowedIds = [];
-
-                if (!message.mentions.everyone) {
-                    message.mentions.roles.map(role => permittedIds.push(role.id));
-                    if (message.guild) {
-                        permittedIds.push(portal_object.creator_id);
-                        disallowedIds.push(message.guild.roles.everyone.id);
-                    }
-                } else {
-                    if (message && message.guild) {
-                        permittedIds.push(message.guild.roles.everyone.id);
-                    }
-                }
-
-                for (const permittedId of permittedIds) {
-                    await portal_channel.permissionOverwrites.edit(permittedId, { CONNECT: true })
-                        .catch(e => {
-                            return Promise.resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-
-                for (const disallowedId of disallowedIds) {
-                    await portal_channel.permissionOverwrites.edit(disallowedId, { CONNECT: true })
-                        .catch(e => {
-                            return Promise.resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-
-                const roles = message.mentions.everyone
-                    ? '@everyone'
-                    : message.mentions.roles
-                        .map(r => `@${r.name}`)
-                        .join(', ');
-
-                return Promise.resolve({
-                    result: true,
-                    value: `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${roles}\``
-                });
-            }
-
-            return Promise.resolve({
-                result: true,
-                value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
-            });
-        },
-        auth: AuthEnum.portal
-    },
-    {
-        name: 'p.v.allowed_roles',
-        hover: 'the role given to the spawned voice channels',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl
-        ): string[] | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!voice_channel) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
-
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
-
-            if (portal_object && portal_object.allowed_roles) {
-                const allowed_roles = voice_channel.guild.roles.cache
-                    .filter(r => {
-                        if (portal_object.allowed_roles) {
-                            return portal_object.allowed_roles
-                                .some(id => id === r.id);
-                        } else {
-                            return false;
-                        }
-                    });
-
-                if (allowed_roles) {
-                    return `${allowed_roles.map(r => r.name).join(', ')}`;
-                } else {
-                    return 'N/A';
-                }
-            }
-
-            return '@everyone';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p', 'v'];
-            const attr = 'allowed_roles';
-
-            return new Promise((resolve) => {
-                if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
-                    const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-                    if (!message.mentions.everyone && mentionRoles.length === 0) {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
-                        });
-                    }
-
-                    const allowed_roles = message.mentions.everyone
-                        ? message.guild?.roles.everyone.id
-                        : message.mentions.roles.map(r => r.id);
-
-                    if (allowed_roles) {
-                        update_portal(guild_object.id, portal_object.id, attr, allowed_roles)
-                            .then(r => {
-                                const roles = message.mentions.everyone
-                                    ? '@everyone'
-                                    : message.mentions.roles
-                                        .map(r => `@${r.name}`)
-                                        .join(', ');
-
-                                return resolve({
-                                    result: r,
-                                    value: r
-                                        ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${roles}\``
-                                        : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${roles}\``
-                                });
-                            })
-                            .catch(e => {
-                                return resolve({
-                                    result: false,
-                                    value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                                });
-                            });
-                    } else {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
-                        });
-                    }
-                }
-            });
-        },
-        auth: AuthEnum.portal
-    },
-    {
-        name: 'v.allowed_roles',
-        hover: 'the role allowed join the voice channel',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): string[] | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!voice_channel) {
-                return 'N/A';
-            }
-
-            if (voice_channel.permissionOverwrites.cache.size > 0) {
-                return `${voice_channel.permissionOverwrites.cache
-                    .filter(p => p.type === 'role')
-                    .filter(p => p.allow.bitfield === BigInt(1048576))
-                    .map(p => {
-                        const role = voice_channel.guild.roles.cache
-                            .find(r => r.id === p.id);
-
-                        if (role) {
-                            return `${role.name}`;
-                        } else {
-                            return 'N/A';
-                        }
-                    })
-                    .join(', ')}`
-            }
-
-            return '@everyone';
-        },
-        set: async (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'allowed_roles';
-
-            if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
-                const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-                if (!message.mentions.everyone && mentionRoles.length === 0) {
-                    return Promise.resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
-                    });
-                }
-
-                if (!voice_channel) {
-                    return Promise.resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
-                    });
-                }
-
-                const permittedIds = [];
-                const disallowedIds = [];
-
-                if (!message.mentions.everyone) {
-                    message.mentions.roles.map(role => permittedIds.push(role.id));
-                    if (message.guild) {
-                        permittedIds.push(portal_object.creator_id);
-                        disallowedIds.push(message.guild.roles.everyone.id);
-                    }
-                } else {
-                    if (message && message.guild) {
-                        permittedIds.push(message.guild.roles.everyone.id);
-                    }
-                }
-
-                for (const permittedId of permittedIds) {
-                    await voice_channel.permissionOverwrites.edit(permittedId, { CONNECT: true })
-                        .catch(e => {
-                            return Promise.resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-
-                for (const disallowedId of disallowedIds) {
-                    await voice_channel.permissionOverwrites.edit(disallowedId, { CONNECT: true })
-                        .catch(e => {
-                            return Promise.resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-
-                const roles = message.mentions.everyone
-                    ? '@everyone'
-                    : message.mentions.roles
-                        .map(r => `@${r.name}`)
-                        .join(', ');
-
-                return Promise.resolve({
-                    result: true,
-                    value: `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${roles}\``
-                });
-            }
-
-            return Promise.resolve({
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updatePortal(pGuild.id, pChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
                 result: false,
-                value: `attribute ${ctgr.join('.') + '.' + attr} can only be one or more roles`
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
             });
-        },
-        auth: AuthEnum.voice
+        } else if (value === 'false') {
+          updatePortal(pGuild.id, pChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
     },
-    {
-        name: 'p.render',
-        hover: 'if voice channels spawned by portal channel will use the text interpreter',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.annAnnounce',
+    hover: 'if voice channel will make announcements',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+
+      return pVoiceChannel.annAnnounce;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'annAnnounce';
+
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else if (value === 'false') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.voice,
+  },
+  {
+    name: 'p.noBots',
+    hover: 'if bots can join voice channels spawned by portal channel',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
+
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
+
+      if (pChannel) {
+        return pChannel.noBots;
+      }
+
+      return 'N/A';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'noBots';
+
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updatePortal(pGuild.id, pChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else if (value === 'false') {
+          updatePortal(pGuild.id, pChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.noBots',
+    hover: 'if bots can join voice channel',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+
+      return pVoiceChannel.noBots;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'noBots';
+
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else if (value === 'false') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.voice,
+  },
+  {
+    name: 'p.allowedRoles',
+    hover: 'the role allowed to create a voice channel',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt
+    ): string[] | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!voiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
+
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
+
+      if (pChannel) {
+        const channel = voiceChannel.guild.channels.cache.find(
+          (c) => c.id === pChannel.id
+        ) as BaseGuildTextChannel;
+
+        if (channel && channel.permissionOverwrites.cache.size > 0) {
+          return `${channel.permissionOverwrites.cache
+            .filter((p) => p.type === OverwriteType.Role)
+            .filter((p) => p.allow.bitfield === BigInt(1048576))
+            .map((p) => {
+              const role = voiceChannel.guild.roles.cache.find((r) => r.id === p.id);
+
+              if (role) {
+                return `${role.name}`;
+              } else {
                 return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
+              }
+            })
+            .join(', ')}`;
+        }
+      }
 
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
-
-            if (portal_object) {
-                return portal_object.render;
-            }
-
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'render';
-
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_portal(guild_object.id, portal_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_portal(guild_object.id, portal_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.portal
+      return '@everyone';
     },
-    {
-        name: 'v.render',
-        hover: 'if voice channel will use the text interpreter',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
+    set: async (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: PMember | undefined,
+      message: Message
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'allowedRoles';
 
-            return voice_object.render;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string// , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'render';
+      if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
+        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
+        if (!message.mentions.everyone && mentionRoles.length === 0) {
+          return Promise.resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+          });
+        }
 
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
+        const channel = voiceChannel.guild.channels.cache.find(
+          (c) => c.id === pChannel.id
+        ) as BaseGuildTextChannel;
+
+        if (!channel) {
+          return Promise.resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+          });
+        }
+
+        const permittedIds = [];
+        const disallowedIds = [];
+
+        if (!message.mentions.everyone) {
+          message.mentions.roles.map((role) => permittedIds.push(role.id));
+          if (message.guild) {
+            permittedIds.push(pChannel.creatorId);
+            disallowedIds.push(message.guild.roles.everyone.id);
+          }
+        } else {
+          if (message && message.guild) {
+            permittedIds.push(message.guild.roles.everyone.id);
+          }
+        }
+
+        for (const permittedId of permittedIds) {
+          await channel.permissionOverwrites.edit(permittedId, { Connect: true }).catch((e) => {
+            return Promise.resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
             });
-        },
-        auth: AuthEnum.voice
+          });
+        }
+
+        for (const disallowedId of disallowedIds) {
+          await channel.permissionOverwrites.edit(disallowedId, { Connect: true }).catch((e) => {
+            return Promise.resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+        }
+
+        const roles = message.mentions.everyone
+          ? '@everyone'
+          : message.mentions.roles.map((r) => `@${r.name}`).join(', ');
+
+        return Promise.resolve({
+          result: true,
+          value: `attribute ${category.join('.') + '.' + attribute} set successfully to \`${roles}\``,
+        });
+      }
+
+      return Promise.resolve({
+        result: true,
+        value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      });
     },
-    {
-        name: 'p.ann_user',
-        hover: 'if voice channels spawned by portal channel will make join/leave announcements',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
+    auth: AuthType.portal,
+  },
+  {
+    name: 'p.v.allowedRoles',
+    hover: 'the role given to the spawned voice channels',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt
+    ): string[] | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!voiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
 
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
 
-            if (portal_object) {
-                return portal_object.ann_user;
-            }
+      if (pChannel && pChannel.allowedRoles) {
+        const allowedRoles = voiceChannel.guild.roles.cache.filter((r) => {
+          if (pChannel.allowedRoles) {
+            return pChannel.allowedRoles.some((id) => id === r.id);
+          } else {
+            return false;
+          }
+        });
 
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'ann_user';
+        if (allowedRoles) {
+          return `${allowedRoles.map((r) => r.name).join(', ')}`;
+        } else {
+          return 'N/A';
+        }
+      }
 
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_portal(guild_object.id, portal_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_portal(guild_object.id, portal_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.portal
+      return '@everyone';
     },
-    {
-        name: 'v.ann_user',
-        hover: 'if voice channel will make join/leave announcements',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: PMember | undefined,
+      message: Message
+    ): Promise<ReturnPromise> => {
+      const category = ['p', 'v'];
+      const attribute = 'allowedRoles';
 
-            return voice_object.ann_user;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'ann_user';
-
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
+      return new Promise((resolve) => {
+        if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
+          const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
+          if (!message.mentions.everyone && mentionRoles.length === 0) {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
             });
-        },
-        auth: AuthEnum.voice
+          }
+
+          const allowedRoles = message.mentions.everyone
+            ? message.guild?.roles.everyone.id
+            : message.mentions.roles.map((r) => r.id);
+
+          if (allowedRoles) {
+            updatePortal(pGuild.id, pChannel.id, attribute, allowedRoles)
+              .then((r) => {
+                const roles = message.mentions.everyone
+                  ? '@everyone'
+                  : message.mentions.roles.map((r) => `@${r.name}`).join(', ');
+
+                return resolve({
+                  result: r,
+                  value: r
+                    ? `attribute ${
+                      category.join('.') + '.' + attribute
+                    } set successfully to \`${roles}\``
+                    : `attribute ${
+                      category.join('.') + '.' + attribute
+                    } failed to be set to \`${roles}\``,
+                });
+              })
+              .catch((e) => {
+                return resolve({
+                  result: false,
+                  value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+                });
+              });
+          } else {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+            });
+          }
+        }
+      });
     },
-    {
-        name: 'v.bitrate',
-        hover: 'voice channels bitrate',
-        get: (
-            voice_channel: VoiceChannel
-        ): number => {
-            return voice_channel.bitrate;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string //, member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'bitrate';
-            const new_bitrate = Number(value);
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.allowedRoles',
+    hover: 'the role allowed join the voice channel',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null
+    ): string[] | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!voiceChannel) {
+        return 'N/A';
+      }
 
-            return new Promise((resolve) => {
-                if (isNaN(new_bitrate)) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number**`
-                    });
-                }
-
-                if (new_bitrate < 8000) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} must be greater or equal to 8000`
-                    });
-                }
-
-                voice_channel
-                    .edit({ bitrate: new_bitrate })
-                    .then(r => {
-                        return resolve({
-                            result: r.bitrate === new_bitrate,
-                            value: r.bitrate === new_bitrate
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
-            });
-        },
-        auth: AuthEnum.voice
-    },
-    {
-        name: 'g.kick_after',
-        hover: 'Portals kick_after',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
-        ): number => {
-            return guild_object.kick_after;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: GuildMember, message: Message
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'kick_after';
-
-            return new Promise((resolve) => {
-                if (!isMod(message.member)) {
-                    return resolve({
-                        result: false,
-                        value: `you must be a Portal moderator to set attribute ${ctgr.join('.') + '.' + attr}`
-                    });
-                }
-
-                if (isNaN(Number(value))) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} has to be a number`
-                    });
-                }
-
-                updateGuild(guild_object.id, attr, Number(value))
-                    .then(r => {
-                        return resolve({
-                            result: r,
-                            value: r
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
-            });
-        },
-        auth: AuthEnum.admin
-    }, {
-        name: 'g.ban_after',
-        hover: 'Portals ban_after',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
-        ): number => {
-            return guild_object.ban_after;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'ban_after';
-
-            return new Promise((resolve) => {
-                if (!isMod(message.member)) {
-                    return resolve({
-                        result: false,
-                        value: `you must be a Portal moderator to set attribute ${ctgr.join('.') + '.' + attr}`
-                    });
-                }
-
-                if (isNaN(Number(value))) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} has to be a number`
-                    });
-                }
-
-                updateGuild(guild_object.id, attr, Number(value))
-                    .then(r => {
-                        return resolve({
-                            result: r,
-                            value: r
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
-            });
-        },
-        auth: AuthEnum.admin
-    },
-
-
-
-    {
-        name: 'g.prefix',
-        hover: 'Portals prefix',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
-        ): string => {
-            return guild_object.prefix;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'prefix';
-
-            return new Promise((resolve) => {
-                updateGuild(guild_object.id, attr, String(value))
-                    .then(r => {
-                        return resolve({
-                            result: r,
-                            value: r
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
-            });
-        },
-        auth: AuthEnum.admin
-    },
-    {
-        name: 'g.mute_role',
-        hover: 'role given to muted members',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): string => {
-            if (!guild) {
-                return 'N/A';
-            }
-
-            const mute_role = guild.roles.cache
-                .find(r => r.id === guild_object.mute_role);
-
-            if (mute_role) {
-                return mute_role.name;
-            }
-
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'mute_role';
-
-            return new Promise((resolve) => {
-                const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-                if (!message.mentions.everyone && mentionRoles.length === 0) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be a role`
-                    });
-                }
-
-                const mute_role = message.mentions.roles.first();
-
-                if (mute_role) {
-                    updateGuild(guild_object.id, attr, mute_role.id)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${mute_role.name}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${mute_role.name}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be a role`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.admin
-    },
-    {
-        name: 'g.rank_speed',
-        hover: 'leveling speed of members',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
-        ): string => {
-            return RankSpeedEnum[guild_object.rank_speed];
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'rank_speed';
-
-            return new Promise((resolve) => {
-                const speed = getKeyFromEnum(value, RankSpeedEnum);
-
-                if (speed !== undefined) {
-                    updateGuild(guild_object.id, attr, speed)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${RankSpeedList.join(', ')}**`
-                    });
-                }
-
-            });
-        },
-        auth: AuthEnum.admin
-    },
-    {
-        name: 'g.profanity_level',
-        hover: 'how harsh Portal will be flagging members for use of profanities',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
-        ): string => {
-            return ProfanityLevelEnum[guild_object.profanity_level];
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'profanity_level';
-
-            return new Promise((resolve) => {
-                const level = getKeyFromEnum(value, ProfanityLevelEnum);
-
-                if (level !== undefined) {
-                    updateGuild(guild_object.id, attr, level)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${ProfanityLevelList.join(', ')}**`
-                    });
-                }
-
-            });
-        },
-        auth: AuthEnum.admin
-    },
-    {
-        name: 'g.initial_role',
-        hover: 'role given to new members',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): string => {
-            if (!guild_object.initial_role || guild_object.initial_role === 'null') {
-                return 'initial role has not been set yet 1';
-            }
-
-            const role = guild.roles.cache
-                .find(r => r.id === guild_object.initial_role);
+      if (voiceChannel.permissionOverwrites.cache.size > 0) {
+        return `${voiceChannel.permissionOverwrites.cache
+          .filter((p) => p.type === OverwriteType.Role)
+          .filter((p) => p.allow.bitfield === BigInt(1048576))
+          .map((p) => {
+            const role = voiceChannel.guild.roles.cache.find((r) => r.id === p.id);
 
             if (role) {
-                return `@${role.name}`;
+              return `${role.name}`;
             } else {
-                return 'initial role has not been set yet 2';
+              return 'N/A';
             }
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined, message: Message
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'initial_role';
+          })
+          .join(', ')}`;
+      }
 
-            return new Promise((resolve) => {
-                if (!message.guild) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set as user guild could not be fetched`
-                    });
-                }
-
-                const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-                if (!message.mentions || !message.mentions.roles || mentionRoles.length === 0) {
-                    if (value === 'null') {
-                        updateGuild(guild_object.id, attr, 'null')
-                            .then(r => {
-                                return resolve({
-                                    result: r,
-                                    value: r
-                                        ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                        : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                                });
-                            })
-                            .catch(e => {
-                                return resolve({
-                                    result: false,
-                                    value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                                });
-                            });
-                    } else {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set as no role was given`
-                        });
-                    }
-                } else {
-                    const new_role = message.mentions.roles.first() || message.guild.roles.cache.get(value);
-
-                    if (new_role) {
-                        updateGuild(guild_object.id, attr, new_role.id)
-                            .then(r => {
-                                return resolve({
-                                    result: r,
-                                    value: r
-                                        ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                        : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                                });
-                            })
-                            .catch(e => {
-                                return resolve({
-                                    result: false,
-                                    value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                                });
-                            });
-                    } else {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set as role could not be found`
-                        });
-                    }
-                }
-            });
-        },
-        auth: AuthEnum.admin
+      return '@everyone';
     },
-    {
-        name: 'g.locale',
-        hover: 'Portals locale',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl // , guild: Guild
-        ): string => {
-            return LocaleEnum[guild_object.locale];
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['g'];
-            const attr = 'locale';
+    set: async (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: PMember | undefined,
+      message: Message
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'allowedRoles';
 
-            return new Promise((resolve) => {
-                const locale = getKeyFromEnum(value, LocaleEnum);
+      if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
+        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
+        if (!message.mentions.everyone && mentionRoles.length === 0) {
+          return Promise.resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+          });
+        }
 
-                if (locale !== undefined) {
-                    updateGuild(guild_object.id, attr, locale)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${LocaleList.join(', ')}**`
-                    });
-                }
+        if (!voiceChannel) {
+          return Promise.resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+          });
+        }
+
+        const permittedIds = [];
+        const disallowedIds = [];
+
+        if (!message.mentions.everyone) {
+          message.mentions.roles.map((role) => permittedIds.push(role.id));
+          if (message.guild) {
+            permittedIds.push(pChannel.creatorId);
+            disallowedIds.push(message.guild.roles.everyone.id);
+          }
+        } else {
+          if (message && message.guild) {
+            permittedIds.push(message.guild.roles.everyone.id);
+          }
+        }
+
+        for (const permittedId of permittedIds) {
+          await voiceChannel.permissionOverwrites.edit(permittedId, { Connect: true }).catch((e) => {
+            return Promise.resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
             });
-        },
-        auth: AuthEnum.admin
+          });
+        }
+
+        for (const disallowedId of disallowedIds) {
+          await voiceChannel.permissionOverwrites.edit(disallowedId, { Connect: true }).catch((e) => {
+            return Promise.resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+        }
+
+        const roles = message.mentions.everyone
+          ? '@everyone'
+          : message.mentions.roles.map((r) => `@${r.name}`).join(', ');
+
+        return Promise.resolve({
+          result: true,
+          value: `attribute ${category.join('.') + '.' + attribute} set successfully to \`${roles}\``,
+        });
+      }
+
+      return Promise.resolve({
+        result: false,
+        value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      });
     },
-    {
-        name: 'p.locale',
-        hover: 'portal channels locale',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
+    auth: AuthType.voice,
+  },
+  {
+    name: 'p.render',
+    hover: 'if voice channels spawned by portal channel will use the text interpreter',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
 
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
 
-            if (portal_object) {
-                return LocaleEnum[portal_object.locale];
-            }
+      if (pChannel) {
+        return pChannel.render;
+      }
 
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'locale';
-
-            return new Promise((resolve) => {
-                const locale = getKeyFromEnum(value, LocaleEnum);
-
-                if (locale !== undefined) {
-                    update_portal(guild_object.id, portal_object.id, attr, locale)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${LocaleList.join(', ')}**`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.portal
+      return 'N/A';
     },
-    {
-        name: 'v.locale',
-        hover: 'voice channels locale',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'render';
 
-            return LocaleEnum[voice_object.locale];
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'locale';
-
-            return new Promise((resolve) => {
-                const locale = getKeyFromEnum(value, LocaleEnum);
-
-                if (locale !== undefined) {
-                    update_voice(guild_object.id, portal_object.id, voice_object.id, attr, locale)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **${LocaleList.join(', ')}**`
-                    });
-                }
-
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updatePortal(pGuild.id, pChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
             });
-        },
-        auth: AuthEnum.voice
+        } else if (value === 'false') {
+          updatePortal(pGuild.id, pChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
     },
-    {
-        name: 'v.position',
-        hover: 'voice channels position in Discord',
-        get: (
-            voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): number | string => {
-            if (!voice_channel) {
-                return 'N/A';
-            }
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.render',
+    hover: 'if voice channel will use the text interpreter',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
 
-            return voice_channel.position;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'position';
-
-            return new Promise((resolve) => {
-                if (isNaN(Number(value))) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number**`
-                    });
-                }
-
-                voice_channel
-                    .edit({ position: Number(value) })
-                    .then(r => {
-                        return resolve({
-                            result: r.position === Number(value),
-                            value: r.position === Number(value)
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to\`${value}\` to ${value} (is ${r.position})`
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
-            });
-        },
-        auth: AuthEnum.voice
+      return pVoiceChannel.render;
     },
-    {
-        name: 'p.regex_overwrite',
-        hover: 'whether voice channels spawned from portal channel will let users use their own regex',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): boolean | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'render';
 
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
-
-            if (portal_object) {
-                return portal_object.regex_overwrite;
-            }
-
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'regex_overwrite';
-
-            return new Promise((resolve) => {
-                if (value === 'true') {
-                    update_portal(guild_object.id, portal_object.id, attr, true)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                }
-                else if (value === 'false') {
-                    update_portal(guild_object.id, portal_object.id, attr, false)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **true or false**`
-                    });
-                }
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
             });
-        },
-        auth: AuthEnum.voice
+        } else if (value === 'false') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
     },
-    {
-        name: 'p.regex',
-        hover: 'portal channels regex',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
+    auth: AuthType.voice,
+  },
+  {
+    name: 'p.annUser',
+    hover: 'if voice channels spawned by portal channel will make join/leave announcements',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
 
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
 
-            if (portal_object) {
-                return portal_object.regex_portal;
-            }
+      if (pChannel) {
+        return pChannel.annUser;
+      }
 
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'regex_portal';
-
-            return new Promise((resolve) => {
-                update_portal(guild_object.id, portal_object.id, attr, value)
-                    .then(r => {
-                        return resolve({
-                            result: r,
-                            value: r
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
-            });
-        },
-        auth: AuthEnum.portal
+      return 'N/A';
     },
-    {
-        name: 'p.v.regex',
-        hover: 'voice channels spawned by portal channel regex',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-            if (!portal_object_list) {
-                return 'N/A';
-            }
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'annUser';
 
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
-
-            if (portal_object) {
-                return portal_object.regex_voice;
-            }
-
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p', 'v'];
-            const attr = 'regex_voice';
-
-            return new Promise((resolve) => {
-                update_portal(guild_object.id, portal_object.id, attr, value)
-                    .then(r => {
-                        return resolve({
-                            result: r,
-                            value: r
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updatePortal(pGuild.id, pChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
             });
-        },
-        auth: AuthEnum.portal
+        } else if (value === 'false') {
+          updatePortal(pGuild.id, pChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
     },
-    {
-        name: 'v.regex',
-        hover: 'voice channels regex',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.annUser',
+    hover: 'if voice channel will make join/leave announcements',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
 
-            return voice_object.regex;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string // , member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'regex';
-
-            return new Promise((resolve) => {
-                update_voice(guild_object.id, portal_object.id, voice_object.id, attr, value)
-                    .then(r => {
-                        return resolve({
-                            result: r,
-                            value: r
-                                ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                        });
-                    })
-                    .catch(e => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                        });
-                    });
-            });
-        },
-        auth: AuthEnum.voice
+      return pVoiceChannel.annUser;
     },
-    {
-        name: 'm.regex',
-        hover: 'members regex',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild,
-            member_object: MemberPrtl | undefined
-        ): string => {
-            return (member_object && member_object.regex)
-                ? member_object.regex
-                : 'not-set';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl, portal_object: PortalChannelPrtl,
-            guild_object: GuildPrtl, value: string, member_object: MemberPrtl | undefined
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['m'];
-            const attr = 'regex';
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'annUser';
 
-            return new Promise((resolve) => {
-                if (member_object) {
-                    updateMember(guild_object.id, member_object.id, attr, value)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `could not find member`
-                    });
-                }
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
             });
-        },
-        auth: AuthEnum.none
+        } else if (value === 'false') {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
     },
-    {
-        name: 'p.user_limit',
-        hover: 'voice channels spawned by portal channel user limit',
-        get: (
-            voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-            portal_object_list: PortalChannelPrtl[] | undefined | null // , guild_object: GuildPrtl, guild: Guild
-        ): number | string => {
-            if (!voice_object) {
-                return 'N/A';
-            }
-
-            if (!portal_object_list) {
-                return 'N/A';
-            }
-
-            const portal_object = portal_object_list.find(portal =>
-                portal.voice_list.some(voice =>
-                    voice.id === voice_object.id
-                )
-            );
-
-            if (portal_object) {
-                return portal_object.user_limit_portal;
-            }
-
-            return 'N/A';
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-            portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['p'];
-            const attr = 'user_limit_portal';
-            const new_user_limit = Number(value);
-
-            return new Promise((resolve) => {
-                if (isNaN(new_user_limit)) {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number from 0-99 (0 means unlimited)**`
-                    });
-                }
-
-                if (value >= 0) {
-                    update_portal(guild_object.id, portal_object.id, 'user_limit_portal', new_user_limit)
-                        .then(r => {
-                            return resolve({
-                                result: r,
-                                value: r
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can be a number from 0-n (0 means unlimited)`
-                    });
-                }
-            });
-        },
-        auth: AuthEnum.portal
+    auth: AuthType.voice,
+  },
+  {
+    name: 'v.bitrate',
+    hover: 'voice channels bitrate',
+    get: (voiceChannel: VoiceChannel): number => {
+      return voiceChannel.bitrate;
     },
-    {
-        name: 'v.user_limit',
-        hover: 'voice channels user limit',
-        get: (
-            voice_channel: VoiceChannel | undefined | null // , voice_object: VoiceChannelPrtl | undefined | null,
-            // portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl, guild: Guild
-        ): number | string => {
-            if (!voice_channel) {
-                return 'N/A';
-            }
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string //, pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'bitrate';
+      const newBitrate = Number(value);
 
-            return voice_channel.userLimit;
-        },
-        set: (
-            voice_channel: VoiceChannel, voice_object: VoiceChannelPrtl,
-            portal_object: PortalChannelPrtl, guild_object: GuildPrtl, value: number
-        ): Promise<ReturnPormise> => {
-            const ctgr = ['v'];
-            const attr = 'user_limit';
-            const new_user_limit = Number(value);
+      return new Promise((resolve) => {
+        if (isNaN(newBitrate)) {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **a number**`,
+          });
+        }
 
-            return new Promise((resolve) => {
-                if (new_user_limit >= 0) {
-                    voice_channel.setUserLimit(new_user_limit)
-                        .then(r => {
-                            return resolve({
-                                result: r.userLimit === new_user_limit,
-                                value: r.userLimit === new_user_limit
-                                    ? `attribute ${ctgr.join('.') + '.' + attr} set successfully to \`${value}\``
-                                    : `attribute ${ctgr.join('.') + '.' + attr} failed to be set to \`${value}\``
-                            });
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${ctgr.join('.') + '.' + attr} failed to be set: ${e}`
-                            });
-                        });
-                } else {
-                    return resolve({
-                        result: false,
-                        value: `attribute ${ctgr.join('.') + '.' + attr} can only be **a number from 0-n (0 means unlimited)**`
-                    });
-                }
+        if (newBitrate < 8000) {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} must be greater or equal to 8000`,
+          });
+        }
+
+        voiceChannel
+          .edit({ bitrate: newBitrate })
+          .then((r) => {
+            return resolve({
+              result: r.bitrate === newBitrate,
+              value:
+                                r.bitrate === newBitrate
+                                  ? `attribute ${
+                                    category.join('.') + '.' + attribute
+                                  } set successfully to \`${value}\``
+                                  : `attribute ${
+                                    category.join('.') + '.' + attribute
+                                  } failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`,
             });
-        },
-        auth: AuthEnum.voice,
-    }
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.voice,
+  },
+  {
+    name: 'g.kickAfter',
+    hover: 'Portals kickAfter',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild // , guild: Guild
+    ): number => {
+      return pGuild.kickAfter;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: GuildMember,
+      message: Message
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'kickAfter';
+
+      return new Promise((resolve) => {
+        if (!isMod(message.member)) {
+          return resolve({
+            result: false,
+            value: `you must be a Portal moderator to set attribute ${
+              category.join('.') + '.' + attribute
+            }`,
+          });
+        }
+
+        if (isNaN(Number(value))) {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} has to be a number`,
+          });
+        }
+
+        updateGuild(pGuild.id, attribute, Number(value))
+          .then((r) => {
+            return resolve({
+              result: r,
+              value: r
+                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
+            });
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.admin,
+  },
+  {
+    name: 'g.banAfter',
+    hover: 'Portals banAfter',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild // , guild: Guild
+    ): number => {
+      return pGuild.banAfter;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: PMember | undefined,
+      message: Message
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'banAfter';
+
+      return new Promise((resolve) => {
+        if (!isMod(message.member)) {
+          return resolve({
+            result: false,
+            value: `you must be a Portal moderator to set attribute ${
+              category.join('.') + '.' + attribute
+            }`,
+          });
+        }
+
+        if (isNaN(Number(value))) {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} has to be a number`,
+          });
+        }
+
+        updateGuild(pGuild.id, attribute, Number(value))
+          .then((r) => {
+            return resolve({
+              result: r,
+              value: r
+                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
+            });
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.admin,
+  },
+
+  {
+    name: 'g.prefix',
+    hover: 'Portals prefix',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild // , guild: Guild
+    ): string => {
+      return pGuild.prefix;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'prefix';
+
+      return new Promise((resolve) => {
+        updateGuild(pGuild.id, attribute, String(value))
+          .then((r) => {
+            return resolve({
+              result: r,
+              value: r
+                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
+            });
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.admin,
+  },
+  {
+    name: 'g.muteRole',
+    hover: 'role given to muted members',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild,
+      guild: Guild
+    ): string => {
+      if (!guild) {
+        return 'N/A';
+      }
+
+      const muteRole = guild.roles.cache.find((r) => r.id === pGuild.muteRole);
+
+      if (muteRole) {
+        return muteRole.name;
+      }
+
+      return 'N/A';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: PMember | undefined,
+      message: Message
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'muteRole';
+
+      return new Promise((resolve) => {
+        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
+        if (!message.mentions.everyone && mentionRoles.length === 0) {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be a role`,
+          });
+        }
+
+        const muteRole = message.mentions.roles.first();
+
+        if (muteRole) {
+          updateGuild(pGuild.id, attribute, muteRole.id)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${
+                    muteRole.name
+                  }\``
+                  : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${
+                    muteRole.name
+                  }\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be a role`,
+          });
+        }
+      });
+    },
+    auth: AuthType.admin,
+  },
+  {
+    name: 'g.rankSpeed',
+    hover: 'leveling speed of members',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild // , guild: Guild
+    ): string => {
+      return RankSpeed[pGuild.rankSpeed];
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'rankSpeed';
+
+      return new Promise((resolve) => {
+        const speed = getKeyFromEnum(value, RankSpeed);
+
+        if (speed !== undefined) {
+          updateGuild(pGuild.id, attribute, speed)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **${RankSpeedList.join(
+              ', '
+            )}**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.admin,
+  },
+  {
+    name: 'g.profanityLevel',
+    hover: 'how harsh Portal will be flagging members for use of profanities',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild // , guild: Guild
+    ): string => {
+      return ProfanityLevel[pGuild.profanityLevel];
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'profanityLevel';
+
+      return new Promise((resolve) => {
+        const level = getKeyFromEnum(value, ProfanityLevel);
+
+        if (level !== undefined) {
+          updateGuild(pGuild.id, attribute, level)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${
+              category.join('.') + '.' + attribute
+            } can only be **${ProfanityLevelList.join(', ')}**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.admin,
+  },
+  {
+    name: 'g.initialRole',
+    hover: 'role given to new members',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild,
+      guild: Guild
+    ): string => {
+      if (!pGuild.initialRole || pGuild.initialRole === 'null') {
+        return 'initial role has not been set yet 1';
+      }
+
+      const role = guild.roles.cache.find((r) => r.id === pGuild.initialRole);
+
+      if (role) {
+        return `@${role.name}`;
+      } else {
+        return 'initial role has not been set yet 2';
+      }
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: PMember | undefined,
+      message: Message
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'initialRole';
+
+      return new Promise((resolve) => {
+        if (!message.guild) {
+          return resolve({
+            result: false,
+            value: `attribute ${
+              category.join('.') + '.' + attribute
+            } failed to be set as user guild could not be fetched`,
+          });
+        }
+
+        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
+        if (!message.mentions || !message.mentions.roles || mentionRoles.length === 0) {
+          if (value === 'null') {
+            updateGuild(pGuild.id, attribute, 'null')
+              .then((r) => {
+                return resolve({
+                  result: r,
+                  value: r
+                    ? `attribute ${
+                      category.join('.') + '.' + attribute
+                    } set successfully to \`${value}\``
+                    : `attribute ${
+                      category.join('.') + '.' + attribute
+                    } failed to be set to \`${value}\``,
+                });
+              })
+              .catch((e) => {
+                return resolve({
+                  result: false,
+                  value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+                });
+              });
+          } else {
+            return resolve({
+              result: false,
+              value: `attribute ${
+                category.join('.') + '.' + attribute
+              } failed to be set as no role was given`,
+            });
+          }
+        } else {
+          const newRole = message.mentions.roles.first() || message.guild.roles.cache.get(value);
+
+          if (newRole) {
+            updateGuild(pGuild.id, attribute, newRole.id)
+              .then((r) => {
+                return resolve({
+                  result: r,
+                  value: r
+                    ? `attribute ${
+                      category.join('.') + '.' + attribute
+                    } set successfully to \`${value}\``
+                    : `attribute ${
+                      category.join('.') + '.' + attribute
+                    } failed to be set to \`${value}\``,
+                });
+              })
+              .catch((e) => {
+                return resolve({
+                  result: false,
+                  value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+                });
+              });
+          } else {
+            return resolve({
+              result: false,
+              value: `attribute ${
+                category.join('.') + '.' + attribute
+              } failed to be set as role could not be found`,
+            });
+          }
+        }
+      });
+    },
+    auth: AuthType.admin,
+  },
+  {
+    name: 'g.locale',
+    hover: 'Portals locale',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild // , guild: Guild
+    ): string => {
+      return Locale[pGuild.locale];
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['g'];
+      const attribute = 'locale';
+
+      return new Promise((resolve) => {
+        const locale = getKeyFromEnum(value, Locale);
+
+        if (locale !== undefined) {
+          updateGuild(pGuild.id, attribute, locale)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
+              ', '
+            )}**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.admin,
+  },
+  {
+    name: 'p.locale',
+    hover: 'portal channels locale',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
+
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
+
+      if (pChannel) {
+        return Locale[pChannel.locale];
+      }
+
+      return 'N/A';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'locale';
+
+      return new Promise((resolve) => {
+        const locale = getKeyFromEnum(value, Locale);
+
+        if (locale !== undefined) {
+          updatePortal(pGuild.id, pChannel.id, attribute, locale)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
+              ', '
+            )}**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.locale',
+    hover: 'voice channels locale',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null
+    ): string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+
+      return Locale[pVoiceChannel.locale];
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'locale';
+
+      return new Promise((resolve) => {
+        const locale = getKeyFromEnum(value, Locale);
+
+        if (locale !== undefined) {
+          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, locale)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
+              ', '
+            )}**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.voice,
+  },
+  {
+    name: 'v.position',
+    hover: 'voice channels position in Discord',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: VoiceChannelPrtl | undefined | null,
+    ): number | string => {
+      if (!voiceChannel) {
+        return 'N/A';
+      }
+
+      return voiceChannel.position;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'position';
+
+      return new Promise((resolve) => {
+        if (isNaN(Number(value))) {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **a number**`,
+          });
+        }
+
+        voiceChannel
+          .edit({ position: Number(value) })
+          .then((r) => {
+            return resolve({
+              result: r.position === Number(value),
+              value:
+                                r.position === Number(value)
+                                  ? `attribute ${
+                                    category.join('.') + '.' + attribute
+                                  } set successfully to \`${value}\``
+                                  : `attribute ${
+                                    category.join('.') + '.' + attribute
+                                  } failed to be set to\`${value}\` to ${value} (is ${r.position})`,
+            });
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.voice,
+  },
+  {
+    name: 'p.regexOverwrite',
+    hover: 'whether voice channels spawned from portal channel will let users use their own regex',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): boolean | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
+
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
+
+      if (pChannel) {
+        return pChannel.regexOverwrite;
+      }
+
+      return 'N/A';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'regexOverwrite';
+
+      return new Promise((resolve) => {
+        if (value === 'true') {
+          updatePortal(pGuild.id, pChannel.id, attribute, true)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else if (value === 'false') {
+          updatePortal(pGuild.id, pChannel.id, attribute, false)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.voice,
+  },
+  {
+    name: 'p.regex',
+    hover: 'portal channels regex',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
+
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
+
+      if (pChannel) {
+        return pChannel.regexPortal;
+      }
+
+      return 'N/A';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'regexPortal';
+
+      return new Promise((resolve) => {
+        updatePortal(pGuild.id, pChannel.id, attribute, value)
+          .then((r) => {
+            return resolve({
+              result: r,
+              value: r
+                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
+            });
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.portal,
+  },
+  {
+    name: 'p.v.regex',
+    hover: 'voice channels spawned by portal channel regex',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+      if (!pChannels) {
+        return 'N/A';
+      }
+
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
+
+      if (pChannel) {
+        return pChannel.regexVoice;
+      }
+
+      return 'N/A';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['p', 'v'];
+      const attribute = 'regexVoice';
+
+      return new Promise((resolve) => {
+        updatePortal(pGuild.id, pChannel.id, attribute, value)
+          .then((r) => {
+            return resolve({
+              result: r,
+              value: r
+                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
+            });
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.regex',
+    hover: 'voice channels regex',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null
+    ): string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+
+      return pVoiceChannel.regex;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string // , pMember: MemberPrtl | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'regex';
+
+      return new Promise((resolve) => {
+        updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, value)
+          .then((r) => {
+            return resolve({
+              result: r,
+              value: r
+                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
+            });
+          })
+          .catch((e) => {
+            return resolve({
+              result: false,
+              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+            });
+          });
+      });
+    },
+    auth: AuthType.voice,
+  },
+  {
+    name: 'm.regex',
+    hover: 'members regex',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null,
+      pGuild: PGuild,
+      guild: Guild,
+      pMember: PMember | undefined
+    ): string => {
+      return pMember && pMember.regex ? pMember.regex : 'not-set';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: string,
+      pMember: PMember | undefined
+    ): Promise<ReturnPromise> => {
+      const category = ['m'];
+      const attribute = 'regex';
+
+      return new Promise((resolve) => {
+        if (pMember) {
+          updateMember(pGuild.id, pMember.id, attribute, value)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: 'could not find member',
+          });
+        }
+      });
+    },
+    auth: AuthType.none,
+  },
+  {
+    name: 'p.userLimit',
+    hover: 'voice channels spawned by portal channel user limit',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null,
+      pVoiceChannel: PVoiceChannel | undefined | null,
+      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
+    ): number | string => {
+      if (!pVoiceChannel) {
+        return 'N/A';
+      }
+
+      if (!pChannels) {
+        return 'N/A';
+      }
+
+      const pChannel = pChannels.find((portal) =>
+        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
+      );
+
+      if (pChannel) {
+        return pChannel.userLimitPortal;
+      }
+
+      return 'N/A';
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: number
+    ): Promise<ReturnPromise> => {
+      const category = ['p'];
+      const attribute = 'userLimitPortal';
+      const newUserLimit = Number(value);
+
+      return new Promise((resolve) => {
+        if (isNaN(newUserLimit)) {
+          return resolve({
+            result: false,
+            value: `attribute ${
+              category.join('.') + '.' + attribute
+            } can only be **a number from 0-99 (0 means unlimited)**`,
+          });
+        }
+
+        if (value >= 0) {
+          updatePortal(pGuild.id, pChannel.id, 'userLimitPortal', newUserLimit)
+            .then((r) => {
+              return resolve({
+                result: r,
+                value: r
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${
+              category.join('.') + '.' + attribute
+            } can be a number from 0-n (0 means unlimited)`,
+          });
+        }
+      });
+    },
+    auth: AuthType.portal,
+  },
+  {
+    name: 'v.userLimit',
+    hover: 'voice channels user limit',
+    get: (
+      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: VoiceChannelPrtl | undefined | null,
+    ): number | string => {
+      if (!voiceChannel) {
+        return 'N/A';
+      }
+
+      return voiceChannel.userLimit;
+    },
+    set: (
+      voiceChannel: VoiceChannel,
+      pVoiceChannel: PVoiceChannel,
+      pChannel: PChannel,
+      pGuild: PGuild,
+      value: number
+    ): Promise<ReturnPromise> => {
+      const category = ['v'];
+      const attribute = 'userLimit';
+      const newUserLimit = Number(value);
+
+      return new Promise((resolve) => {
+        if (newUserLimit >= 0) {
+          voiceChannel
+            .setUserLimit(newUserLimit)
+            .then((r) => {
+              return resolve({
+                result: r.userLimit === newUserLimit,
+                value:
+                                    r.userLimit === newUserLimit
+                                      ? `attribute ${
+                                        category.join('.') + '.' + attribute
+                                      } set successfully to \`${value}\``
+                                      : `attribute ${
+                                        category.join('.') + '.' + attribute
+                                      } failed to be set to \`${value}\``,
+              });
+            })
+            .catch((e) => {
+              return resolve({
+                result: false,
+                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+              });
+            });
+        } else {
+          return resolve({
+            result: false,
+            value: `attribute ${
+              category.join('.') + '.' + attribute
+            } can only be **a number from 0-n (0 means unlimited)**`,
+          });
+        }
+      });
+    },
+    auth: AuthType.voice,
+  },
 ];
 
-export function is_attribute(candidate: string): string {
-    for (let i = 0; i < attributes.length; i++) {
-        const sub_str = String(candidate)
-            .substring(1, (String(attributes[i].name).length + 1));
+export function isAttribute(candidate: string): string {
+  for (let i = 0; i < attributes.length; i++) {
+    const subStr = String(candidate).substring(1, String(attributes[i].name).length + 1);
 
-        if (sub_str == attributes[i].name) {
-            return attributes[i].name;
-        }
+    if (subStr == attributes[i].name) {
+      return attributes[i].name;
     }
+  }
 
-    return '';
+  return '';
 }
 
-export function get_attribute_guide(): MessageEmbed {
-    const attr_array: Field[] = [
-        {
-            emote: 'Used in Regex Interpreter',
-            role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
-            inline: true
-        },
-        {
-            emote: 'attributes are mutable data options',
-            role: '*options corespond to server, portal or voice channels*',
-            inline: true
-        },
-        {
-            emote: '1.\tIn any text channel execute command `./run`',
-            role: './run just like channel name generation uses the text interpreter',
-            inline: false
-        },
-        {
-            emote: '2.\t`./run My set locale is = &g.locale`',
-            role: './run executes the given text and replies with the processed output',
-            inline: false
-        },
-        {
-            emote: '3.\tAwait a reply from portal which will be gr, de or en',
-            role: '*The replied string will look like this: `My set locale is = gr`*',
-            inline: false
-        },
-        {
-            emote: '4.\t`./set g.locale de` (no prefix & needed)',
-            role: '*set command, updates the data of an attribute in this case **locale** to **de***',
-            inline: false
-        },
-        {
-            emote: '5.\tWait for portal response which will be inform you if it was executed without issues',
-            role: '*portal will either confirm update or inform you of the error it faced*',
-            inline: false
-        }
-    ];
+export function getAttributeGuide(): EmbedBuilder {
+  const attrArray: Field[] = [
+    {
+      emote: 'Used in Regex Interpreter',
+      role: '*used by channel name (regex, regexVoice, regexPortal) and run command*',
+      inline: true,
+    },
+    {
+      emote: 'attributes are mutable data options',
+      role: '*options correspond to server, portal or voice channels*',
+      inline: true,
+    },
+    {
+      emote: '1.\tIn any text channel execute command `./run`',
+      role: './run just like channel name generation uses the text interpreter',
+      inline: false,
+    },
+    {
+      emote: '2.\t`./run My set locale is = &g.locale`',
+      role: './run executes the given text and replies with the processed output',
+      inline: false,
+    },
+    {
+      emote: '3.\tAwait a reply from portal which will be gr, de or en',
+      role: '*The replied string will look like this: `My set locale is = gr`*',
+      inline: false,
+    },
+    {
+      emote: '4.\t`./set g.locale de` (no prefix & needed)',
+      role: '*set command, updates the data of an attribute in this case **locale** to **de***',
+      inline: false,
+    },
+    {
+      emote: '5.\tWait for portal response which will be inform you if it was executed without issues',
+      role: '*portal will either confirm update or inform you of the error it faced*',
+      inline: false,
+    },
+  ];
 
-    return createEmded(
-        'Attribute Guide',
-        '[Attributes](' + portal_url + interpreter_url + '/attributes/description) ' +
-        'are options that can be manipulated by whomever has clearance.\n' +
-        'How to use attributes with the Text Interpreter',
+  return createEmbed(
+    'Attribute Guide',
+    '[Attributes](' +
+            PORTAL_URL +
+            INTERPRETER_URL +
+            '/attributes/description) ' +
+            'are options that can be manipulated by whomever has clearance.\n' +
+            'How to use attributes with the Text Interpreter',
+    '#FF5714',
+    attrArray,
+    null,
+    null,
+    null,
+    null,
+    null
+  );
+}
+
+function getLink(attribute: string): string {
+  const url = PORTAL_URL + INTERPRETER_URL + '/attributes';
+
+  if (attribute.indexOf('g.') > -1) {
+    return `${url}/detailed/global/${attribute}`;
+  } else if (attribute.indexOf('m.') > -1) {
+    return `${url}/detailed/member/${attribute}`;
+  } else if (attribute.indexOf('p.') > -1) {
+    return `${url}/detailed/portal/${attribute}`;
+  } else if (attribute.indexOf('v.') > -1) {
+    return `${url}/detailed/voice/${attribute}`;
+  } else {
+    return `${url}/description`;
+  }
+}
+
+export function getAttributeHelp(): EmbedBuilder[] {
+  const attrArray: Field[][] = [];
+
+  for (let l = 0; l <= attributes.length / 25; l++) {
+    attrArray[l] = [];
+    for (let i = 24 * l; i < attributes.length && i < 24 * (l + 1); i++) {
+      attrArray[l].push({
+        emote: `${i + 1}. ${attributes[i].name}`,
+        role: `[hover or click](${getLink(attributes[i].name)} "${attributes[i].hover}")`,
+        inline: true,
+      });
+    }
+  }
+
+  return attrArray.map((command, index) => {
+    if (index === 0) {
+      return createEmbed(
+        'Attributes',
+        '[Attributes](' +
+                    PORTAL_URL +
+                    INTERPRETER_URL +
+                    '/attributes/description) ' +
+                    'are options that can be manipulated by whomever has clearance.\n' +
+                    'Prefix: ' +
+                    ATTRIBUTE_PREFIX,
         '#FF5714',
-        attr_array,
+        attrArray[0],
         null,
         null,
         null,
         null,
         null
-    );
-}
-
-function get_link(attribute: string): string {
-    const url = portal_url + interpreter_url + '/attributes';
-
-    if (attribute.indexOf('g.') > -1) {
-        return `${url}/detailed/global/${attribute}`
-    } else if (attribute.indexOf('m.') > -1) {
-        return `${url}/detailed/member/${attribute}`
-    } else if (attribute.indexOf('p.') > -1) {
-        return `${url}/detailed/portal/${attribute}`
-    } else if (attribute.indexOf('v.') > -1) {
-        return `${url}/detailed/voice/${attribute}`
+      );
     } else {
-        return `${url}/description`
+      return createEmbed(null, null, '#FF5714', attrArray[index], null, null, null, null, null);
     }
+  });
 }
 
-export function get_attribute_help(): MessageEmbed[] {
-    const attr_array: Field[][] = [];
-
-    for (let l = 0; l <= attributes.length / 25; l++) {
-        attr_array[l] = []
-        for (let i = (24 * l); i < attributes.length && i < 24 * (l + 1); i++) {
-            attr_array[l]
-                .push({
-                    emote: `${i + 1}. ${attributes[i].name}`,
-                    role: `[hover or click](${get_link(attributes[i].name)} "${attributes[i].hover}")`,
-                    inline: true
-                });
-        }
+export function getAttributeHelpSuper(candidate: string): EmbedBuilder | boolean {
+  for (let i = 0; i < attributes.length; i++) {
+    if (attributes[i].name === candidate) {
+      return createEmbed(
+        attributes[i].name,
+        null,
+        '#FF5714',
+        [
+          { emote: 'Type', role: 'Attribute', inline: true },
+          { emote: 'Prefix', role: `${ATTRIBUTE_PREFIX}`, inline: true },
+          {
+            emote: 'Description',
+            role: `[hover or click](${getLink(candidate)} "${attributes[i].hover}")`,
+            inline: true,
+          },
+        ],
+        null,
+        null,
+        null,
+        null,
+        null
+      );
     }
-
-    return attr_array
-        .map((cmmd, index) => {
-            if (index === 0) {
-                return createEmded(
-                    'Attributes',
-                    '[Attributes](' + portal_url + interpreter_url + '/attributes/description) ' +
-                    'are options that can be manipulated by whomever has clearance.\n' +
-                    'Prefix: ' + attribute_prefix,
-                    '#FF5714',
-                    attr_array[0],
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                )
-            } else {
-                return createEmded(
-                    null,
-                    null,
-                    '#FF5714',
-                    attr_array[index],
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                )
-            }
-        });
+  }
+  return false;
 }
 
-export function get_attribute_help_super(
-    candidate: string
-): MessageEmbed | boolean {
-    for (let i = 0; i < attributes.length; i++) {
-        if (attributes[i].name === candidate) {
-            return createEmded(
-                attributes[i].name,
-                null,
-                '#FF5714',
-                [
-                    { emote: `Type`, role: `Attribute`, inline: true },
-                    { emote: `Prefix`, role: `${attribute_prefix}`, inline: true },
-                    { emote: `Description`, role: `[hover or click](${get_link(candidate)} "${attributes[i].hover}")`, inline: true }
-                ],
-                null,
-                null,
-                null,
-                null,
-                null
-            );
-        }
-    }
-    return false;
-}
-
-export function get_attribute(
-    voice_channel: VoiceChannel | undefined | null, voice_object: VoiceChannelPrtl | undefined | null,
-    portal_object_list: PortalChannelPrtl[] | undefined | null, guild_object: GuildPrtl,
-    guild: Guild, attr: string
+export function getAttribute(
+  voiceChannel: VoiceChannel | undefined | null,
+  pVoiceChannel: PVoiceChannel | undefined | null,
+  pChannels: PChannel[] | undefined | null,
+  pGuild: PGuild,
+  guild: Guild,
+  attribute: string
 ): string | number | boolean {
-
-    for (let l = 0; l < attributes.length; l++) {
-        if (attr === attributes[l].name) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-            return attributes[l]
-                .get(voice_channel, voice_object, portal_object_list, guild_object, guild);
-        }
+  for (let l = 0; l < attributes.length; l++) {
+    if (attribute === attributes[l].name) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+      return attributes[l].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
     }
+  }
 
-    return -1;
+  return -1;
 }
 
-export function set_attribute(
-    voice_channel: VoiceChannel | undefined | null, guild_object: GuildPrtl,
-    candidate: string, value: string, member: GuildMember, message: Message
-): Promise<ReturnPormise> {
-    return new Promise((resolve) => {
-        let voice_object: VoiceChannelPrtl | undefined = undefined;
-        let portal_object: PortalChannelPrtl | undefined = undefined;
+export async function setAttribute(
+  voiceChannel: VoiceChannel | undefined | null,
+  pGuild: PGuild,
+  candidate: string,
+  value: string,
+  member: GuildMember,
+  message: Message
+): Promise<ReturnPromise> {
+  let pVoiceChannel: PVoiceChannel | undefined = undefined;
+  let pChannel: PChannel | undefined = undefined;
 
-        for (let l = 0; l < attributes.length; l++) {
-            if (candidate === attributes[l].name) {
-                switch (attributes[l].auth) {
-                    case AuthEnum.admin:
-                        if (!isUserAuthorised(member)) {
-                            return resolve({
-                                result: false,
-                                value: `attribute ${candidate} can only be **set by an administrator**`
-                            });
-                        }
-
-                        break;
-                    case AuthEnum.none:
-                        // passes through no checks needed
-                        break;
-                    default:
-                        if (!voice_channel) {
-                            return resolve({
-                                result: false,
-                                value: 'you must be in a channel handled by Portal'
-                            });
-                        }
-
-                        for (let i = 0; i < guild_object.portal_list.length; i++) {
-                            for (let j = 0; j < guild_object.portal_list[i].voice_list.length; j++) {
-                                if (guild_object.portal_list[i].voice_list[j].id === voice_channel.id) {
-                                    portal_object = guild_object.portal_list[i];
-                                    voice_object = guild_object.portal_list[i].voice_list[j];
-
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (!portal_object || !voice_object) {
-                            return resolve({
-                                result: false,
-                                value: 'you must be in a channel handled by Portal'
-                            });
-                        }
-
-                        if (attributes[l].auth === AuthEnum.portal) {
-                            if (portal_object.creator_id !== member.id) {
-                                return resolve({
-                                    result: false,
-                                    value: `attribute ${candidate} can only be **set by the portal creator**`
-                                });
-                            }
-                        } else if (attributes[l].auth === AuthEnum.voice) {
-                            if (voice_object.creator_id !== member.id) {
-                                return resolve({
-                                    result: false,
-                                    value: `attribute ${candidate} can only be **set by the voice creator**`
-                                });
-                            }
-                        }
-
-                        break;
-                }
-
-                const member_object = guild_object.member_list.find(m => m.id === member.id);
-
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                attributes[l]
-                    .set(voice_channel, voice_object, portal_object, guild_object, value, member_object, message)
-                    .then((r: ReturnPormise) => {
-                        return resolve(r);
-                    })
-                    .catch((e: any) => {
-                        return resolve({
-                            result: false,
-                            value: `attribute ${candidate} failed to be set: ${e}`
-                        });
-                    });
-
-                break;
-            } else if (l + 1 === attributes.length) {
-                return resolve({
-                    result: false,
-                    value: `${candidate} is not an attribute`
-                });
-            }
+  for (let l = 0; l < attributes.length; l++) {
+    if (candidate === attributes[l].name) {
+      switch (attributes[l].auth) {
+      case AuthType.admin:
+        if (!isUserAuthorised(member)) {
+          return {
+            result: false,
+            value: `attribute ${candidate} can only be **set by an administrator**`,
+          };
         }
-    });
+
+        break;
+      case AuthType.none:
+        // passes through no checks needed
+        break;
+      default:
+        if (!voiceChannel) {
+          return {
+            result: false,
+            value: 'you must be in a channel handled by Portal',
+          };
+        }
+
+        for (let i = 0; i < pGuild.pChannels.length; i++) {
+          for (let j = 0; j < pGuild.pChannels[i].pVoiceChannels.length; j++) {
+            if (pGuild.pChannels[i].pVoiceChannels[j].id === voiceChannel.id) {
+              pChannel = pGuild.pChannels[i];
+              pVoiceChannel = pGuild.pChannels[i].pVoiceChannels[j];
+
+              break;
+            }
+          }
+        }
+
+        if (!pChannel || !pVoiceChannel) {
+          return {
+            result: false,
+            value: 'you must be in a channel handled by Portal',
+          };
+        }
+
+        if (attributes[l].auth === AuthType.portal) {
+          if (pChannel.creatorId !== member.id) {
+            return {
+              result: false,
+              value: `attribute ${candidate} can only be **set by the portal creator**`,
+            };
+          }
+        } else if (attributes[l].auth === AuthType.voice) {
+          if (pVoiceChannel.creatorId !== member.id) {
+            return {
+              result: false,
+              value: `attribute ${candidate} can only be **set by the voice creator**`,
+            };
+          }
+        }
+
+        break;
+      }
+
+      const pMember = pGuild.pMembers.find((m) => m.id === member.id);
+
+      try {
+        return await attributes[l].set(voiceChannel, pVoiceChannel, pChannel, pGuild, value, pMember, message);
+      } catch (e) {
+        return {
+          result: false,
+          value: `attribute ${candidate} failed to be set: ${e}`,
+        };
+      }
+    } else if (l + 1 === attributes.length) {
+      return {
+        result: false,
+        value: `${candidate} is not an attribute`,
+      };
+    }
+  }
+
+  return {
+    result: false,
+    value: 'fail',
+  };
 }

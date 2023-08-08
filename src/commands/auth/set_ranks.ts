@@ -1,100 +1,92 @@
-import { Message, Role } from "discord.js";
-import { getJsonFromString, messageHelp } from "../../libraries/help.library";
-import { set_ranks } from "../../libraries/mongo.library";
-import { GuildPrtl } from "../../types/classes/GuildPrtl.class";
-import { Rank, ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, Role } from 'discord.js';
+import { commandDescriptionByNameAndAuthenticationLevel, getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { setRanks } from '../../libraries/mongo.library';
+import { PGuild } from '../../types/classes/PGuild.class';
+import { Rank, ReturnPromise } from '../../types/classes/PTypes.interface';
 
-function is_rank(rank: Rank) {
-    return !!rank.level && !!rank.role;
-}
+const COMMAND_NAME = 'set_ranks';
 
-function is_role(rank: Rank, roles: Role[]) {
-    return roles.some(role => {
-        return role.id === rank.role || role.name === rank.role;
-    });
-}
+export = {
+  data: new SlashCommandBuilder()
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .addStringOption((option) =>
+      option
+        .setName('rank_string')
+        .setDescription('JSON string of ranks to set (even for one rank)')
+        .setRequired(true))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    if (!interaction.guild)
+      return {
+        result: true,
+        value: 'guild could not be fetched',
+      };
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('set_ranks')
-        .setDescription('create ranks for the server'),
-    async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
-        return new Promise((resolve) => {
-            if (!message.guild)
-                return resolve({
-                    result: true,
-                    value: 'guild could not be fetched'
-                });
+    const rankString = interaction.options.getString('rank_string');
 
-            const roles = message.guild.roles.cache.map(cr => cr);
-
-            if (args.length > 0) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const new_ranks_json = getJsonFromString(args.join(' '));
-                if (!new_ranks_json || !Array.isArray(new_ranks_json)) {
-                    return resolve({
-                        result: false,
-                        value: messageHelp('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)')
-                    });
-                }
-
-                const new_ranks = <Rank[]>new_ranks_json;
-
-                if (!new_ranks.every(r => r.level && r.role)) {
-                    return resolve({
-                        result: false,
-                        value: messageHelp('commands', 'set_ranks', 'JSON syntax has spelling errors`')
-                    });
-                }
-                if (!new_ranks.every(is_rank)) {
-                    return resolve({
-                        result: false,
-                        value: messageHelp('commands', 'set_ranks', 'rankings must be a key-pair from level and role')
-                    });
-                }
-                if (!new_ranks.every(r => is_role(r, roles))) {
-                    return resolve({
-                        result: false,
-                        value: messageHelp('commands', 'set_ranks', 'a role given does not exist in server')
-                    });
-                }
-
-                new_ranks.forEach(rank => {
-                    rank.level = +rank.level;
-                    const role = roles.find(role => role.name === rank.role);
-                    if (role) rank.role = role.id;
-                });
-
-                set_ranks(guild_object.id, new_ranks)
-                    .then(r => {
-                        return resolve({
-                            result: r,
-                            value: r
-                                ? 'set new ranks successfully'
-                                : 'failed to set new ranks'
-                        });
-                    })
-                    .catch(() => {
-                        return resolve({
-                            result: false,
-                            value: 'failed to set new ranks'
-                        });
-                    });
-            }
-            else {
-                return resolve({
-                    result: false,
-                    value: messageHelp('commands', 'set_ranks')
-                });
-            }
-
-            return resolve({
-                result: true,
-                value: 'new rankings have been set'
-            });
-        });
+    if (!rankString) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'set_ranks', 'rank string must be provided'),
+      };
     }
+
+    const roles = interaction.guild.roles.cache.map((cacheRole) => cacheRole);
+
+    const newRanksJSON = getJSONFromString(rankString);
+    if (!newRanksJSON || !Array.isArray(newRanksJSON)) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)'),
+      };
+    }
+
+    const newRanks = <Rank[]>newRanksJSON;
+
+    if (!newRanks.every((r) => r.level && r.role)) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'set_ranks', 'JSON syntax has spelling errors`'),
+      };
+    }
+
+    if (!newRanks.every(isRank)) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'set_ranks', 'rankings must be a key-pair from level and role'),
+      };
+    }
+
+    if (!newRanks.every((r) => isRole(r, roles))) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'set_ranks', 'a role given does not exist in server'),
+      };
+    }
+
+    newRanks.forEach((rank) => {
+      rank.level = +rank.level;
+      const role = roles.find((role) => role.name === rank.role);
+      if (role) rank.role = role.id;
+    });
+
+    const response = await setRanks(pGuild.id, newRanks);
+
+    return {
+      result: response,
+      value: response ? 'set new ranks successfully' : 'failed to set new ranks',
+    };
+  },
 };
+
+function isRank(rank: Rank) {
+  return !!rank.level && !!rank.role;
+}
+
+function isRole(rank: Rank, roles: Role[]) {
+  return roles.some((role) => {
+    return role.id === rank.role || role.name === rank.role;
+  });
+}

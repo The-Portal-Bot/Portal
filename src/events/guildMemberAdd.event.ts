@@ -1,86 +1,67 @@
-import { GuildMember, TextChannel } from "discord.js";
-import { createEmded } from "../libraries/help.library";
-import { fetch_guild_announcement, insertMember } from "../libraries/mongo.library";
+import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
+import { createEmbed } from '../libraries/help.library';
+import { fetchAnnouncementChannelByGuildId, insertMember } from '../libraries/mongo.library';
 
-module.exports = async (
-    args: { member: GuildMember }
-): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        if (!args.member.user.bot) {
-            insertMember(args.member.guild.id, args.member.id)
-                .then(r => {
-                    if (!r) {
-                        return reject(`failed to add member ${args.member.id} to ${args.member.guild.id}`);
-                    }
+export default async (args: { member: GuildMember | PartialGuildMember }): Promise<string> => {
+  if (args.member.user.bot) {
+    return 'new member is a bot, bots are not handled';
+  }
 
-                    fetch_guild_announcement(args.member.guild.id)
-                        .then(guild_object => {
-                            if (guild_object) {
-                                if (guild_object.initial_role && guild_object.initial_role !== 'null') {
-                                    const initial_role = args.member.guild.roles.cache
-                                        .find(r => r.id === guild_object.initial_role);
+  const memberInserted = await insertMember(args.member.guild.id, args.member.id);
 
-                                    if (initial_role) {
-                                        try {
-                                            args.member.roles
-                                                .add(initial_role)
-                                                .catch(e => {
-                                                    return reject(`failed to give role to member: ${e}`);
-                                                });
-                                        }
-                                        catch (e) {
-                                            return reject(`failed to give role to member: ${e}`);
-                                        }
-                                    }
-                                }
+  if (!memberInserted) {
+    return `failed to add member ${args.member.id} to ${args.member.guild.id}`;
+  }
 
-                                const join_message = `member: ${args.member.presence?.user}\n` +
-                                    `id: ${args.member.guild.id}\n` +
-                                    `\thas joined ${args.member.guild}`;
+  const pGuild = await fetchAnnouncementChannelByGuildId(args.member.guild.id);
 
-                                const announcement_channel = <TextChannel>args.member.guild.channels.cache
-                                    .find(channel => channel.id === guild_object.announcement);
+  if (!pGuild) {
+    return 'no announcement channel in database';
+  }
 
-                                if (announcement_channel) {
-                                    announcement_channel
-                                        .send({
-                                            embeds: [
-                                                createEmded(
-                                                    'member joined',
-                                                    join_message,
-                                                    '#00C70D',
-                                                    [],
-                                                    args.member.user.avatarURL(),
-                                                    null,
-                                                    true,
-                                                    null,
-                                                    null
-                                                )
-                                            ]
-                                        })
-                                        .then(() => {
-                                            return resolve(`added member ${args.member.id} to ${args.member.guild.id}`);
-                                        })
-                                        .catch(e => {
-                                            return reject(`failed to send join message: ${e}`);
-                                        });
+  if (pGuild?.initialRole !== 'null') {
+    const initialRole = args.member.guild.roles.cache.find((r) => r.id === pGuild.initialRole);
 
-                                } else {
-                                    return resolve(`no announcement channel, it has been deleted`);
-                                }
-                            } else {
-                                return resolve(`no announcement channel in database`);
-                            }
-                        })
-                        .catch(e => {
-                            return reject(`failed to get announcement channel in database: ${e}`);
-                        });
-                })
-                .catch(e => {
-                    return reject(`failed to add member ${args.member.id} to ${args.member.guild.id}: ${e}`);
-                });
-        } else {
-            return resolve('new member is a bot, bots are not handled');
-        }
-    });
+    if (initialRole) {
+      const roleAdded = await args.member.roles.add(initialRole)
+
+      if (!roleAdded) {
+        return 'failed to give role to member';
+      }
+    }
+  }
+
+  const joinMessage = `member: ${args.member.presence?.user}\n` +
+    `id: ${args.member.guild.id}\n` +
+    `\thas joined ${args.member.guild}`;
+
+  const announcementChannel = <TextChannel>(
+    args.member.guild.channels.cache.find((channel) => channel.id === pGuild.announcement)
+  );
+
+  if (announcementChannel) {
+    const message = {
+      embeds: [
+        createEmbed(
+          'member joined',
+          joinMessage,
+          '#00C70D',
+          [],
+          args.member.user.avatarURL(),
+          null,
+          true,
+          null,
+          null
+        ),
+      ],
+    };
+
+    const messageSent = await announcementChannel.send(message);
+
+    if (!messageSent) {
+      return 'failed to send join message';
+    }
+  }
+
+  return `added member ${args.member.id} to ${args.member.guild.id}`;
 };

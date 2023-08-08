@@ -1,156 +1,203 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Message, TextChannel } from "discord.js";
-import { PortalChannelTypes } from "../../data/enums/PortalChannel.enum";
-import { create_music_channel, delete_channel, is_announcement_channel, is_music_channel, is_url_only_channel } from "../../libraries/guild.library";
-import { createMusicLyricsMessage, createMusicMessage, logger, messageHelp } from "../../libraries/help.library";
-import { set_music_data } from "../../libraries/mongo.library";
-import { GuildPrtl, MusicData } from "../../types/classes/GuildPrtl.class";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
+import { ChatInputCommandInteraction } from 'discord.js';
+import { PGuild } from '../../types/classes/PGuild.class';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('music')
-        .setDescription('create music channel'),
-    async execute(
-        message: Message, args: string[], guild_object: GuildPrtl
-    ): Promise<ReturnPormise> {
-        return new Promise((resolve) => {
-            if (!message.guild) {
-                return resolve({
-                    result: false,
-                    value: 'message\'s guild could not be fetched'
-                });
-            }
+const COMMAND_NAME = 'music';
 
-            if (args.length === 0) {
-                if (is_music_channel(message.channel.id, guild_object)) {
-                    const music_data = new MusicData('null', 'null', 'null', [], false);
-                    set_music_data(guild_object.id, music_data)
-                        .then(() => {
-                            return resolve({
-                                result: true,
-                                value: 'successfully removed music channel'
-                            });
-                        })
-                        .catch(() => {
-                            return resolve({
-                                result: false,
-                                value: 'failed to remove music channel'
-                            });
-                        });
-                }
-                if (is_announcement_channel(message.channel.id, guild_object)) {
-                    return resolve({
-                        result: false,
-                        value: 'this can\'t be set as the music channel for it is the announcement channel'
-                    });
-                }
-                if (is_url_only_channel(message.channel.id, guild_object)) {
-                    return resolve({
-                        result: false,
-                        value: 'this can\'t be set as the Music channel for it is an url channel'
-                    });
-                }
-            }
+export = {
+  data: new SlashCommandBuilder()
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .addChannelOption((option) =>
+      option
+        .setName('music_channel')
+        .setDescription('the channel you want to make the music channel')
+        .setRequired(true))
+    .addChannelOption((option) =>
+      option
+        .setName('delete_previous')
+        .setDescription('whether or not to delete the previous music channel')
+        .setRequired(false))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    return {
+      result: false,
+      value: 'not yet implemented',
+    };
 
-            const music = message.guild.channels.cache.find(channel =>
-                channel.id == guild_object.music_data.channel_id);
+    //   const musicChannel = interaction.options.getChannel('music_channel');
+    //   const deletePreviousMusicChannel = interaction.options.getChannel('delete_previous');
 
-            if (music) {
-                delete_channel(PortalChannelTypes.music, <TextChannel>music, message)
-                    .catch((e: any) => {
-                        return resolve({
-                            result: false,
-                            value: `failed to delete channel: ${e}`
-                        });
-                    });
-            }
+    //   if (!musicChannel) {
+    //     return {
+    //       result: false,
+    //       value: messageHelp('commands', 'music'),
+    //     };
+    //   }
 
-            if (args.length === 0) {
-                guild_object.music_data.channel_id = message.channel.id;
-                const new_music = <TextChannel>message.guild.channels.cache.find(channel =>
-                    channel.id == guild_object.music_data.channel_id);
+    //   if (!(musicChannel instanceof NewsChannel)) {
+    //     return {
+    //       result: false,
+    //       value: messageHelp('commands', 'announcement', 'channel must be news channel'),
+    //     };
+    //   }
 
-                if (!new_music) {
-                    return resolve({
-                        result: false,
-                        value: 'channel could not be fetched'
-                    });
-                }
+    //   if (!musicChannel.isTextBased) {
+    //     return {
+    //       result: false,
+    //       value: messageHelp('commands', 'announcement', 'channel must be text channel'),
+    //     };
+    //   }
 
-                createMusicMessage(new_music, guild_object)
-                    .then(music_message_id => {
-                        logger.log({ level: 'info', type: 'none', message: `created music message ${music_message_id}` });
-                        createMusicLyricsMessage(new_music, guild_object, music_message_id)
-                            .then(lyrics_message_id => {
-                                logger.log({ level: 'info', type: 'none', message: `created lyrics message ${lyrics_message_id}` });
-                                return resolve({
-                                    result: false,
-                                    value: `created lyrics message`,
-                                });
-                            })
-                            .catch(e => {
-                                logger.log({ level: 'error', type: 'none', message: new Error(`error creating lyrics message: ${e}`).message });
-                                return resolve({
-                                    result: false,
-                                    value: `error creating lyrics message: ${e}`,
-                                });
-                            });
-                    })
-                    .catch(e => {
-                        logger.log({ level: 'error', type: 'none', message: `failed to send music message: ${e}` });
-                        return resolve({
-                            result: false,
-                            value: `failed to send music message: ${e}`,
-                        });
-                    });
+    //   if (!interaction.guild) {
+    //     return {
+    //       result: false,
+    //       value: "message's guild could not be fetched",
+    //     };
+    //   }
 
-                return resolve({
-                    result: true,
-                    value: 'this is now the Music channel'
-                });
-            }
-            else if (args.length > 0) {
-                const music_channel = args.join(' ').substr(0, args.join(' ').indexOf('|'));
-                const music_category = args.join(' ').substr(args.join(' ').indexOf('|') + 1);
+    //   if (!interaction?.channel?.id) {
+    //     return {
+    //       result: false,
+    //       value: "message's channel could not be fetched",
+    //     };
+    //   }
 
-                let result = false;
-                let value = null;
+    //   if (args.length === 0) {
+    //     if (isMusicChannel(interaction.channel.id, pGuild)) {
+    //       const musicData = new MusicData('null', 'null', 'null', [], false);
+    //       const musicDataResponse = await setMusicData(pGuild.id, musicData);
 
-                if (music_channel !== '') {
-                    create_music_channel(message.guild, music_channel, music_category, guild_object)
-                        .catch((e: any) => {
-                            return resolve({
-                                result: false,
-                                value: `failed to create music channel: ${e}`
-                            });
-                        });
-                    result = true;
-                    value = 'music channel and category have been created';
-                }
-                else if (music_channel === '' && music_category !== '') {
-                    create_music_channel(message.guild, music_category, null, guild_object)
-                        .catch((e: any) => {
-                            return resolve({
-                                result: false,
-                                value: `failed to create music channel: ${e}`
-                            });
-                        });
-                    result = true;
-                    value = 'music channel has been created';
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: messageHelp('commands', 'music')
-                    });
-                }
+    //       return {
+    //         result: !!musicDataResponse,
+    //         value: musicDataResponse ? 'successfully removed music channel' : 'failed to remove music channel',
+    //       };
+    //     }
 
-                return resolve({
-                    result: result,
-                    value: value
-                });
-            }
-        });
-    }
+    //     if (isAnnouncementChannel(interaction.channel.id, pGuild)) {
+    //       return {
+    //         result: false,
+    //         value: "this can't be set as the music channel for it is the announcement channel",
+    //       };
+    //     }
+
+    //     if (isUrlOnlyChannel(interaction.channel.id, pGuild)) {
+    //       return {
+    //         result: false,
+    //         value: "this can't be set as the Music channel for it is an url channel",
+    //       };
+    //     }
+    //   }
+
+    //   const musicChannel = interaction.guild.channels.cache.find((channel) => channel.id == pGuild.musicData.channelId);
+
+    //   if (musicChannel) {
+    //     const deletionResponse = await deleteChannel(PortalChannelTypes.music, <TextChannel>musicChannel, interaction)
+
+    //     if (!deletionResponse) {
+    //       return {
+    //         result: false,
+    //         value: `failed to delete channel`,
+    //       };
+    //     }
+    //   }
+
+    //   if (args.length === 0) {
+    //     pGuild.musicData.channelId = interaction.channel.id;
+    //     const newMusic = <TextChannel>(
+    //       interaction.guild.channels.cache.find((channel) => channel.id == pGuild.musicData.channelId)
+    //     );
+
+    //     if (!newMusic) {
+    //       return {
+    //         result: false,
+    //         value: 'channel could not be fetched',
+    //       };
+    //     }
+
+    //     const musicMessageId = await createMusicMessage(newMusic, pGuild);
+
+    //     if (!musicMessageId) {
+    //       logger.log({ level: 'error', type: 'none', message: `failed to send music message` });
+    //       return {
+    //         result: false,
+    //         value: `failed to send music message`,
+    //       };
+    //     }
+
+    //     logger.log({ level: 'info', type: 'none', message: `created music message ${musicMessageId}` });
+
+    //     const lyricsMessageId = await createMusicLyricsMessage(newMusic, pGuild, musicMessageId);
+
+    //     if (!lyricsMessageId) {
+    //       logger.log({
+    //         level: 'error',
+    //         type: 'none',
+    //         message: new Error(`error creating lyrics message`).message,
+    //       });
+    //       return {
+    //         result: false,
+    //         value: `error creating lyrics message`,
+    //       };
+    //     }
+
+    //     logger.log({
+    //       level: 'info',
+    //       type: 'none',
+    //       message: `created lyrics message ${lyricsMessageId}`,
+    //     });
+
+    //     return {
+    //       result: true,
+    //       value: 'this is now the Music channel',
+    //     };
+    //   } else if (args.length > 0) {
+    //     const musicChannel = args.join(' ').substring(0, args.join(' ').indexOf('|'));
+    //     const musicCategory = args.join(' ').substring(args.join(' ').indexOf('|') + 1);
+
+    //     if (musicChannel === '' && musicCategory === '') {
+    //       return {
+    //         result: false,
+    //         value: messageHelp('commands', 'music'),
+    //       };
+    //     }
+
+    //     if (musicChannel !== '') {
+    //       const newMusicChannel = await createMusicChannel(interaction.guild, musicChannel, musicCategory, pGuild);
+
+    //       if (!newMusicChannel) {
+    //         return {
+    //           result: false,
+    //           value: `failed to create music channel`,
+    //         };
+    //       }
+
+    //       return {
+    //         result: true,
+    //         value: 'music channel and category have been created'
+    //       }
+    //     } else if (musicChannel === '' && musicCategory !== '') {
+    //       const newMusicChannel = await createMusicChannel(interaction.guild, musicCategory, null, pGuild)
+
+    //       if (!newMusicChannel) {
+    //         return {
+    //           result: false,
+    //           value: `failed to create music channel`,
+    //         };
+    //       }
+
+    //       return {
+    //         result: true,
+    //         value: 'music channel has been created'
+    //       }
+    //     }
+    //   }
+
+    //   return {
+    //     result: false,
+    //     value: messageHelp('commands', 'music'),
+    //   };
+  },
 };

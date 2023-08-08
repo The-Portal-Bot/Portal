@@ -1,1362 +1,713 @@
-import { Client, TextChannel, VoiceChannel } from 'discord.js';
-import { Document, UpdateWithAggregationPipeline } from 'mongoose';
+import { ChannelType, Client, Guild, TextChannel, VoiceChannel } from 'discord.js';
+import { FilterQuery } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
-import { PortalChannelTypes } from '../data/enums/PortalChannel.enum';
-import { ProfanityLevelEnum } from '../data/enums/ProfanityLevel.enum';
-import { RankSpeedEnum } from '../data/enums/RankSpeed.enum';
-import { GiveRolePrtl } from '../types/classes/GiveRolePrtl.class';
-import { GuildPrtl, IGuildPrtl, MusicData } from '../types/classes/GuildPrtl.class';
-import { MemberPrtl } from '../types/classes/MemberPrtl.class';
-import { PollPrtl } from '../types/classes/PollPrtl.class';
-import { PortalChannelPrtl, IPortalChannelPrtl } from '../types/classes/PortalChannelPrtl.class';
-import { Rank } from '../types/classes/TypesPrtl.interface';
-import { VoiceChannelPrtl } from '../types/classes/VoiceChannelPrtl.class';
-import GuildPrtlMdl from '../types/models/GuildPrtl.model';
+import { PGiveRole } from '../types/classes/PGiveRole.class';
+import { MusicData, PGuild } from '../types/classes/PGuild.class';
+import { PMember } from '../types/classes/PMember.class';
+import { PPoll } from '../types/classes/PPoll.class';
+import { IPChannel, PChannel } from '../types/classes/PPortalChannel.class';
+import { Rank } from '../types/classes/PTypes.interface';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
+import { RankSpeed } from '../types/enums/RankSpeed.enum';
+import PGuildModel from '../types/models/PGuild.model';
 
-// fetch guilds
-export async function fetch_guild_list(
-): Promise<GuildPrtl[] | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .find({})
-            .then((guilds: IGuildPrtl[]) => {
-                if (guilds) {
-                    return resolve(<GuildPrtl[]>guilds);
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuildList(filter: FilterQuery<PGuild>): Promise<PGuild[]> {
+  return (await PGuildModel.find(filter).exec()) as unknown as PGuild[];
 }
 
-export async function fetch_guild(
-    guild_id: string
-): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                }
-            )
-            .then((guild: IGuildPrtl | null) => {
-                if (guild) {
-                    return resolve(<GuildPrtl>guild);
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuild(guildId: PGuild['id']): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne({ id: guildId }).exec()) as unknown as PGuild;
 }
 
-export async function fetch_guild_channel_delete(
-    guild_id: string
-): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                },
-                {
-                    id: 1,
-                    portal_list: 1,
-                    announcement: 1,
-                    music_data: 1,
-                    url_list: 1,
-                    ignore_list: 1
-                })
-            .then((r: any) => {
-                if (r) {
-                    return resolve(<GuildPrtl>{
-                        id: r.id,
-                        portal_list: r.portal_list,
-                        announcement: r.announcement,
-                        music_data: r.music_data,
-                        url_list: r.url_list,
-                        ignore_list: r.ignore_lis
-                    });
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuildChannelDelete(guildId: PGuild['id']): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 1,
+      pChannels: 1,
+      announcement: 1,
+      musicData: 1,
+      pURLs: 1,
+      pIgnores: 1,
+    }
+  ).exec()) as unknown as PGuild;
 }
 
-export async function fetch_guild_announcement(
-    guild_id: string
-): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                },
-                {
-                    announcement: 1,
-                    initial_role: 1
-                })
-            .then((r: any) => {
-                if (r) {
-                    return resolve(<GuildPrtl>{
-                        announcement: r.announcement,
-                        initial_role: r.initial_role
-                    });
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchAnnouncementChannelByGuildId(
+  guildId: PGuild['id']
+): Promise<Pick<PGuild, 'announcement' | 'initialRole'> | undefined> {
+  const pGuild = (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      announcement: 1,
+      initialRole: 1,
+    }
+  ).exec()) as unknown as PGuild;
+
+  return {
+    announcement: pGuild.announcement,
+    initialRole: pGuild.initialRole,
+  };
 }
 
-export async function fetch_guild_reaction_data(
-    guild_id: string, member_id: string
-): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                },
-                {
-                    id: 1,
-                    member_list: {
-                        $elemMatch: {
-                            id: member_id
-                        }
-                    },
-                    role_list: 1,
-                    poll_list: 1,
-                    music_data: 1,
-                    music_queue: 1
-                })
-            .then((r: any) => {
-                if (r) {
-                    return resolve(<GuildPrtl>{
-                        id: r.id,
-                        member_list: r.member_list,
-                        role_list: r.role_list,
-                        poll_list: r.poll_list,
-                        music_data: r.music_data,
-                        music_queue: r.music_queue
-                    });
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuildReactionData(guildId: PGuild['id'], memberId: string): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 1,
+      pMembers: {
+        $elemMatch: {
+          id: memberId,
+        },
+      },
+      pRoles: 1,
+      pPolls: 1,
+      musicData: 1,
+      musicQueue: 1,
+    }
+  ).exec()) as unknown as PGuild;
 }
 
-export async function fetch_guild_members(
-    guild_id: string
-): Promise<MemberPrtl[] | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                },
-                {
-                    member_list: 1
-                })
-            .then((r: any) => {
-                if (r) {
-                    return resolve(<MemberPrtl[]>r.member_list);
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuildMembers(guildId: PGuild['id']): Promise<PMember[]> {
+  const pGuild = (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      pMembers: 1,
+    }
+  ).exec()) as unknown as PGuild | undefined;
+
+  return pGuild?.pMembers ?? [];
 }
 
-export async function fetch_guild_music_queue(
-    guild_id: string
-): Promise<{ queue: VideoSearchResult[], data: MusicData } | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                },
-                {
-                    music_data: 1,
-                    music_queue: 1
-                })
-            .then((r: any) => {
-                if (r) {
-                    return resolve(<{ queue: VideoSearchResult[], data: MusicData }>{
-                        data: r.music_data,
-                        queue: r.music_queue
-                    });
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuildMusicQueue(
+  guildId: PGuild['id']
+): Promise<{ queue: VideoSearchResult[]; data: MusicData } | undefined> {
+  const pGuild = (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      musicData: 1,
+      musicQueue: 1,
+    }
+  ).exec()) as unknown as PGuild;
+
+  return {
+    data: pGuild.musicData,
+    queue: pGuild.musicQueue,
+  };
 }
 
-export async function fetchGuildPredata(
-    guild_id: string, member_id: string
-): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                },
-                {
-                    id: 1,
-                    prefix: 1,
-                    portal_list: 1,
-                    member_list: {
-                        $elemMatch: {
-                            id: member_id
-                        }
-                    },
-                    ignore_list: 1,
-                    url_list: 1,
-                    mute_role: 1,
-                    music_data: 1,
-                    music_queue: 1,
-                    initial_role: 1,
-                    rank_speed: 1,
-                    profanity_level: 1,
-                    kick_after: 1,
-                    ban_after: 1
-                })
-            .then((r: any) => {
-                if (r) {
-                    return resolve(<GuildPrtl>{
-                        id: r.id,
-                        prefix: r.prefix,
-                        portal_list: r.portal_list,
-                        member_list: r.member_list,
-                        ignore_list: r.ignore_list,
-                        url_list: r.url_list,
-                        mute_role: r.mute_role,
-                        music_data: r.music_data,
-                        music_queue: r.music_queue,
-                        initial_role: r.initial_role,
-                        rank_speed: r.rank_speed,
-                        profanity_level: r.profanity_level,
-                        kick_after: r.kick_after,
-                        ban_after: r.ban_after
-                    });
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuildPreData(guildId: PGuild['id'], memberId: string): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 1,
+      prefix: 1,
+      pChannels: 1,
+      pMembers: {
+        $elemMatch: {
+          id: memberId,
+        },
+      },
+      pIgnores: 1,
+      pURLs: 1,
+      muteRole: 1,
+      musicData: 1,
+      musicQueue: 1,
+      initialRole: 1,
+      rankSpeed: 1,
+      profanityLevel: 1,
+      kickAfter: 1,
+      banAfter: 1,
+    }
+  ).exec()) as unknown as PGuild;
 }
 
-export async function fetchGuildRest(
-    guild_id: string
-): Promise<GuildPrtl | undefined> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .findOne(
-                {
-                    id: guild_id
-                },
-                {
-                    id: 0,
-                    prefix: 0,
-                    portal_list: 0,
-                    ignore_list: 0,
-                    url_list: 0,
-                    music_data: 0,
-                    rank_speed: 0,
-                    profanity_level: 0
-                })
-            .then((r: any) => {
-                if (r) {
-                    return resolve(<GuildPrtl>{
-                        id: r.id,
-                        member_list: r.member_list,
-                        poll_list: r.poll_list,
-                        ranks: r.ranks,
-                        music_queue: r.music_queue,
-                        announcement: r.announcement,
-                        locale: r.locale,
-                        announce: r.announce,
-                        premium: r.premium
-                    });
-                } else {
-                    return resolve(undefined);
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function fetchGuildRest(guildId: PGuild['id']): Promise<PGuild | undefined> {
+  return (await PGuildModel.findOne(
+    {
+      id: guildId,
+    },
+    {
+      id: 0,
+      prefix: 0,
+      pChannels: 0,
+      pIgnores: 0,
+      pURLs: 0,
+      musicData: 0,
+      rankSpeed: 0,
+      profanityLevel: 0,
+    }
+  ).exec()) as unknown as PGuild;
 }
 
-export async function guildExists(
-    guild_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .countDocuments(
-                {
-                    id: guild_id
-                }
-            )
-            .then((count: number) => {
-                return resolve(count > 0);
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function guildExists(guildId: PGuild['id']): Promise<boolean> {
+  return (await PGuildModel.countDocuments({ id: guildId }).exec()) > 0;
 }
 
-export async function memberExists(
-    guild_id: string, member_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .countDocuments(
-                {
-                    id: guild_id,
-                    member_list: {
-                        $elemMatch: {
-                            id: member_id
-                        }
-                    }
-                }
-            )
-            .then((count: number) => {
-                return resolve(count > 0);
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function memberExists(guildId: PGuild['id'], memberId: string): Promise<boolean> {
+  return (
+    (await PGuildModel.countDocuments({
+      id: guildId,
+      pMembers: {
+        $elemMatch: {
+          id: memberId,
+        },
+      },
+    })) > 0
+  );
 }
 
-export async function updateGuild(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, key: string, value: any
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        const placeholder: any = {}
-        placeholder[key] = value;
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $set: placeholder
-                },
-                {
-                    'new': true
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
+export async function updateGuild(guildId: PGuild['id'], key: string, value: unknown): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        [key]: value,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
 }
 
 // CRUD guilds
+async function createMembers(guildId: PGuild['id'], client: Client): Promise<PMember[]> {
+  const guild = client.guilds.cache.find((guild) => guild.id === guildId) as Guild;
 
-function createMemberList(guild_id: string, client: Client): MemberPrtl[] {
-    const member_list: MemberPrtl[] = [];
+  if (!guild) {
+    return [];
+  }
 
-    const guild = client.guilds.cache.find(guild => guild.id === guild_id);
-    if (!guild) {
-        return member_list;
+  const members = await guild.members.fetch();
+
+  if (!members) {
+    return [];
+  }
+
+  return members
+    .map(member => member)
+    .filter((member) => !member.user.bot)
+    .filter((member) => member.id !== client?.user?.id)
+    .map((member) => new PMember(member.id, 1, 0, 1, 0, 0, new Date('1 January, 1970, 00:00:00 UTC'), 'null'));
+}
+
+export async function insertGuild(guildId: PGuild['id'], client: Client): Promise<boolean> {
+  const id: string = guildId;
+  const pChannels: PChannel[] = [];
+  const pMembers: PMember[] = await createMembers(guildId, client);
+  const pURLs: string[] = [];
+  const pRoles: PGiveRole[] = [];
+  const pPolls: string[] = [];
+  const ranks: Rank[] = [];
+  const initialRole: string | null = 'null';
+  const musicData: MusicData = {
+    channelId: 'null',
+    messageId: 'null',
+    messageLyricsId: 'null',
+    votes: [],
+    pinned: false,
+  };
+  const musicQueue: VideoSearchResult[] = [];
+  const announcement: string | null = 'null';
+  const muteRole: string | null = 'null';
+  const locale = 1;
+  const announce = true;
+  const rankSpeed: number = RankSpeed.default;
+  const profanityLevel: number = ProfanityLevel.default;
+  const kickAfter = 0;
+  const banAfter = 0;
+  const premium = true; // as it is not a paid service anymore
+  const prefix = process.env.PREFIX ?? './';
+
+  return !!(await PGuildModel.create({
+    id,
+    pChannels,
+    pMembers,
+    pURLs,
+    pRoles,
+    pPolls,
+    initialRole,
+    ranks,
+    musicData,
+    musicQueue,
+    announcement,
+    muteRole,
+    locale,
+    announce,
+    rankSpeed,
+    profanityLevel,
+    kickAfter,
+    banAfter,
+    premium,
+    prefix,
+  }));
+}
+
+export async function removeGuild(guildId: PGuild['id']): Promise<boolean> {
+  return !!(await PGuildModel.deleteOne({ id: guildId }));
+}
+
+export async function updateMember(guildId: PGuild['id'], memberId: string, key: string, value: unknown): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pMembers.$[m].' + key]: value,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [
+        {
+          'm.id': memberId,
+        },
+      ],
     }
+  );
 
-    // const member_array = guild.members.cache.array();
-    // for(let i = 0; i < member_array.length; i++) {
-    //     if (!member_array[i].user.bot) {
-    //         if (client.user && member_array[i].id !== client.user.id) {
-    //             member_list.push(
-    //                 new MemberPrtl(
-    //                     member_array[i].id,
-    //                     1,
-    //                     0,
-    //                     1,
-    //                     0,
-    //                     new Date('1 January, 1970, 00:00:00 UTC'),
-    //                     'null'
-    //                 )
-    //             );
-    //         }
-    //     }
-    // }
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
 
-    guild.members.cache.forEach(member => {
-        if (!member.user.bot) {
-            if (client.user && member.id !== client.user.id) {
-                member_list.push(
-                    new MemberPrtl(
-                        member.id,
-                        1,
-                        0,
-                        1,
-                        0,
-                        0,
-                        new Date('1 January, 1970, 00:00:00 UTC'),
-                        'null'
-                    )
-                );
-            }
+export async function updateEntireMember(guildId: PGuild['id'], memberId: string, member: PMember): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pMembers.$[m]']: member,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [
+        {
+          'm.id': memberId,
+        },
+      ],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertMember(guildId: PGuild['id'], memberId: string): Promise<boolean> {
+  const newPMember = new PMember(memberId, 1, 0, 1, 0, 0, null, 'null');
+
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    { id: guildId },
+    {
+      $push: {
+        pMembers: newPMember,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removeMember(memberId: string, guildId: PGuild['id']): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pMembers: {
+          id: memberId,
+        },
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function updatePortal(guildId: PGuild['id'], portalId: string, key: string, value: unknown): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pChannels.$[p].' + key]: value,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [{ 'p.id': portalId }],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertPortal(guildId: PGuild['id'], newPortal: IPChannel): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pChannels: newPortal,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removePortal(guildId: PGuild['id'], portalId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pChannels: {
+          id: portalId,
+        },
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function updateVoice(
+  guildId: PGuild['id'],
+  portalId: string,
+  voiceId: string,
+  key: string,
+  value: unknown
+): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        ['pChannels.$[p].pVoiceChannels.$[v].' + key]: value,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [{ 'p.id': portalId }, { 'v.id': voiceId }],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertVoice(guildId: PGuild['id'], portalId: string, newVoice: PVoiceChannel): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        'pChannels.$[p].pVoiceChannels': newVoice,
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [{ 'p.id': portalId }],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removeVoice(guildId: PGuild['id'], portalId: string, voiceId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        'pChannels.$[p].pVoiceChannels': {
+          id: voiceId,
+        },
+      },
+    },
+    {
+      new: true,
+      arrayFilters: [
+        {
+          'p.id': portalId,
+        },
+      ],
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertURL(guildId: PGuild['id'], newUrl: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pURLs: newUrl,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removeURL(guildId: PGuild['id'], removeUrl: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pURLs: removeUrl,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertIgnore(guildId: PGuild['id'], newIgnore: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pIgnores: newIgnore,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removeIgnore(guildId: PGuild['id'], removeIgnore: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pIgnores: removeIgnore,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function setRanks(guildId: PGuild['id'], newRanks: Rank[]): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      ranks: newRanks,
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertPoll(guildId: PGuild['id'], poll: PPoll): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pPolls: poll,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removePoll(guildId: PGuild['id'], messageId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pPolls: {
+          messageId: messageId,
+        },
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertVendor(guildId: PGuild['id'], newVendor: PGiveRole): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        pRoles: newVendor,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function removeVendor(guildId: PGuild['id'], messageId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $pull: {
+        pRoles: {
+          messageId: messageId,
+        },
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertMusicVideo(guildId: PGuild['id'], video: VideoSearchResult): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        musicQueue: video,
+      },
+    }
+  );
+
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function clearMusicVote(guildId: PGuild['id']): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        'musicData.votes': [],
+      },
+    }
+  );
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function insertMusicVote(guildId: PGuild['id'], userId: string): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $push: {
+        'musicData.votes': userId,
+      },
+    }
+  );
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function setMusicData(guildId: PGuild['id'], newMusicData: MusicData): Promise<boolean> {
+  const updateWriteOpResult = await PGuildModel.updateOne(
+    {
+      id: guildId,
+    },
+    {
+      $set: {
+        musicData: newMusicData,
+      },
+    }
+  );
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+}
+
+export async function deletedChannelSync(channelToRemove: VoiceChannel | TextChannel): Promise<PortalChannelTypes> {
+  const pGuild = await fetchGuildChannelDelete(channelToRemove.guild.id);
+
+  if (!pGuild) {
+    return PortalChannelTypes.unknown;
+  }
+
+  // check if it is a portal or portal-voice channel
+  if (channelToRemove.type !== ChannelType.GuildText) {
+    const currentVoice = channelToRemove;
+
+    for (const pChannel of pGuild.pChannels) {
+      if (pChannel.id === currentVoice.id) {
+        const channelDeleted = await removePortal(currentVoice.guild.id, pChannel.id);
+        return channelDeleted ? PortalChannelTypes.portal : PortalChannelTypes.unknown;
+      }
+
+      for (const pVoiceChannel of pChannel.pVoiceChannels) {
+        if (pVoiceChannel.id === currentVoice.id) {
+          const channelDeleted = await removeVoice(currentVoice.guild.id, pChannel.id, pVoiceChannel.id);
+          return channelDeleted ? PortalChannelTypes.voice : PortalChannelTypes.unknown;
         }
-    });
-
-    return member_list;
-}
-
-export async function insertGuild(
-    guild_id: string, client: Client
-): Promise<boolean> {
-    const id: string = guild_id;
-    const portal_list: PortalChannelPrtl[] = [];
-    const member_list: MemberPrtl[] = createMemberList(guild_id, client);
-    const url_list: string[] = [];
-    const role_list: GiveRolePrtl[] = [];
-    const poll_list: string[] = [];
-    const ranks: Rank[] = [];
-    const initial_role: string | null = 'null';
-    const music_data: MusicData = {
-        channel_id: 'null',
-        message_id: 'null',
-        message_lyrics_id: 'null',
-        votes: [],
-        pinned: false
+      }
     }
-    const music_queue: VideoSearchResult[] = [];
-    const announcement: string | null = 'null';
-    const mute_role: string | null = 'null';
-    const locale = 1;
-    const announce = true;
-    const rank_speed: number = RankSpeedEnum.default;
-    const profanity_level: number = ProfanityLevelEnum.default;
-    const kick_after = 0;
-    const ban_after = 0;
-    const premium = true; // as it is not a paid service anymore
-    const prefix: string = process.env.PREFIX as unknown as string;
+  } else {
+    const currentText = channelToRemove;
 
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .create({
-                id: id,
-                portal_list: portal_list,
-                member_list: member_list,
-                url_list: url_list,
-                role_list: role_list,
-                poll_list: poll_list,
-                initial_role: initial_role,
-                ranks: ranks,
-                music_data: music_data,
-                music_queue: music_queue,
-                announcement: announcement,
-                mute_role: mute_role,
-                locale: locale,
-                announce: announce,
-                rank_speed: rank_speed,
-                profanity_level: profanity_level,
-                kick_after: kick_after,
-                ban_after: ban_after,
-                premium: premium,
-                prefix: prefix
-            })
-            .then((r: Document<any>) => {
-                return resolve(!!r);
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
+    if (pGuild.announcement === currentText.id) {
+      const channelUpdated = await updateGuild(currentText.guild.id, 'announcement', 'null');
+      return channelUpdated ? PortalChannelTypes.announcement : PortalChannelTypes.unknown;
+    } else if (pGuild.musicData.channelId === currentText.id) {
+      const musicData = new MusicData('null', 'null', 'null', [], false);
+      const musicDataSet = await setMusicData(pGuild.id, musicData);
+      return musicDataSet ? PortalChannelTypes.music : PortalChannelTypes.unknown;
+    } else {
+      for (let i = 0; i < pGuild.pURLs.length; i++) {
+        if (pGuild.pURLs[i] === currentText.id) {
+          const removedURL = await removeURL(currentText.guild.id, currentText.id);
+          return removedURL ? PortalChannelTypes.url : PortalChannelTypes.unknown;
+        }
+      }
 
-export async function removeGuild(
-    guild_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .deleteOne({
-                id: guild_id
-            })
-            .then((r: any) => {
-                if ((r && r.id === guild_id)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
+      for (let i = 0; i < pGuild.pIgnores.length; i++) {
+        if (pGuild.pIgnores[i] === currentText.id) {
+          const removedIgnore = await removeIgnore(currentText.guild.id, currentText.id);
+          return removedIgnore ? PortalChannelTypes.url : PortalChannelTypes.unknown;
+        }
+      }
+    }
+  }
 
-//
-
-export async function updateMember(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, member_id: string, key: string, value: any
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        const placeholder: any = {}
-        placeholder['member_list.$[m].' + key] = value;
-
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $set: placeholder
-                },
-                {
-                    'new': true,
-                    'arrayFilters': [
-                        {
-                            'm.id': member_id
-                        }
-                    ]
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function updateEntireMember(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, member_id: string, member: MemberPrtl
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        const placeholder: any = {}
-        placeholder['member_list.$[m]'] = member;
-
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $set: placeholder
-                },
-                {
-                    'new': true,
-                    'arrayFilters': [
-                        {
-                            'm.id': member_id
-                        }
-                    ]
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function insertMember(
-    guild_id: string, member_id: string
-): Promise<boolean> {
-    const new_member_portal = new MemberPrtl(
-        member_id,
-        1,
-        0,
-        1,
-        0,
-        0,
-        null,
-        'null'
-    );
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                { id: guild_id },
-                {
-                    $push: {
-                        member_list: new_member_portal
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function remove_member(
-    member_id: string, guild_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $pull: {
-                        member_list: {
-                            id: member_id
-                        }
-                    }
-                })
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-//
-
-export async function update_portal(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, portal_id: string, key: string, value: any
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        const placeholder: any = {}
-        placeholder['portal_list.$[p].' + key] = value;
-
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $set: placeholder
-                },
-                {
-                    'new': true,
-                    'arrayFilters': [
-                        { 'p.id': portal_id }
-                    ]
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function insert_portal(
-    guild_id: string, new_portal: IPortalChannelPrtl
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        portal_list: new_portal
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function remove_portal(
-    guild_id: string, portal_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $pull: {
-                        portal_list: {
-                            id: portal_id
-                        }
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-//
-
-export async function update_voice(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    guild_id: string, portal_id: string, voice_id: string, key: string, value: any
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        const placeholder: any = {}
-        placeholder['portal_list.$[p].voice_list.$[v].' + key] = value;
-
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $set: placeholder
-                },
-                {
-                    'new': true,
-                    'arrayFilters': [
-                        { 'p.id': portal_id },
-                        { 'v.id': voice_id }
-                    ]
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function insert_voice(
-    guild_id: string, portal_id: string, new_voice: VoiceChannelPrtl
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        'portal_list.$[p].voice_list': new_voice
-                    }
-                },
-                {
-                    'new': true,
-                    'arrayFilters': [
-                        { 'p.id': portal_id }
-                    ]
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                reject(e);
-            });
-    });
-}
-
-export async function remove_voice(
-    guild_id: string, portal_id: string, voice_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $pull: {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        'portal_list.$[p].voice_list': {
-                            id: voice_id
-                        }
-                    }
-                },
-                {
-                    'new': true,
-                    'arrayFilters': [
-                        {
-                            'p.id': portal_id
-                        }
-                    ]
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                reject(e);
-            });
-    });
-}
-
-//
-
-export async function insert_url(
-    guild_id: string, new_url: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        url_list: new_url
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function remove_url(
-    guild_id: string, remove_url: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $pull: {
-                        url_list: remove_url
-                    }
-                })
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(`did not execute database transaction: ${e}`);
-            });
-    });
-}
-
-//
-
-export async function insert_ignore( // channel
-    guild_id: string, new_ignore: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        ignore_list: new_ignore
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function remove_ignore( // channel
-    guild_id: string, remove_ignore: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $pull: {
-                        ignore_list: remove_ignore
-                    }
-                })
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-//
-
-export async function set_ranks(
-    guild_id: string, new_ranks: Rank[]): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    ranks: new_ranks
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-//
-
-export async function insert_poll(
-    guild_id: string, poll: PollPrtl
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        poll_list: poll
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function remove_poll(
-    guild_id: string, message_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $pull: {
-                        poll_list: {
-                            message_id: message_id
-                        }
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-//
-
-export async function insert_vendor(
-    guild_id: string, new_vendor: GiveRolePrtl
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        role_list: new_vendor
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function remove_vendor(
-    guild_id: string, message_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $pull: {
-                        role_list: {
-                            message_id: message_id
-                        }
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-//
-
-export async function insert_music_video(
-    guild_id: string, video: VideoSearchResult
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        music_queue: video
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function clear_music_vote(
-    guild_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $set: {
-                        'music_data.votes': []
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function insert_music_vote(
-    guild_id: string, user_id: string
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $push: {
-                        'music_data.votes': user_id
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-export async function set_music_data(
-    guild_id: string, new_music_data: MusicData
-): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        GuildPrtlMdl
-            .updateOne(
-                {
-                    id: guild_id
-                },
-                {
-                    $set: {
-                        music_data: new_music_data
-                    }
-                }
-            )
-            .then((r) => {
-                if ((r && r.modifiedCount && r.modifiedCount > 0)) {
-                    return resolve(true);
-                } else {
-                    return reject('did not execute database transaction');
-                }
-            })
-            .catch((e: any) => {
-                return reject(e);
-            });
-    });
-}
-
-//
-
-export async function deleted_channel_sync(
-    channel_to_remove: VoiceChannel | TextChannel
-): Promise<number> {
-    return new Promise((resolve) => {
-        fetch_guild_channel_delete(channel_to_remove.guild.id)
-            .then(guild_object => {
-                if (guild_object) {
-                    // check if it is a portal or portal-voice channel
-                    if (!channel_to_remove.isText()) {
-                        const current_voice = channel_to_remove;
-                        guild_object.portal_list.some(p => {
-                            if (p.id === current_voice.id) {
-                                remove_portal(current_voice.guild.id, p.id)
-                                    .then(r => {
-                                        return r
-                                            ? resolve(PortalChannelTypes.portal)
-                                            : resolve(PortalChannelTypes.unknown)
-                                    })
-                                    .catch(() => {
-                                        return resolve(PortalChannelTypes.unknown)
-                                    });
-
-                                return true;
-                            }
-
-                            p.voice_list.some(v => {
-                                if (v.id === current_voice.id) {
-                                    remove_voice(current_voice.guild.id, p.id, v.id)
-                                        .then(r => {
-                                            return r
-                                                ? resolve(PortalChannelTypes.voice)
-                                                : resolve(PortalChannelTypes.unknown)
-                                        })
-                                        .catch(() => {
-                                            return resolve(PortalChannelTypes.unknown)
-                                        });
-
-                                    return true;
-                                }
-                            });
-                        });
-                    } else {
-                        const current_text = channel_to_remove;
-
-                        if (guild_object.announcement === current_text.id) {
-                            updateGuild(current_text.guild.id, 'announcement', 'null')
-                                .then(r => {
-                                    return r
-                                        ? resolve(PortalChannelTypes.announcement)
-                                        : resolve(PortalChannelTypes.unknown);
-                                })
-                                .catch(() => {
-                                    return resolve(PortalChannelTypes.unknown);
-                                });
-                        } else if (guild_object.music_data.channel_id === current_text.id) {
-                            const music_data = new MusicData('null', 'null', 'null', [], false);
-                            set_music_data(guild_object.id, music_data)
-                                .then(r => {
-                                    return r
-                                        ? resolve(PortalChannelTypes.music)
-                                        : resolve(PortalChannelTypes.unknown)
-                                })
-                                .catch(() => {
-                                    return resolve(PortalChannelTypes.unknown);
-                                });
-                        } else {
-                            for (let i = 0; i < guild_object.url_list.length; i++) {
-                                if (guild_object.url_list[i] === current_text.id) {
-                                    remove_url(current_text.guild.id, current_text.id)
-                                        .then(r => {
-                                            return r
-                                                ? resolve(PortalChannelTypes.url)
-                                                : resolve(PortalChannelTypes.unknown);
-                                        })
-                                        .catch(() => {
-                                            return resolve(PortalChannelTypes.unknown);
-                                        });
-                                    break;
-                                }
-                            }
-
-                            for (let i = 0; i < guild_object.ignore_list.length; i++) {
-                                if (guild_object.ignore_list[i] === current_text.id) {
-                                    remove_ignore(current_text.guild.id, current_text.id)
-                                        .then(r => {
-                                            return r
-                                                ? resolve(PortalChannelTypes.url)
-                                                : resolve(PortalChannelTypes.unknown);
-                                        })
-                                        .catch(() => {
-                                            return resolve(PortalChannelTypes.unknown);
-                                        });
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    return resolve(PortalChannelTypes.unknown);
-                }
-            })
-            .catch(() => {
-                return resolve(PortalChannelTypes.unknown);
-            });
-    });
+  return PortalChannelTypes.unknown;
 }

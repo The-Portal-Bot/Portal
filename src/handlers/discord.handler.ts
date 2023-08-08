@@ -1,24 +1,33 @@
-import { CacheFactory, Client, ClientOptions, Intents, Options } from "discord.js";
+import { CacheFactory, Client, ClientOptions, GatewayIntentBits, Partials, Options } from 'discord.js';
 
 export function clientHandler() {
-    const cacheFactory: CacheFactory = Options.cacheWithLimits({ MessageManager: 200 });
-    const intents = new Intents(32767);
+  const makeCache: CacheFactory = Options.cacheWithLimits({ MessageManager: 200 });
 
-    const clientOptions: ClientOptions = {
-        makeCache: cacheFactory,
-        partials: [
-            'USER',
-            'CHANNEL',
-            'GUILD_MEMBER',
-            'MESSAGE',
-            'REACTION'
-        ],
-        intents: intents
-    }
+  const partials = [
+    Partials.User,
+    Partials.Channel,
+    Partials.GuildMember,
+    Partials.Message,
+    Partials.Reaction
+  ];
 
-    return new Client(clientOptions);
+  const intents = [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildVoiceStates,
+  ];
+
+  const clientOptions: ClientOptions = {
+    makeCache,
+    partials,
+    intents,
+  };
+
+  return new Client(clientOptions);
 }
 
 export async function connectToDiscord(client: Client, token: string) {
-    return client.login(token);
+  return client.login(token);
 }

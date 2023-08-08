@@ -1,10 +1,12 @@
-import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
-import { Client, MessageReaction, Role, User } from "discord.js";
-import { get_role } from "../libraries/guild.library";
-import { createEmded, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
-import { clear_music_vote, fetch_guild_reaction_data, insert_music_vote, remove_poll, set_music_data, updateGuild } from "../libraries/mongo.library";
-// import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
-import { GuildPrtl } from "../types/classes/GuildPrtl.class";
+// import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
+// import { Client, MessageReaction, Role, User } from "discord.js";
+// import { getRole } from "../libraries/guild.library";
+// import { createEmbed, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
+// import { clearMusicVote, fetchGuildReactionData, insertMusicVote, removePoll, setMusicData, updateGuild } from "../libraries/mongo.library";
+// // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
+// import { PGuild } from "../types/classes/PGuild.class";
+
+import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 
 // function clear_user_reactions(
 //     messageReaction: MessageReaction, user: User
@@ -22,15 +24,15 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 // }
 
 // async function reaction_role_manager(
-//     guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
+//     pGuild: GuildPrtl, messageReaction: MessageReaction, user: User
 // ): Promise<string> {
 //     return new Promise((resolve, reject) => {
 //         if (!messageReaction.message.guild) {
 //             return resolve('message has no guild');
 //         }
 
-//         const role_list_object = guild_object.role_list
-//             .find(r => r.message_id === messageReaction.message.id);
+//         const role_list_object = pGuild.role_list
+//             .find(r => r.messageId === messageReaction.message.id);
 
 //         if (!role_list_object) {
 //             return resolve('message is not role adder');
@@ -111,17 +113,17 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 // }
 
 // async function reaction_music_manager(
-//     client: Client, guild_object: GuildPrtl, messageReaction: MessageReaction, user: User
+//     client: Client, pGuild: GuildPrtl, messageReaction: MessageReaction, user: User
 // ): Promise<string> {
 //     if (!messageReaction.message.guild) {
 //         return `could not fetch message's guild`;
 //     }
 
-//     if (!guild_object.music_data) {
+//     if (!pGuild.music_data) {
 //         return 'guild has no music channel';
 //     }
 
-//     if (guild_object.music_data.message_id !== messageReaction.message.id) {
+//     if (pGuild.music_data.messageId !== messageReaction.message.id) {
 //         return 'message is not music player';
 //     }
 
@@ -148,16 +150,16 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //         case '▶️': {
 //             play(
 //                 portal_voice_connection, user, client,
-//                 messageReaction.message.guild, guild_object
+//                 messageReaction.message.guild, pGuild
 //             )
 //                 .then(r => {
-//                     clear_music_vote(guild_object.id)
+//                     clear_music_vote(pGuild.id)
 //                         .catch(e => logger.error(new Error(e)));
 
 //                     return r;
 //                 })
 //                 .catch(e => {
-//                     clear_music_vote(guild_object.id)
+//                     clear_music_vote(pGuild.id)
 //                         .catch(e => logger.error(new Error(e)));
 
 //                     return Promise.reject(`failed to play video: ${e}`);
@@ -168,13 +170,13 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //         case '⏸': {
 //             pause(portal_voice_connection)
 //                 .then(r => {
-//                     clear_music_vote(guild_object.id)
+//                     clear_music_vote(pGuild.id)
 //                         .catch(e => logger.error(new Error(e)));
 
 //                     return r;
 //                 })
 //                 .catch(e => {
-//                     clear_music_vote(guild_object.id)
+//                     clear_music_vote(pGuild.id)
 //                         .catch(e => logger.error(new Error(e)));
 
 //                     return Promise.reject(`failed to pause video: ${e}`);
@@ -184,19 +186,19 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //         }
 //         case '⏭': {
 //             if (!portal_voice_connection) {
-//                 update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
+//                 update_music_lyrics_message(messageReaction.message.guild, pGuild, '')
 //                     .catch(e => logger.error(new Error(e)));
 
 //                 return 'nothing to skip, player is idle';
 //             }
 
-//             if (!guild_object.music_data.votes) {
+//             if (!pGuild.music_data.votes) {
 //                 return 'could not fetch music votes';
 //             }
 
 //             const guild = messageReaction.message.guild;
 //             // const guild = client.guilds.cache
-//             //     .find(g => g.id === guild_object.id);
+//             //     .find(g => g.id === pGuild.id);
 
 //             if (!guild) {
 //                 return Promise.reject(`could not fetch guild`);
@@ -213,12 +215,12 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 
 //             if (!is_dj(member)) {
 //                 if (!is_authorised(member)) {
-//                     if (!guild_object.music_data.votes.includes(user.id)) {
-//                         guild_object.music_data.votes.push(user.id);
-//                         insert_music_vote(guild_object.id, user.id).catch(e => logger.error(new Error(e)));
+//                     if (!pGuild.music_data.votes.includes(user.id)) {
+//                         pGuild.music_data.votes.push(user.id);
+//                         insert_music_vote(pGuild.id, user.id).catch(e => logger.error(new Error(e)));
 //                     }
 
-//                     const votes = guild_object.music_data.votes.length;
+//                     const votes = pGuild.music_data.votes.length;
 //                     const users = portal_voice_connection?.channel?.members
 //                         .filter(member => !member.user.bot).size;
 
@@ -234,15 +236,15 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //                 reason = 'DJ'
 //             }
 
-//             if (!guild_object.music_data.pinned) {
+//             if (!pGuild.music_data.pinned) {
 //                 skip(
 //                     portal_voice_connection, user, client,
-//                     messageReaction.message.guild, guild_object
+//                     messageReaction.message.guild, pGuild
 //                 )
 //                     .then(r => {
-//                         clear_music_vote(guild_object.id)
+//                         clear_music_vote(pGuild.id)
 //                             .catch(e => logger.error(new Error(e)));
-//                         guild_object.music_queue.shift();
+//                         pGuild.music_queue.shift();
 
 //                         return `${r} (by ${reason})`;
 //                     })
@@ -250,22 +252,22 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //                         return Promise.reject(`error while skipping: ${e}`);
 //                     });
 //             } else {
-//                 guild_object.music_data.pinned = false;
-//                 set_music_data(guild_object.id, guild_object.music_data)
+//                 pGuild.music_data.pinned = false;
+//                 set_music_data(pGuild.id, pGuild.music_data)
 //                     .then(r => {
 //                         if (!r) {
-//                             return Promise.reject(guild_object.music_data.pinned
+//                             return Promise.reject(pGuild.music_data.pinned
 //                                 ? 'failed to pin song'
 //                                 : 'failed to unpin song');
 //                         } else {
 //                             skip(
 //                                 portal_voice_connection, user, client,
-//                                 guild, guild_object
+//                                 guild, pGuild
 //                             )
 //                                 .then(r => {
-//                                     clear_music_vote(guild_object.id)
+//                                     clear_music_vote(pGuild.id)
 //                                         .catch(e => logger.error(new Error(e)));
-//                                     guild_object.music_queue.shift();
+//                                     pGuild.music_queue.shift();
 
 //                                     return `${r} (by ${reason})`;
 //                                 })
@@ -275,9 +277,9 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //                         }
 //                     })
 //                     .catch(e => {
-//                         guild_object.music_data.pinned = !guild_object.music_data.pinned;
+//                         pGuild.music_data.pinned = !pGuild.music_data.pinned;
 
-//                         return Promise.reject(!guild_object.music_data.pinned
+//                         return Promise.reject(!pGuild.music_data.pinned
 //                             ? `error occurred while pinning song: ${e}`
 //                             : `error occurred while unpinning song: ${e}`);
 //                     });
@@ -288,13 +290,13 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //         // case '➖': {
 //         //     volume_down(portal_voice_connection)
 //         //         .then(r => {
-//         //             clear_music_vote(guild_object.id)
+//         //             clear_music_vote(pGuild.id)
 //         //.catch(e => logger.error(new Error(e)));
 
 //         //             return resolve(r);
 //         //         })
 //         //         .catch(e => {
-//         //             clear_music_vote(guild_object.id)
+//         //             clear_music_vote(pGuild.id)
 //         // .catch(e => logger.error(new Error(e)));
 
 //         //             return resolve({
@@ -308,13 +310,13 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //         // case '➕': {
 //         //     volume_up(portal_voice_connection)
 //         //         .then(r => {
-//         //             clear_music_vote(guild_object.id)
+//         //             clear_music_vote(pGuild.id)
 //         // .catch(e => logger.error(new Error(e)));
 
 //         //             return resolve(r);
 //         //         })
 //         //         // .catch(e => {
-//         //             clear_music_vote(guild_object.id)
+//         //             clear_music_vote(pGuild.id)
 //         // .catch(e => logger.error(new Error(e)));
 
 //         //             return resolve({
@@ -326,28 +328,28 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //         //     break;
 //         // }
 //         case '📌': {
-//             guild_object.music_data.pinned = !guild_object.music_data.pinned;
+//             pGuild.music_data.pinned = !pGuild.music_data.pinned;
 
-//             set_music_data(guild_object.id, guild_object.music_data)
+//             set_music_data(pGuild.id, pGuild.music_data)
 //                 .then(r => {
 //                     if (!r) {
-//                         guild_object.music_data.pinned = !guild_object.music_data.pinned;
+//                         pGuild.music_data.pinned = !pGuild.music_data.pinned;
 //                     }
 
 //                     if (r) {
-//                         return resolve(guild_object.music_data.pinned
+//                         return resolve(pGuild.music_data.pinned
 //                             ? 'pinned song'
 //                             : 'unpinned song');
 //                     } else {
-//                         return reject(!guild_object.music_data.pinned
+//                         return reject(!pGuild.music_data.pinned
 //                             ? 'failed to pin song'
 //                             : 'failed to unpin song');
 //                     }
 //                 })
 //                 .catch(e => {
-//                     guild_object.music_data.pinned = !guild_object.music_data.pinned;
+//                     pGuild.music_data.pinned = !pGuild.music_data.pinned;
 
-//                     const reply_message = !guild_object.music_data.pinned
+//                     const reply_message = !pGuild.music_data.pinned
 //                         ? `error occurred while pinning song`
 //                         : `error occurred while unpinning song`;
 
@@ -357,7 +359,7 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //             break;
 //         }
 //         case '📄': {
-//             get_lyrics(messageReaction.message.guild, guild_object)
+//             get_lyrics(messageReaction.message.guild, pGuild)
 //                 .then(r => {
 //                     return resolve(r);
 //                 })
@@ -368,7 +370,7 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //             break;
 //         }
 //         case '⬇️': {
-//             export_txt(guild_object)
+//             export_txt(pGuild)
 //                 .then(r => {
 //                     if (r) {
 //                         user.createDM()
@@ -394,25 +396,25 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //             break;
 //         }
 //         case '🧹': {
-//             if (guild_object.music_queue.length > 1) {
-//                 guild_object.music_queue.splice(1, guild_object.music_queue.length);
-//                 update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+//             if (pGuild.music_queue.length > 1) {
+//                 pGuild.music_queue.splice(1, pGuild.music_queue.length);
+//                 update_guild(pGuild.id, 'music_queue', pGuild.music_queue)
 //                     .catch(e => {
 //                         return reject(`failed to update guild: ${e}`);
 //                     });
 
 //                 const guild = client.guilds.cache
-//                     .find(g => g.id === guild_object.id);
+//                     .find(g => g.id === pGuild.id);
 
 //                 if (!guild) {
-//                     clear_music_vote(guild_object.id)
+//                     clear_music_vote(pGuild.id)
 //                         .catch(e => logger.error(new Error(e)));
 
 //                     return reject('could fetch guild from client');
 //                 }
 //             }
 
-//             clear_music_vote(guild_object.id)
+//             clear_music_vote(pGuild.id)
 //                 .catch(e => logger.error(new Error(e)));
 //             return resolve('queue has been cleared');
 
@@ -422,20 +424,20 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //             pause(portal_voice_connection)
 //                 .then(() => {
 //                     if (portal_voice_connection) {
-//                         guild_object.music_queue = [];
-//                         update_guild(guild_object.id, 'music_queue', guild_object.music_queue)
+//                         pGuild.music_queue = [];
+//                         update_guild(pGuild.id, 'music_queue', pGuild.music_queue)
 //                             .catch(e => {
 //                                 return reject(`failed to update guild: ${e}`);
 //                             });
 
 //                         if (messageReaction.message.guild) {
-//                             update_music_lyrics_message(messageReaction.message.guild, guild_object, '')
+//                             update_music_lyrics_message(messageReaction.message.guild, pGuild, '')
 //                                 .catch(e => {
 //                                     return reject(`failed to update music lyric message: ${e}`);
 //                                 });
 //                         }
 
-//                         clear_music_vote(guild_object.id)
+//                         clear_music_vote(pGuild.id)
 //                             .catch(e => logger.error(new Error(e)));
 //                         portal_voice_connection.disconnect();
 
@@ -445,7 +447,7 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //                     }
 //                 })
 //                 .catch(e => {
-//                     clear_music_vote(guild_object.id)
+//                     clear_music_vote(pGuild.id)
 //                         .catch(e => logger.error(new Error(e)));
 
 //                     return reject(`Portal failed to get disconnected: ${e}`);
@@ -456,209 +458,211 @@ import { GuildPrtl } from "../types/classes/GuildPrtl.class";
 //     }
 // }
 
-module.exports = async (
-    args: { client: Client, messageReaction: MessageReaction, user: User }
-): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        return reject(`under construction`);
-        // if (args.user.bot) {
-        //     return resolve(''); // 'not handling bot reactions'
-        // } else if (args.messageReaction.message?.guild) {
-        //     const current_guild = args.messageReaction.message.guild;
-        //     fetch_guild_reaction_data(current_guild.id, args.user.id)
-        //         .then(guild_object => {
-        //             if (guild_object) {
-        //                 if (args.messageReaction.partial) {
-        //                     try {
-        //                         args.messageReaction
-        //                             .fetch()
-        //                             .catch(e => {
-        //                                 return reject(`something went wrong when fetching the message: ${e}`);
-        //                             });
-        //                     } catch (e) {
-        //                         return reject(`something went wrong when fetching the message: ${e}`);
-        //                     }
-        //                 }
+export default async (args: {
+  client: Client;
+  messageReaction: MessageReaction | PartialMessageReaction;
+  user: User | PartialUser;
+}): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    return reject('under construction');
+    // if (args.user.bot) {
+    //     return resolve(''); // 'not handling bot reactions'
+    // } else if (args.messageReaction.message?.guild) {
+    //     const current_guild = args.messageReaction.message.guild;
+    //     fetch_guild_reaction_data(current_guild.id, args.user.id)
+    //         .then(pGuild => {
+    //             if (pGuild) {
+    //                 if (args.messageReaction.partial) {
+    //                     try {
+    //                         args.messageReaction
+    //                             .fetch()
+    //                             .catch(e => {
+    //                                 return reject(`something went wrong when fetching the message: ${e}`);
+    //                             });
+    //                     } catch (e) {
+    //                         return reject(`something went wrong when fetching the message: ${e}`);
+    //                     }
+    //                 }
 
-        //                 if (guild_object.role_list.some(r => r.message_id === args.messageReaction.message.id)) {
-        //                     reaction_role_manager(guild_object, args.messageReaction, args.user)
-        //                         .then(r => {
-        //                             clear_user_reactions(args.messageReaction, args.user)
-        //                                 .catch((e: any) => {
-        //                                     return reject(`failed to clear messages: ${e}`);
-        //                                 });
-        //                             args.messageReaction.message.channel
-        //                                 .send(`${args.user}, ${r}`)
-        //                                 .then(sent_message => {
-        //                                     setTimeout(() =>
-        //                                         sent_message
-        //                                             .delete()
-        //                                             .catch(e => {
-        //                                                 return Promise.reject(`failed to delete message: ${e}`);
-        //                                             }),
-        //                                         7500
-        //                                     );
-        //                                     return resolve('');
-        //                                 })
-        //                                 .catch(e => {
-        //                                     return reject(`failed to send message: ${e}`);
-        //                                 });
-        //                         })
-        //                         .catch(e => {
-        //                             clear_user_reactions(args.messageReaction, args.user)
-        //                                 .catch((e: any) => {
-        //                                     return reject(`failed to clear messages: ${e}`);
-        //                                 });
-        //                             args.messageReaction.message.channel
-        //                                 .send(`${args.user}, ${e}`)
-        //                                 .then(sent_message => {
-        //                                     setTimeout(() =>
-        //                                         sent_message
-        //                                             .delete()
-        //                                             .catch(e => {
-        //                                                 return Promise.reject(`failed to delete message: ${e}`);
-        //                                             }),
-        //                                         7500
-        //                                     );
-        //                                     return resolve('');
-        //                                 })
-        //                                 .catch(e => {
-        //                                     return reject(`failed to send message: ${e}`);
-        //                                 });
-        //                         });
-        //                 } else if (guild_object.music_data.message_id === args.messageReaction.message.id) {
-        //                     reaction_music_manager(args.client, guild_object, args.messageReaction, args.user)
-        //                         .then(r => {
-        //                             if (args.messageReaction.message.guild) {
-        //                                 const portal_voice_connection = args.client.voice?.connections
-        //                                     .find(c => c.channel.guild.id === args.messageReaction.message.guild?.id);
+    //                 if (pGuild.role_list.some(r => r.messageId === args.messageReaction.message.id)) {
+    //                     reaction_role_manager(pGuild, args.messageReaction, args.user)
+    //                         .then(r => {
+    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                                 .catch((e) => {
+    //                                     return reject(`failed to clear messages: ${e}`);
+    //                                 });
+    //                             args.messageReaction.message.channel
+    //                                 .send(`${args.user}, ${r}`)
+    //                                 .then(sent_message => {
+    //                                     setTimeout(() =>
+    //                                         sent_message
+    //                                             .delete()
+    //                                             .catch(e => {
+    //                                                 return Promise.reject(`failed to delete message: ${e}`);
+    //                                             }),
+    //                                         7500
+    //                                     );
+    //                                     return resolve('');
+    //                                 })
+    //                                 .catch(e => {
+    //                                     return reject(`failed to send message: ${e}`);
+    //                                 });
+    //                         })
+    //                         .catch(e => {
+    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                                 .catch((e) => {
+    //                                     return reject(`failed to clear messages: ${e}`);
+    //                                 });
+    //                             args.messageReaction.message.channel
+    //                                 .send(`${args.user}, ${e}`)
+    //                                 .then(sent_message => {
+    //                                     setTimeout(() =>
+    //                                         sent_message
+    //                                             .delete()
+    //                                             .catch(e => {
+    //                                                 return Promise.reject(`failed to delete message: ${e}`);
+    //                                             }),
+    //                                         7500
+    //                                     );
+    //                                     return resolve('');
+    //                                 })
+    //                                 .catch(e => {
+    //                                     return reject(`failed to send message: ${e}`);
+    //                                 });
+    //                         });
+    //                 } else if (pGuild.music_data.messageId === args.messageReaction.message.id) {
+    //                     reaction_music_manager(args.client, pGuild, args.messageReaction, args.user)
+    //                         .then(r => {
+    //                             if (args.messageReaction.message.guild) {
+    //                                 const portal_voice_connection = args.client.voice?.connections
+    //                                     .find(c => c.channel.guild.id === args.messageReaction.message.guild?.id);
 
-        //                                 const animate = portal_voice_connection?.dispatcher
-        //                                     ? !portal_voice_connection?.dispatcher.paused
-        //                                     : false;
+    //                                 const animate = portal_voice_connection?.dispatcher
+    //                                     ? !portal_voice_connection?.dispatcher.paused
+    //                                     : false;
 
-        //                                 update_music_message(
-        //                                     args.messageReaction.message.guild,
-        //                                     guild_object,
-        //                                     guild_object.music_queue.length > 0
-        //                                         ? guild_object.music_queue[0]
-        //                                         : undefined,
-        //                                     r,
-        //                                     animate
-        //                                 )
-        //                                     .catch(e => {
-        //                                         return reject(`failed to update music message: ${e}`);
-        //                                     });
-        //                             }
+    //                                 update_music_message(
+    //                                     args.messageReaction.message.guild,
+    //                                     pGuild,
+    //                                     pGuild.music_queue.length > 0
+    //                                         ? pGuild.music_queue[0]
+    //                                         : undefined,
+    //                                     r,
+    //                                     animate
+    //                                 )
+    //                                     .catch(e => {
+    //                                         return reject(`failed to update music message: ${e}`);
+    //                                     });
+    //                             }
 
-        //                             clear_user_reactions(args.messageReaction, args.user)
-        //                                 .catch((e: any) => {
-        //                                     return reject(`failed to clear messages: ${e}`);
-        //                                 });
+    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                                 .catch((e) => {
+    //                                     return reject(`failed to clear messages: ${e}`);
+    //                                 });
 
-        //                             return resolve(r);
-        //                         })
-        //                         .catch(e => {
-        //                             if (args.messageReaction.message.guild) {
-        //                                 update_music_message(
-        //                                     args.messageReaction.message.guild,
-        //                                     guild_object,
-        //                                     guild_object.music_queue.length > 0
-        //                                         ? guild_object.music_queue[0]
-        //                                         : undefined,
-        //                                     `error while handling music reaction: ${e}`
-        //                                 )
-        //                                     .catch(e => {
-        //                                         return reject(`failed to update music message: ${e}`);
-        //                                     });
-        //                             }
+    //                             return resolve(r);
+    //                         })
+    //                         .catch(e => {
+    //                             if (args.messageReaction.message.guild) {
+    //                                 update_music_message(
+    //                                     args.messageReaction.message.guild,
+    //                                     pGuild,
+    //                                     pGuild.music_queue.length > 0
+    //                                         ? pGuild.music_queue[0]
+    //                                         : undefined,
+    //                                     `error while handling music reaction: ${e}`
+    //                                 )
+    //                                     .catch(e => {
+    //                                         return reject(`failed to update music message: ${e}`);
+    //                                     });
+    //                             }
 
-        //                             clear_user_reactions(args.messageReaction, args.user)
-        //                                 .catch((e: any) => {
-        //                                     return reject(`failed to clear messages: ${e}`);
-        //                                 });
+    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                                 .catch((e) => {
+    //                                     return reject(`failed to clear messages: ${e}`);
+    //                                 });
 
-        //                             return reject(e);
-        //                         });
-        //                 } else if (args.messageReaction.emoji.name === '🏁' &&
-        //                     guild_object.poll_list.some(p => p.message_id === args.messageReaction.message.id)) {
-        //                     const poll = guild_object.poll_list.find(p =>
-        //                         p.message_id === args.messageReaction.message.id);
+    //                             return reject(e);
+    //                         });
+    //                 } else if (args.messageReaction.emoji.name === '🏁' &&
+    //                     pGuild.poll_list.some(p => p.messageId === args.messageReaction.message.id)) {
+    //                     const poll = pGuild.poll_list.find(p =>
+    //                         p.messageId === args.messageReaction.message.id);
 
-        //                     if (poll && args.user.id === poll.member_id) {
-        //                         const winner: MessageReaction[] = [];
-        //                         let count = 0;
+    //                     if (poll && args.user.id === poll.memberId) {
+    //                         const winner: MessageReaction[] = [];
+    //                         let count = 0;
 
-        //                         args.messageReaction.message.reactions.cache
-        //                             .filter(r => r.emoji.name !== '🏁' && r.count !== 1)
-        //                             .sort((a, b) => (b.count ? b.count : 0) - (a.count ? a.count : 0))
-        //                             .forEach((value: MessageReaction) => { // , key: string, map: Map<string, MessageReaction>) => {
-        //                                 if (winner.length === 0) {
-        //                                     count = value.count ? value.count : 0;
-        //                                     winner.push(value);
-        //                                 } else {
-        //                                     if ((winner[0] ? winner[0].count : 0) === (value ? value.count : 0)) {
-        //                                         winner.push(value);
-        //                                     }
-        //                                 }
-        //                             });
+    //                         args.messageReaction.message.reactions.cache
+    //                             .filter(r => r.emoji.name !== '🏁' && r.count !== 1)
+    //                             .sort((a, b) => (b.count ? b.count : 0) - (a.count ? a.count : 0))
+    //                             .forEach((value: MessageReaction) => { // , key: string, map: Map<string, MessageReaction>) => {
+    //                                 if (winner.length === 0) {
+    //                                     count = value.count ? value.count : 0;
+    //                                     winner.push(value);
+    //                                 } else {
+    //                                     if ((winner[0] ? winner[0].count : 0) === (value ? value.count : 0)) {
+    //                                         winner.push(value);
+    //                                     }
+    //                                 }
+    //                             });
 
-        //                         const message = winner.length > 0
-        //                             ? `Poll outcome ${winner.length > 1 ? 'are options' : 'is option'} ` +
-        //                             `${winner.map(r => r.emoji).join(', ')} ` +
-        //                             `with ${(count) - 1} ${(count - 1 > 1 ? 'votes' : 'vote')}`
-        //                             : `Noboody voted`;
+    //                         const message = winner.length > 0
+    //                             ? `Poll outcome ${winner.length > 1 ? 'are options' : 'is option'} ` +
+    //                             `${winner.map(r => r.emoji).join(', ')} ` +
+    //                             `with ${(count) - 1} ${(count - 1 > 1 ? 'votes' : 'vote')}`
+    //                             : `Noboody voted`;
 
-        //                         args.messageReaction.message.channel
-        //                             .send({
-        //                                 embeds: [
-        //                                     create_rich_embed(
-        //                                         null,
-        //                                         null,
-        //                                         '#9900ff',
-        //                                         null,
-        //                                         null,
-        //                                         null,
-        //                                         false,
-        //                                         null,
-        //                                         null,
-        //                                         undefined,
-        //                                         {
-        //                                             name: message,
-        //                                             icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/firework.gif'
-        //                                         }
-        //                                     )
-        //                                 ]
-        //                             })
-        //                             .catch(e => {
-        //                                 return reject(`failed to send message: ${e}`);
-        //                             });
+    //                         args.messageReaction.message.channel
+    //                             .send({
+    //                                 embeds: [
+    //                                     create_rich_embed(
+    //                                         null,
+    //                                         null,
+    //                                         '#9900ff',
+    //                                         null,
+    //                                         null,
+    //                                         null,
+    //                                         false,
+    //                                         null,
+    //                                         null,
+    //                                         undefined,
+    //                                         {
+    //                                             name: message,
+    //                                             icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/firework.gif'
+    //                                         }
+    //                                     )
+    //                                 ]
+    //                             })
+    //                             .catch(e => {
+    //                                 return reject(`failed to send message: ${e}`);
+    //                             });
 
-        //                         remove_poll(current_guild.id, args.messageReaction.message.id)
-        //                             .then(r => {
-        //                                 if (r) {
-        //                                     return resolve('successfully removed poll');
-        //                                 } else {
-        //                                     return reject('failed to remove poll');
-        //                                 }
-        //                             })
-        //                             .catch(e => {
-        //                                 return reject(`error while removing poll: ${e}`);
-        //                             });
-        //                     }
-        //                 } else {
-        //                     return resolve('message is not controlled by Portal');
-        //                 }
-        //             }
-        //             else {
-        //                 return reject('something went wrong with guild object');
-        //             }
-        //         })
-        //         .catch(e => {
-        //             return reject(`failed to fetch message reaction: ${e}`);
-        //         });
-        // } else {
-        //     return reject(`could not fetch guild`);
-        // }
-    });
-}
+    //                         remove_poll(current_guild.id, args.messageReaction.message.id)
+    //                             .then(r => {
+    //                                 if (r) {
+    //                                     return resolve('successfully removed poll');
+    //                                 } else {
+    //                                     return reject('failed to remove poll');
+    //                                 }
+    //                             })
+    //                             .catch(e => {
+    //                                 return reject(`error while removing poll: ${e}`);
+    //                             });
+    //                     }
+    //                 } else {
+    //                     return resolve('message is not controlled by Portal');
+    //                 }
+    //             }
+    //             else {
+    //                 return reject('something went wrong with guild object');
+    //             }
+    //         })
+    //         .catch(e => {
+    //             return reject(`failed to fetch message reaction: ${e}`);
+    //         });
+    // } else {
+    //     return reject(`could not fetch guild`);
+    // }
+  });
+};

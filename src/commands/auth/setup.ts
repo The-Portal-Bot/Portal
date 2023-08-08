@@ -8,7 +8,7 @@
 // import { message_help } from "../../libraries/help.library";
 
 // module.exports = async (
-//     message: Message, args: string[], guild_object: GuildPrtl
+//     message: Message, args: string[], pGuild: GuildPrtl
 // ): Promise<ReturnPormise> => {
 //     return new Promise((resolve) => {
 //         if (!message.guild) {
@@ -23,10 +23,10 @@
 //             .create('portal-hub', { type: 'category' })
 //             .then(cat_channel => {
 //                 current_guild.channels.cache.forEach(channel => {
-//                     if (channel.id === guild_object.announcement) {
+//                     if (channel.id === pGuild.announcement) {
 //                         delete_channel(PortalChannelTypes.announcement, <TextChannel>channel, message);
 //                     }
-//                     if (channel.id === guild_object.music_data.channel_id) {
+//                     if (channel.id === pGuild.music_data.channel_id) {
 //                         delete_channel(PortalChannelTypes.music, <TextChannel>channel, message);
 //                     }
 //                 });
@@ -38,7 +38,7 @@
 //                         bitrate: 64000,
 //                         userLimit: 1
 //                     };
-//                     const voice_regex = guild_object.premium
+//                     const voice_regex = pGuild.premium
 //                         // ? 'G$#-P$member_count | $status_list'
 //                         ? `$#:$member_count {{
 //                             "if": "$status_count", "is": "===", "with": "1",
@@ -50,9 +50,9 @@
 //                         .then(response => {
 //                             if (response.result) {
 //                                 if (message.member) {
-//                                     insert_portal(guild_object.id, new PortalChannelPrtl(
+//                                     insert_portal(pGuild.id, new PortalChannelPrtl(
 //                                         response.value, message.member.id, true, 'voice-portal', voice_regex,
-//                                         [], false, guild_object.locale, true, true, 0, false
+//                                         [], false, pGuild.locale, true, true, 0, false
 //                                     ));
 //                                 } else {
 //                                     return resolve({
@@ -75,7 +75,7 @@
 //                 create_channel(current_guild, 'announcement', announcement_options, cat_channel)
 //                     .then(response => {
 //                         if (response.result) {
-//                             update_guild(guild_object.id, 'announcement', response.value)
+//                             update_guild(pGuild.id, 'announcement', response.value)
 //                                 .then(r => {
 //                                     return resolve({
 //                                         result: r,
@@ -98,13 +98,13 @@
 //                 create_channel(current_guild, 'url-only', url_options, cat_channel)
 //                     .then(response => {
 //                         if (response.result) {
-//                             insert_url(guild_object.id, response.value);
+//                             insert_url(pGuild.id, response.value);
 //                         } else {
 //                             return resolve(response);
 //                         }
 //                     })
 //                     .catch(error => { return resolve(error); });
-//                 create_music_channel(current_guild, 'music-player', cat_channel, guild_object);
+//                 create_music_channel(current_guild, 'music-player', cat_channel, pGuild);
 //             })
 //             .catch(console.error);
 

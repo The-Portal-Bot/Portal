@@ -1,7 +1,7 @@
 {
-  "dupl_after": 2,
-  "warn_after": 3,
-  "mute_after": 4,
-  "mute_period": 2,
-  "message_interval": 1500
+  "DUPLICATE_AFTER": 2,
+  "WARN_AFTER": 3,
+  "MUTE_AFTER": 4,
+  "MUTE_PERIOD": 2,
+  "MESSAGE_INTERVAL": 1500
 }

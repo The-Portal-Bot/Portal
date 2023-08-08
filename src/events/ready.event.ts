@@ -1,135 +1,101 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ActivityOptions, Client, Guild, GuildMember, PresenceData } from "discord.js";
-import { logger } from "../libraries/help.library";
-import { get_function } from "../libraries/localisation.library";
-import { fetch_guild_members, guildExists, insertGuild, insertMember, remove_member } from "../libraries/mongo.library";
-import { MemberPrtl } from "../types/classes/MemberPrtl.class";
+import { ActivityOptions, ActivityType, Client, Guild, PresenceData } from 'discord.js';
+import { logger } from '../libraries/help.library';
+import { getFunction } from '../libraries/localisation.library';
+import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library';
+import { PMember } from '../types/classes/PMember.class';
+import { LogActions } from '../types/classes/PTypes.interface';
 
-function added_when_down(
-    guild: Guild, member_list: MemberPrtl[]
-): Promise<string> {
-    return new Promise((resolve) => {
-        const guild_members: GuildMember[] = guild.members.cache.map(m => m);
+export default async (args: { client: Client }): Promise<string> => {
+  if (!args.client.user) {
+    return 'could not fetch user from client';
+  }
 
-        for (let j = 0; j < guild_members.length; j++) {
-            if (!guild_members[j].user.bot) {
-                const already_in_db = member_list
-                    .find(m => m.id === guild_members[j].id);
+  const activitiesOptions: ActivityOptions = {
+    name: './help', // `in ${args.client.guilds.cache.size} servers``
+    type: ActivityType.Listening,
+    url: 'https://github.com/keybraker',
+  };
 
-                if (!already_in_db) { // if inside guild but not in portal db, add member
-                    insertMember(guild.id, guild_members[j].id)
-                        .then(() => {
-                            logger.info(`late-insert ${guild_members[j].id} to ${guild.name} [${guild.id}]`);
-                        })
-                        .catch(e => {
-                            logger.error(new Error(`failed to late-insert member: ${e}`));
-                        });
-                }
-            }
-        }
+  const data: PresenceData = { activities: [activitiesOptions], status: 'online', afk: false };
 
-        return resolve('finished');
+  args.client.user.setPresence(data);
+  args.client.guilds.cache.forEach((guild: Guild) => {
+    logger.info(`${guild} | ${guild.id}`);
+
+    addGuildAgain(guild, args.client).catch((e) => {
+      return `failed to add guild again: ${e}`;
     });
-}
+    // removeDeletedChannels(guild);
+    // removeEmptyVoiceChannels(guild);
+  });
 
-function removed_when_down(
-    guild: Guild, member_list: MemberPrtl[]
-): Promise<string> {
-    return new Promise((resolve) => {
-        for (let j = 0; j < member_list.length; j++) {
-            const member_in_guild = guild.members.cache
-                .map(m => m)
-                .find(m => m.id === member_list[j].id);
+  const func = getFunction('console', 1, LogActions.ready) as unknown as (a: number, b: number, c: number) => string;
 
-            if (!member_in_guild) {
-                remove_member(member_list[j].id, guild.id)
-                    .then(() => {
-                        logger.info(`late-remove ${member_list[j].id} to ${guild.name} [${guild.id}]`);
-                    })
-                    .catch(e => {
-                        logger.error(new Error(`failed to late-remove member: ${e}`));
-                    });
-            }
-        }
-
-        return resolve('finished');
-    });
-}
-
-async function add_guild_again(
-    guild: Guild, client: Client
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        guildExists(guild.id)
-            .then(exists => {
-                if (!exists) {
-                    insertGuild(guild.id, client)
-                        .then(resposne => {
-                            return resolve(resposne);
-                        })
-                        .catch(() => {
-                            return resolve(false);
-                        });
-                }
-                else {
-                    fetch_guild_members(guild.id)
-                        .then(async member_list => {
-                            if (member_list) {
-                                await added_when_down(guild, member_list);
-                                await removed_when_down(guild, member_list);
-
-                                return resolve(true);
-                            } else {
-                                return resolve(false);
-                            }
-                        })
-                        .catch(() => {
-                            return resolve(false);
-                        });
-                }
-            })
-            .catch(() => {
-                return resolve(false);
-            });
-    });
-}
-
-module.exports = async (
-    args: { client: Client }
-): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        if (!args.client.user) {
-            return reject('could not fetch user from client');
-        }
-
-        const activitiesOptions: ActivityOptions = {
-            name: './help', // `in ${args.client.guilds.cache.size} servers``
-            type: 'LISTENING',
-            url: 'https://github.com/keybraker'
-        }
-
-        const data: PresenceData = { activities: [activitiesOptions], status: 'online', afk: false };
-
-        args.client.user.setPresence(data);
-
-        args.client.guilds.cache.forEach((guild: Guild) => {
-            logger.info(`${guild} | ${guild.id}`);
-
-            add_guild_again(guild, args.client)
-                .catch(e => {
-                    return reject(`failed to add guild again: ${e}`);
-                });
-            // remove_deleted_channels(guild);
-            // remove_empty_voice_channels(guild);
-        });
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const func = get_function('console', 1, 'ready');
-
-        return resolve(func
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            ? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
-            : 'error with localisation'
-        );
-    });
+  return func
+    ? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
+    : 'error with localisation';
 };
+
+async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
+  const membersFetched = await guild.members.fetch();
+  const members = membersFetched.map(member => member).filter((member) => !member.user.bot);
+
+  for (let j = 0; j < members.length; j++) {
+    const alreadyInDatabase = pMembers.find((pMember) => pMember.id === members[j].id);
+
+    if (alreadyInDatabase) {
+      continue;
+    }
+
+    logger.info(`inserting member: ${members[j].id} to ${guild.name} [${guild.id}]`);
+
+    // if member is inside guild but not in portal db, add member
+    const memberInserted = await insertMember(guild.id, members[j].id);
+
+    if (!memberInserted) {
+      logger.error(new Error('failed to late-insert member'));
+    }
+
+    logger.info(`late-insert ${members[j].id} to ${guild.name} [${guild.id}]`);
+  }
+}
+
+async function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
+  const membersFetched = await guild.members.fetch();
+  const members = membersFetched.map(member => member).filter((member) => !member.user.bot);
+
+  for (let j = 0; j < pMembers.length; j++) {
+    const member = members.find((member) => member.id === pMembers[j].id);
+
+    if (member) {
+      continue;
+    }
+
+    logger.info(`removing member: ${pMembers[j].id} from ${guild.name} [${guild.id}]`);
+
+    const memberRemoved = await removeMember(pMembers[j].id, guild.id);
+
+    if (!memberRemoved) {
+      logger.error(new Error('failed to late-remove member'));
+    }
+
+    logger.info(`late-remove ${pMembers[j].id} to ${guild.name} [${guild.id}]`);
+  }
+}
+
+async function addGuildAgain(guild: Guild, client: Client): Promise<boolean> {
+  if (!await guildExists(guild.id)) {
+    return await insertGuild(guild.id, client);
+  }
+
+  const pMembers = await fetchGuildMembers(guild.id);
+
+  if (!pMembers) {
+    return false;
+  }
+
+  await addedWhenDown(guild, pMembers);
+  await removedWhenDown(guild, pMembers);
+
+  return true;
+}

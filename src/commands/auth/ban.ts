@@ -1,133 +1,101 @@
-import { BanOptions, Message } from "discord.js";
-import { askForApproval, isMod, messageHelp } from "../../libraries/help.library";
-import { ban } from "../../libraries/user.library";
-import { ReturnPormise } from "../../types/classes/TypesPrtl.interface";
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { BanOptions, ChatInputCommandInteraction, GuildMember } from 'discord.js';
+import { askForApproval, commandDescriptionByNameAndAuthenticationLevel, isMod, messageHelp } from '../../libraries/help.library';
+import { ban } from '../../libraries/user.library';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('ban')
-        .setDescription('bans given user'),
-    async execute(
-        message: Message, args: string[]
-    ): Promise<ReturnPormise> {
-        return new Promise((resolve) => {
-            if (!message.member) {
-                return resolve({
-                    result: false,
-                    value: 'message author could not be fetched'
-                });
-            }
+const COMMAND_NAME = 'ban';
 
-            if (!isMod(message.member)) {
-                return resolve({
-                    result: false,
-                    value: `you must be a Portal moderator to ban users`
-                });
-            }
+export = {
+  data: new SlashCommandBuilder()
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .addUserOption(option =>
+      option
+        .setName('user_to_ban')
+        .setDescription('user to ban')
+        .setRequired(true))
+    .addNumberOption(option =>
+      option
+        .setName('ban_days')
+        .setDescription('days to ban user for')
+        .setRequired(true))
+    .addStringOption(option =>
+      option
+        .setName('ban_reason')
+        .setDescription('ban reason')
+        .setRequired(false))
+    .setDMPermission(false),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const memberToBan = interaction.options.getMember('user_to_ban') as GuildMember;
+    const banDays = interaction.options.getNumber('ban_days');
+    const banReason = interaction.options.getString('ban_reason');
 
-            if (!message.guild) {
-                return resolve({
-                    result: false,
-                    value: `user guild could not be fetched`
-                });
-            }
-
-            let ban_reason = args
-                .join(' ')
-                .substring(args.join(' ').indexOf('|') + 1, args.join(' ').lastIndexOf('|') - 1)
-                .replace(/\s/g, ' ')
-                .trim();
-
-            if (ban_reason === '') {
-                ban_reason = 'banned by admin'
-            }
-
-            let ban_days = +args
-                .join(' ')
-                .substring(args.join(' ').lastIndexOf('|') + 1)
-                .replace(/\s/g, ' ');
-
-            if (isNaN(ban_days)) {
-                ban_days = 1;
-            }
-
-            if (message.mentions && message.mentions.members) {
-                if (message.mentions.members.size === 0) {
-                    return resolve({
-                        result: false,
-                        value: messageHelp('commands', 'ban', `you must tag a member`)
-                    });
-                }
-
-                const member_to_ban = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-
-                if (member_to_ban) {
-                    if (message.member === member_to_ban) {
-                        return resolve({
-                            result: false,
-                            value: messageHelp('commands', 'ban', `you can't ban on yourself`)
-                        });
-                    }
-
-                    askForApproval(
-                        message,
-                        message.member,
-                        `*${message.member}, are you sure you want to ban ` +
-                        `member ${member_to_ban}*, do you **(yes / no)** ? reason : ${ban_reason}`
-                    )
-                        .then(result => {
-                            if (result) {
-                                const ban_options: BanOptions = {
-                                    days: ban_days,
-                                    reason: ban_reason
-                                };
-
-                                ban(member_to_ban, ban_options)
-                                    .then(r => {
-                                        return resolve({
-                                            result: r,
-                                            value: r
-                                                ? `${member_to_ban} has been banned by ${message.author} ` +
-                                                `for ${ban_days} ${ban_days > 1 ? 'days' : 'day'}, because: *${ban_reason}*`
-                                                : `${member_to_ban} is not bannable`
-                                        });
-                                    })
-                                    .catch(e => {
-                                        return resolve({
-                                            result: false,
-                                            value: `failed to ban member ${member_to_ban}\n` +
-                                                `Portal's role must be higher than member you want to ban: ${e}`
-                                        });
-                                    });
-                            } else {
-                                return resolve({
-                                    result: false,
-                                    value: `user ${member_to_ban} will not be banned`
-                                });
-                            }
-                        })
-                        .catch(e => {
-                            return resolve({
-                                result: false,
-                                value: `failed to ban: ${e}`
-                            });
-                        });
-                }
-                else {
-                    return resolve({
-                        result: false,
-                        value: `could not find member`
-                    });
-                }
-
-            } else {
-                return resolve({
-                    result: false,
-                    value: `no user mentioned to ban`
-                });
-            }
-        });
+    if (!memberToBan) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'corona', 'user must be provided'),
+      };
     }
-};
 
+    if (!banDays) {
+      return {
+        result: false,
+        value: messageHelp('commands', 'corona', 'days to ban must be provided'),
+      };
+    }
+
+    if (!interaction.member) {
+      return {
+        result: false,
+        value: 'message author could not be fetched',
+      };
+    }
+
+    if (!isMod((interaction.member as GuildMember))) {
+      return {
+        result: false,
+        value: 'you must be a Portal moderator to ban users',
+      };
+    }
+
+    if (!interaction.guild) {
+      return {
+        result: false,
+        value: 'user guild could not be fetched',
+      };
+    }
+
+    const deleteMessageDays = banDays ?? 1;
+    const reason = banReason ?? 'banned by admin';
+
+    const approval = await askForApproval(
+      interaction,
+      interaction.member as GuildMember,
+      `*${interaction.member}, are you sure you want to ban ` +
+      `member ${memberToBan}*, do you **(yes / no)** ? reason : ${reason}`
+    );
+
+    if (!approval) {
+      return {
+        result: false,
+        value: `failed to ban ${memberToBan}`,
+      };
+    }
+
+    const banOptions: BanOptions = {
+      deleteMessageDays,
+      reason,
+    };
+
+    const banResponse = await ban(memberToBan, banOptions);
+
+    return {
+      result: !!banResponse,
+      value: banResponse
+        ? `${memberToBan} has been banned by ${interaction.user} ` +
+        `for ${banDays} ${deleteMessageDays > 1 ? 'days' : 'day'}, because: *${reason}*`
+        : `${memberToBan} is not bannable`,
+    };
+  },
+};

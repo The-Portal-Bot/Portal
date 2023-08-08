@@ -1,55 +1,55 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "03:00"
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: "@types/node"
-    versions:
-    - 14.14.37
-    - 14.14.39
-    - 14.14.41
-    - 15.0.0
-  - dependency-name: mongoose
-    versions:
-    - 5.12.2
-    - 5.12.3
-    - 5.12.5
-  - dependency-name: "@typescript-eslint/parser"
-    versions:
-    - 4.21.0
-    - 4.22.0
-  - dependency-name: "@typescript-eslint/eslint-plugin"
-    versions:
-    - 4.21.0
-    - 4.22.0
-  - dependency-name: eslint
-    versions:
-    - 7.23.0
-    - 7.24.0
-  - dependency-name: cheerio
-    versions:
-    - 1.0.0-rc.6
-  - dependency-name: typescript
-    versions:
-    - 4.2.4
-  - dependency-name: "@types/node-fetch"
-    versions:
-    - 2.5.10
-    - 2.5.9
-  - dependency-name: discord.js
-    versions:
-    - 12.5.2
-    - 12.5.3
-  - dependency-name: "@types/ws"
-    versions:
-    - 7.4.1
-  - dependency-name: ffmpeg-static
-    versions:
-    - 4.3.0
-  - dependency-name: yt-search
-    versions:
-    - 2.7.6
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: daily
+      time: '03:00'
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: '@types/node'
+        versions:
+          - 14.14.37
+          - 14.14.39
+          - 14.14.41
+          - 15.0.0
+      - dependency-name: mongoose
+        versions:
+          - 5.12.2
+          - 5.12.3
+          - 5.12.5
+      - dependency-name: '@typescript-eslint/parser'
+        versions:
+          - 4.21.0
+          - 4.22.0
+      - dependency-name: '@typescript-eslint/eslint-plugin'
+        versions:
+          - 4.21.0
+          - 4.22.0
+      - dependency-name: eslint
+        versions:
+          - 7.23.0
+          - 7.24.0
+      - dependency-name: cheerio
+        versions:
+          - 1.0.0-rc.6
+      - dependency-name: typescript
+        versions:
+          - 4.2.4
+      - dependency-name: '@types/node-fetch'
+        versions:
+          - 2.5.10
+          - 2.5.9
+      - dependency-name: discord.js
+        versions:
+          - 12.5.2
+          - 12.5.3
+      - dependency-name: '@types/ws'
+        versions:
+          - 7.4.1
+      - dependency-name: ffmpeg-static
+        versions:
+          - 4.3.0
+      - dependency-name: yt-search
+        versions:
+          - 2.7.6

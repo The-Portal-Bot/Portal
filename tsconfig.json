@@ -1,35 +1,25 @@
 {
-    "compilerOptions": {
-        "incremental": true,
-        "target": "ES2019",
-        "lib": [
-            "es2020", "es7", "es2017.object", "dom"
-        ],
-        "module": "commonjs",
-        "allowJs": false,
-        "checkJs": false,
-        "jsx": "preserve",
-        "declaration": true,
-        "declarationMap": false,
-        "sourceMap": false,
-        "outDir": "build",
-        "rootDir": "src",
-        "composite": false,
-        "removeComments": true,
-        "strict": true,
-        "noImplicitAny": true,
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "typeRoots": ["node_modules/@types"]
-    },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts",
-        "**/*.spec.js",
-        "**/*.test.ts",
-        "**/*.test.js"
-    ]
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ES2019",
+    "lib": ["es2020", "es7", "es2017.object", "dom"],
+    "module": "commonjs",
+    "allowJs": false,
+    "checkJs": false,
+    "jsx": "preserve",
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "outDir": "build",
+    "rootDir": "src",
+    "composite": false,
+    "removeComments": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.js", "**/*.test.ts", "**/*.test.js"]
 }
