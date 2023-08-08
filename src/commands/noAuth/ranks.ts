@@ -1,13 +1,15 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { createEmbed } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'rank';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('ranks')
-    .setDescription('returns server ranks'),
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!pGuild.ranks || pGuild.ranks.length === 0) {
       return {

@@ -10,7 +10,7 @@ export default async (args: { client: Client; guild: Guild }): Promise<string> =
 
   const guildInserted = await insertGuild(args.guild.id, args.client);
 
-  return guildInserted 
+  return guildInserted
     ? `joined guild ${args.guild.name} [${args.guild.id}]`
     : `failed to join guild ${args.guild.name} [${args.guild.id}]`
 };

@@ -2,9 +2,14 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+
+const COMMAND_NAME = 'set';
 
 export = {
-  data: new SlashCommandBuilder().setName('set').setDescription('set the value of an attribute'),
+  data: new SlashCommandBuilder()
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     return {
       result: true,

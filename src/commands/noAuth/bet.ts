@@ -2,14 +2,16 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
 import dayjs from 'dayjs';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'bet';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('bet')
-    .setDescription('returns betting data')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
     .addStringOption(option =>
       option.setName('provider')
         .setDescription('betting provider')

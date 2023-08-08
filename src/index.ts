@@ -4,11 +4,11 @@ import { Client } from 'discord.js';
 import dotenv from 'dotenv';
 import { transports } from 'winston';
 import commandConfig from './config.command.json';
+import { commandResolver } from './handlers/command.handler';
 import { clientHandler, connectToDiscord } from './handlers/discord.handler';
 import { eventHandler } from './handlers/event.handler';
 import { mongoHandler } from './handlers/mongo.handler';
 import { logger } from './libraries/help.library';
-import { commandResolver } from './handlers/command.handler';
 import { AuthCommands, NoAuthCommands } from './types/classes/PTypes.interface';
 
 dotenv.config();
@@ -38,8 +38,8 @@ if (process.env.LOG) {
 const client: Client = clientHandler();
 
 const commands: unknown[] = [];
-commandConfig.forEach((category) => {
-  category.commands.forEach(async (command) => {
+commandConfig.forEach((authenticationLevel) => {
+  authenticationLevel.commands.forEach(async (command) => {
     const commandFile = commandResolver(command.name as AuthCommands | NoAuthCommands);
     commands.push(commandFile.data.toJSON());
   });

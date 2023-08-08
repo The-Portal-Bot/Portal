@@ -1,12 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
-import { getJSONFromString, isMod, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, getJSONFromString, isMod, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+
+const COMMAND_NAME = 'invite';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('invite')
-    .setDescription('generate an invite link')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
     .addStringOption(option =>
       option
         .setName('invite_options_string')

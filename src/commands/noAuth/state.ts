@@ -1,13 +1,15 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Client } from 'discord.js';
-import { createEmbed } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'state';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('state')
-    .setDescription('returns server\'s state'),
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const guild = client.guilds.cache.find((g) => g.id === interaction?.guild?.id);
 

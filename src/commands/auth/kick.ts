@@ -1,11 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+
+const COMMAND_NAME = 'kick';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('kick')
-    .setDescription('kick a user'),
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     return {
       result: false,

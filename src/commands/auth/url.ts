@@ -2,9 +2,14 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+
+const COMMAND_NAME = 'url';
 
 export = {
-  data: new SlashCommandBuilder().setName('url').setDescription('create URL only channel'),
+  data: new SlashCommandBuilder()
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     return {
       result: false,

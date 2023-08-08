@@ -1,13 +1,34 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { PGuild } from '../../types/classes/PGuild.class';
+import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+
+const COMMAND_NAME = 'focus';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('focus')
-    .setDescription('creates a dedicated channel for two users to privately talk in'),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .addUserOption((option) => option.setName('member').setDescription('member to focus on').setRequired(true))
+    .addNumberOption((option) => option.setName('duration').setDescription('duration in seconds').setRequired(true)),
+  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+    const member = interaction.options.getMember('member');
+    const duration = interaction.options.getNumber('duration');
+
+    if (!member) {
+      return {
+        result: false,
+        value: messageHelp('commands', COMMAND_NAME, 'user must be provided'),
+      };
+    }
+
+    if (!duration) {
+      return {
+        result: false,
+        value: messageHelp('commands', COMMAND_NAME, 'duration must be provided'),
+      };
+    }
+
     return {
       result: false,
       value: 'focus is currently disabled',

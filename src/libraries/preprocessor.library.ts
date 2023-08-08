@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import commandConfigJSON from '../config.command.json';
+import commandConfig from '../config.command.json';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { AuthCommands, CommandOptions, NoAuthCommands, ScopeLimit } from '../types/classes/PTypes.interface';
 import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
@@ -109,7 +109,7 @@ export function commandFetcher(
   let commandOptions: CommandOptions | undefined = undefined;
   let scopeLimit = ScopeLimit.NONE;
 
-  commandConfigJSON.some((category) => {
+  commandConfig.some((category) => {
     commandOptions = category.commands.find((command) => command.name === cmd) as CommandOptions;
 
     if (commandOptions) {

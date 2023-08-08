@@ -1,4 +1,4 @@
-import { User } from 'discord.js';
+import { EmbedBuilder, MessageCreateOptions, MessagePayload, User } from 'discord.js';
 
 export type NoAuthCommands =
   | 'about'
@@ -77,7 +77,7 @@ export type MongoPromise = {
 
 export type ReturnPromise = {
   result: boolean;
-  value: string;
+  value: string | EmbedBuilder[];
 };
 
 export class Field {
@@ -125,11 +125,13 @@ export type LocalisationConsoleOption = {
 
 export type CommandOptions = {
   name: string;
+  description: string;
   scopeLimit: ScopeLimit;
   time: number;
   auth: boolean;
   premium: boolean;
   reply: boolean;
+  ephemeral: boolean;
   delete: {
     source: boolean;
     reply: boolean;

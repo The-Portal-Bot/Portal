@@ -1,14 +1,16 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { PMember } from '../../types/classes/PMember.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'leaderboard';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('leaderboard')
-    .setDescription('returns server\'s leaderboard')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
     .addNumberOption(option =>
       option
         .setName('requested_number')

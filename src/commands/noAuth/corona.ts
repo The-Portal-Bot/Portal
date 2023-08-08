@@ -1,17 +1,19 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import dayjs from 'dayjs';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import dayjs from 'dayjs';
 import voca from 'voca';
 import { CountryCodes } from '../../assets/lists/countryCodesISO.static';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'corona';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('corona')
-    .setDescription('returns data on COVID19')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
     .addStringOption(option =>
       option
         .setName('country')

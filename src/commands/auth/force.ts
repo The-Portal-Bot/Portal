@@ -1,18 +1,21 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
 import { deleteChannel, includedInVoiceList, regexInterpreter } from '../../libraries/guild.library';
-import { messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
 import { updateVoice } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { PortalChannelTypes } from '../../types/enums/PortalChannel.enum';
 
+const COMMAND_NAME = 'force';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('force')
-    .setDescription('force updates channel you are in to force a rename'),
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
+
     if (!member) {
       return {
         result: false,

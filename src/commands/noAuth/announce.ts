@@ -1,13 +1,15 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
-import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'announce';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('announce')
-    .setDescription('send an announcement to the announcement channel')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
     .addStringOption(option =>
       option.setName('title')
         .setDescription('Announcement title')

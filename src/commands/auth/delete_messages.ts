@@ -1,12 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
-import { askForApproval, messageHelp } from '../../libraries/help.library';
+import { askForApproval, commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+
+const COMMAND_NAME = 'delete_messages';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('delete_messages')
-    .setDescription('delete n number of messages')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
     .addNumberOption(option =>
       option
         .setName('delete_length')

@@ -1,16 +1,18 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'discord.js';
 import { getRole } from '../../libraries/guild.library';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { insertVendor } from '../../libraries/mongo.library';
 import { GiveRole, PGiveRole } from '../../types/classes/PGiveRole.class';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'vendor';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('vendor')
-    .setDescription('remove user from role')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
     .addStringOption((option) =>
       option
         .setName('vendor_string')

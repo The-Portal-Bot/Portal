@@ -2,11 +2,14 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+
+const COMMAND_NAME = 'music';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('music')
-    .setDescription('create music channel')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
     .addChannelOption((option) =>
       option
         .setName('music_channel')

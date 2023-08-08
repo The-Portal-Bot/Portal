@@ -1,13 +1,15 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import Roll from 'roll';
-import { createEmbed, maxString, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, maxString, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+
+const COMMAND_NAME = 'roll';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('roll')
-    .setDescription('rolls dice')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
     .addStringOption(option =>
       option.setName('roll_command')
         .setDescription('Roll command')

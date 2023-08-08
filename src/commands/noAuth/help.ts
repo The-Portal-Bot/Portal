@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 import { getAttributeGuide, getAttributeHelp, getAttributeHelpSuper } from '../../types/interfaces/Attribute.interface';
 import { getCommandGuide, getCommandHelp, getCommandHelpSuper } from '../../types/interfaces/Command.interface';
@@ -8,10 +8,12 @@ import { getPipeGuide, getPipeHelp, getPipeHelpSuper } from '../../types/interfa
 import { getStructureGuide, getStructureHelp, getStructureHelpSuper } from '../../types/interfaces/Structure.interface';
 import { getVariableGuide, getVariableHelp, getVariableHelpSuper } from '../../types/interfaces/Variable.interface';
 
+const COMMAND_NAME = 'help';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('help')
-    .setDescription('returns help message')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
     .addStringOption(option =>
       option.setName('category')
         .setDescription('Category to get help for')
@@ -186,15 +188,18 @@ export = {
     }
 
     if (category === 'all') {
-      return { result: !!(await simpleReply(interaction)), value: '' };
+      const response = await await simpleReply();
+      return { result: !!response, value: response };
     }
 
     if (category.startsWith('description')) {
-      return { result: !!(await propertyReply(interaction, category.split('_')[1], specific)), value: '' };
+      const response = await await propertyReply(category.split('_')[1], specific);
+      return { result: !!response, value: response };
     }
 
     if (category.startsWith('guide')) {
-      return { result: !!(await guideReply(interaction, category.split('_')[1])), value: '' };
+      const response = await await guideReply(category.split('_')[1]);
+      return { result: !!response, value: response };
     }
 
     return { result: false, value: messageHelp('commands', 'help') };
@@ -264,119 +269,83 @@ const helpArray: Field[] = [
   },
 ];
 
-async function simpleReply(interaction: ChatInputCommandInteraction) {
-  const message = {
-    embeds: [
-      createEmbed(
-        'Help Card',
-        'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
-        '> make a member an **admin**, give role `p.admin`\n' +
-        '> make a member an **moderator**, give role `p.mod`\n' +
-        '> make a member a **dj**, give role `p.dj`\n' +
-        '> to **whitelist** a member, give role `p.mod`\n' +
-        '> to **ignore** a member, give role `p.ignore`\n' +
-        '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
-        '#05d1ff',
-        helpArray,
-        null,
-        null,
-        true,
-        null,
-        null
-      ),
-    ],
-  }
+async function simpleReply() {
+  const helpMessage = [createEmbed(
+    'Help Card',
+    'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
+    '> make a member an **admin**, give role `p.admin`\n' +
+    '> make a member an **moderator**, give role `p.mod`\n' +
+    '> make a member a **dj**, give role `p.dj`\n' +
+    '> to **whitelist** a member, give role `p.mod`\n' +
+    '> to **ignore** a member, give role `p.ignore`\n' +
+    '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
+    '#05d1ff',
+    helpArray,
+    null,
+    null,
+    true,
+    null,
+    null
+  )];
 
-  return !!(await interaction.channel?.send(message));
+  return helpMessage;
 }
 
-async function propertyReply(interaction: ChatInputCommandInteraction, type: string, specific: string | null) {
-  let embedArray: EmbedBuilder[] | null = null;
-
+async function propertyReply(type: string, specific: string | null) {
   if (specific) {
-    let detailed = getCommandHelpSuper(specific);
-    if (!detailed) {
-      detailed = getVariableHelpSuper(specific);
-      if (!detailed) {
-        detailed = getPipeHelpSuper(specific);
-        if (!detailed) {
-          detailed = getAttributeHelpSuper(specific);
-          if (!detailed) {
-            detailed = getStructureHelpSuper(specific);
-            if (!detailed) {
-              return Promise.reject(messageHelp('commands', 'help', `*${specific}* does not exist in portal`));
-            }
-          }
-        }
-      }
-    }
+    const detailed = getCommandHelpSuper(specific) ||
+      getVariableHelpSuper(specific) ||
+      getPipeHelpSuper(specific) ||
+      getAttributeHelpSuper(specific) ||
+      getStructureHelpSuper(specific);
 
     if (detailed instanceof EmbedBuilder) {
-      return !!interaction.user.send({ embeds: [detailed] }).catch(() => {
-        return Promise.reject('failed to send message');
-      });
+      return [detailed];
     } else {
-      return Promise.reject(messageHelp('commands', 'help', `*${type}* does not exist in portal`));
+      return messageHelp('commands', 'help', `*${specific}* does not exist in portal`);
     }
   }
 
   switch (type) {
-  case 'commands':
-    embedArray = getCommandHelp();
-    break;
-  case 'variables':
-    embedArray = getVariableHelp();
-    break;
-  case 'pipes':
-    embedArray = getPipeHelp();
-    break;
-  case 'attributes':
-    embedArray = getAttributeHelp();
-    break;
-  case 'structures':
-    embedArray = getStructureHelp();
-    break;
+    case 'commands':
+      return getCommandHelp();
+    case 'variables':
+      return getVariableHelp();
+    case 'pipes':
+      return getPipeHelp();
+    case 'attributes':
+      return getAttributeHelp();
+    case 'structures':
+      return getStructureHelp();
   }
 
-  if (embedArray) {
-    embedArray.forEach(async (embed) => {
-      await interaction.user.send({ embeds: [embed] }).catch((e) => {
-        return Promise.reject(e);
-      });
-    });
-
-    return true;
-  }
-
-  return false;
+  return messageHelp('commands', 'help', `*${type}* does not exist in portal`);
 }
 
-async function guideReply(interaction: ChatInputCommandInteraction, type: string) {
+async function guideReply(type: string) {
   let guide: EmbedBuilder | null = null;
 
   switch (type) {
-  case 'commands':
-    guide = getCommandGuide();
-    break;
-  case 'variables':
-    guide = getVariableGuide();
-    break;
-  case 'pipes':
-    guide = getPipeGuide();
-    break;
-  case 'attributes':
-    guide = getAttributeGuide();
-    break;
-  case 'structures':
-    guide = getStructureGuide();
-    break;
+    case 'commands':
+      guide = getCommandGuide();
+      break;
+    case 'variables':
+      guide = getVariableGuide();
+      break;
+    case 'pipes':
+      guide = getPipeGuide();
+      break;
+    case 'attributes':
+      guide = getAttributeGuide();
+      break;
+    case 'structures':
+      guide = getStructureGuide();
+      break;
   }
 
-  if (guide) {
-    return !!interaction.user.send({ embeds: [guide] }).catch(() => {
-      return Promise.reject('failed to send message');
-    });
-  } else {
-    return Promise.reject(messageHelp('commands', 'help', `*${type}* does not exist in portal`));
+  if (!guide) {
+    return messageHelp('commands', 'help', `*${type}* does not exist in portal`);
   }
+
+  return [guide];
 }

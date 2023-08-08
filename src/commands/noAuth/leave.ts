@@ -4,9 +4,14 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { clientWrite } from '../../libraries/localisation.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { AnnouncementAction, ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+
+const COMMAND_NAME = 'leave';
 
 export = {
-  data: new SlashCommandBuilder().setName('leave').setDescription('tell Portal to leave your voice channel'),
+  data: new SlashCommandBuilder()
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {

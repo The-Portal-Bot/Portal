@@ -1,241 +1,23 @@
 import { EmbedBuilder } from 'discord.js';
-import { AuthType } from '../enums/Admin.enum';
+import commandConfig from '../../config.command.json';
 import { createEmbed } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
+import { Field } from '../classes/PTypes.interface';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
-export const COMMAND_PREFIX = './';
 
-const commands: InterfaceBlueprint[] = [
-  {
-    name: 'about',
-    hover: 'about Portal',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'announce',
-    hover: 'make an announcement',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'announcement',
-    hover: 'create an announcement channel',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'bet',
-    hover: 'get betting information',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'ban',
-    hover: 'ban a member',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'corona',
-    hover: 'get the latest covid19 data',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'crypto',
-    hover: 'get the latest crypto currency data',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'delete_messages',
-    hover: 'bulk delete message',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'focus',
-    hover: 'talk exclusively with a member',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'force',
-    hover: 'force refresh your current channel',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'help',
-    hover: 'get help about Portal',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'join',
-    hover: 'make Portal join your current voice channel',
-    auth: AuthType.voice,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'kick',
-    hover: 'kick a member',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'leader board',
-    hover: 'get current leader board',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'leave',
-    hover: 'make Portal leave your current voice channel',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'level',
-    hover: 'get your current level information',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'music',
-    hover: 'create a music channel',
-    auth: AuthType.voice,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'ignore',
-    hover: 'ignore current channel',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'ping',
-    hover: 'ping Portal',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'poll',
-    hover: 'create a Poll',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'portal',
-    hover: 'create a portal channel',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'ranks',
-    hover: 'get current ranks',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'vendor',
-    hover: 'create roll assigning message',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'roll',
-    hover: 'roll a dice',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'run',
-    hover: 'run text through Text Interpreter',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'set_ranks',
-    hover: 'set new ranks',
-    auth: AuthType.admin,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'set',
-    hover: 'update an attribute\'s value',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'state',
-    hover: 'get current state of Portal visualised',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'url',
-    hover: 'create a url-only channel',
-    auth: AuthType.voice,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'weather',
-    hover: 'get current weather forecast',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-  {
-    name: 'whoami',
-    hover: 'get current information about you',
-    auth: AuthType.none,
-    get: null,
-    set: null,
-  },
-];
+export function getCommandList() {
+  const commandList = [];
 
-export function isCommand(candidate: string): string {
-  for (let i = 0; i < commands.length; i++) {
-    const sub_str = String(candidate).substring(1, String(commands[i].name).length + 1);
-
-    if (sub_str == commands[i].name) {
-      return commands[i].name;
+  for (let i = 0; i < commandConfig.length; i++) {
+    for (let j = 0; j < commandConfig[i].commands.length; j++) {
+      commandList.push({
+        name: commandConfig[i].commands[j].name,
+        hover: commandConfig[i].commands[j].description
+      });
     }
   }
 
-  return '';
+  return commandList;
 }
 
 export function getCommandGuide(): EmbedBuilder {
@@ -259,11 +41,7 @@ export function getCommandGuide(): EmbedBuilder {
 
   return createEmbed(
     'Command Guide',
-    '[Commands](' +
-    PORTAL_URL +
-    '/commands/description) ' +
-    'are the way you communicate with Portal.\n' +
-    'how to use commands',
+    `[Commands](${PORTAL_URL}/commands/description) are the way you communicate with Portal.\nhow to use commands`,
     '#9775A9',
     commandArray,
     null,
@@ -275,6 +53,7 @@ export function getCommandGuide(): EmbedBuilder {
 }
 
 export function getCommandHelp(): EmbedBuilder[] {
+  const commands = getCommandList();
   const commandArray: Field[][] = [];
 
   for (let l = 0; l <= commands.length / 25; l++) {
@@ -282,7 +61,7 @@ export function getCommandHelp(): EmbedBuilder[] {
     for (let i = 24 * l; i < commands.length && i < 24 * (l + 1); i++) {
       commandArray[l].push({
         emote: `${i + 1}. ${commands[i].name}`,
-        role: `[hover or click](${PORTAL_URL}` + `/commands/detailed/${commands[i].name} "${commands[i].hover}")`,
+        role: `[hover or click](${PORTAL_URL}/commands/detailed/${commands[i].name} "${commands[i].hover}")`,
         inline: true,
       });
     }
@@ -292,12 +71,7 @@ export function getCommandHelp(): EmbedBuilder[] {
     if (index === 0) {
       return createEmbed(
         'Commands',
-        '[Commands](' +
-        PORTAL_URL +
-        '/commands/description) ' +
-        'are the way you communicate with Portal.\n' +
-        'Prefix: ' +
-        COMMAND_PREFIX,
+        `[Commands](${PORTAL_URL}/commands/description) are the way you communicate with Portal.`,
         '#9775A9',
         commandArray[0],
         null,
@@ -313,6 +87,8 @@ export function getCommandHelp(): EmbedBuilder[] {
 }
 
 export function getCommandHelpSuper(candidate: string): EmbedBuilder | boolean {
+  const commands = getCommandList();
+
   for (let i = 0; i < commands.length; i++) {
     if (commands[i].name === candidate) {
       return createEmbed(
@@ -321,7 +97,6 @@ export function getCommandHelpSuper(candidate: string): EmbedBuilder | boolean {
         '#9775A9',
         [
           { emote: 'Type', role: 'Command', inline: true },
-          { emote: 'Prefix', role: `${COMMAND_PREFIX}`, inline: true },
           {
             emote: 'Description',
             role: `[hover or click](${PORTAL_URL}/commands/detailed/${candidate} "${commands[i].hover}")`,

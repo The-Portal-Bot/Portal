@@ -29,6 +29,7 @@ import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import { createDiscordJSAdapter } from './adapter.library';
 import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
+import commandConfig from '../config.command.json';
 
 const idleThumbnail = 'https://raw.githubusercontent.com/keybraker/' + 'Portal/master/src/assets/img/emptyQueue.png';
 
@@ -782,4 +783,10 @@ export async function removeEmptyVoiceChannels(guild: Guild): Promise<boolean> {
   });
 
   return true;
+}
+
+export function commandDescriptionByNameAndAuthenticationLevel(commandName: string, authenticationNeeded: boolean) {
+  return authenticationNeeded
+    ? commandConfig[1].commands.find((command) => command.name === commandName)?.description ?? commandName
+    : commandConfig[0].commands.find((command) => command.name === commandName)?.description ?? commandName;
 }

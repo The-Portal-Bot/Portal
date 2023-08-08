@@ -1,13 +1,15 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Client } from 'discord.js';
-import { createEmbed } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'ping';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('ping')
-    .setDescription('returns time to reply with \'pong\''),
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const message = {
       embeds: [

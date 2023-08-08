@@ -4,11 +4,14 @@ import { includedInPIgnores } from '../../libraries/guild.library';
 import { insertIgnore, removeIgnore } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+
+const COMMAND_NAME = 'ignore';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('ignore')
-    .setDescription('ignore user or channel from spam'),
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {

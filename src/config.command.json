@@ -1,14 +1,14 @@
-[
-  {
+[{
     "path": "noAuth",
-    "commands": [
-      {
+    "commands": [{
         "name": "about",
+        "description": "returns information on Portal",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -16,11 +16,13 @@
       },
       {
         "name": "announce",
+        "description": "send an announcement to the announcement channel",
         "scopeLimit": "member",
         "time": 2,
         "auth": false,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -28,11 +30,13 @@
       },
       {
         "name": "bet",
+        "description": "returns betting data",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": false,
           "reply": true
@@ -40,11 +44,13 @@
       },
       {
         "name": "corona",
+        "description": "returns data on COVID19",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -52,11 +58,13 @@
       },
       {
         "name": "crypto",
+        "description": "returns information about crypto currencies",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -64,11 +72,13 @@
       },
       {
         "name": "focus",
+        "description": "creates a dedicated channel for two users to privately talk in",
         "scopeLimit": "member",
         "time": 1,
         "auth": false,
         "premium": true,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -76,11 +86,13 @@
       },
       {
         "name": "football",
+        "description": "returns football data",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -88,11 +100,13 @@
       },
       {
         "name": "help",
+        "description": "returns requested help page",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -100,11 +114,13 @@
       },
       {
         "name": "join",
+        "description": "makes portal join your voice channel",
         "scopeLimit": "member",
         "time": 1,
         "auth": false,
         "premium": true,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -112,11 +128,13 @@
       },
       {
         "name": "leaderboard",
+        "description": "returns server's leaderboard",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": true,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -124,11 +142,13 @@
       },
       {
         "name": "leave",
+        "description": "makes portal leave your voice channel",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -136,11 +156,13 @@
       },
       {
         "name": "level",
+        "description": "returns your level",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -148,11 +170,13 @@
       },
       {
         "name": "ping",
+        "description": "pings portal",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -160,11 +184,13 @@
       },
       {
         "name": "poll",
+        "description": "create a new poll",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": true,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -172,11 +198,13 @@
       },
       {
         "name": "ranks",
+        "description": "display server ranks",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
         "reply": true,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -184,11 +212,13 @@
       },
       {
         "name": "roll",
+        "description": "roll a dice",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -196,11 +226,13 @@
       },
       {
         "name": "run",
+        "description": "execute given code",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": false,
           "reply": false
@@ -208,11 +240,13 @@
       },
       {
         "name": "state",
+        "description": "returns server's state",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -220,11 +254,13 @@
       },
       {
         "name": "spam_rules",
+        "description": "returns server's spam rules",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -232,11 +268,13 @@
       },
       {
         "name": "weather",
+        "description": "returns weather data",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -244,11 +282,13 @@
       },
       {
         "name": "whoami",
+        "description": "returns your personal card",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": false,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -258,14 +298,15 @@
   },
   {
     "path": "auth",
-    "commands": [
-      {
+    "commands": [{
         "name": "announcement",
+        "description": "make an announcement to the announcements channel",
         "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -273,11 +314,13 @@
       },
       {
         "name": "ban",
+        "description": "ban a user",
         "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": false,
           "reply": false
@@ -285,11 +328,13 @@
       },
       {
         "name": "delete_messages",
+        "description": "delete n messages",
         "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": false,
           "reply": true
@@ -297,11 +342,13 @@
       },
       {
         "name": "force",
+        "description": "force refresh your portal channel",
         "scopeLimit": "member",
         "time": 5,
         "auth": true,
         "premium": true,
         "reply": false,
+        "ephemeral": true,
         "delete": {
           "source": false,
           "reply": false
@@ -309,11 +356,13 @@
       },
       {
         "name": "ignore",
+        "description": "ignore user or channel from spam",
         "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -321,11 +370,13 @@
       },
       {
         "name": "invite",
+        "description": "generate an invite link",
         "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -333,11 +384,13 @@
       },
       {
         "name": "kick",
+        "description": "kick a user",
         "scopeLimit": "member",
         "time": 1,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": false,
           "reply": false
@@ -345,11 +398,13 @@
       },
       {
         "name": "music",
+        "description": "set a music channel",
         "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -357,11 +412,13 @@
       },
       {
         "name": "portal",
+        "description": "set a portal channel",
         "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": false,
         "reply": true,
+        "ephemeral": false,
         "delete": {
           "source": true,
           "reply": true
@@ -369,11 +426,13 @@
       },
       {
         "name": "vendor",
+        "description": "create a vendor message",
         "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -381,11 +440,13 @@
       },
       {
         "name": "set_ranks",
+        "description": "set ranks for server",
         "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -393,11 +454,13 @@
       },
       {
         "name": "set",
+        "description": "set the value of an attribute",
         "scopeLimit": "none",
         "time": 0,
         "auth": false,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true
@@ -405,11 +468,13 @@
       },
       {
         "name": "url",
+        "description": "set a channel to URL only",
         "scopeLimit": "none",
         "time": 0,
         "auth": true,
         "premium": true,
         "reply": true,
+        "ephemeral": true,
         "delete": {
           "source": true,
           "reply": true

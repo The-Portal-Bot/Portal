@@ -1,3 +1,7 @@
+<p align="center">
+    <strong>Disclaimer:</strong> The transition to Discord.js v14 is still ongoing. Some features may not work as expected until the transition is complete.
+</p>
+
 <h1 align="center">
     <a href="https://portal-bot.xyz" target="_blank">
         Portal <img src="https://github.com/keybraker/portal/blob/master/src/assets/img/portal_logo.png" alt="Portal logo" width="25" height="25">

@@ -1,24 +1,16 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Role } from 'discord.js';
-import { getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { setRanks } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Rank, ReturnPromise } from '../../types/classes/PTypes.interface';
 
-function isRank(rank: Rank) {
-  return !!rank.level && !!rank.role;
-}
-
-function isRole(rank: Rank, roles: Role[]) {
-  return roles.some((role) => {
-    return role.id === rank.role || role.name === rank.role;
-  });
-}
+const COMMAND_NAME = 'set_ranks';
 
 export = {
   data: new SlashCommandBuilder()
-    .setName('set_ranks')
-    .setDescription('create ranks for the server')
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
     .addStringOption((option) =>
       option
         .setName('rank_string')
@@ -88,3 +80,13 @@ export = {
     };
   },
 };
+
+function isRank(rank: Rank) {
+  return !!rank.level && !!rank.role;
+}
+
+function isRole(rank: Rank, roles: Role[]) {
+  return roles.some((role) => {
+    return role.id === rank.role || role.name === rank.role;
+  });
+}

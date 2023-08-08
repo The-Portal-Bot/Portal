@@ -1,14 +1,16 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
-import { createEmbed } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { PMember } from '../../types/classes/PMember.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
+const COMMAND_NAME = 'whoami';
+
 export = {
   data: new SlashCommandBuilder()
-    .setName('whoami')
-    .setDescription('returns who am I information'),
+    .setName(COMMAND_NAME)
+    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const pMember = pGuild.pMembers.find((pMember) => pMember.id === interaction.user.id);
     if (!pMember) {
