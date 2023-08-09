@@ -148,20 +148,20 @@ export function getKeyFromEnum(value: string, enumeration: enumTypes): string | 
   let enumerationArray;
 
   switch (enumeration) {
-    case OpapGameId:
-      enumerationArray = Object.values(OpapGameId);
-      break;
-    case RankSpeed:
-      enumerationArray = Object.values(RankSpeed);
-      break;
-    case ProfanityLevel:
-      enumerationArray = Object.values(ProfanityLevel);
-      break;
-    case Locale:
-      enumerationArray = Object.values(Locale);
-      break;
-    default:
-      return undefined;
+  case OpapGameId:
+    enumerationArray = Object.values(OpapGameId);
+    break;
+  case RankSpeed:
+    enumerationArray = Object.values(RankSpeed);
+    break;
+  case ProfanityLevel:
+    enumerationArray = Object.values(ProfanityLevel);
+    break;
+  case Locale:
+    enumerationArray = Object.values(Locale);
+    break;
+  default:
+    return undefined;
   }
 
   for (const enumerationValue of enumerationArray) {
@@ -594,7 +594,7 @@ export async function messageReply(
     }
 
     if (deleteReply) {
-      const delay = (process.env.DELETEDELAY as unknown as number) * 1000;
+      const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
       setTimeout(async () => {
         if (isMessageDeleted(sentMessage)) {
           const deletedMessage = await sentMessage.delete().catch((e) => {
@@ -618,7 +618,7 @@ export async function messageReply(
       return Promise.reject('failed to react to message');
     }
 
-    const delay = (process.env.DELETEDELAY as unknown as number) * 1000;
+    const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
     setTimeout(async () => {
       if (isMessageDeleted(message)) {
         const deletedMessage = await message.delete().catch((e) => {
@@ -672,82 +672,77 @@ export function timeElapsed(timestamp: Date | number, timeout: number): TimeElap
 }
 
 // must get updated
-export function removeDeletedChannels(guild: Guild): Promise<boolean> {
-  return new Promise((resolve) => {
-    fetchGuild(guild.id)
-      .then((pGuild) => {
-        if (pGuild) {
-          pGuild.pChannels.forEach((p, indexP) => {
-            if (!guild.channels.cache.some((c) => c.id === p.id)) {
-              pGuild.pChannels.splice(indexP, 1);
-            }
-            p.pVoiceChannels.forEach((v, indexV) => {
-              if (!guild.channels.cache.some((c) => c.id === v.id)) {
-                p.pVoiceChannels.splice(indexV, 1);
-              }
-            });
-          });
+export async function removeDeletedChannels(guild: Guild): Promise<boolean> {
+  const pGuild = await fetchGuild(guild.id)
 
-          pGuild.pURLs.some((uId, indexU) => {
-            if (!guild.channels.cache.some((c) => c.id === uId)) {
-              pGuild.pURLs.splice(indexU, 1);
-              return true;
-            }
+  if (!pGuild) {
+    return false;
+  }
 
-            return false;
-          });
-
-          pGuild.pRoles.forEach((r, indexR) => {
-            !guild.channels.cache.some((c) => {
-              if (c instanceof TextChannel) {
-                let found = false;
-                c.messages
-                  .fetch(r.messageId)
-                  .then(() => {
-                    // clear from emotes leave only those from portal
-                    found = true;
-                  })
-                  .catch(() => {
-                    pGuild.pRoles.splice(indexR, 1);
-                  });
-
-                return found;
-              }
-
-              return false;
-            });
-          });
-
-          pGuild.pMembers.forEach((m, indexM) => {
-            if (!guild.members.cache.some((m) => m.id === m.id)) {
-              pGuild.pURLs.splice(indexM, 1);
-            }
-          });
-
-          if (!guild.channels.cache.some((c) => c.id === pGuild.musicData.channelId)) {
-            pGuild.musicData.channelId = undefined;
-            pGuild.musicData.messageId = undefined;
-            pGuild.musicData.votes = undefined;
-          }
-
-          if (!guild.channels.cache.some((c) => c.id === pGuild.announcement)) {
-            pGuild.announcement = null;
-          }
-
-          return resolve(true);
-        }
-
-        return resolve(false);
-      })
-      .catch(() => {
-        return resolve(false);
-      });
+  pGuild.pChannels.forEach((portalChannel, indexP) => {
+    if (!guild.channels.cache.some((channel) => channel.id === portalChannel.id)) {
+      pGuild.pChannels.splice(indexP, 1);
+    }
+    portalChannel.pVoiceChannels.forEach((portalVoice, indexV) => {
+      if (!guild.channels.cache.some((channel) => channel.id === portalVoice.id)) {
+        portalChannel.pVoiceChannels.splice(indexV, 1);
+      }
+    });
   });
+
+  pGuild.pURLs.some((uId, indexU) => {
+    if (!guild.channels.cache.some((channel) => channel.id === uId)) {
+      pGuild.pURLs.splice(indexU, 1);
+      return true;
+    }
+
+    return false;
+  });
+
+  pGuild.pRoles.forEach((portalRole, indexR) => {
+    !guild.channels.cache.some((channel) => {
+      if (channel instanceof TextChannel) {
+        let found = false;
+        channel.messages
+          .fetch(portalRole.messageId)
+          .then(() => {
+            // clear from emotes leave only those from portal
+            found = true;
+          })
+          .catch(() => {
+            pGuild.pRoles.splice(indexR, 1);
+          });
+
+        return found;
+      }
+
+      return false;
+    });
+  });
+
+  pGuild.pMembers.forEach((portalMember, indexM) => {
+    if (!guild.members.cache.some((m) => m.id === m.id)) {
+      pGuild.pURLs.splice(indexM, 1);
+    }
+  });
+
+  if (!guild.channels.cache.some((channel) => channel.id === pGuild.musicData.channelId)) {
+    pGuild.musicData.channelId = undefined;
+    pGuild.musicData.messageId = undefined;
+    pGuild.musicData.votes = undefined;
+  }
+
+  if (!guild.channels.cache.some((channel) => channel.id === pGuild.announcement)) {
+    pGuild.announcement = null;
+  }
+
+  return true;
 }
 
 // must get updated
 export async function removeEmptyVoiceChannels(guild: Guild): Promise<boolean> {
   const guildList = await fetchGuildList({});
+
   if (!guildList) {
     return false;
   }
@@ -757,14 +752,14 @@ export async function removeEmptyVoiceChannels(guild: Guild): Promise<boolean> {
   }
 
   guild.channels.cache.forEach((channel) => {
-    guildList.some((g) =>
-      g.pChannels.some((p) =>
-        p.pVoiceChannels.some((v, index) => {
-          if (v.id === channel.id && (<Collection<string, GuildMember>>channel.members).size === 0) {
+    guildList.some((portalGuild) =>
+      portalGuild.pChannels.some((portalChannel) =>
+        portalChannel.pVoiceChannels.some((portalVoice, index) => {
+          if (portalVoice.id === channel.id && (<Collection<string, GuildMember>>channel.members).size === 0) {
             channel
               .delete()
               .then(() => {
-                p.pVoiceChannels.splice(index, 1);
+                portalChannel.pVoiceChannels.splice(index, 1);
                 logger.log({
                   level: 'info',
                   type: 'none',

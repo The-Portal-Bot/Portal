@@ -51,6 +51,11 @@ export async function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): P
   }
 
   const ranks = pGuild.ranks;
+
+  if (ranks.length === 0) {
+    return false;
+  }
+
   const member = voiceState.member;
   const speed = pGuild.rankSpeed;
   const cachedLevel = pMember.level;

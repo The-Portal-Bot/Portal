@@ -260,7 +260,7 @@ export const consoleText: LocalisationConsoleOption[] = [
 // }
 
 export function getFunction(output: string, locale: number, context: EventAction | AnnouncementAction | LogActions) {
-  let func = null;
+  let func;
 
   if (output === 'portal') {
     portal.some((ct) => {

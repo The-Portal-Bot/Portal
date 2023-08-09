@@ -1,4 +1,4 @@
-export enum PortalChannelTypes {
+export enum PortalChannelType {
   unknown = 0,
   portal = 1,
   voice = 2,
