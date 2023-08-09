@@ -22,7 +22,7 @@ import voca from 'voca';
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
-import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
+import { PortalChannelType } from '../types/enums/PortalChannel.enum';
 import { ATTRIBUTE_PREFIX, getAttribute, isAttribute } from '../types/interfaces/Attribute.interface';
 import { PIPE_PREFIX, getPipe, isPipe } from '../types/interfaces/Pipe.interface';
 import { VARIABLE_PREFIX, getVariable, isVariable } from '../types/interfaces/Variable.interface';
@@ -359,7 +359,7 @@ export async function createFocusChannel(
 }
 
 export async function deleteChannel(
-  type: PortalChannelTypes,
+  type: PortalChannelType,
   channelToDelete: VoiceChannel | TextChannel,
   interaction: ChatInputCommandInteraction | null,
   isPortal = false
@@ -383,7 +383,7 @@ export async function deleteChannel(
   const sentMessage = await interaction.channel
     ?.send(
       `${interaction.user}, do you wish to delete old ` +
-      `${PortalChannelTypes[type].toString()} channel **${channelToDelete}** (yes / no) ?`
+      `${PortalChannelType[type].toString()} channel **${channelToDelete}** (yes / no) ?`
     )
 
   if (!sentMessage) {

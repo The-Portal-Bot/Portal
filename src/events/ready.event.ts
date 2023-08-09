@@ -1,5 +1,5 @@
 import { ActivityOptions, ActivityType, Client, Guild, PresenceData } from 'discord.js';
-import { logger } from '../libraries/help.library';
+import { logger, removeDeletedChannels, removeEmptyVoiceChannels } from '../libraries/help.library';
 import { getFunction } from '../libraries/localisation.library';
 import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library';
 import { PMember } from '../types/classes/PMember.class';
@@ -25,14 +25,18 @@ export default async (args: { client: Client }): Promise<string> => {
     addGuildAgain(guild, args.client).catch((e) => {
       return `failed to add guild again: ${e}`;
     });
-    // removeDeletedChannels(guild);
-    // removeEmptyVoiceChannels(guild);
+    removeDeletedChannels(guild);
+    removeEmptyVoiceChannels(guild);
   });
 
-  const func = getFunction('console', 1, LogActions.ready) as unknown as (a: number, b: number, c: number) => string;
+  const func = getFunction('console', 1, LogActions.ready) as unknown as (args: { memberLength: number, channelLength: number, guildLength: number }) => string;
 
   return func
-    ? func(args.client.users.cache.size, args.client.channels.cache.size, args.client.guilds.cache.size)
+    ? func({
+      memberLength: args.client.users.cache.size,
+      channelLength: args.client.channels.cache.size,
+      guildLength: args.client.guilds.cache.size,
+    })
     : 'error with localisation';
 };
 

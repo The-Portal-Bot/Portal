@@ -10,7 +10,7 @@ import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../
 import { updateGuild } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { PortalChannelTypes } from '../../types/enums/PortalChannel.enum';
+import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
 
 const COMMAND_NAME = 'announcement';
 
@@ -67,7 +67,7 @@ export = {
         .find((channel) => channel.id == pGuild.announcement) as VoiceChannel;
 
       if (announcement) {
-        deleteChannel(PortalChannelTypes.announcement, announcement, interaction);
+        deleteChannel(PortalChannelType.announcement, announcement, interaction);
       }
     }
 

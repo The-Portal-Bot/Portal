@@ -1,5 +1,5 @@
 import { Channel, ChannelType, PartialDMChannel, TextChannel, VoiceChannel } from 'discord.js';
-import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
+import { PortalChannelType } from '../types/enums/PortalChannel.enum';
 import { deletedChannelSync } from '../libraries/mongo.library';
 
 export default async function channelDelete(args: { channel: Channel | PartialDMChannel }): Promise<string> {
@@ -13,12 +13,12 @@ export default async function channelDelete(args: { channel: Channel | PartialDM
 
   const deletedPChannel = await deletedChannelSync(currentChannel);
 
-  if (!deletedPChannel) {
+  if (!Object.values(PortalChannelType).includes(deletedPChannel)) {
     throw new Error(`error syncing deleted channel from ${currentChannel.guild.name}|${currentChannel.guild.id}`);
   }
 
   return deletedPChannel > 0
-    ? `${PortalChannelTypes[deletedPChannel].toString()} channel removed from ` +
+    ? `${PortalChannelType[deletedPChannel].toString()} channel removed from ` +
     `${currentChannel.guild.name}|${currentChannel.guild.id}`
     : `${currentChannel.name} channel is not controlled by Portal`;
 }

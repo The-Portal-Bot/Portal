@@ -8,7 +8,7 @@ import { PPoll } from '../types/classes/PPoll.class';
 import { IPChannel, PChannel } from '../types/classes/PPortalChannel.class';
 import { Rank } from '../types/classes/PTypes.interface';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
-import { PortalChannelTypes } from '../types/enums/PortalChannel.enum';
+import { PortalChannelType } from '../types/enums/PortalChannel.enum';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import PGuildModel from '../types/models/PGuild.model';
@@ -186,7 +186,7 @@ export async function updateGuild(guildId: PGuild['id'], key: string, value: unk
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 // CRUD guilds
@@ -286,7 +286,7 @@ export async function updateMember(guildId: PGuild['id'], memberId: string, key:
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function updateEntireMember(guildId: PGuild['id'], memberId: string, member: PMember): Promise<boolean> {
@@ -309,7 +309,7 @@ export async function updateEntireMember(guildId: PGuild['id'], memberId: string
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertMember(guildId: PGuild['id'], memberId: string): Promise<boolean> {
@@ -324,7 +324,7 @@ export async function insertMember(guildId: PGuild['id'], memberId: string): Pro
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function removeMember(memberId: string, guildId: PGuild['id']): Promise<boolean> {
@@ -341,7 +341,7 @@ export async function removeMember(memberId: string, guildId: PGuild['id']): Pro
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function updatePortal(guildId: PGuild['id'], portalId: string, key: string, value: unknown): Promise<boolean> {
@@ -360,7 +360,7 @@ export async function updatePortal(guildId: PGuild['id'], portalId: string, key:
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertPortal(guildId: PGuild['id'], newPortal: IPChannel): Promise<boolean> {
@@ -375,7 +375,7 @@ export async function insertPortal(guildId: PGuild['id'], newPortal: IPChannel):
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function removePortal(guildId: PGuild['id'], portalId: string): Promise<boolean> {
@@ -392,7 +392,7 @@ export async function removePortal(guildId: PGuild['id'], portalId: string): Pro
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function updateVoice(
@@ -417,7 +417,9 @@ export async function updateVoice(
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  console.log('updateWriteOpResult :>> ', updateWriteOpResult);
+  console.log('updateWriteOpResult.modifiedCount === 1 :>> ', updateWriteOpResult.modifiedCount === 1);
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertVoice(guildId: PGuild['id'], portalId: string, newVoice: PVoiceChannel): Promise<boolean> {
@@ -436,7 +438,7 @@ export async function insertVoice(guildId: PGuild['id'], portalId: string, newVo
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function removeVoice(guildId: PGuild['id'], portalId: string, voiceId: string): Promise<boolean> {
@@ -461,7 +463,7 @@ export async function removeVoice(guildId: PGuild['id'], portalId: string, voice
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertURL(guildId: PGuild['id'], newUrl: string): Promise<boolean> {
@@ -476,7 +478,7 @@ export async function insertURL(guildId: PGuild['id'], newUrl: string): Promise<
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function removeURL(guildId: PGuild['id'], removeUrl: string): Promise<boolean> {
@@ -491,7 +493,7 @@ export async function removeURL(guildId: PGuild['id'], removeUrl: string): Promi
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertIgnore(guildId: PGuild['id'], newIgnore: string): Promise<boolean> {
@@ -506,7 +508,7 @@ export async function insertIgnore(guildId: PGuild['id'], newIgnore: string): Pr
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function removeIgnore(guildId: PGuild['id'], removeIgnore: string): Promise<boolean> {
@@ -521,7 +523,7 @@ export async function removeIgnore(guildId: PGuild['id'], removeIgnore: string):
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function setRanks(guildId: PGuild['id'], newRanks: Rank[]): Promise<boolean> {
@@ -534,7 +536,7 @@ export async function setRanks(guildId: PGuild['id'], newRanks: Rank[]): Promise
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertPoll(guildId: PGuild['id'], poll: PPoll): Promise<boolean> {
@@ -549,7 +551,7 @@ export async function insertPoll(guildId: PGuild['id'], poll: PPoll): Promise<bo
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function removePoll(guildId: PGuild['id'], messageId: string): Promise<boolean> {
@@ -566,7 +568,7 @@ export async function removePoll(guildId: PGuild['id'], messageId: string): Prom
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertVendor(guildId: PGuild['id'], newVendor: PGiveRole): Promise<boolean> {
@@ -581,7 +583,7 @@ export async function insertVendor(guildId: PGuild['id'], newVendor: PGiveRole):
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function removeVendor(guildId: PGuild['id'], messageId: string): Promise<boolean> {
@@ -598,7 +600,7 @@ export async function removeVendor(guildId: PGuild['id'], messageId: string): Pr
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertMusicVideo(guildId: PGuild['id'], video: VideoSearchResult): Promise<boolean> {
@@ -613,7 +615,7 @@ export async function insertMusicVideo(guildId: PGuild['id'], video: VideoSearch
     }
   );
 
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function clearMusicVote(guildId: PGuild['id']): Promise<boolean> {
@@ -627,7 +629,7 @@ export async function clearMusicVote(guildId: PGuild['id']): Promise<boolean> {
       },
     }
   );
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function insertMusicVote(guildId: PGuild['id'], userId: string): Promise<boolean> {
@@ -641,7 +643,7 @@ export async function insertMusicVote(guildId: PGuild['id'], userId: string): Pr
       },
     }
   );
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
 export async function setMusicData(guildId: PGuild['id'], newMusicData: MusicData): Promise<boolean> {
@@ -655,59 +657,69 @@ export async function setMusicData(guildId: PGuild['id'], newMusicData: MusicDat
       },
     }
   );
-  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1 && updateWriteOpResult.modifiedCount === 1;
+  return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function deletedChannelSync(channelToRemove: VoiceChannel | TextChannel): Promise<PortalChannelTypes> {
+export async function deletedChannelSync(channelToRemove: VoiceChannel | TextChannel): Promise<PortalChannelType> {
   const pGuild = await fetchGuildChannelDelete(channelToRemove.guild.id);
 
   if (!pGuild) {
-    return PortalChannelTypes.unknown;
+    return PortalChannelType.unknown;
   }
 
   // check if it is a portal or portal-voice channel
-  if (channelToRemove.type !== ChannelType.GuildText) {
-    const currentVoice = channelToRemove;
+  if (channelToRemove.type === ChannelType.GuildVoice) {
+    console.log('voice');
+    const voiceChannelToRemove = channelToRemove;
 
     for (const pChannel of pGuild.pChannels) {
-      if (pChannel.id === currentVoice.id) {
-        const channelDeleted = await removePortal(currentVoice.guild.id, pChannel.id);
-        return channelDeleted ? PortalChannelTypes.portal : PortalChannelTypes.unknown;
+      console.log(`a. ${pChannel.id} === ${ voiceChannelToRemove.id}`);
+
+      if (pChannel.id === voiceChannelToRemove.id) {
+        return await removePortal(voiceChannelToRemove.guild.id, pChannel.id)
+          ? PortalChannelType.portal
+          : PortalChannelType.unknown;
       }
 
       for (const pVoiceChannel of pChannel.pVoiceChannels) {
-        if (pVoiceChannel.id === currentVoice.id) {
-          const channelDeleted = await removeVoice(currentVoice.guild.id, pChannel.id, pVoiceChannel.id);
-          return channelDeleted ? PortalChannelTypes.voice : PortalChannelTypes.unknown;
+        console.log(`b. ${pVoiceChannel.id} === ${ voiceChannelToRemove.id}`);
+
+        if (pVoiceChannel.id === voiceChannelToRemove.id) {
+          return await removeVoice(voiceChannelToRemove.guild.id, pChannel.id, pVoiceChannel.id)
+            ? PortalChannelType.voice
+            : PortalChannelType.unknown;
         }
       }
     }
-  } else {
-    const currentText = channelToRemove;
+  } else if ([ChannelType.GuildText, ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(channelToRemove.type)) {
+    const textChannelToRemove = channelToRemove;
 
-    if (pGuild.announcement === currentText.id) {
-      const channelUpdated = await updateGuild(currentText.guild.id, 'announcement', 'null');
-      return channelUpdated ? PortalChannelTypes.announcement : PortalChannelTypes.unknown;
-    } else if (pGuild.musicData.channelId === currentText.id) {
+    if (pGuild.announcement === textChannelToRemove.id) {
+      return await updateGuild(textChannelToRemove.guild.id, 'announcement', 'null')
+        ? PortalChannelType.announcement
+        : PortalChannelType.unknown;
+    } else if (pGuild.musicData.channelId === textChannelToRemove.id) {
       const musicData = new MusicData('null', 'null', 'null', [], false);
-      const musicDataSet = await setMusicData(pGuild.id, musicData);
-      return musicDataSet ? PortalChannelTypes.music : PortalChannelTypes.unknown;
+      return await setMusicData(pGuild.id, musicData)
+        ? PortalChannelType.music : PortalChannelType.unknown;
     } else {
       for (let i = 0; i < pGuild.pURLs.length; i++) {
-        if (pGuild.pURLs[i] === currentText.id) {
-          const removedURL = await removeURL(currentText.guild.id, currentText.id);
-          return removedURL ? PortalChannelTypes.url : PortalChannelTypes.unknown;
+        if (pGuild.pURLs[i] === textChannelToRemove.id) {
+          return await removeURL(textChannelToRemove.guild.id, textChannelToRemove.id)
+            ? PortalChannelType.url
+            : PortalChannelType.unknown;
         }
       }
 
       for (let i = 0; i < pGuild.pIgnores.length; i++) {
-        if (pGuild.pIgnores[i] === currentText.id) {
-          const removedIgnore = await removeIgnore(currentText.guild.id, currentText.id);
-          return removedIgnore ? PortalChannelTypes.url : PortalChannelTypes.unknown;
+        if (pGuild.pIgnores[i] === textChannelToRemove.id) {
+          return await removeIgnore(textChannelToRemove.guild.id, textChannelToRemove.id)
+            ? PortalChannelType.url
+            : PortalChannelType.unknown;
         }
       }
     }
   }
-
-  return PortalChannelTypes.unknown;
+  console.log('PortalChannelTypes.unknown');
+  return PortalChannelType.unknown;
 }
