@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember, InviteCreateOptions, TextChannel } from 'discord.js';
 import { commandDescriptionByNameAndAuthenticationLevel, getJSONFromString, isMod, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
@@ -9,22 +9,33 @@ export = {
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .addBooleanOption(option =>
+      option
+        .setName('temporary')
+        .setDescription('should invite be temporary')
+        .setRequired(true))
+    .addNumberOption(option =>
+      option
+        .setName('max_age')
+        .setDescription('what the maximum age of the invitee shall be')
+        .setRequired(true))
+    .addNumberOption(option =>
+      option
+        .setName('max_uses')
+        .setDescription('maximum usages')
+        .setRequired(true))
+    .addBooleanOption(option =>
+      option
+        .setName('unique')
+        .setDescription('should invite be unique')
+        .setRequired(true))
     .addStringOption(option =>
       option
-        .setName('invite_options_string')
-        .setDescription('JSON string of invite options')
+        .setName('reason')
+        .setDescription('the reason for the invite')
         .setRequired(true))
     .setDMPermission(false),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    const inviteOptionsString = interaction.options.getString('invite_options_string');
-
-    if (!inviteOptionsString) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'invite', 'invite options string is required'),
-      };
-    }
-
     const member = interaction.member as GuildMember;
     if (!interaction.guild) {
       return {
@@ -43,35 +54,32 @@ export = {
     if (!isMod(member)) {
       return {
         result: false,
-        value: 'you must be a Portal moderator to ban users',
+        value: 'you must be a Portal moderator to invite users',
       };
     }
 
-    const inviteOptionsJSON = getJSONFromString(inviteOptionsString);
+    const temporary = interaction.options.getBoolean('temporary');
+    const maxAge = interaction.options.getNumber('max_age');
+    const maxUses = interaction.options.getNumber('max_uses');
+    const unique = interaction.options.getBoolean('unique');
+    const reason = interaction.options.getString('reason');
 
-    if (!inviteOptionsJSON) {
+    if (!(temporary && maxAge && maxUses && unique && reason)) {
       return {
         result: false,
-        value: messageHelp('commands', 'invite', 'must be in JSON format'),
+        value: messageHelp('commands', 'invite', 'all invite options are required'),
       };
     }
 
-    const inviteOptions = inviteOptionsJSON;
-    if (
-      !(
-        inviteOptions.temporary ||
-        inviteOptions.maxAge ||
-        (inviteOptions.maxUses && inviteOptions.unique) ||
-        inviteOptions.reason
-      )
-    ) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'invite', 'JSON syntax has spelling errors'),
-      };
+    const inviteCreationOptions: InviteCreateOptions = {
+      temporary,
+      maxAge,
+      maxUses,
+      unique,
+      reason,
     }
 
-    const createdInvite = await (<TextChannel>interaction.channel).createInvite(inviteOptions);
+    const createdInvite = await (<TextChannel>interaction.channel).createInvite(inviteCreationOptions);
 
     if (!createdInvite) {
       return {

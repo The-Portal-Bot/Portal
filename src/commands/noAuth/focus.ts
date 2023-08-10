@@ -34,12 +34,6 @@ export = {
       value: 'focus is currently disabled',
     };
 
-    // const member = interaction.member as GuildMember;
-
-    // if (!member) {
-    //   return Promise.reject('message author could not be fetched');
-    // }
-
     // if (!member.voice.channel) {
     //   return Promise.reject(messageHelp('commands', 'focus', 'you must be in a channel handled by Portal'));
     // }
@@ -90,11 +84,11 @@ export = {
     // }
 
     // if (member === memberToFocus) {
-    //   return Promise.reject(messageHelp('commands', 'focus', "you can't focus on yourself"));
+    //   return Promise.reject(messageHelp('commands', 'focus', 'you can\'t focus on yourself'));
     // }
 
     // if (member.voice.channel !== memberToFocus.voice.channel) {
-    //   return Promise.reject(messageHelp('commands', 'focus', "you can't focus on user from another channel"));
+    //   return Promise.reject(messageHelp('commands', 'focus', 'you can\'t focus on user from another channel'));
     // }
 
     // const gotApproval = await askForApproval(
@@ -111,17 +105,17 @@ export = {
     // }
 
     // if (!interaction.guild) {
-    //   return Promise.reject("could not fetch message's guild");
+    //   return Promise.reject('could not fetch message\'s guild');
     // }
 
     // if (!member) {
-    //   return Promise.reject("could not fetch message's member");
+    //   return Promise.reject('could not fetch message\'s member');
     // }
 
     // const pChannel = pGuild.pChannels.find((p) => p.pVoiceChannels.some((v) => v.id === member?.voice.channel?.id));
 
     // if (!pChannel) {
-    //   return Promise.reject("could not find member's portal channel");
+    //   return Promise.reject('could not find member\'s portal channel');
     // }
 
     // const oldChannel = member.voice.channel;
@@ -137,7 +131,7 @@ export = {
 
     // setTimeout(async () => {
     //   if (!member) {
-    //     return Promise.reject("could not fetch message's member");
+    //     return Promise.reject('could not fetch message\'s member');
     //   }
 
     //   const movedMembers = await moveMembersBack(oldChannel, member, memberToFocus).catch((e) => {

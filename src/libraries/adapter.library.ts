@@ -17,8 +17,8 @@ function trackClient(client: Client) {
     adapters.get(payload.guild_id)?.onVoiceServerUpdate(payload);
   });
   client.ws.on(GatewayDispatchEvents.VoiceStateUpdate, (payload) => {
-    if (payload.d.guild_id && payload.d.session_id && payload.d.user_id === client.user?.id) {
-      adapters.get(payload.d.guild_id)?.onVoiceStateUpdate(payload);
+    if (payload.guild_id && payload.session_id && payload.user_id === client.user?.id) {
+      adapters.get(payload.guild_id)?.onVoiceStateUpdate(payload);
     }
   });
   client.on(Events.ShardDisconnect, (_, shardId) => {

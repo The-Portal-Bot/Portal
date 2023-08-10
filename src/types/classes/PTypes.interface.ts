@@ -1,4 +1,4 @@
-import { EmbedBuilder, MessageCreateOptions, MessagePayload, User } from 'discord.js';
+import { EmbedBuilder, User } from 'discord.js';
 
 export type NoAuthCommands =
   | 'about'

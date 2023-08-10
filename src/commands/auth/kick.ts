@@ -26,7 +26,7 @@ export = {
     // if (!isMod(member)) {
     //   return {
     //     result: false,
-    //     value: `you must be a Portal moderator to ban users`,
+    //     value: `you must be a Portal moderator to kick users`,
     //   };
     // }
 

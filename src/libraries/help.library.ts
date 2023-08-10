@@ -549,11 +549,11 @@ export function isUserIgnored(member: GuildMember): boolean {
 }
 
 export function isMod(member: GuildMember | null): boolean {
-  if (member && member.roles.cache) {
-    return member.roles.cache.some((r) => r.name.toLowerCase() === 'p.mod');
+  if (!member) {
+    return false;
   }
 
-  return false;
+  return member.guild.ownerId === member.id || member.roles.cache.some((r) => r.name.toLowerCase() === 'p.mod')
 }
 
 export function isWhitelist(member: GuildMember | null): boolean {
