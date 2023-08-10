@@ -20,7 +20,7 @@ export = {
       };
     }
 
-    const voiceConnection = await getVoiceConnection(interaction.guild.id);
+    const voiceConnection = getVoiceConnection(interaction.guild.id);
 
     if (!voiceConnection) {
       return {
@@ -29,9 +29,7 @@ export = {
       };
     }
 
-    const outcome = await voiceConnection.disconnect();
-
-    if (!outcome) {
+    if (!voiceConnection.disconnect()) {
       return {
         result: false,
         value: 'failed to disconnect from voice channel',

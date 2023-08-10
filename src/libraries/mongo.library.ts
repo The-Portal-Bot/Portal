@@ -417,8 +417,6 @@ export async function updateVoice(
     }
   );
 
-  console.log('updateWriteOpResult :>> ', updateWriteOpResult);
-  console.log('updateWriteOpResult.modifiedCount === 1 :>> ', updateWriteOpResult.modifiedCount === 1);
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
@@ -669,11 +667,9 @@ export async function deletedChannelSync(channelToRemove: VoiceChannel | TextCha
 
   // check if it is a portal or portal-voice channel
   if (channelToRemove.type === ChannelType.GuildVoice) {
-    console.log('voice');
     const voiceChannelToRemove = channelToRemove;
 
     for (const pChannel of pGuild.pChannels) {
-      console.log(`a. ${pChannel.id} === ${ voiceChannelToRemove.id}`);
 
       if (pChannel.id === voiceChannelToRemove.id) {
         return await removePortal(voiceChannelToRemove.guild.id, pChannel.id)
@@ -682,7 +678,6 @@ export async function deletedChannelSync(channelToRemove: VoiceChannel | TextCha
       }
 
       for (const pVoiceChannel of pChannel.pVoiceChannels) {
-        console.log(`b. ${pVoiceChannel.id} === ${ voiceChannelToRemove.id}`);
 
         if (pVoiceChannel.id === voiceChannelToRemove.id) {
           return await removeVoice(voiceChannelToRemove.guild.id, pChannel.id, pVoiceChannel.id)
@@ -720,6 +715,5 @@ export async function deletedChannelSync(channelToRemove: VoiceChannel | TextCha
       }
     }
   }
-  console.log('PortalChannelTypes.unknown');
   return PortalChannelType.unknown;
 }

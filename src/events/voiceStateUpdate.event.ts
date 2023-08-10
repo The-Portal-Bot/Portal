@@ -1,4 +1,4 @@
-import { getVoiceConnection } from '@discordjs/voice';
+import { VoiceConnectionStatus, getVoiceConnection } from '@discordjs/voice';
 import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from 'discord.js';
 import {
   createVoiceChannel,
@@ -103,7 +103,7 @@ export default async function (args: { client: Client; newState: VoiceState; old
       return 'failed to create voice channel';
     }
 
-    return response;
+    return `member-${args.newState?.member?.id}: ${response}`;
   } else {
     const response = await fromExisting(oldChannel as VoiceChannel, newChannel as VoiceChannel | null, args.client, pGuild, args.newState);
 
@@ -111,7 +111,7 @@ export default async function (args: { client: Client; newState: VoiceState; old
       return 'failed to create voice channel';
     }
 
-    return response;
+    return `member-${args.oldState?.member?.id}: ${response}`;
   }
 }
 
@@ -140,6 +140,11 @@ async function deleteVoiceChannel(channel: VoiceChannel | TextChannel, pGuild: P
 }
 
 async function fiveMinuteRefresher(voiceChannel: VoiceChannel, portalList: PChannel[], guild: Guild, minutes: number): Promise<void> {
+  if (isGuildDeleted(guild) || isChannelDeleted(voiceChannel)) {
+    logger.info(`voice channel with id ${voiceChannel.id} is deleted, stopping refreshers`);
+    return;
+  }
+
   const pGuild = await fetchGuild(guild.id)
     .catch(() => {
       logger.error(new Error('failed to fetch guild'));
@@ -183,7 +188,7 @@ async function channelEmptyCheck(
 
     const voiceConnection = getVoiceConnection(oldChannel.guild.id);
 
-    if (!voiceConnection) {
+    if (!voiceConnection || [VoiceConnectionStatus.Destroyed, VoiceConnectionStatus.Disconnected].includes(voiceConnection.state.status)) {
       return 'Portal is not connected';
     }
 
