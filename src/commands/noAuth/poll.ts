@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
 import { insertPoll } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { PPoll } from '../../types/classes/PPoll.class';
@@ -18,9 +18,29 @@ export = {
         .setDescription('Poll title')
         .setRequired(true))
     .addStringOption(option =>
-      option.setName('poll_json_string')
-        .setDescription('Poll JSON string')
-        .setRequired(true)),
+      option.setName('option_1')
+        .setDescription('option 1')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('option_2')
+        .setDescription('option 2')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('option_3')
+        .setDescription('option 3')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('option_4')
+        .setDescription('option 4')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('option_5')
+        .setDescription('option 5')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('option_6')
+        .setDescription('option 6')
+        .setRequired(false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
@@ -30,53 +50,31 @@ export = {
     }
 
     const title = interaction.options.getString('title');
-    const pollJSONString = interaction.options.getString('body');
 
-    if (!title || !pollJSONString) {
+    const option_1 = interaction.options.getString('option_1');
+    const option_2 = interaction.options.getString('option_2');
+    const option_3 = interaction.options.getString('option_3');
+    const option_4 = interaction.options.getString('option_4');
+    const option_5 = interaction.options.getString('option_5');
+    const option_6 = interaction.options.getString('option_6');
+
+    if (!title || !option_1 || !option_2) {
       return {
         result: false,
         value: messageHelp('commands', 'poll'),
       };
     }
 
-    const pollJSON = getJSONFromString(pollJSONString);
-    if (!pollJSON) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'poll', 'poll must be in JSON array format `./help poll`'),
-      };
-    }
+    const pollMap = [option_1, option_2];
 
-    const pollMap = <string[]>pollJSON;
-    if (pollMap.length > 9) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'poll', 'polls can have maximum 9 options'),
-      };
-    }
+    if (option_3) {  pollMap.push(option_3); }
+    if (option_4) {  pollMap.push(option_4); }
+    if (option_5) {  pollMap.push(option_5); }
+    if (option_6) {  pollMap.push(option_6); }
 
-    if (pollMap.length < 2) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'poll', 'polls must have minimum 2 options'),
-      };
-    }
+    pollMap.filter(poll => !!poll).map(poll => poll.trim());
 
-    if (!Array.isArray(pollMap)) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'poll', 'must be array even for one role'),
-      };
-    }
-
-    pollMap.forEach((r) => r.trim());
-    const pollMapField = pollMap.map((p, i) => {
-      return <Field>{
-        emote: emoji[i],
-        role: p,
-        inline: true,
-      };
-    });
+    const pollMapField = pollMap.map((p, i) => { return <Field>{emote: emoji[i],  role: p, inline: true}; });
 
     const response = await createRoleMessage(<TextChannel>interaction.channel, pGuild, title, '', '#9900ff', pollMapField, interaction.user.id);
 
