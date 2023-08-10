@@ -4,7 +4,7 @@ import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
 
-const COMMAND_NAME = 'rank';
+const COMMAND_NAME = 'ranks';
 
 export = {
   data: new SlashCommandBuilder()
