@@ -658,7 +658,7 @@ export async function setMusicData(guildId: PGuild['id'], newMusicData: MusicDat
   return updateWriteOpResult && updateWriteOpResult.modifiedCount === 1;
 }
 
-export async function deletedChannelSync(channelToRemove: VoiceChannel | TextChannel): Promise<PortalChannelType> {
+export async function handleChannelDeletion(channelToRemove: VoiceChannel | TextChannel): Promise<PortalChannelType> {
   const pGuild = await fetchGuildChannelDelete(channelToRemove.guild.id);
 
   if (!pGuild) {
@@ -715,5 +715,6 @@ export async function deletedChannelSync(channelToRemove: VoiceChannel | TextCha
       }
     }
   }
+
   return PortalChannelType.unknown;
 }
