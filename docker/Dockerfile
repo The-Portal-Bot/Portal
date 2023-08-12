@@ -17,4 +17,4 @@ RUN npm install typescript --save-dev
 COPY . .
 
 RUN npm run build
-CMD [ "node", "build/index.js" ]
+CMD [ "node", "build/app.js" ]
