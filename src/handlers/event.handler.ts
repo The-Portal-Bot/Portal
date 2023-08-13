@@ -1,52 +1,30 @@
-import {
-  Channel,
-  ChannelType,
-  ChatInputCommandInteraction,
-  Client,
-  EmbedBuilder,
-  Guild,
-  GuildMember,
-  Message,
-  MessageCreateOptions,
-  MessagePayload,
-  MessageReaction,
-  PartialDMChannel,
-  PartialGuildMember,
-  PartialMessage,
-  PartialMessageReaction,
-  PartialUser,
-  User,
-  VoiceState,
-} from 'discord.js';
-import channelDelete from '../events/channelDelete.event';
-import guildCreate from '../events/guildCreate.event';
-import guildDelete from '../events/guildDelete.event';
-import guildMemberAdd from '../events/guildMemberAdd.event';
-import guildMemberRemove from '../events/guildMemberRemove.event';
-import messageDelete from '../events/messageDelete.event';
-import messageReactionAdd from '../events/messageReactionAdd.event';
-import ready from '../events/ready.event';
-import voiceStateUpdate from '../events/voiceStateUpdate.event';
+import { Channel, ChannelType, ChatInputCommandInteraction, Client, EmbedBuilder, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from 'discord.js';
+import * as EventFunctions from '../events';
 import { isUserAuthorised, logger } from '../libraries/help.library';
 import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
 import { commandFetcher } from '../libraries/preprocessor.library';
 import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface';
 import { commandLoader } from './command.handler';
 
-type HandledEvents =
-  | 'ready'
-  | 'channelDelete'
-  | 'guildCreate'
-  | 'guildDelete'
-  | 'guildMemberAdd'
-  | 'guildMemberRemove'
-  | 'messageDelete'
-  | 'messageReactionAdd'
-  | 'voiceStateUpdate';
+type HandledEvents = 'ready' | 'channelDelete' | 'guildCreate' | 'guildDelete' | 'guildMemberAdd' | 'guildMemberRemove' | 'messageDelete' | 'messageReactionAdd' | 'voiceStateUpdate';
 
-async function eventLoader(
-  event: HandledEvents,
-  args:
+interface EventMap {
+  [key: string]: typeof EventFunctions[keyof typeof EventFunctions];
+}
+
+const eventFunctionMap: EventMap = {
+  ready: EventFunctions.ready,
+  channelDelete: EventFunctions.channelDelete,
+  guildCreate: EventFunctions.guildCreate,
+  guildDelete: EventFunctions.guildDelete,
+  guildMemberAdd: EventFunctions.guildMemberAdd,
+  guildMemberRemove: EventFunctions.guildMemberRemove,
+  messageDelete: EventFunctions.messageDelete,
+  messageReactionAdd: EventFunctions.messageReactionAdd,
+  voiceStateUpdate: EventFunctions.voiceStateUpdate,
+};
+
+type Arguments =
     | { channel: Channel | PartialDMChannel }
     | { client: Client; guild: Guild }
     | { guild: Guild }
@@ -55,40 +33,14 @@ async function eventLoader(
     | { client: Client; messageReaction: MessageReaction | PartialMessageReaction; user: User | PartialUser }
     | { client: Client }
     | { client: Client; newState: VoiceState; oldState: VoiceState }
-) {
-  let eventFunction = undefined;
-  switch (event) {
-    case 'ready':
-      eventFunction = ready;
-      break;
-    case 'channelDelete':
-      eventFunction = channelDelete;
-      break;
-    case 'guildCreate':
-      eventFunction = guildCreate;
-      break;
-    case 'guildDelete':
-      eventFunction = guildDelete;
-      break;
-    case 'guildMemberAdd':
-      eventFunction = guildMemberAdd;
-      break;
-    case 'guildMemberRemove':
-      eventFunction = guildMemberRemove;
-      break;
-    case 'messageDelete':
-      eventFunction = messageDelete;
-      break;
-    case 'messageReactionAdd':
-      eventFunction = messageReactionAdd;
-      break;
-    case 'voiceStateUpdate':
-      eventFunction = voiceStateUpdate;
-      break;
-    default:
-      return;
-  }
 
+async function eventLoader(event: HandledEvents, args: Arguments) {
+  const eventFunction = eventFunctionMap[event];
+
+  if (!eventFunction) {
+    logger.debug(`[event-handled] ${event} is unhandled`);
+    return;
+  }
 
   try {
     // @ts-expect-error args can be a multitude of things
@@ -99,90 +51,7 @@ async function eventLoader(
   }
 }
 
-export async function eventHandler(
-  client: Client,
-  activeCooldowns: ActiveCooldowns = { guild: [], member: [] }
-  // spamCache: SpamCache[] = []
-) {
-  // This event will run if the bot starts, and logs in, successfully.
-  client.once('ready', () => eventLoader('ready', { client }));
-
-  // This event triggers when the bot joins a guild.
-  client.on('channelDelete', (channel: Channel | PartialDMChannel) => {
-    eventLoader('channelDelete', {
-      channel: channel,
-    });
-  });
-
-  // This event triggers when the bot joins a guild
-  client.on('guildCreate', (guild: Guild) =>
-    eventLoader('guildCreate', {
-      client,
-      guild,
-    })
-  );
-
-  // this event triggers when the bot is removed from a guild
-  client.on('guildDelete', (guild: Guild) =>
-    eventLoader('guildDelete', {
-      guild,
-    })
-  );
-
-  // This event triggers when a new member joins a guild.
-  client.on('guildMemberAdd', (member: GuildMember) => {
-    eventLoader('guildMemberAdd', {
-      member: member,
-    });
-  });
-
-  // This event triggers when a new member leaves a guild.
-  client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
-    eventLoader('guildMemberRemove', { member });
-  });
-
-  // This event triggers when a message is deleted
-  client.on('messageDelete', (message: Message | PartialMessage) => eventLoader('messageDelete', { client, message }));
-
-  // This event triggers when a member reacts to a message
-  client.on(
-    'messageReactionAdd',
-    (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
-      eventLoader('messageReactionAdd', {
-        client,
-        messageReaction,
-        user,
-      })
-  );
-
-  // This event triggers when a member joins or leaves a voice channel
-  client.on('voiceStateUpdate', (oldState: VoiceState, newState: VoiceState) => {
-    const newChannel = newState.channel; // join channel
-    const oldChannel = oldState.channel; // left channel
-
-    // mute / unmute deafen user are ignored
-    if (oldChannel && newChannel && newChannel.id === oldChannel.id) {
-      return;
-    }
-
-    eventLoader('voiceStateUpdate', { client, oldState, newState });
-  });
-
-  // This event will run when a slash command is called.
-  client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) return;
-    logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
-
-    const response = await handleInteractionCommand(client, interaction as ChatInputCommandInteraction, activeCooldowns);
-    const reply = typeof response.content === 'string'
-      ? { content: response.content, ephemeral: response.ephemeral }
-      : { embeds: response.content, ephemeral: response.ephemeral };
-
-    await interaction.reply(reply);
-  });
-}
-
-async function handleInteractionCommand(
+async function handleCommandInteraction(
   client: Client,
   interaction: ChatInputCommandInteraction,
   activeCooldowns: ActiveCooldowns
@@ -190,6 +59,7 @@ async function handleInteractionCommand(
   if (!interaction || !interaction.user || !interaction.member || !interaction.guild || !interaction.channel) {
     return { content: 'interaction is missing data', ephemeral: false };
   }
+
   if (interaction.channel.type === ChannelType.DM || interaction.user.bot) {
     return { content: 'interaction was made in DM or by bot', ephemeral: false };
   }
@@ -272,9 +142,45 @@ async function handleInteractionCommand(
     return { content: 'something went wrong', ephemeral: false };
   }
 
-  if (commandResponse.result) {
-    return { content: commandResponse.value !== '' ? commandResponse.value : 'command succeeded', ephemeral: command.commandOptions.ephemeral };
-  } else {
-    return { content: commandResponse.value !== '' ? commandResponse.value : 'command failed', ephemeral: command.commandOptions.ephemeral };
-  }
+  const content = commandResponse.value !== '' ? commandResponse.value : 'command succeeded';
+  const ephemeral = command.commandOptions.ephemeral;
+
+  return { content, ephemeral };
+}
+
+export async function eventHandler(client: Client, activeCooldowns: ActiveCooldowns = { guild: [], member: [] }) {
+  // This event will run if the bot starts, and logs in, successfully.
+  client.once('ready', () => eventLoader('ready', { client }));
+  // This event triggers when a channel is deleted
+  client.on('channelDelete', (channel) => eventLoader('channelDelete', { channel }));
+  // This event triggers when the bot joins a guild
+  client.on('guildCreate', (guild) => eventLoader('guildCreate', { client, guild }));
+  // this event triggers when the bot is removed from a guild
+  client.on('guildDelete', (guild) => eventLoader('guildDelete', { guild }));
+  // This event triggers when a new member joins a guild.
+  client.on('guildMemberAdd', (member) => eventLoader('guildMemberAdd', { member }));
+  // This event triggers when a new member leaves a guild.
+  client.on('guildMemberRemove', (member) => eventLoader('guildMemberRemove', { member }));
+  // This event triggers when a message is deleted
+  client.on('messageDelete', (message) => eventLoader('messageDelete', { client, message }));
+  // This event triggers when a member reacts to a message
+  client.on('messageReactionAdd', (messageReaction, user) => eventLoader('messageReactionAdd', { client, messageReaction, user }));
+  // This event triggers when a member joins or leaves a voice channel
+  client.on('voiceStateUpdate', (oldState /* left channel */, newState /* joined channel */) => {
+    if (oldState.channel?.id !== newState.channel?.id) {
+      eventLoader('voiceStateUpdate', { client, oldState, newState });
+    }
+  });
+  // This event will run when a slash command is called.
+  client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+    logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
+
+    const response = await handleCommandInteraction(client, interaction as ChatInputCommandInteraction, activeCooldowns);
+    const reply = typeof response.content === 'string'
+      ? { content: response.content, ephemeral: response.ephemeral }
+      : { embeds: response.content, ephemeral: response.ephemeral };
+
+    await interaction.reply(reply);
+  });
 }

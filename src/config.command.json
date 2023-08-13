@@ -334,7 +334,7 @@
         "auth": true,
         "premium": true,
         "reply": false,
-        "ephemeral": true,
+        "ephemeral": false,
         "delete": {
           "source": false,
           "reply": true

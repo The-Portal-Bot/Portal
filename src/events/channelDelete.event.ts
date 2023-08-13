@@ -1,24 +1,24 @@
-import { Channel, ChannelType, PartialDMChannel, TextChannel, VoiceChannel } from 'discord.js';
+import { ChannelType, DMChannel, GuildChannel, TextChannel, VoiceChannel } from 'discord.js';
+import { handleChannelDeletion } from '../libraries/mongo.library';
 import { PortalChannelType } from '../types/enums/PortalChannel.enum';
-import { deletedChannelSync } from '../libraries/mongo.library';
 
-export default async function channelDelete(args: { channel: Channel | PartialDMChannel }): Promise<string> {
+export default async function channelDelete(args: { channel: DMChannel | GuildChannel }): Promise<string> {
   if (args.channel.type !== ChannelType.GuildText && args.channel.type !== ChannelType.GuildVoice) {
     throw new Error('only voice and text channels are handled');
   }
 
-  const currentChannel = typeof args.channel === typeof VoiceChannel
-    ? args.channel as VoiceChannel
+  const deletedChannel = args.channel instanceof VoiceChannel
+    ? args.channel
     : args.channel as TextChannel;
 
-  const deletedPChannel = await deletedChannelSync(currentChannel);
+  const deletedChannelPortalType = await handleChannelDeletion(deletedChannel);
 
-  if (!Object.values(PortalChannelType).includes(deletedPChannel)) {
-    throw new Error(`error syncing deleted channel from ${currentChannel.guild.name}|${currentChannel.guild.id}`);
+  if (!Object.values(PortalChannelType).includes(deletedChannelPortalType)) {
+    throw new Error('Only guild voice and text channels are handled');
   }
 
-  return deletedPChannel > 0
-    ? `${PortalChannelType[deletedPChannel].toString()} channel removed from ` +
-    `${currentChannel.guild.name}|${currentChannel.guild.id}`
-    : `${currentChannel.name} channel is not controlled by Portal`;
+  return deletedChannelPortalType > 0
+    ? `${PortalChannelType[deletedChannelPortalType].toString()} channel removed from ` +
+    `${deletedChannel.guild.name}|${deletedChannel.guild.id}`
+    : `${deletedChannel.name} channel is not controlled by Portal`;
 }

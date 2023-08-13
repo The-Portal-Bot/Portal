@@ -1,13 +1,13 @@
-import { Guild, EmbedBuilder, VoiceChannel } from 'discord.js';
 import dayjs from 'dayjs';
-import { AuthType } from '../enums/Admin.enum';
+import calendar from 'dayjs/plugin/calendar';
+import { EmbedBuilder, Guild, VoiceChannel } from 'discord.js';
 import { createEmbed } from '../../libraries/help.library';
 import { getStatusList } from '../../libraries/status.library';
 import { PGuild } from '../classes/PGuild.class';
 import { PChannel } from '../classes/PPortalChannel.class';
 import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
 import { PVoiceChannel } from '../classes/PVoiceChannel.class';
-import calendar from 'dayjs/plugin/calendar';
+import { AuthType } from '../enums/Admin.enum';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
@@ -434,6 +434,43 @@ const variables: InterfaceBlueprint[] = [
   },
 ];
 
+function getLink(variable: string): string {
+  const url = PORTAL_URL + INTERPRETER_URL + '/variables';
+  const general = ['creatorPortal', 'creatorVoice', '##', '#'];
+  const member = ['pMembers', 'memberCount', 'memberActiveCount', 'memberWithStatus', 'memberHistory'];
+  const status = ['statusList', 'statusCount', 'statusHistory'];
+  const time = [
+    'date',
+    'dayNumber',
+    'dayName',
+    'monthNumber',
+    'monthName',
+    'year',
+    'time',
+    'hour',
+    'minute',
+    'second',
+  ];
+
+  if (general.includes(variable)) {
+    if (variable === '##') {
+      return `${url}/detailed/general/slash`;
+    } else if (variable === '#') {
+      return `${url}/detailed/general/doubleSlash`;
+    } else {
+      return `${url}/detailed/general/${variable}`;
+    }
+  } else if (member.includes(variable)) {
+    return `${url}/detailed/member/${variable}`;
+  } else if (status.includes(variable)) {
+    return `${url}/detailed/status/${variable}`;
+  } else if (time.includes(variable)) {
+    return `${url}/detailed/time/${variable}`;
+  } else {
+    return `${url}/description`;
+  }
+}
+
 export function isVariable(candidate: string): string {
   for (let i = 0; i < variables.length; i++) {
     const subString = String(candidate).substring(1, String(variables[i].name).length + 1);
@@ -491,43 +528,6 @@ export function getVariableGuide(): EmbedBuilder {
     null,
     null
   );
-}
-
-function getLink(variable: string): string {
-  const url = PORTAL_URL + INTERPRETER_URL + '/variables';
-  const general = ['creatorPortal', 'creatorVoice', '##', '#'];
-  const member = ['pMembers', 'memberCount', 'memberActiveCount', 'memberWithStatus', 'memberHistory'];
-  const status = ['statusList', 'statusCount', 'statusHistory'];
-  const time = [
-    'date',
-    'dayNumber',
-    'dayName',
-    'monthNumber',
-    'monthName',
-    'year',
-    'time',
-    'hour',
-    'minute',
-    'second',
-  ];
-
-  if (general.includes(variable)) {
-    if (variable === '##') {
-      return `${url}/detailed/general/slash`;
-    } else if (variable === '#') {
-      return `${url}/detailed/general/doubleSlash`;
-    } else {
-      return `${url}/detailed/general/${variable}`;
-    }
-  } else if (member.includes(variable)) {
-    return `${url}/detailed/member/${variable}`;
-  } else if (status.includes(variable)) {
-    return `${url}/detailed/status/${variable}`;
-  } else if (time.includes(variable)) {
-    return `${url}/detailed/time/${variable}`;
-  } else {
-    return `${url}/description`;
-  }
 }
 
 export function getVariableHelp(): EmbedBuilder[] {

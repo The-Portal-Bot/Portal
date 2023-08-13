@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { APIUser, ChatInputCommandInteraction, User } from 'discord.js';
+import { ChatInputCommandInteraction, User } from 'discord.js';
 import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
@@ -46,8 +46,7 @@ export = {
             inline: false,
           },
         ],
-        (interaction.member?.user as User)?.avatarURL()
-        ?? null,
+        (interaction.member?.user as User)?.avatarURL() ?? null,
         null,
         true,
         null,

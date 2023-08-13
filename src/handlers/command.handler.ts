@@ -1,38 +1,6 @@
 import { ChatInputCommandInteraction, Client } from 'discord.js';
-import announcement from '../commands/auth/announcement';
-import ban from '../commands/auth/ban';
-import delete_messages from '../commands/auth/delete_messages';
-import force from '../commands/auth/force';
-import ignore from '../commands/auth/ignore';
-import invite from '../commands/auth/invite';
-import kick from '../commands/auth/kick';
-import music from '../commands/auth/music';
-import portal from '../commands/auth/portal';
-import set from '../commands/auth/set';
-import set_ranks from '../commands/auth/set_ranks';
-import url from '../commands/auth/url';
-import vendor from '../commands/auth/vendor';
-import about from '../commands/noAuth/about';
-import announce from '../commands/noAuth/announce';
-import bet from '../commands/noAuth/bet';
-import corona from '../commands/noAuth/corona';
-import crypto from '../commands/noAuth/crypto';
-import focus from '../commands/noAuth/focus';
-import football from '../commands/noAuth/football';
-import help from '../commands/noAuth/help';
-import join from '../commands/noAuth/join';
-import leaderboard from '../commands/noAuth/leaderboard';
-import leave from '../commands/noAuth/leave';
-import level from '../commands/noAuth/level';
-import ping from '../commands/noAuth/ping';
-import poll from '../commands/noAuth/poll';
-import ranks from '../commands/noAuth/ranks';
-import roll from '../commands/noAuth/roll';
-import run from '../commands/noAuth/run';
-import spam_rules from '../commands/noAuth/spam_rules';
-import state from '../commands/noAuth/state';
-import weather from '../commands/noAuth/weather';
-import whoami from '../commands/noAuth/whoami';
+import * as authCommands from '../commands/auth';
+import * as noAuthCommands from '../commands/noAuth';
 import { logger, pad, timeElapsed } from '../libraries/help.library';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
@@ -42,6 +10,43 @@ import {
   NoAuthCommands,
   ScopeLimit
 } from '../types/classes/PTypes.interface';
+
+const commandMap = {
+  about: noAuthCommands.about,
+  announce: noAuthCommands.announce,
+  bet: noAuthCommands.bet,
+  corona: noAuthCommands.corona,
+  crypto: noAuthCommands.crypto,
+  focus: noAuthCommands.focus,
+  football: noAuthCommands.football,
+  help: noAuthCommands.help,
+  join: noAuthCommands.join,
+  leaderboard: noAuthCommands.leaderboard,
+  leave: noAuthCommands.leave,
+  level: noAuthCommands.level,
+  ping: noAuthCommands.ping,
+  poll: noAuthCommands.poll,
+  ranks: noAuthCommands.ranks,
+  roll: noAuthCommands.roll,
+  run: noAuthCommands.run,
+  state: noAuthCommands.state,
+  spam_rules: noAuthCommands.spam_rules,
+  weather: noAuthCommands.weather,
+  whoami: noAuthCommands.whoami,
+  announcement: authCommands.announcement,
+  ban: authCommands.ban,
+  delete_messages: authCommands.delete_messages,
+  force: authCommands.force,
+  ignore: authCommands.ignore,
+  invite: authCommands.invite,
+  kick: authCommands.kick,
+  music: authCommands.music,
+  portal: authCommands.portal,
+  vendor: authCommands.vendor,
+  set_ranks: authCommands.set_ranks,
+  set: authCommands.set,
+  url: authCommands.url
+};
 
 export async function commandLoader(
   interaction: ChatInputCommandInteraction,
@@ -105,221 +110,10 @@ export async function commandLoader(
   return commandReturn;
 }
 
-// export async function commandLoaderOld(
-//   client: Client,
-//   message: Message,
-//   command: AuthCommands | NoAuthCommands,
-//   args: string[],
-//   scopeLimit: ScopeLimit,
-//   commandOptions: CommandOptions,
-//   pGuild: PGuild
-//   // activeCooldowns: ActiveCooldowns
-// ) {
-//   if (scopeLimit === 'none' && commandOptions.time === 0) {
-//     const commandReturn = await commandResolver(command)
-//       .execute(message, args, pGuild, client)
-//       .catch((e: string) => {
-//         messageReply(false, message, e, commandOptions.delete.source, commandOptions.delete.reply).catch((e) =>
-//           logger.error(new Error('failed to send message'))
-//         );
-//       });
-
-//     if (commandReturn) {
-//       messageReply(
-//         commandReturn.result,
-//         message,
-//         commandReturn.value,
-//         commandOptions.delete.source,
-//         commandOptions.delete.reply
-//       ).catch(() => logger.error(new Error('failed to send message')));
-//     }
-
-//     return;
-//   }
-
-//   const active = activeCooldowns[scopeLimit].find((activeCurrent) => {
-//     if (activeCurrent.command === command) {
-//       if (scopeLimit === ScopeLimit.MEMBER && activeCurrent.member === message.author.id) {
-//         if (message.guild && activeCurrent.guild === message.guild.id) {
-//           return true;
-//         }
-//       }
-
-//       if (scopeLimit === ScopeLimit.GUILD) {
-//         if (message.guild && activeCurrent.guild === message.guild.id) {
-//           return true;
-//         }
-//       }
-//     }
-
-//     return false;
-//   });
-
-//   if (active) {
-//     const time = timeElapsed(active.timestamp, commandOptions.time);
-
-//     const typeForMessage =
-//       scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${message.guild?.name}**` : `.*`;
-
-//     const mustWaitMessage =
-//       `you need to wait **${pad(time.remainingMin)}:` +
-//       `${pad(time.remainingSec)}/${pad(time.timeoutMin)}:` +
-//       `${pad(time.timeoutSec)}** *to use* **${command}** *again${typeForMessage}`;
-
-//     messageReply(false, message, mustWaitMessage, true, true).catch((e) =>
-//       logger.error(new Error(`failed to reply to message: ${e}`))
-//     );
-
-//     return;
-//   }
-
-//   let commandReturn: ReturnPromise;
-//   try {
-//     commandReturn = await commandResolver(command).execute(message, args, pGuild, client);
-//   } catch (e) {
-//     logger.error(new Error(`in ${command} got error ${e}`));
-//     throw Error('Got error in command execution');
-//   }
-
-//   if (commandReturn) {
-//     if (commandReturn.result) {
-//       if (message.guild) {
-//         activeCooldowns[scopeLimit].push({
-//           member: message.author.id,
-//           guild: message.guild.id,
-//           command: command,
-//           timestamp: Date.now(),
-//         });
-
-//         if (commandOptions) {
-//           setTimeout(() => {
-//             activeCooldowns[scopeLimit] = activeCooldowns[scopeLimit].filter((active) => active.command !== command);
-//           }, commandOptions.time * 60 * 1000);
-//         }
-//       }
-//     }
-
-//     messageReply(
-//       commandReturn.result,
-//       message,
-//       commandReturn.value,
-//       commandOptions.delete.source,
-//       commandOptions.delete.reply
-//     ).catch((e) => {
-//       logger.error(new Error(`in ${command} got error ${e}`));
-//     });
-//   } else {
-//     logger.error(new Error(`did not get response from command: ${command}`));
-//   }
-// }
-
 export function commandResolver(command: AuthCommands | NoAuthCommands) {
-  let commandFile = undefined;
+  const commandFile = commandMap[command];
 
-  switch (command) {
-  case 'about':
-    commandFile = about;
-    break;
-  case 'announce':
-    commandFile = announce;
-    break;
-  case 'bet':
-    commandFile = bet;
-    break;
-  case 'corona':
-    commandFile = corona;
-    break;
-  case 'crypto':
-    commandFile = crypto;
-    break;
-  case 'focus':
-    commandFile = focus;
-    break;
-  case 'football':
-    commandFile = football;
-    break;
-  case 'help':
-    commandFile = help;
-    break;
-  case 'join':
-    commandFile = join;
-    break;
-  case 'leaderboard':
-    commandFile = leaderboard;
-    break;
-  case 'leave':
-    commandFile = leave;
-    break;
-  case 'level':
-    commandFile = level;
-    break;
-  case 'ping':
-    commandFile = ping;
-    break;
-  case 'poll':
-    commandFile = poll;
-    break;
-  case 'ranks':
-    commandFile = ranks;
-    break;
-  case 'roll':
-    commandFile = roll;
-    break;
-  case 'run':
-    commandFile = run;
-    break;
-  case 'state':
-    commandFile = state;
-    break;
-  case 'spam_rules':
-    commandFile = spam_rules;
-    break;
-  case 'weather':
-    commandFile = weather;
-    break;
-  case 'whoami':
-    commandFile = whoami;
-    break;
-  case 'announcement':
-    commandFile = announcement;
-    break;
-  case 'ban':
-    commandFile = ban;
-    break;
-  case 'delete_messages':
-    commandFile = delete_messages;
-    break;
-  case 'force':
-    commandFile = force;
-    break;
-  case 'ignore':
-    commandFile = ignore;
-    break;
-  case 'invite':
-    commandFile = invite;
-    break;
-  case 'kick':
-    commandFile = kick;
-    break;
-  case 'music':
-    commandFile = music;
-    break;
-  case 'portal':
-    commandFile = portal;
-    break;
-  case 'vendor':
-    commandFile = vendor;
-    break;
-  case 'set_ranks':
-    commandFile = set_ranks;
-    break;
-  case 'set':
-    commandFile = set;
-    break;
-  case 'url':
-    commandFile = url;
-    break;
-  default:
+  if (!commandFile) {
     throw Error(`command ${command} not found`);
   }
 
