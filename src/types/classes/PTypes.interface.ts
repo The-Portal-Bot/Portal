@@ -173,7 +173,7 @@ export type TimeRemaining = {
   remainingSec: number;
 };
 
-export type InterfaceBlueprint = {
+export type Blueprint = {
   name: string;
   hover: string;
   get: any;

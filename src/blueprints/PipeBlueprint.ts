@@ -1,10 +1,8 @@
 import voca from 'voca';
-import { InterfaceBlueprint } from '../classes/PTypes.interface';
-import { AuthType } from '../enums/Admin.enum';
+import { Blueprint } from '../types/classes/PTypes.interface';
+import { AuthType } from '../types/enums/Admin.enum';
 
-export const PIPE_PREFIX = '|';
-
-export const PipeBlueprints: InterfaceBlueprint[] = [
+export const PipeBlueprints: Blueprint[] = [
   {
     name: 'acronym',
     hover: 'make acronym',
@@ -203,28 +201,6 @@ export const PipeBlueprints: InterfaceBlueprint[] = [
     auth: AuthType.none,
   },
 ];
-
-export function isPipe(candidate: string): string {
-  for (let i = 0; i < PipeBlueprints.length; i++) {
-    const subString = String(candidate).substring(1, String(PipeBlueprints[i].name).length + 1);
-
-    if (subString == PipeBlueprints[i].name) {
-      return PipeBlueprints[i].name;
-    }
-  }
-
-  return '';
-}
-
-export function getPipe(str: string | string[], pipe: string): string | number {
-  for (let l = 0; l < PipeBlueprints.length; l++) {
-    if (pipe === PipeBlueprints[l].name) {
-      return PipeBlueprints[l].get(str);
-    }
-  }
-
-  return -1;
-}
 
 function mostFrequent(array: string[], return_number: boolean): string | number {
   if (array.length == 0) {

@@ -3,7 +3,8 @@ import {
 } from 'discord.js';
 import { createEmbed } from '../../../libraries/help.library';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { ATTRIBUTE_PREFIX, AttributeBlueprints } from '../../../types/interfaces/Attribute.interface';
+import { AttributeBlueprints } from '../../../blueprints/AttributeBlueprint';
+import { Prefix } from '../../../types/enums/Prefix.enum';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
@@ -90,7 +91,7 @@ export class AttributeDocumentation implements HelpDocumentation {
           '/attributes/description) ' +
           'are options that can be manipulated by whomever has clearance.\n' +
           'Prefix: ' +
-          ATTRIBUTE_PREFIX,
+          Prefix.ATTRIBUTE,
           '#FF5714',
           attributeArray[0],
           null,
@@ -114,7 +115,7 @@ export class AttributeDocumentation implements HelpDocumentation {
           '#FF5714',
           [
             { emote: 'Type', role: 'Attribute', inline: true },
-            { emote: 'Prefix', role: `${ATTRIBUTE_PREFIX}`, inline: true },
+            { emote: 'Prefix', role: `${Prefix.ATTRIBUTE}`, inline: true },
             {
               emote: 'Description',
               role: `[hover or click](${this.getLink(candidate)} "${AttributeBlueprints[i].hover}")`,

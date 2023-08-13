@@ -1,7 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { PIPE_PREFIX, PipeBlueprints } from '../../../types/interfaces/Pipe.interface';
+import { PipeBlueprints } from '../../../blueprints/PipeBlueprint';
 import { createEmbed } from '../../../libraries/help.library';
+import { Prefix } from '../../../types/enums/Prefix.enum';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
@@ -80,7 +81,7 @@ export class PipeDocumentation implements HelpDocumentation {
           '/pipes/description) ' +
           'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
           'Prefix: ' +
-          PIPE_PREFIX,
+          Prefix.PIPE,
           '#6EEB83',
           pipeArray[0],
           null,
@@ -104,7 +105,7 @@ export class PipeDocumentation implements HelpDocumentation {
           '#6EEB83',
           [
             { emote: 'Type', role: 'Pipe', inline: true },
-            { emote: 'Prefix', role: `${PIPE_PREFIX}`, inline: true },
+            { emote: 'Prefix', role: `${Prefix.PIPE}`, inline: true },
             {
               emote: 'Description',
               role:

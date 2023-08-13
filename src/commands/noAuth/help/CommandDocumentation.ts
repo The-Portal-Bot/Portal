@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { getCommandList } from '../../../types/interfaces/Command.interface';
 import { createEmbed } from '../../../libraries/help.library';
+import commandConfig from '../../../config.command.json';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 
@@ -39,7 +39,7 @@ export class CommandDocumentation implements HelpDocumentation {
   }
 
   public getHelp():  EmbedBuilder[] {
-    const commands = getCommandList();
+    const commands = this.getCommandList();
     const commandArray: Field[][] = [];
 
     for (let l = 0; l <= commands.length / 25; l++) {
@@ -73,7 +73,7 @@ export class CommandDocumentation implements HelpDocumentation {
   }
 
   public getHelpDetailed(candidate: string):  EmbedBuilder | boolean {
-    const commands = getCommandList();
+    const commands = this.getCommandList();
 
     for (let i = 0; i < commands.length; i++) {
       if (commands[i].name === candidate) {
@@ -99,5 +99,20 @@ export class CommandDocumentation implements HelpDocumentation {
     }
 
     return false;
+  }
+
+  private getCommandList() {
+    const commandList = [];
+
+    for (let i = 0; i < commandConfig.length; i++) {
+      for (let j = 0; j < commandConfig[i].commands.length; j++) {
+        commandList.push({
+          name: commandConfig[i].commands[j].name,
+          hover: commandConfig[i].commands[j].description
+        });
+      }
+    }
+
+    return commandList;
   }
 }

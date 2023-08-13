@@ -1,7 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
 import { createEmbed } from '../../../libraries/help.library';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { STRUCTURE_PREFIX, StructureBlueprint } from '../../../types/interfaces/Structure.interface';
+import { StructureBlueprint } from '../../../blueprints/StructureBlueprint';
+import { Prefix } from '../../../types/enums/Prefix.enum';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
@@ -81,7 +82,7 @@ export class StructureDocumentation implements HelpDocumentation {
           '/structures/description) ' +
           'conditional flow manipulators (if this do that, or if that do this).\n' +
           'Prefix: ' +
-          STRUCTURE_PREFIX,
+          Prefix.STRUCTURE,
           '#EEB902',
           structArray[0],
           null,
@@ -105,7 +106,7 @@ export class StructureDocumentation implements HelpDocumentation {
           '#EEB902',
           [
             { emote: 'Type', role: 'structures', inline: true },
-            { emote: 'Prefix', role: `${STRUCTURE_PREFIX}`, inline: true },
+            { emote: 'Prefix', role: `${Prefix.STRUCTURE}`, inline: true },
             {
               emote: 'Description',
               role:

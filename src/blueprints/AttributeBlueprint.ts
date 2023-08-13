@@ -6,21 +6,19 @@ import {
   OverwriteType,
   VoiceChannel
 } from 'discord.js';
-import { getKeyFromEnum, isMod, isUserAuthorised } from '../../libraries/help.library';
-import { updateGuild, updateMember, updatePortal, updateVoice } from '../../libraries/mongo.library';
-import { PGuild } from '../classes/PGuild.class';
-import { PMember } from '../classes/PMember.class';
-import { PChannel } from '../classes/PPortalChannel.class';
-import { InterfaceBlueprint, ReturnPromise } from '../classes/PTypes.interface';
-import { PVoiceChannel } from '../classes/PVoiceChannel.class';
-import { AuthType } from '../enums/Admin.enum';
-import { Locale, LocaleList } from '../enums/Locales.enum';
-import { ProfanityLevel, ProfanityLevelList } from '../enums/ProfanityLevel.enum';
-import { RankSpeed, RankSpeedList } from '../enums/RankSpeed.enum';
+import { getKeyFromEnum, isMod } from '../libraries/help.library';
+import { updateGuild, updateMember, updatePortal, updateVoice } from '../libraries/mongo.library';
+import { PGuild } from '../types/classes/PGuild.class';
+import { PMember } from '../types/classes/PMember.class';
+import { PChannel } from '../types/classes/PPortalChannel.class';
+import { Blueprint, ReturnPromise } from '../types/classes/PTypes.interface';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import { AuthType } from '../types/enums/Admin.enum';
+import { Locale, LocaleList } from '../types/enums/Locales.enum';
+import { ProfanityLevel, ProfanityLevelList } from '../types/enums/ProfanityLevel.enum';
+import { RankSpeed, RankSpeedList } from '../types/enums/RankSpeed.enum';
 
-export const ATTRIBUTE_PREFIX = '&';
-
-export const AttributeBlueprints: InterfaceBlueprint[] = [
+export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.annAnnounce',
     hover: 'if voice channels spawned by portal channel will make announcements',
@@ -2186,128 +2184,3 @@ export const AttributeBlueprints: InterfaceBlueprint[] = [
     auth: AuthType.voice,
   },
 ];
-
-export function isAttribute(candidate: string): string {
-  for (let i = 0; i < AttributeBlueprints.length; i++) {
-    const subStr = String(candidate).substring(1, String(AttributeBlueprints[i].name).length + 1);
-
-    if (subStr == AttributeBlueprints[i].name) {
-      return AttributeBlueprints[i].name;
-    }
-  }
-
-  return '';
-}
-
-export function getAttribute(
-  voiceChannel: VoiceChannel | undefined | null,
-  pVoiceChannel: PVoiceChannel | undefined | null,
-  pChannels: PChannel[] | undefined | null,
-  pGuild: PGuild,
-  guild: Guild,
-  attribute: string
-): string | number | boolean {
-  for (let l = 0; l < AttributeBlueprints.length; l++) {
-    if (attribute === AttributeBlueprints[l].name) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-      return AttributeBlueprints[l].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
-    }
-  }
-
-  return -1;
-}
-
-export async function setAttribute(
-  voiceChannel: VoiceChannel | undefined | null,
-  pGuild: PGuild,
-  candidate: string,
-  value: string,
-  member: GuildMember,
-  message: Message
-): Promise<ReturnPromise> {
-  let pVoiceChannel: PVoiceChannel | undefined = undefined;
-  let pChannel: PChannel | undefined = undefined;
-
-  for (let l = 0; l < AttributeBlueprints.length; l++) {
-    if (candidate === AttributeBlueprints[l].name) {
-      switch (AttributeBlueprints[l].auth) {
-      case AuthType.admin:
-        if (!isUserAuthorised(member)) {
-          return {
-            result: false,
-            value: `attribute ${candidate} can only be **set by an administrator**`,
-          };
-        }
-
-        break;
-      case AuthType.none:
-        // passes through no checks needed
-        break;
-      default:
-        if (!voiceChannel) {
-          return {
-            result: false,
-            value: 'you must be in a channel handled by Portal',
-          };
-        }
-
-        for (let i = 0; i < pGuild.pChannels.length; i++) {
-          for (let j = 0; j < pGuild.pChannels[i].pVoiceChannels.length; j++) {
-            if (pGuild.pChannels[i].pVoiceChannels[j].id === voiceChannel.id) {
-              pChannel = pGuild.pChannels[i];
-              pVoiceChannel = pGuild.pChannels[i].pVoiceChannels[j];
-
-              break;
-            }
-          }
-        }
-
-        if (!pChannel || !pVoiceChannel) {
-          return {
-            result: false,
-            value: 'you must be in a channel handled by Portal',
-          };
-        }
-
-        if (AttributeBlueprints[l].auth === AuthType.portal) {
-          if (pChannel.creatorId !== member.id) {
-            return {
-              result: false,
-              value: `attribute ${candidate} can only be **set by the portal creator**`,
-            };
-          }
-        } else if (AttributeBlueprints[l].auth === AuthType.voice) {
-          if (pVoiceChannel.creatorId !== member.id) {
-            return {
-              result: false,
-              value: `attribute ${candidate} can only be **set by the voice creator**`,
-            };
-          }
-        }
-
-        break;
-      }
-
-      const pMember = pGuild.pMembers.find((m) => m.id === member.id);
-
-      try {
-        return await AttributeBlueprints[l].set(voiceChannel, pVoiceChannel, pChannel, pGuild, value, pMember, message);
-      } catch (e) {
-        return {
-          result: false,
-          value: `attribute ${candidate} failed to be set: ${e}`,
-        };
-      }
-    } else if (l + 1 === AttributeBlueprints.length) {
-      return {
-        result: false,
-        value: `${candidate} is not an attribute`,
-      };
-    }
-  }
-
-  return {
-    result: false,
-    value: 'fail',
-  };
-}

@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {
   CategoryChannel,
   CategoryChannelResolvable,
@@ -17,15 +18,15 @@ import {
   VoiceChannel,
   VoiceState
 } from 'discord.js';
-import dayjs from 'dayjs';
 import voca from 'voca';
+import { getAttribute, isAttribute } from '../Interpreter/AttributeFunctions';
+import { getPipe, isPipe } from '../Interpreter/PipeFunctions';
+import { getVariable, isVariable } from '../Interpreter/VariableFunctions';
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import { PortalChannelType } from '../types/enums/PortalChannel.enum';
-import { ATTRIBUTE_PREFIX, getAttribute, isAttribute } from '../types/interfaces/Attribute.interface';
-import { PIPE_PREFIX, getPipe, isPipe } from '../types/interfaces/Pipe.interface';
-import { VARIABLE_PREFIX, getVariable, isVariable } from '../types/interfaces/Variable.interface';
+import { Prefix } from '../types/enums/Prefix.enum';
 import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, logger, maxString } from './help.library';
 import { insertVoice } from './mongo.library';
 
@@ -559,7 +560,7 @@ export function regexInterpreter(
   let newChannelName = '';
 
   for (let i = 0; i < regex.length; i++) {
-    if (regex[i] === VARIABLE_PREFIX) {
+    if (regex[i] === Prefix.VARIABLE) {
       const variable = isVariable(regex.substring(i));
 
       if (variable.length !== 0) {
@@ -584,7 +585,7 @@ export function regexInterpreter(
       } else {
         newChannelName += regex[i];
       }
-    } else if (regex[i] === ATTRIBUTE_PREFIX) {
+    } else if (regex[i] === Prefix.ATTRIBUTE) {
       const attr = isAttribute(regex.substring(i));
 
       if (attr.length !== 0) {
@@ -611,7 +612,7 @@ export function regexInterpreter(
       } else {
         newChannelName += regex[i];
       }
-    } else if (regex[i] === PIPE_PREFIX) {
+    } else if (regex[i] === Prefix.PIPE) {
       const pipe = isPipe(regex.substring(i));
 
       if (pipe.length !== 0) {

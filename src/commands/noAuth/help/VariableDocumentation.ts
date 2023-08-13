@@ -1,7 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
 import { createEmbed } from '../../../libraries/help.library';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { VARIABLE_PREFIX, VariableBlueprints } from '../../../types/interfaces/Variable.interface';
+import { VariableBlueprints } from '../../../blueprints/VariableBlueprint';
+import { Prefix } from '../../../types/enums/Prefix.enum';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
@@ -78,7 +79,7 @@ export class VariableDocumentation implements HelpDocumentation {
           '/variables/description) ' +
           'are immutable and live data that return information about your current voice channel.\n' +
           'Prefix: ' +
-          VARIABLE_PREFIX,
+          Prefix.VARIABLE,
           '#1BE7FF',
           variableArray[0],
           null,
@@ -102,7 +103,7 @@ export class VariableDocumentation implements HelpDocumentation {
           '#1BE7FF',
           [
             { emote: 'Type', role: 'Variables', inline: true },
-            { emote: 'Prefix', role: `${VARIABLE_PREFIX}`, inline: true },
+            { emote: 'Prefix', role: `${Prefix.VARIABLE}`, inline: true },
             {
               emote: 'Description',
               role: `[hover or click](${this.getLink(candidate)} "${VariableBlueprints[i].hover}")`,

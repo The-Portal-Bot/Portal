@@ -1,16 +1,13 @@
 import dayjs from 'dayjs';
 import calendar from 'dayjs/plugin/calendar';
-import { Guild, VoiceChannel } from 'discord.js';
-import { getStatusList } from '../../libraries/status.library';
-import { PGuild } from '../classes/PGuild.class';
-import { PChannel } from '../classes/PPortalChannel.class';
-import { InterfaceBlueprint } from '../classes/PTypes.interface';
-import { PVoiceChannel } from '../classes/PVoiceChannel.class';
-import { AuthType } from '../enums/Admin.enum';
+import { VoiceChannel } from 'discord.js';
+import { getStatusList } from '../libraries/status.library';
+import { PChannel } from '../types/classes/PPortalChannel.class';
+import { Blueprint } from '../types/classes/PTypes.interface';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+import { AuthType } from '../types/enums/Admin.enum';
 
-export const VARIABLE_PREFIX = '$';
-
-export const VariableBlueprints: InterfaceBlueprint[] = [
+export const VariableBlueprints: Blueprint[] = [
   {
     name: '##',
     hover: 'number of voice channel with #',
@@ -430,38 +427,3 @@ export const VariableBlueprints: InterfaceBlueprint[] = [
     auth: AuthType.none,
   },
 ];
-
-export function isVariable(candidate: string): string {
-  for (let i = 0; i < VariableBlueprints.length; i++) {
-    const subString = String(candidate).substring(1, String(VariableBlueprints[i].name).length + 1);
-
-    if (subString === VariableBlueprints[i].name) {
-      return VariableBlueprints[i].name;
-    }
-  }
-
-  return '';
-}
-
-export function getVariable(
-  voiceChannel: VoiceChannel | undefined | null,
-  pVoiceChannel: PVoiceChannel | undefined | null,
-  pChannels: PChannel[] | undefined | null,
-  pGuild: PGuild,
-  guild: Guild,
-  variable: string
-) {
-  let variableIndex = -1;
-  for (let l = 0; l < VariableBlueprints.length; l++) {
-    if (variable === VariableBlueprints[l].name) {
-      variableIndex = l;
-      break;
-    }
-  }
-
-  if (variableIndex === -1) {
-    return -1;
-  }
-
-  return VariableBlueprints[variableIndex].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
-}
