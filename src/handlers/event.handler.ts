@@ -51,43 +51,6 @@ async function eventLoader(event: HandledEvents, args: Arguments) {
   }
 }
 
-export async function eventHandler(client: Client, activeCooldowns: ActiveCooldowns = { guild: [], member: [] }) {
-  // This event will run if the bot starts, and logs in, successfully.
-  client.once('ready', () => eventLoader('ready', { client }));
-  // This event triggers when a channel is deleted
-  client.on('channelDelete', (channel) => eventLoader('channelDelete', { channel }));
-  // This event triggers when the bot joins a guild
-  client.on('guildCreate', (guild) => eventLoader('guildCreate', { client, guild }));
-  // this event triggers when the bot is removed from a guild
-  client.on('guildDelete', (guild) => eventLoader('guildDelete', { guild }));
-  // This event triggers when a new member joins a guild.
-  client.on('guildMemberAdd', (member) => eventLoader('guildMemberAdd', { member }));
-  // This event triggers when a new member leaves a guild.
-  client.on('guildMemberRemove', (member) => eventLoader('guildMemberRemove', { member }));
-  // This event triggers when a message is deleted
-  client.on('messageDelete', (message) => eventLoader('messageDelete', { client, message }));
-  // This event triggers when a member reacts to a message
-  client.on('messageReactionAdd', (messageReaction, user) => eventLoader('messageReactionAdd', { client, messageReaction, user }));
-  // This event triggers when a member joins or leaves a voice channel
-  client.on('voiceStateUpdate', (oldState /* left channel */, newState /* joined channel */) => {
-    if (oldState.channel?.id !== newState.channel?.id) {
-      eventLoader('voiceStateUpdate', { client, oldState, newState });
-    }
-  });
-  // This event will run when a slash command is called.
-  client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) return;
-    logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
-
-    const response = await handleCommandInteraction(client, interaction as ChatInputCommandInteraction, activeCooldowns);
-    const reply = typeof response.content === 'string'
-      ? { content: response.content, ephemeral: response.ephemeral }
-      : { embeds: response.content, ephemeral: response.ephemeral };
-
-    await interaction.reply(reply);
-  });
-}
-
 async function handleCommandInteraction(
   client: Client,
   interaction: ChatInputCommandInteraction,
@@ -183,4 +146,41 @@ async function handleCommandInteraction(
   const ephemeral = command.commandOptions.ephemeral;
 
   return { content, ephemeral };
+}
+
+export async function eventHandler(client: Client, activeCooldowns: ActiveCooldowns = { guild: [], member: [] }) {
+  // This event will run if the bot starts, and logs in, successfully.
+  client.once('ready', () => eventLoader('ready', { client }));
+  // This event triggers when a channel is deleted
+  client.on('channelDelete', (channel) => eventLoader('channelDelete', { channel }));
+  // This event triggers when the bot joins a guild
+  client.on('guildCreate', (guild) => eventLoader('guildCreate', { client, guild }));
+  // this event triggers when the bot is removed from a guild
+  client.on('guildDelete', (guild) => eventLoader('guildDelete', { guild }));
+  // This event triggers when a new member joins a guild.
+  client.on('guildMemberAdd', (member) => eventLoader('guildMemberAdd', { member }));
+  // This event triggers when a new member leaves a guild.
+  client.on('guildMemberRemove', (member) => eventLoader('guildMemberRemove', { member }));
+  // This event triggers when a message is deleted
+  client.on('messageDelete', (message) => eventLoader('messageDelete', { client, message }));
+  // This event triggers when a member reacts to a message
+  client.on('messageReactionAdd', (messageReaction, user) => eventLoader('messageReactionAdd', { client, messageReaction, user }));
+  // This event triggers when a member joins or leaves a voice channel
+  client.on('voiceStateUpdate', (oldState /* left channel */, newState /* joined channel */) => {
+    if (oldState.channel?.id !== newState.channel?.id) {
+      eventLoader('voiceStateUpdate', { client, oldState, newState });
+    }
+  });
+  // This event will run when a slash command is called.
+  client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+    logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
+
+    const response = await handleCommandInteraction(client, interaction as ChatInputCommandInteraction, activeCooldowns);
+    const reply = typeof response.content === 'string'
+      ? { content: response.content, ephemeral: response.ephemeral }
+      : { embeds: response.content, ephemeral: response.ephemeral };
+
+    await interaction.reply(reply);
+  });
 }
