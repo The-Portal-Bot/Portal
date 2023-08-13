@@ -1,14 +1,10 @@
 import voca from 'voca';
+import { InterfaceBlueprint } from '../classes/PTypes.interface';
 import { AuthType } from '../enums/Admin.enum';
-import { createEmbed } from '../../libraries/help.library';
-import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
-import { EmbedBuilder } from 'discord.js';
 
-const PORTAL_URL = 'https://portal-bot.xyz/docs';
-const INTERPRETER_URL = '/interpreter/objects';
 export const PIPE_PREFIX = '|';
 
-const pipes: InterfaceBlueprint[] = [
+export const PipeBlueprints: InterfaceBlueprint[] = [
   {
     name: 'acronym',
     hover: 'make acronym',
@@ -209,139 +205,21 @@ const pipes: InterfaceBlueprint[] = [
 ];
 
 export function isPipe(candidate: string): string {
-  for (let i = 0; i < pipes.length; i++) {
-    const subString = String(candidate).substring(1, String(pipes[i].name).length + 1);
+  for (let i = 0; i < PipeBlueprints.length; i++) {
+    const subString = String(candidate).substring(1, String(PipeBlueprints[i].name).length + 1);
 
-    if (subString == pipes[i].name) {
-      return pipes[i].name;
+    if (subString == PipeBlueprints[i].name) {
+      return PipeBlueprints[i].name;
     }
   }
 
   return '';
 }
 
-export function getPipeGuide(): EmbedBuilder {
-  const pipe_array: Field[] = [
-    {
-      emote: 'Used in Regex Interpreter',
-      role: '*used by channel name (regex, regex_voice, regex_portal) and run command*',
-      inline: true,
-    },
-    {
-      emote: 'Pipes are inextricably linked with text',
-      role: '*pipes can used on plain text or even variables and attributes*',
-      inline: true,
-    },
-    {
-      emote: '1.\tIn any text channel execute command `./run`',
-      role: './run just like channel name generation uses the text interpreter',
-      inline: false,
-    },
-    {
-      emote: '2.\t`./run My locale in caps is = &g.locale | upperCase`',
-      role: './run executes the given text and replies with the processed output',
-      inline: false,
-    },
-    {
-      emote: '3.\tAwait a reply from portal which will be gr, de or en',
-      role: '*The replied string will look like this: `My locale in caps is = GR`*',
-      inline: false,
-    },
-  ];
-
-  return createEmbed(
-    'Pipe Guide',
-    '[Pipes](' +
-    PORTAL_URL +
-    INTERPRETER_URL +
-    '/pipes/description) ' +
-    'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
-    'How to use pipes with the Text Interpreter',
-    '#6EEB83',
-    pipe_array,
-    null,
-    null,
-    null,
-    null,
-    null
-  );
-}
-
-export function getPipeHelp(): EmbedBuilder[] {
-  const pipeArray: Field[][] = [];
-
-  for (let l = 0; l <= pipes.length / 25; l++) {
-    pipeArray[l] = [];
-    for (let i = 24 * l; i < pipes.length && i < 24 * (l + 1); i++) {
-      pipeArray[l].push({
-        emote: `${i + 1}. ${pipes[i].name}`,
-        role:
-          `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
-          `/pipes/detailed/${pipes[i].name} "${pipes[i].hover}")`,
-        inline: true,
-      });
-    }
-  }
-
-  return pipeArray.map((command, index): EmbedBuilder => {
-    if (index === 0) {
-      return createEmbed(
-        'Pipes',
-        '[Pipes](' +
-        PORTAL_URL +
-        INTERPRETER_URL +
-        '/pipes/description) ' +
-        'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
-        'Prefix: ' +
-        PIPE_PREFIX,
-        '#6EEB83',
-        pipeArray[0],
-        null,
-        null,
-        null,
-        null,
-        null
-      );
-    } else {
-      return createEmbed(null, null, '#6EEB83', pipeArray[index], null, null, null, null, null);
-    }
-  });
-}
-
-export function getPipeHelpSuper(candidate: string): EmbedBuilder | boolean {
-  for (let i = 0; i < pipes.length; i++) {
-    if (pipes[i].name === candidate) {
-      return createEmbed(
-        pipes[i].name,
-        null,
-        '#6EEB83',
-        [
-          { emote: 'Type', role: 'Pipe', inline: true },
-          { emote: 'Prefix', role: `${PIPE_PREFIX}`, inline: true },
-          {
-            emote: 'Description',
-            role:
-              `[hover or click](${PORTAL_URL}${INTERPRETER_URL}` +
-              `/pipes/detailed/${candidate} "${pipes[i].hover}")`,
-            inline: true,
-          },
-        ],
-        null,
-        null,
-        null,
-        null,
-        null
-      );
-    }
-  }
-
-  return false;
-}
-
 export function getPipe(str: string | string[], pipe: string): string | number {
-  for (let l = 0; l < pipes.length; l++) {
-    if (pipe === pipes[l].name) {
-      return pipes[l].get(str);
+  for (let l = 0; l < PipeBlueprints.length; l++) {
+    if (pipe === PipeBlueprints[l].name) {
+      return PipeBlueprints[l].get(str);
     }
   }
 

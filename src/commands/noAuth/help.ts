@@ -2,11 +2,12 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
 import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
-import { getAttributeGuide, getAttributeHelp, getAttributeHelpSuper } from '../../types/interfaces/Attribute.interface';
-import { getCommandGuide, getCommandHelp, getCommandHelpSuper } from '../../types/interfaces/Command.interface';
-import { getPipeGuide, getPipeHelp, getPipeHelpSuper } from '../../types/interfaces/Pipe.interface';
-import { getStructureGuide, getStructureHelp, getStructureHelpSuper } from '../../types/interfaces/Structure.interface';
-import { getVariableGuide, getVariableHelp, getVariableHelpSuper } from '../../types/interfaces/Variable.interface';
+
+import { AttributeDocumentation } from './help/AttributeDocumentation';
+import { CommandDocumentation } from './help/CommandDocumentation';
+import { PipeDocumentation } from './help/PipeDocumentation';
+import { StructureDocumentation } from './help/StructureDocumentation';
+import { VariableDocumentation } from './help/VariableDocumentation';
 
 const COMMAND_NAME = 'help';
 
@@ -188,23 +189,30 @@ export = {
     }
 
     if (category === 'all') {
-      const response = await await simpleReply();
+      const response = await simpleReply();
       return { result: !!response, value: response };
     }
 
     if (category.startsWith('description')) {
-      const response = await await propertyReply(category.split('_')[1], specific);
+      const response = await propertyReply(category.split('_')[1], specific);
       return { result: !!response, value: response };
     }
 
     if (category.startsWith('guide')) {
-      const response = await await guideReply(category.split('_')[1]);
+      const response = await guideReply(category.split('_')[1]);
       return { result: !!response, value: response };
     }
 
     return { result: false, value: messageHelp('commands', 'help') };
   },
 };
+
+
+const commandDocumentation = new CommandDocumentation();
+const variableDocumentation = new VariableDocumentation();
+const pipeDocumentation = new PipeDocumentation();
+const attributeDocumentation = new AttributeDocumentation();
+const structureDocumentation = new StructureDocumentation();
 
 const helpArray: Field[] = [
   {
@@ -293,11 +301,11 @@ async function simpleReply() {
 
 async function propertyReply(type: string, specific: string | null) {
   if (specific) {
-    const detailed = getCommandHelpSuper(specific) ||
-      getVariableHelpSuper(specific) ||
-      getPipeHelpSuper(specific) ||
-      getAttributeHelpSuper(specific) ||
-      getStructureHelpSuper(specific);
+    const detailed = commandDocumentation.getHelpDetailed(specific) ||
+      variableDocumentation.getHelpDetailed(specific) ||
+      pipeDocumentation.getHelpDetailed(specific) ||
+      attributeDocumentation.getHelpDetailed(specific) ||
+      structureDocumentation.getHelpDetailed(specific);
 
     if (detailed instanceof EmbedBuilder) {
       return [detailed];
@@ -308,15 +316,15 @@ async function propertyReply(type: string, specific: string | null) {
 
   switch (type) {
   case 'commands':
-    return getCommandHelp();
+    return commandDocumentation.getHelp();
   case 'variables':
-    return getVariableHelp();
+    return variableDocumentation.getHelp();
   case 'pipes':
-    return getPipeHelp();
+    return pipeDocumentation.getHelp();
   case 'attributes':
-    return getAttributeHelp();
+    return attributeDocumentation.getHelp();
   case 'structures':
-    return getStructureHelp();
+    return structureDocumentation.getHelp();
   }
 
   return messageHelp('commands', 'help', `*${type}* does not exist in portal`);
@@ -327,19 +335,19 @@ async function guideReply(type: string) {
 
   switch (type) {
   case 'commands':
-    guide = getCommandGuide();
+    guide = commandDocumentation.getGuide();
     break;
   case 'variables':
-    guide = getVariableGuide();
+    guide = variableDocumentation.getGuide();
     break;
   case 'pipes':
-    guide = getPipeGuide();
+    guide = pipeDocumentation.getGuide();
     break;
   case 'attributes':
-    guide = getAttributeGuide();
+    guide = attributeDocumentation.getGuide();
     break;
   case 'structures':
-    guide = getStructureGuide();
+    guide = structureDocumentation.getGuide();
     break;
   }
 

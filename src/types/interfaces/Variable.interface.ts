@@ -1,19 +1,16 @@
 import dayjs from 'dayjs';
 import calendar from 'dayjs/plugin/calendar';
-import { EmbedBuilder, Guild, VoiceChannel } from 'discord.js';
-import { createEmbed } from '../../libraries/help.library';
+import { Guild, VoiceChannel } from 'discord.js';
 import { getStatusList } from '../../libraries/status.library';
 import { PGuild } from '../classes/PGuild.class';
 import { PChannel } from '../classes/PPortalChannel.class';
-import { Field, InterfaceBlueprint } from '../classes/PTypes.interface';
+import { InterfaceBlueprint } from '../classes/PTypes.interface';
 import { PVoiceChannel } from '../classes/PVoiceChannel.class';
 import { AuthType } from '../enums/Admin.enum';
 
-const PORTAL_URL = 'https://portal-bot.xyz/docs';
-const INTERPRETER_URL = '/interpreter/objects';
 export const VARIABLE_PREFIX = '$';
 
-const variables: InterfaceBlueprint[] = [
+export const VariableBlueprints: InterfaceBlueprint[] = [
   {
     name: '##',
     hover: 'number of voice channel with #',
@@ -434,167 +431,16 @@ const variables: InterfaceBlueprint[] = [
   },
 ];
 
-function getLink(variable: string): string {
-  const url = PORTAL_URL + INTERPRETER_URL + '/variables';
-  const general = ['creatorPortal', 'creatorVoice', '##', '#'];
-  const member = ['pMembers', 'memberCount', 'memberActiveCount', 'memberWithStatus', 'memberHistory'];
-  const status = ['statusList', 'statusCount', 'statusHistory'];
-  const time = [
-    'date',
-    'dayNumber',
-    'dayName',
-    'monthNumber',
-    'monthName',
-    'year',
-    'time',
-    'hour',
-    'minute',
-    'second',
-  ];
-
-  if (general.includes(variable)) {
-    if (variable === '##') {
-      return `${url}/detailed/general/slash`;
-    } else if (variable === '#') {
-      return `${url}/detailed/general/doubleSlash`;
-    } else {
-      return `${url}/detailed/general/${variable}`;
-    }
-  } else if (member.includes(variable)) {
-    return `${url}/detailed/member/${variable}`;
-  } else if (status.includes(variable)) {
-    return `${url}/detailed/status/${variable}`;
-  } else if (time.includes(variable)) {
-    return `${url}/detailed/time/${variable}`;
-  } else {
-    return `${url}/description`;
-  }
-}
-
 export function isVariable(candidate: string): string {
-  for (let i = 0; i < variables.length; i++) {
-    const subString = String(candidate).substring(1, String(variables[i].name).length + 1);
+  for (let i = 0; i < VariableBlueprints.length; i++) {
+    const subString = String(candidate).substring(1, String(VariableBlueprints[i].name).length + 1);
 
-    if (subString === variables[i].name) {
-      return variables[i].name;
+    if (subString === VariableBlueprints[i].name) {
+      return VariableBlueprints[i].name;
     }
   }
 
   return '';
-}
-
-export function getVariableGuide(): EmbedBuilder {
-  const structArray: Field[] = [
-    {
-      emote: 'Used in Regex Interpreter',
-      role: '*used by channel name (regex, regexVoice, regexPortal) and run command*',
-      inline: true,
-    },
-    {
-      emote: 'variables are immutable and live data',
-      role: '*data corresponds to server, portal or voice channel live data*',
-      inline: true,
-    },
-    {
-      emote: '1.\tIn any text channel execute command `./run`',
-      role: './run just like channel name generation uses the text interpreter',
-      inline: false,
-    },
-    {
-      emote: '2.\t`./run The year is $year`',
-      role: './run executes the given text and replies with the processed output',
-      inline: false,
-    },
-    {
-      emote: '3.\tAwait a reply from portal which will be `The year is 2021',
-      role: '*note that at the time of writhing it is 2021*',
-      inline: false,
-    },
-  ];
-
-  return createEmbed(
-    'Variable Guide',
-    '[Variables](' +
-    PORTAL_URL +
-    INTERPRETER_URL +
-    '/variables/description) ' +
-    'are immutable and live data that return information about your current voice channel.\n' +
-    'how to use variables with text interpreter',
-    '#1BE7FF',
-    structArray,
-    null,
-    null,
-    null,
-    null,
-    null
-  );
-}
-
-export function getVariableHelp(): EmbedBuilder[] {
-  const variableArray: Field[][] = [];
-
-  for (let l = 0; l <= variables.length / 24; l++) {
-    variableArray[l] = [];
-    for (let i = 24 * l; i < variables.length && i < 24 * (l + 1); i++) {
-      variableArray[l].push({
-        emote: `${i + 1}. ${variables[i].name}`,
-        role: `[hover or click](${getLink(variables[i].name)} "${getLink(variables[i].hover)}")`,
-        inline: true,
-      });
-    }
-  }
-
-  return variableArray.map((command, index) => {
-    if (index === 0) {
-      return createEmbed(
-        'Variables',
-        '[Variables](' +
-        PORTAL_URL +
-        INTERPRETER_URL +
-        '/variables/description) ' +
-        'are immutable and live data that return information about your current voice channel.\n' +
-        'Prefix: ' +
-        VARIABLE_PREFIX,
-        '#1BE7FF',
-        variableArray[0],
-        null,
-        null,
-        null,
-        null,
-        null
-      );
-    } else {
-      return createEmbed(null, null, '#1BE7FF', variableArray[index], null, null, null, null, null);
-    }
-  });
-}
-
-export function getVariableHelpSuper(candidate: string): EmbedBuilder | boolean {
-  for (let i = 0; i < variables.length; i++) {
-    if (variables[i].name === candidate) {
-      return createEmbed(
-        variables[i].name,
-        null,
-        '#1BE7FF',
-        [
-          { emote: 'Type', role: 'Variables', inline: true },
-          { emote: 'Prefix', role: `${VARIABLE_PREFIX}`, inline: true },
-          {
-            emote: 'Description',
-            role: `[hover or click](${getLink(candidate)} "${variables[i].hover}")`,
-            inline: true,
-          },
-        ],
-        null,
-        null,
-        null,
-        null,
-        null
-      );
-    }
-  }
-
-  return false;
 }
 
 export function getVariable(
@@ -606,8 +452,8 @@ export function getVariable(
   variable: string
 ) {
   let variableIndex = -1;
-  for (let l = 0; l < variables.length; l++) {
-    if (variable === variables[l].name) {
+  for (let l = 0; l < VariableBlueprints.length; l++) {
+    if (variable === VariableBlueprints[l].name) {
       variableIndex = l;
       break;
     }
@@ -617,5 +463,5 @@ export function getVariable(
     return -1;
   }
 
-  return variables[variableIndex].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
+  return VariableBlueprints[variableIndex].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
 }

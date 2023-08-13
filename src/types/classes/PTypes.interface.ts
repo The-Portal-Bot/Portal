@@ -180,3 +180,9 @@ export type InterfaceBlueprint = {
   set: any;
   auth: number;
 };
+
+export interface HelpDocumentation {
+  getGuide: () =>  EmbedBuilder,
+  getHelp: () =>  EmbedBuilder[],
+  getHelpDetailed: (candidate: string) =>  EmbedBuilder | boolean,
+}

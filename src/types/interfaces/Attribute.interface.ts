@@ -1,29 +1,26 @@
 import {
   BaseGuildTextChannel,
-  EmbedBuilder,
   Guild,
   GuildMember,
   Message,
   OverwriteType,
-  VoiceChannel,
+  VoiceChannel
 } from 'discord.js';
-import { AuthType } from '../enums/Admin.enum';
-import { Locale, LocaleList } from '../enums/Locales.enum';
-import { ProfanityLevel, ProfanityLevelList } from '../enums/ProfanityLevel.enum';
-import { RankSpeed, RankSpeedList } from '../enums/RankSpeed.enum';
-import { createEmbed, getKeyFromEnum, isUserAuthorised, isMod } from '../../libraries/help.library';
+import { getKeyFromEnum, isMod, isUserAuthorised } from '../../libraries/help.library';
 import { updateGuild, updateMember, updatePortal, updateVoice } from '../../libraries/mongo.library';
 import { PGuild } from '../classes/PGuild.class';
 import { PMember } from '../classes/PMember.class';
 import { PChannel } from '../classes/PPortalChannel.class';
-import { Field, InterfaceBlueprint, ReturnPromise } from '../classes/PTypes.interface';
+import { InterfaceBlueprint, ReturnPromise } from '../classes/PTypes.interface';
 import { PVoiceChannel } from '../classes/PVoiceChannel.class';
+import { AuthType } from '../enums/Admin.enum';
+import { Locale, LocaleList } from '../enums/Locales.enum';
+import { ProfanityLevel, ProfanityLevelList } from '../enums/ProfanityLevel.enum';
+import { RankSpeed, RankSpeedList } from '../enums/RankSpeed.enum';
 
-const PORTAL_URL = 'https://portal-bot.xyz/docs';
-const INTERPRETER_URL = '/interpreter/objects';
 export const ATTRIBUTE_PREFIX = '&';
 
-const attributes: InterfaceBlueprint[] = [
+export const AttributeBlueprints: InterfaceBlueprint[] = [
   {
     name: 'p.annAnnounce',
     hover: 'if voice channels spawned by portal channel will make announcements',
@@ -2191,154 +2188,15 @@ const attributes: InterfaceBlueprint[] = [
 ];
 
 export function isAttribute(candidate: string): string {
-  for (let i = 0; i < attributes.length; i++) {
-    const subStr = String(candidate).substring(1, String(attributes[i].name).length + 1);
+  for (let i = 0; i < AttributeBlueprints.length; i++) {
+    const subStr = String(candidate).substring(1, String(AttributeBlueprints[i].name).length + 1);
 
-    if (subStr == attributes[i].name) {
-      return attributes[i].name;
+    if (subStr == AttributeBlueprints[i].name) {
+      return AttributeBlueprints[i].name;
     }
   }
 
   return '';
-}
-
-export function getAttributeGuide(): EmbedBuilder {
-  const attrArray: Field[] = [
-    {
-      emote: 'Used in Regex Interpreter',
-      role: '*used by channel name (regex, regexVoice, regexPortal) and run command*',
-      inline: true,
-    },
-    {
-      emote: 'attributes are mutable data options',
-      role: '*options correspond to server, portal or voice channels*',
-      inline: true,
-    },
-    {
-      emote: '1.\tIn any text channel execute command `./run`',
-      role: './run just like channel name generation uses the text interpreter',
-      inline: false,
-    },
-    {
-      emote: '2.\t`./run My set locale is = &g.locale`',
-      role: './run executes the given text and replies with the processed output',
-      inline: false,
-    },
-    {
-      emote: '3.\tAwait a reply from portal which will be gr, de or en',
-      role: '*The replied string will look like this: `My set locale is = gr`*',
-      inline: false,
-    },
-    {
-      emote: '4.\t`./set g.locale de` (no prefix & needed)',
-      role: '*set command, updates the data of an attribute in this case **locale** to **de***',
-      inline: false,
-    },
-    {
-      emote: '5.\tWait for portal response which will be inform you if it was executed without issues',
-      role: '*portal will either confirm update or inform you of the error it faced*',
-      inline: false,
-    },
-  ];
-
-  return createEmbed(
-    'Attribute Guide',
-    '[Attributes](' +
-            PORTAL_URL +
-            INTERPRETER_URL +
-            '/attributes/description) ' +
-            'are options that can be manipulated by whomever has clearance.\n' +
-            'How to use attributes with the Text Interpreter',
-    '#FF5714',
-    attrArray,
-    null,
-    null,
-    null,
-    null,
-    null
-  );
-}
-
-function getLink(attribute: string): string {
-  const url = PORTAL_URL + INTERPRETER_URL + '/attributes';
-
-  if (attribute.indexOf('g.') > -1) {
-    return `${url}/detailed/global/${attribute}`;
-  } else if (attribute.indexOf('m.') > -1) {
-    return `${url}/detailed/member/${attribute}`;
-  } else if (attribute.indexOf('p.') > -1) {
-    return `${url}/detailed/portal/${attribute}`;
-  } else if (attribute.indexOf('v.') > -1) {
-    return `${url}/detailed/voice/${attribute}`;
-  } else {
-    return `${url}/description`;
-  }
-}
-
-export function getAttributeHelp(): EmbedBuilder[] {
-  const attrArray: Field[][] = [];
-
-  for (let l = 0; l <= attributes.length / 25; l++) {
-    attrArray[l] = [];
-    for (let i = 24 * l; i < attributes.length && i < 24 * (l + 1); i++) {
-      attrArray[l].push({
-        emote: `${i + 1}. ${attributes[i].name}`,
-        role: `[hover or click](${getLink(attributes[i].name)} "${attributes[i].hover}")`,
-        inline: true,
-      });
-    }
-  }
-
-  return attrArray.map((command, index) => {
-    if (index === 0) {
-      return createEmbed(
-        'Attributes',
-        '[Attributes](' +
-                    PORTAL_URL +
-                    INTERPRETER_URL +
-                    '/attributes/description) ' +
-                    'are options that can be manipulated by whomever has clearance.\n' +
-                    'Prefix: ' +
-                    ATTRIBUTE_PREFIX,
-        '#FF5714',
-        attrArray[0],
-        null,
-        null,
-        null,
-        null,
-        null
-      );
-    } else {
-      return createEmbed(null, null, '#FF5714', attrArray[index], null, null, null, null, null);
-    }
-  });
-}
-
-export function getAttributeHelpSuper(candidate: string): EmbedBuilder | boolean {
-  for (let i = 0; i < attributes.length; i++) {
-    if (attributes[i].name === candidate) {
-      return createEmbed(
-        attributes[i].name,
-        null,
-        '#FF5714',
-        [
-          { emote: 'Type', role: 'Attribute', inline: true },
-          { emote: 'Prefix', role: `${ATTRIBUTE_PREFIX}`, inline: true },
-          {
-            emote: 'Description',
-            role: `[hover or click](${getLink(candidate)} "${attributes[i].hover}")`,
-            inline: true,
-          },
-        ],
-        null,
-        null,
-        null,
-        null,
-        null
-      );
-    }
-  }
-  return false;
 }
 
 export function getAttribute(
@@ -2349,10 +2207,10 @@ export function getAttribute(
   guild: Guild,
   attribute: string
 ): string | number | boolean {
-  for (let l = 0; l < attributes.length; l++) {
-    if (attribute === attributes[l].name) {
+  for (let l = 0; l < AttributeBlueprints.length; l++) {
+    if (attribute === AttributeBlueprints[l].name) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-      return attributes[l].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
+      return AttributeBlueprints[l].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
     }
   }
 
@@ -2370,9 +2228,9 @@ export async function setAttribute(
   let pVoiceChannel: PVoiceChannel | undefined = undefined;
   let pChannel: PChannel | undefined = undefined;
 
-  for (let l = 0; l < attributes.length; l++) {
-    if (candidate === attributes[l].name) {
-      switch (attributes[l].auth) {
+  for (let l = 0; l < AttributeBlueprints.length; l++) {
+    if (candidate === AttributeBlueprints[l].name) {
+      switch (AttributeBlueprints[l].auth) {
       case AuthType.admin:
         if (!isUserAuthorised(member)) {
           return {
@@ -2411,14 +2269,14 @@ export async function setAttribute(
           };
         }
 
-        if (attributes[l].auth === AuthType.portal) {
+        if (AttributeBlueprints[l].auth === AuthType.portal) {
           if (pChannel.creatorId !== member.id) {
             return {
               result: false,
               value: `attribute ${candidate} can only be **set by the portal creator**`,
             };
           }
-        } else if (attributes[l].auth === AuthType.voice) {
+        } else if (AttributeBlueprints[l].auth === AuthType.voice) {
           if (pVoiceChannel.creatorId !== member.id) {
             return {
               result: false,
@@ -2433,14 +2291,14 @@ export async function setAttribute(
       const pMember = pGuild.pMembers.find((m) => m.id === member.id);
 
       try {
-        return await attributes[l].set(voiceChannel, pVoiceChannel, pChannel, pGuild, value, pMember, message);
+        return await AttributeBlueprints[l].set(voiceChannel, pVoiceChannel, pChannel, pGuild, value, pMember, message);
       } catch (e) {
         return {
           result: false,
           value: `attribute ${candidate} failed to be set: ${e}`,
         };
       }
-    } else if (l + 1 === attributes.length) {
+    } else if (l + 1 === AttributeBlueprints.length) {
       return {
         result: false,
         value: `${candidate} is not an attribute`,
