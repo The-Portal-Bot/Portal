@@ -1,10 +1,7 @@
 import dayjs from 'dayjs';
 import calendar from 'dayjs/plugin/calendar';
-import { VoiceChannel } from 'discord.js';
 import { getStatusList } from '../libraries/status.library';
-import { PChannel } from '../types/classes/PPortalChannel.class';
 import { Blueprint } from '../types/classes/PTypes.interface';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import { AuthType } from '../types/enums/Admin.enum';
 
 export const VariableBlueprints: Blueprint[] = [
@@ -12,10 +9,10 @@ export const VariableBlueprints: Blueprint[] = [
     name: '##',
     hover: 'number of voice channel with #',
     get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild, guild: Guild
-    ) => {
+      {
+        pVoiceChannel,
+        pChannels,
+      }) => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -43,11 +40,10 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: '#',
     hover: 'number of voice channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }) => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -75,11 +71,10 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'creatorPortal',
     hover: 'creator of portal channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }) => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -103,11 +98,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'creatorVoice',
     hover: 'creator of voice channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -120,11 +113,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'date',
     hover: 'current date',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       dayjs.extend(calendar);
 
       if (!pVoiceChannel) {
@@ -139,11 +130,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'dayNumber',
     hover: 'current day in number format',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().date();
       }
@@ -156,11 +145,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'dayName',
     hover: 'current day in text format',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().format('dddd');
       }
@@ -172,11 +159,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'monthNumber',
     hover: 'current month in number format',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().format('M');
       }
@@ -188,11 +173,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'monthName',
     hover: 'current month in text format',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().startOf('month').format('MMMM');
       }
@@ -204,11 +187,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'year',
     hover: 'current year',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().format('yyyy');
       }
@@ -220,11 +201,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'time',
     hover: 'current time',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().format('hh:mm:ss');
       }
@@ -236,11 +215,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'hour',
     hover: 'current hour',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().format('hh');
       }
@@ -252,11 +229,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'minute',
     hover: 'current minute',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().format('mm');
       }
@@ -268,11 +243,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'second',
     hover: 'current second',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      pVoiceChannel,
+    }) => {
       if (!pVoiceChannel) {
         return dayjs().format('ss');
       }
@@ -284,10 +257,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'memberActiveCount',
     hover: 'number of members with status',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      voiceChannel
+    }) => {
       if (!voiceChannel) return 'N/A';
       let cnt = 0;
       voiceChannel.members.forEach((member) => {
@@ -304,10 +276,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'memberCount',
     hover: 'number of members in channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      voiceChannel
+    }) => {
       if (!voiceChannel) return 'N/A';
       let cnt = 0;
       voiceChannel.members.forEach((member) => {
@@ -336,10 +307,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'pMembers',
     hover: 'current members names',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      voiceChannel,
+    }) => {
       if (!voiceChannel) return 'N/A';
       const pMembers: string[] = [];
       voiceChannel.members.forEach((member) => {
@@ -354,10 +324,9 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'memberWithStatus',
     hover: 'names of members with statuses',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      voiceChannel,
+    }) => {
       if (!voiceChannel) return 'N/A';
       const pMembers: string[] = [];
       voiceChannel.members.forEach((member) => {
@@ -374,11 +343,10 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'statusCount',
     hover: 'number of unique statuses',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      voiceChannel,
+      pVoiceChannel,
+    }) => {
       if (!voiceChannel) {
         return 'N/A';
       }
@@ -409,11 +377,10 @@ export const VariableBlueprints: Blueprint[] = [
   {
     name: 'statusList',
     hover: 'all statuses names',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-    ) => {
+    get: ({
+      voiceChannel,
+      pVoiceChannel,
+    }) => {
       if (!voiceChannel) {
         return 'N/A';
       }

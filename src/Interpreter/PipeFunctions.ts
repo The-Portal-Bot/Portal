@@ -12,10 +12,10 @@ export function isPipe(candidate: string): string {
   return '';
 }
 
-export function getPipe(str: string | string[], pipe: string): string | number {
+export function getPipe(string: string | string[], pipe: string): string | number {
   for (let l = 0; l < PipeBlueprints.length; l++) {
     if (pipe === PipeBlueprints[l].name) {
-      return PipeBlueprints[l].get(str);
+      return PipeBlueprints[l].get({ string });
     }
   }
 

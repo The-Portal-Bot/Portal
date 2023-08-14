@@ -17,9 +17,9 @@ export function isVariable(candidate: string): string {
 }
 
 export function getVariable(
-  voiceChannel: VoiceChannel | undefined | null,
-  pVoiceChannel: PVoiceChannel | undefined | null,
-  pChannels: PChannel[] | undefined | null,
+  voiceChannel: VoiceChannel,
+  pVoiceChannel: PVoiceChannel | null,
+  pChannels: PChannel[],
   pGuild: PGuild,
   guild: Guild,
   variable: string
@@ -36,5 +36,11 @@ export function getVariable(
     return -1;
   }
 
-  return VariableBlueprints[variableIndex].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
+  return VariableBlueprints[variableIndex].get({
+    voiceChannel,
+    pVoiceChannel,
+    pChannels,
+    pGuild,
+    guild
+  });
 }

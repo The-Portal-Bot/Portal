@@ -20,17 +20,22 @@ export function isAttribute(candidate: string): string {
 }
 
 export function getAttribute(
-  voiceChannel: VoiceChannel | undefined | null,
-  pVoiceChannel: PVoiceChannel | undefined | null,
-  pChannels: PChannel[] | undefined | null,
+  voiceChannel: VoiceChannel,
+  pVoiceChannel: PVoiceChannel | null,
+  pChannels: PChannel[],
   pGuild: PGuild,
   guild: Guild,
   attribute: string
 ): string | number | boolean {
   for (let l = 0; l < AttributeBlueprints.length; l++) {
     if (attribute === AttributeBlueprints[l].name) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-      return AttributeBlueprints[l].get(voiceChannel, pVoiceChannel, pChannels, pGuild, guild);
+      return AttributeBlueprints[l].get({
+        voiceChannel,
+        pVoiceChannel,
+        pChannels,
+        pGuild,
+        guild
+      });
     }
   }
 

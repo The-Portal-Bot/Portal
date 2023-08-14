@@ -1,4 +1,8 @@
-import { EmbedBuilder, User } from 'discord.js';
+import { EmbedBuilder, Guild, User, VoiceChannel } from 'discord.js';
+import { PChannel } from './PPortalChannel.class';
+import { PVoiceChannel } from './PVoiceChannel.class';
+import { PGuild } from './PGuild.class';
+import { PMember } from './PMember.class';
 
 export type NoAuthCommands =
   | 'about'
@@ -176,9 +180,25 @@ export type TimeRemaining = {
 export type Blueprint = {
   name: string;
   hover: string;
-  get: any;
-  set: any;
   auth: number;
+  get: ({
+    voiceChannel,
+    pVoiceChannel,
+    pChannels,
+    pGuild,
+    guild,
+    pMember,
+    string,
+  }:{
+    voiceChannel?: VoiceChannel,
+    pVoiceChannel?: PVoiceChannel | null,
+    pChannels?: PChannel[],
+    pGuild?: PGuild,
+    guild?: Guild,
+    pMember?: PMember,
+    string?: string | string[]
+  }) => any;
+  set?: any;
 };
 
 export interface HelpDocumentation {

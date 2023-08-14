@@ -544,9 +544,9 @@ export async function generateChannelName(
 
 export function regexInterpreter(
   regex: string,
-  voiceChannel: VoiceChannel | undefined | null,
-  pVoiceChannel: PVoiceChannel | undefined | null,
-  pChannels: PChannel[] | undefined | null,
+  voiceChannel: VoiceChannel,
+  pVoiceChannel: PVoiceChannel | null,
+  pChannels: PChannel[],
   pGuild: PGuild,
   guild: Guild,
   memberId: string
@@ -565,7 +565,6 @@ export function regexInterpreter(
 
       if (variable.length !== 0) {
         const returnValue: string | number = <string>getVariable(
-          // maybe make any ?
           voiceChannel,
           pVoiceChannel,
           pChannels,

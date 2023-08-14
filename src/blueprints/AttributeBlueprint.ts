@@ -22,11 +22,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.annAnnounce',
     hover: 'if voice channels spawned by portal channel will make announcements',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -109,10 +108,9 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.annAnnounce',
     hover: 'if voice channel will make announcements',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -183,11 +181,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.noBots',
     hover: 'if bots can join voice channels spawned by portal channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -269,15 +266,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.noBots',
     hover: 'if bots can join voice channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
-      return pVoiceChannel.noBots;
+      return pVoiceChannel?.noBots ??  false;
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -343,11 +339,11 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.allowedRoles',
     hover: 'the role allowed to create a voice channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt
-    ): string[] | string => {
+    get: ({
+      voiceChannel,
+      pVoiceChannel,
+      pChannels,
+    }): string[] | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -471,11 +467,11 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.v.allowedRoles',
     hover: 'the role given to the spawned voice channels',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt
-    ): string[] | string => {
+    get: ({
+      voiceChannel,
+      pVoiceChannel,
+      pChannels,
+    }): string[] | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -572,10 +568,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.allowedRoles',
     hover: 'the role allowed join the voice channel',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-    ): string[] | string => {
+    get: ({
+      voiceChannel,
+      pVoiceChannel,
+    }): string[] | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -682,11 +678,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.render',
     hover: 'if voice channels spawned by portal channel will use the text interpreter',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -768,10 +763,9 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.render',
     hover: 'if voice channel will use the text interpreter',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -842,11 +836,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.annUser',
     hover: 'if voice channels spawned by portal channel will make join/leave announcements',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -928,10 +921,9 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.annUser',
     hover: 'if voice channel will make join/leave announcements',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -1002,8 +994,8 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.bitrate',
     hover: 'voice channels bitrate',
-    get: (voiceChannel: VoiceChannel): number => {
-      return voiceChannel.bitrate;
+    get: ({ voiceChannel }): number => {
+      return voiceChannel?.bitrate ?? 96000;
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1059,13 +1051,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.kickAfter',
     hover: 'Portals kickAfter',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild // , guild: Guild
-    ): number => {
-      return pGuild.kickAfter;
+    get: ({
+      pGuild,
+    }): number => {
+      return pGuild?.kickAfter ?? 1;
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1118,13 +1107,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.banAfter',
     hover: 'Portals banAfter',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild // , guild: Guild
-    ): number => {
-      return pGuild.banAfter;
+    get: ({
+      pGuild,
+    }): number => {
+      return pGuild?.banAfter ?? 1;
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1174,17 +1160,13 @@ export const AttributeBlueprints: Blueprint[] = [
     },
     auth: AuthType.admin,
   },
-
   {
     name: 'g.prefix',
     hover: 'Portals prefix',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild // , guild: Guild
-    ): string => {
-      return pGuild.prefix;
+    get: ({
+      pGuild,
+    }): string => {
+      return pGuild?.prefix ?? './';
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1219,18 +1201,15 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.muteRole',
     hover: 'role given to muted members',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild,
-      guild: Guild
-    ): string => {
+    get: ({
+      guild,
+      pGuild,
+    }): string => {
       if (!guild) {
         return 'N/A';
       }
 
-      const muteRole = guild.roles.cache.find((r) => r.id === pGuild.muteRole);
+      const muteRole = guild.roles.cache.find((r) => r.id === pGuild?.muteRole);
 
       if (muteRole) {
         return muteRole.name;
@@ -1294,13 +1273,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.rankSpeed',
     hover: 'leveling speed of members',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild // , guild: Guild
-    ): string => {
-      return RankSpeed[pGuild.rankSpeed];
+    get: ({
+      pGuild,
+    }): string => {
+      return RankSpeed[pGuild?.rankSpeed ?? 1];
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1350,13 +1326,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.profanityLevel',
     hover: 'how harsh Portal will be flagging members for use of profanities',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild // , guild: Guild
-    ): string => {
-      return ProfanityLevel[pGuild.profanityLevel];
+    get: ({
+      pGuild,
+    }): string => {
+      return ProfanityLevel[pGuild?.profanityLevel ?? 1];
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1406,18 +1379,15 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.initialRole',
     hover: 'role given to new members',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild,
-      guild: Guild
-    ): string => {
-      if (!pGuild.initialRole || pGuild.initialRole === 'null') {
+    get: ({
+      pGuild,
+      guild
+    }): string => {
+      if (!pGuild?.initialRole || pGuild.initialRole === 'null') {
         return 'initial role has not been set yet 1';
       }
 
-      const role = guild.roles.cache.find((r) => r.id === pGuild.initialRole);
+      const role = guild?.roles.cache.find((r) => r.id === pGuild.initialRole);
 
       if (role) {
         return `@${role.name}`;
@@ -1516,13 +1486,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.locale',
     hover: 'Portals locale',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild // , guild: Guild
-    ): string => {
-      return Locale[pGuild.locale];
+    get: ({
+      pGuild,
+    }): string => {
+      return Locale[pGuild?.locale ?? 1];
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1572,11 +1539,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.locale',
     hover: 'portal channels locale',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -1642,15 +1608,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.locale',
     hover: 'voice channels locale',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-    ): string => {
+    get: ({
+      pVoiceChannel,
+    }): string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
-      return Locale[pVoiceChannel.locale];
+      return Locale[pVoiceChannel?.locale ?? 1];
     },
     set: (
       voiceChannel: VoiceChannel,
@@ -1700,9 +1665,9 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.position',
     hover: 'voice channels position in Discord',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: VoiceChannelPrtl | undefined | null,
-    ): number | string => {
+    get: ({
+      voiceChannel,
+    }): number | string => {
       if (!voiceChannel) {
         return 'N/A';
       }
@@ -1755,11 +1720,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.regexOverwrite',
     hover: 'whether voice channels spawned from portal channel will let users use their own regex',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): boolean | string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -1841,11 +1805,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.regex',
     hover: 'portal channels regex',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -1896,11 +1859,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.v.regex',
     hover: 'voice channels spawned by portal channel regex',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -1951,10 +1913,9 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.regex',
     hover: 'voice channels regex',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null
-    ): string => {
+    get: ({
+      pVoiceChannel,
+    }): string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -1994,14 +1955,9 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'm.regex',
     hover: 'members regex',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null,
-      pGuild: PGuild,
-      guild: Guild,
-      pMember: PMember | undefined
-    ): string => {
+    get: ({
+      pMember,
+    }): string => {
       return pMember && pMember.regex ? pMember.regex : 'not-set';
     },
     set: (
@@ -2049,11 +2005,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.userLimit',
     hover: 'voice channels spawned by portal channel user limit',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null,
-      pVoiceChannel: PVoiceChannel | undefined | null,
-      pChannels: PChannel[] | undefined | null // , pGuild: PGuilt, guild: Guild
-    ): number | string => {
+    get: ({
+      pVoiceChannel,
+      pChannels,
+    }): number | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
@@ -2128,8 +2083,9 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.userLimit',
     hover: 'voice channels user limit',
-    get: (
-      voiceChannel: VoiceChannel | undefined | null // , pVoiceChannel: VoiceChannelPrtl | undefined | null,
+    get: ({
+      voiceChannel
+    }
     ): number | string => {
       if (!voiceChannel) {
         return 'N/A';
