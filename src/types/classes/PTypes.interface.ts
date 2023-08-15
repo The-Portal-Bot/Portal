@@ -197,7 +197,7 @@ export type Blueprint = {
     guild?: Guild,
     pMember?: PMember,
     string?: string | string[]
-  }) => any;
+  }) => boolean | string | string[] | number | undefined;
   set: ({
     voiceChannel,
     pVoiceChannel,
@@ -213,7 +213,7 @@ export type Blueprint = {
     pMember?: PMember,
     message?: Message
   },
-  value: string) => any;
+  value: string) =>  Promise<ReturnPromise> | boolean | string | string[] | number | undefined;
 };
 
 export interface HelpDocumentation {

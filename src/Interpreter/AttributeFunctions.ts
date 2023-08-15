@@ -35,7 +35,7 @@ export function getAttribute(
         pChannels,
         pGuild,
         guild
-      });
+      }) as string | number | boolean;
     }
   }
 
@@ -125,7 +125,7 @@ export async function setAttribute(
           message
         },
         value,
-        );
+        ) as ReturnPromise;
       } catch (e) {
         return {
           result: false,

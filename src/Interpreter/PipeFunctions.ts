@@ -15,7 +15,7 @@ export function isPipe(candidate: string): string {
 export function getPipe(string: string | string[], pipe: string): string | number {
   for (let l = 0; l < PipeBlueprints.length; l++) {
     if (pipe === PipeBlueprints[l].name) {
-      return PipeBlueprints[l].get({ string });
+      return PipeBlueprints[l].get({ string }) as string | number;
     }
   }
 
