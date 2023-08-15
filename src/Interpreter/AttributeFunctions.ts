@@ -43,7 +43,7 @@ export function getAttribute(
 }
 
 export async function setAttribute(
-  voiceChannel: VoiceChannel | undefined | null,
+  voiceChannel: VoiceChannel,
   pGuild: PGuild,
   candidate: string,
   value: string,
@@ -116,7 +116,16 @@ export async function setAttribute(
       const pMember = pGuild.pMembers.find((m) => m.id === member.id);
 
       try {
-        return await AttributeBlueprints[l].set(voiceChannel, pVoiceChannel, pChannel, pGuild, value, pMember, message);
+        return await AttributeBlueprints[l].set({
+          voiceChannel,
+          pVoiceChannel,
+          pChannel,
+          pGuild,
+          pMember,
+          message
+        },
+        value,
+        );
       } catch (e) {
         return {
           result: false,

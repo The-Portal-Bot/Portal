@@ -1,18 +1,10 @@
 import {
   BaseGuildTextChannel,
-  Guild,
-  GuildMember,
-  Message,
-  OverwriteType,
-  VoiceChannel
+  OverwriteType
 } from 'discord.js';
 import { getKeyFromEnum, isMod } from '../libraries/help.library';
 import { updateGuild, updateMember, updatePortal, updateVoice } from '../libraries/mongo.library';
-import { PGuild } from '../types/classes/PGuild.class';
-import { PMember } from '../types/classes/PMember.class';
-import { PChannel } from '../types/classes/PPortalChannel.class';
 import { Blueprint, ReturnPromise } from '../types/classes/PTypes.interface';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import { AuthType } from '../types/enums/Admin.enum';
 import { Locale, LocaleList } from '../types/enums/Locales.enum';
 import { ProfanityLevel, ProfanityLevelList } from '../types/enums/ProfanityLevel.enum';
@@ -44,15 +36,22 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'annAnnounce';
+
+      if (!pGuild) {
+        throw new Error('pGuild is undefined');
+      }
+
+      if (!pChannel) {
+        throw new Error('pChannel is undefined');
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -117,15 +116,27 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.annAnnounce;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string
+    set: ({
+      pVoiceChannel,
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'annAnnounce';
+
+      if (!pGuild) {
+        throw new Error('pGuild is undefined');
+      }
+
+      if (!pChannel) {
+        throw new Error('pChannel is undefined');
+      }
+
+      if (!pVoiceChannel) {
+        throw new Error('pVoiceChannel is undefined');
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -202,15 +213,22 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'noBots';
+
+      if (!pGuild) {
+        throw new Error('pGuild is undefined');
+      }
+
+      if (!pChannel) {
+        throw new Error('pChannel is undefined');
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -275,15 +293,27 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel?.noBots ??  false;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pVoiceChannel,
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'noBots';
+
+      if (!pGuild) {
+        throw new Error('pGuild is undefined');
+      }
+
+      if (!pChannel) {
+        throw new Error('pChannel is undefined');
+      }
+
+      if (!pVoiceChannel) {
+        throw new Error('pVoiceChannel is undefined');
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -382,17 +412,34 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return '@everyone';
     },
-    set: async (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: PMember | undefined,
-      message: Message
-    ): Promise<ReturnPromise> => {
+    set: async ({
+      voiceChannel,
+      pChannel,
+      message,
+    }): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'allowedRoles';
+
+      if (!voiceChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'voice channel is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
+
+      if (!message) {
+        return Promise.resolve({
+          result: false,
+          value: 'pVoiceChannel is undefined',
+        });
+      }
 
       if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
         const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
@@ -504,17 +551,34 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return '@everyone';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: PMember | undefined,
-      message: Message
-    ): Promise<ReturnPromise> => {
+    set: ({
+      pChannel,
+      pGuild,
+      message
+    }): Promise<ReturnPromise> => {
       const category = ['p', 'v'];
       const attribute = 'allowedRoles';
+
+      if (!message) {
+        return Promise.resolve({
+          result: false,
+          value: 'message is undefined',
+        });
+      }
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'portal Guild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'voice channel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
@@ -597,17 +661,27 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return '@everyone';
     },
-    set: async (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: PMember | undefined,
-      message: Message
-    ): Promise<ReturnPromise> => {
+    set: async ({
+      voiceChannel,
+      pChannel,
+      message,
+    }): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'allowedRoles';
+
+      if (!message) {
+        return Promise.resolve({
+          result: false,
+          value: 'message is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'portal channel is undefined',
+        });
+      }
 
       if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
         const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
@@ -685,6 +759,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (!pVoiceChannel) {
         return 'N/A';
       }
+
       if (!pChannels) {
         return 'N/A';
       }
@@ -699,15 +774,28 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'render';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -772,15 +860,36 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.render;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pVoiceChannel,
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'render';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
+
+      if (!pVoiceChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pVoiceChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -857,15 +966,28 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'annUser';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -930,15 +1052,36 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.annUser;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pVoiceChannel,
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'annUser';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
+
+      if (!pVoiceChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pVoiceChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -997,12 +1140,10 @@ export const AttributeBlueprints: Blueprint[] = [
     get: ({ voiceChannel }): number => {
       return voiceChannel?.bitrate ?? 96000;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string //, pMember: MemberPrtl | undefined
+    set: ({
+      voiceChannel,
+    },
+    value: string
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'bitrate';
@@ -1020,6 +1161,13 @@ export const AttributeBlueprints: Blueprint[] = [
           return resolve({
             result: false,
             value: `attribute ${category.join('.') + '.' + attribute} must be greater or equal to 8000`,
+          });
+        }
+
+        if (!voiceChannel) {
+          return Promise.resolve({
+            result: false,
+            value: 'voiceChannel is undefined',
           });
         }
 
@@ -1056,17 +1204,28 @@ export const AttributeBlueprints: Blueprint[] = [
     }): number => {
       return pGuild?.kickAfter ?? 1;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: GuildMember,
-      message: Message
+    set: ({
+      pGuild,
+      message,
+    },
+    value: string
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'kickAfter';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!message) {
+        return Promise.resolve({
+          result: false,
+          value: 'message is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (!isMod(message.member)) {
@@ -1112,17 +1271,28 @@ export const AttributeBlueprints: Blueprint[] = [
     }): number => {
       return pGuild?.banAfter ?? 1;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: PMember | undefined,
-      message: Message
+    set: ({
+      pGuild,
+      message,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'banAfter';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!message) {
+        return Promise.resolve({
+          result: false,
+          value: 'message is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (!isMod(message.member)) {
@@ -1168,15 +1338,20 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return pGuild?.prefix ?? './';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'prefix';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         updateGuild(pGuild.id, attribute, String(value))
@@ -1217,17 +1392,26 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: PMember | undefined,
-      message: Message
-    ): Promise<ReturnPromise> => {
+    set: ({
+      pGuild,
+      message,
+    }): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'muteRole';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!message) {
+        return Promise.resolve({
+          result: false,
+          value: 'message is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
@@ -1278,15 +1462,20 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return RankSpeed[pGuild?.rankSpeed ?? 1];
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'rankSpeed';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         const speed = getKeyFromEnum(value, RankSpeed);
@@ -1331,15 +1520,20 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return ProfanityLevel[pGuild?.profanityLevel ?? 1];
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'profanityLevel';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         const level = getKeyFromEnum(value, ProfanityLevel);
@@ -1395,17 +1589,28 @@ export const AttributeBlueprints: Blueprint[] = [
         return 'initial role has not been set yet 2';
       }
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: PMember | undefined,
-      message: Message
+    set: ({
+      pGuild,
+      message,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'initialRole';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!message) {
+        return Promise.resolve({
+          result: false,
+          value: 'message is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (!message.guild) {
@@ -1491,15 +1696,20 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return Locale[pGuild?.locale ?? 1];
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'locale';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         const locale = getKeyFromEnum(value, Locale);
@@ -1560,15 +1770,28 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'locale';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         const locale = getKeyFromEnum(value, Locale);
@@ -1617,15 +1840,36 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return Locale[pVoiceChannel?.locale ?? 1];
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pVoiceChannel,
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'locale';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
+
+      if (!pVoiceChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pVoiceChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         const locale = getKeyFromEnum(value, Locale);
@@ -1674,15 +1918,20 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return voiceChannel.position;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      voiceChannel,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'position';
+
+      if (!voiceChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'voiceChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (isNaN(Number(value))) {
@@ -1741,15 +1990,28 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'regexOverwrite';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (value === 'true') {
@@ -1826,15 +2088,28 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'regexPortal';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         updatePortal(pGuild.id, pChannel.id, attribute, value)
@@ -1880,15 +2155,28 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p', 'v'];
       const attribute = 'regexVoice';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         updatePortal(pGuild.id, pChannel.id, attribute, value)
@@ -1922,15 +2210,36 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.regex;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string // , pMember: MemberPrtl | undefined
+    set: ({
+      pVoiceChannel,
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'regex';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
+
+      if (!pVoiceChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pVoiceChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, value)
@@ -1960,16 +2269,21 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return pMember && pMember.regex ? pMember.regex : 'not-set';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: string,
-      pMember: PMember | undefined
+    set: ({
+      pGuild,
+      pMember,
+    },
+    value: string
     ): Promise<ReturnPromise> => {
       const category = ['m'];
       const attribute = 'regex';
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (pMember) {
@@ -2027,16 +2341,29 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: number
+    set: ({
+      pChannel,
+      pGuild,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'userLimitPortal';
       const newUserLimit = Number(value);
+
+      if (!pGuild) {
+        return Promise.resolve({
+          result: false,
+          value: 'pGuild is undefined',
+        });
+      }
+
+      if (!pChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'pChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (isNaN(newUserLimit)) {
@@ -2048,7 +2375,7 @@ export const AttributeBlueprints: Blueprint[] = [
           });
         }
 
-        if (value >= 0) {
+        if (newUserLimit >= 0) {
           updatePortal(pGuild.id, pChannel.id, 'userLimitPortal', newUserLimit)
             .then((r) => {
               return resolve({
@@ -2093,16 +2420,21 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return voiceChannel.userLimit;
     },
-    set: (
-      voiceChannel: VoiceChannel,
-      pVoiceChannel: PVoiceChannel,
-      pChannel: PChannel,
-      pGuild: PGuild,
-      value: number
+    set: ({
+      voiceChannel,
+    },
+    value: string,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'userLimit';
       const newUserLimit = Number(value);
+
+      if (!voiceChannel) {
+        return Promise.resolve({
+          result: false,
+          value: 'voiceChannel is undefined',
+        });
+      }
 
       return new Promise((resolve) => {
         if (newUserLimit >= 0) {

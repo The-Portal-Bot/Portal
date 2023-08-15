@@ -34,7 +34,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return '#-';
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -65,7 +65,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return '-';
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -92,7 +92,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return '?';
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -107,7 +107,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return pVoiceChannel.creatorId;
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -124,7 +124,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return dayjs().subtract(10, 'days').calendar();
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -139,7 +139,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return dayjs().date();
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -153,7 +153,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().format('dddd');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -167,7 +167,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().format('M');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -181,7 +181,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().startOf('month').format('MMMM');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -195,7 +195,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().format('yyyy');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -209,7 +209,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().format('hh:mm:ss');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -223,7 +223,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().format('hh');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -237,7 +237,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().format('mm');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -251,7 +251,7 @@ export const VariableBlueprints: Blueprint[] = [
       }
       return dayjs().format('ss');
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -270,7 +270,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return cnt;
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -289,7 +289,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return cnt;
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -301,7 +301,7 @@ export const VariableBlueprints: Blueprint[] = [
     {
       return 'noYetImplemented';
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -318,7 +318,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return pMembers;
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -337,7 +337,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return pMembers;
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -359,7 +359,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return statusList.length;
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -371,7 +371,7 @@ export const VariableBlueprints: Blueprint[] = [
     {
       return 'noYetImplemented';
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
   {
@@ -390,7 +390,7 @@ export const VariableBlueprints: Blueprint[] = [
 
       return getStatusList(voiceChannel, pVoiceChannel);
     },
-    set: null,
+    set: () => undefined,
     auth: AuthType.none,
   },
 ];

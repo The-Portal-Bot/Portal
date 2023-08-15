@@ -1,8 +1,8 @@
-import { EmbedBuilder, Guild, User, VoiceChannel } from 'discord.js';
-import { PChannel } from './PPortalChannel.class';
-import { PVoiceChannel } from './PVoiceChannel.class';
+import { EmbedBuilder, Guild, Message, User, VoiceChannel } from 'discord.js';
 import { PGuild } from './PGuild.class';
 import { PMember } from './PMember.class';
+import { PChannel } from './PPortalChannel.class';
+import { PVoiceChannel } from './PVoiceChannel.class';
 
 export type NoAuthCommands =
   | 'about'
@@ -198,7 +198,22 @@ export type Blueprint = {
     pMember?: PMember,
     string?: string | string[]
   }) => any;
-  set?: any;
+  set: ({
+    voiceChannel,
+    pVoiceChannel,
+    pChannel,
+    pGuild,
+    pMember,
+    message,
+  }:{
+    voiceChannel?: VoiceChannel,
+    pVoiceChannel?: PVoiceChannel | null,
+    pChannel?: PChannel,
+    pGuild?: PGuild,
+    pMember?: PMember,
+    message?: Message
+  },
+  value: string) => any;
 };
 
 export interface HelpDocumentation {
