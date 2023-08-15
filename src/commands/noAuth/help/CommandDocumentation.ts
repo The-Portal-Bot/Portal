@@ -53,7 +53,7 @@ export class CommandDocumentation implements HelpDocumentation {
       }
     }
 
-    return commandArray.map((command, index) => {
+    return commandArray.map((_command, index) => {
       if (index === 0) {
         return createEmbed(
           'Commands',

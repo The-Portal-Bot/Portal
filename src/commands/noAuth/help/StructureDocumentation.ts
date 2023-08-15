@@ -72,7 +72,7 @@ export class StructureDocumentation implements HelpDocumentation {
       }
     }
 
-    return structArray.map((command, index) => {
+    return structArray.map((_structure, index) => {
       if (index === 0) {
         return createEmbed(
           'Structures',

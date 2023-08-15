@@ -71,7 +71,7 @@ export class PipeDocumentation implements HelpDocumentation {
       }
     }
 
-    return pipeArray.map((command, index): EmbedBuilder => {
+    return pipeArray.map((_pipe, index): EmbedBuilder => {
       if (index === 0) {
         return createEmbed(
           'Pipes',
