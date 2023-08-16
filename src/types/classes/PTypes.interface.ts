@@ -1,4 +1,4 @@
-import { EmbedBuilder, Guild, Message, User, VoiceChannel } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, Guild, Message, Role, User, VoiceChannel } from 'discord.js';
 import { PGuild } from './PGuild.class';
 import { PMember } from './PMember.class';
 import { PChannel } from './PPortalChannel.class';
@@ -204,16 +204,16 @@ export type Blueprint = {
     pChannel,
     pGuild,
     pMember,
-    message,
+    interaction,
   }:{
     voiceChannel?: VoiceChannel,
     pVoiceChannel?: PVoiceChannel | null,
     pChannel?: PChannel,
     pGuild?: PGuild,
     pMember?: PMember,
-    message?: Message
+    interaction?: ChatInputCommandInteraction
   },
-  value: string) =>  Promise<ReturnPromise> | boolean | string | string[] | number | undefined;
+  value: string | Role) =>  Promise<ReturnPromise> | boolean | string | string[] | number | undefined;
 };
 
 export interface HelpDocumentation {

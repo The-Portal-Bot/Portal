@@ -1,4 +1,4 @@
-import { VoiceChannel, Guild, GuildMember, Message } from 'discord.js';
+import { VoiceChannel, Guild, GuildMember, Message, ChatInputCommandInteraction, Role } from 'discord.js';
 import { isUserAuthorised } from '../libraries/help.library';
 import { AttributeBlueprints } from '../blueprints/AttributeBlueprint';
 import { PGuild } from '../types/classes/PGuild.class';
@@ -46,9 +46,9 @@ export async function setAttribute(
   voiceChannel: VoiceChannel,
   pGuild: PGuild,
   candidate: string,
-  value: string,
   member: GuildMember,
-  message: Message
+  interaction: ChatInputCommandInteraction,
+  value: string | Role,
 ): Promise<ReturnPromise> {
   let pVoiceChannel: PVoiceChannel | undefined = undefined;
   let pChannel: PChannel | undefined = undefined;
@@ -122,7 +122,7 @@ export async function setAttribute(
           pChannel,
           pGuild,
           pMember,
-          message
+          interaction,
         },
         value,
         ) as ReturnPromise;

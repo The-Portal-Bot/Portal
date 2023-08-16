@@ -1,14 +1,59 @@
 import {
   BaseGuildTextChannel,
-  OverwriteType
+  GuildMember,
+  OverwriteType,
+  Role
 } from 'discord.js';
 import { getKeyFromEnum, isMod } from '../libraries/help.library';
 import { updateGuild, updateMember, updatePortal, updateVoice } from '../libraries/mongo.library';
+import { PGuild } from '../types/classes/PGuild.class';
+import { PChannel } from '../types/classes/PPortalChannel.class';
 import { Blueprint, ReturnPromise } from '../types/classes/PTypes.interface';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import { AuthType } from '../types/enums/Admin.enum';
 import { Locale, LocaleList } from '../types/enums/Locales.enum';
 import { ProfanityLevel, ProfanityLevelList } from '../types/enums/ProfanityLevel.enum';
-import { RankSpeed, RankSpeedList } from '../types/enums/RankSpeed.enum';
+import { RankSpeed } from '../types/enums/RankSpeed.enum';
+import { PMember } from '../types/classes/PMember.class';
+
+function getResponse(response: boolean, category: string[], attribute: string, value: string | number) {
+  const responseValue =  response
+    ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+    : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``;
+
+  return {
+    result: response,
+    value: responseValue,
+  }
+}
+
+async function updatePortalChannelAttribute(pGuildId: PGuild['id'], pChannelIdl: PChannel['id'], category: string[], attribute: string, value: string | number) {
+  const sanitisedValue = value === 'true' ? true : value === 'false' ? false : value;
+  const response = await updatePortal(pGuildId, pChannelIdl, attribute, sanitisedValue);
+
+  return getResponse(response, category, attribute, value);
+}
+
+async function updateVoiceChannelAttribute(pGuildId: PGuild['id'], pChannelId: PChannel['id'], pVoiceChannelId: PVoiceChannel['id'], category: string[], attribute: string, value: string) {
+  const sanitisedValue = value === 'true' ? true : value === 'false' ? false : value;
+  const response = await updateVoice(pGuildId, pChannelId, pVoiceChannelId, attribute, sanitisedValue);
+
+  return getResponse(response, category, attribute, value);
+}
+
+async function updateGuildAttribute(pGuildId: PGuild['id'], category: string[], attribute: string, value: string | number) {
+  const response = await updateGuild(pGuildId, attribute, value);
+
+  return getResponse(response, category, attribute, value);
+}
+
+async function updateMemberAttribute(pGuildId: PGuild['id'], pMemberId: PMember['id'], category: string[], attribute: string, value: string | number) {
+  const response = await updateMember(pGuildId, pMemberId, attribute, value);
+
+  return getResponse(response, category, attribute, value);
+}
+
+//
 
 export const AttributeBlueprints: Blueprint[] = [
   {
@@ -18,89 +63,42 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): boolean | string => {
-      if (!pVoiceChannel) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      if (!pChannels) {
-        return 'N/A';
-      }
-
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
-
-      if (pChannel) {
-        return pChannel.annAnnounce;
+      for (let i = 0; i < pChannels.length; i++) {
+        if (pChannels[i].pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)) {
+          return pChannels[i].annAnnounce;
+        }
       }
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'annAnnounce';
 
-      if (!pGuild) {
-        throw new Error('pGuild is undefined');
+      if (!pGuild || !pChannel) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        throw new Error('pChannel is undefined');
+      if (value !== 'true' && value !== 'false') {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updatePortal(pGuild.id, pChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updatePortal(pGuild.id, pChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.portal,
   },
@@ -116,76 +114,31 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.annAnnounce;
     },
-    set: ({
+    set: async ({
       pVoiceChannel,
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'annAnnounce';
 
-      if (!pGuild) {
-        throw new Error('pGuild is undefined');
+      if (!pGuild || !pChannel || !pVoiceChannel) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        throw new Error('pChannel is undefined');
+      if (value !== 'true' && value !== 'false') {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      if (!pVoiceChannel) {
-        throw new Error('pVoiceChannel is undefined');
-      }
-
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updateVoiceChannelAttribute(pGuild.id, pChannel.id, pVoiceChannel.id, category, attribute, value);
     },
     auth: AuthType.voice,
   },
@@ -196,88 +149,43 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): boolean | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
-
-      if (pChannel) {
-        return pChannel.noBots;
+      for (const pChannel of pChannels) {
+        const voiceChannel = pChannel.pVoiceChannels.find((voice) => voice.id === pVoiceChannel.id);
+        if (voiceChannel) {
+          return voiceChannel.noBots;
+        }
       }
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'noBots';
 
-      if (!pGuild) {
-        throw new Error('pGuild is undefined');
+      if (!pGuild || !pChannel) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        throw new Error('pChannel is undefined');
+      if (value !== 'true' && value !== 'false') {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updatePortal(pGuild.id, pChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updatePortal(pGuild.id, pChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.portal,
   },
@@ -293,76 +201,31 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel?.noBots ??  false;
     },
-    set: ({
+    set: async ({
       pVoiceChannel,
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'noBots';
 
-      if (!pGuild) {
-        throw new Error('pGuild is undefined');
+      if (!pGuild || !pChannel || !pVoiceChannel) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        throw new Error('pChannel is undefined');
+      if (value !== 'true' && value !== 'false') {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      if (!pVoiceChannel) {
-        throw new Error('pVoiceChannel is undefined');
-      }
-
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updateVoiceChannelAttribute(pGuild.id, pChannel.id, pVoiceChannel.id, category, attribute, value);
     },
     auth: AuthType.voice,
   },
@@ -374,13 +237,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): string[] | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!voiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !voiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -412,102 +269,89 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return '@everyone';
     },
-    set: async ({
-      voiceChannel,
-      pChannel,
-      message,
-    }): Promise<ReturnPromise> => {
-      const category = ['p'];
-      const attribute = 'allowedRoles';
-
-      if (!voiceChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'voice channel is undefined',
-        });
+    set: async (): Promise<ReturnPromise> => {
+      return {
+        result: false,
+        value: 'not yet implemented',
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'pChannel is undefined',
-        });
-      }
+      // const category = ['p'];
+      // const attribute = 'allowedRoles';
 
-      if (!message) {
-        return Promise.resolve({
-          result: false,
-          value: 'pVoiceChannel is undefined',
-        });
-      }
+      // if (!voiceChannel || !pChannel || !interaction) {
+      //   return {
+      //     result: false,
+      //     value: 'values are missing from request',
+      //   };
+      // }
 
-      if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
-        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-        if (!message.mentions.everyone && mentionRoles.length === 0) {
-          return Promise.resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-          });
-        }
+      // if (interaction.mentions.everyone || (interaction.mentions && interaction.mentions.roles)) {
+      //   const mentionRoles = Array.prototype.slice.call(interaction.mentions.roles, 0);
+      //   if (!interaction.mentions.everyone && mentionRoles.length === 0) {
+      //     return Promise.resolve({
+      //       result: false,
+      //       value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      //     });
+      //   }
 
-        const channel = voiceChannel.guild.channels.cache.find(
-          (c) => c.id === pChannel.id
-        ) as BaseGuildTextChannel;
+      //   const channel = voiceChannel.guild.channels.cache.find(
+      //     (c) => c.id === pChannel.id
+      //   ) as BaseGuildTextChannel;
 
-        if (!channel) {
-          return Promise.resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-          });
-        }
+      //   if (!channel) {
+      //     return Promise.resolve({
+      //       result: false,
+      //       value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      //     });
+      //   }
 
-        const permittedIds = [];
-        const disallowedIds = [];
+      //   const permittedIds = [];
+      //   const disallowedIds = [];
 
-        if (!message.mentions.everyone) {
-          message.mentions.roles.map((role) => permittedIds.push(role.id));
-          if (message.guild) {
-            permittedIds.push(pChannel.creatorId);
-            disallowedIds.push(message.guild.roles.everyone.id);
-          }
-        } else {
-          if (message && message.guild) {
-            permittedIds.push(message.guild.roles.everyone.id);
-          }
-        }
+      //   if (!interaction.mentions.everyone) {
+      //     interaction.mentions.roles.map((role) => permittedIds.push(role.id));
+      //     if (interaction.guild) {
+      //       permittedIds.push(pChannel.creatorId);
+      //       disallowedIds.push(interaction.guild.roles.everyone.id);
+      //     }
+      //   } else {
+      //     if (interaction && interaction.guild) {
+      //       permittedIds.push(interaction.guild.roles.everyone.id);
+      //     }
+      //   }
 
-        for (const permittedId of permittedIds) {
-          await channel.permissionOverwrites.edit(permittedId, { Connect: true }).catch((e) => {
-            return Promise.resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-        }
+      //   for (const permittedId of permittedIds) {
+      //     await channel.permissionOverwrites.edit(permittedId, { Connect: true }).catch((e) => {
+      //       return Promise.resolve({
+      //         result: false,
+      //         value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+      //       });
+      //     });
+      //   }
 
-        for (const disallowedId of disallowedIds) {
-          await channel.permissionOverwrites.edit(disallowedId, { Connect: true }).catch((e) => {
-            return Promise.resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-        }
+      //   for (const disallowedId of disallowedIds) {
+      //     await channel.permissionOverwrites.edit(disallowedId, { Connect: true }).catch((e) => {
+      //       return Promise.resolve({
+      //         result: false,
+      //         value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+      //       });
+      //     });
+      //   }
 
-        const roles = message.mentions.everyone
-          ? '@everyone'
-          : message.mentions.roles.map((r) => `@${r.name}`).join(', ');
+      //   const roles = interaction.mentions.everyone
+      //     ? '@everyone'
+      //     : interaction.mentions.roles.map((r) => `@${r.name}`).join(', ');
 
-        return Promise.resolve({
-          result: true,
-          value: `attribute ${category.join('.') + '.' + attribute} set successfully to \`${roles}\``,
-        });
-      }
+      //   return Promise.resolve({
+      //     result: true,
+      //     value: `attribute ${category.join('.') + '.' + attribute} set successfully to \`${roles}\``,
+      //   });
+      // }
 
-      return Promise.resolve({
-        result: true,
-        value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-      });
+      // return Promise.resolve({
+      //   result: true,
+      //   value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      // });
     },
     auth: AuthType.portal,
   },
@@ -519,13 +363,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): string[] | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!voiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !voiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -551,81 +389,68 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return '@everyone';
     },
-    set: ({
-      pChannel,
-      pGuild,
-      message
-    }): Promise<ReturnPromise> => {
-      const category = ['p', 'v'];
-      const attribute = 'allowedRoles';
-
-      if (!message) {
-        return Promise.resolve({
-          result: false,
-          value: 'message is undefined',
-        });
+    set: async (): Promise<ReturnPromise> => {
+      return {
+        result: false,
+        value: 'not yet implemented',
       }
 
-      if (!pGuild) {
-        return Promise.resolve({
-          result: false,
-          value: 'portal Guild is undefined',
-        });
-      }
+      // const category = ['p', 'v'];
+      // const attribute = 'allowedRoles';
 
-      if (!pChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'voice channel is undefined',
-        });
-      }
+      // if (!pGuild || !pChannel || !interaction) {
+      //   return {
+      //     result: false,
+      //     value: 'values are missing from request',
+      //   };
+      // }
 
-      return new Promise((resolve) => {
-        if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
-          const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-          if (!message.mentions.everyone && mentionRoles.length === 0) {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-            });
-          }
+      // return new Promise((resolve) => {
+      //   if (interaction.mentions.everyone || (interaction.mentions && interaction.mentions.roles)) {
+      //     const mentionRoles = Array.prototype.slice.call(interaction.mentions.roles, 0);
+      //     if (!interaction.mentions.everyone && mentionRoles.length === 0) {
+      //       return resolve({
+      //         result: false,
+      //         value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      //       });
+      //     }
 
-          const allowedRoles = message.mentions.everyone
-            ? message.guild?.roles.everyone.id
-            : message.mentions.roles.map((r) => r.id);
+      //     const allowedRoles = interaction.mentions.everyone
+      //       ? interaction.guild?.roles.everyone.id
+      //       : interaction.mentions.roles.map((r) => r.id);
 
-          if (allowedRoles) {
-            updatePortal(pGuild.id, pChannel.id, attribute, allowedRoles)
-              .then((r) => {
-                const roles = message.mentions.everyone
-                  ? '@everyone'
-                  : message.mentions.roles.map((r) => `@${r.name}`).join(', ');
+      //     if (allowedRoles) {
+      //       updatePortal(pGuild.id, pChannel.id, attribute, allowedRoles)
+      //         .then((r) => {
+      //           const roles = interaction.mentions.everyone
+      //             ? '@everyone'
+      //             : interaction.mentions.roles.map((r) => `@${r.name}`).join(', ');
 
-                return resolve({
-                  result: r,
-                  value: r
-                    ? `attribute ${
-                      category.join('.') + '.' + attribute
-                    } set successfully to \`${roles}\``
-                    : `attribute ${
-                      category.join('.') + '.' + attribute
-                    } failed to be set to \`${roles}\``,
-                });
-              })
-              .catch((e) => {
-                return resolve({
-                  result: false,
-                  value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-                });
-              });
-          } else {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-            });
-          }
-        }
-      });
+      //           return resolve({
+      //             result: r,
+      //             value: r
+      //               ? `attribute ${
+      //                 category.join('.') + '.' + attribute
+      //               } set successfully to \`${roles}\``
+      //               : `attribute ${
+      //                 category.join('.') + '.' + attribute
+      //               } failed to be set to \`${roles}\``,
+      //           });
+      //         })
+      //         .catch((e) => {
+      //           return resolve({
+      //             result: false,
+      //             value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+      //           });
+      //         });
+      //     } else {
+      //       return resolve({
+      //         result: false,
+      //         value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      //       });
+      //     }
+      //   }
+      // });
     },
     auth: AuthType.portal,
   },
@@ -636,14 +461,11 @@ export const AttributeBlueprints: Blueprint[] = [
       voiceChannel,
       pVoiceChannel,
     }): string[] | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!voiceChannel) {
+      if (!pVoiceChannel || !voiceChannel) {
         return 'N/A';
       }
 
-      if (voiceChannel.permissionOverwrites.cache.size > 0) {
+      if (!pVoiceChannel || !voiceChannel || voiceChannel.permissionOverwrites.cache.size > 0) {
         return `${voiceChannel.permissionOverwrites.cache
           .filter((p) => p.type === OverwriteType.Role)
           .filter((p) => p.allow.bitfield === BigInt(1048576))
@@ -661,91 +483,78 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return '@everyone';
     },
-    set: async ({
-      voiceChannel,
-      pChannel,
-      message,
-    }): Promise<ReturnPromise> => {
-      const category = ['v'];
-      const attribute = 'allowedRoles';
-
-      if (!message) {
-        return Promise.resolve({
-          result: false,
-          value: 'message is undefined',
-        });
-      }
-
-      if (!pChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'portal channel is undefined',
-        });
-      }
-
-      if (message.mentions.everyone || (message.mentions && message.mentions.roles)) {
-        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-        if (!message.mentions.everyone && mentionRoles.length === 0) {
-          return Promise.resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-          });
-        }
-
-        if (!voiceChannel) {
-          return Promise.resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-          });
-        }
-
-        const permittedIds = [];
-        const disallowedIds = [];
-
-        if (!message.mentions.everyone) {
-          message.mentions.roles.map((role) => permittedIds.push(role.id));
-          if (message.guild) {
-            permittedIds.push(pChannel.creatorId);
-            disallowedIds.push(message.guild.roles.everyone.id);
-          }
-        } else {
-          if (message && message.guild) {
-            permittedIds.push(message.guild.roles.everyone.id);
-          }
-        }
-
-        for (const permittedId of permittedIds) {
-          await voiceChannel.permissionOverwrites.edit(permittedId, { Connect: true }).catch((e) => {
-            return Promise.resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-        }
-
-        for (const disallowedId of disallowedIds) {
-          await voiceChannel.permissionOverwrites.edit(disallowedId, { Connect: true }).catch((e) => {
-            return Promise.resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-        }
-
-        const roles = message.mentions.everyone
-          ? '@everyone'
-          : message.mentions.roles.map((r) => `@${r.name}`).join(', ');
-
-        return Promise.resolve({
-          result: true,
-          value: `attribute ${category.join('.') + '.' + attribute} set successfully to \`${roles}\``,
-        });
-      }
-
-      return Promise.resolve({
+    set: async (): Promise<ReturnPromise> => {
+      return {
         result: false,
-        value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
-      });
+        value: 'not yet implemented',
+      }
+
+      // const category = ['v'];
+      // const attribute = 'allowedRoles';
+
+      // if (!voiceChannel || !pChannel || !interaction) {
+      //   return {
+      //     result: false,
+      //     value: 'values are missing from request',
+      //   };
+      // }
+
+      // if (interaction.mentions.everyone || (interaction.mentions && interaction.mentions.roles)) {
+      //   const mentionRoles = Array.prototype.slice.call(interaction.mentions.roles, 0);
+      //   if (!interaction.mentions.everyone && mentionRoles.length === 0) {
+      //     return Promise.resolve({
+      //       result: false,
+      //       value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      //     });
+      //   }
+
+      //   const permittedIds = [];
+      //   const disallowedIds = [];
+
+      //   if (!interaction.mentions.everyone) {
+      //     interaction.mentions.roles.map((role) => permittedIds.push(role.id));
+      //     if (interaction.guild) {
+      //       permittedIds.push(pChannel.creatorId);
+      //       disallowedIds.push(interaction.guild.roles.everyone.id);
+      //     }
+      //   } else {
+      //     if (interaction && interaction.guild) {
+      //       permittedIds.push(interaction.guild.roles.everyone.id);
+      //     }
+      //   }
+
+      //   for (const permittedId of permittedIds) {
+      //     await voiceChannel.permissionOverwrites.edit(permittedId, { Connect: true }).catch((e) => {
+      //       return Promise.resolve({
+      //         result: false,
+      //         value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+      //       });
+      //     });
+      //   }
+
+      //   for (const disallowedId of disallowedIds) {
+      //     await voiceChannel.permissionOverwrites.edit(disallowedId, { Connect: true }).catch((e) => {
+      //       return Promise.resolve({
+      //         result: false,
+      //         value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
+      //       });
+      //     });
+      //   }
+
+      //   const roles = interaction.mentions.everyone
+      //     ? '@everyone'
+      //     : interaction.mentions.roles.map((role) => `@${role.name}`).join(', ');
+
+      //   return Promise.resolve({
+      //     result: true,
+      //     value: `attribute ${category.join('.') + '.' + attribute} set successfully to \`${roles}\``,
+      //   });
+      // }
+
+      // return Promise.resolve({
+      //   result: false,
+      //   value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
+      // });
     },
     auth: AuthType.voice,
   },
@@ -756,11 +565,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): boolean | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -774,77 +579,30 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'render';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (value !== 'true' && value !== 'false') {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updatePortal(pGuild.id, pChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updatePortal(pGuild.id, pChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.portal,
   },
@@ -860,85 +618,31 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.render;
     },
-    set: ({
+    set: async ({
       pVoiceChannel,
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'render';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel || !pVoiceChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (value !== 'true' && value !== 'false') {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      if (!pVoiceChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'pVoiceChannel is undefined',
-        });
-      }
-
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.voice,
   },
@@ -949,10 +653,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): boolean | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -966,77 +667,30 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'annUser';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (value !== 'true' && value !== 'false') {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updatePortal(pGuild.id, pChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updatePortal(pGuild.id, pChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.portal,
   },
@@ -1052,85 +706,31 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.annUser;
     },
-    set: ({
+    set: async ({
       pVoiceChannel,
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'annUser';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel || !pVoiceChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (value !== 'true' && value !== 'false') {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      if (!pVoiceChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'pVoiceChannel is undefined',
-        });
-      }
-
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.voice,
   },
@@ -1140,14 +740,21 @@ export const AttributeBlueprints: Blueprint[] = [
     get: ({ voiceChannel }): number => {
       return voiceChannel?.bitrate ?? 96000;
     },
-    set: ({
+    set: async ({
       voiceChannel,
     },
-    value: string
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'bitrate';
       const newBitrate = Number(value);
+
+      if (!voiceChannel) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
 
       return new Promise((resolve) => {
         if (isNaN(newBitrate)) {
@@ -1164,26 +771,19 @@ export const AttributeBlueprints: Blueprint[] = [
           });
         }
 
-        if (!voiceChannel) {
-          return Promise.resolve({
-            result: false,
-            value: 'voiceChannel is undefined',
-          });
-        }
-
         voiceChannel
           .edit({ bitrate: newBitrate })
           .then((r) => {
             return resolve({
               result: r.bitrate === newBitrate,
               value:
-                                r.bitrate === newBitrate
-                                  ? `attribute ${
-                                    category.join('.') + '.' + attribute
-                                  } set successfully to \`${value}\``
-                                  : `attribute ${
-                                    category.join('.') + '.' + attribute
-                                  } failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`,
+                r.bitrate === newBitrate
+                  ? `attribute ${
+                    category.join('.') + '.' + attribute
+                  } set successfully to \`${value}\``
+                  : `attribute ${
+                    category.join('.') + '.' + attribute
+                  } failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`,
             });
           })
           .catch((e) => {
@@ -1204,62 +804,39 @@ export const AttributeBlueprints: Blueprint[] = [
     }): number => {
       return pGuild?.kickAfter ?? 1;
     },
-    set: ({
+    set: async ({
       pGuild,
-      message,
+      interaction,
     },
-    value: string
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'kickAfter';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !interaction) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!message) {
-        return Promise.resolve({
+      if (!isMod(interaction.member as GuildMember | null)) {
+        return {
           result: false,
-          value: 'message is undefined',
-        });
+          value: `you must be a Portal moderator to set attribute ${
+            category.join('.') + '.' + attribute
+          }`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (!isMod(message.member)) {
-          return resolve({
-            result: false,
-            value: `you must be a Portal moderator to set attribute ${
-              category.join('.') + '.' + attribute
-            }`,
-          });
-        }
+      if (isNaN(Number(value))) {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} has to be a number`,
+        };
+      }
 
-        if (isNaN(Number(value))) {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} has to be a number`,
-          });
-        }
-
-        updateGuild(pGuild.id, attribute, Number(value))
-          .then((r) => {
-            return resolve({
-              result: r,
-              value: r
-                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
-                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
-            });
-          })
-          .catch((e) => {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-      });
+      return await updateGuildAttribute(pGuild.id, category, attribute, Number(value));
     },
     auth: AuthType.admin,
   },
@@ -1271,62 +848,39 @@ export const AttributeBlueprints: Blueprint[] = [
     }): number => {
       return pGuild?.banAfter ?? 1;
     },
-    set: ({
+    set: async ({
       pGuild,
-      message,
+      interaction,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'banAfter';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !interaction) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!message) {
-        return Promise.resolve({
+      if (!isMod(interaction.member as GuildMember | null)) {
+        return {
           result: false,
-          value: 'message is undefined',
-        });
+          value: `you must be a Portal moderator to set attribute ${
+            category.join('.') + '.' + attribute
+          }`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (!isMod(message.member)) {
-          return resolve({
-            result: false,
-            value: `you must be a Portal moderator to set attribute ${
-              category.join('.') + '.' + attribute
-            }`,
-          });
-        }
+      if (isNaN(Number(value))) {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} has to be a number`,
+        };
+      }
 
-        if (isNaN(Number(value))) {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} has to be a number`,
-          });
-        }
-
-        updateGuild(pGuild.id, attribute, Number(value))
-          .then((r) => {
-            return resolve({
-              result: r,
-              value: r
-                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
-                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
-            });
-          })
-          .catch((e) => {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-      });
+      return await updateGuildAttribute(pGuild.id, category, attribute, Number(value));
     },
     auth: AuthType.admin,
   },
@@ -1338,38 +892,22 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return pGuild?.prefix ?? './';
     },
-    set: ({
+    set: async ({
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'prefix';
 
       if (!pGuild) {
-        return Promise.resolve({
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      return new Promise((resolve) => {
-        updateGuild(pGuild.id, attribute, String(value))
-          .then((r) => {
-            return resolve({
-              result: r,
-              value: r
-                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
-                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
-            });
-          })
-          .catch((e) => {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-      });
+      return await updateGuildAttribute(pGuild.id, category, attribute, String(value));
     },
     auth: AuthType.admin,
   },
@@ -1392,65 +930,29 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pGuild,
-      message,
-    }): Promise<ReturnPromise> => {
+      interaction,
+    },
+    value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'muteRole';
 
-      if (!pGuild) {
+      if (!pGuild || !interaction) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
+
+      if (!(value instanceof Role)) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value must be Role',
         });
       }
 
-      if (!message) {
-        return Promise.resolve({
-          result: false,
-          value: 'message is undefined',
-        });
-      }
-
-      return new Promise((resolve) => {
-        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-        if (!message.mentions.everyone && mentionRoles.length === 0) {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be a role`,
-          });
-        }
-
-        const muteRole = message.mentions.roles.first();
-
-        if (muteRole) {
-          updateGuild(pGuild.id, attribute, muteRole.id)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${
-                    muteRole.name
-                  }\``
-                  : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${
-                    muteRole.name
-                  }\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be a role`,
-          });
-        }
-      });
+      return await updateGuildAttribute(pGuild.id, category, attribute, value.id);
     },
     auth: AuthType.admin,
   },
@@ -1462,53 +964,38 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return RankSpeed[pGuild?.rankSpeed ?? 1];
     },
-    set: ({
+    set: async ({
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'rankSpeed';
 
       if (!pGuild) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
+
+      if (value instanceof Role) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value cannot be Role',
         });
       }
 
-      return new Promise((resolve) => {
-        const speed = getKeyFromEnum(value, RankSpeed);
+      const speed = getKeyFromEnum(value, RankSpeed);
 
-        if (speed !== undefined) {
-          updateGuild(pGuild.id, attribute, speed)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **${RankSpeedList.join(
-              ', '
-            )}**`,
-          });
-        }
-      });
+      if (!speed) {
+        return Promise.resolve({
+          result: false,
+          value: 'value can not be assigned to rank a valid ranking speed',
+        });
+      }
+
+      return await updateGuildAttribute(pGuild.id, category, attribute, speed);
     },
     auth: AuthType.admin,
   },
@@ -1520,53 +1007,40 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return ProfanityLevel[pGuild?.profanityLevel ?? 1];
     },
-    set: ({
+    set: async ({
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'profanityLevel';
 
       if (!pGuild) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
+
+      if (value instanceof Role) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value cannot be Role',
         });
       }
 
-      return new Promise((resolve) => {
-        const level = getKeyFromEnum(value, ProfanityLevel);
+      const level = getKeyFromEnum(value, ProfanityLevel);
 
-        if (level !== undefined) {
-          updateGuild(pGuild.id, attribute, level)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${
-              category.join('.') + '.' + attribute
-            } can only be **${ProfanityLevelList.join(', ')}**`,
-          });
-        }
-      });
+      if (level === undefined) {
+        return {
+          result: false,
+          value: `attribute ${
+            category.join('.') + '.' + attribute
+          } can only be **${ProfanityLevelList.join(', ')}**`,
+        };
+      }
+
+      return await updateGuildAttribute(pGuild.id, category, attribute, level);
     },
     auth: AuthType.admin,
   },
@@ -1589,102 +1063,39 @@ export const AttributeBlueprints: Blueprint[] = [
         return 'initial role has not been set yet 2';
       }
     },
-    set: ({
+    set: async ({
       pGuild,
-      message,
+      interaction,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'initialRole';
 
-      if (!pGuild) {
+      if (!pGuild || !interaction) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
+
+      if (!interaction.guild) {
+        return {
+          result: false,
+          value: `attribute ${
+            category.join('.') + '.' + attribute
+          } failed to be set as user guild could not be fetched`,
+        };
+      }
+
+      if (!(value instanceof Role)) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value must be Role',
         });
       }
 
-      if (!message) {
-        return Promise.resolve({
-          result: false,
-          value: 'message is undefined',
-        });
-      }
-
-      return new Promise((resolve) => {
-        if (!message.guild) {
-          return resolve({
-            result: false,
-            value: `attribute ${
-              category.join('.') + '.' + attribute
-            } failed to be set as user guild could not be fetched`,
-          });
-        }
-
-        const mentionRoles = Array.prototype.slice.call(message.mentions.roles, 0);
-        if (!message.mentions || !message.mentions.roles || mentionRoles.length === 0) {
-          if (value === 'null') {
-            updateGuild(pGuild.id, attribute, 'null')
-              .then((r) => {
-                return resolve({
-                  result: r,
-                  value: r
-                    ? `attribute ${
-                      category.join('.') + '.' + attribute
-                    } set successfully to \`${value}\``
-                    : `attribute ${
-                      category.join('.') + '.' + attribute
-                    } failed to be set to \`${value}\``,
-                });
-              })
-              .catch((e) => {
-                return resolve({
-                  result: false,
-                  value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-                });
-              });
-          } else {
-            return resolve({
-              result: false,
-              value: `attribute ${
-                category.join('.') + '.' + attribute
-              } failed to be set as no role was given`,
-            });
-          }
-        } else {
-          const newRole = message.mentions.roles.first() || message.guild.roles.cache.get(value);
-
-          if (newRole) {
-            updateGuild(pGuild.id, attribute, newRole.id)
-              .then((r) => {
-                return resolve({
-                  result: r,
-                  value: r
-                    ? `attribute ${
-                      category.join('.') + '.' + attribute
-                    } set successfully to \`${value}\``
-                    : `attribute ${
-                      category.join('.') + '.' + attribute
-                    } failed to be set to \`${value}\``,
-                });
-              })
-              .catch((e) => {
-                return resolve({
-                  result: false,
-                  value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-                });
-              });
-          } else {
-            return resolve({
-              result: false,
-              value: `attribute ${
-                category.join('.') + '.' + attribute
-              } failed to be set as role could not be found`,
-            });
-          }
-        }
-      });
+      return await updateGuildAttribute(pGuild.id, category, attribute, value.id);
     },
     auth: AuthType.admin,
   },
@@ -1696,53 +1107,40 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return Locale[pGuild?.locale ?? 1];
     },
-    set: ({
+    set: async ({
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'locale';
 
-      if (!pGuild) {
+      if (value instanceof Role) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value cannot be Role',
         });
       }
 
-      return new Promise((resolve) => {
-        const locale = getKeyFromEnum(value, Locale);
+      if (!pGuild) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
 
-        if (locale !== undefined) {
-          updateGuild(pGuild.id, attribute, locale)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
-              ', '
-            )}**`,
-          });
-        }
-      });
+      const locale = getKeyFromEnum(value, Locale);
+
+      if (locale === undefined) {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
+            ', '
+          )}**`,
+        };
+      }
+
+      return await updateGuildAttribute(pGuild.id, category, attribute, locale);
     },
     auth: AuthType.admin,
   },
@@ -1753,10 +1151,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -1770,61 +1165,41 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'locale';
 
-      if (!pGuild) {
+      if (value instanceof Role) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value cannot be Role',
         });
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel) {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      return new Promise((resolve) => {
-        const locale = getKeyFromEnum(value, Locale);
+      const locale = getKeyFromEnum(value, Locale);
 
-        if (locale !== undefined) {
-          updatePortal(pGuild.id, pChannel.id, attribute, locale)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
-              ', '
-            )}**`,
-          });
-        }
-      });
+      if (locale === undefined) {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
+            ', '
+          )}**`,
+        };
+      }
+
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, locale);
     },
     auth: AuthType.portal,
   },
@@ -1840,69 +1215,42 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return Locale[pVoiceChannel?.locale ?? 1];
     },
-    set: ({
+    set: async ({
       pVoiceChannel,
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'locale';
 
-      if (!pGuild) {
+      if (value instanceof Role) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value cannot be Role',
         });
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel || !pVoiceChannel) {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pVoiceChannel) {
-        return Promise.resolve({
+      const locale = getKeyFromEnum(value, Locale);
+
+      if (locale === undefined) {
+        return {
           result: false,
-          value: 'pVoiceChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
+            ', '
+          )}**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        const locale = getKeyFromEnum(value, Locale);
-
-        if (locale !== undefined) {
-          updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, locale)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
-              ', '
-            )}**`,
-          });
-        }
-      });
+      return await updateGuildAttribute(pGuild.id, category, attribute, locale);
     },
     auth: AuthType.voice,
   },
@@ -1918,51 +1266,41 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return voiceChannel.position;
     },
-    set: ({
+    set: async ({
       voiceChannel,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'position';
 
       if (!voiceChannel) {
-        return Promise.resolve({
+        return {
           result: false,
-          value: 'voiceChannel is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      return new Promise((resolve) => {
-        if (isNaN(Number(value))) {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **a number**`,
-          });
-        }
+      if (isNaN(Number(value))) {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **a number**`,
+        };
+      }
 
-        voiceChannel
-          .edit({ position: Number(value) })
-          .then((r) => {
-            return resolve({
-              result: r.position === Number(value),
-              value:
-                                r.position === Number(value)
-                                  ? `attribute ${
-                                    category.join('.') + '.' + attribute
-                                  } set successfully to \`${value}\``
-                                  : `attribute ${
-                                    category.join('.') + '.' + attribute
-                                  } failed to be set to\`${value}\` to ${value} (is ${r.position})`,
-            });
-          })
-          .catch((e) => {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-      });
+      const updatedVoiceChannel = await voiceChannel.edit({ position: Number(value) });
+
+      return {
+        result: updatedVoiceChannel.position === Number(value),
+        value:
+          updatedVoiceChannel.position === Number(value)
+            ? `attribute ${
+              category.join('.') + '.' + attribute
+            } set successfully to \`${value}\``
+            : `attribute ${
+              category.join('.') + '.' + attribute
+            } failed to be set to\`${value}\` to ${value} (is ${updatedVoiceChannel.position})`,
+      };
     },
     auth: AuthType.voice,
   },
@@ -1973,10 +1311,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): boolean | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -1990,77 +1325,30 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'regexOverwrite';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (value !== 'true' && value !== 'false') {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (value === 'true') {
-          updatePortal(pGuild.id, pChannel.id, attribute, true)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else if (value === 'false') {
-          updatePortal(pGuild.id, pChannel.id, attribute, false)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.voice,
   },
@@ -2071,10 +1359,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -2088,46 +1373,30 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'regexPortal';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (value !== 'true' && value !== 'false') {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        updatePortal(pGuild.id, pChannel.id, attribute, value)
-          .then((r) => {
-            return resolve({
-              result: r,
-              value: r
-                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
-                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
-            });
-          })
-          .catch((e) => {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.portal,
   },
@@ -2138,10 +1407,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -2155,46 +1421,30 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p', 'v'];
       const attribute = 'regexVoice';
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (value !== 'true' && value !== 'false') {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **true or false**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        updatePortal(pGuild.id, pChannel.id, attribute, value)
-          .then((r) => {
-            return resolve({
-              result: r,
-              value: r
-                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
-                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
-            });
-          })
-          .catch((e) => {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, value);
     },
     auth: AuthType.portal,
   },
@@ -2210,54 +1460,31 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return pVoiceChannel.regex;
     },
-    set: ({
+    set: async ({
       pVoiceChannel,
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'regex';
 
-      if (!pGuild) {
+      if (!pGuild || !pChannel || !pVoiceChannel) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
+
+      if (value instanceof Role) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value cannot be Role',
         });
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'pChannel is undefined',
-        });
-      }
-
-      if (!pVoiceChannel) {
-        return Promise.resolve({
-          result: false,
-          value: 'pVoiceChannel is undefined',
-        });
-      }
-
-      return new Promise((resolve) => {
-        updateVoice(pGuild.id, pChannel.id, pVoiceChannel.id, attribute, value)
-          .then((r) => {
-            return resolve({
-              result: r,
-              value: r
-                ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
-                : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
-            });
-          })
-          .catch((e) => {
-            return resolve({
-              result: false,
-              value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-            });
-          });
-      });
+      return await updateVoiceChannelAttribute(pGuild.id, pChannel.id, pVoiceChannel.id, category, attribute, value);
     },
     auth: AuthType.voice,
   },
@@ -2269,50 +1496,37 @@ export const AttributeBlueprints: Blueprint[] = [
     }): string => {
       return pMember && pMember.regex ? pMember.regex : 'not-set';
     },
-    set: ({
+    set: async ({
       pGuild,
       pMember,
     },
-    value: string
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['m'];
       const attribute = 'regex';
 
       if (!pGuild) {
+        return {
+          result: false,
+          value: 'values are missing from request',
+        };
+      }
+
+      if (!pMember) {
+        return {
+          result: false,
+          value: 'could not find member',
+        };
+      }
+
+      if (value instanceof Role) {
         return Promise.resolve({
           result: false,
-          value: 'pGuild is undefined',
+          value: 'value cannot be Role',
         });
       }
 
-      return new Promise((resolve) => {
-        if (pMember) {
-          updateMember(pGuild.id, pMember.id, attribute, value)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: 'could not find member',
-          });
-        }
-      });
+      return await updateMemberAttribute(pGuild.id, pMember.id,category, attribute, value);
     },
     auth: AuthType.none,
   },
@@ -2323,11 +1537,7 @@ export const AttributeBlueprints: Blueprint[] = [
       pVoiceChannel,
       pChannels,
     }): number | string => {
-      if (!pVoiceChannel) {
-        return 'N/A';
-      }
-
-      if (!pChannels) {
+      if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
@@ -2341,69 +1551,42 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: ({
+    set: async ({
       pChannel,
       pGuild,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'userLimitPortal';
       const newUserLimit = Number(value);
 
-      if (!pGuild) {
-        return Promise.resolve({
+      if (!pGuild || !pChannel) {
+        return {
           result: false,
-          value: 'pGuild is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      if (!pChannel) {
-        return Promise.resolve({
+      if (isNaN(newUserLimit)) {
+        return {
           result: false,
-          value: 'pChannel is undefined',
-        });
+          value: `attribute ${
+            category.join('.') + '.' + attribute
+          } can only be **a number from 0-99 (0 means unlimited)**`,
+        };
       }
 
-      return new Promise((resolve) => {
-        if (isNaN(newUserLimit)) {
-          return resolve({
-            result: false,
-            value: `attribute ${
-              category.join('.') + '.' + attribute
-            } can only be **a number from 0-99 (0 means unlimited)**`,
-          });
-        }
+      if (newUserLimit < 0) {
+        return {
+          result: false,
+          value: `attribute ${
+            category.join('.') + '.' + attribute
+          } can be a number from 0-n (0 means unlimited)`,
+        };
+      }
 
-        if (newUserLimit >= 0) {
-          updatePortal(pGuild.id, pChannel.id, 'userLimitPortal', newUserLimit)
-            .then((r) => {
-              return resolve({
-                result: r,
-                value: r
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
-                  : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${
-              category.join('.') + '.' + attribute
-            } can be a number from 0-n (0 means unlimited)`,
-          });
-        }
-      });
+      return await updatePortalChannelAttribute(pGuild.id, pChannel.id, category, attribute, newUserLimit);
     },
     auth: AuthType.portal,
   },
@@ -2420,54 +1603,51 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return voiceChannel.userLimit;
     },
-    set: ({
+    set: async ({
       voiceChannel,
     },
-    value: string,
+    value,
     ): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'userLimit';
       const newUserLimit = Number(value);
 
       if (!voiceChannel) {
-        return Promise.resolve({
+        return {
           result: false,
-          value: 'voiceChannel is undefined',
-        });
+          value: 'values are missing from request',
+        };
       }
 
-      return new Promise((resolve) => {
-        if (newUserLimit >= 0) {
-          voiceChannel
-            .setUserLimit(newUserLimit)
-            .then((r) => {
-              return resolve({
-                result: r.userLimit === newUserLimit,
-                value:
-                                    r.userLimit === newUserLimit
-                                      ? `attribute ${
-                                        category.join('.') + '.' + attribute
-                                      } set successfully to \`${value}\``
-                                      : `attribute ${
-                                        category.join('.') + '.' + attribute
-                                      } failed to be set to \`${value}\``,
-              });
-            })
-            .catch((e) => {
-              return resolve({
-                result: false,
-                value: `attribute ${category.join('.') + '.' + attribute} failed to be set: ${e}`,
-              });
-            });
-        } else {
-          return resolve({
-            result: false,
-            value: `attribute ${
+      if (newUserLimit < 0) {
+        return {
+          result: false,
+          value: `attribute ${
+            category.join('.') + '.' + attribute
+          } can only be **a number from 0-n (0 means unlimited)**`,
+        };
+      }
+
+      const updatedVoiceChannel = await voiceChannel.setUserLimit(newUserLimit);
+
+      if (!updatedVoiceChannel) {
+        return {
+          result: false,
+          value: `attribute ${category.join('.') + '.' + attribute} failed to be set`,
+        };
+      }
+
+      return {
+        result: updatedVoiceChannel.userLimit === newUserLimit,
+        value:
+          updatedVoiceChannel.userLimit === newUserLimit
+            ? `attribute ${
               category.join('.') + '.' + attribute
-            } can only be **a number from 0-n (0 means unlimited)**`,
-          });
-        }
-      });
+            } set successfully to \`${value}\``
+            : `attribute ${
+              category.join('.') + '.' + attribute
+            } failed to be set to \`${value}\``,
+      };
     },
     auth: AuthType.voice,
   },

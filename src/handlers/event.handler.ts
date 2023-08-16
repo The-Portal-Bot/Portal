@@ -174,7 +174,7 @@ export async function eventHandler(client: Client, activeCooldowns: ActiveCooldo
   // This event will run when a slash command is called.
   client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
-    logger.info(`user ${interaction.user}/${interaction.member} called command ${interaction.commandName}`);
+    logger.info(`user ${interaction.user} called command ${interaction.commandName}`);
 
     const response = await handleCommandInteraction(client, interaction as ChatInputCommandInteraction, activeCooldowns);
     const reply = typeof response.content === 'string'
