@@ -6,7 +6,7 @@
 // // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
 // import { PGuild } from "../types/classes/PGuild.class";
 
-import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
+// import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 
 // function clear_user_reactions(
 //     messageReaction: MessageReaction, user: User
@@ -458,11 +458,13 @@ import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } fr
 //     }
 // }
 
-export default async (args: {
-  client: Client;
-  messageReaction: MessageReaction | PartialMessageReaction;
-  user: User | PartialUser;
-}): Promise<string> => {
+export default async (
+//   args: {
+//   client: Client;
+//   messageReaction: MessageReaction | PartialMessageReaction;
+//   user: User | PartialUser;
+// }
+): Promise<string> => {
   return new Promise((resolve, reject) => {
     return reject('under construction');
     // if (args.user.bot) {

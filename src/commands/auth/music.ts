@@ -1,8 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'music';
 
@@ -21,7 +19,7 @@ export = {
         .setDescription('whether or not to delete the previous music channel')
         .setRequired(false))
     .setDMPermission(false),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+  async execute(/* interaction: ChatInputCommandInteraction, pGuild: PGuild */): Promise<ReturnPromise> {
     return {
       result: false,
       value: 'not yet implemented',

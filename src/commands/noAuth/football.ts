@@ -1,8 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { RequestOptions } from 'https';
-import { commandDescriptionByNameAndAuthenticationLevel, getJSONFromString, messageHelp } from '../../libraries/help.library';
-import { httpsFetch } from '../../libraries/http.library';
+import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'football';
@@ -22,43 +19,43 @@ export = {
         .setDescription('Football match day')
         .setRequired(true))
     .setDMPermission(false),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+  async execute(/* interaction: ChatInputCommandInteraction */): Promise<ReturnPromise> {
     return {
       result: true,
       value: 'not yet implemented',
     };
 
-    if (!process.env.FOOTBALL_DATA) {
-      return {
-        result: false,
-        value: 'FOOTBALL_DATA API key is not set up',
-      };
-    }
+    // if (!process.env.FOOTBALL_DATA) {
+    //   return {
+    //     result: false,
+    //     value: 'FOOTBALL_DATA API key is not set up',
+    //   };
+    // }
 
-    const league = interaction.options.getString('league');
-    const day = interaction.options.getString('day');
+    // const league = interaction.options.getString('league');
+    // const day = interaction.options.getString('day');
 
-    if (!league || !day) {
-      return {
-        result: false,
-        value: messageHelp('commands', 'football', 'league and day must be provided'),
-      };
-    }
+    // if (!league || !day) {
+    //   return {
+    //     result: false,
+    //     value: messageHelp('commands', 'football', 'league and day must be provided'),
+    //   };
+    // }
 
-    const options: RequestOptions = {
-      method: 'GET',
-      hostname: `http://api.football-data.org/v2/competitions/${league}/matches/?matchday=${day}`,
-      port: undefined,
-      path: '/statistics',
-      headers: {
-        'X-Auth-Token': process.env.FOOTBALL_DATA,
-        useQueryString: 1,
-      },
-    };
+    // const options: RequestOptions = {
+    //   method: 'GET',
+    //   hostname: `http://api.football-data.org/v2/competitions/${league}/matches/?matchday=${day}`,
+    //   port: undefined,
+    //   path: '/statistics',
+    //   headers: {
+    //     'X-Auth-Token': process.env.FOOTBALL_DATA,
+    //     useQueryString: 1,
+    //   },
+    // };
 
-    const response = await httpsFetch(options);
+    // const response = await httpsFetch(options);
 
-    const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
+    // const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
 
     // if (json === null) {
     //   return {

@@ -1,4 +1,8 @@
-import { EmbedBuilder, User } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, Guild, Role, User, VoiceChannel } from 'discord.js';
+import { PGuild } from './PGuild.class';
+import { PMember } from './PMember.class';
+import { PChannel } from './PPortalChannel.class';
+import { PVoiceChannel } from './PVoiceChannel.class';
 
 export type NoAuthCommands =
   | 'about'
@@ -173,10 +177,47 @@ export type TimeRemaining = {
   remainingSec: number;
 };
 
-export type InterfaceBlueprint = {
+export type Blueprint = {
   name: string;
   hover: string;
-  get: any;
-  set: any;
   auth: number;
+  get: ({
+    voiceChannel,
+    pVoiceChannel,
+    pChannels,
+    pGuild,
+    guild,
+    pMember,
+    string,
+  }:{
+    voiceChannel?: VoiceChannel,
+    pVoiceChannel?: PVoiceChannel | null,
+    pChannels?: PChannel[],
+    pGuild?: PGuild,
+    guild?: Guild,
+    pMember?: PMember,
+    string?: string | string[]
+  }) => boolean | string | string[] | number | undefined;
+  set: ({
+    voiceChannel,
+    pVoiceChannel,
+    pChannel,
+    pGuild,
+    pMember,
+    interaction,
+  }:{
+    voiceChannel?: VoiceChannel,
+    pVoiceChannel?: PVoiceChannel | null,
+    pChannel?: PChannel,
+    pGuild?: PGuild,
+    pMember?: PMember,
+    interaction?: ChatInputCommandInteraction
+  },
+  value: string | Role) =>  Promise<ReturnPromise> | boolean | string | string[] | number | undefined;
 };
+
+export interface HelpDocumentation {
+  getGuide: () =>  EmbedBuilder,
+  getHelp: () =>  EmbedBuilder[],
+  getHelpDetailed: (candidate: string) =>  EmbedBuilder | boolean,
+}
