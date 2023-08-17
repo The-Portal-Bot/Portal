@@ -59,9 +59,9 @@
 <br>
 
 <p align="center">
-    <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-14.16.0-blue" alt="nodejs" /></a>
-    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-7.7.5-blue" alt="npm" /></a>
-    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-12.5.1-blue" alt="npm" /></a></br>
+    <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-v18.14.2-blue" alt="nodejs" /></a>
+    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-v9.8.1-blue" alt="npm" /></a>
+    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-v14.12.1-blue" alt="npm" /></a></br>
     <a href="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml/badge.svg" alt="nodejs" /></a>
     <a href="https://github.com/keybraker/Portal/actions/workflows/eslint.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/eslint.yml/badge.svg" alt="eslint" /></a>
 </p>
@@ -69,5 +69,5 @@
 <p align="center">
    <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPalMe</a>
 </p>
-   
+
 <p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>
