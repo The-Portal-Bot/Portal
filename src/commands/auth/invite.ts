@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, InviteCreateOptions, TextChannel } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, getJSONFromString, isMod, messageHelp } from '../../libraries/help.library';
+import { commandDescriptionByNameAndAuthenticationLevel, isMod, messageHelp } from '../../libraries/help.library';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'invite';

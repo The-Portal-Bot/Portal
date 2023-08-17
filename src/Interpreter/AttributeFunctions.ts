@@ -1,4 +1,4 @@
-import { VoiceChannel, Guild, GuildMember, Message, ChatInputCommandInteraction, Role } from 'discord.js';
+import { VoiceChannel, Guild, GuildMember, ChatInputCommandInteraction, Role } from 'discord.js';
 import { isUserAuthorised } from '../libraries/help.library';
 import { AttributeBlueprints } from '../blueprints/AttributeBlueprint';
 import { PGuild } from '../types/classes/PGuild.class';

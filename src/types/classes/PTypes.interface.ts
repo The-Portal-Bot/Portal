@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Guild, Message, Role, User, VoiceChannel } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, Guild, Role, User, VoiceChannel } from 'discord.js';
 import { PGuild } from './PGuild.class';
 import { PMember } from './PMember.class';
 import { PChannel } from './PPortalChannel.class';
