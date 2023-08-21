@@ -885,33 +885,6 @@ export const AttributeBlueprints: Blueprint[] = [
     auth: AuthType.admin,
   },
   {
-    name: 'g.prefix',
-    hover: 'Portals prefix',
-    get: ({
-      pGuild,
-    }): string => {
-      return pGuild?.prefix ?? './';
-    },
-    set: async ({
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
-      const category = ['g'];
-      const attribute = 'prefix';
-
-      if (!pGuild) {
-        return {
-          result: false,
-          value: 'values are missing from request',
-        };
-      }
-
-      return await updateGuildAttribute(pGuild.id, category, attribute, String(value));
-    },
-    auth: AuthType.admin,
-  },
-  {
     name: 'g.muteRole',
     hover: 'role given to muted members',
     get: ({

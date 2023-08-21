@@ -71,15 +71,12 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
   }
 }
 
-export function commandDecipher(
-  messageContent: Message['content'],
-  pGuild: PGuild
-): {
+export function commandDecipher(messageContent: Message['content']): {
   cmd: AuthCommands | NoAuthCommands | undefined;
   args: string[];
 } {
   // separate command name and arguments
-  const args = messageContent.slice(pGuild.prefix.length).trim().split(/ +/g);
+  const args = messageContent.trim().split(/ +/g);
   const commandOnly = args.shift();
 
   if (!commandOnly) {

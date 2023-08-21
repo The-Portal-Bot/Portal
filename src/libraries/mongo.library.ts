@@ -236,7 +236,6 @@ export async function insertGuild(guildId: PGuild['id'], client: Client): Promis
   const kickAfter = 0;
   const banAfter = 0;
   const premium = true; // as it is not a paid service anymore
-  const prefix = process.env.PREFIX ?? './';
 
   return !!(await PGuildModel.create({
     id,
@@ -258,7 +257,6 @@ export async function insertGuild(guildId: PGuild['id'], client: Client): Promis
     kickAfter,
     banAfter,
     premium,
-    prefix,
   }));
 }
 

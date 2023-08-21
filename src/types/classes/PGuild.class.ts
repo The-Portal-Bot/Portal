@@ -43,7 +43,6 @@ export class PGuild {
   public kickAfter: number;
   public banAfter: number;
   public premium: boolean;
-  public prefix: string;
 
   constructor(
     id: string,
@@ -66,7 +65,6 @@ export class PGuild {
     banAfter: number,
     profanityLevel: number,
     premium: boolean,
-    prefix: string
   ) {
     this.id = id;
     this.pChannels = pChannels;
@@ -88,7 +86,6 @@ export class PGuild {
     this.banAfter = banAfter;
     this.profanityLevel = profanityLevel;
     this.premium = premium;
-    this.prefix = prefix;
   }
 }
 
@@ -113,5 +110,4 @@ export interface IPGuild extends Document {
   banAfter: number;
   profanityLevel: number;
   premium: boolean;
-  prefix: string;
 }

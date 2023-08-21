@@ -85,7 +85,6 @@ const PGuildSchema = new Schema(
     kickAfter: { type: Number, required: true },
     banAfter: { type: Number, required: true },
     premium: { type: Boolean, required: true },
-    prefix: { type: String, required: true },
   },
   {
     collection: 'guild_list',

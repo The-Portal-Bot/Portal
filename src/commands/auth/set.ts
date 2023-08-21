@@ -29,7 +29,6 @@ export = {
           { name: 'v.bitrate', value: 'v.bitrate' },
           { name: 'g.kickAfter', value: 'g.kickAfter' },
           { name: 'g.banAfter', value: 'g.banAfter' },
-          { name: 'g.prefix', value: 'g.prefix' },
           { name: 'g.muteRole', value: 'g.muteRole' },
           { name: 'g.rankSpeed', value: 'g.rankSpeed' },
           { name: 'g.profanityLevel', value: 'g.profanityLevel' },
