@@ -19,9 +19,9 @@ import {
   VoiceState
 } from 'discord.js';
 import voca from 'voca';
-import { getAttribute, isAttribute } from '../Interpreter/AttributeFunctions';
-import { getPipe, isPipe } from '../Interpreter/PipeFunctions';
-import { getVariable, isVariable } from '../Interpreter/VariableFunctions';
+import { getAttribute, isAttribute } from '../Interpreter/attribute.functions';
+import { getPipe, isPipe } from '../Interpreter/pipe.functions';
+import { getVariable, isVariable } from '../Interpreter/variable.functions';
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';

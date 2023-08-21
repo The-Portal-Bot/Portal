@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { createEmbed } from '../../../libraries/help.library';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { VariableBlueprints } from '../../../blueprints/VariableBlueprint';
+import { VariableBlueprints } from '../../../blueprints/variable.blueprint';
 import { Prefix } from '../../../types/enums/Prefix.enum';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';

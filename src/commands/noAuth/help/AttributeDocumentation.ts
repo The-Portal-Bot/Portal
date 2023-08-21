@@ -3,7 +3,7 @@ import {
 } from 'discord.js';
 import { createEmbed } from '../../../libraries/help.library';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { AttributeBlueprints } from '../../../blueprints/AttributeBlueprint';
+import { AttributeBlueprints } from '../../../blueprints/attribute.blueprint';
 import { Prefix } from '../../../types/enums/Prefix.enum';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';

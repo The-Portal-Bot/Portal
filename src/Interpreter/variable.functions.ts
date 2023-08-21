@@ -1,5 +1,5 @@
 import { VoiceChannel, Guild } from 'discord.js';
-import { VariableBlueprints } from '../blueprints/VariableBlueprint';
+import { VariableBlueprints } from '../blueprints/variable.blueprint';
 import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';

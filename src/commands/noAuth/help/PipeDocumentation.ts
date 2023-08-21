@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { PipeBlueprints } from '../../../blueprints/PipeBlueprint';
+import { PipeBlueprints } from '../../../blueprints/pipe.blueprint';
 import { createEmbed } from '../../../libraries/help.library';
 import { Prefix } from '../../../types/enums/Prefix.enum';
 
