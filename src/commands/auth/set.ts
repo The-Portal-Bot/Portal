@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction, GuildMember, Role, VoiceChannel } from 'di
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise } from '../../types/classes/PTypes.interface';
 import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
-import { setAttribute } from '../../Interpreter/attribute.functions';
+import { setAttribute } from '../../interpreter/attribute.functions';
 
 const COMMAND_NAME = 'set';
 
