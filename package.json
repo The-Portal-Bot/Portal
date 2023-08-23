@@ -28,7 +28,7 @@
     "jest": "^29.6.2",
     "jsonfile": "^6.1.0",
     "lodash": "^4.17.21",
-    "mongoose": "^7.4.3",
+    "mongoose": "^7.4.4",
     "openai": "^4.0.1",
     "optionator": "^0.9.3",
     "opusscript": "0.1.0",
