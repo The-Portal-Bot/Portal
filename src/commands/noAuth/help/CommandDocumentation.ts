@@ -2,6 +2,8 @@ import { EmbedBuilder } from 'discord.js';
 import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
 import { createEmbed } from '../../../libraries/help.library';
 import commandConfig from '../../../config.command.json';
+import * as auth from '../../../commands/auth';
+import * as noAuth from '../../../commands/noAuth';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 
@@ -102,17 +104,12 @@ export class CommandDocumentation implements HelpDocumentation {
   }
 
   private getCommandList() {
-    const commandList = [];
-
-    for (let i = 0; i < commandConfig.length; i++) {
-      for (let j = 0; j < commandConfig[i].commands.length; j++) {
-        commandList.push({
-          name: commandConfig[i].commands[j].name,
-          hover: commandConfig[i].commands[j].description
-        });
-      }
-    }
-
-    return commandList;
+    return [
+      ...Object.values(auth),
+      ...Object.values(noAuth),
+    ].map(command => ({
+      name: command.data.name,
+      hover: command.data.description
+    }));
   }
 }
