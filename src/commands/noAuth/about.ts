@@ -1,13 +1,19 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { createEmbed } from '../../libraries/help.library';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'about';
+const DESCRIPTION = 'returns information on Portal'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
+    .setDescription(DESCRIPTION),
   async execute(): Promise<ReturnPromise> {
     const aboutMessage = [
       createEmbed(

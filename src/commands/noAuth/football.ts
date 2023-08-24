@@ -1,13 +1,18 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'football';
+const DESCRIPTION = 'returns football data'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .setDescription(DESCRIPTION)
     .addStringOption(option =>
       option
         .setName('league')

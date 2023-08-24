@@ -1,16 +1,22 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Client } from 'discord.js';
 import SPAM_CONFIG from '../../config.spam.json';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
+import { createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'spam_rules';
+const DESCRIPTION = 'returns server\'s spam rules'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
+    .setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const guild = client.guilds.cache.find((guild) => guild.id === interaction?.guild?.id);
 

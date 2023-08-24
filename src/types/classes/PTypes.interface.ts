@@ -132,14 +132,8 @@ export type CommandOptions = {
   description: string;
   scopeLimit: ScopeLimit;
   time: number;
-  auth: boolean;
   premium: boolean;
-  reply: boolean;
   ephemeral: boolean;
-  delete: {
-    source: boolean;
-    reply: boolean;
-  };
 };
 
 export type ActiveCooldown = {

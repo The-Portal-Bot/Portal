@@ -1,15 +1,21 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { BanOptions, ChatInputCommandInteraction, GuildMember } from 'discord.js';
-import { askForApproval, commandDescriptionByNameAndAuthenticationLevel, isMod, messageHelp } from '../../libraries/help.library';
+import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
 import { ban } from '../../libraries/user.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'ban';
+const DESCRIPTION = 'ban a user';
 
 export = {
+  time: 1,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.MEMBER,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .setDescription(DESCRIPTION)
     .addUserOption(option =>
       option
         .setName('user_to_ban')

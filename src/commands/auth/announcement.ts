@@ -6,18 +6,24 @@ import {
   isMusicChannel,
   isUrlOnlyChannel
 } from '../../libraries/guild.library';
-import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
+import { messageHelp } from '../../libraries/help.library';
 import { updateGuild } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
 
 const COMMAND_NAME = 'announcement';
+const DESCRIPTION = 'make an announcement to the announcements channel';
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .setDescription(DESCRIPTION)
     .addChannelOption((option) =>
       option
         .setName('announcement_channel')

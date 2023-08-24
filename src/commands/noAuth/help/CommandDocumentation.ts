@@ -1,9 +1,8 @@
 import { EmbedBuilder } from 'discord.js';
-import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { createEmbed } from '../../../libraries/help.library';
-import commandConfig from '../../../config.command.json';
 import * as auth from '../../../commands/auth';
 import * as noAuth from '../../../commands/noAuth';
+import { createEmbed } from '../../../libraries/help.library';
+import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 

@@ -1,15 +1,16 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
 import { deleteChannel, includedInVoiceList, regexInterpreter } from '../../libraries/guild.library';
-import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
+import { messageHelp } from '../../libraries/help.library';
 import { updateVoice } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
 import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
 import { PChannel } from '../../types/classes/PPortalChannel.class';
 
 const COMMAND_NAME = 'force';
+const DESCRIPTION = 'force refresh your portal channel';
 
 function isUserInHandledVoiceChannel(member: GuildMember, pGuild: PGuild): boolean {
   return !!member.voice.channel && includedInVoiceList(member.voice.channel.id, pGuild.pChannels);
@@ -54,9 +55,14 @@ async function cloneAndUpdateVoiceChannel(currentVoice: VoiceChannel, pChannel: 
 }
 
 export = {
+  time: 5,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.MEMBER,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
+    .setDescription(DESCRIPTION),
 
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;

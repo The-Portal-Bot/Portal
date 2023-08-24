@@ -1,15 +1,21 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed } from '../../libraries/help.library';
+import { createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'level';
+const DESCRIPTION = 'returns your level'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .setDescription(DESCRIPTION)
     .setDMPermission(false),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;

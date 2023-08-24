@@ -1,13 +1,18 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'kick';
+const DESCRIPTION = 'kick a user';
 
 export = {
+  time: 1,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.MEMBER,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
+    .setDescription(DESCRIPTION),
   async execute(/* interaction: ChatInputCommandInteraction */): Promise<ReturnPromise> {
     return {
       result: false,

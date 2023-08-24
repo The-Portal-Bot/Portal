@@ -1,16 +1,22 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, Role, VoiceChannel } from 'discord.js';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { messageHelp } from '../../libraries/help.library';
 import { setAttribute } from '../../interpreter/attribute.functions';
 
 const COMMAND_NAME = 'set';
+const DESCRIPTION = 'set the value of an attribute'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .setDescription(DESCRIPTION)
     .addStringOption(option =>
       option.setName('attribute')
         .setDescription('Attribute\'s name to set')
