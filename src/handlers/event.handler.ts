@@ -92,12 +92,12 @@ async function handleCommandInteraction(
 
   const commandData = commandFetcher(commandName);
 
-  if (!commandData || !commandData.commandOptions) {
+  if (!commandData) {
     return { content: `command ${interaction.commandName} does not exist`, ephemeral: false };
   }
 
   if (
-    commandData.commandOptions.auth &&
+    commandData.auth &&
     (interaction.member &&
     !isUserAuthorised(interaction.member as GuildMember /* needs better implementation */))
   ) {
@@ -126,8 +126,8 @@ async function handleCommandInteraction(
     args,
     pGuild,
     client,
-    commandData.commandOptions.scopeLimit,
-    commandData.commandOptions,
+    commandData.scopeLimit,
+    commandData.time,
     activeCooldowns
   );
 
@@ -137,7 +137,7 @@ async function handleCommandInteraction(
   }
 
   const content = commandResponse.value !== '' ? commandResponse.value : 'command succeeded';
-  const ephemeral = commandData.commandOptions.ephemeral;
+  const ephemeral = commandData.ephemeral;
 
   return { content, ephemeral };
 }

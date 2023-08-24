@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import * as auth from '../commands/auth';
 import * as noAuth from '../commands/noAuth';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
-import { AuthCommands, CommandOptions, NoAuthCommands, ScopeLimit } from '../types/classes/PTypes.interface';
+import { AuthCommands, CommandOptions, NoAuthCommands } from '../types/classes/PTypes.interface';
 import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
 import { isMessageDeleted, isUserIgnored, logger, markMessageAsDeleted, messageReply } from './help.library';
 import { removeIgnore, removeURL, setMusicData } from './mongo.library';
@@ -73,7 +73,7 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
 }
 
 export function commandDecipher(messageContent: Message['content']): {
-  cmd: AuthCommands | NoAuthCommands | undefined;
+  commandName: AuthCommands | NoAuthCommands | undefined;
   args: string[];
 } {
   // separate command name and arguments
@@ -82,52 +82,46 @@ export function commandDecipher(messageContent: Message['content']): {
 
   if (!commandOnly) {
     return {
-      cmd: undefined,
+      commandName: undefined,
       args: [],
     };
   }
 
   return {
-    cmd: commandOnly.toLowerCase() as AuthCommands | NoAuthCommands,
+    commandName: commandOnly.toLowerCase() as AuthCommands | NoAuthCommands,
     args: args,
   };
 }
 
 export function commandFetcher(
-  cmd: AuthCommands | NoAuthCommands,
+  commandName: AuthCommands | NoAuthCommands,
 ){
-  const authCommand = [...Object.values(auth)].find(command => command.data.name === cmd);
+  const authCommand = [...Object.values(auth)].find(command => command.data.name === commandName);
 
   if (authCommand) {
     return {
-      pathToCommand: 'auth',
-      commandOptions: {
-        name: authCommand.data.name,
-        description: authCommand.data.description,
-        auth: authCommand.auth,
-        scopeLimit: authCommand.scopeLimit,
-        time: authCommand.time,
-        premium: authCommand.premium,
-        ephemeral: authCommand.ephemeral,
-      },
-    };
+      name: authCommand.data.name,
+      description: authCommand.data.description,
+      auth: authCommand.auth,
+      scopeLimit: authCommand.scopeLimit,
+      time: authCommand.time,
+      premium: authCommand.premium,
+      ephemeral: authCommand.ephemeral,
+    } as CommandOptions;
   }
 
-  const noAuthCommand = [...Object.values(noAuth)].find(command => command.data.name === cmd);
+  const noAuthCommand = [...Object.values(noAuth)].find(command => command.data.name === commandName);
 
   if (noAuthCommand) {
-    return {
-      pathToCommand: 'noAuth',
-      commandOptions: {
-        name: noAuthCommand.data.name,
-        description: noAuthCommand.data.description,
-        auth: noAuthCommand.auth,
-        scopeLimit: noAuthCommand.scopeLimit,
-        time: noAuthCommand.time,
-        premium: noAuthCommand.premium,
-        ephemeral: noAuthCommand.ephemeral,
-      },
-    };
+    return  {
+      name: noAuthCommand.data.name,
+      description: noAuthCommand.data.description,
+      auth: noAuthCommand.auth,
+      scopeLimit: noAuthCommand.scopeLimit,
+      time: noAuthCommand.time,
+      premium: noAuthCommand.premium,
+      ephemeral: noAuthCommand.ephemeral,
+    } as CommandOptions;
   }
 
   return undefined;

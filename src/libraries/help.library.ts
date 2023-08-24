@@ -657,7 +657,7 @@ export function pad(num: number): string {
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-export function timeElapsed(timestamp: Date | number, timeout: number): TimeElapsed {
+export function getElapsedTime(timestamp: Date | number, timeout: number): TimeElapsed {
   const timeoutTime = timeout * 60 * 1000;
   const el = dayjs.duration(dayjs().diff(dayjs(typeof timestamp === 'number' ? timestamp : timestamp.getTime())));
 

@@ -130,6 +130,7 @@ export type LocalisationConsoleOption = {
 export type CommandOptions = {
   name: string;
   description: string;
+  auth: boolean;
   scopeLimit: ScopeLimit;
   time: number;
   premium: boolean;

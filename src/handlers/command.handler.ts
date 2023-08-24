@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Client } from 'discord.js';
 import * as authCommands from '../commands/auth';
 import * as noAuthCommands from '../commands/noAuth';
-import { logger, pad, timeElapsed } from '../libraries/help.library';
+import { logger, pad, getElapsedTime } from '../libraries/help.library';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
   ActiveCooldowns,
@@ -55,10 +55,10 @@ export async function commandLoader(
   pGuild: PGuild,
   client: Client,
   scopeLimit: ScopeLimit,
-  commandOptions: CommandOptions,
+  time: number,
   activeCooldowns: ActiveCooldowns
 ) {
-  if (scopeLimit === 'none' && commandOptions.time === 0) {
+  if (scopeLimit === 'none' && time === 0) {
     return await commandExecution(interaction, command, args, pGuild, client);
   }
 
@@ -67,19 +67,14 @@ export async function commandLoader(
   if (cooldown) {
     logger.info(`User ${interaction.user.id} tried to use ${command} but is on cooldown`);
 
-    const time = timeElapsed(cooldown.timestamp, commandOptions.time);
-
-    const typeForMessage =
-      scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : '.*';
-
-    const mustWaitMessage =
-      `you need to wait **${pad(time.remainingMin)}:` +
-      `${pad(time.remainingSec)}/${pad(time.timeoutMin)}:` +
-      `${pad(time.timeoutSec)}** *to use* **${command}** *again${typeForMessage}`;
+    const elapsedTime = getElapsedTime(cooldown.timestamp, time);
 
     return {
       result: false,
-      value: mustWaitMessage,
+      value: `you need to wait **${pad(elapsedTime.remainingMin)}:` +
+        `${pad(elapsedTime.remainingSec)}/${pad(elapsedTime.timeoutMin)}:` +
+        `${pad(elapsedTime.timeoutSec)}** *to use* **${command}** *again` +
+        scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : '.*',
     }
   }
 
@@ -95,7 +90,7 @@ export async function commandLoader(
       timestamp: Date.now(),
     });
 
-    if (commandOptions) {
+    if (time) {
       setTimeout(() => {
         const updatedCooldown = activeCooldown.filter((active) => active.command !== command);
         if (scopeLimit === ScopeLimit.GUILD) {
@@ -103,7 +98,7 @@ export async function commandLoader(
         } else {
           activeCooldowns['member'] = updatedCooldown;
         }
-      }, commandOptions.time * 60 * 1000);
+      }, time * 60 * 1000);
     }
   }
 

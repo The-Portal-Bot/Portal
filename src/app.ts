@@ -10,7 +10,6 @@ import { eventHandler } from './handlers/event.handler';
 import { mongoHandler } from './handlers/mongo.handler';
 import { logger } from './libraries/help.library';
 
-
 dotenv.config();
 
 if (process.env.DEBUG) {
@@ -36,14 +35,6 @@ if (process.env.LOG) {
 // const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 // const spam_cache: SpamCache[] = [];
 const client: Client = clientHandler();
-
-// const commands: unknown[] = [];
-// commandConfig.forEach((authenticationLevel) => {
-//   authenticationLevel.commands.forEach(async (command) => {
-//     const commandFile = commandResolver(command.name as AuthCommands | NoAuthCommands);
-//     commands.push(commandFile.data.toJSON());
-//   });
-// });
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
