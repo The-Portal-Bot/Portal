@@ -1,12 +1,11 @@
 import { ChatInputCommandInteraction, Client } from 'discord.js';
 import * as authCommands from '../commands/auth';
 import * as noAuthCommands from '../commands/noAuth';
-import { logger, pad, getElapsedTime } from '../libraries/help.library';
+import { getElapsedTime, logger, pad } from '../libraries/help.library';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
   ActiveCooldowns,
   AuthCommands,
-  CommandOptions,
   NoAuthCommands,
   ScopeLimit
 } from '../types/classes/PTypes.interface';
@@ -69,23 +68,25 @@ export async function commandLoader(
 
     const elapsedTime = getElapsedTime(cooldown.timestamp, time);
 
+    const ending = scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : '.*';
+    const awaitMessage = `you need to wait **${pad(elapsedTime.remainingMin)}:` +
+    `${pad(elapsedTime.remainingSec)}/${pad(elapsedTime.timeoutMin)}:` +
+    `${pad(elapsedTime.timeoutSec)}** *to use* **${command}** *again${ending}`
+
     return {
       result: false,
-      value: `you need to wait **${pad(elapsedTime.remainingMin)}:` +
-        `${pad(elapsedTime.remainingSec)}/${pad(elapsedTime.timeoutMin)}:` +
-        `${pad(elapsedTime.timeoutSec)}** *to use* **${command}** *again` +
-        scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : '.*',
+      value: awaitMessage,
     }
   }
 
   const commandReturn = await commandExecution(interaction, command, args, pGuild, client);
 
-  if (commandReturn.result && interaction.guild) {
+  if (commandReturn.result) {
     const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns['guild'] : activeCooldowns['member'];
 
     activeCooldown.push({
       member: interaction.user.id,
-      guild: interaction.guild.id,
+      guild: interaction?.guild?.id ?? 'null',
       command: command,
       timestamp: Date.now(),
     });

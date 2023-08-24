@@ -73,7 +73,7 @@ export = {
     const outcome = await announcementChannel.send({ embeds: [richMessage] });
 
     return {
-      result: false,
+      result: !!outcome,
       value: outcome ? 'announcement was sent successfully' : 'could not send message',
     };
   },

@@ -9,6 +9,7 @@ import { clientHandler, connectToDiscord } from './handlers/discord.handler';
 import { eventHandler } from './handlers/event.handler';
 import { mongoHandler } from './handlers/mongo.handler';
 import { logger } from './libraries/help.library';
+import { ActiveCooldowns } from './types/classes/PTypes.interface';
 
 dotenv.config();
 
@@ -32,7 +33,7 @@ if (process.env.LOG) {
   logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
 
-// const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
+const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 // const spam_cache: SpamCache[] = [];
 const client: Client = clientHandler();
 
@@ -63,7 +64,8 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
   }
 })();
 
-eventHandler(client);
+eventHandler(client, active_cooldowns);
+
 const mongo = mongoHandler(process.env.MONGO_URL);
 const discord = connectToDiscord(client, process.env.TOKEN);
 
