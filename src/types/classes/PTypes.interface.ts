@@ -145,8 +145,8 @@ export type ActiveCooldown = {
 };
 
 export type ActiveCooldowns = {
-  guild: ActiveCooldown[];
-  member: ActiveCooldown[];
+  [ScopeLimit.MEMBER]: ActiveCooldown[];
+  [ScopeLimit.GUILD]: ActiveCooldown[];
 };
 
 export type SpamCache = {

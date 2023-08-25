@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Client } from 'discord.js';
-import * as authCommands from '../commands/auth';
-import * as noAuthCommands from '../commands/noAuth';
+import * as auth from '../commands/auth';
+import * as noAuth from '../commands/noAuth';
 import { getElapsedTime, logger, pad } from '../libraries/help.library';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
@@ -10,55 +10,17 @@ import {
   ScopeLimit
 } from '../types/classes/PTypes.interface';
 
-const commandMap = {
-  about: noAuthCommands.about,
-  announce: noAuthCommands.announce,
-  bet: noAuthCommands.bet,
-  corona: noAuthCommands.corona,
-  crypto: noAuthCommands.crypto,
-  focus: noAuthCommands.focus,
-  football: noAuthCommands.football,
-  help: noAuthCommands.help,
-  join: noAuthCommands.join,
-  leaderboard: noAuthCommands.leaderboard,
-  leave: noAuthCommands.leave,
-  level: noAuthCommands.level,
-  ping: noAuthCommands.ping,
-  poll: noAuthCommands.poll,
-  ranks: noAuthCommands.ranks,
-  roll: noAuthCommands.roll,
-  run: noAuthCommands.run,
-  state: noAuthCommands.state,
-  spam_rules: noAuthCommands.spam_rules,
-  weather: noAuthCommands.weather,
-  whoami: noAuthCommands.whoami,
-  announcement: authCommands.announcement,
-  ban: authCommands.ban,
-  delete_messages: authCommands.delete_messages,
-  force: authCommands.force,
-  ignore: authCommands.ignore,
-  invite: authCommands.invite,
-  kick: authCommands.kick,
-  music: authCommands.music,
-  portal: authCommands.portal,
-  vendor: authCommands.vendor,
-  set_ranks: authCommands.set_ranks,
-  set: authCommands.set,
-  url: authCommands.url
-};
-
 export async function commandLoader(
   interaction: ChatInputCommandInteraction,
   command: AuthCommands | NoAuthCommands,
-  args: string[],
   pGuild: PGuild,
   client: Client,
   scopeLimit: ScopeLimit,
   time: number,
   activeCooldowns: ActiveCooldowns
 ) {
-  if (scopeLimit === 'none' && time === 0) {
-    return await commandExecution(interaction, command, args, pGuild, client);
+  if (scopeLimit === ScopeLimit.NONE && time === 0) {
+    return await commandExecution(interaction, command, pGuild, client);
   }
 
   const cooldown = hasActiveCooldown(interaction, command, scopeLimit, activeCooldowns);
@@ -79,10 +41,10 @@ export async function commandLoader(
     }
   }
 
-  const commandReturn = await commandExecution(interaction, command, args, pGuild, client);
+  const commandReturn = await commandExecution(interaction, command, pGuild, client);
 
   if (commandReturn.result) {
-    const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns['guild'] : activeCooldowns['member'];
+    const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns[ScopeLimit.GUILD] : activeCooldowns[ScopeLimit.MEMBER];
 
     activeCooldown.push({
       member: interaction.user.id,
@@ -95,9 +57,9 @@ export async function commandLoader(
       setTimeout(() => {
         const updatedCooldown = activeCooldown.filter((active) => active.command !== command);
         if (scopeLimit === ScopeLimit.GUILD) {
-          activeCooldowns['guild'] = updatedCooldown;
+          activeCooldowns[ScopeLimit.GUILD] = updatedCooldown;
         } else {
-          activeCooldowns['member'] = updatedCooldown;
+          activeCooldowns[ScopeLimit.MEMBER] = updatedCooldown;
         }
       }, time * 60 * 1000);
     }
@@ -107,13 +69,16 @@ export async function commandLoader(
 }
 
 export function commandResolver(command: AuthCommands | NoAuthCommands) {
-  const commandFile = commandMap[command];
+  const commandData = [
+    ...Object.values(auth),
+    ...Object.values(noAuth),
+  ].find((commandData) => commandData.data.name === command);
 
-  if (!commandFile) {
+  if (!commandData) {
     throw Error(`command ${command} not found`);
   }
 
-  return commandFile;
+  return commandData;
 }
 
 function hasActiveCooldown(
@@ -122,7 +87,7 @@ function hasActiveCooldown(
   scopeLimit: Omit<ScopeLimit, ScopeLimit.NONE>,
   activeCooldowns: ActiveCooldowns
 ) {
-  const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns['guild'] : activeCooldowns['member'];
+  const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns[ScopeLimit.GUILD] : activeCooldowns[ScopeLimit.MEMBER];
 
   return activeCooldown.find((activeCurrent) => {
     if (activeCurrent.command === command) {
@@ -146,7 +111,6 @@ function hasActiveCooldown(
 async function commandExecution(
   interaction: ChatInputCommandInteraction,
   command: AuthCommands | NoAuthCommands,
-  args: string[],
   pGuild: PGuild,
   client: Client
 ) {
@@ -156,7 +120,7 @@ async function commandExecution(
     logger.error(new Error(`While executing ${command}, got error: ${e}`));
     return {
       result: false,
-      value: `While executing ${command}, got error: ${e}`,
+      value: `Error while executing ${command}:\n\t${e}`,
     }
   }
 }

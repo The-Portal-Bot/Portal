@@ -356,38 +356,31 @@ export async function joinUserVoiceChannelByInteraction(
   const member = interaction.member as GuildMember;
 
   if (!member) {
-    logger.error('user could not be fetched for message');
-    return undefined;
+    throw('user could not be fetched for message');
   }
 
   if (!member.voice) {
-    logger.error('voice could not be fetched for member');
-    return undefined;
+    throw('voice could not be fetched for member');
   }
 
   if (!member.voice.channel) {
-    logger.error('you aren\'t in a channel');
-    return undefined;
+    throw('you aren\'t in a voice channel');
   }
 
   if (!interaction.guild) {
-    logger.error('guild could not be fetched for message');
-    return undefined;
+    throw('guild could not be fetched for message');
   }
 
   if (!interaction.guild.voiceAdapterCreator) {
-    logger.error('voiceAdapterCreator could not be fetched for guild');
-    return undefined;
+    throw('voiceAdapterCreator could not be fetched for guild');
   }
 
   if (!pGuild) {
-    logger.error('could not find guild of message');
-    return undefined;
+    throw('could not find guild of message');
   }
 
   if (!client.voice) {
-    logger.error('could not fetch portal\'s voice connections');
-    return undefined;
+    throw('could not fetch portal\'s voice connections');
   }
 
   let voiceConnection = getVoiceConnection(member.voice.channel.id);
@@ -403,8 +396,7 @@ export async function joinUserVoiceChannelByInteraction(
     });
 
     if (!voiceConnection) {
-      logger.error('could not join voice channel');
-      return undefined;
+      throw('could not join voice channel');
     }
 
     if (clientVoiceState) {

@@ -20,7 +20,7 @@ const profaneWords = ProfaneWords as {
  * Determine if a string contains profane words
  */
 export function isProfane(candidate: string, profanityLevel: number): string[] {
-  const gr: string[] = profaneWords.gr.filter((word: string) => {
+  const gr = profaneWords.gr.filter((word: string) => {
     return candidate.toLowerCase() === word.toLowerCase();
   });
 
@@ -179,75 +179,73 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
 /**
  * Give member a role
  */
-function muteUser(message: Message, muteRoleId: string): void {
+async function muteUser(message: Message, muteRoleId: string): Promise<void> {
   const muteRole = getRole(message.guild, muteRoleId);
   const channel = message.channel;
 
-  if (muteRole) {
-    try {
-      message.member?.roles
-        .add(muteRole)
-        .then(() => {
-          channel
-            .send(`user ${message.author}, has been muted for ${configSpam.MUTE_PERIOD} minutes`)
-            .then((message) => deleteMessage(message))
-            .catch((e) => {
-              logger.error(new Error(`failed to reply to message: ${e}`));
-            });
-
-          setTimeout(() => {
-            const muteRole = getRole(message.guild, muteRoleId);
-
-            if (muteRole) {
-              try {
-                message.member?.roles
-                  .remove(muteRole)
-                  .then(() => {
-                    channel
-                      .send(`user ${message.author}, has been unmuted`)
-                      .then((message) => {
-                        if (message.deletable) {
-                          deleteMessage(message);
-                        }
-                      })
-                      .catch((e) => {
-                        logger.error(new Error(`failed to reply to message: ${e}`));
-                      });
-                  })
-                  .catch((e) => {
-                    logger.error(new Error(`failed to give role to member: ${e}`));
-                  });
-              } catch (e) {
-                logger.error(new Error(`failed to give role to member: ${e}`));
-              }
-            }
-          }, configSpam.MUTE_PERIOD * 60 * 1000);
-        })
-        .catch((e) => {
-          logger.error(new Error(`failed to give role to member: ${e}`));
-        });
-    } catch (e) {
-      logger.error(new Error(`failed to give role to member: ${e}`));
-    }
+  if (!muteRole) {
+    return;
   }
+
+  const addedRole = await message.member?.roles.add(muteRole);
+
+  if (!addedRole) {
+    logger.error(new Error('failed to give role to member'));
+    return;
+  }
+
+  channel
+    .send(`user ${message.author}, has been muted for ${configSpam.MUTE_PERIOD} minutes`)
+    .then(deleteMessage)
+    .catch(logger.error);
+
+  setTimeout(() => {
+    const muteRole = getRole(message.guild, muteRoleId);
+
+    if (!muteRole) {
+      return;
+    }
+
+    message.member?.roles.remove(muteRole)
+      .then(() =>
+        channel
+          .send(`user ${message.author}, has been unmuted`)
+          .then((message) => {
+            if (message.deletable) {
+              deleteMessage(message);
+            }
+          })
+          .catch((e) => {
+            logger.error(new Error(`failed to reply to message: ${e}`));
+          })
+      )
+      .catch(logger.error);
+  }, configSpam.MUTE_PERIOD * 60 * 1000);
 }
 
 /**
  * Delete message with delay
  */
 function deleteMessage(message: Message): void {
-  if (message.deletable) {
-    const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
-    setTimeout(async () => {
-      if (isMessageDeleted(message)) {
-        const deletedMessage = await message.delete().catch((e) => {
-          return Promise.reject(`failed to delete message: ${e}`);
-        });
-
-        if (deletedMessage) {
-          markMessageAsDeleted(deletedMessage);
-        }
-      }
-    }, delay);
+  if (!message.deletable) {
+    return;
   }
+
+  const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+
+  if (delay === 0) {
+    message.delete()
+      .then(markMessageAsDeleted)
+      .catch(logger.error);
+
+    return;
+  }
+
+  setTimeout(async () => {
+    if (isMessageDeleted(message)) {
+      await message.delete()
+        .then(markMessageAsDeleted)
+        .catch(logger.error);
+    }
+  }, delay);
 }

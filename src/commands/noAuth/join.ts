@@ -17,11 +17,18 @@ export = {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
-    const voiceConnection = await joinUserVoiceChannelByInteraction(client, interaction, pGuild /*, true*/);
+    try {
+      await joinUserVoiceChannelByInteraction(client, interaction, pGuild /*, true*/);
 
-    return {
-      result: !!voiceConnection,
-      value: `${voiceConnection ? 'successfully joined' : 'failed to join'} voice channel`,
-    };
+      return {
+        result: true,
+        value: 'successfully joined voice channel',
+      };
+    }catch (error) {
+      return {
+        result: false,
+        value: String(error),
+      };
+    }
   },
 };

@@ -86,9 +86,7 @@ async function handleCommandInteraction(
     return { content: 'late-inserted member', ephemeral: false };
   }
 
-  const messageContent = interaction.options.getString('message');
   const commandName = interaction.commandName as AuthCommands | NoAuthCommands;
-  const args = messageContent?.split(/ +/g) ?? [];
 
   const commandData = commandFetcher(commandName);
 
@@ -123,7 +121,6 @@ async function handleCommandInteraction(
   const commandResponse = await commandLoader(
     interaction,
     commandName,
-    args,
     pGuild,
     client,
     commandData.scopeLimit,
