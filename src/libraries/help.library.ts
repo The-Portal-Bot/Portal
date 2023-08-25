@@ -16,8 +16,7 @@ import {
   PermissionResolvable,
   TextBasedChannel,
   TextChannel,
-  User,
-  VoiceChannel,
+  VoiceChannel
 } from 'discord.js';
 import { createLogger, format, transports } from 'winston';
 import { VideoSearchResult } from 'yt-search';
@@ -29,6 +28,11 @@ import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import { createDiscordJSAdapter } from './adapter.library';
 import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
+type enumTypes = typeof OpapGameId | typeof RankSpeed | typeof ProfanityLevel | typeof Locale;
 
 const idleThumbnail = 'https://raw.githubusercontent.com/keybraker/' + 'Portal/master/src/assets/img/emptyQueue.png';
 
@@ -141,8 +145,6 @@ export function getJSONFromString(str: string) {
 export function maxString(abstract: string, max: number): string {
   return abstract.length < max ? abstract : abstract.substring(0, max - 3) + '...';
 }
-
-type enumTypes = typeof OpapGameId | typeof RankSpeed | typeof ProfanityLevel | typeof Locale;
 export function getKeyFromEnum(value: string, enumeration: enumTypes): string | number | undefined {
   let enumerationArray;
 
@@ -346,112 +348,65 @@ export async function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyr
   return !!editedMessage;
 }
 
-export async function joinUserVoiceChannelByReaction(
-  guild: Guild,
-  client: Client,
-  pGuild: PGuild,
-  user: User
-  // announceEntrance: boolean
-): Promise<VoiceConnection> {
-  const guildMembers = await guild.members.fetch();
-
-  if (!guildMembers) {
-    return Promise.reject('could not fetch members');
-  }
-
-  const member = guildMembers.find((guildMember) => !guildMember.user?.bot && guildMember.id === user.id);
-
-  if (!member) {
-    return Promise.reject('could not find member');
-  }
-
-  if (!member.voice) {
-    return Promise.reject('you must be connected to a voice channel');
-  }
-
-  if (!member.voice.channel) {
-    return Promise.reject('you must be connected to a voice channel');
-  }
-
-  let voiceConnection = await getVoiceConnection(member.voice.channel.id);
-  const clientVoiceState = member.voice.channel.guild.voiceStates.cache.get(member.client.user.id);
-
-  if (voiceConnection && clientVoiceState?.channelId === member.voice.channel?.id) {
-    // member.voice.channel.guild.me?.voice.setDeaf();
-    clientVoiceState.setDeaf(true);
-  } else {
-    voiceConnection = joinVoiceChannel({
-      channelId: member.voice.channel.id,
-      guildId: member.voice.channel.guild.id,
-      adapterCreator: createDiscordJSAdapter(member.voice.channel as VoiceChannel),
-    });
-
-    if (!voiceConnection) {
-      return Promise.reject('could not join voice channel');
-    }
-
-    // member.voice.channel.guild.me?.voice.setDeaf();
-    if (clientVoiceState) {
-      clientVoiceState.setDeaf(true);
-    }
-  }
-
-  return voiceConnection;
-}
 export async function joinUserVoiceChannelByInteraction(
   client: Client,
   interaction: ChatInputCommandInteraction,
   pGuild: PGuild
-  // join = false
-): Promise<VoiceConnection> {
+): Promise<VoiceConnection | undefined> {
   const member = interaction.member as GuildMember;
 
   if (!member) {
-    return Promise.reject('user could not be fetched for message');
+    logger.error('user could not be fetched for message');
+    return undefined;
   }
 
   if (!member.voice) {
-    return Promise.reject('voice could not be fetched for member');
+    logger.error('voice could not be fetched for member');
+    return undefined;
   }
 
   if (!member.voice.channel) {
-    return Promise.reject('you aren\'t in a channel');
+    logger.error('you aren\'t in a channel');
+    return undefined;
   }
 
   if (!interaction.guild) {
-    return Promise.reject('guild could not be fetched for message');
+    logger.error('guild could not be fetched for message');
+    return undefined;
   }
 
   if (!interaction.guild.voiceAdapterCreator) {
-    return Promise.reject('voiceAdapterCreator could not be fetched for guild');
+    logger.error('voiceAdapterCreator could not be fetched for guild');
+    return undefined;
   }
 
   if (!pGuild) {
-    return Promise.reject('could not find guild of message');
+    logger.error('could not find guild of message');
+    return undefined;
   }
 
   if (!client.voice) {
-    return Promise.reject('could not fetch portal\'s voice connections');
+    logger.error('could not fetch portal\'s voice connections');
+    return undefined;
   }
 
-  let voiceConnection = await getVoiceConnection(member.voice.channel.id);
+  let voiceConnection = getVoiceConnection(member.voice.channel.id);
   const clientVoiceState = interaction.guild.voiceStates.cache.get(interaction.guild.client.user.id);
 
   if (voiceConnection && clientVoiceState?.channelId === member.voice.channel?.id) {
-    // message.guild.me?.voice.setDeaf();
     clientVoiceState.setDeaf(true);
   } else {
-    voiceConnection = await joinVoiceChannel({
+    voiceConnection = joinVoiceChannel({
       channelId: member.voice.channel.id,
       guildId: interaction.guild.id,
       adapterCreator: createDiscordJSAdapter(member.voice.channel as VoiceChannel),
     });
 
     if (!voiceConnection) {
-      return Promise.reject('could not join voice channel');
+      logger.error('could not join voice channel');
+      return undefined;
     }
 
-    // message.guild.me?.voice.setDeaf();
     if (clientVoiceState) {
       clientVoiceState.setDeaf(true);
     }
@@ -654,9 +609,6 @@ export function pad(num: number): string {
   return num.toString().length >= 2 ? `${num}` : `0${num}`;
 }
 
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
-
 export function getElapsedTime(timestamp: Date | number, timeout: number): TimeElapsed {
   const timeoutTime = timeout * 60 * 1000;
   const el = dayjs.duration(dayjs().diff(dayjs(typeof timestamp === 'number' ? timestamp : timestamp.getTime())));
@@ -719,7 +671,7 @@ export async function removeDeletedChannels(guild: Guild): Promise<boolean> {
     });
   });
 
-  pGuild.pMembers.forEach((portalMember, indexM) => {
+  pGuild.pMembers.forEach((_portalMember, indexM) => {
     if (!guild.members.cache.some((m) => m.id === m.id)) {
       pGuild.pURLs.splice(indexM, 1);
     }
