@@ -3,15 +3,20 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { includedInPIgnores } from '../../libraries/guild.library';
 import { insertIgnore, removeIgnore } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
-import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'ignore';
+const DESCRIPTION = 'ignore user or channel from spam';
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
+    .setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {

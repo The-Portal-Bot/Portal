@@ -3,13 +3,13 @@ import { Routes } from 'discord-api-types/v9';
 import { Client } from 'discord.js';
 import dotenv from 'dotenv';
 import { transports } from 'winston';
-import commandConfig from './config.command.json';
-import { commandResolver } from './handlers/command.handler';
+import * as auth from './commands/auth';
+import * as noAuth from './commands/noAuth';
 import { clientHandler, connectToDiscord } from './handlers/discord.handler';
 import { eventHandler } from './handlers/event.handler';
 import { mongoHandler } from './handlers/mongo.handler';
 import { logger } from './libraries/help.library';
-import { AuthCommands, NoAuthCommands } from './types/classes/PTypes.interface';
+import { ActiveCooldowns } from './types/classes/PTypes.interface';
 
 dotenv.config();
 
@@ -33,17 +33,9 @@ if (process.env.LOG) {
   logger.add(new transports.File({ filename: '/logs/portal-all.log.json' }));
 }
 
-// const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
+const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
 // const spam_cache: SpamCache[] = [];
 const client: Client = clientHandler();
-
-const commands: unknown[] = [];
-commandConfig.forEach((authenticationLevel) => {
-  authenticationLevel.commands.forEach(async (command) => {
-    const commandFile = commandResolver(command.name as AuthCommands | NoAuthCommands);
-    commands.push(commandFile.data.toJSON());
-  });
-});
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
@@ -56,7 +48,15 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
       process.exit(4);
     }
 
-    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
+    await rest.put(
+      Routes.applicationCommands(process.env.CLIENT_ID),
+      {
+        body:  [
+          ...Object.values(auth),
+          ...Object.values(noAuth),
+        ].map(command => command.data.toJSON())
+      }
+    );
 
     logger.info('Successfully reloaded application (/) commands.');
   } catch (error) {
@@ -64,7 +64,8 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
   }
 })();
 
-eventHandler(client);
+eventHandler(client, active_cooldowns);
+
 const mongo = mongoHandler(process.env.MONGO_URL);
 const discord = connectToDiscord(client, process.env.TOKEN);
 

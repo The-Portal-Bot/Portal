@@ -130,16 +130,11 @@ export type LocalisationConsoleOption = {
 export type CommandOptions = {
   name: string;
   description: string;
+  auth: boolean;
   scopeLimit: ScopeLimit;
   time: number;
-  auth: boolean;
   premium: boolean;
-  reply: boolean;
   ephemeral: boolean;
-  delete: {
-    source: boolean;
-    reply: boolean;
-  };
 };
 
 export type ActiveCooldown = {

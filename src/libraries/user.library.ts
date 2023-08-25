@@ -3,7 +3,7 @@ import { PGuild } from '../types/classes/PGuild.class';
 import { PMember } from '../types/classes/PMember.class';
 import { Rank } from '../types/classes/PTypes.interface';
 import { RankSpeed, RankSpeedValueList } from '../types/enums/RankSpeed.enum';
-import { logger, timeElapsed } from './help.library';
+import { logger, getElapsedTime } from './help.library';
 import { updateEntireMember, updateMember } from './mongo.library';
 
 export async function calculateRank(member: PMember): Promise<number> {
@@ -28,7 +28,7 @@ export async function addPointsTime(pMember: PMember, rankSpeed: number): Promis
     return pMember.points;
   }
 
-  const voiceTime = timeElapsed(pMember.timestamp, 0);
+  const voiceTime = getElapsedTime(pMember.timestamp, 0);
 
   pMember.points += Math.round(voiceTime.remainingSec * RankSpeedValueList[rankSpeed] * 0.5);
   pMember.points += Math.round(voiceTime.remainingMin * RankSpeedValueList[rankSpeed] * 30 * 1.15);

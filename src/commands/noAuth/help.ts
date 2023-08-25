@@ -1,8 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
-import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
-
+import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 import { AttributeDocumentation } from './help/AttributeDocumentation';
 import { CommandDocumentation } from './help/CommandDocumentation';
 import { PipeDocumentation } from './help/PipeDocumentation';
@@ -10,11 +9,17 @@ import { StructureDocumentation } from './help/StructureDocumentation';
 import { VariableDocumentation } from './help/VariableDocumentation';
 
 const COMMAND_NAME = 'help';
+const DESCRIPTION = 'returns requested help page'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .setDescription(DESCRIPTION)
     .addStringOption(option =>
       option.setName('category')
         .setDescription('Category to get help for')

@@ -1,7 +1,8 @@
 import { Message } from 'discord.js';
-import commandConfig from '../config.command.json';
+import * as auth from '../commands/auth';
+import * as noAuth from '../commands/noAuth';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
-import { AuthCommands, CommandOptions, NoAuthCommands, ScopeLimit } from '../types/classes/PTypes.interface';
+import { AuthCommands, CommandOptions, NoAuthCommands } from '../types/classes/PTypes.interface';
 import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
 import { isMessageDeleted, isUserIgnored, logger, markMessageAsDeleted, messageReply } from './help.library';
 import { removeIgnore, removeURL, setMusicData } from './mongo.library';
@@ -72,7 +73,7 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
 }
 
 export function commandDecipher(messageContent: Message['content']): {
-  cmd: AuthCommands | NoAuthCommands | undefined;
+  commandName: AuthCommands | NoAuthCommands | undefined;
   args: string[];
 } {
   // separate command name and arguments
@@ -81,51 +82,49 @@ export function commandDecipher(messageContent: Message['content']): {
 
   if (!commandOnly) {
     return {
-      cmd: undefined,
+      commandName: undefined,
       args: [],
     };
   }
 
   return {
-    cmd: commandOnly.toLowerCase() as AuthCommands | NoAuthCommands,
+    commandName: commandOnly.toLowerCase() as AuthCommands | NoAuthCommands,
     args: args,
   };
 }
 
 export function commandFetcher(
-  cmd: AuthCommands | NoAuthCommands,
-  args: string[]
-): {
-  args: string[];
-  cmd: AuthCommands | NoAuthCommands | undefined;
-  pathToCommand: string;
-  commandOptions: CommandOptions | undefined;
-  scopeLimit: ScopeLimit;
-} {
-  let pathToCommand = '';
-  let commandOptions: CommandOptions | undefined = undefined;
-  let scopeLimit = ScopeLimit.NONE;
+  commandName: AuthCommands | NoAuthCommands,
+){
+  const authCommand = [...Object.values(auth)].find(command => command.data.name === commandName);
 
-  commandConfig.some((category) => {
-    commandOptions = category.commands.find((command) => command.name === cmd) as CommandOptions;
+  if (authCommand) {
+    return {
+      name: authCommand.data.name,
+      description: authCommand.data.description,
+      auth: authCommand.auth,
+      scopeLimit: authCommand.scopeLimit,
+      time: authCommand.time,
+      premium: authCommand.premium,
+      ephemeral: authCommand.ephemeral,
+    } as CommandOptions;
+  }
 
-    if (commandOptions) {
-      scopeLimit = commandOptions.scopeLimit;
-      pathToCommand = category.path;
+  const noAuthCommand = [...Object.values(noAuth)].find(command => command.data.name === commandName);
 
-      return true;
-    }
+  if (noAuthCommand) {
+    return  {
+      name: noAuthCommand.data.name,
+      description: noAuthCommand.data.description,
+      auth: noAuthCommand.auth,
+      scopeLimit: noAuthCommand.scopeLimit,
+      time: noAuthCommand.time,
+      premium: noAuthCommand.premium,
+      ephemeral: noAuthCommand.ephemeral,
+    } as CommandOptions;
+  }
 
-    return false;
-  });
-
-  return {
-    args,
-    cmd,
-    pathToCommand,
-    commandOptions,
-    scopeLimit,
-  };
+  return undefined;
 }
 
 export function handleRankingSystem(message: Message, pGuild: PGuild): void {

@@ -87,20 +87,19 @@ async function handleCommandInteraction(
   }
 
   const messageContent = interaction.options.getString('message');
+  const commandName = interaction.commandName as AuthCommands | NoAuthCommands;
+  const args = messageContent?.split(/ +/g) ?? [];
 
-  const command = commandFetcher(
-    interaction.commandName as AuthCommands | NoAuthCommands,
-    messageContent?.split(/ +/g) ?? []
-  );
+  const commandData = commandFetcher(commandName);
 
-  if (!command.commandOptions) {
+  if (!commandData) {
     return { content: `command ${interaction.commandName} does not exist`, ephemeral: false };
   }
 
   if (
-    command.commandOptions.auth &&
-    interaction.member &&
-    !isUserAuthorised(interaction.member as GuildMember /* needs better implementation */)
+    commandData.auth &&
+    (interaction.member &&
+    !isUserAuthorised(interaction.member as GuildMember /* needs better implementation */))
   ) {
     return { content: `you are not authorised to use ${interaction.commandName}`, ephemeral: false };
   }
@@ -121,19 +120,14 @@ async function handleCommandInteraction(
   pGuild.announce = pGuildRest.announce;
   pGuild.premium = pGuildRest.premium;
 
-  if (!command?.cmd) {
-    logger.error(new Error(`command ${interaction.commandName} does not exist`));
-    return { content: `command ${interaction.commandName} does not exist`, ephemeral: false };
-  }
-
   const commandResponse = await commandLoader(
     interaction,
-    command.cmd,
-    command.args,
+    commandName,
+    args,
     pGuild,
     client,
-    command.scopeLimit,
-    command.commandOptions,
+    commandData.scopeLimit,
+    commandData.time,
     activeCooldowns
   );
 
@@ -143,7 +137,7 @@ async function handleCommandInteraction(
   }
 
   const content = commandResponse.value !== '' ? commandResponse.value : 'command succeeded';
-  const ephemeral = command.commandOptions.ephemeral;
+  const ephemeral = commandData.ephemeral;
 
   return { content, ephemeral };
 }

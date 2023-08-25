@@ -3,15 +3,20 @@ import { getVoiceConnection } from '@discordjs/voice';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { clientWrite } from '../../libraries/localisation.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { AnnouncementAction, ReturnPromise } from '../../types/classes/PTypes.interface';
-import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
+import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'leave';
+const DESCRIPTION = 'makes portal leave your voice channel'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false)),
+    .setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {

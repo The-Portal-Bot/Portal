@@ -1,14 +1,20 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { messageHelp } from '../../libraries/help.library';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'delete_messages';
+const DESCRIPTION = 'delete n messages';
 
 export = {
+  time: 1,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.MEMBER,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .setDescription(DESCRIPTION)
     .addNumberOption(option =>
       option
         .setName('delete_length')

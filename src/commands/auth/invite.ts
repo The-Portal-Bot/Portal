@@ -1,14 +1,20 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, InviteCreateOptions, TextChannel } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, isMod, messageHelp } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { isMod, messageHelp } from '../../libraries/help.library';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'invite';
+const DESCRIPTION = 'generate an invite link';
 
 export = {
+  time: 1,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.MEMBER,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .setDescription(DESCRIPTION)
     .addBooleanOption(option =>
       option
         .setName('temporary')

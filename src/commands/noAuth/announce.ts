@@ -1,15 +1,21 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
+import { createEmbed, messageHelp } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'announce';
+const DESCRIPTION = 'send an announcement to the announcement channel'
 
 export = {
+  time: 2,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.MEMBER,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .setDescription(DESCRIPTION)
     .addStringOption(option =>
       option.setName('title')
         .setDescription('Announcement title')
@@ -67,7 +73,7 @@ export = {
     const outcome = await announcementChannel.send({ embeds: [richMessage] });
 
     return {
-      result: false,
+      result: !!outcome,
       value: outcome ? 'announcement was sent successfully' : 'could not send message',
     };
   },

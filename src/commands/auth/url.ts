@@ -1,13 +1,18 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { commandDescriptionByNameAndAuthenticationLevel } from '../../libraries/help.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'url';
+const DESCRIPTION = 'set a channel to URL only'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true)),
+    .setDescription(DESCRIPTION),
   async execute(/* interaction: ChatInputCommandInteraction, pGuild: PGuild */): Promise<ReturnPromise> {
     return {
       result: false,

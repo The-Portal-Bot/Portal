@@ -1,18 +1,24 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, messageHelp } from '../../libraries/help.library';
+import { createEmbed, messageHelp } from '../../libraries/help.library';
 import { insertPoll } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { PPoll } from '../../types/classes/PPoll.class';
-import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'poll';
+const DESCRIPTION = 'create a new poll'
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .setDescription(DESCRIPTION)
     .addStringOption(option =>
       option.setName('title')
         .setDescription('Poll title')

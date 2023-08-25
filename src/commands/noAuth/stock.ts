@@ -2,9 +2,9 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
 import dayjs from 'dayjs';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 // import { CountryCodes } from '../../data/lists/countryCodesISO.static';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
@@ -20,11 +20,17 @@ import { ReturnPromise } from '../../types/classes/PTypes.interface';
 // };
 
 const COMMAND_NAME = 'stock';
+const DESCRIPTION = 'returns data on stocks'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .setDescription(DESCRIPTION)
     .addStringOption(option =>
       option.setName('stock')
         .setDescription('Stock you want to get data for')

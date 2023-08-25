@@ -1,17 +1,23 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, messageHelp } from '../../libraries/help.library';
+import { messageHelp } from '../../libraries/help.library';
 import { insertPortal } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { IPChannel, PChannel } from '../../types/classes/PPortalChannel.class';
-import { ReturnPromise } from '../../types/classes/PTypes.interface';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'portal';
+const DESCRIPTION = 'set a portal channel';
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .setDescription(DESCRIPTION)
     .addChannelOption((option) =>
       option
         .setName('portal_channel_name')

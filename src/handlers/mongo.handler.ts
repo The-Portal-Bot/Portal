@@ -1,14 +1,13 @@
 import mongoose from 'mongoose';
+import { logger } from '../libraries/help.library';
 
 export async function mongoHandler(mongoUrl: string) {
   mongoose.connection.on('connecting', () => {
-    // eslint-disable-next-line no-console
-    console.log('[mongoose] connecting to mongo');
+    logger.info('[mongoose] connecting to mongo');
   });
 
   mongoose.connection.on('connected', () => {
-    // eslint-disable-next-line no-console
-    console.log('[mongoose] connected to mongo');
+    logger.info('[mongoose] connected to mongo');
   });
 
   const connectOptions = {

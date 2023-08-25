@@ -1,17 +1,23 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
 import { regexInterpreter } from '../../libraries/guild.library';
-import { commandDescriptionByNameAndAuthenticationLevel, createEmbed, maxString, messageHelp } from '../../libraries/help.library';
+import { createEmbed, maxString, messageHelp } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { Field, ReturnPromise } from '../../types/classes/PTypes.interface';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
 
 const COMMAND_NAME = 'run';
+const DESCRIPTION = 'execute given code'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: false,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, false))
+    .setDescription(DESCRIPTION)
     .addStringOption(option =>
       option.setName('command')
         .setDescription('Command to run')

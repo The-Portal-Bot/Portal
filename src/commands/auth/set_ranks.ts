@@ -1,16 +1,22 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Role } from 'discord.js';
-import { commandDescriptionByNameAndAuthenticationLevel, getJSONFromString, messageHelp } from '../../libraries/help.library';
+import { getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { setRanks } from '../../libraries/mongo.library';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { Rank, ReturnPromise } from '../../types/classes/PTypes.interface';
+import { Rank, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'set_ranks';
+const DESCRIPTION = 'set ranks for server'
 
 export = {
+  time: 0,
+  premium: false,
+  ephemeral: true,
+  auth: true,
+  scopeLimit: ScopeLimit.NONE,
   data: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription(commandDescriptionByNameAndAuthenticationLevel(COMMAND_NAME, true))
+    .setDescription(DESCRIPTION)
     .addStringOption((option) =>
       option
         .setName('rank_string')
