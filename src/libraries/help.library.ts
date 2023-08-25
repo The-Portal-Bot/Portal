@@ -521,7 +521,8 @@ export function isWhitelist(member: GuildMember | null): boolean {
 export function messageHelp(type: string, argument: string, info = ''): string {
   if (info !== '') info += '\n';
   return (
-    `${info} get help by typing \`./help ${argument}\`\n` + `*https://portal-bot.xyz/docs/${type}/detailed/${argument}*`
+    `${info} get help at \`/help ${argument}\` or by clicking ` +
+    `[here](<https://portal-bot.xyz/docs/${type}/detailed/${argument}>)`
   );
 }
 
