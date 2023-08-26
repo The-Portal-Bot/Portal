@@ -1,6 +1,7 @@
 import { Channel, ChannelType, ChatInputCommandInteraction, Client, EmbedBuilder, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from 'discord.js';
 import * as EventFunctions from '../events';
-import { isUserAuthorised, logger } from '../libraries/help.library';
+import { isUserAuthorised } from '../libraries/help.library';
+import logger from '../libraries/log.library';
 import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
 import { commandFetcher } from '../libraries/preprocessor.library';
 import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface';
@@ -38,16 +39,16 @@ async function eventLoader(event: HandledEvents, args: Arguments) {
   const eventFunction = eventFunctionMap[event];
 
   if (!eventFunction) {
-    logger.debug(`[event-handled] ${event} is unhandled`);
+    logger.debug(`${event} is unhandled`);
     return;
   }
 
   try {
     // @ts-expect-error args can be a multitude of things
     const response = await eventFunction(args);
-    logger.info(`[event-handled] ${event} | ${response}`);
-  } catch (e) {
-    logger.error(new Error(`[event-rejected] ${event} | ${e}`));
+    logger.info(`${event} handled with response: ${response}`);
+  } catch (error) {
+    logger.error(new Error(`${event} rejected with error: ${error}`));
   }
 }
 
@@ -87,7 +88,6 @@ async function handleCommandInteraction(
   }
 
   const commandName = interaction.commandName as AuthCommands | NoAuthCommands;
-
   const commandData = commandFetcher(commandName);
 
   if (!commandData) {

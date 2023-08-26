@@ -1,7 +1,8 @@
 import { ChatInputCommandInteraction, Client } from 'discord.js';
 import * as auth from '../commands/auth';
 import * as noAuth from '../commands/noAuth';
-import { getElapsedTime, logger, pad } from '../libraries/help.library';
+import { getElapsedTime, pad } from '../libraries/help.library';
+import logger from '../libraries/log.library';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
   ActiveCooldowns,
