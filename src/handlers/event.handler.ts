@@ -39,14 +39,14 @@ async function eventLoader(event: HandledEvents, args: Arguments) {
   const eventFunction = eventFunctionMap[event];
 
   if (!eventFunction) {
-    logger.debug(`${event} is unhandled`);
+    logger.debug(`event ${event}, is unhandled`);
     return;
   }
 
   try {
     // @ts-expect-error args can be a multitude of things
     const response = await eventFunction(args);
-    logger.info(`${event} handled with response: ${response}`);
+    logger.info(`event ${event}, handled with response - "${response}"`);
   } catch (error) {
     logger.error(new Error(`${event} rejected with error: ${error}`));
   }

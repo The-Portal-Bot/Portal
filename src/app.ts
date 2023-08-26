@@ -37,7 +37,7 @@ dotenv.config();
   const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
   try {
-    logger.info('Started refreshing application slash commands');
+    logger.info('started refreshing application slash commands');
 
     if (!process.env.CLIENT_ID) {
       logger.error(new Error('Discord client id is not defined'));
@@ -54,7 +54,7 @@ dotenv.config();
       }
     );
 
-    logger.info('Successfully reloaded application slash commands');
+    logger.info('successfully reloaded application slash commands');
   } catch (error) {
     logger.error(error);
   }
@@ -75,5 +75,5 @@ dotenv.config();
     process.exit(1);
   }
 
-  logger.info('ready');
+  logger.info('portal bot is running');
 })();
