@@ -1,12 +1,13 @@
-import { BanOptions, Message } from 'discord.js';
 import dayjs from 'dayjs';
-import configSpam from '../config.spam.json';
-import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
+import { BanOptions, Message } from 'discord.js';
 import { ProfaneWords } from '../assets/lists/profaneWords.static';
+import configSpam from '../config.spam.json';
 import { PGuild } from '../types/classes/PGuild.class';
 import { SpamCache } from '../types/classes/PTypes.interface';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { getRole } from './guild.library';
-import { isMessageDeleted, isWhitelist, logger, markMessageAsDeleted, messageReply } from './help.library';
+import { isMessageDeleted, isWhitelist, markMessageAsDeleted, messageReply } from './help.library';
+import logger from '../utilities/log.utility';
 import { updateMember } from './mongo.library';
 import { ban, kick } from './user.library';
 

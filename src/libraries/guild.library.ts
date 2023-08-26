@@ -27,7 +27,8 @@ import { PChannel } from '../types/classes/PPortalChannel.class';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
 import { PortalChannelType } from '../types/enums/PortalChannel.enum';
 import { Prefix } from '../types/enums/Prefix.enum';
-import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, logger, maxString } from './help.library';
+import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, maxString } from './help.library';
+import logger from '../utilities/log.utility';
 import { insertVoice } from './mongo.library';
 
 function inlineOperator(str: string) {

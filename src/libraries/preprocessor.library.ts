@@ -4,7 +4,8 @@ import * as noAuth from '../commands/noAuth';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { AuthCommands, CommandOptions, NoAuthCommands } from '../types/classes/PTypes.interface';
 import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
-import { isMessageDeleted, isUserIgnored, logger, markMessageAsDeleted, messageReply } from './help.library';
+import { isMessageDeleted, isUserIgnored, markMessageAsDeleted, messageReply } from './help.library';
+import logger from '../utilities/log.utility';
 import { removeIgnore, removeURL, setMusicData } from './mongo.library';
 import { addPointsMessage } from './user.library';
 

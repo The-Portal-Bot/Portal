@@ -18,7 +18,6 @@ import {
   TextChannel,
   VoiceChannel
 } from 'discord.js';
-import { createLogger, format, transports } from 'winston';
 import { VideoSearchResult } from 'yt-search';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { Field, TimeElapsed } from '../types/classes/PTypes.interface';
@@ -27,6 +26,7 @@ import { OpapGameId } from '../types/enums/OpapGames.enum';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import { createDiscordJSAdapter } from './adapter.library';
+import logger from '../utilities/log.utility';
 import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
 
 dayjs.extend(duration);
@@ -63,23 +63,6 @@ export function isGuildDeleted(guild: Guild) {
 export function markGuildAsDeleted(guild: Guild) {
   deletedGuild.add(guild);
 }
-
-export const logger = createLogger({
-  format: format.combine(
-    format.timestamp({
-      format: 'DD-MM-YY HH:mm:ss',
-    }),
-    format.errors({ stack: true }),
-    format.splat(),
-    format.json()
-  ),
-  defaultMeta: { service: 'portal' },
-  transports: [
-    new transports.Console(),
-    new transports.File({ filename: 'error.log', level: 'error' }),
-    new transports.File({ filename: 'combined.log' }),
-  ],
-});
 
 export async function askForApproval(
   interaction: ChatInputCommandInteraction,

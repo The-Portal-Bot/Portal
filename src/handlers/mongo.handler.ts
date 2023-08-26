@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
-import { logger } from '../libraries/help.library';
+import logger from '../utilities/log.utility';
 
 export async function mongoHandler(mongoUrl: string) {
   mongoose.connection.on('connecting', () => {
-    logger.info('[mongoose] connecting to mongo');
+    logger.info('connecting to mongo', { service: 'mongse' });
   });
 
   mongoose.connection.on('connected', () => {
-    logger.info('[mongoose] connected to mongo');
+    logger.info('connected to mongo', { service: 'mongse' });
   });
 
   const connectOptions = {

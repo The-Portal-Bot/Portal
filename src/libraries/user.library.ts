@@ -3,7 +3,8 @@ import { PGuild } from '../types/classes/PGuild.class';
 import { PMember } from '../types/classes/PMember.class';
 import { Rank } from '../types/classes/PTypes.interface';
 import { RankSpeed, RankSpeedValueList } from '../types/enums/RankSpeed.enum';
-import { logger, getElapsedTime } from './help.library';
+import { getElapsedTime } from './help.library';
+import logger from '../utilities/log.utility';
 import { updateEntireMember, updateMember } from './mongo.library';
 
 export async function calculateRank(member: PMember): Promise<number> {
