@@ -7,7 +7,7 @@ import { SpamCache } from '../types/classes/PTypes.interface';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { getRole } from './guild.library';
 import { isMessageDeleted, isWhitelist, markMessageAsDeleted, messageReply } from './help.library';
-import logger from './log.library';
+import logger from '../utilities/log.library';
 import { updateMember } from './mongo.library';
 import { ban, kick } from './user.library';
 

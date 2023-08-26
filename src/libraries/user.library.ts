@@ -4,7 +4,7 @@ import { PMember } from '../types/classes/PMember.class';
 import { Rank } from '../types/classes/PTypes.interface';
 import { RankSpeed, RankSpeedValueList } from '../types/enums/RankSpeed.enum';
 import { getElapsedTime } from './help.library';
-import logger from './log.library';
+import logger from '../utilities/log.library';
 import { updateEntireMember, updateMember } from './mongo.library';
 
 export async function calculateRank(member: PMember): Promise<number> {

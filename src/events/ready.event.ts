@@ -1,7 +1,7 @@
 import { ActivityOptions, ActivityType, Client, Guild, PresenceData } from 'discord.js';
 import { removeDeletedChannels, removeEmptyVoiceChannels } from '../libraries/help.library';
 import { getFunction } from '../libraries/localisation.library';
-import logger from '../libraries/log.library';
+import logger from '../utilities/log.library';
 import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library';
 import { PMember } from '../types/classes/PMember.class';
 import { LogActions } from '../types/classes/PTypes.interface';

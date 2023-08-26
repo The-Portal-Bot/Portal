@@ -1,7 +1,7 @@
 import { Channel, ChannelType, ChatInputCommandInteraction, Client, EmbedBuilder, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from 'discord.js';
 import * as EventFunctions from '../events';
 import { isUserAuthorised } from '../libraries/help.library';
-import logger from '../libraries/log.library';
+import logger from '../utilities/log.library';
 import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
 import { commandFetcher } from '../libraries/preprocessor.library';
 import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface';
