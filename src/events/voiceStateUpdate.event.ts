@@ -12,7 +12,7 @@ import {
   updateMusicLyricsMessage,
   updateMusicMessage,
 } from '../libraries/help.library';
-import logger from '../utilities/log.library';
+import logger from '../utilities/log.utility';
 import { fetchGuild, removeVoice, setMusicData, updateGuild } from '../libraries/mongo.library';
 import { updateTimestamp } from '../libraries/user.library';
 import { PGuild } from '../types/classes/PGuild.class';

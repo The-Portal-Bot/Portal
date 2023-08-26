@@ -26,7 +26,7 @@ import { OpapGameId } from '../types/enums/OpapGames.enum';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
 import { createDiscordJSAdapter } from './adapter.library';
-import logger from '../utilities/log.library';
+import logger from '../utilities/log.utility';
 import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
 
 dayjs.extend(duration);

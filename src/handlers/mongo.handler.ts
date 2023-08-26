@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import logger from '../utilities/log.library';
+import logger from '../utilities/log.utility';
 
 export async function mongoHandler(mongoUrl: string) {
   mongoose.connection.on('connecting', () => {

@@ -8,7 +8,7 @@ import * as noAuth from './commands/noAuth';
 import { clientHandler, connectToDiscord } from './handlers/discord.handler';
 import { eventHandler } from './handlers/event.handler';
 import { mongoHandler } from './handlers/mongo.handler';
-import logger from './utilities/log.library';
+import logger from './utilities/log.utility';
 import { ActiveCooldowns } from './types/classes/PTypes.interface';
 
 dotenv.config();
