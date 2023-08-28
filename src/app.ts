@@ -50,7 +50,7 @@ dotenv.config();
         body:  [
           ...Object.values(auth),
           ...Object.values(noAuth),
-        ].map(command => command.data.toJSON())
+        ].map(command => command.slashCommand.toJSON())
       }
     );
 

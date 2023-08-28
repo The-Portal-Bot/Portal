@@ -8,6 +8,6 @@ export type Command = {
     ephemeral: boolean;
     auth: boolean;
     scopeLimit: ScopeLimit;
-    data: SlashCommandBuilder;
+    slashCommand: SlashCommandBuilder;
     execute: (interaction: ChatInputCommandInteraction, pGuild?: PGuild) => Promise<ReturnPromise>;
 }

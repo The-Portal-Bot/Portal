@@ -97,12 +97,12 @@ export function commandDecipher(messageContent: Message['content']): {
 export function commandFetcher(
   commandName: AuthCommands | NoAuthCommands,
 ){
-  const authCommand = [...Object.values(auth)].find(command => command.data.name === commandName);
+  const authCommand = [...Object.values(auth)].find(command => command.slashCommand.name === commandName);
 
   if (authCommand) {
     return {
-      name: authCommand.data.name,
-      description: authCommand.data.description,
+      name: authCommand.slashCommand.name,
+      description: authCommand.slashCommand.description,
       auth: authCommand.auth,
       scopeLimit: authCommand.scopeLimit,
       time: authCommand.time,
@@ -111,12 +111,12 @@ export function commandFetcher(
     } as CommandOptions;
   }
 
-  const noAuthCommand = [...Object.values(noAuth)].find(command => command.data.name === commandName);
+  const noAuthCommand = [...Object.values(noAuth)].find(command => command.slashCommand.name === commandName);
 
   if (noAuthCommand) {
     return  {
-      name: noAuthCommand.data.name,
-      description: noAuthCommand.data.description,
+      name: noAuthCommand.slashCommand.name,
+      description: noAuthCommand.slashCommand.description,
       auth: noAuthCommand.auth,
       scopeLimit: noAuthCommand.scopeLimit,
       time: noAuthCommand.time,

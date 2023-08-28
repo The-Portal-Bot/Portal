@@ -72,7 +72,7 @@ export function commandResolver(command: AuthCommands | NoAuthCommands) {
   const commandData = [
     ...Object.values(auth),
     ...Object.values(noAuth),
-  ].find((commandData) => commandData.data.name === command);
+  ].find((commandData) => commandData.slashCommand.name === command);
 
   if (!commandData) {
     throw Error(`command ${command} not found`);

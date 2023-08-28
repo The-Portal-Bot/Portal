@@ -11,7 +11,7 @@ export = {
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.MEMBER,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION),
   async execute(/* interaction: ChatInputCommandInteraction */): Promise<ReturnPromise> {

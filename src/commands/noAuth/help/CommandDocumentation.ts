@@ -107,8 +107,8 @@ export class CommandDocumentation implements HelpDocumentation {
       ...Object.values(auth),
       ...Object.values(noAuth),
     ].map(command => ({
-      name: command.data.name,
-      hover: command.data.description
+      name: command.slashCommand.name,
+      hover: command.slashCommand.description
     }));
   }
 }
