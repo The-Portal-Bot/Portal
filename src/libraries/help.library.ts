@@ -3,6 +3,9 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   ChatInputCommandInteraction,
   Client,
   Collection,
@@ -64,53 +67,25 @@ export function markGuildAsDeleted(guild: Guild) {
   deletedGuild.add(guild);
 }
 
-export async function askForApproval(
-  interaction: ChatInputCommandInteraction,
-  requester: GuildMember,
-  question: string
-): Promise<boolean> {
-  const questionMessage = await interaction.channel?.send(question);
+export async function askForApproval(interaction: ChatInputCommandInteraction, memberToBanName: string) {
+  const confirm = new ButtonBuilder()
+    .setCustomId('confirm')
+    .setLabel('Confirm Ban')
+    .setStyle(ButtonStyle.Danger);
 
-  if (!questionMessage) {
-    return false;
-  }
+  const cancel = new ButtonBuilder()
+    .setCustomId('cancel')
+    .setLabel('Cancel')
+    .setStyle(ButtonStyle.Secondary);
 
-  let accepted = false;
-  const filter = (m: Message) => m.author.id === requester.user.id;
-  const collector = interaction.channel?.createMessageCollector({ filter, time: 10000 });
+  const row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(cancel, confirm);
 
-  collector?.on('collect', (m: Message) => {
-    if (m.content === 'yes') {
-      accepted = true;
-      collector?.stop();
-    } else if (m.content === 'no') {
-      collector?.stop();
-    }
+  return await interaction.reply({
+    fetchReply: true,
+    content: `Are you sure you want to ban ${memberToBanName}?`,
+    components: [row],
   });
-
-  return new Promise((resolve) => {
-    collector?.on('end', async (collected) => {
-      for (const replyMessage of collected.values()) {
-        if (isMessageDeleted(replyMessage)) {
-          const deletedMessage = await replyMessage.delete();
-
-          if (deletedMessage) {
-            markMessageAsDeleted(deletedMessage);
-          }
-        }
-      }
-
-      if (isMessageDeleted(questionMessage)) {
-        const deletedMessage = await questionMessage.delete();
-
-        if (deletedMessage) {
-          markMessageAsDeleted(deletedMessage);
-        }
-      }
-
-      resolve(accepted);
-    });
-  }).then(() => accepted);
 }
 
 export function getJSONFromString(str: string) {

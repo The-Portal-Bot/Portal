@@ -122,12 +122,12 @@ export async function kick(memberToKick: GuildMember, kickReason: string): Promi
   return !!await memberToKick.kick(kickReason)
 }
 
-export async function ban(userToBan: GuildMember, banOptions: BanOptions): Promise<boolean> {
-  if (!userToBan.bannable) {
+export async function ban(memberToBan: GuildMember, banOptions: BanOptions): Promise<boolean> {
+  if (!memberToBan.bannable) {
     return false;
   }
 
-  return !!await userToBan.ban(banOptions);
+  return !!await memberToBan.ban(banOptions);
 }
 
 async function giveRoleFromRankUp(

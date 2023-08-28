@@ -170,6 +170,12 @@ export async function eventHandler(client: Client, activeCooldowns: ActiveCooldo
       ? { content: response.content, ephemeral: response.ephemeral }
       : { embeds: response.content, ephemeral: response.ephemeral };
 
-    await interaction.reply(reply);
+    if (interaction.replied) {
+      return;
+    }
+
+    if (interaction.isRepliable()) {
+      await interaction.reply(reply);
+    }
   });
 }

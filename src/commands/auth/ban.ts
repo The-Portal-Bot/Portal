@@ -76,33 +76,42 @@ export = {
     const deleteMessageDays = banDays ?? 1;
     const reason = banReason ?? 'banned by admin';
 
-    const approval = await askForApproval(
-      interaction,
-      interaction.member as GuildMember,
-      `*${interaction.member}, are you sure you want to ban ` +
-      `member ${memberToBan}*, do you **(yes / no)** ? reason : ${reason}`
-    );
+    const response = await askForApproval(interaction, memberToBan.displayName);
 
-    if (!approval) {
-      return {
-        result: false,
-        value: `failed to ban ${memberToBan}`,
-      };
+    try {
+      const confirmation = await response.awaitMessageComponent({
+        filter: buttonInteraction => buttonInteraction.user.id === interaction.user.id,
+        time: 10_000
+      });
+
+      if (confirmation.customId === 'confirm') {
+        const banOptions: BanOptions = {
+          deleteMessageDays,
+          reason,
+        };
+
+        const banResponse = await ban(memberToBan, banOptions);
+        await confirmation.update({
+          content: banResponse
+            ? `${memberToBan} has been banned by ${interaction.user} ` +
+          `for ${banDays} ${deleteMessageDays > 1 ? 'days' : 'day'}, because: *${reason}*`
+            : `${memberToBan} is not bannable`
+        });
+      } else if (confirmation.customId === 'cancel') {
+        await confirmation.update({
+          content: 'Ban cancelled'
+        });
+      }
+    } catch (e) {
+      await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
     }
 
-    const banOptions: BanOptions = {
-      deleteMessageDays,
-      reason,
-    };
-
-    const banResponse = await ban(memberToBan, banOptions);
-
     return {
-      result: !!banResponse,
-      value: banResponse
-        ? `${memberToBan} has been banned by ${interaction.user} ` +
-        `for ${banDays} ${deleteMessageDays > 1 ? 'days' : 'day'}, because: *${reason}*`
-        : `${memberToBan} is not bannable`,
-    };
+      result: true,
+      value: '',
+    }
   },
 } as Command;
+
+
+
