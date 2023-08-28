@@ -1,10 +1,10 @@
 import { Channel, ChannelType, ChatInputCommandInteraction, Client, EmbedBuilder, Guild, GuildMember, Message, MessageReaction, PartialDMChannel, PartialGuildMember, PartialMessage, PartialMessageReaction, PartialUser, User, VoiceState } from 'discord.js';
 import * as EventFunctions from '../events';
 import { isUserAuthorised } from '../libraries/help.library';
-import logger from '../utilities/log.utility';
 import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
 import { commandFetcher } from '../libraries/preprocessor.library';
 import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface';
+import logger from '../utilities/log.utility';
 import { commandLoader } from './command.handler';
 
 type HandledEvents = 'ready' | 'channelDelete' | 'guildCreate' | 'guildDelete' | 'guildMemberAdd' | 'guildMemberRemove' | 'messageDelete' | 'messageReactionAdd' | 'voiceStateUpdate';
@@ -53,7 +53,6 @@ async function eventLoader(event: HandledEvents, args: Arguments) {
 }
 
 async function handleCommandInteraction(
-  client: Client,
   interaction: ChatInputCommandInteraction,
   activeCooldowns: ActiveCooldowns
 ): Promise<{ content: string | EmbedBuilder[], ephemeral: boolean }> {
@@ -122,7 +121,6 @@ async function handleCommandInteraction(
     interaction,
     commandName,
     pGuild,
-    client,
     commandData.scopeLimit,
     commandData.time,
     activeCooldowns
@@ -167,7 +165,7 @@ export async function eventHandler(client: Client, activeCooldowns: ActiveCooldo
     if (!interaction.isCommand()) return;
     logger.info(`user ${interaction.user} called command ${interaction.commandName}`);
 
-    const response = await handleCommandInteraction(client, interaction as ChatInputCommandInteraction, activeCooldowns);
+    const response = await handleCommandInteraction(interaction as ChatInputCommandInteraction, activeCooldowns);
     const reply = typeof response.content === 'string'
       ? { content: response.content, ephemeral: response.ephemeral }
       : { embeds: response.content, ephemeral: response.ephemeral };

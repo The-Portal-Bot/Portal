@@ -5,6 +5,7 @@ import { RequestOptions } from 'https';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { Command } from '../../types/Command';
 
 const COMMAND_NAME = 'weather';
 const DESCRIPTION = 'returns weather data'
@@ -147,7 +148,7 @@ export = {
 
 
   },
-};
+} as Command;
 
 function kelvinToCelsius(kelvin: number): number {
   return Math.round(kelvin - 273.15);

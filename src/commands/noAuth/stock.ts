@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import dayjs from 'dayjs';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import dayjs from 'dayjs';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 // import { CountryCodes } from '../../data/lists/countryCodesISO.static';
 
@@ -137,4 +138,4 @@ export = {
       value: sentMessage ? '' : 'failed to send message',
     };
   },
-};
+} as Command;

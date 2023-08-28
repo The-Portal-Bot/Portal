@@ -15,13 +15,12 @@ export async function commandLoader(
   interaction: ChatInputCommandInteraction,
   command: AuthCommands | NoAuthCommands,
   pGuild: PGuild,
-  client: Client,
   scopeLimit: ScopeLimit,
   time: number,
   activeCooldowns: ActiveCooldowns
 ) {
   if (scopeLimit === ScopeLimit.NONE && time === 0) {
-    return await commandExecution(interaction, command, pGuild, client);
+    return await commandExecution(interaction, command, pGuild);
   }
 
   const cooldown = hasActiveCooldown(interaction, command, scopeLimit, activeCooldowns);
@@ -42,7 +41,7 @@ export async function commandLoader(
     }
   }
 
-  const commandReturn = await commandExecution(interaction, command, pGuild, client);
+  const commandReturn = await commandExecution(interaction, command, pGuild);
 
   if (commandReturn.result) {
     const activeCooldown = scopeLimit === ScopeLimit.GUILD ? activeCooldowns[ScopeLimit.GUILD] : activeCooldowns[ScopeLimit.MEMBER];
@@ -112,11 +111,10 @@ function hasActiveCooldown(
 async function commandExecution(
   interaction: ChatInputCommandInteraction,
   command: AuthCommands | NoAuthCommands,
-  pGuild: PGuild,
-  client: Client
+  pGuild: PGuild
 ) {
   try {
-    return await commandResolver(command).execute(interaction, pGuild, client);
+    return await commandResolver(command).execute(interaction, pGuild);
   } catch (e) {
     logger.error(new Error(`While executing ${command}, got error: ${e}`));
     return {

@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { messageHelp } from '../../libraries/help.library';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { Command } from '../../types/Command';
 
 const COMMAND_NAME = 'focus';
 const DESCRIPTION = 'creates a dedicated channel for two users to privately talk in'
@@ -154,4 +155,4 @@ export = {
     //   value: focusChannelOutcome,
     // };
   },
-};
+} as Command;

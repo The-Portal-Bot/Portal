@@ -8,6 +8,7 @@ import {
 } from '../../libraries/guild.library';
 import { messageHelp } from '../../libraries/help.library';
 import { updateGuild } from '../../libraries/mongo.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
@@ -86,7 +87,7 @@ export = {
         : 'failed to set new announcement channel',
     };
   },
-};
+} as Command;
 
 async function doesChannelHaveUsage(textBasedChannelId: TextBasedChannel['id'], pGuild: PGuild) {
   if (!textBasedChannelId) {

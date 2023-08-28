@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction, User } from 'discord.js';
 import { createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { Command } from '../../types/Command';
 
 const COMMAND_NAME = 'whoami';
 const DESCRIPTION = 'returns your personal card'
@@ -65,4 +66,4 @@ export = {
       value: sentMessage ? '' : 'could not send message',
     };
   },
-};
+} as Command;

@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
 import { messageHelp } from '../../libraries/help.library';
 import { insertPortal } from '../../libraries/mongo.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { IPChannel, PChannel } from '../../types/classes/PPortalChannel.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -108,4 +109,4 @@ export = {
     };
 
   },
-};
+} as Command;

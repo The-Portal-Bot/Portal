@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, InviteCreateOptions, TextChannel } from 'discord.js';
 import { isMod, messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'invite';
@@ -108,4 +109,4 @@ export = {
       value: 'I sent you an invite as a private message',
     };
   },
-};
+} as Command;

@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 import { AttributeDocumentation } from './help/AttributeDocumentation';
 import { CommandDocumentation } from './help/CommandDocumentation';
@@ -210,8 +211,7 @@ export = {
 
     return { result: false, value: messageHelp('commands', 'help') };
   },
-};
-
+} as Command;
 
 const commandDocumentation = new CommandDocumentation();
 const variableDocumentation = new VariableDocumentation();

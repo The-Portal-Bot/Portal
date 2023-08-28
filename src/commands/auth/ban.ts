@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { BanOptions, ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
 import { ban } from '../../libraries/user.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'ban';
@@ -104,4 +105,4 @@ export = {
         : `${memberToBan} is not bannable`,
     };
   },
-};
+} as Command;

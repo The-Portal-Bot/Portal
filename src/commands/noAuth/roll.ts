@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import Roll from 'roll';
 import { createEmbed, maxString, messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'roll';
@@ -65,4 +66,4 @@ export = {
       };
     }
   },
-};
+} as Command;

@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'delete_messages';
@@ -73,4 +74,4 @@ export = {
       value: `User ${interaction.user.displayName}, deleted ${messages.size - 1} messages`,
     };
   }
-};
+} as Command;

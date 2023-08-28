@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
 import { insertPoll } from '../../libraries/mongo.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { PPoll } from '../../types/classes/PPoll.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -96,7 +97,7 @@ export = {
       value: response.result ? '' : response.value,
     };
   },
-};
+} as Command;
 
 async function createRoleMessage(
   channel: TextChannel,

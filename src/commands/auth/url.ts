@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'url';
@@ -113,4 +114,4 @@ export = {
     //   value: messageHelp('commands', 'url'),
     // };
   },
-};
+} as Command;

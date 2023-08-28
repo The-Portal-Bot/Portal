@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { PMember } from '../../types/classes/PMember.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -102,7 +103,7 @@ export = {
       value: outcome ? '' : 'failed to send message',
     };
   },
-};
+} as Command;
 
 function compare(memberA: PMember, memberB: PMember) {
   return memberB.level === memberA.level

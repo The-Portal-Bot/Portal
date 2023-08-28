@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
 import { regexInterpreter } from '../../libraries/guild.library';
 import { createEmbed, maxString, messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
@@ -136,4 +137,4 @@ export = {
       value: editedMessage ? '' : 'failed to edit message',
     };
   },
-};
+} as Command;

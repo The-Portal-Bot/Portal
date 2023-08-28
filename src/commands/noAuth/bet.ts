@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import dayjs from 'dayjs';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import dayjs from 'dayjs';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'bet';
@@ -30,7 +31,7 @@ export = {
         .setDescription('betting game')
         .setRequired(true)
         .addChoices(
-          { name: 'ΚΙΝΟ', value: 1100 },
+          { name: 'KINO', value: 1100 },
           { name: 'PoweSpin', value: 1110 },
           { name: 'Super3', value: 2100 },
           { name: 'ΠΡΟΤΟ', value: 2101 },
@@ -138,4 +139,4 @@ export = {
       value: outcome ? '' : 'failed to send message',
     };
   },
-};
+} as Command;

@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import { createEmbed } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
@@ -57,4 +58,4 @@ export = {
       value: outcome ? '' : 'failed to send message',
     };
   },
-};
+} as Command;

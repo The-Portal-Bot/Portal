@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Role } from 'discord.js';
 import { getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { setRanks } from '../../libraries/mongo.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Rank, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
@@ -85,7 +86,7 @@ export = {
       value: response ? 'set new ranks successfully' : 'failed to set new ranks',
     };
   },
-};
+} as Command;
 
 function isRank(rank: Rank) {
   return !!rank.level && !!rank.role;

@@ -6,6 +6,7 @@ import voca from 'voca';
 import { CountryCodes } from '../../assets/lists/countryCodesISO.static';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { httpsFetch } from '../../libraries/http.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'corona';
@@ -180,7 +181,7 @@ export = {
       value: outcome ? '' : 'failed to send message',
     };
   },
-};
+} as Command;
 
 const countryCodes: { name: string; code: string }[] = CountryCodes;
 
