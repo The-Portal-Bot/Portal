@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
@@ -13,7 +14,7 @@ export = {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.MEMBER,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption(option =>
@@ -77,4 +78,4 @@ export = {
       value: outcome ? 'announcement was sent successfully' : 'could not send message',
     };
   },
-};
+} as Command;

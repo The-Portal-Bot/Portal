@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'disco
 import { getRole } from '../../libraries/guild.library';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { insertVendor } from '../../libraries/mongo.library';
+import { Command } from '../../types/Command';
 import { GiveRole, PGiveRole } from '../../types/classes/PGiveRole.class';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -16,7 +17,7 @@ export = {
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.NONE,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
@@ -130,7 +131,7 @@ export = {
 
     return roleMessage;
   },
-};
+} as Command;
 
 function createRoleMessage(
   channel: TextChannel,

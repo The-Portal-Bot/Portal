@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import { createEmbed } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
@@ -13,7 +14,7 @@ export = {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .setDMPermission(false),
@@ -57,4 +58,4 @@ export = {
       value: outcome ? '' : 'failed to send message',
     };
   },
-};
+} as Command;

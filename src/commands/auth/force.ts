@@ -3,11 +3,12 @@ import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.
 import { deleteChannel, includedInVoiceList, regexInterpreter } from '../../libraries/guild.library';
 import { messageHelp } from '../../libraries/help.library';
 import { updateVoice } from '../../libraries/mongo.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
-import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
-import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
 import { PChannel } from '../../types/classes/PPortalChannel.class';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
+import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
 
 const COMMAND_NAME = 'force';
 const DESCRIPTION = 'force refresh your portal channel';
@@ -60,7 +61,7 @@ export = {
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.MEMBER,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION),
 
@@ -82,4 +83,4 @@ export = {
     }
     return { result: false, value: 'Force failed' };
   },
-};
+} as Command;

@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'football';
@@ -10,7 +11,7 @@ export = {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption(option =>
@@ -157,4 +158,4 @@ export = {
     //   value: `could not access the server\nerror: ${error}`,
     // };
   },
-};
+} as Command;

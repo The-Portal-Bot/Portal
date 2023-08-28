@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction, User } from 'discord.js';
 import { createEmbed } from '../../libraries/help.library';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { Command } from '../../types/Command';
 
 const COMMAND_NAME = 'whoami';
 const DESCRIPTION = 'returns your personal card'
@@ -13,7 +14,7 @@ export = {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
@@ -65,4 +66,4 @@ export = {
       value: sentMessage ? '' : 'could not send message',
     };
   },
-};
+} as Command;

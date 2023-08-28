@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, InviteCreateOptions, TextChannel } from 'discord.js';
 import { isMod, messageHelp } from '../../libraries/help.library';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'invite';
@@ -12,7 +13,7 @@ export = {
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.MEMBER,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addBooleanOption(option =>
@@ -108,4 +109,4 @@ export = {
       value: 'I sent you an invite as a private message',
     };
   },
-};
+} as Command;

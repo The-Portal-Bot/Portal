@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'kick';
@@ -10,7 +11,7 @@ export = {
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.MEMBER,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION),
   async execute(/* interaction: ChatInputCommandInteraction */): Promise<ReturnPromise> {
@@ -119,4 +120,4 @@ export = {
     //   };
     // }
   },
-};
+} as Command;

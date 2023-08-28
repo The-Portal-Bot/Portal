@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { getVoiceConnection } from '@discordjs/voice';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { clientWrite } from '../../libraries/localisation.library';
+import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
@@ -14,7 +15,7 @@ export = {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  data: new SlashCommandBuilder()
+  slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
@@ -54,4 +55,4 @@ export = {
       value: clientWrite(interaction, pGuild, AnnouncementAction.leave),
     };
   },
-};
+} as Command;
