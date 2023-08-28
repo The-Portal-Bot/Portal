@@ -49,7 +49,6 @@ export = {
           { name: 'corona', value: 'corona' },
           { name: 'crypto', value: 'crypto' },
           { name: 'focus', value: 'focus' },
-          { name: 'football', value: 'football' },
           { name: 'help', value: 'help' },
           { name: 'join', value: 'join' },
           { name: 'leaderboard', value: 'leaderboard' },

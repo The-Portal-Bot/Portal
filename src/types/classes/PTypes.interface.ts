@@ -11,7 +11,6 @@ export type NoAuthCommands =
   | 'corona'
   | 'crypto'
   | 'focus'
-  | 'football'
   | 'help'
   | 'join'
   | 'leaderboard'

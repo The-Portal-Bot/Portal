@@ -4,7 +4,6 @@ export { default as bet } from './bet';
 export { default as corona } from './corona';
 export { default as crypto } from './crypto';
 export { default as focus } from './focus';
-export { default as football } from './football';
 export { default as help } from './help';
 export { default as join } from './join';
 export { default as leaderboard } from './leaderboard';

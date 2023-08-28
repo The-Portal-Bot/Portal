@@ -494,11 +494,17 @@ export function isWhitelist(member: GuildMember | null): boolean {
 }
 
 export function messageHelp(type: string, argument: string, info = ''): string {
-  if (info !== '') info += '\n';
-  return (
-    `${info} get help at \`/help ${argument}\` or by clicking ` +
-    `[here](<https://portal-bot.xyz/docs/${type}/detailed/${argument}>)`
-  );
+  let message = '';
+
+  if (info) {
+    message += `**Info:** ${info}\n`;
+  }
+
+  message += '**Help:** ';
+  message += `You can get detailed guidance by typing \`/help ${argument}\` `;
+  message += `or by visiting [our documentation](<https://portal-bot.xyz/docs/${type}/detailed/${argument}>).`;
+
+  return message;
 }
 
 export async function messageReply(

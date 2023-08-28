@@ -24,7 +24,7 @@ export = {
         .setDescription('betting provider')
         .setRequired(true)
         .addChoices(
-          { name: 'ΟΠΑΠ', value: 'opap' },
+          { name: 'OPAP', value: 'opap' },
         ))
     .addNumberOption(option =>
       option.setName('game')
@@ -32,9 +32,9 @@ export = {
         .setRequired(true)
         .addChoices(
           { name: 'KINO', value: 1100 },
-          { name: 'PoweSpin', value: 1110 },
+          { name: 'PowerSpin', value: 1110 },
           { name: 'Super3', value: 2100 },
-          { name: 'ΠΡΟΤΟ', value: 2101 },
+          { name: 'PROTO', value: 2101 },
           { name: 'LOTTO', value: 5103 },
           { name: 'Tzoker', value: 5104 },
           { name: 'extra5', value: 5106 },

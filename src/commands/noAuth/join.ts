@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Client } from 'discord.js';
-import { joinUserVoiceChannelByInteraction } from '../../libraries/help.library';
+import { joinUserVoiceChannelByInteraction, messageHelp } from '../../libraries/help.library';
 import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -28,7 +28,7 @@ export = {
     }catch (error) {
       return {
         result: false,
-        value: String(error),
+        value: messageHelp('commands', 'join', String(error)),
       };
     }
   },
