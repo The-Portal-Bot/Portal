@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Guild, Role, User, VoiceChannel } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, Guild, Presence, Role, User, VoiceChannel } from 'discord.js';
 import { PGuild } from './PGuild.class';
 import { PMember } from './PMember.class';
 import { PChannel } from './PPortalChannel.class';
@@ -110,10 +110,28 @@ export type LanguagePortal = {
   en: (args: User) => unknown;
 };
 
+export type ClientArguments = {
+  memberLength: number; channelLength: number; guildLength: number
+}
+
+export type StatusArguments = {
+  displayName: string, name: string
+}
+
+export type DataArguments = {
+  data: string, source: string
+}
+
+export type PresenceArguments = {
+   newPresence: Presence
+}
+
+export type LanguageConsoleArguments = ClientArguments & StatusArguments & DataArguments & PresenceArguments;
+
 export type LanguageConsole = {
-  gr: (args: unknown) => unknown;
-  de: (args: unknown) => unknown;
-  en: (args: unknown) => unknown;
+  gr: (args: LanguageConsoleArguments) => string;
+  de: (args: LanguageConsoleArguments) => string;
+  en: (args: LanguageConsoleArguments) => string;
 };
 
 export type LocalisationPortalOption = {
@@ -123,7 +141,7 @@ export type LocalisationPortalOption = {
 
 export type LocalisationConsoleOption = {
   name: LogActions;
-  lang: any; // LanguageConsole;
+  lang: LanguageConsole;
 };
 
 export type CommandOptions = {

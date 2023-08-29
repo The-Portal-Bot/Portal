@@ -1,11 +1,15 @@
-import { ChatInputCommandInteraction, GuildMember, Message, Presence, User } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
   AnnouncementAction,
+  ClientArguments,
+  DataArguments,
   EventAction,
   LocalisationConsoleOption,
   LocalisationPortalOption,
   LogActions,
+  PresenceArguments,
+  StatusArguments
 } from '../types/classes/PTypes.interface';
 import { Locale } from '../types/enums/Locales.enum';
 
@@ -142,14 +146,14 @@ export const consoleText: LocalisationConsoleOption[] = [
   {
     name: LogActions.ready,
     lang: {
-      gr: (args: { memberLength: number; channelLength: number; guildLength: number }) => {
-        return `το ρομπότ ξεκίνησε, με ${args.memberLength} χρήστες, μέσα σε ${args.channelLength} κανάλια σε ${args.guildLength} συντεχνίες`;
+      gr: (args: ClientArguments) => {
+        return `το πόρταλ ξεκίνησε, με ${args.memberLength} χρήστες, μέσα σε ${args.channelLength} κανάλια σε ${args.guildLength} συντεχνίες`;
       },
-      en: (args: { memberLength: number; channelLength: number; guildLength: number }) => {
-        return `bot has started, with ${args.memberLength} users, in ${args.channelLength} channels from ${args.guildLength} guilds`;
+      en: (args: ClientArguments) => {
+        return `portal has started, with ${args.memberLength} users, in ${args.channelLength} channels from ${args.guildLength} guilds`;
       },
-      de: (args: { memberLength: number; channelLength: number; guildLength: number }) => {
-        return `bot hat ${args.memberLength} Mitglieder in ${args.channelLength} Kanälen von ${args.guildLength} Gilden gestartet`;
+      de: (args: ClientArguments) => {
+        return `portal hat ${args.memberLength} Mitglieder in ${args.channelLength} Kanälen von ${args.guildLength} Gilden gestartet`;
       },
     },
   },
@@ -173,20 +177,20 @@ export const consoleText: LocalisationConsoleOption[] = [
   {
     name: LogActions.presenceControlledAway,
     lang: {
-      gr: (args: { newPresence: Presence }) => {
+      gr: (args: PresenceArguments) => {
         return (
           `ο χρήστης ${args?.newPresence?.member?.displayName} είναι μέλος ` +
           'μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ' +
           `(${args?.newPresence?.guild?.name})`
         );
       },
-      en: (args: { newPresence: Presence }) => {
+      en: (args: PresenceArguments) => {
         return (
           `${args?.newPresence?.member?.displayName} who is a member of a handled server, ` +
           `has changed presence, but is in another server (${args?.newPresence?.guild?.name})`
         );
       },
-      de: (args: { newPresence: Presence }) => {
+      de: (args: PresenceArguments) => {
         return (
           `${args?.newPresence?.member?.displayName} who is a member of a handled server, ` +
           `has changed presence, but is in another server (${args?.newPresence?.guild?.name})`
@@ -197,28 +201,28 @@ export const consoleText: LocalisationConsoleOption[] = [
   {
     name: LogActions.presenceControlled,
     lang: {
-      gr: (displayName: string, name: string) => {
-        return `ο χρήστης ${displayName} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${name})`;
+      gr: (args: StatusArguments) => {
+        return `ο χρήστης ${args.displayName} έχει αλλάξει κατάσταση, και βρίσκεται στην ελεγχόμενη συντεχνία (${args.name})`;
       },
-      en: (displayName: string, name: string) => {
-        return `${displayName} has changed presence, in controlled server (${name})`;
+      en: (args: StatusArguments) => {
+        return `${args.displayName} has changed presence, in controlled server (${args.name})`;
       },
-      de: (displayName: string, name: string) => {
-        return `${displayName} has changed presence, in controlled server (${name})`;
+      de: (args: StatusArguments) => {
+        return `${args.displayName} has changed presence, in controlled server (${args.name})`;
       },
     },
   },
   {
     name: LogActions.couldNotFetchData,
     lang: {
-      gr: (data: string, source: string) => {
-        return `δεν κατάφερα να πάρω το ${data} από το ${source}`;
+      gr: (args: DataArguments) => {
+        return `δεν κατάφερα να πάρω το ${args.data} από το ${args.source}`;
       },
-      en: (data: string, source: string) => {
-        return `could not fetch ${data} from ${source}`;
+      en: (args: DataArguments) => {
+        return `could not fetch ${args.data} from ${args.source}`;
       },
-      de: (data: string, source: string) => {
-        return `ich konnte ${data} nicht vom ${source} holen`;
+      de: (args: DataArguments) => {
+        return `ich konnte ${args.data} nicht vom ${args.source} holen`;
       },
     },
   },
@@ -346,39 +350,39 @@ export function clientWrite(
   }
 }
 
-export function clientLog(
-  message: Message | null,
-  guildList: PGuild[],
-  context: EventAction | AnnouncementAction | LogActions,
-  args: unknown
-): string {
-  if (message === null || message.member === null) {
-    return 'there was an error';
-  }
+// export function clientLog(
+//   message: Message | null,
+//   guildList: PGuild[],
+//   context: EventAction | AnnouncementAction | LogActions,
+//   args: ClientArguments
+// ): string {
+//   if (message === null || message.member === null) {
+//     return 'there was an error';
+//   }
 
-  if (!message.member.voice) {
-    return 'there was an error';
-  }
+//   if (!message.member.voice) {
+//     return 'there was an error';
+//   }
 
-  guildList.some((g) =>
-    g.pChannels.some((p) =>
-      p.pVoiceChannels.some((v) => {
-        if (message.member && message.member.voice.channel) {
-          if (v.id === message.member.voice.channel.id) {
-            // message.author.presence.member.voice.channel.id) {
-            switch (v.locale) {
-            case Locale.gr:
-              return consoleText.find((c) => c.name === context)?.lang.gr(args);
-            case Locale.en:
-              return consoleText.find((c) => c.name === context)?.lang.en(args);
-            case Locale.de:
-              return consoleText.find((c) => c.name === context)?.lang.de(args);
-            }
-          }
-        }
-      })
-    )
-  );
+//   guildList.some((g) =>
+//     g.pChannels.some((p) =>
+//       p.pVoiceChannels.some((v) => {
+//         if (message.member && message.member.voice.channel) {
+//           if (v.id === message.member.voice.channel.id) {
+//             // message.author.presence.member.voice.channel.id) {
+//             switch (v.locale) {
+//             case Locale.gr:
+//               return consoleText.find((c) => c.name === context)?.lang.gr(args);
+//             case Locale.en:
+//               return consoleText.find((c) => c.name === context)?.lang.en(args);
+//             case Locale.de:
+//               return consoleText.find((c) => c.name === context)?.lang.de(args);
+//             }
+//           }
+//         }
+//       })
+//     )
+//   );
 
-  return consoleText.find((c) => c.name === context)?.lang.en(args);
-}
+//   return consoleText.find((c) => c.name === context)?.lang.en(args) ?? '';
+// }
