@@ -116,7 +116,8 @@ async function commandExecution(
   try {
     return await commandResolver(command).execute(interaction, pGuild);
   } catch (e) {
-    logger.error(new Error(`While executing ${command}, got error: ${e}`));
+    logger.error(`While executing ${command}, got error: ${e}`);
+
     return {
       result: false,
       value: `Error while executing ${command}:\n\t${e}`,

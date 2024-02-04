@@ -14,7 +14,7 @@ import { addPointsMessage } from './user.library';
  */
 export async function portalPreprocessor(message: Message, pGuild: PGuild): Promise<boolean> {
   if (!message.member) {
-    logger.error(new Error('could not get member'));
+    logger.error('could not get member');
     return true;
   }
 
@@ -22,12 +22,12 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
     if (!handleUrlChannels(message, pGuild)) {
       if (pGuild.musicData.channelId === message.channel.id) {
         message.member.send('you can\'t play music when ignored').catch((e) => {
-          logger.error(new Error(`failed to send message: ${e}`));
+          logger.error(`failed to send message: ${e}`);
         });
 
         if (isMessageDeleted(message)) {
           const deletedMessage = await message.delete().catch((e) => {
-            logger.error(new Error(`failed to delete message: ${e}`));
+            logger.error(`failed to delete message: ${e}`);
           });
 
           if (deletedMessage) {
@@ -57,13 +57,13 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
       //         message
       //             .react('🚩')
       //             .catch((e) => {
-      //                 logger.error(new Error(`failed to react message: ${e}`));
+      //                 logger.error(`failed to react message: ${e}`);
       //             });
 
       //         message.author
       //             .send(`try not to use profanities (${profanities.join(',')})`)
       //             .catch(e => {
-      //                 logger.error(new Error(e));
+      //                 logger.error(e);
       //             });
       //     }
       // }
@@ -133,12 +133,12 @@ export function handleRankingSystem(message: Message, pGuild: PGuild): void {
     .then((level) => {
       if (level) {
         messageReply(true, message, `you reached level ${level}!`).catch((e) => {
-          logger.error(new Error(`failed to send message: ${e}`));
+          logger.error(`failed to send message: ${e}`);
         });
       }
     })
     .catch((e) => {
-      logger.error(new Error(e));
+      logger.error(e);
     });
 }
 
@@ -148,20 +148,20 @@ export async function handleUrlChannels(message: Message, pGuild: PGuild): Promi
       removeURL(pGuild.id, message.channel.id)
         .then((r) => {
           messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`).catch((e) => {
-            logger.error(new Error(`failed to send message: ${e}`));
+            logger.error(`failed to send message: ${e}`);
           });
         })
         .catch((e) => {
-          logger.error(new Error(`failed to remove url channel: ${e}`));
+          logger.error(`failed to remove url channel: ${e}`);
         });
     } else {
       message.author.send(`${message.channel} is a url-only channel`).catch((e) => {
-        logger.error(new Error(`failed to remove url channel: ${e}`));
+        logger.error(`failed to remove url channel: ${e}`);
       });
 
       if (isMessageDeleted(message)) {
         const deletedMessage = await message.delete().catch((e) => {
-          logger.error(new Error(`failed to delete message: ${e}`));
+          logger.error(`failed to delete message: ${e}`);
         });
 
         if (deletedMessage) {
@@ -183,12 +183,12 @@ export function handleIgnoredChannels(message: Message, pGuild: PGuild): boolean
         .then((r) => {
           messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
             (e) => {
-              logger.error(new Error(`failed to send message: ${e}`));
+              logger.error(`failed to send message: ${e}`);
             }
           );
         })
         .catch((e) => {
-          logger.error(new Error(`failed to remove ignored channel: ${e}`));
+          logger.error(`failed to remove ignored channel: ${e}`);
         });
     }
 
@@ -202,7 +202,7 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
   if (pGuild.musicData.channelId === message.channel.id) {
     if (message.content === './music') {
       if (!message.guild) {
-        logger.error(new Error('failed to get guild from message'));
+        logger.error('failed to get guild from message');
         return true;
       }
 
@@ -210,16 +210,16 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
       setMusicData(pGuild.id, musicData)
         .then((r) => {
           messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
-            (e) => logger.error(new Error(`failed to send message: ${e}`))
+            (e) => logger.error(`failed to send message: ${e}`)
           );
         })
-        .catch((e) => logger.error(new Error(`failed to remove music channel: ${e}`)));
+        .catch((e) => logger.error(`failed to remove music channel: ${e}`));
     } else {
       // if (!message.guild || !message.member) {
       //     if (message.deletable) {
       //         message
       //             .delete()
-      //             .catch((e) => logger.error(new Error(`failed to delete message: ${e}`)));
+      //             .catch((e) => logger.error(`failed to delete message: ${e}`));
       //     }
       //     return false;
       // }
@@ -242,14 +242,14 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
       //                 'you must be in the same channel as Portal',
       //                 animate
       //             ).catch(e => {
-      //                 logger.error(new Error(e));
+      //                 logger.error(e);
       //             });
       //         }
       //         if (message.deletable) {
       //             message
       //                 .delete()
       //                 .catch((e) => {
-      //                     logger.error(new Error(`failed to send message: ${e}`));
+      //                     logger.error(`failed to send message: ${e}`);
       //                 });
       //         }
       //         return false;
@@ -275,14 +275,14 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
       //                 r,
       //                 animate
       //             ).catch(e => {
-      //                 logger.error(new Error(e));
+      //                 logger.error(e);
       //             });
       //         }
       //         if (message.deletable) {
       //             message
       //                 .delete()
       //                 .catch((e) => {
-      //                     logger.error(new Error(`failed to send message: ${e}`));
+      //                     logger.error(`failed to send message: ${e}`);
       //                 });
       //         }
       //     })
@@ -296,14 +296,14 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
       //                     : undefined,
       //                 `error while starting playback: ${e}`
       //             ).catch(e => {
-      //                 logger.error(new Error(e));
+      //                 logger.error(e);
       //             });
       //         }
       //         if (message.deletable) {
       //             message
       //                 .delete()
       //                 .catch((e) => {
-      //                     logger.error(new Error(`failed to send message: ${e}`));
+      //                     logger.error(`failed to send message: ${e}`);
       //                 });
       //         }
       //     });

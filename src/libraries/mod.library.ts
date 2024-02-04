@@ -98,13 +98,13 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
 
   if (configSpam.DUPLICATE_AFTER !== 0 && memberSpamCache.duplicateFouls === configSpam.DUPLICATE_AFTER) {
     messageReply(false, message, 'warning: please stop spamming the same message', false, true).catch((e) => {
-      logger.error(new Error(`failed to reply to message: ${e}`));
+      logger.error(`failed to reply to message: ${e}`);
     });
 
     memberSpamCache.timestamp = new Date();
   } else if (configSpam.WARN_AFTER !== 0 && memberSpamCache.spamFouls === configSpam.WARN_AFTER) {
     messageReply(false, message, 'warning: please stop spamming messages', false, true).catch((e) => {
-      logger.error(new Error(`failed to reply to message: ${e}`));
+      logger.error(`failed to reply to message: ${e}`);
     });
 
     memberSpamCache.timestamp = new Date();
@@ -129,15 +129,15 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
               : `member ${message.author} cannot be kicked`;
 
             messageReply(false, message, replyMessage, false, true).catch((e) => {
-              logger.error(new Error(`failed to reply to message: ${e}`));
+              logger.error(`failed to reply to message: ${e}`);
             });
           })
           .catch((e) => {
-            logger.error(new Error(`failed to kick member: ${e}`));
+            logger.error(`failed to kick member: ${e}`);
           });
       } else {
         messageReply(false, message, `could not kick ${message.author}`, false, true).catch((e) => {
-          logger.error(new Error(`failed to reply to message: ${e}`));
+          logger.error(`failed to reply to message: ${e}`);
         });
       }
     } else if (pGuild.banAfter && pGuild.banAfter !== 0 && pGuild.pMembers[0].penalties === pGuild.banAfter) {
@@ -154,20 +154,20 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
               : `member ${message.author} cannot be banned`;
 
             messageReply(false, message, replyMessage, false, true).catch((e) => {
-              logger.error(new Error(`failed to reply to message: ${e}`));
+              logger.error(`failed to reply to message: ${e}`);
             });
           })
           .catch((e) => {
-            logger.error(new Error(`failed to ban member: ${e}`));
+            logger.error(`failed to ban member: ${e}`);
           });
       } else {
         messageReply(false, message, `could not kick ${message.author}`, false, true).catch((e) => {
-          logger.error(new Error(`failed to reply to message: ${e}`));
+          logger.error(`failed to reply to message: ${e}`);
         });
       }
     } else {
       updateMember(pGuild.id, message.author.id, 'penalties', pGuild.pMembers[0].penalties).catch((e) => {
-        logger.error(new Error(`failed to update member: ${e}`));
+        logger.error(`failed to update member: ${e}`);
       });
 
       if (pGuild.muteRole) {
@@ -191,7 +191,7 @@ async function muteUser(message: Message, muteRoleId: string): Promise<void> {
   const addedRole = await message.member?.roles.add(muteRole);
 
   if (!addedRole) {
-    logger.error(new Error('failed to give role to member'));
+    logger.error('failed to give role to member');
     return;
   }
 
@@ -217,7 +217,7 @@ async function muteUser(message: Message, muteRoleId: string): Promise<void> {
             }
           })
           .catch((e) => {
-            logger.error(new Error(`failed to reply to message: ${e}`));
+            logger.error(`failed to reply to message: ${e}`);
           })
       )
       .catch(logger.error);

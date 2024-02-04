@@ -15,12 +15,12 @@ dotenv.config();
 
 (async () => {
   if (!process.env.TOKEN) {
-    logger.error(new Error('Discord token is not defined'));
+    logger.error('Discord token is not defined');
     process.exit(1);
   }
 
   if (!process.env.MONGO_URL) {
-    logger.error(new Error('mongo url is not defined'));
+    logger.error('mongo url is not defined');
     process.exit(2);
   }
 
@@ -40,7 +40,7 @@ dotenv.config();
     logger.info('started refreshing application slash commands');
 
     if (!process.env.CLIENT_ID) {
-      logger.error(new Error('Discord client id is not defined'));
+      logger.error('Discord client id is not defined');
       process.exit(4);
     }
 
@@ -64,14 +64,14 @@ dotenv.config();
   const mongo = await mongoHandler(process.env.MONGO_URL);
 
   if (!mongo){
-    logger.error(new Error('failed to connect to mongo'));
+    logger.error('failed to connect to mongo');
     process.exit(2);
   }
 
   const discord = await connectToDiscord(client, process.env.TOKEN);
 
   if (!discord) {
-    logger.error(new Error('failed to connect to discord'));
+    logger.error('failed to connect to discord');
     process.exit(1);
   }
 

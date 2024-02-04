@@ -49,7 +49,7 @@ export default async function (args: { client: Client; newState: VoiceState; old
 
           channelEmptyCheck(newChannel as VoiceChannel, pGuild, args.client)
             .catch((e) => {
-              logger.error(new Error(`failed to check channel state: ${e}`));
+              logger.error(`failed to check channel state: ${e}`);
             });
 
           return 'portal channel does not allow bots';
@@ -68,7 +68,7 @@ export default async function (args: { client: Client; newState: VoiceState; old
 
             channelEmptyCheck(newChannel as VoiceChannel, pGuild, args.client)
               .catch((e) => {
-                logger.error(new Error(`failed to check channel state: ${e}`));
+                logger.error(`failed to check channel state: ${e}`);
               });
 
             return 'voice channel does not allow bots';
@@ -147,7 +147,7 @@ async function fiveMinuteRefresher(voiceChannel: VoiceChannel, portalList: PChan
 
   const pGuild = await fetchGuild(guild.id)
     .catch(() => {
-      logger.error(new Error('failed to fetch guild'));
+      logger.error('failed to fetch guild');
     });
 
   if (!pGuild) {
@@ -156,14 +156,14 @@ async function fiveMinuteRefresher(voiceChannel: VoiceChannel, portalList: PChan
 
   generateChannelName(voiceChannel, portalList, pGuild, guild)
     .catch(() => {
-      logger.error(new Error('failed to generate channel name'));
+      logger.error('failed to generate channel name');
     });
 
   setTimeout(() => {
     if (!isGuildDeleted(guild) && !isChannelDeleted(voiceChannel)) {
       generateChannelName(voiceChannel, portalList, pGuild, guild)
         .catch(() => {
-          logger.error(new Error('failed to generate channel name'));
+          logger.error('failed to generate channel name');
         });
 
       fiveMinuteRefresher(voiceChannel, portalList, guild, minutes);
@@ -257,14 +257,14 @@ async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newStat
 
     const level = await updateTimestamp(newState, pGuild) // points for voice
       .catch((e) => {
-        logger.error(new Error(`failed to send message: ${e}`));
+        logger.error(`failed to send message: ${e}`);
       });
 
     if (level) {
       newState.member
         ?.send(`you reached level ${level} in ${newState.guild}!`)
         .catch((e) => {
-          logger.error(new Error(`failed to send message: ${e}`));
+          logger.error(`failed to send message: ${e}`);
         });
     }
 
@@ -274,14 +274,14 @@ async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newStat
     fiveMinuteRefresher(newChannel, pGuild.pChannels, newState.guild, 5);
     const level = await updateTimestamp(newState, pGuild) // points for voice
       .catch((e) => {
-        logger.error(new Error(`failed to send message: ${e}`));
+        logger.error(`failed to send message: ${e}`);
       });
 
     if (level) {
       newState.member
         ?.send(`you reached level ${level} in ${newState.guild}!`)
         .catch((e) => {
-          logger.error(new Error(`failed to send message: ${e}`));
+          logger.error(`failed to send message: ${e}`);
         });
     }
 
@@ -290,14 +290,14 @@ async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newStat
     // joined other channel
     const level = await updateTimestamp(newState, pGuild) // points for voice
       .catch((e) => {
-        logger.error(new Error(`failed to send message: ${e}`));
+        logger.error(`failed to send message: ${e}`);
       });
 
     if (level) {
       newState.member
         ?.send(`you reached level ${level} in ${newState.guild}!`)
         .catch((e) => {
-          logger.error(new Error(`failed to send message: ${e}`));
+          logger.error(`failed to send message: ${e}`);
         });
     }
 
@@ -315,20 +315,20 @@ async function fromExisting(
   if (newChannel === null) {
     const level = await updateTimestamp(newState, pGuild) // points for voice
       .catch((e) => {
-        logger.error(new Error(`failed to send message: ${e}`));
+        logger.error(`failed to send message: ${e}`);
       });
 
     if (level) {
       newState.member
         ?.send(`you reached level ${level} in ${newState.guild}!`)
         .catch((e) => {
-          logger.error(new Error(`failed to send message: ${e}`));
+          logger.error(`failed to send message: ${e}`);
         });
     }
 
     channelEmptyCheck(oldChannel, pGuild, client)
       .catch((e) => {
-        logger.error(new Error(`failed to check channel state: ${e}`));
+        logger.error(`failed to check channel state: ${e}`);
       });
 
     return 'existing->null';
@@ -337,14 +337,14 @@ async function fromExisting(
   // Moved from channel to channel
   const level = await updateTimestamp(newState, pGuild) // points for voice
     .catch((e) => {
-      logger.error(new Error(`failed to send message: ${e}`));
+      logger.error(`failed to send message: ${e}`);
     });
 
   if (level) {
     newState.member
       ?.send(`you reached level ${level} in ${newState.guild}!`)
       .catch((e) => {
-        logger.error(new Error(`failed to send message: ${e}`));
+        logger.error(`failed to send message: ${e}`);
       });
   }
 
@@ -360,7 +360,7 @@ async function fromExisting(
   } else if (includedInVoiceList(oldChannel.id, pGuild.pChannels)) {
     await channelEmptyCheck(oldChannel, pGuild, client)
       .catch((e) => {
-        logger.error(new Error(`failed to check channel state: ${e}`));
+        logger.error(`failed to check channel state: ${e}`);
       });
 
     if (includedInPChannels(newChannel.id, pGuild.pChannels)) {

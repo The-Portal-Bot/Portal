@@ -60,10 +60,10 @@ async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
     const memberInserted = await insertMember(guild.id, members[j].id);
 
     if (!memberInserted) {
-      logger.error(new Error('failed to late-insert member'));
+      logger.error('failed to late-insert member');
+    } else {
+      logger.info(`late-insert ${members[j].id} to ${guild.name} [${guild.id}]`);
     }
-
-    logger.info(`late-insert ${members[j].id} to ${guild.name} [${guild.id}]`);
   }
 }
 
@@ -83,10 +83,10 @@ async function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void>
     const memberRemoved = await removeMember(pMembers[j].id, guild.id);
 
     if (!memberRemoved) {
-      logger.error(new Error('failed to late-remove member'));
+      logger.error('failed to late-remove member');
+    } else {
+      logger.info(`late-remove ${pMembers[j].id} to ${guild.name} [${guild.id}]`);
     }
-
-    logger.info(`late-remove ${pMembers[j].id} to ${guild.name} [${guild.id}]`);
   }
 }
 

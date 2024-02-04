@@ -154,13 +154,13 @@
 //             )
 //                 .then(r => {
 //                     clear_music_vote(pGuild.id)
-//                         .catch(e => logger.error(new Error(e)));
+//                         .catch(e => logger.error(e));
 
 //                     return r;
 //                 })
 //                 .catch(e => {
 //                     clear_music_vote(pGuild.id)
-//                         .catch(e => logger.error(new Error(e)));
+//                         .catch(e => logger.error(e));
 
 //                     return Promise.reject(`failed to play video: ${e}`);
 //                 });
@@ -171,13 +171,13 @@
 //             pause(portal_voice_connection)
 //                 .then(r => {
 //                     clear_music_vote(pGuild.id)
-//                         .catch(e => logger.error(new Error(e)));
+//                         .catch(e => logger.error(e));
 
 //                     return r;
 //                 })
 //                 .catch(e => {
 //                     clear_music_vote(pGuild.id)
-//                         .catch(e => logger.error(new Error(e)));
+//                         .catch(e => logger.error(e));
 
 //                     return Promise.reject(`failed to pause video: ${e}`);
 //                 });
@@ -187,7 +187,7 @@
 //         case '⏭': {
 //             if (!portal_voice_connection) {
 //                 update_music_lyrics_message(messageReaction.message.guild, pGuild, '')
-//                     .catch(e => logger.error(new Error(e)));
+//                     .catch(e => logger.error(e));
 
 //                 return 'nothing to skip, player is idle';
 //             }
@@ -217,7 +217,7 @@
 //                 if (!is_authorised(member)) {
 //                     if (!pGuild.music_data.votes.includes(user.id)) {
 //                         pGuild.music_data.votes.push(user.id);
-//                         insert_music_vote(pGuild.id, user.id).catch(e => logger.error(new Error(e)));
+//                         insert_music_vote(pGuild.id, user.id).catch(e => logger.error(e));
 //                     }
 
 //                     const votes = pGuild.music_data.votes.length;
@@ -243,7 +243,7 @@
 //                 )
 //                     .then(r => {
 //                         clear_music_vote(pGuild.id)
-//                             .catch(e => logger.error(new Error(e)));
+//                             .catch(e => logger.error(e));
 //                         pGuild.music_queue.shift();
 
 //                         return `${r} (by ${reason})`;
@@ -266,7 +266,7 @@
 //                             )
 //                                 .then(r => {
 //                                     clear_music_vote(pGuild.id)
-//                                         .catch(e => logger.error(new Error(e)));
+//                                         .catch(e => logger.error(e));
 //                                     pGuild.music_queue.shift();
 
 //                                     return `${r} (by ${reason})`;
@@ -291,13 +291,13 @@
 //         //     volume_down(portal_voice_connection)
 //         //         .then(r => {
 //         //             clear_music_vote(pGuild.id)
-//         //.catch(e => logger.error(new Error(e)));
+//         //.catch(e => logger.error(e));
 
 //         //             return resolve(r);
 //         //         })
 //         //         .catch(e => {
 //         //             clear_music_vote(pGuild.id)
-//         // .catch(e => logger.error(new Error(e)));
+//         // .catch(e => logger.error(e));
 
 //         //             return resolve({
 //         //                 result: false,
@@ -311,13 +311,13 @@
 //         //     volume_up(portal_voice_connection)
 //         //         .then(r => {
 //         //             clear_music_vote(pGuild.id)
-//         // .catch(e => logger.error(new Error(e)));
+//         // .catch(e => logger.error(e));
 
 //         //             return resolve(r);
 //         //         })
 //         //         // .catch(e => {
 //         //             clear_music_vote(pGuild.id)
-//         // .catch(e => logger.error(new Error(e)));
+//         // .catch(e => logger.error(e));
 
 //         //             return resolve({
 //         //                 result: false,
@@ -408,14 +408,14 @@
 
 //                 if (!guild) {
 //                     clear_music_vote(pGuild.id)
-//                         .catch(e => logger.error(new Error(e)));
+//                         .catch(e => logger.error(e));
 
 //                     return reject('could fetch guild from client');
 //                 }
 //             }
 
 //             clear_music_vote(pGuild.id)
-//                 .catch(e => logger.error(new Error(e)));
+//                 .catch(e => logger.error(e));
 //             return resolve('queue has been cleared');
 
 //             break;
@@ -438,7 +438,7 @@
 //                         }
 
 //                         clear_music_vote(pGuild.id)
-//                             .catch(e => logger.error(new Error(e)));
+//                             .catch(e => logger.error(e));
 //                         portal_voice_connection.disconnect();
 
 //                         return resolve('Portal has been disconnected');
@@ -448,7 +448,7 @@
 //                 })
 //                 .catch(e => {
 //                     clear_music_vote(pGuild.id)
-//                         .catch(e => logger.error(new Error(e)));
+//                         .catch(e => logger.error(e));
 
 //                     return reject(`Portal failed to get disconnected: ${e}`);
 //                 });

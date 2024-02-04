@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, Role, VoiceChannel } from 'discord.js';
-import { setAttribute } from '../../interpreter/attribute.functions';
+import { setAttribute } from '../../Interpreter/attribute.functions';
 import { messageHelp } from '../../libraries/help.library';
 import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';

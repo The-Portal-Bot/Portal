@@ -137,21 +137,21 @@ async function giveRoleFromRankUp(
   guild: Guild
 ): Promise<boolean> {
   if (!ranks) {
-    logger.error(new Error('At least one rank must be given'));
+    logger.error('At least one rank must be given');
     return false;
   }
 
   const newRank = await ranks.find((rank) => rank.level === pMember.level);
 
   if (!newRank) {
-    logger.error(new Error('Could not find rank'));
+    logger.error('Could not find rank');
     return false;
   }
 
   const newRole = await guild.roles.cache.find((role) => role.id === newRank.role);
 
   if (!newRole) {
-    logger.error(new Error('Could not find role'));
+    logger.error('Could not find role');
     return false;
   }
 

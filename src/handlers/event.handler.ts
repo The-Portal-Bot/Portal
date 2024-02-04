@@ -48,7 +48,7 @@ async function eventLoader(event: HandledEvents, args: Arguments) {
     const response = await eventFunction(args);
     logger.info(`event ${event}, handled with response - "${response}"`);
   } catch (error) {
-    logger.error(new Error(`${event} rejected with error: ${error}`));
+    logger.error(`${event} rejected with error: ${error}`);
   }
 }
 
@@ -67,7 +67,7 @@ async function handleCommandInteraction(
   const pGuild = await fetchGuildPreData(interaction.guild.id, interaction.user.id);
 
   if (!pGuild) {
-    logger.error(new Error('fetching guild pre data failed'));
+    logger.error('fetching guild pre data failed');
     return { content: 'fetching guild pre data failed', ephemeral: false };
   }
 
@@ -75,7 +75,7 @@ async function handleCommandInteraction(
     const insertResponse = await insertMember(interaction.guild.id, interaction.user.id);
 
     if (!insertResponse) {
-      logger.error(new Error('failed to late-insert member'));
+      logger.error('failed to late-insert member');
       return { content: 'failed to late-insert member', ephemeral: false };
     }
 
@@ -104,7 +104,7 @@ async function handleCommandInteraction(
   const pGuildRest = await fetchGuildRest(interaction.guild.id);
 
   if (!pGuildRest) {
-    logger.error(new Error('fetching guild rest data failed'));
+    logger.error('fetching guild rest data failed');
     return { content: 'fetching guild rest data failed', ephemeral: false };
   }
 
@@ -127,7 +127,7 @@ async function handleCommandInteraction(
   );
 
   if (!commandResponse) {
-    logger.error(new Error(`something went wrong with command ${interaction.commandName}`));
+    logger.error(`something went wrong with command ${interaction.commandName}`);
     return { content: 'something went wrong', ephemeral: false };
   }
 
