@@ -1,11 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, NewsChannel, TextBasedChannel, VoiceChannel } from 'discord.js';
+import { ChatInputCommandInteraction, NewsChannel, VoiceChannel } from 'discord.js';
+
 import {
   deleteChannel,
-  doesChannelHaveUsage,
-  isAnnouncementChannel,
-  isMusicChannel,
-  isUrlOnlyChannel
+  doesChannelHaveUsage
 } from '../../libraries/guild.library';
 import { messageHelp } from '../../libraries/help.library';
 import { updateGuild } from '../../libraries/mongo.library';

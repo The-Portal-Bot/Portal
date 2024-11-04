@@ -1,5 +1,5 @@
-<p align="center">
-    <strong>Disclaimer:</strong> The transition to Discord.js v14 is still ongoing. Some features may not work as expected until the transition is complete.
+<p align="left">
+    <strong>Disclaimer:</strong> The transition to Discord.js v14 is ongoing. Some features may not work as expected until the transition is complete. (Expected Q1 2025)
 </p>
 
 <h1 align="center">
@@ -32,7 +32,7 @@
     <a href="https://portal-bot.xyz"><img src="https://img.shields.io/badge/Portal-Website%20Official-red" alt="Portal Website" /></a>
 </p>
 
-<p align="center">A full Documentation with everything you may need can be found at <b><a href="https://portal-bot.xyz/docs/">portal-bot.xyz/docs</b></p>
+<p align="center">A full documentation can be found at <b><a href="https://portal-bot.xyz/docs/">portal-bot.xyz/docs</b></p>
 
 ## Documentation
 
@@ -42,6 +42,10 @@
   2. **[Attributes](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)**, are mutable options that can be manipulated by whomever has clearance.
   3. **[Pipes](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)**, are mini functions you can pass text variables or attributes to, that manipulate their outcome.
   4. **[Structures](https://portal-bot.xyz/docs/interpreter/objects/structures/description)**, are conditional flow manipulators.
+
+## Changelog
+
+- With discord.js 14 Portal moves to slash commands!
 
 ## More
 
@@ -70,4 +74,4 @@
    <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPalMe</a>
 </p>
 
-<p align="center">Copyrights © Keybraker 2020-2021 Portal, All rights reserved</p>
+<p align="center">Copyrights © Keybraker 2020-2024 Portal, All rights reserved</p>

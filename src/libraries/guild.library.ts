@@ -370,6 +370,7 @@ export async function deleteChannel(
   interaction: ChatInputCommandInteraction | null,
   isPortal = false
 ): Promise<boolean> {
+  logger.log({ level: 'info', type: 'none', message: `${type}, ${channelToDelete}, ${interaction}, ${isPortal}` });
   return true;
   // if (isPortal && channelToDelete.deletable) {
   //   const channelDeleted = await channelToDelete.delete().catch((e) => {
