@@ -172,7 +172,7 @@ export async function createMusicMessage(channel: TextChannel, pGuild: PGuild): 
     false
   );
 
-  setMusicData(pGuild.id, musicData).catch((e) => logger.error(`failed to set music data: ${e}`));
+  await setMusicData(pGuild.id, musicData);
 
   return sentMessage.id;
 }

@@ -45,19 +45,18 @@ export = {
       const rollDetail = show ? ` (${roll.rolled} from ${rollCommand})` : '';
       const rollMsg = `${member.displayName} rolled ${roll.result}${rollDetail}`;
 
-      const sentMessage = await interaction.channel
-        ?.send({
-          embeds: [
-            createEmbed(null, null, '#FF0000', null, null, null, false, null, null, undefined, {
-              name: maxString(rollMsg, 256),
-              icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif',
-            }),
-          ],
-        })
+      const outcome = await interaction.reply({
+        embeds: [
+          createEmbed(null, null, '#FF0000', null, null, null, false, null, null, undefined, {
+            name: maxString(rollMsg, 256),
+            icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif',
+          }),
+        ],
+      })
 
       return {
-        result: true,
-        value: sentMessage ? '' : 'failed to send message',
+        result: !!outcome,
+        value: outcome ? '' : 'failed to send message',
       };
     } catch (e) {
       return {

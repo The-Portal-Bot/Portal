@@ -1,12 +1,13 @@
 import dayjs from 'dayjs';
-import { BanOptions, Message } from 'discord.js';
+import { BanOptions, Message, TextChannel } from 'discord.js';
+
 import { ProfaneWords } from '../assets/lists/profaneWords.static';
 import configSpam from '../config.spam.json';
 import { PGuild } from '../types/classes/PGuild.class';
 import { SpamCache } from '../types/classes/PTypes.interface';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
-import { getRole } from './guild.library';
-import { isMessageDeleted, isWhitelist, markMessageAsDeleted, messageReply } from './help.library';
+import { deleteMessage, getRole } from './guild.library';
+import { isWhitelist, messageReply } from './help.library';
 import logger from '../utilities/log.utility';
 import { updateMember } from './mongo.library';
 import { ban, kick } from './user.library';
@@ -182,9 +183,12 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
  */
 async function muteUser(message: Message, muteRoleId: string): Promise<void> {
   const muteRole = getRole(message.guild, muteRoleId);
-  const channel = message.channel;
-
   if (!muteRole) {
+    return;
+  }
+
+  const channel = message.channel;
+  if (!channel || !channel.isTextBased()) {
     return;
   }
 
@@ -195,58 +199,32 @@ async function muteUser(message: Message, muteRoleId: string): Promise<void> {
     return;
   }
 
-  channel
-    .send(`user ${message.author}, has been muted for ${configSpam.MUTE_PERIOD} minutes`)
-    .then(deleteMessage)
-    .catch(logger.error);
 
-  setTimeout(() => {
-    const muteRole = getRole(message.guild, muteRoleId);
+  if (channel instanceof TextChannel) {
+    const messageSent = await channel.send(`user ${message.author}, has been muted for ${configSpam.MUTE_PERIOD} minutes`);
+    deleteMessage(messageSent);
 
-    if (!muteRole) {
-      return;
-    }
+    setTimeout(() => {
+      const muteRole = getRole(message.guild, muteRoleId);
 
-    message.member?.roles.remove(muteRole)
-      .then(() =>
-        channel
-          .send(`user ${message.author}, has been unmuted`)
-          .then((message) => {
-            if (message.deletable) {
-              deleteMessage(message);
-            }
-          })
-          .catch((e) => {
-            logger.error(`failed to reply to message: ${e}`);
-          })
-      )
-      .catch(logger.error);
-  }, configSpam.MUTE_PERIOD * 60 * 1000);
-}
+      if (!muteRole) {
+        return;
+      }
 
-/**
- * Delete message with delay
- */
-function deleteMessage(message: Message): void {
-  if (!message.deletable) {
-    return;
-  }
-
-  const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
-
-  if (delay === 0) {
-    message.delete()
-      .then(markMessageAsDeleted)
-      .catch(logger.error);
-
-    return;
-  }
-
-  setTimeout(async () => {
-    if (isMessageDeleted(message)) {
-      await message.delete()
-        .then(markMessageAsDeleted)
+      message.member?.roles.remove(muteRole)
+        .then(() =>
+          channel
+            .send(`user ${message.author}, has been unmuted`)
+            .then((message) => {
+              if (message.deletable) {
+                deleteMessage(message);
+              }
+            })
+            .catch((e) => {
+              logger.error(`failed to reply to message: ${e}`);
+            })
+        )
         .catch(logger.error);
-    }
-  }, delay);
+    }, configSpam.MUTE_PERIOD * 60 * 1000);
+  }
 }

@@ -114,7 +114,7 @@ export = {
       };
     }
 
-    const outcome = await interaction.channel?.send({
+    const outcome = await interaction.reply({
       embeds: [
         createEmbed(
           `${countryData.country} | ${dayjs(countryData.time).format('DD/MM/YY')}`,

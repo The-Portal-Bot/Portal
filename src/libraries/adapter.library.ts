@@ -1,5 +1,5 @@
 import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '@discordjs/voice';
-import { GatewayVoiceServerUpdateDispatchData } from 'discord-api-types/v9';
+// import { GatewayVoiceServerUpdateDispatchData } from 'discord-api-types/v9';
 import { Client, Events, GatewayDispatchEvents, Guild, Snowflake, Status, VoiceChannel } from 'discord.js';
 
 const adapters = new Map<Snowflake, DiscordGatewayAdapterLibraryMethods>();
@@ -13,7 +13,7 @@ const trackedClients = new Set<Client>();
 function trackClient(client: Client) {
   if (trackedClients.has(client)) return;
   trackedClients.add(client);
-  client.ws.on(GatewayDispatchEvents.VoiceServerUpdate, (payload: GatewayVoiceServerUpdateDispatchData) => {
+  client.ws.on(GatewayDispatchEvents.VoiceServerUpdate, (payload) => {
     adapters.get(payload.guild_id)?.onVoiceServerUpdate(payload);
   });
   client.ws.on(GatewayDispatchEvents.VoiceStateUpdate, (payload) => {

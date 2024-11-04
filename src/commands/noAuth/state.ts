@@ -143,13 +143,13 @@ export = {
       });
     }
 
-    const sentMessage = await interaction.channel?.send({
+    const outcome = await interaction.reply({
       embeds: [createEmbed('State of Portal', null, '#eba000', portalState, null, null, true, null, null)],
     })
 
     return {
-      result: !!sentMessage,
-      value: sentMessage ? '' : 'failed to send message',
+      result: !!outcome,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 } as Command;

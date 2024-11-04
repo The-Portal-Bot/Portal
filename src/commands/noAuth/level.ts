@@ -49,9 +49,9 @@ export = {
           null
         ),
       ],
-    }
+    };
 
-    const outcome = await interaction.channel?.send(message);
+    const outcome = await interaction.reply(message);
 
     return {
       result: !!outcome,

@@ -78,7 +78,7 @@ export = {
       };
     }
 
-    const outcome = await interaction.channel?.send({
+    const outcome = await interaction.reply({
       embeds: [
         createEmbed(null, null, '#FFE600', null, null, null, false, null, null, undefined, {
           name: `${voca.titleCase(cryptoName)} to ${voca.titleCase(currencyName)} price is ${json[cryptoName][currencyName]

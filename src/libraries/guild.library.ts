@@ -4,7 +4,6 @@ import {
   CategoryChannelResolvable,
   ChannelType,
   ChatInputCommandInteraction,
-  Collection,
   Guild,
   GuildChannelCreateOptions,
   GuildMember,
@@ -13,12 +12,14 @@ import {
   PermissionFlagsBits,
   PermissionsBitField,
   Role,
+  TextBasedChannel,
   TextChannel,
   VoiceBasedChannel,
   VoiceChannel,
   VoiceState
 } from 'discord.js';
 import voca from 'voca';
+
 import { getAttribute, isAttribute } from '../Interpreter/attribute.functions';
 import { getPipe, isPipe } from '../Interpreter/pipe.functions';
 import { getVariable, isVariable } from '../Interpreter/variable.functions';
@@ -29,7 +30,7 @@ import { PortalChannelType } from '../types/enums/PortalChannel.enum';
 import { Prefix } from '../types/enums/Prefix.enum';
 import logger from '../utilities/log.utility';
 import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, maxString } from './help.library';
-import { insertVoice } from './mongo.library';
+import { insertVoice, updateGuild } from './mongo.library';
 
 function inlineOperator(str: string) {
   switch (str) {
@@ -62,6 +63,7 @@ export function getOptions(
   type: ChannelType = ChannelType.GuildText
 ) {
   return {
+    name: topic,
     parent: parent,
     permissionOverwrites: canWrite
       ? [
@@ -167,6 +169,7 @@ function createVoiceOptions(state: VoiceState, pChannel: PChannel): GuildChannel
   }
 
   return {
+    name: 'loading..',
     type: ChannelType.GuildVoice,
     bitrate: 96000,
     userLimit: pChannel.userLimitPortal,
@@ -211,6 +214,7 @@ export async function createVoiceChannel(state: VoiceState, pChannel: PChannel):
   return 'created channel and moved member to new voice';
 }
 
+// @deprecated replaced by music.ts
 export async function createMusicChannel(
   guild: Guild,
   musicChannel: string,
@@ -366,123 +370,142 @@ export async function deleteChannel(
   interaction: ChatInputCommandInteraction | null,
   isPortal = false
 ): Promise<boolean> {
-  if (isPortal && channelToDelete.deletable) {
-    const channelDeleted = await channelToDelete.delete().catch((e) => {
-      return Promise.reject(`failed to delete channel: ${e}`);
-    });
-
-    return !!channelDeleted;
-  }
-
-  if (!interaction) {
-    return Promise.reject('message is undefined');
-  }
-
-  const author = interaction.user;
-  const channelToDeleteName = channelToDelete.name;
-  let repliedWithYes = false;
-
-  const sentMessage = await interaction.channel
-    ?.send(
-      `${interaction.user}, do you wish to delete old ` +
-      `${PortalChannelType[type].toString()} channel **${channelToDelete}** (yes / no) ?`
-    )
-
-  if (!sentMessage) {
-    return Promise.reject('failed to send message');
-  }
-
-  const filter = (message: Message) => message.author.id === author.id;
-  const collector = interaction?.channel?.createMessageCollector({ filter, time: 10000 });
-
-  if (!collector) {
-    return Promise.reject('failed to send message');
-  }
-
-  collector.on('collect', (m: Message) => {
-    if (m.content === 'yes' || m.content === 'no') {
-      repliedWithYes = m.content === 'yes' ? true : false;
-      collector.stop();
-    }
-  });
-
-  collector.on('end', (collected: Collection<string, Message>) => {
-    collected.forEach((replyMessage: Message) => {
-      if (replyMessage.deletable) {
-        replyMessage.delete().catch((e) => {
-          return Promise.reject(`failed to delete message: ${e}`);
-        });
-      }
-    });
-
-    if (!repliedWithYes) {
-      sentMessage
-        .edit(`channel **"${channelToDelete}"** will not be deleted`)
-        .then((msg) => {
-          setTimeout(
-            () =>
-              msg.delete().catch((e) => {
-                return Promise.reject(`failed to delete message: ${e}`);
-              }),
-            5000
-          );
-        })
-        .catch((e) => {
-          return Promise.reject(`failed to send message: ${e}`);
-        });
-    } else {
-      if (channelToDelete.deletable) {
-        channelToDelete
-          .delete()
-          .then(() => {
-            sentMessage
-              .edit(`channel **"${channelToDeleteName}"** deleted`)
-              .then((editMessage) => {
-                setTimeout(
-                  () =>
-                    editMessage
-                      .delete()
-                      .then(() => {
-                        return true;
-                      })
-                      .catch((e) => {
-                        return Promise.reject(`failed to delete message: ${e}`);
-                      }),
-                  5000
-                );
-              })
-              .catch((e) => {
-                return Promise.reject(`failed to send message: ${e}`);
-              });
-          })
-          .catch((e) => {
-            return Promise.reject(`failed to delete channel: ${e}`);
-          });
-      } else {
-        sentMessage
-          .edit(`channel **"${channelToDelete}"** is not deletable`)
-          .then((editMessage) => {
-            setTimeout(
-              () =>
-                editMessage
-                  .delete()
-                  .then(() => {
-                    return true;
-                  })
-                  .catch((e) => {
-                    return Promise.reject(`failed to delete message: ${e}`);
-                  }),
-              5000
-            );
-          })
-          .catch((e) => {
-            return Promise.reject(`failed to send message: ${e}`);
-          });
-      }
-    }
-  });
-
   return true;
+  // if (isPortal && channelToDelete.deletable) {
+  //   const channelDeleted = await channelToDelete.delete().catch((e) => {
+  //     return Promise.reject(`failed to delete channel: ${e}`);
+  //   });
+
+  //   return !!channelDeleted;
+  // }
+
+  // if (!interaction) {
+  //   return Promise.reject('message is undefined');
+  // }
+
+  // const author = interaction.user;
+  // const channelToDeleteName = channelToDelete.name;
+  // let repliedWithYes = false;
+
+  // const outcome = await interaction.reply(
+  //   `${interaction.user}, do you wish to delete old ` +
+  //     `${PortalChannelType[type].toString()} channel **${channelToDelete}** (yes / no) ?`
+  // )
+
+  // if (!outcome) {
+  //   return Promise.reject('failed to send message');
+  // }
+
+  // const filter = (message: Message) => message.author.id === author.id;
+  // const collector = interaction?.channel?.createMessageCollector({ filter, time: 10000 });
+
+  // if (!collector) {
+  //   return Promise.reject('failed to send message');
+  // }
+
+  // collector.on('collect', (m: Message) => {
+  //   if (m.content === 'yes' || m.content === 'no') {
+  //     repliedWithYes = m.content === 'yes' ? true : false;
+  //     collector.stop();
+  //   }
+  // });
+
+  // collector.on('end', (collected: Collection<string, Message>) => {
+  //   collected.forEach((replyMessage: Message) => {
+  //     if (replyMessage.deletable) {
+  //       replyMessage.delete().catch((e) => {
+  //         return Promise.reject(`failed to delete message: ${e}`);
+  //       });
+  //     }
+  //   });
+
+  //   if (!repliedWithYes) {
+  //     outcome
+  //       .edit(`channel **"${channelToDelete}"** will not be deleted`)
+  //       .then((msg) => {
+  //         setTimeout(
+  //           () =>
+  //             msg.delete().catch((e) => {
+  //               return Promise.reject(`failed to delete message: ${e}`);
+  //             }),
+  //           5000
+  //         );
+  //       })
+  //       .catch((e) => {
+  //         return Promise.reject(`failed to send message: ${e}`);
+  //       });
+  //   } else {
+  //     if (channelToDelete.deletable) {
+  //       channelToDelete
+  //         .delete()
+  //         .then(() => {
+  //           outcome
+  //             .edit(`channel **"${channelToDeleteName}"** deleted`)
+  //             .then((editMessage) => {
+  //               setTimeout(
+  //                 () =>
+  //                   editMessage
+  //                     .delete()
+  //                     .then(() => {
+  //                       return true;
+  //                     })
+  //                     .catch((e) => {
+  //                       return Promise.reject(`failed to delete message: ${e}`);
+  //                     }),
+  //                 5000
+  //               );
+  //             })
+  //             .catch((e) => {
+  //               return Promise.reject(`failed to send message: ${e}`);
+  //             });
+  //         })
+  //         .catch((e) => {
+  //           return Promise.reject(`failed to delete channel: ${e}`);
+  //         });
+  //     } else {
+  //       outcome
+  //         .edit(`channel **"${channelToDelete}"** is not deletable`)
+  //         .then((editMessage) => {
+  //           setTimeout(
+  //             () =>
+  //               editMessage
+  //                 .delete()
+  //                 .then(() => {
+  //                   return true;
+  //                 })
+  //                 .catch((e) => {
+  //                   return Promise.reject(`failed to delete message: ${e}`);
+  //                 }),
+  //             5000
+  //           );
+  //         })
+  //         .catch((e) => {
+  //           return Promise.reject(`failed to send message: ${e}`);
+  //         });
+  //     }
+  //   }
+  // });
+
+  // return true;
+}
+
+export async function deleteMessage(message: Message<true>): Promise<boolean> {
+  if (!message || !message.deletable) {
+    return false;
+  }
+
+  const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      try {
+        await message.delete();
+        resolve(true);
+      } catch {
+        resolve(false);
+      }
+    }, delay);
+  });
 }
 
 export async function generateChannelName(
@@ -766,4 +789,46 @@ export function regexInterpreter(
   }
 
   return newChannelName;
+}
+
+export async function doesChannelHaveUsage(textBasedChannelId: TextBasedChannel['id'], pGuild: PGuild) {
+  if (!textBasedChannelId) {
+    return {
+      result: false,
+      value: 'could not get channel id',
+    };
+  }
+
+  if (isAnnouncementChannel(textBasedChannelId, pGuild)) {
+    const response = await updateGuild(pGuild.id, 'announcement', 'null').catch(() => {
+      return {
+        result: true,
+        value: 'failed to remove announcement channel',
+      };
+    });
+
+    return {
+      result: true,
+      value: response ? 'successfully removed announcement channel' : 'failed to remove announcement channel',
+    };
+  }
+
+  if (isMusicChannel(textBasedChannelId, pGuild)) {
+    return {
+      result: true,
+      value: 'this can\'t be set as an announcement channel for it is the music channel',
+    };
+  }
+
+  if (isUrlOnlyChannel(textBasedChannelId, pGuild)) {
+    return {
+      result: true,
+      value: 'this can\'t be set as the announcement channel for it is an url channel',
+    };
+  }
+
+  return {
+    result: false,
+    value: '',
+  };
 }

@@ -27,20 +27,20 @@ export = {
       ],
     };
 
-    const messageSent = await interaction.channel?.send(message);
+    const outcome = await interaction.reply(message);
 
-    if (!messageSent) {
+    if (!outcome) {
       return {
         result: false,
         value: 'error while sending pong message',
       };
     }
 
-    const editMessage = await messageSent.edit({
+    const editMessage = await outcome.edit({
       embeds: [
         createEmbed(null, null, '#0093ff', null, null, null, false, null, null, undefined, {
           name:
-            `RTT latency\t${messageSent.createdTimestamp - interaction.createdTimestamp} ms\n` +
+            `RTT latency\t${outcome.createdTimestamp - interaction.createdTimestamp} ms\n` +
             `Portal latency\t${client.ws.ping} ms`,
           icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/ping.gif',
         }),

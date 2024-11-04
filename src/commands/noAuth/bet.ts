@@ -86,7 +86,7 @@ export = {
       };
     }
 
-    const outcome = await interaction.channel?.send({
+    const outcome = await interaction.reply({
       embeds: [
         createEmbed(
           `${gameCode} from ${provider} | ${dayjs(json.last.drawTime).format('DD/MM/YY')}`,

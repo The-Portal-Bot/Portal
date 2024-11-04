@@ -109,33 +109,32 @@ export = {
       };
     }
 
-    const sentMessage = await interaction.channel
-      ?.send({
-        embeds: [
-          createEmbed(
-            `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${dayjs().format('DD/MM/YY')}`,
-            'powered by yahoo finance',
-            '#FF0000',
-            [],
-            // [
-            //     {
-            //         emote: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price`,
-            //         role: `${json[crypto_name][currnc_name]}`,
-            //         inline: false
-            //     }
-            // ],
-            null,
-            null,
-            true,
-            null,
-            null
-          ),
-        ],
-      });
+    const outcome = await interaction.reply({
+      embeds: [
+        createEmbed(
+          `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${dayjs().format('DD/MM/YY')}`,
+          'powered by yahoo finance',
+          '#FF0000',
+          [],
+          // [
+          //     {
+          //         emote: `${voca.titleCase(crypto_name)} to ${voca.titleCase(currnc_name)} price`,
+          //         role: `${json[crypto_name][currnc_name]}`,
+          //         inline: false
+          //     }
+          // ],
+          null,
+          null,
+          true,
+          null,
+          null
+        ),
+      ],
+    });
 
     return {
-      result: !!sentMessage,
-      value: sentMessage ? '' : 'failed to send message',
+      result: !!outcome,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 } as Command;

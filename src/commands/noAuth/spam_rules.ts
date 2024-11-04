@@ -43,13 +43,13 @@ export = {
         : '***Automatic ban has not been set yet.***'
       }`;
 
-    const sentMessage = await interaction.channel?.send({
+    const outcome = await interaction.reply({
       embeds: [createEmbed('Spam Rules', rules, '#006996', null, null, null, true, null, null)],
     })
 
     return {
-      result: !!sentMessage,
-      value: sentMessage ? '' : 'failed to send message',
+      result: !!outcome,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 } as Command;

@@ -82,16 +82,16 @@ export = {
       ],
     }
 
-    const sentMessage = await interaction.channel?.send(message);
+    const outcome = await interaction.reply(message);
 
-    if (!sentMessage) {
+    if (!outcome) {
       return {
         result: true,
         value: 'failed to send message',
       };
     }
 
-    const editedMessage = await sentMessage
+    const editedMessage = await outcome
       .edit({
         embeds: [
           createEmbed(

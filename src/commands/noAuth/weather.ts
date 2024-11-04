@@ -81,69 +81,68 @@ export = {
       };
     }
 
-    const sentMessage = await interaction.channel
-      ?.send({
-        embeds: [
-          createEmbed(
-            `${json.name}, ${json.sys.country} at ${dayjs().format('DD/MM/YY')}`,
-            'powered by OpenWeatherMap',
-            '#BFEFFF',
-            [
-              {
-                emote: 'Temperature',
-                role: `${kelvinToCelsius(json.main.temp)}°C / ${kelvinToFahrenheit(json.main.temp)}°F`,
-                inline: true,
-              },
-              {
-                emote: 'Feels like',
-                role: `${kelvinToCelsius(json.main.feels_like)}°C / ${kelvinToFahrenheit(
-                  json.main.feels_like
-                )}°F`,
-                inline: true,
-              },
-              {
-                emote: null,
-                role: null,
-                inline: false,
-              },
-              {
-                emote: 'Humidity',
-                role: `${json.main.humidity}`,
-                inline: true,
-              },
-              {
-                emote: 'Wind Speed',
-                role: `${msToKs(json.wind.speed)}kmh / ${msToMlh(json.wind.speed)}mlh`,
-                inline: true,
-              },
-              {
-                emote: 'Cloudiness',
-                role: `${json.clouds.all}%`,
-                inline: true,
-              },
-              {
-                emote: 'Condition',
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                role: `${json.weather
-                  .map((weather: { main: string; description: string }) => {
-                    return `${weather.main} (${weather.description})`;
-                  })
-                  .join(', ')}`,
-                inline: false,
-              },
-            ],
-            `http://openweathermap.org/img/wn/${json.weather[0].icon}@2x.png`,
-            null,
-            true,
-            null,
-            null
-          ),
-        ],
-      });
+    const outcome = await interaction.reply({
+      embeds: [
+        createEmbed(
+          `${json.name}, ${json.sys.country} at ${dayjs().format('DD/MM/YY')}`,
+          'powered by OpenWeatherMap',
+          '#BFEFFF',
+          [
+            {
+              emote: 'Temperature',
+              role: `${kelvinToCelsius(json.main.temp)}°C / ${kelvinToFahrenheit(json.main.temp)}°F`,
+              inline: true,
+            },
+            {
+              emote: 'Feels like',
+              role: `${kelvinToCelsius(json.main.feels_like)}°C / ${kelvinToFahrenheit(
+                json.main.feels_like
+              )}°F`,
+              inline: true,
+            },
+            {
+              emote: null,
+              role: null,
+              inline: false,
+            },
+            {
+              emote: 'Humidity',
+              role: `${json.main.humidity}`,
+              inline: true,
+            },
+            {
+              emote: 'Wind Speed',
+              role: `${msToKs(json.wind.speed)}kmh / ${msToMlh(json.wind.speed)}mlh`,
+              inline: true,
+            },
+            {
+              emote: 'Cloudiness',
+              role: `${json.clouds.all}%`,
+              inline: true,
+            },
+            {
+              emote: 'Condition',
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+              role: `${json.weather
+                .map((weather: { main: string; description: string }) => {
+                  return `${weather.main} (${weather.description})`;
+                })
+                .join(', ')}`,
+              inline: false,
+            },
+          ],
+          `http://openweathermap.org/img/wn/${json.weather[0].icon}@2x.png`,
+          null,
+          true,
+          null,
+          null
+        ),
+      ],
+    });
 
     return {
-      result: true,
-      value: sentMessage ? `${json.name} weather` : 'failed to send message',
+      result: !!outcome,
+      value: outcome ? `${json.name} weather` : 'failed to send message',
     };
 
 

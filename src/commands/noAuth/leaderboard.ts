@@ -81,22 +81,21 @@ export = {
       }
     });
 
-    const outcome = await interaction.channel
-      ?.send({
-        embeds: [
-          createEmbed(
-            'LEADERBOARD',
-            '[Ranking System](https://portal-bot.xyz/docs/ranking)',
-            '#00FFFF',
-            memberLevels,
-            null,
-            null,
-            true,
-            null,
-            null
-          ),
-        ],
-      });
+    const outcome = await interaction.reply({
+      embeds: [
+        createEmbed(
+          'LEADERBOARD',
+          '[Ranking System](https://portal-bot.xyz/docs/ranking)',
+          '#00FFFF',
+          memberLevels,
+          null,
+          null,
+          true,
+          null,
+          null
+        ),
+      ],
+    });
 
     return {
       result: !!outcome,

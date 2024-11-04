@@ -26,7 +26,7 @@ export = {
       };
     }
 
-    const sentMessage = await interaction.channel?.send({ embeds: [
+    const outcome = await interaction.reply({ embeds: [
       createEmbed(
         interaction.member?.user?.username,
         null,
@@ -62,8 +62,8 @@ export = {
     ] })
 
     return {
-      result: !!sentMessage,
-      value: sentMessage ? '' : 'could not send message',
+      result: !!outcome,
+      value: outcome ? '' : 'could not send message',
     };
   },
 } as Command;

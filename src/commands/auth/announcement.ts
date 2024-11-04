@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, NewsChannel, TextBasedChannel, VoiceChannel } from 'discord.js';
 import {
   deleteChannel,
+  doesChannelHaveUsage,
   isAnnouncementChannel,
   isMusicChannel,
   isUrlOnlyChannel
@@ -88,45 +89,3 @@ export = {
     };
   },
 } as Command;
-
-async function doesChannelHaveUsage(textBasedChannelId: TextBasedChannel['id'], pGuild: PGuild) {
-  if (!textBasedChannelId) {
-    return {
-      result: false,
-      value: 'could not get channel id',
-    };
-  }
-
-  if (isAnnouncementChannel(textBasedChannelId, pGuild)) {
-    const response = await updateGuild(pGuild.id, 'announcement', 'null').catch(() => {
-      return {
-        result: true,
-        value: 'failed to remove announcement channel',
-      };
-    });
-
-    return {
-      result: true,
-      value: response ? 'successfully removed announcement channel' : 'failed to remove announcement channel',
-    };
-  }
-
-  if (isMusicChannel(textBasedChannelId, pGuild)) {
-    return {
-      result: true,
-      value: 'this can\'t be set as an announcement channel for it is the music channel',
-    };
-  }
-
-  if (isUrlOnlyChannel(textBasedChannelId, pGuild)) {
-    return {
-      result: true,
-      value: 'this can\'t be set as the announcement channel for it is an url channel',
-    };
-  }
-
-  return {
-    result: false,
-    value: '',
-  };
-}

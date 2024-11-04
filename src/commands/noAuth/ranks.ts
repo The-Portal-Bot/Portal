@@ -36,14 +36,13 @@ export = {
       });
     });
 
-    const sentMessage = await interaction.channel
-      ?.send({
-        embeds: [createEmbed('Ranking System', null, '#FF4500', ranksMessage, null, null, true, null, null)],
-      });
+    const outcome = await interaction.reply({
+      embeds: [createEmbed('Ranking System', null, '#FF4500', ranksMessage, null, null, true, null, null)],
+    });
 
     return {
-      result: true,
-      value: sentMessage ? '' : 'failed to send message',
+      result: !!outcome,
+      value: outcome ? '' : 'failed to send message',
     };
   },
 } as Command;
