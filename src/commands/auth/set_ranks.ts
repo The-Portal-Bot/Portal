@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, Role } from 'discord.js';
+import { ChatInputCommandInteraction, InteractionContextType, Role } from 'discord.js';
 import { getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { setRanks } from '../../libraries/mongo.library';
 import { Command } from '../../types/Command';
@@ -23,7 +23,7 @@ export = {
         .setName('rank_string')
         .setDescription('JSON string of ranks to set (even for one rank)')
         .setRequired(true))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild)
       return {

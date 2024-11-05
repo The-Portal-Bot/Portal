@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, ColorResolvable, InteractionContextType, TextChannel } from 'discord.js';
 import { getRole } from '../../libraries/guild.library';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
 import { insertVendor } from '../../libraries/mongo.library';
@@ -25,7 +25,7 @@ export = {
         .setName('vendor_string')
         .setDescription('JSON string of vendor roles')
         .setRequired(true))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {

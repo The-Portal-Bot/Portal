@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { BanOptions, ChatInputCommandInteraction, GuildMember } from 'discord.js';
+import { BanOptions, ButtonStyle, ChatInputCommandInteraction, GuildMember, InteractionContextType } from 'discord.js';
 import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
 import { ban } from '../../libraries/user.library';
 import { Command } from '../../types/Command';
@@ -19,36 +19,36 @@ export = {
     .setDescription(DESCRIPTION)
     .addUserOption(option =>
       option
-        .setName('user_to_ban')
-        .setDescription('user to ban')
+        .setName('user_to_kick')
+        .setDescription('user to kick')
         .setRequired(true))
     .addNumberOption(option =>
       option
-        .setName('ban_days')
-        .setDescription('days to ban user for')
+        .setName('kick_days')
+        .setDescription('days to kick user for')
         .setRequired(true))
     .addStringOption(option =>
       option
-        .setName('ban_reason')
-        .setDescription('ban reason')
+        .setName('kick_reason')
+        .setDescription('kick reason')
         .setRequired(false))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    const memberToBan = interaction.options.getMember('user_to_ban') as GuildMember;
-    const banDays = interaction.options.getNumber('ban_days');
-    const banReason = interaction.options.getString('ban_reason');
+    const memberToBan = interaction.options.getMember('user_to_kick') as GuildMember;
+    const kickDays = interaction.options.getNumber('kick_days');
+    const kickReason = interaction.options.getString('kick_reason');
 
     if (!memberToBan) {
       return {
         result: false,
-        value: messageHelp('commands', 'corona', 'user must be provided'),
+        value: messageHelp('commands', 'kick', 'user must be provided'),
       };
     }
 
-    if (!banDays) {
+    if (!kickDays) {
       return {
         result: false,
-        value: messageHelp('commands', 'corona', 'days to ban must be provided'),
+        value: messageHelp('commands', 'kick', 'days to kick must be provided'),
       };
     }
 
@@ -62,7 +62,7 @@ export = {
     if (!isMod((interaction.member as GuildMember))) {
       return {
         result: false,
-        value: 'you must be a Portal moderator to ban users',
+        value: 'you must be a Portal moderator to kick users',
       };
     }
 
@@ -73,42 +73,43 @@ export = {
       };
     }
 
-    const deleteMessageDays = banDays ?? 1;
-    const reason = banReason ?? 'banned by admin';
+    const deleteMessageDays = kickDays ?? 1;
+    const reason = kickReason ?? 'kicked by admin';
 
-    const response = await askForApproval(interaction, memberToBan.displayName);
+    const response = await askForApproval(
+      interaction,
+      `*${interaction.user}, are you sure you want to kick **${memberToBan.displayName}** for **${deleteMessageDays}** days*?`,
+      ButtonStyle.Danger
+    );
+
+    if (!response) {
+      return {
+        result: false,
+        value: 'kick approval not received',
+      };
+    }
 
     try {
-      const confirmation = await response.awaitMessageComponent({
-        filter: buttonInteraction => buttonInteraction.user.id === interaction.user.id,
-        time: 10_000
-      });
+      const kickOptions: BanOptions = {
+        deleteMessageDays,
+        reason,
+      };
 
-      if (confirmation.customId === 'confirm') {
-        const banOptions: BanOptions = {
-          deleteMessageDays,
-          reason,
-        };
+      const kickResponse = await ban(memberToBan, kickOptions);
 
-        const banResponse = await ban(memberToBan, banOptions);
-        await confirmation.update({
-          content: banResponse
-            ? `${memberToBan} has been banned by ${interaction.user} ` +
-          `for ${banDays} ${deleteMessageDays > 1 ? 'days' : 'day'}, because: *${reason}*`
-            : `${memberToBan} is not bannable`
-        });
-      } else if (confirmation.customId === 'cancel') {
-        await confirmation.update({
-          content: 'Ban cancelled'
-        });
+      return {
+        result: kickResponse,
+        value: kickResponse
+          ? `User ${memberToBan.displayName} has been kicked`
+          : `User ${memberToBan.displayName} could not be kicked`
       }
     } catch (e) {
       await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
-    }
 
-    return {
-      result: true,
-      value: '',
+      return {
+        result: false,
+        value: `User ${memberToBan.displayName} could not be kicked`,
+      }
     }
   },
 } as Command;

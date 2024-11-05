@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
 import { createEmbed, messageHelp } from '../../libraries/help.library';
 import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
@@ -23,7 +23,7 @@ export = {
         .setName('requested_number')
         .setDescription('Number of members to display')
         .setRequired(false))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const pMembers = pGuild.pMembers;
 

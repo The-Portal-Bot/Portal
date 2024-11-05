@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, InviteCreateOptions, TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember, InteractionContextType, InviteCreateOptions, TextChannel } from 'discord.js';
 import { isMod, messageHelp } from '../../libraries/help.library';
 import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -41,7 +41,7 @@ export = {
         .setName('reason')
         .setDescription('the reason for the invite')
         .setRequired(true))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
     if (!interaction.guild) {

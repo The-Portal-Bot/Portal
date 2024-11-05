@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, NewsChannel, VoiceChannel } from 'discord.js';
+import { ChatInputCommandInteraction, InteractionContextType, NewsChannel, VoiceChannel } from 'discord.js';
 
 import {
   deleteChannel,
@@ -34,7 +34,7 @@ export = {
         .setName('delete_previous')
         .setDescription('whether or not to delete the previous announcement channel')
         .setRequired(false))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const announcementChannel = interaction.options.getChannel('announcement_channel');
     const deletePreviousAnnouncementChannel = interaction.options.getChannel('delete_previous');

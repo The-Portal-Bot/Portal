@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, TextChannel, VoiceChannel } from 'discord.js';
+import { ChatInputCommandInteraction, InteractionContextType, TextChannel, VoiceChannel } from 'discord.js';
 
 import { deleteChannel, doesChannelHaveUsage } from '../../libraries/guild.library';
 import { createMusicLyricsMessage, createMusicMessage, messageHelp } from '../../libraries/help.library';
@@ -30,7 +30,7 @@ export = {
         .setName('delete_previous')
         .setDescription('whether or not to delete the previous music channel')
         .setRequired(false))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const musicChannel = interaction.options.getChannel('music_channel');
     const deletePreviousMusicChannel = interaction.options.getChannel('delete_previous');

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import dayjs from 'dayjs';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
 import { RequestOptions } from 'https';
 import voca from 'voca';
 import { CountryCodes } from '../../assets/lists/countryCodesISO.static';
@@ -26,7 +26,7 @@ export = {
         .setName('country')
         .setDescription('The country you want to get corona data for')
         .setRequired(true))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     if (!process.env.COVID_193) {
       return {
@@ -80,7 +80,7 @@ export = {
     if (json.message === 'You are not subscribed to this API.') {
       return {
         result: false,
-        value: 'you are not subscribed to this API.',
+        value: json.message,
       };
     }
 

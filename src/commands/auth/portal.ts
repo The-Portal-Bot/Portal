@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember, InteractionContextType, VoiceChannel } from 'discord.js';
 import { messageHelp } from '../../libraries/help.library';
 import { insertPortal } from '../../libraries/mongo.library';
 import { Command } from '../../types/Command';
@@ -24,7 +24,7 @@ export = {
         .setName('portal_channel_name')
         .setDescription('the name of the portal channel you want to create')
         .setRequired(true))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const newPortalChannel = interaction.options.getChannel('portal_channel_name');
 

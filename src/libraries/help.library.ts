@@ -16,20 +16,22 @@ import {
   GuildBasedChannel,
   GuildMember,
   Message,
+  MessageComponentInteraction,
   PermissionResolvable,
   TextBasedChannel,
   TextChannel,
   VoiceChannel
 } from 'discord.js';
 import { VideoSearchResult } from 'yt-search';
+
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { Field, TimeElapsed } from '../types/classes/PTypes.interface';
 import { Locale } from '../types/enums/Locales.enum';
 import { OpapGameId } from '../types/enums/OpapGames.enum';
 import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
-import { createDiscordJSAdapter } from './adapter.library';
 import logger from '../utilities/log.utility';
+import { createDiscordJSAdapter } from './adapter.library';
 import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
 
 dayjs.extend(duration);
@@ -67,11 +69,11 @@ export function markGuildAsDeleted(guild: Guild) {
   deletedGuild.add(guild);
 }
 
-export async function askForApproval(interaction: ChatInputCommandInteraction, memberToBanName: string) {
+export async function askForApproval(interaction: ChatInputCommandInteraction, question: string, buttonStyle: ButtonStyle): Promise<boolean> {
   const confirm = new ButtonBuilder()
     .setCustomId('confirm')
-    .setLabel('Confirm Ban')
-    .setStyle(ButtonStyle.Danger);
+    .setLabel('Confirm')
+    .setStyle(buttonStyle);
 
   const cancel = new ButtonBuilder()
     .setCustomId('cancel')
@@ -81,11 +83,22 @@ export async function askForApproval(interaction: ChatInputCommandInteraction, m
   const row = new ActionRowBuilder<ButtonBuilder>()
     .addComponents(cancel, confirm);
 
-  return await interaction.reply({
+  const reply = await interaction.reply({
     fetchReply: true,
-    content: `Are you sure you want to ban ${memberToBanName}?`,
+    content: question,
     components: [row],
   });
+
+  const filter = (i: MessageComponentInteraction) => i.customId === 'confirm' || i.customId === 'cancel';
+  const collected = await reply.awaitMessageComponent({ filter, time: 10_000 });
+
+  if (collected.customId === 'confirm') {
+    await collected.update({ content: `${question} **Confirmed**` });
+  } else {
+    await collected.update({ content: `${question} **Cancelled**` });
+  }
+
+  return collected.customId === 'confirm';
 }
 
 export function getJSONFromString(str: string) {

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { messageHelp } from '../../libraries/help.library';
+import { ButtonStyle, ChatInputCommandInteraction, InteractionContextType, TextChannel } from 'discord.js';
+import { askForApproval, messageHelp } from '../../libraries/help.library';
 import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
@@ -18,12 +18,12 @@ export = {
     .setDescription(DESCRIPTION)
     .addNumberOption(option =>
       option
-        .setName('delete_length')
+        .setName('message_number')
         .setDescription('number of messages to delete')
         .setRequired(true))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    const bulkDeleteLength = interaction.options.getNumber('delete_length');
+    const bulkDeleteLength = interaction.options.getNumber('message_number');
 
     if (!bulkDeleteLength) {
       return {
@@ -46,21 +46,20 @@ export = {
       };
     }
 
-    // const result = askForApproval(
-    //   interaction,
-    //   (interaction.member as GuildMember),
-    //   `*${interaction.user}, are you sure you want to delete ` +
-    //   `**${bulkDeleteLength}** messages*, do you **(yes / no)** ?`
-    // );
+    const result = askForApproval(
+      interaction,
+      `*${interaction.user}, are you sure you want to delete **${bulkDeleteLength}** messages*?`,
+      ButtonStyle.Success
+    );
 
-    // if (!result) {
-    //   return {
-    //     result: false,
-    //     value: 'failed to get approval',
-    //   };
-    // }
+    if (!result) {
+      return {
+        result: false,
+        value: 'failed to get approval',
+      };
+    }
 
-    const messages = await (<TextChannel>interaction.channel).bulkDelete(bulkDeleteLength + 3);
+    const messages = await (<TextChannel>interaction.channel).bulkDelete(bulkDeleteLength);
 
     if (!messages) {
       return {

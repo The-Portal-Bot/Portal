@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
 import { RequestOptions } from 'https';
 import voca from 'voca';
 import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
@@ -29,7 +29,7 @@ export = {
         .setName('currency_name')
         .setDescription('The name of the fiat currency to compare to')
         .setRequired(true))
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     if (!process.env.COIN_GECKO) {
       return {
