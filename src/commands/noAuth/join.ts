@@ -31,7 +31,7 @@ export = {
         };
       }
 
-      clientTalk(interaction, pGuild, AnnouncementAction.join);
+      clientTalk(interaction, pGuild, AnnouncementAction.join, true);
 
       return {
         result: true,

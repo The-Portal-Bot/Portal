@@ -4,9 +4,11 @@ import {
   OverwriteType,
   Role
 } from 'discord.js';
+
 import { getKeyFromEnum, isMod } from '../libraries/help.library';
 import { updateGuild, updateMember, updatePortal, updateVoice } from '../libraries/mongo.library';
 import { PGuild } from '../types/classes/PGuild.class';
+import { PMember } from '../types/classes/PMember.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import { Blueprint, ReturnPromise } from '../types/classes/PTypes.interface';
 import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
@@ -14,7 +16,6 @@ import { AuthType } from '../types/enums/Admin.enum';
 import { Locale, LocaleList } from '../types/enums/Locales.enum';
 import { ProfanityLevel, ProfanityLevelList } from '../types/enums/ProfanityLevel.enum';
 import { RankSpeed } from '../types/enums/RankSpeed.enum';
-import { PMember } from '../types/classes/PMember.class';
 
 function getResponse(response: boolean, category: string[], attribute: string, value: string | number) {
   const responseValue =  response
@@ -1105,9 +1106,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (locale === undefined) {
         return {
           result: false,
-          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
-            ', '
-          )}**`,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(', ')}**`,
         };
       }
 
@@ -1164,9 +1163,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (locale === undefined) {
         return {
           result: false,
-          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
-            ', '
-          )}**`,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(', ')}**`,
         };
       }
 
@@ -1215,9 +1212,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (locale === undefined) {
         return {
           result: false,
-          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(
-            ', '
-          )}**`,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **${LocaleList.join(', ')}**`,
         };
       }
 

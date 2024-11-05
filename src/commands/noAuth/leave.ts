@@ -43,7 +43,7 @@ export = {
       };
     }
 
-    clientTalk(interaction, pGuild, AnnouncementAction.leave);
+    clientTalk(interaction, pGuild, AnnouncementAction.leave, true);
     setTimeout(function () {
       voiceConnection.disconnect();
     }, 4000);

@@ -1,5 +1,6 @@
 import { ChannelType, DMChannel, GuildChannel, TextChannel, VoiceChannel } from 'discord.js';
 import { handleChannelDeletion } from '../libraries/mongo.library';
+
 import { PortalChannelType } from '../types/enums/PortalChannel.enum';
 
 export default async function channelDelete(args: { channel: DMChannel | GuildChannel }): Promise<string> {
@@ -18,7 +19,6 @@ export default async function channelDelete(args: { channel: DMChannel | GuildCh
   }
 
   return deletedChannelPortalType > 0
-    ? `${PortalChannelType[deletedChannelPortalType].toString()} channel removed from ` +
-    `${deletedChannel.guild.name}|${deletedChannel.guild.id}`
+    ? `${PortalChannelType[deletedChannelPortalType].toString()} channel removed from ${deletedChannel.guild.name}|${deletedChannel.guild.id}`
     : `${deletedChannel.name} channel is not controlled by Portal`;
 }

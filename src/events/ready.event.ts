@@ -1,4 +1,5 @@
 import { ActivityOptions, ActivityType, Client, Guild, PresenceData } from 'discord.js';
+
 import { removeDeletedChannels, removeEmptyVoiceChannels } from '../libraries/help.library';
 import { getFunction } from '../libraries/localisation.library';
 import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library';
@@ -17,16 +18,20 @@ export default async (args: { client: Client }): Promise<string> => {
     url: 'https://github.com/keybraker',
   };
 
-  const data: PresenceData = { activities: [activitiesOptions], status: 'online', afk: false };
+  const data: PresenceData = {
+    activities: [activitiesOptions],
+    status: 'online',
+    afk: false
+  };
 
   args.client.user.setPresence(data);
+
   let index = 0;
   args.client.guilds.cache.forEach((guild: Guild) => {
     logger.info(`${index++}. logged onto guild ${guild} (${guild.id})`);
 
-    addGuildAgain(guild, args.client).catch((e) => {
-      return `failed to add guild again: ${e}`;
-    });
+    addGuildAgain(guild, args.client)
+      .catch((e) => logger.warn(`failed to add guild ${guild.name} [${guild.id}] (${e})`));
 
     removeDeletedChannels(guild);
     removeEmptyVoiceChannels(guild);

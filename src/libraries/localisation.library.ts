@@ -230,18 +230,11 @@ export const consoleText: LocalisationConsoleOption[] = [
   },
 ];
 
-function isAnnouncementAction(value: AnnouncementAction | string): value is AnnouncementAction {
-  return Object.values(AnnouncementAction).includes(value);
-}
-
-function isEventAction(value: EventAction | string): value is EventAction {
-  return Object.values(EventAction).includes(value);
-}
-
 export function clientTalk(
   interaction: ChatInputCommandInteraction,
   pGuild: PGuild,
-  context: AnnouncementAction | EventAction
+  context: AnnouncementAction | EventAction,
+  isAction: boolean
 ): boolean {
   if (!interaction.guild) {
     return false;
@@ -276,28 +269,30 @@ export function clientTalk(
     [EventAction.userDisconnected]: 'user_disconnected',
   };
 
-  for (const p of pGuild.pChannels) {
-    for (const v of p.pVoiceChannels) {
-      if (isAnnouncementAction(context.toString())&& !isEventAction(context.toString()) && v.annAnnounce) {
+  for (let i = 0; i < pGuild.pChannels.length; i++) {
+    for (let j = 0; j < pGuild.pChannels[i].pVoiceChannels.length; j++) {
+      const v = pGuild.pChannels[i].pVoiceChannels[j];
+
+      if (isAction) {
         const locale = localeToString[v.locale];
         const contextAsAction = AnnouncementActionToString[context];
         const random = Math.floor(Math.random() * 3);
 
-        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3`);
-        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3, ${!!resource}`);
+        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`);
+        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`);
 
         player.play(resource);
         voiceConnection.subscribe(player);
 
         return true;
-      } else if (!isAnnouncementAction(context.toString()) && isEventAction(context.toString()) && v.annUser) {
+      } else {
         const locale = localeToString[v.locale];
         const contextAsAction = EventActionToString[context as EventAction];
 
         const random = Math.floor(Math.random() * 3);
 
-        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3`);
-        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3, ${!!resource}`);
+        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`);
+        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`);
 
         player.play(resource);
         voiceConnection.subscribe(player);
