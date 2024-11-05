@@ -20,27 +20,27 @@ export = {
       option
         .setName('temporary')
         .setDescription('should invite be temporary')
-        .setRequired(true))
+        .setRequired(false))
     .addNumberOption(option =>
       option
         .setName('max_age')
         .setDescription('what the maximum age of the invitee shall be')
-        .setRequired(true))
+        .setRequired(false))
     .addNumberOption(option =>
       option
         .setName('max_uses')
         .setDescription('maximum usages')
-        .setRequired(true))
+        .setRequired(false))
     .addBooleanOption(option =>
       option
         .setName('unique')
         .setDescription('should invite be unique')
-        .setRequired(true))
+        .setRequired(false))
     .addStringOption(option =>
       option
         .setName('reason')
         .setDescription('the reason for the invite')
-        .setRequired(true))
+        .setRequired(false))
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;

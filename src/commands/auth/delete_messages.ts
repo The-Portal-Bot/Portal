@@ -46,7 +46,7 @@ export = {
       };
     }
 
-    const result = askForApproval(
+    const result = await askForApproval(
       interaction,
       `*${interaction.user}, are you sure you want to delete **${bulkDeleteLength}** messages*?`,
       ButtonStyle.Success
@@ -59,7 +59,7 @@ export = {
       };
     }
 
-    const messages = await (<TextChannel>interaction.channel).bulkDelete(bulkDeleteLength);
+    const messages = await (<TextChannel>interaction.channel).bulkDelete(bulkDeleteLength + 1);
 
     if (!messages) {
       return {

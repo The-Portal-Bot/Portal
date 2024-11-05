@@ -1,3 +1,4 @@
+import { createAudioPlayer, createAudioResource, getVoiceConnection } from '@discordjs/voice';
 import { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
 import { PGuild } from '../types/classes/PGuild.class';
 import {
@@ -12,6 +13,7 @@ import {
   StatusArguments
 } from '../types/classes/PTypes.interface';
 import { Locale } from '../types/enums/Locales.enum';
+import logger from '../utilities/log.utility';
 
 export const portal: LocalisationPortalOption[] = [
   {
@@ -228,40 +230,85 @@ export const consoleText: LocalisationConsoleOption[] = [
   },
 ];
 
-// export function clientTalk(
-// 	client: Client, pGuild: GuildPrtl, context: string
-// ): boolean {
-// 	const voiceConnection = client?.voice?.connections
-// 		.find(connection => connection.channel.guild.id === pGuild.id);
+function isAnnouncementAction(value: AnnouncementAction | string): value is AnnouncementAction {
+  return Object.values(AnnouncementAction).includes(value);
+}
 
-// 	if (voiceConnection) {
-// 		if (!voiceConnection.dispatcher) {
-// 			return pGuild.portalList.some(p =>
-// 				p.voiceList.some(v => {
+function isEventAction(value: EventAction | string): value is EventAction {
+  return Object.values(EventAction).includes(value);
+}
 
-// 					if (typeOfAnnouncement.includes(context) && v.annAnnounce) {
-// 						const locale = v.locale;
-// 						const random = Math.floor(Math.random() * Math.floor(3));
+export function clientTalk(
+  interaction: ChatInputCommandInteraction,
+  pGuild: PGuild,
+  context: AnnouncementAction | EventAction
+): boolean {
+  if (!interaction.guild) {
+    return false;
+  }
 
-// 						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}${random}.mp3`);
-// 						return true;
-// 					}
-// 					else if (typeOfAction.includes(context) && v.annUser) {
-// 						const locale = v.locale;
-// 						const random = Math.floor(Math.random() * Math.floor(3));
+  const voiceConnection = getVoiceConnection(interaction.guild.id);
 
-// 						voiceConnection.play(`src/assets/mp3s/${locale}/${context}/${context}${random}.mp3`);
-// 						return true;
-// 					}
+  if (!voiceConnection) {
+    return false;
+  }
 
-// 					return v.id === voiceConnection.channel.id;
-// 				})
-// 			);
-// 		}
-// 	}
+  const player = createAudioPlayer();
 
-// 	return false;
-// }
+  const localeToString: Record<Locale, string> = {
+    [Locale.gr]: 'gr',
+    [Locale.en]: 'en',
+    [Locale.de]: 'de',
+  };
+
+  const AnnouncementActionToString: Record<AnnouncementAction, string> = {
+    [AnnouncementAction.fail]: 'fail',
+    [AnnouncementAction.announce]: 'announce',
+    [AnnouncementAction.spotify]: 'spotify',
+    [AnnouncementAction.url]: 'url',
+    [AnnouncementAction.readOnly]: 'readOnly',
+    [AnnouncementAction.join]: 'join',
+    [AnnouncementAction.leave]: 'leave',
+  };
+
+  const EventActionToString: Record<EventAction, string> = {
+    [EventAction.userConnected]: 'user_connected',
+    [EventAction.userDisconnected]: 'user_disconnected',
+  };
+
+  for (const p of pGuild.pChannels) {
+    for (const v of p.pVoiceChannels) {
+      if (isAnnouncementAction(context.toString())&& !isEventAction(context.toString()) && v.annAnnounce) {
+        const locale = localeToString[v.locale];
+        const contextAsAction = AnnouncementActionToString[context];
+        const random = Math.floor(Math.random() * 3);
+
+        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3`);
+        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3, ${!!resource}`);
+
+        player.play(resource);
+        voiceConnection.subscribe(player);
+
+        return true;
+      } else if (!isAnnouncementAction(context.toString()) && isEventAction(context.toString()) && v.annUser) {
+        const locale = localeToString[v.locale];
+        const contextAsAction = EventActionToString[context as EventAction];
+
+        const random = Math.floor(Math.random() * 3);
+
+        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3`);
+        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}${random}.mp3, ${!!resource}`);
+
+        player.play(resource);
+        voiceConnection.subscribe(player);
+
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
 
 export function getFunction(output: string, locale: number, context: EventAction | AnnouncementAction | LogActions) {
   let func;

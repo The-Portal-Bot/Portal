@@ -1,9 +1,12 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, Client } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
+import logger from '../../utilities/log.utility';
+
 import { joinUserVoiceChannelByInteraction, messageHelp } from '../../libraries/help.library';
+import { clientTalk } from '../../libraries/localisation.library';
 import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'join';
 const DESCRIPTION = 'makes portal join your voice channel'
@@ -17,18 +20,29 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
+  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     try {
-      await joinUserVoiceChannelByInteraction(client, interaction, pGuild /*, true*/);
+      const voiceChannel = await joinUserVoiceChannelByInteraction(interaction, pGuild);
+
+      if(!voiceChannel) {
+        return {
+          result: false,
+          value: 'failed to join voice channel',
+        };
+      }
+
+      clientTalk(interaction, pGuild, AnnouncementAction.join);
 
       return {
         result: true,
         value: 'successfully joined voice channel',
       };
     }catch (error) {
+      logger.error(`commands.join.error: ${error}`);
+
       return {
         result: false,
-        value: messageHelp('commands', 'join', String(error)),
+        value: messageHelp('commands', 'join', 'failed to join voice channel'),
       };
     }
   },

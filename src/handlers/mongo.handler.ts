@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ConnectOptions } from 'mongoose';
 import logger from '../utilities/log.utility';
 
 export async function mongoHandler(mongoUrl: string) {
@@ -10,12 +10,11 @@ export async function mongoHandler(mongoUrl: string) {
     logger.info('connected to mongo', { service: 'mongse' });
   });
 
-  const connectOptions = {
+  const connectOptions: ConnectOptions = {
     dbName: 'portal',
     compressors: 'zlib',
     maxPoolSize: 50,
     wtimeoutMS: 2500,
-    useNewUrlParser: true,
   };
   // {
   //     dbName: 'portal',

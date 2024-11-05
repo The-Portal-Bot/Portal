@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { getVoiceConnection } from '@discordjs/voice';
+import { getVoiceConnection, VoiceConnectionStatus } from '@discordjs/voice';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { clientWrite } from '../../libraries/localisation.library';
+import { clientTalk, clientWrite } from '../../libraries/localisation.library';
 import { Command } from '../../types/Command';
 import { PGuild } from '../../types/classes/PGuild.class';
 import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -35,20 +35,18 @@ export = {
       };
     }
 
-    if (!voiceConnection.disconnect()) {
+    if (voiceConnection.state.status !== VoiceConnectionStatus.Ready) {
+      // await voiceConnection.destroy();
       return {
         result: false,
-        value: 'failed to disconnect from voice channel',
+        value: 'failed to destroy voice connection',
       };
     }
 
-    // clientTalk(client, pGuild, 'leave');
-    // setTimeout(
-    // 	function () {
-    // 		voiceConnection.disconnect();
-    // 	},
-    // 	4000
-    // );
+    clientTalk(interaction, pGuild, AnnouncementAction.leave);
+    setTimeout(function () {
+      voiceConnection.disconnect();
+    }, 4000);
 
     return {
       result: true,

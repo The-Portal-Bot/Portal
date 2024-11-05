@@ -171,7 +171,7 @@ export async function memberExists(guildId: PGuild['id'], memberId: string): Pro
   );
 }
 
-export async function updateGuild(guildId: PGuild['id'], key: string, value: unknown): Promise<boolean> {
+export async function updateGuild(guildId: PGuild['id'], key: keyof PGuild, value: unknown): Promise<boolean> {
   const updateWriteOpResult = await PGuildModel.updateOne(
     {
       id: guildId,

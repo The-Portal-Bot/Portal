@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import { Locale } from '../enums/Locales.enum';
 
 export class PVoiceChannel {
   public id: string;
@@ -6,7 +7,7 @@ export class PVoiceChannel {
   public render: boolean;
   public regex: string;
   public noBots: boolean;
-  public locale: number;
+  public locale: Locale;
   public annAnnounce: boolean;
   public annUser: boolean;
 
@@ -16,7 +17,7 @@ export class PVoiceChannel {
     render: boolean,
     regex: string,
     noBots: boolean,
-    locale: number,
+    locale: Locale,
     annAnnounce: boolean,
     annUser: boolean
   ) {

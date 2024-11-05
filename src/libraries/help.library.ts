@@ -7,7 +7,6 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ChatInputCommandInteraction,
-  Client,
   Collection,
   ColorResolvable,
   EmbedAuthorOptions,
@@ -19,8 +18,7 @@ import {
   MessageComponentInteraction,
   PermissionResolvable,
   TextBasedChannel,
-  TextChannel,
-  VoiceChannel
+  TextChannel
 } from 'discord.js';
 import { VideoSearchResult } from 'yt-search';
 
@@ -320,54 +318,55 @@ export async function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyr
 }
 
 export async function joinUserVoiceChannelByInteraction(
-  client: Client,
   interaction: ChatInputCommandInteraction,
   pGuild: PGuild
 ): Promise<VoiceConnection | undefined> {
-  const member = interaction.member as GuildMember;
+  const member = interaction.member;
 
   if (!member) {
-    throw('user could not be fetched for message');
+    return undefined; // throw('user could not be fetched for message');
+  }
+
+  if (!(member instanceof GuildMember)) {
+    return undefined; // throw('member is not a guild member instance');
   }
 
   if (!member.voice) {
-    throw('voice could not be fetched for member');
+    return undefined; // throw('voice could not be fetched for member');
   }
 
-  if (!member.voice.channel) {
-    throw('you aren\'t in a voice channel');
+  const voiceChannel = member.voice.channel;
+  if (!voiceChannel) {
+    return undefined; // throw('you aren\'t in a voice channel');
   }
 
-  if (!interaction.guild) {
-    throw('guild could not be fetched for message');
+  const guild = interaction.guild;
+  if (!guild) {
+    return undefined; // throw('guild could not be fetched for message');
   }
 
-  if (!interaction.guild.voiceAdapterCreator) {
-    throw('voiceAdapterCreator could not be fetched for guild');
+  if (!guild.voiceAdapterCreator) {
+    return undefined; // throw('voiceAdapterCreator could not be fetched for guild');
   }
 
   if (!pGuild) {
-    throw('could not find guild of message');
+    return undefined; // throw('could not find guild of message');
   }
 
-  if (!client.voice) {
-    throw('could not fetch portal\'s voice connections');
-  }
+  let voiceConnection = getVoiceConnection(voiceChannel.id);
+  const clientVoiceState = guild.voiceStates.cache.get(guild.client.user.id);
 
-  let voiceConnection = getVoiceConnection(member.voice.channel.id);
-  const clientVoiceState = interaction.guild.voiceStates.cache.get(interaction.guild.client.user.id);
-
-  if (voiceConnection && clientVoiceState?.channelId === member.voice.channel?.id) {
+  if (voiceConnection && clientVoiceState?.channelId === voiceChannel?.id) {
     clientVoiceState.setDeaf(true);
   } else {
     voiceConnection = joinVoiceChannel({
-      channelId: member.voice.channel.id,
-      guildId: interaction.guild.id,
-      adapterCreator: createDiscordJSAdapter(member.voice.channel as VoiceChannel),
+      channelId: voiceChannel.id,
+      guildId: guild.id,
+      adapterCreator: createDiscordJSAdapter(voiceChannel),
     });
 
     if (!voiceConnection) {
-      throw('could not join voice channel');
+      return undefined; // throw('could not join voice channel');
     }
 
     if (clientVoiceState) {

@@ -79,21 +79,21 @@ export default async function (args: { client: Client; newState: VoiceState; old
   }
 
   // if (args.client.voice && args.newState.member) {
-  //     const newVoiceConnection = args.client.voice.connections
-  //         .find((connection: VoiceConnection) =>
-  //             !!newChannel && connection.channel.id === newChannel.id);
+  //   const newVoiceConnection = args.client.voice.connections
+  //     .find((connection: VoiceConnection) =>
+  //       !!newChannel && connection.channel.id === newChannel.id);
 
-  //     if (newVoiceConnection && !args.newState.member.user.bot) {
-  //         clientTalk(args.client, pGuild, 'userConnected');
-  //     }
+  //   if (newVoiceConnection && !args.newState.member.user.bot) {
+  //     clientTalk(args.client, pGuild, 'userConnected');
+  //   }
 
-  //     const oldVoiceConnection = args.client.voice.connections
-  //         .find((connection: VoiceConnection) =>
-  //             !!oldChannel && connection.channel.id === oldChannel.id);
+  //   const oldVoiceConnection = args.client.voice.connections
+  //     .find((connection: VoiceConnection) =>
+  //       !!oldChannel && connection.channel.id === oldChannel.id);
 
-  //     if (oldVoiceConnection && !args.newState.member.user.bot) {
-  //         clientTalk(args.client, pGuild, 'userDisconnected');
-  //     }
+  //   if (oldVoiceConnection && !args.newState.member.user.bot) {
+  //     clientTalk(args.client, pGuild, 'userDisconnected');
+  //   }
   // }
 
   if (!oldChannel) {

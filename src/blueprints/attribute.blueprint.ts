@@ -41,7 +41,7 @@ async function updateVoiceChannelAttribute(pGuildId: PGuild['id'], pChannelId: P
   return getResponse(response, category, attribute, value);
 }
 
-async function updateGuildAttribute(pGuildId: PGuild['id'], category: string[], attribute: string, value: string | number) {
+async function updateGuildAttribute(pGuildId: PGuild['id'], category: string[], attribute: keyof PGuild, value: string | number) {
   const response = await updateGuild(pGuildId, attribute, value);
 
   return getResponse(response, category, attribute, value);
@@ -52,8 +52,6 @@ async function updateMemberAttribute(pGuildId: PGuild['id'], pMemberId: PMember[
 
   return getResponse(response, category, attribute, value);
 }
-
-//
 
 export const AttributeBlueprints: Blueprint[] = [
   {

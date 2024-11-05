@@ -31,6 +31,7 @@
     "eslint-config-prettier": "9.1.0",
     "ffmpeg-static": "5.2.0",
     "jsonfile": "6.1.0",
+    "libsodium-wrappers": "^0.7.15",
     "lodash": "4.17.21",
     "mongoose": "8.8.0",
     "optionator": "0.9.4",
