@@ -37,3 +37,8 @@ services:
       resources:
         limits:
           memory: 256M
+    healthcheck:
+      test: "echo 'db.runCommand(\"ping\").ok' | mongo localhost:27017/test --quiet"
+      interval: 10s
+      timeout: 5s
+      retries: 5

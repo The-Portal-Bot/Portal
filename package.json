@@ -8,7 +8,6 @@
     "build": "npx tsc",
     "start": "node build/app.js",
     "build-start": "npx tsc && node build/app.js",
-    "test": "npx tsc && jest",
     "lint": "eslint --ext .ts .",
     "lint-fix": "npm run lint -- --fix",
     "dev": "tsc --watch"
@@ -43,7 +42,6 @@
     "ytdl-core": "4.11.5"
   },
   "devDependencies": {
-    "@types/jest": "29.5.4",
     "@types/lodash": "4.14.197",
     "@types/node": "20.5.7",
     "@types/node-fetch": "2.6.11",
@@ -58,8 +56,8 @@
     "husky": "8.0.3",
     "lint-staged": "14.0.1",
     "nodemon": "3.1.7",
-    "ts-jest": "29.2.5",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "prettier-plugin-organize-imports": "^3.0.0"
   },
   "optionalDependencies": {
     "fsevents": "2.3.3"

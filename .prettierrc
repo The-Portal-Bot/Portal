@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc.json",
+  "semi": true,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "printWidth": 120,
+  "trailingComma": "all",
+  "endOfLine": "lf",
+  "arrowParens": "always",
+  "plugins": [
+    "prettier-plugin-organize-imports"
+  ],
+  "useTabs": false
+}
