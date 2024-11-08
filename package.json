@@ -27,7 +27,6 @@
     "discord-ytdl-core": "5.0.4",
     "discord.js": "14.16.3",
     "dotenv": "16.4.5",
-    "eslint-config-prettier": "9.1.0",
     "ffmpeg-static": "5.2.0",
     "jsonfile": "6.1.0",
     "libsodium-wrappers": "^0.7.15",
@@ -49,15 +48,16 @@
     "@types/voca": "1.4.6",
     "@types/ws": "8.5.13",
     "@types/yt-search": "2.10.3",
-    "@typescript-eslint/eslint-plugin": "6.5.0",
-    "@typescript-eslint/parser": "6.5.0",
-    "eslint": "8.48.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "5.2.1",
     "husky": "8.0.3",
     "lint-staged": "14.0.1",
     "nodemon": "3.1.7",
-    "typescript": "5.6.3",
-    "prettier-plugin-organize-imports": "^3.0.0"
+    "prettier-plugin-organize-imports": "^3.0.0",
+    "typescript": "5.6.3"
   },
   "optionalDependencies": {
     "fsevents": "2.3.3"
