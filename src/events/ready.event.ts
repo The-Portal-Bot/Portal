@@ -7,7 +7,7 @@ import { PMember } from '../types/classes/PMember.class';
 import { LogActions } from '../types/classes/PTypes.interface';
 import logger from '../utilities/log.utility';
 
-export default async (client: Client): Promise<void> => {
+export async function ready(client: Client): Promise<void> {
   if (!client.user) {
     logger.warn('could not fetch user from client');
     return;
@@ -50,7 +50,7 @@ export default async (client: Client): Promise<void> => {
       guildLength: client.guilds.cache.size,
     }),
   );
-};
+}
 
 async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
   const membersFetched = await guild.members.fetch();

@@ -1,5 +1,6 @@
 import { VoiceConnectionStatus, getVoiceConnection } from '@discordjs/voice';
 import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from 'discord.js';
+
 import {
   createVoiceChannel,
   generateChannelName,
@@ -18,7 +19,7 @@ import { PGuild } from '../types/classes/PGuild.class';
 import { PChannel } from '../types/classes/PPortalChannel.class';
 import logger from '../utilities/log.utility';
 
-export default async function (client: Client, oldState: VoiceState, newState: VoiceState): Promise<void> {
+export async function voiceStateUpdate(client: Client, oldState: VoiceState, newState: VoiceState): Promise<void> {
   logger.info(`voiceStateUpdate event triggered with ${oldState.channelId} to ${newState.channelId}`);
   if (oldState.channel?.id === newState.channel?.id) {
     logger.warn('channel change detected');

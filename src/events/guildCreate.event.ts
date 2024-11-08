@@ -3,7 +3,7 @@ import { guildExists, insertGuild } from '../libraries/mongo.library';
 
 import logger from '../utilities/log.utility';
 
-export default async (client: Client, guild: Guild): Promise<void> => {
+export async function guildCreate(client: Client, guild: Guild): Promise<void> {
   const exists = await guildExists(guild.id);
 
   if (exists) {
@@ -17,4 +17,4 @@ export default async (client: Client, guild: Guild): Promise<void> => {
   } else {
     logger.error(`failed to insert guild ${guild.name} [${guild.id}] into database`);
   }
-};
+}

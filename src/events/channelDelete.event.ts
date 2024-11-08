@@ -4,7 +4,7 @@ import { handleChannelDeletion } from '../libraries/mongo.library';
 import { PortalChannelType } from '../types/enums/PortalChannel.enum';
 import logger from '../utilities/log.utility';
 
-export default async function channelDelete(channel: DMChannel | GuildChannel): Promise<void> {
+export async function channelDelete(channel: DMChannel | GuildChannel): Promise<void> {
   if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildVoice) {
     logger.error('only voice and text channels are handled');
     return;

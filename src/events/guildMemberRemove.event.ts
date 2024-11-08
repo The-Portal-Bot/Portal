@@ -4,7 +4,7 @@ import { fetchAnnouncementChannelByGuildId, removeMember } from '../libraries/mo
 
 import logger from '../utilities/log.utility';
 
-export default async (member: GuildMember | PartialGuildMember): Promise<void> => {
+export async function guildMemberRemove(member: GuildMember | PartialGuildMember): Promise<void> {
   if (member.user.bot) {
     logger.info('new member is a bot, bots are not handled');
     return;
@@ -44,4 +44,4 @@ export default async (member: GuildMember | PartialGuildMember): Promise<void> =
   }
 
   logger.info(`removed member ${member.id} from ${member.guild.id}`);
-};
+}

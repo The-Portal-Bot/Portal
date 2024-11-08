@@ -458,14 +458,14 @@
 //     }
 // }
 
-export default async (
+export async function messageReactionAdd(
   // @ts-expect-error
   client: Client,
   // @ts-expect-error
   messageReaction: MessageReaction | PartialMessageReactionClient,
   // @ts-expect-error
   user: User | PartialUserClient,
-): Promise<void> => {
+): Promise<void> {
   return new Promise((resolve, reject) => {
     return reject('under construction');
     // if (user.bot) {
@@ -668,4 +668,4 @@ export default async (
     //     return reject(`could not fetch guild`);
     // }
   });
-};
+}

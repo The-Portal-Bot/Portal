@@ -11,7 +11,7 @@ function validateBaseInteractionIsCommand(interaction: BaseInteraction): interac
   return interaction.isCommand();
 }
 
-export default async (interaction: BaseInteraction, activeCooldowns: ActiveCooldowns): Promise<void> => {
+export async function interactionCreate(interaction: BaseInteraction, activeCooldowns: ActiveCooldowns): Promise<void> {
   if (!validateBaseInteractionIsCommand(interaction)) {
     return;
   }
@@ -107,7 +107,7 @@ export default async (interaction: BaseInteraction, activeCooldowns: ActiveCoold
   const ephemeral = commandData.ephemeral;
 
   return await InteractionReply(interaction, { content, ephemeral });
-};
+}
 
 async function InteractionReply(
   interaction: ChatInputCommandInteraction,

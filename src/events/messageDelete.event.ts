@@ -9,7 +9,7 @@ import { fetchGuild, removePoll, removeVendor } from '../libraries/mongo.library
 
 import logger from '../utilities/log.utility';
 
-export default async (message: Message<boolean> | PartialMessage): Promise<void> => {
+export async function messageDelete(message: Message<boolean> | PartialMessage): Promise<void> {
   if (!message.guild) {
     logger.error('message does not have guild');
     return;
@@ -92,4 +92,4 @@ export default async (message: Message<boolean> | PartialMessage): Promise<void>
       logger.warn(`failed to remove vendor ${roleGiver.messageId}`);
     }
   }
-};
+}
