@@ -459,24 +459,25 @@
 // }
 
 export default async (
-//   args: {
-//   client: Client;
-//   messageReaction: MessageReaction | PartialMessageReaction;
-//   user: User | PartialUser;
-// }
-): Promise<string> => {
+  // @ts-expect-error
+  client: Client,
+  // @ts-expect-error
+  messageReaction: MessageReaction | PartialMessageReactionClient,
+  // @ts-expect-error
+  user: User | PartialUserClient,
+): Promise<void> => {
   return new Promise((resolve, reject) => {
     return reject('under construction');
-    // if (args.user.bot) {
+    // if (user.bot) {
     //     return resolve(''); // 'not handling bot reactions'
-    // } else if (args.messageReaction.message?.guild) {
-    //     const current_guild = args.messageReaction.message.guild;
-    //     fetch_guild_reaction_data(current_guild.id, args.user.id)
+    // } else if (messageReaction.message?.guild) {
+    //     const current_guild = messageReaction.message.guild;
+    //     fetch_guild_reaction_data(current_guild.id, user.id)
     //         .then(pGuild => {
     //             if (pGuild) {
-    //                 if (args.messageReaction.partial) {
+    //                 if (messageReaction.partial) {
     //                     try {
-    //                         args.messageReaction
+    //                         messageReaction
     //                             .fetch()
     //                             .catch(e => {
     //                                 return reject(`something went wrong when fetching the message: ${e}`);
@@ -486,15 +487,15 @@ export default async (
     //                     }
     //                 }
 
-    //                 if (pGuild.role_list.some(r => r.messageId === args.messageReaction.message.id)) {
-    //                     reaction_role_manager(pGuild, args.messageReaction, args.user)
+    //                 if (pGuild.role_list.some(r => r.messageId === messageReaction.message.id)) {
+    //                     reaction_role_manager(pGuild, messageReaction, user)
     //                         .then(r => {
-    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                             clear_user_reactions(messageReaction, user)
     //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
-    //                             args.messageReaction.message.channel
-    //                                 .send(`${args.user}, ${r}`)
+    //                             messageReaction.message.channel
+    //                                 .send(`${user}, ${r}`)
     //                                 .then(sent_message => {
     //                                     setTimeout(() =>
     //                                         sent_message
@@ -511,12 +512,12 @@ export default async (
     //                                 });
     //                         })
     //                         .catch(e => {
-    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                             clear_user_reactions(messageReaction, user)
     //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
-    //                             args.messageReaction.message.channel
-    //                                 .send(`${args.user}, ${e}`)
+    //                             messageReaction.message.channel
+    //                                 .send(`${user}, ${e}`)
     //                                 .then(sent_message => {
     //                                     setTimeout(() =>
     //                                         sent_message
@@ -532,19 +533,19 @@ export default async (
     //                                     return reject(`failed to send message: ${e}`);
     //                                 });
     //                         });
-    //                 } else if (pGuild.music_data.messageId === args.messageReaction.message.id) {
-    //                     reaction_music_manager(args.client, pGuild, args.messageReaction, args.user)
+    //                 } else if (pGuild.music_data.messageId === messageReaction.message.id) {
+    //                     reaction_music_manager(client, pGuild, messageReaction, user)
     //                         .then(r => {
-    //                             if (args.messageReaction.message.guild) {
-    //                                 const portal_voice_connection = args.client.voice?.connections
-    //                                     .find(c => c.channel.guild.id === args.messageReaction.message.guild?.id);
+    //                             if (messageReaction.message.guild) {
+    //                                 const portal_voice_connection = client.voice?.connections
+    //                                     .find(c => c.channel.guild.id === messageReaction.message.guild?.id);
 
     //                                 const animate = portal_voice_connection?.dispatcher
     //                                     ? !portal_voice_connection?.dispatcher.paused
     //                                     : false;
 
     //                                 update_music_message(
-    //                                     args.messageReaction.message.guild,
+    //                                     messageReaction.message.guild,
     //                                     pGuild,
     //                                     pGuild.music_queue.length > 0
     //                                         ? pGuild.music_queue[0]
@@ -557,7 +558,7 @@ export default async (
     //                                     });
     //                             }
 
-    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                             clear_user_reactions(messageReaction, user)
     //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
@@ -565,9 +566,9 @@ export default async (
     //                             return resolve(r);
     //                         })
     //                         .catch(e => {
-    //                             if (args.messageReaction.message.guild) {
+    //                             if (messageReaction.message.guild) {
     //                                 update_music_message(
-    //                                     args.messageReaction.message.guild,
+    //                                     messageReaction.message.guild,
     //                                     pGuild,
     //                                     pGuild.music_queue.length > 0
     //                                         ? pGuild.music_queue[0]
@@ -579,23 +580,23 @@ export default async (
     //                                     });
     //                             }
 
-    //                             clear_user_reactions(args.messageReaction, args.user)
+    //                             clear_user_reactions(messageReaction, user)
     //                                 .catch((e) => {
     //                                     return reject(`failed to clear messages: ${e}`);
     //                                 });
 
     //                             return reject(e);
     //                         });
-    //                 } else if (args.messageReaction.emoji.name === '🏁' &&
-    //                     pGuild.poll_list.some(p => p.messageId === args.messageReaction.message.id)) {
+    //                 } else if (messageReaction.emoji.name === '🏁' &&
+    //                     pGuild.poll_list.some(p => p.messageId === messageReaction.message.id)) {
     //                     const poll = pGuild.poll_list.find(p =>
-    //                         p.messageId === args.messageReaction.message.id);
+    //                         p.messageId === messageReaction.message.id);
 
-    //                     if (poll && args.user.id === poll.memberId) {
+    //                     if (poll && user.id === poll.memberId) {
     //                         const winner: MessageReaction[] = [];
     //                         let count = 0;
 
-    //                         args.messageReaction.message.reactions.cache
+    //                         messageReaction.message.reactions.cache
     //                             .filter(r => r.emoji.name !== '🏁' && r.count !== 1)
     //                             .sort((a, b) => (b.count ? b.count : 0) - (a.count ? a.count : 0))
     //                             .forEach((value: MessageReaction) => { // , key: string, map: Map<string, MessageReaction>) => {
@@ -615,7 +616,7 @@ export default async (
     //                             `with ${(count) - 1} ${(count - 1 > 1 ? 'votes' : 'vote')}`
     //                             : `Noboody voted`;
 
-    //                         args.messageReaction.message.channel
+    //                         messageReaction.message.channel
     //                             .send({
     //                                 embeds: [
     //                                     create_rich_embed(
@@ -640,7 +641,7 @@ export default async (
     //                                 return reject(`failed to send message: ${e}`);
     //                             });
 
-    //                         remove_poll(current_guild.id, args.messageReaction.message.id)
+    //                         remove_poll(current_guild.id, messageReaction.message.id)
     //                             .then(r => {
     //                                 if (r) {
     //                                     return resolve('successfully removed poll');

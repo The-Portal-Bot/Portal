@@ -1,10 +1,14 @@
 import { Guild } from 'discord.js';
 import { removeGuild } from '../libraries/mongo.library';
 
-export default async (args: { guild: Guild }): Promise<string> => {
-  const guildRemoved = await removeGuild(args.guild.id);
+import logger from '../utilities/log.utility';
 
-  return guildRemoved
-    ? `removed guild ${args.guild.name} [${args.guild.id}]`
-    : `failed to remove guild ${args.guild.name} [${args.guild.id}]`;
+export default async (guild: Guild): Promise<void> => {
+  const guildRemoved = await removeGuild(guild.id);
+
+  if (guildRemoved) {
+    logger.info(`removed guild ${guild.name} [${guild.id}]`);
+  } else {
+    logger.error(`failed to remove guild ${guild.name} [${guild.id}]`);
+  }
 };

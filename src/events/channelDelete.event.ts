@@ -2,23 +2,26 @@ import { ChannelType, DMChannel, GuildChannel, TextChannel, VoiceChannel } from 
 import { handleChannelDeletion } from '../libraries/mongo.library';
 
 import { PortalChannelType } from '../types/enums/PortalChannel.enum';
+import logger from '../utilities/log.utility';
 
-export default async function channelDelete(args: { channel: DMChannel | GuildChannel }): Promise<string> {
-  if (args.channel.type !== ChannelType.GuildText && args.channel.type !== ChannelType.GuildVoice) {
-    throw new Error('only voice and text channels are handled');
+export default async function channelDelete(channel: DMChannel | GuildChannel): Promise<void> {
+  if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildVoice) {
+    logger.error('only voice and text channels are handled');
+    return;
   }
 
-  const deletedChannel = args.channel instanceof VoiceChannel
-    ? args.channel
-    : args.channel as TextChannel;
-
+  const deletedChannel = channel instanceof VoiceChannel ? channel : (channel as TextChannel);
   const deletedChannelPortalType = await handleChannelDeletion(deletedChannel);
 
   if (!Object.values(PortalChannelType).includes(deletedChannelPortalType)) {
     throw new Error('Only guild voice and text channels are handled');
   }
 
-  return deletedChannelPortalType > 0
-    ? `${PortalChannelType[deletedChannelPortalType].toString()} channel removed from ${deletedChannel.guild.name}|${deletedChannel.guild.id}`
-    : `${deletedChannel.name} channel is not controlled by Portal`;
+  if (deletedChannelPortalType > 0) {
+    logger.info(
+      `${PortalChannelType[deletedChannelPortalType].toString()} channel removed from ${deletedChannel.guild.name}|${
+        deletedChannel.guild.id
+      }`,
+    );
+  }
 }

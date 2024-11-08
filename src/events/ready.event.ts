@@ -1,4 +1,4 @@
-import { ActivityOptions, ActivityType, Client, Guild, PresenceData } from 'discord.js';
+import { ActivityOptions, ActivityType, Client, Guild, PresenceData, PresenceStatusData } from 'discord.js';
 
 import { removeDeletedChannels, removeEmptyVoiceChannels } from '../libraries/help.library';
 import { getFunction } from '../libraries/localisation.library';
@@ -7,50 +7,54 @@ import { PMember } from '../types/classes/PMember.class';
 import { LogActions } from '../types/classes/PTypes.interface';
 import logger from '../utilities/log.utility';
 
-export default async (args: { client: Client }): Promise<string> => {
-  if (!args.client.user) {
-    return 'could not fetch user from client';
+export default async (client: Client): Promise<void> => {
+  if (!client.user) {
+    logger.warn('could not fetch user from client');
+    return;
   }
 
   const activitiesOptions: ActivityOptions = {
-    name: './help', // `in ${args.client.guilds.cache.size} servers``
+    name: './help', // `in ${client.guilds.cache.size} servers``
     type: ActivityType.Listening,
     url: 'https://github.com/keybraker',
   };
 
-  const data: PresenceData = {
+  const presenceData: PresenceData = {
     activities: [activitiesOptions],
-    status: 'online',
-    afk: false
+    status: 'online' satisfies PresenceStatusData,
+    afk: false,
   };
 
-  args.client.user.setPresence(data);
+  client.user.setPresence(presenceData);
 
   let index = 0;
-  args.client.guilds.cache.forEach((guild: Guild) => {
+  client.guilds.cache.forEach((guild: Guild) => {
     logger.info(`${index++}. logged onto guild ${guild} (${guild.id})`);
 
-    addGuildAgain(guild, args.client)
-      .catch((e) => logger.warn(`failed to add guild ${guild.name} [${guild.id}] (${e})`));
+    addGuildAgain(guild, client).catch((e) => logger.warn(`failed to add guild ${guild.name} [${guild.id}] (${e})`));
 
     removeDeletedChannels(guild);
     removeEmptyVoiceChannels(guild);
   });
 
-  const func = getFunction('console', 1, LogActions.ready) as unknown as (args: { memberLength: number, channelLength: number, guildLength: number }) => string;
+  const func = getFunction('console', 1, LogActions.ready) as unknown as (args: {
+    memberLength: number;
+    channelLength: number;
+    guildLength: number;
+  }) => string;
 
-  return func
-    ? func({
-      memberLength: args.client.users.cache.size,
-      channelLength: args.client.channels.cache.size,
-      guildLength: args.client.guilds.cache.size,
-    })
-    : 'error with localisation';
+  logger.info(
+    func({
+      memberLength: client.users.cache.size,
+      channelLength: client.channels.cache.size,
+      guildLength: client.guilds.cache.size,
+    }),
+  );
 };
 
 async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
   const membersFetched = await guild.members.fetch();
-  const members = membersFetched.map(member => member).filter((member) => !member.user.bot);
+  const members = membersFetched.map((member) => member).filter((member) => !member.user.bot);
 
   for (let j = 0; j < members.length; j++) {
     const alreadyInDatabase = pMembers.find((pMember) => pMember.id === members[j].id);
@@ -74,7 +78,7 @@ async function addedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
 
 async function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void> {
   const membersFetched = await guild.members.fetch();
-  const members = membersFetched.map(member => member).filter((member) => !member.user.bot);
+  const members = membersFetched.map((member) => member).filter((member) => !member.user.bot);
 
   for (let j = 0; j < pMembers.length; j++) {
     const member = members.find((member) => member.id === pMembers[j].id);
@@ -96,7 +100,7 @@ async function removedWhenDown(guild: Guild, pMembers: PMember[]): Promise<void>
 }
 
 async function addGuildAgain(guild: Guild, client: Client): Promise<boolean> {
-  if (!await guildExists(guild.id)) {
+  if (!(await guildExists(guild.id))) {
     return await insertGuild(guild.id, client);
   }
 

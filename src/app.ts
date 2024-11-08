@@ -1,6 +1,5 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-import { Client } from 'discord.js';
 import dotenv from 'dotenv';
 import { transports } from 'winston';
 
@@ -15,6 +14,12 @@ import logger from './utilities/log.utility';
 dotenv.config();
 
 (async () => {
+  if (process.env.LOG) {
+    logger.add(new transports.File({ filename: '/logs/portal-error.log.json', level: 'error' }));
+    logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info', silent: true }));
+    logger.add(new transports.File({ filename: '/logs/portal-all.log.json', silent: true }));
+  }
+
   if (!process.env.TOKEN) {
     logger.error('Discord token is not defined');
     process.exit(1);
@@ -25,49 +30,37 @@ dotenv.config();
     process.exit(2);
   }
 
-  if (process.env.LOG) {
-    logger.add(new transports.File({ filename: '/logs/portal-error.log.json', level: 'error' }));
-    logger.add(new transports.File({ filename: '/logs/portal-info.log.json', level: 'info', silent: true }));
-    logger.add(new transports.File({ filename: '/logs/portal-all.log.json', silent: true }));
+  if (!process.env.CLIENT_ID) {
+    logger.error('Discord client id is not defined');
+    process.exit(4);
   }
-
-  const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
-  // const spam_cache: SpamCache[] = [];
-  const client: Client = clientHandler();
-
-  const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
   try {
     logger.info('started refreshing application slash commands');
-
-    if (!process.env.CLIENT_ID) {
-      logger.error('Discord client id is not defined');
-      process.exit(4);
-    }
-
-    await rest.put(
-      Routes.applicationCommands(process.env.CLIENT_ID),
-      {
-        body:  [
-          ...Object.values(auth),
-          ...Object.values(noAuth),
-        ].map(command => command.slashCommand.toJSON())
-      }
-    );
+    const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
+      body: [...Object.values(auth), ...Object.values(noAuth)].map((command) => command.slashCommand.toJSON()),
+    });
 
     logger.info('successfully reloaded application slash commands');
   } catch (error) {
     logger.error(error);
   }
 
-  await eventHandler(client, active_cooldowns);
-
   const mongo = await mongoHandler(process.env.MONGO_URL);
 
-  if (!mongo){
-    logger.error('failed to connect to mongo');
+  if (!mongo) {
+    logger.error('failed to connect to database');
     process.exit(2);
   }
+
+  logger.info('connected to database');
+
+  const active_cooldowns: ActiveCooldowns = { guild: [], member: [] };
+  // const spam_cache: SpamCache[] = [];
+
+  const client = clientHandler();
+  await eventHandler(client, active_cooldowns);
 
   const discord = await connectToDiscord(client, process.env.TOKEN);
 

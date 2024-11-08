@@ -7,4 +7,4 @@ export { default as guildMemberRemove } from './guildMemberRemove.event';
 export { default as messageDelete } from './messageDelete.event';
 export { default as messageReactionAdd } from './messageReactionAdd.event';
 export { default as voiceStateUpdate } from './voiceStateUpdate.event';
-
+export { default as interactionCreate } from './interactionCreate.event';

@@ -1,4 +1,4 @@
-import { Client, Message, PartialMessage, TextChannel } from 'discord.js';
+import { Message, PartialMessage, TextChannel } from 'discord.js';
 import {
   createMusicLyricsMessage,
   createMusicMessage,
@@ -7,33 +7,37 @@ import {
 } from '../libraries/help.library';
 import { fetchGuild, removePoll, removeVendor } from '../libraries/mongo.library';
 
-export default async (args: { client: Client; message: Message<boolean> | PartialMessage }): Promise<string> => {
-  if (!args.message.guild) {
-    return 'message\'s guild could not be fetched';
+import logger from '../utilities/log.utility';
+
+export default async (message: Message<boolean> | PartialMessage): Promise<void> => {
+  if (!message.guild) {
+    logger.error('message does not have guild');
+    return;
   }
 
-  const pGuild = await fetchGuild(args.message.guild.id);
-
+  const pGuild = await fetchGuild(message.guild.id);
   if (!pGuild) {
-    return 'failed to fetch guild';
+    logger.error(`failed to fetch guild ${message.guild.id}`);
+    return;
   }
 
   const pRoles = pGuild.pRoles;
   const pMusicData = pGuild.musicData;
 
-  if (pMusicData.messageId === args.message.id) {
+  if (pMusicData.messageId === message.id) {
     const musicChannel = <TextChannel>(
-      args.message.guild?.channels.cache.find((channel) => channel.id === pGuild.musicData.channelId)
+      message.guild?.channels.cache.find((channel) => channel.id === pGuild.musicData.channelId)
     );
 
     if (!musicChannel) {
-      return 'could not find channel';
+      logger.error(`failed to find music channel ${pGuild.musicData.channelId}`);
+      return;
     }
 
     const musicMessage = await createMusicMessage(musicChannel, pGuild);
-
     if (!musicMessage) {
-      return 'failed to create music message';
+      logger.error('failed to create music message');
+      return;
     }
 
     if (pGuild.musicData.messageLyricsId) {
@@ -41,7 +45,8 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
         const lyricMessage = await musicChannel.messages.fetch(pGuild.musicData.messageLyricsId);
 
         if (!lyricMessage) {
-          return 'error creating lyrics message';
+          logger.error(`failed to fetch lyrics message ${pGuild.musicData.messageLyricsId}`);
+          return;
         }
 
         if (isMessageDeleted(lyricMessage)) {
@@ -49,42 +54,42 @@ export default async (args: { client: Client; message: Message<boolean> | Partia
 
           if (deletedMessage) {
             markMessageAsDeleted(deletedMessage);
-            return 'deleted lyrics message';
+            logger.info(`deleted lyrics message ${pGuild.musicData.messageLyricsId}`);
           }
         }
       }
     }
-  } else if (pMusicData.messageLyricsId === args.message.id) {
+  } else if (pMusicData.messageLyricsId === message.id) {
     const musicChannel = <TextChannel>(
-      args.message?.guild?.channels.cache.find((channel) => channel.id === pGuild.musicData.channelId)
+      message?.guild?.channels.cache.find((channel) => channel.id === pGuild.musicData.channelId)
     );
 
     if (musicChannel && pGuild.musicData.messageId) {
       const lyricMessage = await createMusicLyricsMessage(musicChannel, pGuild, pGuild.musicData.messageId);
-      return lyricMessage ? 'created lyrics message' : 'error creating lyrics message';
+      if (!lyricMessage) {
+        logger.warn('failed to create lyrics message');
+      }
     }
-  } else if (pGuild.pPolls.some((p) => p.messageId === args.message.id)) {
-    const poll = pGuild.pPolls.find((p) => p.messageId === args.message.id);
+  } else if (pGuild.pPolls.some((p) => p.messageId === message.id)) {
+    // const poll = pGuild.pPolls.find((p) => p.messageId === message.id);
+    // if (!poll) {
+    //   logger.warn(`failed to find poll ${message.id}`);
+    // }
 
-    if (!poll) {
-      return 'failed to find poll';
+    const removedPoll = await removePoll(pGuild.id, message.id);
+    if (!removedPoll) {
+      logger.warn(`failed to remove poll ${message.id}`);
     }
-
-    const removedPoll = await removePoll(pGuild.id, args.message.id);
-    return removedPoll ? 'successfully removed poll' : 'failed to remove poll';
   } else {
-    const roleGiver = pRoles.find((roleGiver) => roleGiver.messageId === args.message.id);
-
+    const roleGiver = pRoles.find((roleGiver) => roleGiver.messageId === message.id);
     if (!roleGiver) {
-      return `could not find role giver message ${args.message.id} in database`;
+      logger.warn(`failed to find role giver ${message.id}`);
+      return;
     }
 
     const response = await removeVendor(pGuild.id, roleGiver.messageId);
-
-    return response
-      ? 'successfully deleted role message'
-      : 'failed to delete role message';
+    if (!response) {
+      logger.warn(`failed to remove vendor ${roleGiver.messageId}`);
+    }
   }
-
-  return 'message deletion handled';
 };

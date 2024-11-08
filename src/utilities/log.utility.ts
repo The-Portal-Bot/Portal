@@ -16,7 +16,7 @@ const fileFormat = format.combine(
   format.errors({ stack: true }),
   format.splat(),
   format.printf(({ timestamp, level, message, service }) => `${timestamp} service: ${service} ${level}: ${message}`),
-  format.json()
+  format.json(),
 );
 
 const fileTransports = [
@@ -24,10 +24,11 @@ const fileTransports = [
   new transports.File({ filename: 'combined.log', format: fileFormat, silent: true }),
 ];
 
-const consoleTransport = process.env.DEBUG ? [new transports.Console({ format: consoleFormat })] : [];
+const consoleTransport = process.env['DEBUG'] ? [new transports.Console({ format: consoleFormat })] : [];
 
-export default createLogger({
+const logger = createLogger({
   defaultMeta: { service: 'portal' },
-  transports: [ ...fileTransports, ...consoleTransport ],
+  transports: [...fileTransports, ...consoleTransport],
 });
 
+export default logger;

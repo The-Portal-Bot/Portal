@@ -1,16 +1,20 @@
 import { Client, Guild } from 'discord.js';
 import { guildExists, insertGuild } from '../libraries/mongo.library';
 
-export default async (args: { client: Client; guild: Guild }): Promise<string> => {
-  const exists = await guildExists(args.guild.id);
+import logger from '../utilities/log.utility';
+
+export default async (client: Client, guild: Guild): Promise<void> => {
+  const exists = await guildExists(guild.id);
 
   if (exists) {
-    return `guild ${args.guild.name} [${args.guild.id}] already in database`;
+    logger.error(`guild ${guild.name} [${guild.id}] already in database`);
+    return;
   }
 
-  const guildInserted = await insertGuild(args.guild.id, args.client);
-
-  return guildInserted
-    ? `joined guild ${args.guild.name} [${args.guild.id}]`
-    : `failed to join guild ${args.guild.name} [${args.guild.id}]`
+  const guildInserted = await insertGuild(guild.id, client);
+  if (guildInserted) {
+    logger.info(`inserted guild ${guild.name} [${guild.id}] into database`);
+  } else {
+    logger.error(`failed to insert guild ${guild.name} [${guild.id}] into database`);
+  }
 };
