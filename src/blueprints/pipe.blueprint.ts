@@ -11,20 +11,20 @@ export const PipeBlueprints: Blueprint[] = [
         ? isAcronym(str)
           ? str
           : str
-              .replace(/[-_,.:*=+]/g, ' ')
-              .split(' ')
-              .map((s) => s[0])
-              .join('')
+            .replace(/[-_,.:*=+]/g, ' ')
+            .split(' ')
+            .map((s) => s[0])
+            .join('')
         : typeof str === 'object'
           ? str
-              .map((s) =>
-                s
-                  .replace(/[-_,.:*=+]/g, ' ')
-                  .split(' ')
-                  .map((sm) => (isAcronym(sm) ? sm : sm[0]))
-                  .join(''),
-              )
-              .join(',')
+            .map((s) =>
+              s
+                .replace(/[-_,.:*=+]/g, ' ')
+                .split(' ')
+                .map((sm) => (isAcronym(sm) ? sm : sm[0]))
+                .join(''),
+            )
+            .join(',')
           : (str ?? '');
     },
     set: () => undefined,

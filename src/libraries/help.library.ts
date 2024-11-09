@@ -115,20 +115,20 @@ export function getKeyFromEnum(value: string, enumeration: enumTypes): string | 
   let enumerationArray;
 
   switch (enumeration) {
-    case OpapGameId:
-      enumerationArray = Object.values(OpapGameId);
-      break;
-    case RankSpeed:
-      enumerationArray = Object.values(RankSpeed);
-      break;
-    case ProfanityLevel:
-      enumerationArray = Object.values(ProfanityLevel);
-      break;
-    case Locale:
-      enumerationArray = Object.values(Locale);
-      break;
-    default:
-      return undefined;
+  case OpapGameId:
+    enumerationArray = Object.values(OpapGameId);
+    break;
+  case RankSpeed:
+    enumerationArray = Object.values(RankSpeed);
+    break;
+  case ProfanityLevel:
+    enumerationArray = Object.values(ProfanityLevel);
+    break;
+  case Locale:
+    enumerationArray = Object.values(Locale);
+    break;
+  default:
+    return undefined;
   }
 
   for (const enumerationValue of enumerationArray) {
@@ -228,15 +228,15 @@ export async function updateMusicMessage(
   const musicQueue = pGuild.musicQueue
     ? pGuild.musicQueue.length > 1
       ? pGuild.musicQueue
-          .map((v, i) => {
-            if (i !== 0 && i < 6) {
-              return `${i}. ${maxString(v.title, 61)}`;
-            } else if (i === 6) {
-              return `...${pGuild.musicQueue.length - 6} more`;
-            }
-          })
-          .filter((v) => !!v)
-          .join('\n')
+        .map((v, i) => {
+          if (i !== 0 && i < 6) {
+            return `${i}. ${maxString(v.title, 61)}`;
+          } else if (i === 6) {
+            return `...${pGuild.musicQueue.length - 6} more`;
+          }
+        })
+        .filter((v) => !!v)
+        .join('\n')
       : 'empty'
     : 'empty';
 

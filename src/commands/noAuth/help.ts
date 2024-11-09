@@ -337,16 +337,16 @@ async function propertyReply(type: string, specific: string | null) {
   }
 
   switch (type) {
-    case 'commands':
-      return commandDocumentation.getHelp();
-    case 'variables':
-      return variableDocumentation.getHelp();
-    case 'pipes':
-      return pipeDocumentation.getHelp();
-    case 'attributes':
-      return attributeDocumentation.getHelp();
-    case 'structures':
-      return structureDocumentation.getHelp();
+  case 'commands':
+    return commandDocumentation.getHelp();
+  case 'variables':
+    return variableDocumentation.getHelp();
+  case 'pipes':
+    return pipeDocumentation.getHelp();
+  case 'attributes':
+    return attributeDocumentation.getHelp();
+  case 'structures':
+    return structureDocumentation.getHelp();
   }
 
   return messageHelp('commands', 'help', `*${type}* does not exist in portal`);
@@ -356,21 +356,21 @@ async function guideReply(type: string) {
   let guide: EmbedBuilder | null = null;
 
   switch (type) {
-    case 'commands':
-      guide = commandDocumentation.getGuide();
-      break;
-    case 'variables':
-      guide = variableDocumentation.getGuide();
-      break;
-    case 'pipes':
-      guide = pipeDocumentation.getGuide();
-      break;
-    case 'attributes':
-      guide = attributeDocumentation.getGuide();
-      break;
-    case 'structures':
-      guide = structureDocumentation.getGuide();
-      break;
+  case 'commands':
+    guide = commandDocumentation.getGuide();
+    break;
+  case 'variables':
+    guide = variableDocumentation.getGuide();
+    break;
+  case 'pipes':
+    guide = pipeDocumentation.getGuide();
+    break;
+  case 'attributes':
+    guide = attributeDocumentation.getGuide();
+    break;
+  case 'structures':
+    guide = structureDocumentation.getGuide();
+    break;
   }
 
   if (!guide) {

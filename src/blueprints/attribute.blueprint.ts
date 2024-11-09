@@ -709,8 +709,8 @@ export const AttributeBlueprints: Blueprint[] = [
                 r.bitrate === newBitrate
                   ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
                   : `attribute ${
-                      category.join('.') + '.' + attribute
-                    } failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`,
+                    category.join('.') + '.' + attribute
+                  } failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`,
             });
           })
           .catch((e) => {
@@ -1113,8 +1113,8 @@ export const AttributeBlueprints: Blueprint[] = [
           updatedVoiceChannel.position === Number(value)
             ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
             : `attribute ${
-                category.join('.') + '.' + attribute
-              } failed to be set to\`${value}\` to ${value} (is ${updatedVoiceChannel.position})`,
+              category.join('.') + '.' + attribute
+            } failed to be set to\`${value}\` to ${value} (is ${updatedVoiceChannel.position})`,
       };
     },
     auth: AuthType.voice,

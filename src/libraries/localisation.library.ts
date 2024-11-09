@@ -23,7 +23,7 @@ export const portal: LocalisationPortalOption[] = [
         return '> Γειά σας, το Πόρταλ είναι εδώ';
       },
       en: () => {
-        return "> Cheers love, Portal's here";
+        return '> Cheers love, Portal\'s here';
       },
       de: () => {
         return '> Hallo, Portal ist da';
@@ -316,21 +316,6 @@ export function getFunction(output: string, locale: number, context: EventAction
     portal.some((ct) => {
       if (ct.name === context) {
         switch (locale) {
-          case Locale.gr:
-            func = ct.lang.gr;
-            return true;
-          case Locale.en:
-            func = ct.lang.en;
-            return true;
-          case Locale.de:
-            func = ct.lang.de;
-            return true;
-        }
-      }
-    });
-  } else if (output === 'console') {
-    consoleText.some((ct) => {
-      switch (locale) {
         case Locale.gr:
           func = ct.lang.gr;
           return true;
@@ -340,6 +325,21 @@ export function getFunction(output: string, locale: number, context: EventAction
         case Locale.de:
           func = ct.lang.de;
           return true;
+        }
+      }
+    });
+  } else if (output === 'console') {
+    consoleText.some((ct) => {
+      switch (locale) {
+      case Locale.gr:
+        func = ct.lang.gr;
+        return true;
+      case Locale.en:
+        func = ct.lang.en;
+        return true;
+      case Locale.de:
+        func = ct.lang.de;
+        return true;
       }
     });
   }
@@ -364,15 +364,15 @@ export function clientWrite(
       if (member && member.voice.channel) {
         if (v.id === member.voice.channel.id) {
           switch (v.locale) {
-            case Locale.gr:
-              returnValue = portal.find((p) => p.name === context)?.lang.gr({} as User) as unknown as string;
-              break;
-            case Locale.en:
-              returnValue = portal.find((p) => p.name === context)?.lang.en({} as User) as unknown as string;
-              break;
-            case Locale.de:
-              returnValue = portal.find((p) => p.name === context)?.lang.de({} as User) as unknown as string;
-              break;
+          case Locale.gr:
+            returnValue = portal.find((p) => p.name === context)?.lang.gr({} as User) as unknown as string;
+            break;
+          case Locale.en:
+            returnValue = portal.find((p) => p.name === context)?.lang.en({} as User) as unknown as string;
+            break;
+          case Locale.de:
+            returnValue = portal.find((p) => p.name === context)?.lang.de({} as User) as unknown as string;
+            break;
           }
 
           return true;

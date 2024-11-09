@@ -255,11 +255,11 @@ export const VariableBlueprints: Blueprint[] = [
     name: 'memberHistory',
     hover: 'all members to ever pass through channel',
     get: () =>
-      // voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-      {
-        return 'noYetImplemented';
-      },
+    // voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+    // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
+    {
+      return 'noYetImplemented';
+    },
     set: () => undefined,
     auth: AuthType.none,
   },
@@ -318,11 +318,11 @@ export const VariableBlueprints: Blueprint[] = [
     name: 'statusHistory',
     hover: 'all statuses from start',
     get: () =>
-      // voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
-      // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
-      {
-        return 'noYetImplemented';
-      },
+    // voiceChannel: VoiceChannel | undefined | null, pVoiceChannel: PVoiceChannel | undefined | null,
+    // pChannels: PChannel[] | undefined | null, pGuild, guild: Guild
+    {
+      return 'noYetImplemented';
+    },
     set: () => undefined,
     auth: AuthType.none,
   },

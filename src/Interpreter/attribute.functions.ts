@@ -57,61 +57,61 @@ export async function setAttribute(
   for (let l = 0; l < AttributeBlueprints.length; l++) {
     if (candidate === AttributeBlueprints[l].name) {
       switch (AttributeBlueprints[l].auth) {
-        case AuthType.admin:
-          if (!isUserAuthorised(member)) {
-            return {
-              result: false,
-              value: `attribute ${candidate} can only be **set by an administrator**`,
-            };
-          }
+      case AuthType.admin:
+        if (!isUserAuthorised(member)) {
+          return {
+            result: false,
+            value: `attribute ${candidate} can only be **set by an administrator**`,
+          };
+        }
 
-          break;
-        case AuthType.none:
-          // passes through no checks needed
-          break;
-        default:
-          if (!voiceChannel) {
-            return {
-              result: false,
-              value: 'you must be in a channel handled by Portal',
-            };
-          }
+        break;
+      case AuthType.none:
+        // passes through no checks needed
+        break;
+      default:
+        if (!voiceChannel) {
+          return {
+            result: false,
+            value: 'you must be in a channel handled by Portal',
+          };
+        }
 
-          for (let i = 0; i < pGuild.pChannels.length; i++) {
-            for (let j = 0; j < pGuild.pChannels[i].pVoiceChannels.length; j++) {
-              if (pGuild.pChannels[i].pVoiceChannels[j].id === voiceChannel.id) {
-                pChannel = pGuild.pChannels[i];
-                pVoiceChannel = pGuild.pChannels[i].pVoiceChannels[j];
+        for (let i = 0; i < pGuild.pChannels.length; i++) {
+          for (let j = 0; j < pGuild.pChannels[i].pVoiceChannels.length; j++) {
+            if (pGuild.pChannels[i].pVoiceChannels[j].id === voiceChannel.id) {
+              pChannel = pGuild.pChannels[i];
+              pVoiceChannel = pGuild.pChannels[i].pVoiceChannels[j];
 
-                break;
-              }
+              break;
             }
           }
+        }
 
-          if (!pChannel || !pVoiceChannel) {
+        if (!pChannel || !pVoiceChannel) {
+          return {
+            result: false,
+            value: 'you must be in a channel handled by Portal',
+          };
+        }
+
+        if (AttributeBlueprints[l].auth === AuthType.portal) {
+          if (pChannel.creatorId !== member.id) {
             return {
               result: false,
-              value: 'you must be in a channel handled by Portal',
+              value: `attribute ${candidate} can only be **set by the portal creator**`,
             };
           }
-
-          if (AttributeBlueprints[l].auth === AuthType.portal) {
-            if (pChannel.creatorId !== member.id) {
-              return {
-                result: false,
-                value: `attribute ${candidate} can only be **set by the portal creator**`,
-              };
-            }
-          } else if (AttributeBlueprints[l].auth === AuthType.voice) {
-            if (pVoiceChannel.creatorId !== member.id) {
-              return {
-                result: false,
-                value: `attribute ${candidate} can only be **set by the voice creator**`,
-              };
-            }
+        } else if (AttributeBlueprints[l].auth === AuthType.voice) {
+          if (pVoiceChannel.creatorId !== member.id) {
+            return {
+              result: false,
+              value: `attribute ${candidate} can only be **set by the voice creator**`,
+            };
           }
+        }
 
-          break;
+        break;
       }
 
       const pMember = pGuild.pMembers.find((m) => m.id === member.id);

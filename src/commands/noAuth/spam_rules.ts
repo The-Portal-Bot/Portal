@@ -8,7 +8,7 @@ import { PGuild } from '../../types/classes/PGuild.class.js';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'spam_rules';
-const DESCRIPTION = "returns server's spam rules";
+const DESCRIPTION = 'returns server\'s spam rules';
 
 export default {
   time: 0,
