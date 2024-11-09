@@ -2,10 +2,10 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import dayjs from 'dayjs';
 import { ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
 import { RequestOptions } from 'https';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
-import { httpsFetch } from '../../libraries/http.library';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
-import { Command } from '../../types/Command';
+import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
+import { httpsFetch } from '../../libraries/http.library.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { Command } from '../../types/Command.js';
 
 const COMMAND_NAME = 'weather';
 const DESCRIPTION = 'returns weather data';

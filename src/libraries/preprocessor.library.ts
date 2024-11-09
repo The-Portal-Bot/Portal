@@ -1,14 +1,14 @@
 import { Message } from 'discord.js';
 
-import * as auth from '../commands/auth';
-import * as noAuth from '../commands/noAuth';
-import { MusicData, PGuild } from '../types/classes/PGuild.class';
-import { AuthCommands, CommandOptions, NoAuthCommands } from '../types/classes/PTypes.interface';
-import logger from '../utilities/log.utility';
-import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
-import { isMessageDeleted, isUserIgnored, markMessageAsDeleted, messageReply } from './help.library';
-import { removeIgnore, removeURL, setMusicData } from './mongo.library';
-import { addPointsMessage } from './user.library';
+import * as auth from '../commands/auth/index.js';
+import * as noAuth from '../commands/noAuth/index.js';
+import { MusicData, PGuild } from '../types/classes/PGuild.class.js';
+import { AuthCommands, CommandOptions, NoAuthCommands } from '../types/classes/PTypes.interface.js';
+import logger from '../utilities/log.utility.js';
+import { includedInPIgnores, isUrlOnlyChannel } from './guild.library.js';
+import { isMessageDeleted, isUserIgnored, markMessageAsDeleted, messageReply } from './help.library.js';
+import { removeIgnore, removeURL, setMusicData } from './mongo.library.js';
+import { addPointsMessage } from './user.library.js';
 
 /*
  * Returns: true/false if processing must continue

@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import Roll from 'roll';
-import { createEmbed, maxString, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { createEmbed, maxString, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'roll';
 const DESCRIPTION = 'roll a dice';

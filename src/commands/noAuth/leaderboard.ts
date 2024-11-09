@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
-import { createEmbed, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { PMember } from '../../types/classes/PMember.class';
-import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { createEmbed, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { PMember } from '../../types/classes/PMember.class.js';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'leaderboard';
 const DESCRIPTION = 'returns server\'s leaderboard';

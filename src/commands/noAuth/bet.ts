@@ -2,10 +2,11 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import dayjs from 'dayjs';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { RequestOptions } from 'https';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
-import { httpsFetch } from '../../libraries/http.library';
-import { Command } from '../../types/Command';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+
+import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
+import { httpsFetch } from '../../libraries/http.library.js';
+import { Command } from '../../types/Command.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'bet';
 const DESCRIPTION = 'returns betting data';

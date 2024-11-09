@@ -1,11 +1,11 @@
 import { ActivityOptions, ActivityType, Client, Guild, PresenceData, PresenceStatusData } from 'discord.js';
 
-import { removeDeletedChannels, removeEmptyVoiceChannels } from '../libraries/help.library';
-import { getFunction } from '../libraries/localisation.library';
-import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library';
-import { PMember } from '../types/classes/PMember.class';
-import { LogActions } from '../types/classes/PTypes.interface';
-import logger from '../utilities/log.utility';
+import { removeDeletedChannels, removeEmptyVoiceChannels } from '../libraries/help.library.js';
+import { getFunction } from '../libraries/localisation.library.js';
+import { fetchGuildMembers, guildExists, insertGuild, insertMember, removeMember } from '../libraries/mongo.library.js';
+import { PMember } from '../types/classes/PMember.class.js';
+import { LogActions } from '../types/classes/PTypes.interface.js';
+import logger from '../utilities/log.utility.js';
 
 export async function ready(client: Client): Promise<void> {
   if (!client.user) {

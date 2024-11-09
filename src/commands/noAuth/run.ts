@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
-import { regexInterpreter } from '../../libraries/guild.library';
-import { createEmbed, maxString, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
-import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
+import { regexInterpreter } from '../../libraries/guild.library.js';
+import { createEmbed, maxString, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class.js';
 
 const COMMAND_NAME = 'run';
 const DESCRIPTION = 'execute given code';

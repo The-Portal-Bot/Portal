@@ -1,5 +1,5 @@
-import { Blueprint } from '../types/classes/PTypes.interface';
-import { AuthType } from '../types/enums/Admin.enum';
+import { Blueprint } from '../types/classes/PTypes.interface.js';
+import { AuthType } from '../types/enums/Admin.enum.js';
 
 export const StructureBlueprint: Blueprint[] = [
   {

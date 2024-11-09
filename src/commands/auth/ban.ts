@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { BanOptions, ButtonStyle, ChatInputCommandInteraction, GuildMember, InteractionContextType } from 'discord.js';
-import { askForApproval, isMod, messageHelp } from '../../libraries/help.library';
-import { ban } from '../../libraries/user.library';
-import { Command } from '../../types/Command';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+
+import { askForApproval, isMod, messageHelp } from '../../libraries/help.library.js';
+import { ban } from '../../libraries/user.library.js';
+import { Command } from '../../types/Command.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'ban';
 const DESCRIPTION = 'ban a user';

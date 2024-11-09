@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 
-import * as auth from '../commands/auth';
-import * as noAuth from '../commands/noAuth';
-import { getElapsedTime, pad } from '../libraries/help.library';
-import { PGuild } from '../types/classes/PGuild.class';
-import { ActiveCooldowns, AuthCommands, NoAuthCommands, ScopeLimit } from '../types/classes/PTypes.interface';
-import logger from '../utilities/log.utility';
+import * as auth from '../commands/auth/index.js';
+import * as noAuth from '../commands/noAuth/index.js';
+import { getElapsedTime, pad } from '../libraries/help.library.js';
+import { PGuild } from '../types/classes/PGuild.class.js';
+import { ActiveCooldowns, AuthCommands, NoAuthCommands, ScopeLimit } from '../types/classes/PTypes.interface.js';
+import logger from '../utilities/log.utility.js';
 
 export async function commandLoader(
   interaction: ChatInputCommandInteraction,

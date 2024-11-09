@@ -1,12 +1,13 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import logger from '../../utilities/log.utility';
 
-import { joinUserVoiceChannelByInteraction, messageHelp } from '../../libraries/help.library';
-import { clientTalk } from '../../libraries/localisation.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import logger from '../../utilities/log.utility.js';
+
+import { joinUserVoiceChannelByInteraction, messageHelp } from '../../libraries/help.library.js';
+import { clientTalk } from '../../libraries/localisation.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'join';
 const DESCRIPTION = 'makes portal join your voice channel';

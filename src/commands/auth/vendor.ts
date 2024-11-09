@@ -1,12 +1,13 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, ColorResolvable, InteractionContextType, TextChannel } from 'discord.js';
-import { getRole } from '../../libraries/guild.library';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library';
-import { insertVendor } from '../../libraries/mongo.library';
-import { Command } from '../../types/Command';
-import { GiveRole, PGiveRole } from '../../types/classes/PGiveRole.class';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+
+import { getRole } from '../../libraries/guild.library.js';
+import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
+import { insertVendor } from '../../libraries/mongo.library.js';
+import { Command } from '../../types/Command.js';
+import { GiveRole, PGiveRole } from '../../types/classes/PGiveRole.class.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'vendor';
 const DESCRIPTION = 'create a vendor message';

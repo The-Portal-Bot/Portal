@@ -1,10 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, Role, VoiceChannel } from 'discord.js';
-import { setAttribute } from '../../Interpreter/attribute.functions';
-import { messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+
+import { setAttribute } from '../../Interpreter/attribute.functions.js';
+import { messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'set';
 const DESCRIPTION = 'set the value of an attribute';

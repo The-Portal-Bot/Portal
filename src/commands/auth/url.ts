@@ -1,12 +1,12 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, InteractionContextType, NewsChannel } from 'discord.js';
 
-import { doesChannelHaveUsage } from '../../libraries/guild.library';
-import { messageHelp } from '../../libraries/help.library';
-import { insertURL } from '../../libraries/mongo.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { doesChannelHaveUsage } from '../../libraries/guild.library.js';
+import { messageHelp } from '../../libraries/help.library.js';
+import { insertURL } from '../../libraries/mongo.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'url';
 const DESCRIPTION = 'set a channel to URL only';

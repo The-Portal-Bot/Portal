@@ -1,10 +1,10 @@
 import { Document } from 'mongoose';
 import { VideoSearchResult } from 'yt-search';
-import { PGiveRole } from './PGiveRole.class';
-import { PPoll } from './PPoll.class';
-import { IPChannel, PChannel } from './PPortalChannel.class';
+import { PGiveRole } from './PGiveRole.class.js';
+import { PMember } from './PMember.class.js';
+import { PPoll } from './PPoll.class.js';
+import { IPChannel, PChannel } from './PPortalChannel.class.js';
 import { Rank } from './PTypes.interface';
-import { PMember } from './PMember.class';
 
 export class MusicData {
   public channelId: string | undefined;

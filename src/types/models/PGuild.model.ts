@@ -1,9 +1,10 @@
 import { model, Schema } from 'mongoose';
-import { IPGuild } from '../classes/PGuild.class';
-import PGiveRoleSchema from './schemas/PGiveRole.schema';
-import PMemberSchema from './schemas/PMember.schema';
-import PPollSchema from './schemas/PPoll.schema';
-import PPortalChannelSchema from './schemas/PPortalChannel.schema';
+
+import { IPGuild } from '../classes/PGuild.class.js';
+import PGiveRoleSchema from './schemas/PGiveRole.schema.js';
+import PMemberSchema from './schemas/PMember.schema.js';
+import PPollSchema from './schemas/PPoll.schema.js';
+import PPortalChannelSchema from './schemas/PPortalChannel.schema.js';
 
 const VideoSearchResult = new Schema(
   {
@@ -37,7 +38,7 @@ const VideoSearchResult = new Schema(
   },
   {
     collection: 'guild_list',
-  }
+  },
 );
 
 const Rank = new Schema(
@@ -47,7 +48,7 @@ const Rank = new Schema(
   },
   {
     collection: 'guild_list',
-  }
+  },
 );
 
 const MusicData = new Schema(
@@ -60,7 +61,7 @@ const MusicData = new Schema(
   },
   {
     collection: 'guild_list',
-  }
+  },
 );
 
 const PGuildSchema = new Schema(
@@ -88,7 +89,7 @@ const PGuildSchema = new Schema(
   },
   {
     collection: 'guild_list',
-  }
+  },
 );
 
 export default model<IPGuild>('PGuildSchema', PGuildSchema);

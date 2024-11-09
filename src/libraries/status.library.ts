@@ -1,8 +1,9 @@
 import { Activity, GuildMember, VoiceChannel } from 'discord.js';
-import { GameNames } from '../assets/lists/gameNames.static';
-import { ProgramNames } from '../assets/lists/programNames.static';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
-import { Locale } from '../types/enums/Locales.enum';
+
+import { GameNames } from '../assets/lists/gameNames.static.js';
+import { ProgramNames } from '../assets/lists/programNames.static.js';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class.js';
+import { Locale } from '../types/enums/Locales.enum.js';
 
 function statusAliases(activities: Activity[], locale: number): string[] {
   const newStatus: string[] = [];

@@ -1,13 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { createEmbed, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
-import { AttributeDocumentation } from './help/AttributeDocumentation';
-import { CommandDocumentation } from './help/CommandDocumentation';
-import { PipeDocumentation } from './help/PipeDocumentation';
-import { StructureDocumentation } from './help/StructureDocumentation';
-import { VariableDocumentation } from './help/VariableDocumentation';
+
+import { createEmbed, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { AttributeDocumentation } from './help/AttributeDocumentation.js';
+import { CommandDocumentation } from './help/CommandDocumentation.js';
+import { PipeDocumentation } from './help/PipeDocumentation.js';
+import { StructureDocumentation } from './help/StructureDocumentation.js';
+import { VariableDocumentation } from './help/VariableDocumentation.js';
 
 const COMMAND_NAME = 'help';
 const DESCRIPTION = 'returns requested help page';
@@ -336,16 +337,16 @@ async function propertyReply(type: string, specific: string | null) {
   }
 
   switch (type) {
-  case 'commands':
-    return commandDocumentation.getHelp();
-  case 'variables':
-    return variableDocumentation.getHelp();
-  case 'pipes':
-    return pipeDocumentation.getHelp();
-  case 'attributes':
-    return attributeDocumentation.getHelp();
-  case 'structures':
-    return structureDocumentation.getHelp();
+    case 'commands':
+      return commandDocumentation.getHelp();
+    case 'variables':
+      return variableDocumentation.getHelp();
+    case 'pipes':
+      return pipeDocumentation.getHelp();
+    case 'attributes':
+      return attributeDocumentation.getHelp();
+    case 'structures':
+      return structureDocumentation.getHelp();
   }
 
   return messageHelp('commands', 'help', `*${type}* does not exist in portal`);
@@ -355,21 +356,21 @@ async function guideReply(type: string) {
   let guide: EmbedBuilder | null = null;
 
   switch (type) {
-  case 'commands':
-    guide = commandDocumentation.getGuide();
-    break;
-  case 'variables':
-    guide = variableDocumentation.getGuide();
-    break;
-  case 'pipes':
-    guide = pipeDocumentation.getGuide();
-    break;
-  case 'attributes':
-    guide = attributeDocumentation.getGuide();
-    break;
-  case 'structures':
-    guide = structureDocumentation.getGuide();
-    break;
+    case 'commands':
+      guide = commandDocumentation.getGuide();
+      break;
+    case 'variables':
+      guide = variableDocumentation.getGuide();
+      break;
+    case 'pipes':
+      guide = pipeDocumentation.getGuide();
+      break;
+    case 'attributes':
+      guide = attributeDocumentation.getGuide();
+      break;
+    case 'structures':
+      guide = structureDocumentation.getGuide();
+      break;
   }
 
   if (!guide) {

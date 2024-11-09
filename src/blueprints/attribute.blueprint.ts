@@ -1,54 +1,73 @@
-import {
-  BaseGuildTextChannel,
-  GuildMember,
-  OverwriteType,
-  Role
-} from 'discord.js';
+import { BaseGuildTextChannel, GuildMember, OverwriteType, Role } from 'discord.js';
 
-import { getKeyFromEnum, isMod } from '../libraries/help.library';
-import { updateGuild, updateMember, updatePortal, updateVoice } from '../libraries/mongo.library';
-import { PGuild } from '../types/classes/PGuild.class';
-import { PMember } from '../types/classes/PMember.class';
-import { PChannel } from '../types/classes/PPortalChannel.class';
-import { Blueprint, ReturnPromise } from '../types/classes/PTypes.interface';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
-import { AuthType } from '../types/enums/Admin.enum';
-import { Locale, LocaleList } from '../types/enums/Locales.enum';
-import { ProfanityLevel, ProfanityLevelList } from '../types/enums/ProfanityLevel.enum';
-import { RankSpeed } from '../types/enums/RankSpeed.enum';
+import { getKeyFromEnum, isMod } from '../libraries/help.library.js';
+import { updateGuild, updateMember, updatePortal, updateVoice } from '../libraries/mongo.library.js';
+import { PGuild } from '../types/classes/PGuild.class.js';
+import { PMember } from '../types/classes/PMember.class.js';
+import { PChannel } from '../types/classes/PPortalChannel.class.js';
+import { Blueprint, ReturnPromise } from '../types/classes/PTypes.interface.js';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class.js';
+import { AuthType } from '../types/enums/Admin.enum.js';
+import { Locale, LocaleList } from '../types/enums/Locales.enum.js';
+import { ProfanityLevel, ProfanityLevelList } from '../types/enums/ProfanityLevel.enum.js';
+import { RankSpeed } from '../types/enums/RankSpeed.enum.js';
 
 function getResponse(response: boolean, category: string[], attribute: string, value: string | number) {
-  const responseValue =  response
+  const responseValue = response
     ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
     : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``;
 
   return {
     result: response,
     value: responseValue,
-  }
+  };
 }
 
-async function updatePortalChannelAttribute(pGuildId: PGuild['id'], pChannelIdl: PChannel['id'], category: string[], attribute: string, value: string | number) {
+async function updatePortalChannelAttribute(
+  pGuildId: PGuild['id'],
+  pChannelIdl: PChannel['id'],
+  category: string[],
+  attribute: string,
+  value: string | number,
+) {
   const sanitisedValue = value === 'true' ? true : value === 'false' ? false : value;
   const response = await updatePortal(pGuildId, pChannelIdl, attribute, sanitisedValue);
 
   return getResponse(response, category, attribute, value);
 }
 
-async function updateVoiceChannelAttribute(pGuildId: PGuild['id'], pChannelId: PChannel['id'], pVoiceChannelId: PVoiceChannel['id'], category: string[], attribute: string, value: string) {
+async function updateVoiceChannelAttribute(
+  pGuildId: PGuild['id'],
+  pChannelId: PChannel['id'],
+  pVoiceChannelId: PVoiceChannel['id'],
+  category: string[],
+  attribute: string,
+  value: string,
+) {
   const sanitisedValue = value === 'true' ? true : value === 'false' ? false : value;
   const response = await updateVoice(pGuildId, pChannelId, pVoiceChannelId, attribute, sanitisedValue);
 
   return getResponse(response, category, attribute, value);
 }
 
-async function updateGuildAttribute(pGuildId: PGuild['id'], category: string[], attribute: keyof PGuild, value: string | number) {
+async function updateGuildAttribute(
+  pGuildId: PGuild['id'],
+  category: string[],
+  attribute: keyof PGuild,
+  value: string | number,
+) {
   const response = await updateGuild(pGuildId, attribute, value);
 
   return getResponse(response, category, attribute, value);
 }
 
-async function updateMemberAttribute(pGuildId: PGuild['id'], pMemberId: PMember['id'], category: string[], attribute: string, value: string | number) {
+async function updateMemberAttribute(
+  pGuildId: PGuild['id'],
+  pMemberId: PMember['id'],
+  category: string[],
+  attribute: string,
+  value: string | number,
+) {
   const response = await updateMember(pGuildId, pMemberId, attribute, value);
 
   return getResponse(response, category, attribute, value);
@@ -58,10 +77,7 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.annAnnounce',
     hover: 'if voice channels spawned by portal channel will make announcements',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): boolean | string => {
+    get: ({ pVoiceChannel, pChannels }): boolean | string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
@@ -74,12 +90,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'annAnnounce';
 
@@ -104,22 +115,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.annAnnounce',
     hover: 'if voice channel will make announcements',
-    get: ({
-      pVoiceChannel,
-    }): boolean | string => {
+    get: ({ pVoiceChannel }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
       return pVoiceChannel.annAnnounce;
     },
-    set: async ({
-      pVoiceChannel,
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pVoiceChannel, pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'annAnnounce';
 
@@ -144,10 +147,7 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.noBots',
     hover: 'if bots can join voice channels spawned by portal channel',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): boolean | string => {
+    get: ({ pVoiceChannel, pChannels }): boolean | string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
@@ -161,12 +161,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'noBots';
 
@@ -191,22 +186,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.noBots',
     hover: 'if bots can join voice channel',
-    get: ({
-      pVoiceChannel,
-    }): boolean | string => {
+    get: ({ pVoiceChannel }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
-      return pVoiceChannel?.noBots ??  false;
+      return pVoiceChannel?.noBots ?? false;
     },
-    set: async ({
-      pVoiceChannel,
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pVoiceChannel, pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'noBots';
 
@@ -231,23 +218,15 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.allowedRoles',
     hover: 'the role allowed to create a voice channel',
-    get: ({
-      voiceChannel,
-      pVoiceChannel,
-      pChannels,
-    }): string[] | string => {
+    get: ({ voiceChannel, pVoiceChannel, pChannels }): string[] | string => {
       if (!pVoiceChannel || !voiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
-        const channel = voiceChannel.guild.channels.cache.find(
-          (c) => c.id === pChannel.id
-        ) as BaseGuildTextChannel;
+        const channel = voiceChannel.guild.channels.cache.find((c) => c.id === pChannel.id) as BaseGuildTextChannel;
 
         if (channel && channel.permissionOverwrites.cache.size > 0) {
           return `${channel.permissionOverwrites.cache
@@ -272,7 +251,7 @@ export const AttributeBlueprints: Blueprint[] = [
       return {
         result: false,
         value: 'not yet implemented',
-      }
+      };
 
       // const category = ['p'];
       // const attribute = 'allowedRoles';
@@ -357,18 +336,12 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.v.allowedRoles',
     hover: 'the role given to the spawned voice channels',
-    get: ({
-      voiceChannel,
-      pVoiceChannel,
-      pChannels,
-    }): string[] | string => {
+    get: ({ voiceChannel, pVoiceChannel, pChannels }): string[] | string => {
       if (!pVoiceChannel || !voiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel && pChannel.allowedRoles) {
         const allowedRoles = voiceChannel.guild.roles.cache.filter((r) => {
@@ -392,7 +365,7 @@ export const AttributeBlueprints: Blueprint[] = [
       return {
         result: false,
         value: 'not yet implemented',
-      }
+      };
 
       // const category = ['p', 'v'];
       // const attribute = 'allowedRoles';
@@ -456,10 +429,7 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.allowedRoles',
     hover: 'the role allowed join the voice channel',
-    get: ({
-      voiceChannel,
-      pVoiceChannel,
-    }): string[] | string => {
+    get: ({ voiceChannel, pVoiceChannel }): string[] | string => {
       if (!pVoiceChannel || !voiceChannel) {
         return 'N/A';
       }
@@ -486,7 +456,7 @@ export const AttributeBlueprints: Blueprint[] = [
       return {
         result: false,
         value: 'not yet implemented',
-      }
+      };
 
       // const category = ['v'];
       // const attribute = 'allowedRoles';
@@ -560,17 +530,12 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.render',
     hover: 'if voice channels spawned by portal channel will use the text interpreter',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): boolean | string => {
+    get: ({ pVoiceChannel, pChannels }): boolean | string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
         return pChannel.render;
@@ -578,12 +543,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'render';
 
@@ -608,22 +568,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.render',
     hover: 'if voice channel will use the text interpreter',
-    get: ({
-      pVoiceChannel
-    }): boolean | string => {
+    get: ({ pVoiceChannel }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
       return pVoiceChannel.render;
     },
-    set: async ({
-      pVoiceChannel,
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pVoiceChannel, pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'render';
 
@@ -648,17 +600,12 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.annUser',
     hover: 'if voice channels spawned by portal channel will make join/leave announcements',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): boolean | string => {
+    get: ({ pVoiceChannel, pChannels }): boolean | string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
         return pChannel.annUser;
@@ -666,12 +613,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'annUser';
 
@@ -696,22 +638,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.annUser',
     hover: 'if voice channel will make join/leave announcements',
-    get: ({
-      pVoiceChannel,
-    }): boolean | string => {
+    get: ({ pVoiceChannel }): boolean | string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
       return pVoiceChannel.annUser;
     },
-    set: async ({
-      pVoiceChannel,
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pVoiceChannel, pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'annUser';
 
@@ -739,11 +673,7 @@ export const AttributeBlueprints: Blueprint[] = [
     get: ({ voiceChannel }): number => {
       return voiceChannel?.bitrate ?? 96000;
     },
-    set: async ({
-      voiceChannel,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ voiceChannel }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'bitrate';
       const newBitrate = Number(value);
@@ -777,12 +707,10 @@ export const AttributeBlueprints: Blueprint[] = [
               result: r.bitrate === newBitrate,
               value:
                 r.bitrate === newBitrate
-                  ? `attribute ${
-                    category.join('.') + '.' + attribute
-                  } set successfully to \`${value}\``
+                  ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
                   : `attribute ${
-                    category.join('.') + '.' + attribute
-                  } failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`,
+                      category.join('.') + '.' + attribute
+                    } failed to be set to\`${value}\` to ${value} (is ${r.bitrate})`,
             });
           })
           .catch((e) => {
@@ -798,17 +726,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.kickAfter',
     hover: 'Portals kickAfter',
-    get: ({
-      pGuild,
-    }): number => {
+    get: ({ pGuild }): number => {
       return pGuild?.kickAfter ?? 1;
     },
-    set: async ({
-      pGuild,
-      interaction,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pGuild, interaction }, value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'kickAfter';
 
@@ -822,9 +743,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (!isMod(interaction.member as GuildMember | null)) {
         return {
           result: false,
-          value: `you must be a Portal moderator to set attribute ${
-            category.join('.') + '.' + attribute
-          }`,
+          value: `you must be a Portal moderator to set attribute ${category.join('.') + '.' + attribute}`,
         };
       }
 
@@ -842,17 +761,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.banAfter',
     hover: 'Portals banAfter',
-    get: ({
-      pGuild,
-    }): number => {
+    get: ({ pGuild }): number => {
       return pGuild?.banAfter ?? 1;
     },
-    set: async ({
-      pGuild,
-      interaction,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pGuild, interaction }, value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'banAfter';
 
@@ -866,9 +778,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (!isMod(interaction.member as GuildMember | null)) {
         return {
           result: false,
-          value: `you must be a Portal moderator to set attribute ${
-            category.join('.') + '.' + attribute
-          }`,
+          value: `you must be a Portal moderator to set attribute ${category.join('.') + '.' + attribute}`,
         };
       }
 
@@ -886,10 +796,7 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.muteRole',
     hover: 'role given to muted members',
-    get: ({
-      guild,
-      pGuild,
-    }): string => {
+    get: ({ guild, pGuild }): string => {
       if (!guild) {
         return 'N/A';
       }
@@ -902,11 +809,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pGuild,
-      interaction,
-    },
-    value): Promise<ReturnPromise> => {
+    set: async ({ pGuild, interaction }, value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'muteRole';
 
@@ -931,16 +834,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.rankSpeed',
     hover: 'leveling speed of members',
-    get: ({
-      pGuild,
-    }): string => {
+    get: ({ pGuild }): string => {
       return RankSpeed[pGuild?.rankSpeed ?? 1];
     },
-    set: async ({
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pGuild }, value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'rankSpeed';
 
@@ -974,16 +871,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.profanityLevel',
     hover: 'how harsh Portal will be flagging members for use of profanities',
-    get: ({
-      pGuild,
-    }): string => {
+    get: ({ pGuild }): string => {
       return ProfanityLevel[pGuild?.profanityLevel ?? 1];
     },
-    set: async ({
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pGuild }, value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'profanityLevel';
 
@@ -1006,9 +897,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (level === undefined) {
         return {
           result: false,
-          value: `attribute ${
-            category.join('.') + '.' + attribute
-          } can only be **${ProfanityLevelList.join(', ')}**`,
+          value: `attribute ${category.join('.') + '.' + attribute} can only be **${ProfanityLevelList.join(', ')}**`,
         };
       }
 
@@ -1019,10 +908,7 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.initialRole',
     hover: 'role given to new members',
-    get: ({
-      pGuild,
-      guild
-    }): string => {
+    get: ({ pGuild, guild }): string => {
       if (!pGuild?.initialRole || pGuild.initialRole === 'null') {
         return 'initial role has not been set yet 1';
       }
@@ -1035,12 +921,7 @@ export const AttributeBlueprints: Blueprint[] = [
         return 'initial role has not been set yet 2';
       }
     },
-    set: async ({
-      pGuild,
-      interaction,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pGuild, interaction }, value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'initialRole';
 
@@ -1074,16 +955,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'g.locale',
     hover: 'Portals locale',
-    get: ({
-      pGuild,
-    }): string => {
+    get: ({ pGuild }): string => {
       return Locale[pGuild?.locale ?? 1];
     },
-    set: async ({
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pGuild }, value): Promise<ReturnPromise> => {
       const category = ['g'];
       const attribute = 'locale';
 
@@ -1117,17 +992,12 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.locale',
     hover: 'portal channels locale',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): string => {
+    get: ({ pVoiceChannel, pChannels }): string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
         return Locale[pChannel.locale];
@@ -1135,12 +1005,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'locale';
 
@@ -1174,22 +1039,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.locale',
     hover: 'voice channels locale',
-    get: ({
-      pVoiceChannel,
-    }): string => {
+    get: ({ pVoiceChannel }): string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
       return Locale[pVoiceChannel?.locale ?? 1];
     },
-    set: async ({
-      pVoiceChannel,
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pVoiceChannel, pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'locale';
 
@@ -1223,20 +1080,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.position',
     hover: 'voice channels position in Discord',
-    get: ({
-      voiceChannel,
-    }): number | string => {
+    get: ({ voiceChannel }): number | string => {
       if (!voiceChannel) {
         return 'N/A';
       }
 
       return voiceChannel.position;
     },
-    set: async ({
-      voiceChannel,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ voiceChannel }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'position';
 
@@ -1260,12 +1111,10 @@ export const AttributeBlueprints: Blueprint[] = [
         result: updatedVoiceChannel.position === Number(value),
         value:
           updatedVoiceChannel.position === Number(value)
-            ? `attribute ${
-              category.join('.') + '.' + attribute
-            } set successfully to \`${value}\``
+            ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
             : `attribute ${
-              category.join('.') + '.' + attribute
-            } failed to be set to\`${value}\` to ${value} (is ${updatedVoiceChannel.position})`,
+                category.join('.') + '.' + attribute
+              } failed to be set to\`${value}\` to ${value} (is ${updatedVoiceChannel.position})`,
       };
     },
     auth: AuthType.voice,
@@ -1273,17 +1122,12 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.regexOverwrite',
     hover: 'whether voice channels spawned from portal channel will let users use their own regex',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): boolean | string => {
+    get: ({ pVoiceChannel, pChannels }): boolean | string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
         return pChannel.regexOverwrite;
@@ -1291,12 +1135,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'regexOverwrite';
 
@@ -1321,17 +1160,12 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.regex',
     hover: 'portal channels regex',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): string => {
+    get: ({ pVoiceChannel, pChannels }): string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
         return pChannel.regexPortal;
@@ -1339,12 +1173,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'regexPortal';
 
@@ -1369,17 +1198,12 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'p.v.regex',
     hover: 'voice channels spawned by portal channel regex',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): string => {
+    get: ({ pVoiceChannel, pChannels }): string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
         return pChannel.regexVoice;
@@ -1387,12 +1211,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p', 'v'];
       const attribute = 'regexVoice';
 
@@ -1417,22 +1236,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.regex',
     hover: 'voice channels regex',
-    get: ({
-      pVoiceChannel,
-    }): string => {
+    get: ({ pVoiceChannel }): string => {
       if (!pVoiceChannel) {
         return 'N/A';
       }
 
       return pVoiceChannel.regex;
     },
-    set: async ({
-      pVoiceChannel,
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pVoiceChannel, pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'regex';
 
@@ -1457,17 +1268,10 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'm.regex',
     hover: 'members regex',
-    get: ({
-      pMember,
-    }): string => {
+    get: ({ pMember }): string => {
       return pMember && pMember.regex ? pMember.regex : 'not-set';
     },
-    set: async ({
-      pGuild,
-      pMember,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pGuild, pMember }, value): Promise<ReturnPromise> => {
       const category = ['m'];
       const attribute = 'regex';
 
@@ -1492,24 +1296,19 @@ export const AttributeBlueprints: Blueprint[] = [
         });
       }
 
-      return await updateMemberAttribute(pGuild.id, pMember.id,category, attribute, value);
+      return await updateMemberAttribute(pGuild.id, pMember.id, category, attribute, value);
     },
     auth: AuthType.none,
   },
   {
     name: 'p.userLimit',
     hover: 'voice channels spawned by portal channel user limit',
-    get: ({
-      pVoiceChannel,
-      pChannels,
-    }): number | string => {
+    get: ({ pVoiceChannel, pChannels }): number | string => {
       if (!pVoiceChannel || !pChannels) {
         return 'N/A';
       }
 
-      const pChannel = pChannels.find((portal) =>
-        portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id)
-      );
+      const pChannel = pChannels.find((portal) => portal.pVoiceChannels.some((voice) => voice.id === pVoiceChannel.id));
 
       if (pChannel) {
         return pChannel.userLimitPortal;
@@ -1517,12 +1316,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return 'N/A';
     },
-    set: async ({
-      pChannel,
-      pGuild,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ pChannel, pGuild }, value): Promise<ReturnPromise> => {
       const category = ['p'];
       const attribute = 'userLimitPortal';
       const newUserLimit = Number(value);
@@ -1546,9 +1340,7 @@ export const AttributeBlueprints: Blueprint[] = [
       if (newUserLimit < 0) {
         return {
           result: false,
-          value: `attribute ${
-            category.join('.') + '.' + attribute
-          } can be a number from 0-n (0 means unlimited)`,
+          value: `attribute ${category.join('.') + '.' + attribute} can be a number from 0-n (0 means unlimited)`,
         };
       }
 
@@ -1559,21 +1351,14 @@ export const AttributeBlueprints: Blueprint[] = [
   {
     name: 'v.userLimit',
     hover: 'voice channels user limit',
-    get: ({
-      voiceChannel
-    }
-    ): number | string => {
+    get: ({ voiceChannel }): number | string => {
       if (!voiceChannel) {
         return 'N/A';
       }
 
       return voiceChannel.userLimit;
     },
-    set: async ({
-      voiceChannel,
-    },
-    value,
-    ): Promise<ReturnPromise> => {
+    set: async ({ voiceChannel }, value): Promise<ReturnPromise> => {
       const category = ['v'];
       const attribute = 'userLimit';
       const newUserLimit = Number(value);
@@ -1607,12 +1392,8 @@ export const AttributeBlueprints: Blueprint[] = [
         result: updatedVoiceChannel.userLimit === newUserLimit,
         value:
           updatedVoiceChannel.userLimit === newUserLimit
-            ? `attribute ${
-              category.join('.') + '.' + attribute
-            } set successfully to \`${value}\``
-            : `attribute ${
-              category.join('.') + '.' + attribute
-            } failed to be set to \`${value}\``,
+            ? `attribute ${category.join('.') + '.' + attribute} set successfully to \`${value}\``
+            : `attribute ${category.join('.') + '.' + attribute} failed to be set to \`${value}\``,
       };
     },
     auth: AuthType.voice,

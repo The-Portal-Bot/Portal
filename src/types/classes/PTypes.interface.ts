@@ -1,8 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder, Guild, Presence, Role, User, VoiceChannel } from 'discord.js';
-import { PGuild } from './PGuild.class';
-import { PMember } from './PMember.class';
-import { PChannel } from './PPortalChannel.class';
-import { PVoiceChannel } from './PVoiceChannel.class';
+
+import { PGuild } from './PGuild.class.js';
+import { PMember } from './PMember.class.js';
+import { PChannel } from './PPortalChannel.class.js';
+import { PVoiceChannel } from './PVoiceChannel.class.js';
 
 export type NoAuthCommands =
   | 'about'
@@ -91,7 +92,7 @@ export class Field {
   constructor(
     emote: string | null | undefined | boolean,
     role: string | number | null | undefined | boolean,
-    inline: boolean
+    inline: boolean,
   ) {
     this.emote = emote;
     this.role = role;
@@ -111,20 +112,24 @@ export type LanguagePortal = {
 };
 
 export type ClientArguments = {
-  memberLength: number; channelLength: number; guildLength: number
-}
+  memberLength: number;
+  channelLength: number;
+  guildLength: number;
+};
 
 export type StatusArguments = {
-  displayName: string, name: string
-}
+  displayName: string;
+  name: string;
+};
 
 export type DataArguments = {
-  data: string, source: string
-}
+  data: string;
+  source: string;
+};
 
 export type PresenceArguments = {
-   newPresence: Presence
-}
+  newPresence: Presence;
+};
 
 export type LanguageConsoleArguments = ClientArguments & StatusArguments & DataArguments & PresenceArguments;
 
@@ -201,35 +206,37 @@ export type Blueprint = {
     guild,
     pMember,
     string,
-  }:{
-    voiceChannel?: VoiceChannel,
-    pVoiceChannel?: PVoiceChannel | null,
-    pChannels?: PChannel[],
-    pGuild?: PGuild,
-    guild?: Guild,
-    pMember?: PMember,
-    string?: string | string[]
+  }: {
+    voiceChannel?: VoiceChannel;
+    pVoiceChannel?: PVoiceChannel | null;
+    pChannels?: PChannel[];
+    pGuild?: PGuild;
+    guild?: Guild;
+    pMember?: PMember;
+    string?: string | string[];
   }) => boolean | string | string[] | number | undefined;
-  set: ({
-    voiceChannel,
-    pVoiceChannel,
-    pChannel,
-    pGuild,
-    pMember,
-    interaction,
-  }:{
-    voiceChannel?: VoiceChannel,
-    pVoiceChannel?: PVoiceChannel | null,
-    pChannel?: PChannel,
-    pGuild?: PGuild,
-    pMember?: PMember,
-    interaction?: ChatInputCommandInteraction
-  },
-  value: string | Role) =>  Promise<ReturnPromise> | boolean | string | string[] | number | undefined;
+  set: (
+    {
+      voiceChannel,
+      pVoiceChannel,
+      pChannel,
+      pGuild,
+      pMember,
+      interaction,
+    }: {
+      voiceChannel?: VoiceChannel;
+      pVoiceChannel?: PVoiceChannel | null;
+      pChannel?: PChannel;
+      pGuild?: PGuild;
+      pMember?: PMember;
+      interaction?: ChatInputCommandInteraction;
+    },
+    value: string | Role,
+  ) => Promise<ReturnPromise> | boolean | string | string[] | number | undefined;
 };
 
 export interface HelpDocumentation {
-  getGuide: () =>  EmbedBuilder,
-  getHelp: () =>  EmbedBuilder[],
-  getHelpDetailed: (candidate: string) =>  EmbedBuilder | boolean,
+  getGuide: () => EmbedBuilder;
+  getHelp: () => EmbedBuilder[];
+  getHelpDetailed: (candidate: string) => EmbedBuilder | boolean;
 }

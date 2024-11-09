@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { createEmbed } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { createEmbed } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'about';
 const DESCRIPTION = 'returns information on Portal';

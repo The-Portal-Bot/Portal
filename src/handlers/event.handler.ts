@@ -15,9 +15,9 @@ import {
   VoiceState,
 } from 'discord.js';
 
-import * as events from '../events/index';
-import { ActiveCooldowns } from '../types/classes/PTypes.interface';
-import logger from '../utilities/log.utility';
+import * as events from '../events/index.js';
+import { ActiveCooldowns } from '../types/classes/PTypes.interface.js';
+import logger from '../utilities/log.utility.js';
 
 export async function eventHandler(
   client: Client,

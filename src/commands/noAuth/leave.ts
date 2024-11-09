@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { getVoiceConnection, VoiceConnectionStatus } from '@discordjs/voice';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { clientTalk, clientWrite } from '../../libraries/localisation.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { clientTalk, clientWrite } from '../../libraries/localisation.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'leave';
 const DESCRIPTION = 'makes portal leave your voice channel';

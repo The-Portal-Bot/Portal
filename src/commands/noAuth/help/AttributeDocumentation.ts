@@ -1,16 +1,15 @@
-import {
-  EmbedBuilder
-} from 'discord.js';
-import { createEmbed } from '../../../libraries/help.library';
-import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { AttributeBlueprints } from '../../../blueprints/attribute.blueprint';
-import { Prefix } from '../../../types/enums/Prefix.enum';
+import { EmbedBuilder } from 'discord.js';
+
+import { AttributeBlueprints } from '../../../blueprints/attribute.blueprint.js';
+import { createEmbed } from '../../../libraries/help.library.js';
+import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface.js';
+import { Prefix } from '../../../types/enums/Prefix.enum.js';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
 
 export class AttributeDocumentation implements HelpDocumentation {
-  public getGuide():  EmbedBuilder {
+  public getGuide(): EmbedBuilder {
     const attrArray: Field[] = [
       {
         emote: 'Used in Regex Interpreter',
@@ -52,22 +51,22 @@ export class AttributeDocumentation implements HelpDocumentation {
     return createEmbed(
       'Attribute Guide',
       '[Attributes](' +
-      PORTAL_URL +
-      INTERPRETER_URL +
-      '/attributes/description) ' +
-      'are options that can be manipulated by whomever has clearance.\n' +
-      'How to use attributes with the Text Interpreter',
+        PORTAL_URL +
+        INTERPRETER_URL +
+        '/attributes/description) ' +
+        'are options that can be manipulated by whomever has clearance.\n' +
+        'How to use attributes with the Text Interpreter',
       '#FF5714',
       attrArray,
       null,
       null,
       null,
       null,
-      null
+      null,
     );
   }
 
-  public getHelp():  EmbedBuilder[] {
+  public getHelp(): EmbedBuilder[] {
     const attributeArray: Field[][] = [];
 
     for (let l = 0; l <= AttributeBlueprints.length / 25; l++) {
@@ -86,19 +85,19 @@ export class AttributeDocumentation implements HelpDocumentation {
         return createEmbed(
           'Attributes',
           '[Attributes](' +
-          PORTAL_URL +
-          INTERPRETER_URL +
-          '/attributes/description) ' +
-          'are options that can be manipulated by whomever has clearance.\n' +
-          'Prefix: ' +
-          Prefix.ATTRIBUTE,
+            PORTAL_URL +
+            INTERPRETER_URL +
+            '/attributes/description) ' +
+            'are options that can be manipulated by whomever has clearance.\n' +
+            'Prefix: ' +
+            Prefix.ATTRIBUTE,
           '#FF5714',
           attributeArray[0],
           null,
           null,
           null,
           null,
-          null
+          null,
         );
       } else {
         return createEmbed(null, null, '#FF5714', attributeArray[index], null, null, null, null, null);
@@ -106,7 +105,7 @@ export class AttributeDocumentation implements HelpDocumentation {
     });
   }
 
-  public getHelpDetailed(candidate: string):  EmbedBuilder | boolean {
+  public getHelpDetailed(candidate: string): EmbedBuilder | boolean {
     for (let i = 0; i < AttributeBlueprints.length; i++) {
       if (AttributeBlueprints[i].name === candidate) {
         return createEmbed(
@@ -126,7 +125,7 @@ export class AttributeDocumentation implements HelpDocumentation {
           null,
           null,
           null,
-          null
+          null,
         );
       }
     }

@@ -6,18 +6,18 @@ import {
   generateChannelName,
   includedInPChannels,
   includedInVoiceList,
-} from '../libraries/guild.library';
+} from '../libraries/guild.library.js';
 import {
   isChannelDeleted,
   isGuildDeleted,
   updateMusicLyricsMessage,
   updateMusicMessage,
-} from '../libraries/help.library';
-import { fetchGuild, removeVoice, setMusicData, updateGuild } from '../libraries/mongo.library';
-import { updateTimestamp } from '../libraries/user.library';
-import { PGuild } from '../types/classes/PGuild.class';
-import { PChannel } from '../types/classes/PPortalChannel.class';
-import logger from '../utilities/log.utility';
+} from '../libraries/help.library.js';
+import { fetchGuild, removeVoice, setMusicData, updateGuild } from '../libraries/mongo.library.js';
+import { updateTimestamp } from '../libraries/user.library.js';
+import { PGuild } from '../types/classes/PGuild.class.js';
+import { PChannel } from '../types/classes/PPortalChannel.class.js';
+import logger from '../utilities/log.utility.js';
 
 export async function voiceStateUpdate(client: Client, oldState: VoiceState, newState: VoiceState): Promise<void> {
   logger.info(`voiceStateUpdate event triggered with ${oldState.channelId} to ${newState.channelId}`);

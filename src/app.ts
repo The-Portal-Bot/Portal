@@ -3,13 +3,13 @@ import { Routes } from 'discord-api-types/v9';
 import dotenv from 'dotenv';
 import { transports } from 'winston';
 
-import * as auth from './commands/auth';
-import * as noAuth from './commands/noAuth';
-import { clientHandler, connectToDiscord } from './handlers/discord.handler';
-import { eventHandler } from './handlers/event.handler';
-import { mongoHandler } from './handlers/mongo.handler';
-import { ActiveCooldowns } from './types/classes/PTypes.interface';
-import logger from './utilities/log.utility';
+import * as auth from './commands/auth/index.js';
+import * as noAuth from './commands/noAuth/index.js';
+import { clientHandler, connectToDiscord } from './handlers/discord.handler.js';
+import { eventHandler } from './handlers/event.handler.js';
+import { mongoHandler } from './handlers/mongo.handler.js';
+import { ActiveCooldowns } from './types/classes/PTypes.interface.js';
+import logger from './utilities/log.utility.js';
 
 dotenv.config();
 

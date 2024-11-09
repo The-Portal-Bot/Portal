@@ -1,14 +1,15 @@
 import { EmbedBuilder } from 'discord.js';
-import { createEmbed } from '../../../libraries/help.library';
-import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { StructureBlueprint } from '../../../blueprints/structure.blueprint';
-import { Prefix } from '../../../types/enums/Prefix.enum';
+
+import { StructureBlueprint } from '../../../blueprints/structure.blueprint.js';
+import { createEmbed } from '../../../libraries/help.library.js';
+import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface.js';
+import { Prefix } from '../../../types/enums/Prefix.enum.js';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
 
 export class StructureDocumentation implements HelpDocumentation {
-  public getGuide():  EmbedBuilder {
+  public getGuide(): EmbedBuilder {
     const structArray: Field[] = [
       {
         emote: 'Used in Regex Interpreter',
@@ -41,22 +42,22 @@ export class StructureDocumentation implements HelpDocumentation {
     return createEmbed(
       'Structure Guide',
       '[Structures](' +
-      PORTAL_URL +
-      INTERPRETER_URL +
-      '/structures/description) ' +
-      'conditional flow manipulators (if this do that, or if that do this).\n' +
-      'How to use structures with the Text Interpreter',
+        PORTAL_URL +
+        INTERPRETER_URL +
+        '/structures/description) ' +
+        'conditional flow manipulators (if this do that, or if that do this).\n' +
+        'How to use structures with the Text Interpreter',
       '#EEB902',
       structArray,
       null,
       null,
       null,
       null,
-      null
+      null,
     );
   }
 
-  public getHelp():  EmbedBuilder[] {
+  public getHelp(): EmbedBuilder[] {
     const structArray: Field[][] = [];
 
     for (let l = 0; l <= StructureBlueprint.length / 25; l++) {
@@ -77,19 +78,19 @@ export class StructureDocumentation implements HelpDocumentation {
         return createEmbed(
           'Structures',
           '[Structures](' +
-          PORTAL_URL +
-          INTERPRETER_URL +
-          '/structures/description) ' +
-          'conditional flow manipulators (if this do that, or if that do this).\n' +
-          'Prefix: ' +
-          Prefix.STRUCTURE,
+            PORTAL_URL +
+            INTERPRETER_URL +
+            '/structures/description) ' +
+            'conditional flow manipulators (if this do that, or if that do this).\n' +
+            'Prefix: ' +
+            Prefix.STRUCTURE,
           '#EEB902',
           structArray[0],
           null,
           null,
           null,
           null,
-          null
+          null,
         );
       } else {
         return createEmbed(null, null, '#EEB902', structArray[index], null, null, null, null, null);
@@ -97,7 +98,7 @@ export class StructureDocumentation implements HelpDocumentation {
     });
   }
 
-  public getHelpDetailed(candidate: string):  EmbedBuilder | boolean {
+  public getHelpDetailed(candidate: string): EmbedBuilder | boolean {
     for (let i = 0; i < StructureBlueprint.length; i++) {
       if (StructureBlueprint[i].name === candidate) {
         return createEmbed(
@@ -119,7 +120,7 @@ export class StructureDocumentation implements HelpDocumentation {
           null,
           null,
           null,
-          null
+          null,
         );
       }
     }

@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, InteractionContextType, Role } from 'discord.js';
-import { getJSONFromString, messageHelp } from '../../libraries/help.library';
-import { setRanks } from '../../libraries/mongo.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { Rank, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { getJSONFromString, messageHelp } from '../../libraries/help.library.js';
+import { setRanks } from '../../libraries/mongo.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { Rank, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'set_ranks';
 const DESCRIPTION = 'set ranks for server';

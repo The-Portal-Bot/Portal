@@ -1,14 +1,15 @@
 import { EmbedBuilder } from 'discord.js';
-import { createEmbed } from '../../../libraries/help.library';
-import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { VariableBlueprints } from '../../../blueprints/variable.blueprint';
-import { Prefix } from '../../../types/enums/Prefix.enum';
+
+import { VariableBlueprints } from '../../../blueprints/variable.blueprint.js';
+import { createEmbed } from '../../../libraries/help.library.js';
+import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface.js';
+import { Prefix } from '../../../types/enums/Prefix.enum.js';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
 
 export class VariableDocumentation implements HelpDocumentation {
-  public getGuide():  EmbedBuilder {
+  public getGuide(): EmbedBuilder {
     const structArray: Field[] = [
       {
         emote: 'Used in Regex Interpreter',
@@ -40,22 +41,22 @@ export class VariableDocumentation implements HelpDocumentation {
     return createEmbed(
       'Variable Guide',
       '[Variables](' +
-      PORTAL_URL +
-      INTERPRETER_URL +
-      '/variables/description) ' +
-      'are immutable and live data that return information about your current voice channel.\n' +
-      'how to use variables with text interpreter',
+        PORTAL_URL +
+        INTERPRETER_URL +
+        '/variables/description) ' +
+        'are immutable and live data that return information about your current voice channel.\n' +
+        'how to use variables with text interpreter',
       '#1BE7FF',
       structArray,
       null,
       null,
       null,
       null,
-      null
+      null,
     );
   }
 
-  public getHelp():  EmbedBuilder[] {
+  public getHelp(): EmbedBuilder[] {
     const variableArray: Field[][] = [];
 
     for (let l = 0; l <= VariableBlueprints.length / 25; l++) {
@@ -74,19 +75,19 @@ export class VariableDocumentation implements HelpDocumentation {
         return createEmbed(
           'Variables',
           '[Variables](' +
-          PORTAL_URL +
-          INTERPRETER_URL +
-          '/variables/description) ' +
-          'are immutable and live data that return information about your current voice channel.\n' +
-          'Prefix: ' +
-          Prefix.VARIABLE,
+            PORTAL_URL +
+            INTERPRETER_URL +
+            '/variables/description) ' +
+            'are immutable and live data that return information about your current voice channel.\n' +
+            'Prefix: ' +
+            Prefix.VARIABLE,
           '#1BE7FF',
           variableArray[0],
           null,
           null,
           null,
           null,
-          null
+          null,
         );
       } else {
         return createEmbed(null, null, '#1BE7FF', variableArray[index], null, null, null, null, null);
@@ -94,7 +95,7 @@ export class VariableDocumentation implements HelpDocumentation {
     });
   }
 
-  public getHelpDetailed(candidate: string):  EmbedBuilder | boolean {
+  public getHelpDetailed(candidate: string): EmbedBuilder | boolean {
     for (let i = 0; i < VariableBlueprints.length; i++) {
       if (VariableBlueprints[i].name === candidate) {
         return createEmbed(
@@ -114,7 +115,7 @@ export class VariableDocumentation implements HelpDocumentation {
           null,
           null,
           null,
-          null
+          null,
         );
       }
     }

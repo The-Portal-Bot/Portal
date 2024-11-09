@@ -6,9 +6,9 @@ import {
   InviteCreateOptions,
   TextChannel,
 } from 'discord.js';
-import { isMod, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { isMod, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'invite';
 const DESCRIPTION = 'generate an invite link';

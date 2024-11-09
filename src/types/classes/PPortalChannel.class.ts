@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { PVoiceChannel } from './PVoiceChannel.class';
+import { PVoiceChannel } from './PVoiceChannel.class.js';
 
 export class PChannel {
   public id: string;
@@ -29,7 +29,7 @@ export class PChannel {
     annAnnounce: boolean,
     annUser: boolean,
     userLimitPortal: number,
-    regexOverwrite: boolean
+    regexOverwrite: boolean,
   ) {
     this.id = id;
     this.creatorId = creatorId;

@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { Locale } from '../enums/Locales.enum';
+import { Locale } from '../enums/Locales.enum.js';
 
 export class PVoiceChannel {
   public id: string;
@@ -19,7 +19,7 @@ export class PVoiceChannel {
     noBots: boolean,
     locale: Locale,
     annAnnounce: boolean,
-    annUser: boolean
+    annUser: boolean,
   ) {
     this.id = id;
     this.creatorId = creatorId;

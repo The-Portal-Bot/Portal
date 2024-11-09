@@ -1,16 +1,16 @@
 import dayjs from 'dayjs';
 import { BanOptions, Message, TextChannel } from 'discord.js';
 
-import { ProfaneWords } from '../assets/lists/profaneWords.static';
-import configSpam from '../config.spam.json';
-import { PGuild } from '../types/classes/PGuild.class';
-import { SpamCache } from '../types/classes/PTypes.interface';
-import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
-import { deleteMessage, getRole } from './guild.library';
-import { isWhitelist, messageReply } from './help.library';
-import logger from '../utilities/log.utility';
-import { updateMember } from './mongo.library';
-import { ban, kick } from './user.library';
+import { ProfaneWords } from '../assets/lists/profaneWords.static.js';
+import configSpam from '../config.spam.json' assert { type: 'json' };
+import { PGuild } from '../types/classes/PGuild.class.js';
+import { SpamCache } from '../types/classes/PTypes.interface.js';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum.js';
+import logger from '../utilities/log.utility.js';
+import { deleteMessage, getRole } from './guild.library.js';
+import { isWhitelist, messageReply } from './help.library.js';
+import { updateMember } from './mongo.library.js';
+import { ban, kick } from './user.library.js';
 
 const profaneWords = ProfaneWords as {
   gr: string[];
@@ -29,7 +29,7 @@ export function isProfane(candidate: string, profanityLevel: number): string[] {
   const en = profaneWords.en.filter((word: string) => {
     const wordExp = new RegExp(
       ProfanityLevel.default === profanityLevel ? `\\b(${word})\\b` : `\\b(\\w*${word}\\w*)\\b`,
-      'gi'
+      'gi',
     );
 
     return wordExp.test(candidate);
@@ -38,7 +38,7 @@ export function isProfane(candidate: string, profanityLevel: number): string[] {
   const de = profaneWords.de.filter((word: string) => {
     const wordExp = new RegExp(
       ProfanityLevel.default === profanityLevel ? `\\b(${word})\\b` : `\\b(\\w*${word}\\w*)\\b`,
-      'gi'
+      'gi',
     );
 
     return wordExp.test(candidate);
@@ -199,32 +199,37 @@ async function muteUser(message: Message, muteRoleId: string): Promise<void> {
     return;
   }
 
-
   if (channel instanceof TextChannel) {
-    const messageSent = await channel.send(`user ${message.author}, has been muted for ${configSpam.MUTE_PERIOD} minutes`);
+    const messageSent = await channel.send(
+      `user ${message.author}, has been muted for ${configSpam.MUTE_PERIOD} minutes`,
+    );
     deleteMessage(messageSent);
 
-    setTimeout(() => {
-      const muteRole = getRole(message.guild, muteRoleId);
+    setTimeout(
+      () => {
+        const muteRole = getRole(message.guild, muteRoleId);
 
-      if (!muteRole) {
-        return;
-      }
+        if (!muteRole) {
+          return;
+        }
 
-      message.member?.roles.remove(muteRole)
-        .then(() =>
-          channel
-            .send(`user ${message.author}, has been unmuted`)
-            .then((message) => {
-              if (message.deletable) {
-                deleteMessage(message);
-              }
-            })
-            .catch((e) => {
-              logger.error(`failed to reply to message: ${e}`);
-            })
-        )
-        .catch(logger.error);
-    }, configSpam.MUTE_PERIOD * 60 * 1000);
+        message.member?.roles
+          .remove(muteRole)
+          .then(() =>
+            channel
+              .send(`user ${message.author}, has been unmuted`)
+              .then((message) => {
+                if (message.deletable) {
+                  deleteMessage(message);
+                }
+              })
+              .catch((e) => {
+                logger.error(`failed to reply to message: ${e}`);
+              }),
+          )
+          .catch(logger.error);
+      },
+      configSpam.MUTE_PERIOD * 60 * 1000,
+    );
   }
 }

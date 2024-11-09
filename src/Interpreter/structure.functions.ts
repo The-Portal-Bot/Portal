@@ -1,4 +1,4 @@
-import { StructureBlueprint } from '../blueprints/structure.blueprint';
+import { StructureBlueprint } from '../blueprints/structure.blueprint.js';
 
 export function isStructure(candidate: string): string {
   for (let i = 0; i < StructureBlueprint.length; i++) {

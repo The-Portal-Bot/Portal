@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from 'discord.js';
-import { createEmbed, messageHelp } from '../../libraries/help.library';
-import { insertPoll } from '../../libraries/mongo.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { PPoll } from '../../types/classes/PPoll.class';
-import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { createEmbed, messageHelp } from '../../libraries/help.library.js';
+import { insertPoll } from '../../libraries/mongo.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { PPoll } from '../../types/classes/PPoll.class.js';
+import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'poll';
 const DESCRIPTION = 'create a new poll';

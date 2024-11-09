@@ -1,11 +1,12 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, InteractionContextType, VoiceChannel } from 'discord.js';
-import { messageHelp } from '../../libraries/help.library';
-import { insertPortal } from '../../libraries/mongo.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { IPChannel, PChannel } from '../../types/classes/PPortalChannel.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+
+import { messageHelp } from '../../libraries/help.library.js';
+import { insertPortal } from '../../libraries/mongo.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { IPChannel, PChannel } from '../../types/classes/PPortalChannel.class.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'portal';
 const DESCRIPTION = 'set a portal channel';

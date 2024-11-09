@@ -1,6 +1,6 @@
 import { createAudioPlayer, createAudioResource, getVoiceConnection } from '@discordjs/voice';
 import { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
-import { PGuild } from '../types/classes/PGuild.class';
+import { PGuild } from '../types/classes/PGuild.class.js';
 import {
   AnnouncementAction,
   ClientArguments,
@@ -10,10 +10,10 @@ import {
   LocalisationPortalOption,
   LogActions,
   PresenceArguments,
-  StatusArguments
-} from '../types/classes/PTypes.interface';
-import { Locale } from '../types/enums/Locales.enum';
-import logger from '../utilities/log.utility';
+  StatusArguments,
+} from '../types/classes/PTypes.interface.js';
+import { Locale } from '../types/enums/Locales.enum.js';
+import logger from '../utilities/log.utility.js';
 
 export const portal: LocalisationPortalOption[] = [
   {
@@ -23,7 +23,7 @@ export const portal: LocalisationPortalOption[] = [
         return '> Γειά σας, το Πόρταλ είναι εδώ';
       },
       en: () => {
-        return '> Cheers love, Portal\'s here';
+        return "> Cheers love, Portal's here";
       },
       de: () => {
         return '> Hallo, Portal ist da';
@@ -234,7 +234,7 @@ export function clientTalk(
   interaction: ChatInputCommandInteraction,
   pGuild: PGuild,
   context: AnnouncementAction | EventAction,
-  isAction: boolean
+  isAction: boolean,
 ): boolean {
   if (!interaction.guild) {
     return false;
@@ -278,7 +278,9 @@ export function clientTalk(
         const contextAsAction = AnnouncementActionToString[context];
         const random = Math.floor(Math.random() * 3);
 
-        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`);
+        const resource = createAudioResource(
+          `src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`,
+        );
         logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`);
 
         player.play(resource);
@@ -291,7 +293,9 @@ export function clientTalk(
 
         const random = Math.floor(Math.random() * 3);
 
-        const resource = createAudioResource(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`);
+        const resource = createAudioResource(
+          `src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`,
+        );
         logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`);
 
         player.play(resource);
@@ -312,6 +316,21 @@ export function getFunction(output: string, locale: number, context: EventAction
     portal.some((ct) => {
       if (ct.name === context) {
         switch (locale) {
+          case Locale.gr:
+            func = ct.lang.gr;
+            return true;
+          case Locale.en:
+            func = ct.lang.en;
+            return true;
+          case Locale.de:
+            func = ct.lang.de;
+            return true;
+        }
+      }
+    });
+  } else if (output === 'console') {
+    consoleText.some((ct) => {
+      switch (locale) {
         case Locale.gr:
           func = ct.lang.gr;
           return true;
@@ -321,21 +340,6 @@ export function getFunction(output: string, locale: number, context: EventAction
         case Locale.de:
           func = ct.lang.de;
           return true;
-        }
-      }
-    });
-  } else if (output === 'console') {
-    consoleText.some((ct) => {
-      switch (locale) {
-      case Locale.gr:
-        func = ct.lang.gr;
-        return true;
-      case Locale.en:
-        func = ct.lang.en;
-        return true;
-      case Locale.de:
-        func = ct.lang.de;
-        return true;
       }
     });
   }
@@ -346,7 +350,7 @@ export function getFunction(output: string, locale: number, context: EventAction
 export function clientWrite(
   interaction: ChatInputCommandInteraction,
   pGuild: PGuild,
-  context: EventAction | AnnouncementAction | LogActions
+  context: EventAction | AnnouncementAction | LogActions,
 ): string {
   const member = interaction.member as GuildMember;
   if (!interaction) return 'could not fetch message';
@@ -360,21 +364,15 @@ export function clientWrite(
       if (member && member.voice.channel) {
         if (v.id === member.voice.channel.id) {
           switch (v.locale) {
-          case Locale.gr:
-            returnValue = portal
-              .find((p) => p.name === context)
-              ?.lang.gr({} as User) as unknown as string;
-            break;
-          case Locale.en:
-            returnValue = portal
-              .find((p) => p.name === context)
-              ?.lang.en({} as User) as unknown as string;
-            break;
-          case Locale.de:
-            returnValue = portal
-              .find((p) => p.name === context)
-              ?.lang.de({} as User) as unknown as string;
-            break;
+            case Locale.gr:
+              returnValue = portal.find((p) => p.name === context)?.lang.gr({} as User) as unknown as string;
+              break;
+            case Locale.en:
+              returnValue = portal.find((p) => p.name === context)?.lang.en({} as User) as unknown as string;
+              break;
+            case Locale.de:
+              returnValue = portal.find((p) => p.name === context)?.lang.de({} as User) as unknown as string;
+              break;
           }
 
           return true;
@@ -382,7 +380,7 @@ export function clientWrite(
       }
 
       return false;
-    })
+    }),
   );
 
   if (found) {

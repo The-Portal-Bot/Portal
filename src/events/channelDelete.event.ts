@@ -1,8 +1,8 @@
 import { ChannelType, DMChannel, GuildChannel, TextChannel, VoiceChannel } from 'discord.js';
-import { handleChannelDeletion } from '../libraries/mongo.library';
+import { handleChannelDeletion } from '../libraries/mongo.library.js';
 
-import { PortalChannelType } from '../types/enums/PortalChannel.enum';
-import logger from '../utilities/log.utility';
+import { PortalChannelType } from '../types/enums/PortalChannel.enum.js';
+import logger from '../utilities/log.utility.js';
 
 export async function channelDelete(channel: DMChannel | GuildChannel): Promise<void> {
   if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildVoice) {

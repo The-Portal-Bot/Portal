@@ -1,13 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, Client } from 'discord.js';
-import SPAM_CONFIG from '../../config.spam.json';
-import { createEmbed } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+
+import SPAM_CONFIG from '../../config.spam.json' assert { type: 'json' };
+import { createEmbed } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'spam_rules';
-const DESCRIPTION = 'returns server\'s spam rules';
+const DESCRIPTION = "returns server's spam rules";
 
 export default {
   time: 0,

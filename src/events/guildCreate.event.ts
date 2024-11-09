@@ -1,7 +1,7 @@
 import { Client, Guild } from 'discord.js';
-import { guildExists, insertGuild } from '../libraries/mongo.library';
+import { guildExists, insertGuild } from '../libraries/mongo.library.js';
 
-import logger from '../utilities/log.utility';
+import logger from '../utilities/log.utility.js';
 
 export async function guildCreate(client: Client, guild: Guild): Promise<void> {
   const exists = await guildExists(guild.id);

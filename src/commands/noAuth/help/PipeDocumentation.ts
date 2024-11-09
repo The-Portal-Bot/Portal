@@ -1,14 +1,15 @@
 import { EmbedBuilder } from 'discord.js';
-import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface';
-import { PipeBlueprints } from '../../../blueprints/pipe.blueprint';
-import { createEmbed } from '../../../libraries/help.library';
-import { Prefix } from '../../../types/enums/Prefix.enum';
+
+import { PipeBlueprints } from '../../../blueprints/pipe.blueprint.js';
+import { createEmbed } from '../../../libraries/help.library.js';
+import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface.js';
+import { Prefix } from '../../../types/enums/Prefix.enum.js';
 
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 const INTERPRETER_URL = '/interpreter/objects';
 
 export class PipeDocumentation implements HelpDocumentation {
-  public getGuide():  EmbedBuilder {
+  public getGuide(): EmbedBuilder {
     const pipe_array: Field[] = [
       {
         emote: 'Used in Regex Interpreter',
@@ -40,22 +41,22 @@ export class PipeDocumentation implements HelpDocumentation {
     return createEmbed(
       'Pipe Guide',
       '[Pipes](' +
-      PORTAL_URL +
-      INTERPRETER_URL +
-      '/pipes/description) ' +
-      'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
-      'How to use pipes with the Text Interpreter',
+        PORTAL_URL +
+        INTERPRETER_URL +
+        '/pipes/description) ' +
+        'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
+        'How to use pipes with the Text Interpreter',
       '#6EEB83',
       pipe_array,
       null,
       null,
       null,
       null,
-      null
+      null,
     );
   }
 
-  public getHelp():  EmbedBuilder[] {
+  public getHelp(): EmbedBuilder[] {
     const pipeArray: Field[][] = [];
 
     for (let l = 0; l <= PipeBlueprints.length / 25; l++) {
@@ -76,19 +77,19 @@ export class PipeDocumentation implements HelpDocumentation {
         return createEmbed(
           'Pipes',
           '[Pipes](' +
-          PORTAL_URL +
-          INTERPRETER_URL +
-          '/pipes/description) ' +
-          'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
-          'Prefix: ' +
-          Prefix.PIPE,
+            PORTAL_URL +
+            INTERPRETER_URL +
+            '/pipes/description) ' +
+            'are small programs you can pass text, variables or attributes, to manipulate their outcome\n' +
+            'Prefix: ' +
+            Prefix.PIPE,
           '#6EEB83',
           pipeArray[0],
           null,
           null,
           null,
           null,
-          null
+          null,
         );
       } else {
         return createEmbed(null, null, '#6EEB83', pipeArray[index], null, null, null, null, null);
@@ -96,7 +97,7 @@ export class PipeDocumentation implements HelpDocumentation {
     });
   }
 
-  public getHelpDetailed(candidate: string):  EmbedBuilder | boolean {
+  public getHelpDetailed(candidate: string): EmbedBuilder | boolean {
     for (let i = 0; i < PipeBlueprints.length; i++) {
       if (PipeBlueprints[i].name === candidate) {
         return createEmbed(
@@ -118,7 +119,7 @@ export class PipeDocumentation implements HelpDocumentation {
           null,
           null,
           null,
-          null
+          null,
         );
       }
     }

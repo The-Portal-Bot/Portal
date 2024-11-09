@@ -1,4 +1,4 @@
-import { PipeBlueprints } from '../blueprints/pipe.blueprint';
+import { PipeBlueprints } from '../blueprints/pipe.blueprint.js';
 
 export function isPipe(candidate: string): string {
   for (let i = 0; i < PipeBlueprints.length; i++) {

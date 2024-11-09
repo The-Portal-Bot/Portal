@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { messageHelp } from '../../libraries/help.library';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
-import { Command } from '../../types/Command';
+import { messageHelp } from '../../libraries/help.library.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { Command } from '../../types/Command.js';
 
 const COMMAND_NAME = 'focus';
 const DESCRIPTION = 'creates a dedicated channel for two users to privately talk in';

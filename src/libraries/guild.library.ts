@@ -20,17 +20,17 @@ import {
 } from 'discord.js';
 import voca from 'voca';
 
-import { getAttribute, isAttribute } from '../Interpreter/attribute.functions';
-import { getPipe, isPipe } from '../Interpreter/pipe.functions';
-import { getVariable, isVariable } from '../Interpreter/variable.functions';
-import { PGuild } from '../types/classes/PGuild.class';
-import { PChannel } from '../types/classes/PPortalChannel.class';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
-import { PortalChannelType } from '../types/enums/PortalChannel.enum';
-import { Prefix } from '../types/enums/Prefix.enum';
-import logger from '../utilities/log.utility';
-import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, maxString } from './help.library';
-import { insertVoice, updateGuild } from './mongo.library';
+import { getAttribute, isAttribute } from '../Interpreter/attribute.functions.js';
+import { getPipe, isPipe } from '../Interpreter/pipe.functions.js';
+import { getVariable, isVariable } from '../Interpreter/variable.functions.js';
+import { PGuild } from '../types/classes/PGuild.class.js';
+import { PChannel } from '../types/classes/PPortalChannel.class.js';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class.js';
+import { PortalChannelType } from '../types/enums/PortalChannel.enum.js';
+import { Prefix } from '../types/enums/Prefix.enum.js';
+import logger from '../utilities/log.utility.js';
+import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, maxString } from './help.library.js';
+import { insertVoice, updateGuild } from './mongo.library.js';
 
 function inlineOperator(str: string) {
   switch (str) {

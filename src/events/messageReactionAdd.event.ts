@@ -6,7 +6,7 @@
 // // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
 // import { PGuild } from "../types/classes/PGuild.class";
 
-import logger from '../utilities/log.utility';
+import logger from '../utilities/log.utility.js';
 
 // import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 

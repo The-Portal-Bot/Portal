@@ -1,6 +1,6 @@
 import voca from 'voca';
-import { Blueprint } from '../types/classes/PTypes.interface';
-import { AuthType } from '../types/enums/Admin.enum';
+import { Blueprint } from '../types/classes/PTypes.interface.js';
+import { AuthType } from '../types/enums/Admin.enum.js';
 
 export const PipeBlueprints: Blueprint[] = [
   {
@@ -11,21 +11,21 @@ export const PipeBlueprints: Blueprint[] = [
         ? isAcronym(str)
           ? str
           : str
-            .replace(/[-_,.:*=+]/g, ' ')
-            .split(' ')
-            .map((s) => s[0])
-            .join('')
+              .replace(/[-_,.:*=+]/g, ' ')
+              .split(' ')
+              .map((s) => s[0])
+              .join('')
         : typeof str === 'object'
           ? str
-            .map((s) =>
-              s
-                .replace(/[-_,.:*=+]/g, ' ')
-                .split(' ')
-                .map((sm) => (isAcronym(sm) ? sm : sm[0]))
-                .join('')
-            )
-            .join(',')
-          : str ?? '';
+              .map((s) =>
+                s
+                  .replace(/[-_,.:*=+]/g, ' ')
+                  .split(' ')
+                  .map((sm) => (isAcronym(sm) ? sm : sm[0]))
+                  .join(''),
+              )
+              .join(',')
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -38,7 +38,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? getVowels(str).join('')
         : typeof str === 'object'
           ? str.map((s) => getVowels(s).join('')).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -51,7 +51,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? getConstants(str).join('')
         : typeof str === 'object'
           ? str.map((s) => getConstants(s).join('')).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -64,7 +64,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.camelCase(str)
         : typeof str === 'object'
           ? str.map((s) => voca.camelCase(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -77,7 +77,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.capitalize(str)
         : typeof str === 'object'
           ? str.map((s) => voca.capitalize(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -90,7 +90,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.decapitalize(str)
         : typeof str === 'object'
           ? str.map((s) => voca.decapitalize(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -103,7 +103,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.lowerCase(str)
         : typeof str === 'object'
           ? str.map((s) => voca.lowerCase(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -116,7 +116,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.upperCase(str)
         : typeof str === 'object'
           ? str.map((s) => voca.upperCase(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -125,11 +125,7 @@ export const PipeBlueprints: Blueprint[] = [
     name: 'populous_count',
     hover: 'frequency of most popular item',
     get: ({ string: str }): number => {
-      return typeof str === 'string'
-        ? 1
-        : typeof str === 'object'
-          ? <number>mostFrequent(str, true)
-          : str ?? 0;
+      return typeof str === 'string' ? 1 : typeof str === 'object' ? <number>mostFrequent(str, true) : (str ?? 0);
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -138,7 +134,7 @@ export const PipeBlueprints: Blueprint[] = [
     name: 'populous',
     hover: 'most popular item',
     get: ({ string: str }): string => {
-      return typeof str === 'string' ? str : typeof str === 'object' ? <string>mostFrequent(str, false) : str ?? '';
+      return typeof str === 'string' ? str : typeof str === 'object' ? <string>mostFrequent(str, false) : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -151,7 +147,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.snakeCase(str)
         : typeof str === 'object'
           ? str.map((s) => voca.snakeCase(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -164,7 +160,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.kebabCase(str)
         : typeof str === 'object'
           ? str.map((s) => voca.kebabCase(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -177,7 +173,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.words(str).length
         : typeof str === 'object'
           ? voca.words(str.join(' ')).length
-          : str ?? 0;
+          : (str ?? 0);
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -190,7 +186,7 @@ export const PipeBlueprints: Blueprint[] = [
         ? voca.titleCase(str)
         : typeof str === 'object'
           ? str.map((s) => voca.titleCase(s)).join(',')
-          : str ?? '';
+          : (str ?? '');
     },
     set: () => undefined,
     auth: AuthType.none,
@@ -199,11 +195,7 @@ export const PipeBlueprints: Blueprint[] = [
     name: 'length',
     hover: 'get length',
     get: ({ string: str }): number => {
-      return typeof str === 'string'
-        ? str.length
-        : typeof str === 'object'
-          ? str.join(',').length
-          : str ?? 0;
+      return typeof str === 'string' ? str.length : typeof str === 'object' ? str.join(',').length : (str ?? 0);
     },
     set: () => undefined,
     auth: AuthType.none,

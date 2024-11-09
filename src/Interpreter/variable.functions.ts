@@ -1,8 +1,9 @@
 import { VoiceChannel, Guild } from 'discord.js';
-import { VariableBlueprints } from '../blueprints/variable.blueprint';
-import { PGuild } from '../types/classes/PGuild.class';
-import { PChannel } from '../types/classes/PPortalChannel.class';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class';
+
+import { VariableBlueprints } from '../blueprints/variable.blueprint.js';
+import { PGuild } from '../types/classes/PGuild.class.js';
+import { PChannel } from '../types/classes/PPortalChannel.class.js';
+import { PVoiceChannel } from '../types/classes/PVoiceChannel.class.js';
 
 export function isVariable(candidate: string): string {
   for (let i = 0; i < VariableBlueprints.length; i++) {

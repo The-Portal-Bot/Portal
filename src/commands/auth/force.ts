@@ -1,14 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
-import { deleteChannel, includedInVoiceList, regexInterpreter } from '../../libraries/guild.library';
-import { messageHelp } from '../../libraries/help.library';
-import { updateVoice } from '../../libraries/mongo.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { PChannel } from '../../types/classes/PPortalChannel.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
-import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
-import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
+import { deleteChannel, includedInVoiceList, regexInterpreter } from '../../libraries/guild.library.js';
+import { messageHelp } from '../../libraries/help.library.js';
+import { updateVoice } from '../../libraries/mongo.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { PChannel } from '../../types/classes/PPortalChannel.class.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class.js';
+import { PortalChannelType } from '../../types/enums/PortalChannel.enum.js';
 
 const COMMAND_NAME = 'force';
 const DESCRIPTION = 'force refresh your portal channel';

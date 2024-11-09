@@ -1,7 +1,7 @@
 import { getVoiceConnection, joinVoiceChannel, VoiceConnection } from '@discordjs/voice';
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import duration from 'dayjs/plugin/duration.js';
+import relativeTime from 'dayjs/plugin/relativeTime.js';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -18,19 +18,19 @@ import {
   MessageComponentInteraction,
   PermissionResolvable,
   TextBasedChannel,
-  TextChannel
+  TextChannel,
 } from 'discord.js';
 import { VideoSearchResult } from 'yt-search';
 
-import { MusicData, PGuild } from '../types/classes/PGuild.class';
-import { Field, TimeElapsed } from '../types/classes/PTypes.interface';
-import { Locale } from '../types/enums/Locales.enum';
-import { OpapGameId } from '../types/enums/OpapGames.enum';
-import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum';
-import { RankSpeed } from '../types/enums/RankSpeed.enum';
-import logger from '../utilities/log.utility';
-import { createDiscordJSAdapter } from './adapter.library';
-import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library';
+import { MusicData, PGuild } from '../types/classes/PGuild.class.js';
+import { Field, TimeElapsed } from '../types/classes/PTypes.interface.js';
+import { Locale } from '../types/enums/Locales.enum.js';
+import { OpapGameId } from '../types/enums/OpapGames.enum.js';
+import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum.js';
+import { RankSpeed } from '../types/enums/RankSpeed.enum.js';
+import logger from '../utilities/log.utility.js';
+import { createDiscordJSAdapter } from './adapter.library.js';
+import { fetchGuild, fetchGuildList, setMusicData } from './mongo.library.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -67,19 +67,16 @@ export function markGuildAsDeleted(guild: Guild) {
   deletedGuild.add(guild);
 }
 
-export async function askForApproval(interaction: ChatInputCommandInteraction, question: string, buttonStyle: ButtonStyle): Promise<boolean> {
-  const confirm = new ButtonBuilder()
-    .setCustomId('confirm')
-    .setLabel('Confirm')
-    .setStyle(buttonStyle);
+export async function askForApproval(
+  interaction: ChatInputCommandInteraction,
+  question: string,
+  buttonStyle: ButtonStyle,
+): Promise<boolean> {
+  const confirm = new ButtonBuilder().setCustomId('confirm').setLabel('Confirm').setStyle(buttonStyle);
 
-  const cancel = new ButtonBuilder()
-    .setCustomId('cancel')
-    .setLabel('Cancel')
-    .setStyle(ButtonStyle.Secondary);
+  const cancel = new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Secondary);
 
-  const row = new ActionRowBuilder<ButtonBuilder>()
-    .addComponents(cancel, confirm);
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(cancel, confirm);
 
   const reply = await interaction.reply({
     fetchReply: true,
@@ -118,20 +115,20 @@ export function getKeyFromEnum(value: string, enumeration: enumTypes): string | 
   let enumerationArray;
 
   switch (enumeration) {
-  case OpapGameId:
-    enumerationArray = Object.values(OpapGameId);
-    break;
-  case RankSpeed:
-    enumerationArray = Object.values(RankSpeed);
-    break;
-  case ProfanityLevel:
-    enumerationArray = Object.values(ProfanityLevel);
-    break;
-  case Locale:
-    enumerationArray = Object.values(Locale);
-    break;
-  default:
-    return undefined;
+    case OpapGameId:
+      enumerationArray = Object.values(OpapGameId);
+      break;
+    case RankSpeed:
+      enumerationArray = Object.values(RankSpeed);
+      break;
+    case ProfanityLevel:
+      enumerationArray = Object.values(ProfanityLevel);
+      break;
+    case Locale:
+      enumerationArray = Object.values(Locale);
+      break;
+    default:
+      return undefined;
   }
 
   for (const enumerationValue of enumerationArray) {
@@ -160,10 +157,10 @@ export async function createMusicMessage(channel: TextChannel, pGuild: PGuild): 
     true,
     null,
     idleThumbnail,
-    'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
+    'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png',
   );
 
-  const sentMessage = await channel.send({ embeds: [musicMessageEmb] })
+  const sentMessage = await channel.send({ embeds: [musicMessageEmb] });
 
   if (!sentMessage) {
     return 'failed to send message to channel';
@@ -180,7 +177,7 @@ export async function createMusicMessage(channel: TextChannel, pGuild: PGuild): 
     sentMessage.id,
     pGuild.musicData.messageLyricsId ? pGuild.musicData.messageLyricsId : 'null',
     [],
-    false
+    false,
   );
 
   await setMusicData(pGuild.id, musicData);
@@ -188,7 +185,11 @@ export async function createMusicMessage(channel: TextChannel, pGuild: PGuild): 
   return sentMessage.id;
 }
 
-export async function createMusicLyricsMessage(channel: TextChannel, pGuild: PGuild, messageId: string): Promise<string | undefined> {
+export async function createMusicLyricsMessage(
+  channel: TextChannel,
+  pGuild: PGuild,
+  messageId: string,
+): Promise<string | undefined> {
   const musicLyricsMessageEmb = createEmbed('Lyrics 📄', '', '#e60026', null, null, null, false, null, null);
 
   const sentMessageLyrics = await channel.send({ embeds: [musicLyricsMessageEmb] });
@@ -208,34 +209,34 @@ export async function updateMusicMessage(
   pGuild: PGuild,
   yts: VideoSearchResult | undefined,
   status: string,
-  animated = true
+  animated = true,
 ): Promise<boolean> {
   const guildChannel: GuildBasedChannel | undefined = guild.channels.cache.find(
-    (c) => c.id === pGuild.musicData.channelId
+    (c) => c.id === pGuild.musicData.channelId,
   );
 
   if (!guildChannel) {
-    return false
+    return false;
   }
 
   const channel: TextChannel = <TextChannel>guildChannel;
 
   if (!channel || !pGuild.musicData.messageId) {
-    return false
+    return false;
   }
 
   const musicQueue = pGuild.musicQueue
     ? pGuild.musicQueue.length > 1
       ? pGuild.musicQueue
-        .map((v, i) => {
-          if (i !== 0 && i < 6) {
-            return `${i}. ${maxString(v.title, 61)}`;
-          } else if (i === 6) {
-            return `...${pGuild.musicQueue.length - 6} more`;
-          }
-        })
-        .filter((v) => !!v)
-        .join('\n')
+          .map((v, i) => {
+            if (i !== 0 && i < 6) {
+              return `${i}. ${maxString(v.title, 61)}`;
+            } else if (i === 6) {
+              return `...${pGuild.musicQueue.length - 6} more`;
+            }
+          })
+          .filter((v) => !!v)
+          .join('\n')
       : 'empty'
     : 'empty';
 
@@ -259,7 +260,7 @@ export async function updateMusicMessage(
     yts ? yts.thumbnail : idleThumbnail,
     animated
       ? 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.gif'
-      : 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png'
+      : 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/music.png',
   );
 
   if (!pGuild.musicData.messageId || !channel) {
@@ -277,7 +278,12 @@ export async function updateMusicMessage(
   return !!messageEdit;
 }
 
-export async function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyrics: string, url?: string): Promise<boolean> {
+export async function updateMusicLyricsMessage(
+  guild: Guild,
+  pGuild: PGuild,
+  lyrics: string,
+  url?: string,
+): Promise<boolean> {
   const guildChannel = guild.channels.cache.find((c) => c.id === pGuild.musicData.channelId);
 
   if (!guildChannel) {
@@ -299,7 +305,7 @@ export async function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyr
     null,
     false,
     null,
-    null
+    null,
   );
 
   if (!pGuild.musicData.messageLyricsId || !channel) {
@@ -319,7 +325,7 @@ export async function updateMusicLyricsMessage(guild: Guild, pGuild: PGuild, lyr
 
 export async function joinUserVoiceChannelByInteraction(
   interaction: ChatInputCommandInteraction,
-  pGuild: PGuild
+  pGuild: PGuild,
 ): Promise<VoiceConnection | undefined> {
   const member = interaction.member;
 
@@ -389,7 +395,7 @@ export function createEmbed(
   image: string | null | undefined,
   customGif?: string,
   author?: { name: string; icon: string },
-  footer?: string
+  footer?: string,
 ): EmbedBuilder {
   const portalIconUrl: string =
     'https://raw.githubusercontent.com/keybraker' + '/Portal/master/src/assets/img/portal_logo_spinr.gif';
@@ -469,7 +475,7 @@ export function isMod(member: GuildMember | null): boolean {
     return false;
   }
 
-  return member.guild.ownerId === member.id || member.roles.cache.some((r) => r.name.toLowerCase() === 'p.mod')
+  return member.guild.ownerId === member.id || member.roles.cache.some((r) => r.name.toLowerCase() === 'p.mod');
 }
 
 export function isWhitelist(member: GuildMember | null): boolean {
@@ -501,7 +507,7 @@ export async function messageReply(
   deleteSource = false,
   deleteReply = false,
   emotePass = '✔️',
-  emoteFail = '❌'
+  emoteFail = '❌',
 ): Promise<boolean> {
   if (!message) {
     return Promise.reject('failed to find message');
@@ -563,12 +569,12 @@ export async function messageReply(
 export function isUrl(potentialURL: string): boolean {
   const pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%.~+]*)*' + // port and path
-    '(\\?[;&a-z\\d%.~+=-]*)?' + // query string
-    '(\\#[-a-z\\d]*)?$',
-    'i'
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d]*)?$',
+    'i',
   ); // fragment locator
 
   return pattern.test(potentialURL);
@@ -593,7 +599,7 @@ export function getElapsedTime(timestamp: Date | number, timeout: number): TimeE
 
 // must get updated
 export async function removeDeletedChannels(guild: Guild): Promise<boolean> {
-  const pGuild = await fetchGuild(guild.id)
+  const pGuild = await fetchGuild(guild.id);
 
   if (!pGuild) {
     return false;
@@ -692,8 +698,8 @@ export async function removeEmptyVoiceChannels(guild: Guild): Promise<boolean> {
             return true;
           }
           return false;
-        })
-      )
+        }),
+      ),
     );
   });
 

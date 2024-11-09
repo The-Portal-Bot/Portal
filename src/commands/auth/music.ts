@@ -1,12 +1,12 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, InteractionContextType, TextChannel, VoiceChannel } from 'discord.js';
 
-import { deleteChannel, doesChannelHaveUsage } from '../../libraries/guild.library';
-import { createMusicLyricsMessage, createMusicMessage, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
-import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
+import { deleteChannel, doesChannelHaveUsage } from '../../libraries/guild.library.js';
+import { createMusicLyricsMessage, createMusicMessage, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { PortalChannelType } from '../../types/enums/PortalChannel.enum.js';
 
 const COMMAND_NAME = 'music';
 const DESCRIPTION = 'set a music channel';

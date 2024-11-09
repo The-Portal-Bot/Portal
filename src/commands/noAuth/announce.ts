@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
-import { createEmbed, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { PGuild } from '../../types/classes/PGuild.class';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+
+import { createEmbed, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { PGuild } from '../../types/classes/PGuild.class.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'announce';
 const DESCRIPTION = 'send an announcement to the announcement channel';

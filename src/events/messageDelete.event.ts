@@ -4,10 +4,10 @@ import {
   createMusicMessage,
   isMessageDeleted,
   markMessageAsDeleted,
-} from '../libraries/help.library';
-import { fetchGuild, removePoll, removeVendor } from '../libraries/mongo.library';
+} from '../libraries/help.library.js';
+import { fetchGuild, removePoll, removeVendor } from '../libraries/mongo.library.js';
 
-import logger from '../utilities/log.utility';
+import logger from '../utilities/log.utility.js';
 
 export async function messageDelete(message: Message<boolean> | PartialMessage): Promise<void> {
   if (!message.guild) {

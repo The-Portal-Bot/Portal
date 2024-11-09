@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-import PVoiceChannelSchema from './PVoiceChannel.schema';
+import PVoiceChannelSchema from './PVoiceChannel.schema.js';
 
 const PPortalChannelSchema = new Schema(
   {

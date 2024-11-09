@@ -1,11 +1,12 @@
 import { BanOptions, Guild, GuildMember, Message, VoiceState } from 'discord.js';
-import { PGuild } from '../types/classes/PGuild.class';
-import { PMember } from '../types/classes/PMember.class';
-import { Rank } from '../types/classes/PTypes.interface';
-import { RankSpeed, RankSpeedValueList } from '../types/enums/RankSpeed.enum';
-import { getElapsedTime } from './help.library';
-import logger from '../utilities/log.utility';
-import { updateEntireMember, updateMember } from './mongo.library';
+
+import { PGuild } from '../types/classes/PGuild.class.js';
+import { PMember } from '../types/classes/PMember.class.js';
+import { Rank } from '../types/classes/PTypes.interface.js';
+import { RankSpeed, RankSpeedValueList } from '../types/enums/RankSpeed.enum.js';
+import logger from '../utilities/log.utility.js';
+import { getElapsedTime } from './help.library.js';
+import { updateEntireMember, updateMember } from './mongo.library.js';
 
 export async function calculateRank(member: PMember): Promise<number> {
   if (member.tier === 0) {
@@ -63,7 +64,7 @@ export async function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): P
 
   if (!pMember.timestamp) {
     pMember.timestamp = new Date();
-    await updateMember(voiceState.guild.id, member.id, 'timestamp', pMember.timestamp) ? false : pMember.level;
+    (await updateMember(voiceState.guild.id, member.id, 'timestamp', pMember.timestamp)) ? false : pMember.level;
   }
 
   pMember.points = await addPointsTime(pMember, speed);
@@ -85,7 +86,11 @@ export async function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): P
   return pMember.level > cachedLevel ? pMember.level : false;
 }
 
-export async function addPointsMessage(message: Message, member: PMember, rankSpeed: number): Promise<number | boolean> {
+export async function addPointsMessage(
+  message: Message,
+  member: PMember,
+  rankSpeed: number,
+): Promise<number | boolean> {
   if (rankSpeed === RankSpeed.none) {
     return false;
   }
@@ -97,18 +102,16 @@ export async function addPointsMessage(message: Message, member: PMember, rankSp
   const points = message.content.length * RankSpeedValueList[rankSpeed];
   member.points += points > 5 ? 5 : points;
 
-  updateMember(message.guild.id, member.id, 'points', member.points)
-    .catch(() => {
-      return 'failed to update member';
-    });
+  updateMember(message.guild.id, member.id, 'points', member.points).catch(() => {
+    return 'failed to update member';
+  });
 
   const level = await calculateRank(member);
 
   if (level) {
-    updateMember(message.guild.id, member.id, 'level', level)
-      .catch(() => {
-        return 'failed to update member';
-      });
+    updateMember(message.guild.id, member.id, 'level', level).catch(() => {
+      return 'failed to update member';
+    });
   }
 
   return level ?? false;
@@ -119,7 +122,7 @@ export async function kick(memberToKick: GuildMember, kickReason: string): Promi
     return false;
   }
 
-  return !!await memberToKick.kick(kickReason)
+  return !!(await memberToKick.kick(kickReason));
 }
 
 export async function ban(memberToBan: GuildMember, banOptions: BanOptions): Promise<boolean> {
@@ -127,14 +130,14 @@ export async function ban(memberToBan: GuildMember, banOptions: BanOptions): Pro
     return false;
   }
 
-  return !!await memberToBan.ban(banOptions);
+  return !!(await memberToBan.ban(banOptions));
 }
 
 async function giveRoleFromRankUp(
   pMember: PMember,
   member: GuildMember,
   ranks: Rank[],
-  guild: Guild
+  guild: Guild,
 ): Promise<boolean> {
   if (!ranks) {
     logger.error('At least one rank must be given');

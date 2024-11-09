@@ -1,11 +1,11 @@
 import { BaseInteraction, ChannelType, ChatInputCommandInteraction, EmbedBuilder, GuildMember } from 'discord.js';
 
-import { commandLoader } from '../handlers/command.handler';
-import { isUserAuthorised } from '../libraries/help.library';
-import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library';
-import { commandFetcher } from '../libraries/preprocessor.library';
-import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface';
-import logger from '../utilities/log.utility';
+import { commandLoader } from '../handlers/command.handler.js';
+import { isUserAuthorised } from '../libraries/help.library.js';
+import { fetchGuildPreData, fetchGuildRest, insertMember } from '../libraries/mongo.library.js';
+import { commandFetcher } from '../libraries/preprocessor.library.js';
+import { ActiveCooldowns, AuthCommands, NoAuthCommands } from '../types/classes/PTypes.interface.js';
+import logger from '../utilities/log.utility.js';
 
 function validateBaseInteractionIsCommand(interaction: BaseInteraction): interaction is ChatInputCommandInteraction {
   return interaction.isCommand();

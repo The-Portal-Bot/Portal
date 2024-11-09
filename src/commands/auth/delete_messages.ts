@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 import { ButtonStyle, ChatInputCommandInteraction, InteractionContextType, TextChannel } from 'discord.js';
-import { askForApproval, messageHelp } from '../../libraries/help.library';
-import { Command } from '../../types/Command';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
+import { askForApproval, messageHelp } from '../../libraries/help.library.js';
+import { Command } from '../../types/Command.js';
+import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
 
 const COMMAND_NAME = 'delete_messages';
 const DESCRIPTION = 'delete n messages';

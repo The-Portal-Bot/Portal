@@ -1,8 +1,8 @@
 import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
-import { createEmbed } from '../libraries/help.library';
-import { fetchAnnouncementChannelByGuildId, removeMember } from '../libraries/mongo.library';
+import { createEmbed } from '../libraries/help.library.js';
+import { fetchAnnouncementChannelByGuildId, removeMember } from '../libraries/mongo.library.js';
 
-import logger from '../utilities/log.utility';
+import logger from '../utilities/log.utility.js';
 
 export async function guildMemberRemove(member: GuildMember | PartialGuildMember): Promise<void> {
   if (member.user.bot) {
