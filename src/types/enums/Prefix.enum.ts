@@ -1,6 +1,6 @@
 export enum Prefix {
-    ATTRIBUTE = '&',
-    PIPE = '|',
-    STRUCTURE = '{{',
-    VARIABLE = '$',
+  ATTRIBUTE = "&",
+  PIPE = "|",
+  STRUCTURE = "{{",
+  VARIABLE = "$",
 }

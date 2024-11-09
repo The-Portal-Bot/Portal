@@ -1,15 +1,22 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, InteractionContextType, NewsChannel } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  type ChatInputCommandInteraction,
+  InteractionContextType,
+  NewsChannel,
+} from "npm:discord.js";
 
-import { doesChannelHaveUsage } from '../../libraries/guild.library.js';
-import { messageHelp } from '../../libraries/help.library.js';
-import { insertURL } from '../../libraries/mongo.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { doesChannelHaveUsage } from "../../libraries/guild.library.ts";
+import { messageHelp } from "../../libraries/help.library.ts";
+import { insertURL } from "../../libraries/mongo.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'url';
-const DESCRIPTION = 'set a channel to URL only';
+const COMMAND_NAME = "url";
+const DESCRIPTION = "set a channel to URL only";
 
 export default {
   time: 0,
@@ -21,30 +28,35 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addChannelOption((option) =>
-      option.setName('url_channel').setDescription('the channel you want to make the url channel').setRequired(true),
+      option.setName("url_channel").setDescription(
+        "the channel you want to make the url channel",
+      ).setRequired(true)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
-    const urlChannel = interaction.options.getChannel('url_channel');
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
+    const urlChannel = interaction.options.getChannel("url_channel");
 
     if (!urlChannel) {
       return {
         result: false,
-        value: messageHelp('commands', 'url'),
+        value: messageHelp("commands", "url"),
       };
     }
 
     if (!(urlChannel instanceof NewsChannel)) {
       return {
         result: false,
-        value: messageHelp('commands', 'url', 'channel must be news channel'),
+        value: messageHelp("commands", "url", "channel must be news channel"),
       };
     }
 
     if (!urlChannel.isTextBased()) {
       return {
         result: false,
-        value: messageHelp('commands', 'url', 'channel must be text channel'),
+        value: messageHelp("commands", "url", "channel must be text channel"),
       };
     }
 
@@ -60,7 +72,9 @@ export default {
 
     return {
       result: response,
-      value: response ? 'new url channel set successfully' : 'failed to set new url channel',
+      value: response
+        ? "new url channel set successfully"
+        : "failed to set new url channel",
     };
   },
 } as Command;

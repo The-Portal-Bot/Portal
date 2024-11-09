@@ -1,5 +1,5 @@
-import { Document } from 'mongoose';
-import { PVoiceChannel } from './PVoiceChannel.class.js';
+import type { Document } from "npm:mongoose";
+import type { PVoiceChannel } from "./PVoiceChannel.class.ts";
 
 export class PChannel {
   public id: string;

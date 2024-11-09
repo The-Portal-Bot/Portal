@@ -5,4 +5,4 @@ export enum AuthType {
   admin,
 }
 
-export const AuthTypeList = ['none', 'portal', 'voice', 'admin'];
+export const AuthTypeList = ["none", "portal", "voice", "admin"];

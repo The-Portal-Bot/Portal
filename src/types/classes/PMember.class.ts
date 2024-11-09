@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import type { Document } from "npm:mongoose";
 
 export class PMember {
   public id: string;
@@ -18,7 +18,7 @@ export class PMember {
     points: number,
     penalties: number,
     timestamp: Date | null,
-    regex: string | null
+    regex: string | null,
   ) {
     this.id = id;
     this.level = level;

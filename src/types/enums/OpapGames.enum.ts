@@ -8,4 +8,12 @@ export enum OpapGameId {
   extra5 = 5106,
 }
 
-export const OpapGameIdList = ['kino', 'powerspin', 'super3', 'proto', 'lotto', 'tzoker', 'extra5'];
+export const OpapGameIdList = [
+  "kino",
+  "powerspin",
+  "super3",
+  "proto",
+  "lotto",
+  "tzoker",
+  "extra5",
+];

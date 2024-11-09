@@ -1,5 +1,5 @@
-import { Document } from 'mongoose';
-import { Locale } from '../enums/Locales.enum.js';
+import type { Document } from "npm:mongoose";
+import type { Locale } from "../enums/Locales.enum.ts";
 
 export class PVoiceChannel {
   public id: string;

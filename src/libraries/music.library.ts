@@ -1,13 +1,13 @@
 //
 // // const ytdl = require('ytdl-core');
 // import ytdl from 'discord-ytdl-core';
-// import { Client, Guild, Message, MessageAttachment, User } from "discord.js";
-// import { RequestOptions } from 'https';
+// import { Client, Guild, Message, MessageAttachment, User } from "npm:discord.js";
+// import { RequestOptions } from 'node:https';
 // import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
 // import { GuildPrtl } from "../types/classes/GuildPrtl.class";
-// import { get_json, is_url, join_by_reaction, joinUserVoiceChannelByReaction, update_music_lyrics_message, update_music_message } from './help.library.js';
-// import { https_fetch, scrape_lyrics } from './http.library.js';
-// import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library.js';
+// import { get_json, is_url, join_by_reaction, joinUserVoiceChannelByReaction, update_music_lyrics_message, update_music_message } from './help.library.ts';
+// import { https_fetch, scrape_lyrics } from './http.library.ts';
+// import { clear_music_vote, fetch_guild_music_queue, insert_music_video, update_guild } from './mongo.library.ts';
 
 // async function pop_music_queue(
 // 	pGuild: GuildPrtl

@@ -1,10 +1,11 @@
-import { Document } from 'mongoose';
-import { VideoSearchResult } from 'yt-search';
-import { PGiveRole } from './PGiveRole.class.js';
-import { PMember } from './PMember.class.js';
-import { PPoll } from './PPoll.class.js';
-import { IPChannel, PChannel } from './PPortalChannel.class.js';
-import { Rank } from './PTypes.interface';
+import type { Document } from "npm:mongoose";
+import type { VideoSearchResult } from "yt-search";
+
+import type { PGiveRole } from "./PGiveRole.class.ts";
+import type { PMember } from "./PMember.class.ts";
+import type { PPoll } from "./PPoll.class.ts";
+import type { IPChannel, PChannel } from "./PPortalChannel.class.ts";
+import type { Rank } from "./PTypes.interface.ts";
 
 export class MusicData {
   public channelId: string | undefined;
@@ -13,7 +14,13 @@ export class MusicData {
   public votes: string[] | undefined;
   public pinned: boolean;
 
-  constructor(channelId: string, messageId: string, messageLyricsId: string, votes: string[], pinned: boolean) {
+  constructor(
+    channelId: string,
+    messageId: string,
+    messageLyricsId: string,
+    votes: string[],
+    pinned: boolean,
+  ) {
     this.channelId = channelId;
     this.messageId = messageId;
     this.messageLyricsId = messageLyricsId;

@@ -1,12 +1,12 @@
-// import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
-// import { Client, MessageReaction, Role, User } from "discord.js";
+// import { entersState, getVoiceConnection, VoiceConnectionStatus } from "npm:@discordjs/voice";
+// import { Client, MessageReaction, Role, User } from "npm:discord.js";
 // import { getRole } from "../libraries/guild.library";
 // import { createEmbed, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
 // import { clearMusicVote, fetchGuildReactionData, insertMusicVote, removePoll, setMusicData, updateGuild } from "../libraries/mongo.library";
 // // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
 // import { PGuild } from "../types/classes/PGuild.class";
 
-import logger from '../utilities/log.utility.js';
+import logger from "../utilities/log.utility.ts";
 
 // import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 
@@ -460,7 +460,7 @@ import logger from '../utilities/log.utility.js';
 //     }
 // }
 
-export async function messageReactionAdd(
+export function messageReactionAdd(
   // @ts-expect-error: description
   client: Client,
   // @ts-expect-error: description
@@ -470,7 +470,11 @@ export async function messageReactionAdd(
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     logger.info(`${client} ${messageReaction} ${user}`);
-    return reject('under construction');
+    if (date.now() > 0) {
+      return resolve();
+    }
+    return reject("under construction");
+
     // if (user.bot) {
     //     return resolve(''); // 'not handling bot reactions'
     // } else if (messageReaction.message?.guild) {

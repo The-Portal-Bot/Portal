@@ -1,15 +1,26 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, InteractionContextType, VoiceChannel } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  type ChatInputCommandInteraction,
+  type GuildMember,
+  InteractionContextType,
+  VoiceChannel,
+} from "npm:discord.js";
 
-import { messageHelp } from '../../libraries/help.library.js';
-import { insertPortal } from '../../libraries/mongo.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { IPChannel, PChannel } from '../../types/classes/PPortalChannel.class.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { messageHelp } from "../../libraries/help.library.ts";
+import { insertPortal } from "../../libraries/mongo.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type IPChannel,
+  PChannel,
+} from "../../types/classes/PPortalChannel.class.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'portal';
-const DESCRIPTION = 'set a portal channel';
+const COMMAND_NAME = "portal";
+const DESCRIPTION = "set a portal channel";
 
 export default {
   time: 0,
@@ -22,39 +33,52 @@ export default {
     .setDescription(DESCRIPTION)
     .addChannelOption((option) =>
       option
-        .setName('portal_channel_name')
-        .setDescription('the name of the portal channel you want to create')
-        .setRequired(true),
+        .setName("portal_channel_name")
+        .setDescription("the name of the portal channel you want to create")
+        .setRequired(true)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
-    const newPortalChannel = interaction.options.getChannel('portal_channel_name');
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
+    const newPortalChannel = interaction.options.getChannel(
+      "portal_channel_name",
+    );
 
     if (!newPortalChannel) {
       return {
         result: false,
-        value: messageHelp('commands', 'portal', 'portal channel name is required'),
+        value: messageHelp(
+          "commands",
+          "portal",
+          "portal channel name is required",
+        ),
       };
     }
 
     if (!(newPortalChannel instanceof VoiceChannel)) {
       return {
         result: false,
-        value: messageHelp('commands', 'portal', 'channel must be voice channel'),
+        value: messageHelp(
+          "commands",
+          "portal",
+          "channel must be voice channel",
+        ),
       };
     }
 
     if (!interaction.guild) {
       return {
         result: true,
-        value: 'guild could not be fetched',
+        value: "guild could not be fetched",
       };
     }
 
     if (!interaction.member) {
       return {
         result: true,
-        value: 'member could not be fetched',
+        value: "member could not be fetched",
       };
     }
 
@@ -70,9 +94,9 @@ export default {
     // };
 
     const voiceRegex = pGuild.premium
-      ? // ? 'G$#-P$memberCount | $statusList'
-      '$#:$memberCount {{"if": "$statusCount", "is": "===", "with": "1","yes": "$statusList", "no": "$statusList|acronym"}}'
-      : 'Channel $#';
+      // ? 'G$#-P$memberCount | $statusList'
+      ? '$#:$memberCount {{"if": "$statusCount", "is": "===", "with": "1","yes": "$statusList", "no": "$statusList|acronym"}}'
+      : "Channel $#";
 
     // const newPortalChannelId = await createChannel(currentGuild, portalChannelName, portalOptions, portalChannelCategoryName);
 
@@ -87,7 +111,7 @@ export default {
       newPortalChannel.id,
       currentMember.id,
       true,
-      'portal',
+      "portal",
       voiceRegex,
       [],
       false,
@@ -99,15 +123,18 @@ export default {
       false,
     );
 
-    const portalInserted = await insertPortal(pGuild.id, pChannel as unknown as IPChannel);
+    const portalInserted = await insertPortal(
+      pGuild.id,
+      pChannel as unknown as IPChannel,
+    );
 
     return {
       result: !!portalInserted,
       value: portalInserted
-        ? 'Portal channel has been created.\n' +
-          'Keep in mind that due to Discord\'s limitations,\n' +
-          'channel names will be updated on a five minute interval'
-        : 'portal channel failed to be created',
+        ? "Portal channel has been created.\n" +
+          "Keep in mind that due to Discord's limitations,\n" +
+          "channel names will be updated on a five minute interval"
+        : "portal channel failed to be created",
     };
   },
 } as Command;

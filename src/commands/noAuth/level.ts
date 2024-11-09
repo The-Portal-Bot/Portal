@@ -1,12 +1,19 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, InteractionContextType } from 'discord.js';
-import { createEmbed } from '../../libraries/help.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  type ChatInputCommandInteraction,
+  type GuildMember,
+  InteractionContextType,
+} from "npm:discord.js";
+import { createEmbed } from "../../libraries/help.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'level';
-const DESCRIPTION = 'returns your level';
+const COMMAND_NAME = "level";
+const DESCRIPTION = "returns your level";
 
 export default {
   time: 0,
@@ -18,14 +25,17 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
     const pMember = pGuild.pMembers.find((m) => m.id === member.id);
 
     if (!pMember) {
       return {
         result: false,
-        value: 'could not find member',
+        value: "could not find member",
       };
     }
 
@@ -34,13 +44,17 @@ export default {
         createEmbed(
           null,
           null,
-          '#00FFFF',
+          "#00FFFF",
           [
-            { emote: 'Level', role: `${pMember.level}`, inline: true },
-            { emote: 'Points', role: `${Math.round(pMember.points)}`, inline: true },
+            { emote: "Level", role: `${pMember.level}`, inline: true },
+            {
+              emote: "Points",
+              role: `${Math.round(pMember.points)}`,
+              inline: true,
+            },
             // { emote: '', role: '', inline: false },
             // { emote: 'Rank', role: `${pMember.rank}`, inline: true },
-            { emote: 'Tier', role: `${pMember.tier}`, inline: true },
+            { emote: "Tier", role: `${pMember.tier}`, inline: true },
           ],
           null,
           member,
@@ -55,7 +69,7 @@ export default {
 
     return {
       result: !!outcome,
-      value: outcome ? '' : 'failed to send message',
+      value: outcome ? "" : "failed to send message",
     };
   },
 } as Command;

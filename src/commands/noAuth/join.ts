@@ -1,16 +1,23 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type { ChatInputCommandInteraction } from "npm:discord.js";
 
-import logger from '../../utilities/log.utility.js';
+import logger from "../../utilities/log.utility.ts";
 
-import { joinUserVoiceChannelByInteraction, messageHelp } from '../../libraries/help.library.js';
-import { clientTalk } from '../../libraries/localisation.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import {
+  joinUserVoiceChannelByInteraction,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { clientTalk } from "../../libraries/localisation.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  AnnouncementAction,
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'join';
-const DESCRIPTION = 'makes portal join your voice channel';
+const COMMAND_NAME = "join";
+const DESCRIPTION = "makes portal join your voice channel";
 
 export default {
   time: 1,
@@ -18,15 +25,23 @@ export default {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.MEMBER,
-  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
+    DESCRIPTION,
+  ),
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
     try {
-      const voiceChannel = await joinUserVoiceChannelByInteraction(interaction, pGuild);
+      const voiceChannel = await joinUserVoiceChannelByInteraction(
+        interaction,
+        pGuild,
+      );
 
       if (!voiceChannel) {
         return {
           result: false,
-          value: 'failed to join voice channel',
+          value: "failed to join voice channel",
         };
       }
 
@@ -34,14 +49,14 @@ export default {
 
       return {
         result: true,
-        value: 'successfully joined voice channel',
+        value: "successfully joined voice channel",
       };
     } catch (error) {
       logger.error(`commands.join.error: ${error}`);
 
       return {
         result: false,
-        value: messageHelp('commands', 'join', 'failed to join voice channel'),
+        value: messageHelp("commands", "join", "failed to join voice channel"),
       };
     }
   },

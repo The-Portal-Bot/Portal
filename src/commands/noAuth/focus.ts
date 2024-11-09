@@ -1,11 +1,15 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { messageHelp } from '../../libraries/help.library.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
-import { Command } from '../../types/Command.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type { ChatInputCommandInteraction } from "npm:discord.js";
+import { messageHelp } from "../../libraries/help.library.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
+import type { Command } from "../../types/Command.ts";
 
-const COMMAND_NAME = 'focus';
-const DESCRIPTION = 'creates a dedicated channel for two users to privately talk in';
+const COMMAND_NAME = "focus";
+const DESCRIPTION =
+  "creates a dedicated channel for two users to privately talk in";
 
 export default {
   time: 1,
@@ -16,29 +20,42 @@ export default {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addUserOption((option) => option.setName('member').setDescription('member to focus on').setRequired(true))
-    .addNumberOption((option) => option.setName('duration').setDescription('duration in seconds').setRequired(true)),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    const member = interaction.options.getMember('member');
-    const duration = interaction.options.getNumber('duration');
+    .addUserOption((option) =>
+      option.setName("member").setDescription("member to focus on").setRequired(
+        true,
+      )
+    )
+    .addNumberOption((option) =>
+      option.setName("duration").setDescription("duration in seconds")
+        .setRequired(true)
+    ),
+  execute(
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReturnPromise> {
+    const member = interaction.options.getMember("member");
+    const duration = interaction.options.getNumber("duration");
 
     if (!member) {
       return {
         result: false,
-        value: messageHelp('commands', COMMAND_NAME, 'user must be provided'),
+        value: messageHelp("commands", COMMAND_NAME, "user must be provided"),
       };
     }
 
     if (!duration) {
       return {
         result: false,
-        value: messageHelp('commands', COMMAND_NAME, 'duration must be provided'),
+        value: messageHelp(
+          "commands",
+          COMMAND_NAME,
+          "duration must be provided",
+        ),
       };
     }
 
     return {
       result: false,
-      value: 'focus is currently disabled',
+      value: "focus is currently disabled",
     };
 
     // if (!member.voice.channel) {

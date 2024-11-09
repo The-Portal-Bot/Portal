@@ -1,15 +1,22 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import dayjs from 'dayjs';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { RequestOptions } from 'https';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import dayjs from "npm:dayjs";
+import type { ChatInputCommandInteraction } from "npm:discord.js";
+import type { RequestOptions } from "node:https";
 
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
-import { httpsFetch } from '../../libraries/http.library.js';
-import { Command } from '../../types/Command.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import {
+  createEmbed,
+  getJSONFromString,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { httpsFetch } from "../../libraries/http.library.ts";
+import type { Command } from "../../types/Command.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'bet';
-const DESCRIPTION = 'returns betting data';
+const COMMAND_NAME = "bet";
+const DESCRIPTION = "returns betting data";
 
 export default {
   time: 0,
@@ -22,51 +29,53 @@ export default {
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
       option
-        .setName('provider')
-        .setDescription('betting provider')
+        .setName("provider")
+        .setDescription("betting provider")
         .setRequired(true)
-        .addChoices({ name: 'OPAP', value: 'opap' }),
+        .addChoices({ name: "OPAP", value: "opap" })
     )
     .addNumberOption((option) =>
       option
-        .setName('game')
-        .setDescription('betting game')
+        .setName("game")
+        .setDescription("betting game")
         .setRequired(true)
         .addChoices(
-          { name: 'KINO', value: 1100 },
-          { name: 'PowerSpin', value: 1110 },
-          { name: 'Super3', value: 2100 },
-          { name: 'PROTO', value: 2101 },
-          { name: 'LOTTO', value: 5103 },
-          { name: 'Tzoker', value: 5104 },
-          { name: 'extra5', value: 5106 },
-        ),
+          { name: "KINO", value: 1100 },
+          { name: "PowerSpin", value: 1110 },
+          { name: "Super3", value: 2100 },
+          { name: "PROTO", value: 2101 },
+          { name: "LOTTO", value: 5103 },
+          { name: "Tzoker", value: 5104 },
+          { name: "extra5", value: 5106 },
+        )
     ),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    const provider = interaction.options.getString('provider');
-    const gameCode = interaction.options.getNumber('game');
+  async execute(
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReturnPromise> {
+    const provider = interaction.options.getString("provider");
+    const gameCode = interaction.options.getNumber("game");
 
     if (!provider) {
       return {
         result: false,
-        value: messageHelp('commands', 'bet', 'provider must be provided'),
+        value: messageHelp("commands", "bet", "provider must be provided"),
       };
     }
 
     if (!gameCode) {
       return {
         result: false,
-        value: messageHelp('commands', 'bet', 'gameCode must be provided'),
+        value: messageHelp("commands", "bet", "gameCode must be provided"),
       };
     }
 
     const options: RequestOptions = {
-      method: 'GET',
-      hostname: 'api.opap.gr',
+      method: "GET",
+      hostname: "api.opap.gr",
       port: undefined,
       path: `/draws/v3.0/${gameCode}/last-result-and-active`,
       headers: {
-        'x-opap-host': 'api.opap.gr',
+        "x-opap-host": "api.opap.gr",
         useQueryString: 1,
       },
     };
@@ -76,54 +85,62 @@ export default {
     if (!response) {
       return {
         result: false,
-        value: 'could not fetch data from OpenAPI',
+        value: "could not fetch data from OpenAPI",
       };
     }
 
-    const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
+    const json = getJSONFromString(
+      response.toString().substring(response.toString().indexOf("{")),
+    );
 
     if (json === null) {
       return {
         result: false,
-        value: 'data from source is corrupted',
+        value: "data from source is corrupted",
       };
     }
 
     const outcome = await interaction.reply({
       embeds: [
         createEmbed(
-          `${gameCode} from ${provider} | ${dayjs(json.last.drawTime).format('DD/MM/YY')}`,
+          `${gameCode} from ${provider} | ${
+            dayjs(json.last.drawTime).format("DD/MM/YY")
+          }`,
           `powered by ${provider}`,
-          '#0384fc',
+          "#0384fc",
           [
             {
-              emote: 'Winning Numbers',
+              emote: "Winning Numbers",
               // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-              role: `${json.last.winningNumbers.list.map((n: number) => n).join(', ')}`,
+              role: `${
+                json.last.winningNumbers.list.map((n: number) => n).join(", ")
+              }`,
               inline: true,
             },
             {
-              emote: 'Tzoker',
+              emote: "Tzoker",
               role: `${json.last.winningNumbers.bonus}`,
               inline: true,
             },
             {
-              emote: `${json.last.prizeCategories[0].winners > 1 ? 'Winners' : 'Winner'}`,
+              emote: `${
+                json.last.prizeCategories[0].winners > 1 ? "Winners" : "Winner"
+              }`,
               role: `${json.last.prizeCategories[0].winners}`,
               inline: true,
             },
             {
-              emote: 'Draw Number',
+              emote: "Draw Number",
               role: `${json.last.drawId}`,
               inline: true,
             },
             {
-              emote: 'Columns Cast',
+              emote: "Columns Cast",
               role: `${json.last.wagerStatistics.columns}`,
               inline: true,
             },
             {
-              emote: 'Wagers',
+              emote: "Wagers",
               role: `${json.last.wagerStatistics.wagers}`,
               inline: true,
             },
@@ -139,7 +156,7 @@ export default {
 
     return {
       result: !!outcome,
-      value: outcome ? '' : 'failed to send message',
+      value: outcome ? "" : "failed to send message",
     };
   },
 } as Command;

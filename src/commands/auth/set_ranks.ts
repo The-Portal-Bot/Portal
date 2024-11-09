@@ -1,13 +1,24 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, InteractionContextType, Role } from 'discord.js';
-import { getJSONFromString, messageHelp } from '../../libraries/help.library.js';
-import { setRanks } from '../../libraries/mongo.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { Rank, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  type ChatInputCommandInteraction,
+  InteractionContextType,
+  type Role,
+} from "npm:discord.js";
+import {
+  getJSONFromString,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { setRanks } from "../../libraries/mongo.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type Rank,
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'set_ranks';
-const DESCRIPTION = 'set ranks for server';
+const COMMAND_NAME = "set_ranks";
+const DESCRIPTION = "set ranks for server";
 
 export default {
   time: 0,
@@ -19,22 +30,32 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
-      option.setName('rank_string').setDescription('JSON string of ranks to set (even for one rank)').setRequired(true),
+      option.setName("rank_string").setDescription(
+        "JSON string of ranks to set (even for one rank)",
+      ).setRequired(true)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
-    if (!interaction.guild)
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
+    if (!interaction.guild) {
       return {
         result: true,
-        value: 'guild could not be fetched',
+        value: "guild could not be fetched",
       };
+    }
 
-    const rankString = interaction.options.getString('rank_string');
+    const rankString = interaction.options.getString("rank_string");
 
     if (!rankString) {
       return {
         result: false,
-        value: messageHelp('commands', 'set_ranks', 'rank string must be provided'),
+        value: messageHelp(
+          "commands",
+          "set_ranks",
+          "rank string must be provided",
+        ),
       };
     }
 
@@ -44,30 +65,46 @@ export default {
     if (!newRanksJSON || !Array.isArray(newRanksJSON)) {
       return {
         result: false,
-        value: messageHelp('commands', 'set_ranks', 'ranking must be an array in JSON format (even for one role)'),
+        value: messageHelp(
+          "commands",
+          "set_ranks",
+          "ranking must be an array in JSON format (even for one role)",
+        ),
       };
     }
 
-    const newRanks = <Rank[]>newRanksJSON;
+    const newRanks = <Rank[]> newRanksJSON;
 
     if (!newRanks.every((r) => r.level && r.role)) {
       return {
         result: false,
-        value: messageHelp('commands', 'set_ranks', 'JSON syntax has spelling errors`'),
+        value: messageHelp(
+          "commands",
+          "set_ranks",
+          "JSON syntax has spelling errors`",
+        ),
       };
     }
 
     if (!newRanks.every(isRank)) {
       return {
         result: false,
-        value: messageHelp('commands', 'set_ranks', 'rankings must be a key-pair from level and role'),
+        value: messageHelp(
+          "commands",
+          "set_ranks",
+          "rankings must be a key-pair from level and role",
+        ),
       };
     }
 
     if (!newRanks.every((r) => isRole(r, roles))) {
       return {
         result: false,
-        value: messageHelp('commands', 'set_ranks', 'a role given does not exist in server'),
+        value: messageHelp(
+          "commands",
+          "set_ranks",
+          "a role given does not exist in server",
+        ),
       };
     }
 
@@ -81,7 +118,9 @@ export default {
 
     return {
       result: response,
-      value: response ? 'set new ranks successfully' : 'failed to set new ranks',
+      value: response
+        ? "set new ranks successfully"
+        : "failed to set new ranks",
     };
   },
 } as Command;

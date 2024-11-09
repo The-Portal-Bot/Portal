@@ -1,16 +1,32 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, ColorResolvable, InteractionContextType, TextChannel } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  type ChatInputCommandInteraction,
+  type ColorResolvable,
+  InteractionContextType,
+  type TextChannel,
+} from "npm:discord.js";
 
-import { getRole } from '../../libraries/guild.library.js';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
-import { insertVendor } from '../../libraries/mongo.library.js';
-import { Command } from '../../types/Command.js';
-import { GiveRole, PGiveRole } from '../../types/classes/PGiveRole.class.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { getRole } from "../../libraries/guild.library.ts";
+import {
+  createEmbed,
+  getJSONFromString,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { insertVendor } from "../../libraries/mongo.library.ts";
+import type { Command } from "../../types/Command.ts";
+import {
+  type GiveRole,
+  PGiveRole,
+} from "../../types/classes/PGiveRole.class.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  Field,
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'vendor';
-const DESCRIPTION = 'create a vendor message';
+const COMMAND_NAME = "vendor";
+const DESCRIPTION = "create a vendor message";
 
 export default {
   time: 0,
@@ -22,23 +38,32 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
-      option.setName('vendor_string').setDescription('JSON string of vendor roles').setRequired(true),
+      option.setName("vendor_string").setDescription(
+        "JSON string of vendor roles",
+      ).setRequired(true)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
         result: true,
-        value: 'guild could not be fetched',
+        value: "guild could not be fetched",
       };
     }
 
-    const vendorString = interaction.options.getString('vendor_string');
+    const vendorString = interaction.options.getString("vendor_string");
 
     if (!vendorString) {
       return {
         result: false,
-        value: messageHelp('commands', 'vendor', 'vendor string must be provided'),
+        value: messageHelp(
+          "commands",
+          "vendor",
+          "vendor string must be provided",
+        ),
       };
     }
 
@@ -47,29 +72,45 @@ export default {
     if (!roleMapJson) {
       return {
         result: false,
-        value: messageHelp('commands', 'vendor', 'must be an array in JSON format (even for one role)'),
+        value: messageHelp(
+          "commands",
+          "vendor",
+          "must be an array in JSON format (even for one role)",
+        ),
       };
     }
 
-    const roleMap = <GiveRole[]>roleMapJson;
+    const roleMap = <GiveRole[]> roleMapJson;
     if (!Array.isArray(roleMap)) {
       return {
         result: false,
-        value: messageHelp('commands', 'vendor', 'must be an array in JSON format (even for one role)'),
+        value: messageHelp(
+          "commands",
+          "vendor",
+          "must be an array in JSON format (even for one role)",
+        ),
       };
     }
 
     if (multipleSameEmote(roleMap)) {
       return {
         result: false,
-        value: messageHelp('commands', 'vendor', 'can not have the same emote for multiple actions'),
+        value: messageHelp(
+          "commands",
+          "vendor",
+          "can not have the same emote for multiple actions",
+        ),
       };
     }
 
     if (!roleMap.every((rm) => rm.emote && rm.role)) {
       return {
         result: false,
-        value: messageHelp('commands', 'vendor', 'JSON syntax has spelling errors'),
+        value: messageHelp(
+          "commands",
+          "vendor",
+          "JSON syntax has spelling errors",
+        ),
       };
     }
 
@@ -80,26 +121,31 @@ export default {
 
     const roleEmbDisplay: Field[] = [];
 
-    let returnValue = '';
+    let returnValue = "";
     // give roles
     const failed = roleMap.some((r) => {
       if (interaction.guild) {
-        const roleFetched = r.role.map((role) => getRole(interaction.guild, role));
+        const roleFetched = r.role.map((role) =>
+          getRole(interaction.guild, role)
+        );
 
         if (roleFetched.some((role) => !role)) {
-          returnValue = 'some of the given roles do not exist';
+          returnValue = "some of the given roles do not exist";
           return true;
         }
 
         roleEmbDisplay.push(
           new Field(
             r.emote,
-            `\`\`\`${roleFetched.map((role) => `@${role ? role.name : 'undefined'}`).join(', ')}\`\`\``,
+            `\`\`\`${
+              roleFetched.map((role) => `@${role ? role.name : "undefined"}`)
+                .join(", ")
+            }\`\`\``,
             true,
           ),
         );
       } else {
-        returnValue = 'could not fetch guild of message';
+        returnValue = "could not fetch guild of message";
         return true;
       }
     });
@@ -112,11 +158,11 @@ export default {
     }
 
     const roleMessage = await createRoleMessage(
-      <TextChannel>interaction.channel,
+      <TextChannel> interaction.channel,
       pGuild,
-      'Role Assigner',
-      'React with emote to get or remove mentioned role',
-      '#FF7F00',
+      "Role Assigner",
+      "React with emote to get or remove mentioned role",
+      "#FF7F00",
       roleEmbDisplay,
       roleMap,
     );
@@ -124,7 +170,7 @@ export default {
     if (!roleMessage || !roleMessage.result) {
       return {
         result: false,
-        value: 'an error occurred while creating role message',
+        value: "an error occurred while creating role message",
       };
     }
 
@@ -142,7 +188,17 @@ function createRoleMessage(
   roleMap: GiveRole[],
 ): Promise<ReturnPromise> {
   return new Promise((resolve) => {
-    const roleMessageEmb = createEmbed(title, desc, colour, roleEmb, null, null, null, null, null);
+    const roleMessageEmb = createEmbed(
+      title,
+      desc,
+      colour,
+      roleEmb,
+      null,
+      null,
+      null,
+      null,
+      null,
+    );
 
     channel
       .send({ embeds: [roleMessageEmb] })
@@ -161,22 +217,22 @@ function createRoleMessage(
             return resolve({
               result: r,
               value: r
-                ? 'Keep in mind that Portal role must be over any role you wish it to be able to distribute.\n' +
-                  'In order to change it, please head to your servers settings and put Portal role above them'
-                : 'failed to set new ranks',
+                ? "Keep in mind that Portal role must be over any role you wish it to be able to distribute.\n" +
+                  "In order to change it, please head to your servers settings and put Portal role above them"
+                : "failed to set new ranks",
             });
           })
           .catch(() => {
             return resolve({
               result: false,
-              value: 'failed to set new ranks',
+              value: "failed to set new ranks",
             });
           });
       })
       .catch(() => {
         return resolve({
           result: false,
-          value: 'failed to create role assigner message',
+          value: "failed to create role assigner message",
         });
       });
   });

@@ -1,33 +1,52 @@
-import { VoiceConnectionStatus, getVoiceConnection } from '@discordjs/voice';
-import { Client, Guild, TextChannel, VoiceChannel, VoiceState } from 'discord.js';
+import {
+  getVoiceConnection,
+  VoiceConnectionStatus,
+} from "npm:@discordjs/voice";
+import type {
+  Client,
+  Guild,
+  TextChannel,
+  VoiceChannel,
+  VoiceState,
+} from "npm:discord.js";
 
 import {
   createVoiceChannel,
   generateChannelName,
   includedInPChannels,
   includedInVoiceList,
-} from '../libraries/guild.library.js';
+} from "../libraries/guild.library.ts";
 import {
   isChannelDeleted,
   isGuildDeleted,
   updateMusicLyricsMessage,
   updateMusicMessage,
-} from '../libraries/help.library.js';
-import { fetchGuild, removeVoice, setMusicData, updateGuild } from '../libraries/mongo.library.js';
-import { updateTimestamp } from '../libraries/user.library.js';
-import { PGuild } from '../types/classes/PGuild.class.js';
-import { PChannel } from '../types/classes/PPortalChannel.class.js';
-import logger from '../utilities/log.utility.js';
+} from "../libraries/help.library.ts";
+import {
+  fetchGuild,
+  removeVoice,
+  setMusicData,
+  updateGuild,
+} from "../libraries/mongo.library.ts";
+import { updateTimestamp } from "../libraries/user.library.ts";
+import type { PGuild } from "../types/classes/PGuild.class.ts";
+import type { PChannel } from "../types/classes/PPortalChannel.class.ts";
+import logger from "../utilities/log.utility.ts";
 
-export async function voiceStateUpdate(client: Client, oldState: VoiceState, newState: VoiceState): Promise<void> {
-  logger.info(`voiceStateUpdate event triggered with ${oldState.channelId} to ${newState.channelId}`);
-  if (oldState.channel?.id === newState.channel?.id) {
-    logger.warn('channel change detected');
+export async function voiceStateUpdate(
+  client: Client,
+  oldState: VoiceState,
+  newState: VoiceState,
+): Promise<void> {
+  logger.info(
+    `voiceStateUpdate event triggered with ${oldState.channelId} to ${newState.channelId}`,
+  );
+  if (newState.channel?.id === oldState.channel?.id) {
     return;
   }
 
   if (!newState?.guild) {
-    logger.warn('could not find guild in Portal');
+    logger.warn("could not find guild in Portal");
     return;
   }
 
@@ -37,12 +56,12 @@ export async function voiceStateUpdate(client: Client, oldState: VoiceState, new
   const pGuild = await fetchGuild(newState?.guild.id);
 
   if (!pGuild) {
-    logger.warn('could not find guild in Portal');
+    logger.warn("could not find guild in Portal");
     return;
   }
 
   if (!pGuild) {
-    logger.warn('could not find guild in Portal');
+    logger.warn("could not find guild in Portal");
     return;
   }
 
@@ -52,16 +71,20 @@ export async function voiceStateUpdate(client: Client, oldState: VoiceState, new
 
       if (p.id === newChannel.id) {
         if (p.noBots && newState.member?.user.bot) {
-          newState.disconnect('voice channel does not allow bots').catch((e) => {
-            logger.error(`failed to kick: ${e}`);
-            return;
-          });
+          newState.disconnect("voice channel does not allow bots").catch(
+            (e) => {
+              logger.error(`failed to kick: ${e}`);
+              return;
+            },
+          );
 
-          channelEmptyCheck(newChannel as VoiceChannel, pGuild, client).catch((e) => {
-            logger.error(`failed to check channel state: ${e}`);
-          });
+          channelEmptyCheck(newChannel as VoiceChannel, pGuild, client).catch(
+            (e) => {
+              logger.error(`failed to check channel state: ${e}`);
+            },
+          );
 
-          logger.warn('portal channel does not allow bots');
+          logger.warn("portal channel does not allow bots");
           return;
         }
       }
@@ -71,16 +94,20 @@ export async function voiceStateUpdate(client: Client, oldState: VoiceState, new
 
         if (v.id === newChannel.id) {
           if (v.noBots) {
-            newState.disconnect('voice channel does not allow bots').catch((e) => {
-              logger.error(`failed to kick: ${e}`);
-              return;
-            });
+            newState.disconnect("voice channel does not allow bots").catch(
+              (e) => {
+                logger.error(`failed to kick: ${e}`);
+                return;
+              },
+            );
 
-            channelEmptyCheck(newChannel as VoiceChannel, pGuild, client).catch((e) => {
-              logger.error(`failed to check channel state: ${e}`);
-            });
+            channelEmptyCheck(newChannel as VoiceChannel, pGuild, client).catch(
+              (e) => {
+                logger.error(`failed to check channel state: ${e}`);
+              },
+            );
 
-            logger.warn('voice channel does not allow bots');
+            logger.warn("voice channel does not allow bots");
             return;
           }
         }
@@ -107,10 +134,14 @@ export async function voiceStateUpdate(client: Client, oldState: VoiceState, new
   // }
 
   if (!oldChannel) {
-    const response = await fromNull(newChannel as VoiceChannel | null, pGuild, newState);
+    const response = await fromNull(
+      newChannel as VoiceChannel | null,
+      pGuild,
+      newState,
+    );
 
     if (!response) {
-      logger.warn('failed to create voice channel');
+      logger.warn("failed to create voice channel");
       return;
     }
 
@@ -126,7 +157,7 @@ export async function voiceStateUpdate(client: Client, oldState: VoiceState, new
     );
 
     if (!response) {
-      logger.warn('failed to create voice channel');
+      logger.warn("failed to create voice channel");
       return;
     }
 
@@ -136,7 +167,10 @@ export async function voiceStateUpdate(client: Client, oldState: VoiceState, new
 }
 
 // delete portal's voice channel
-async function deleteVoiceChannel(channel: VoiceChannel | TextChannel, pGuild: PGuild): Promise<string> {
+async function deleteVoiceChannel(
+  channel: VoiceChannel | TextChannel,
+  pGuild: PGuild,
+): Promise<string> {
   if (!channel.deletable) {
     return `channel ${channel.name} (${channel.id}) is not deletable`;
   }
@@ -146,12 +180,17 @@ async function deleteVoiceChannel(channel: VoiceChannel | TextChannel, pGuild: P
       if (pVoiceChannel.id === channel.id) {
         try {
           const deletedChannel = await channel.delete();
-          const response = await removeVoice(pGuild.id, pChannel.id, pVoiceChannel.id);
+          const response = await removeVoice(
+            pGuild.id,
+            pChannel.id,
+            pVoiceChannel.id,
+          );
 
           return response
             ? `channel (${deletedChannel.id}) deleted`
             : `channel (${deletedChannel.id}) failed to be deleted`;
         } catch (e) {
+          logger.error(`failed to delete channel: ${e}`);
           return `channel ${channel.name} (${channel.id}) failed to be delete`;
         }
       }
@@ -168,12 +207,14 @@ async function fiveMinuteRefresher(
   minutes: number,
 ): Promise<void> {
   if (isGuildDeleted(guild) || isChannelDeleted(voiceChannel)) {
-    logger.info(`voice channel with id ${voiceChannel.id} is deleted, stopping refreshers`);
+    logger.info(
+      `voice channel with id ${voiceChannel.id} is deleted, stopping refreshers`,
+    );
     return;
   }
 
   const pGuild = await fetchGuild(guild.id).catch(() => {
-    logger.error('failed to fetch guild');
+    logger.error("failed to fetch guild");
   });
 
   if (!pGuild) {
@@ -181,15 +222,17 @@ async function fiveMinuteRefresher(
   }
 
   generateChannelName(voiceChannel, portalList, pGuild, guild).catch(() => {
-    logger.error('failed to generate channel name');
+    logger.error("failed to generate channel name");
   });
 
   setTimeout(
     () => {
       if (!isGuildDeleted(guild) && !isChannelDeleted(voiceChannel)) {
-        generateChannelName(voiceChannel, portalList, pGuild, guild).catch(() => {
-          logger.error('failed to generate channel name');
-        });
+        generateChannelName(voiceChannel, portalList, pGuild, guild).catch(
+          () => {
+            logger.error("failed to generate channel name");
+          },
+        );
 
         fiveMinuteRefresher(voiceChannel, portalList, guild, minutes);
       }
@@ -203,26 +246,30 @@ async function channelEmptyCheck(
   pGuild: PGuild,
   client: Client,
 ): Promise<string> {
-  if (oldChannel.members.size === 0 && includedInVoiceList(oldChannel.id, pGuild.pChannels)) {
+  if (
+    oldChannel.members.size === 0 &&
+    includedInVoiceList(oldChannel.id, pGuild.pChannels)
+  ) {
     return await deleteVoiceChannel(oldChannel, pGuild).catch((e) => {
       return `an error occurred while deleting voice | ${e}`;
     });
   } else if (oldChannel.members.size === 1) {
     if (!client.voice) {
-      return 'Portal is not connected';
+      return "Portal is not connected";
     }
 
     const voiceConnection = getVoiceConnection(oldChannel.guild.id);
 
     if (
       !voiceConnection ||
-      [VoiceConnectionStatus.Destroyed, VoiceConnectionStatus.Disconnected].includes(voiceConnection.state.status)
+      [VoiceConnectionStatus.Destroyed, VoiceConnectionStatus.Disconnected]
+        .includes(voiceConnection.state.status)
     ) {
-      return 'Portal is not connected';
+      return "Portal is not connected";
     }
 
     pGuild.musicQueue = [];
-    updateGuild(pGuild.id, 'musicQueue', pGuild.musicQueue).catch((e) => {
+    updateGuild(pGuild.id, "musicQueue", pGuild.musicQueue).catch((e) => {
       return `failed to update guild: ${e}`;
     });
     voiceConnection.disconnect();
@@ -238,13 +285,13 @@ async function channelEmptyCheck(
       oldChannel.guild,
       pGuild,
       pGuild.musicQueue.length > 0 ? pGuild.musicQueue[0] : undefined,
-      'left last',
+      "left last",
       false,
     ).catch((e) => {
       return `failed to update music message: ${e}`;
     });
 
-    updateMusicLyricsMessage(oldChannel.guild, pGuild, '').catch((e) => {
+    updateMusicLyricsMessage(oldChannel.guild, pGuild, "").catch((e) => {
       return `failed to update music lyrics: ${e}`;
     });
 
@@ -253,16 +300,20 @@ async function channelEmptyCheck(
         return `an error occurred while deleting voice | ${e}`;
       });
     } else {
-      return 'Portal left voice channel';
+      return "Portal left voice channel";
     }
   }
 
-  return 'channel is not handled by Portal';
+  return "channel is not handled by Portal";
 }
 
-async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newState: VoiceState): Promise<string> {
+async function fromNull(
+  newChannel: VoiceChannel | null,
+  pGuild: PGuild,
+  newState: VoiceState,
+): Promise<string> {
   if (!newChannel) {
-    return 'strange, from null to null';
+    return "strange, from null to null";
   }
 
   // joined from null
@@ -271,7 +322,7 @@ async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newStat
     const pChannel = pGuild.pChannels.find((p) => p.id === newChannel.id);
 
     if (!pChannel) {
-      return 'null->existing (source: null | dest: portalList) / could not find pChannel';
+      return "null->existing (source: null | dest: portalList) / could not find pChannel";
     }
 
     await createVoiceChannel(newState, pChannel).catch((e) => {
@@ -284,12 +335,13 @@ async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newStat
       });
 
     if (level) {
-      newState.member?.send(`you reached level ${level} in ${newState.guild}!`).catch((e) => {
-        logger.error(`failed to send message: ${e}`);
-      });
+      newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+        .catch((e) => {
+          logger.error(`failed to send message: ${e}`);
+        });
     }
 
-    return 'null->existing (source: null | dest: portalList)';
+    return "null->existing (source: null | dest: portalList)";
   } else if (includedInVoiceList(newChannel.id, pGuild.pChannels)) {
     // joined voice channel
     fiveMinuteRefresher(newChannel, pGuild.pChannels, newState.guild, 5);
@@ -299,12 +351,13 @@ async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newStat
       });
 
     if (level) {
-      newState.member?.send(`you reached level ${level} in ${newState.guild}!`).catch((e) => {
-        logger.error(`failed to send message: ${e}`);
-      });
+      newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+        .catch((e) => {
+          logger.error(`failed to send message: ${e}`);
+        });
     }
 
-    return 'null->existing (source: null | dest: voiceList)';
+    return "null->existing (source: null | dest: voiceList)";
   } else {
     // joined other channel
     const level = await updateTimestamp(newState, pGuild) // points for voice
@@ -313,12 +366,13 @@ async function fromNull(newChannel: VoiceChannel | null, pGuild: PGuild, newStat
       });
 
     if (level) {
-      newState.member?.send(`you reached level ${level} in ${newState.guild}!`).catch((e) => {
-        logger.error(`failed to send message: ${e}`);
-      });
+      newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+        .catch((e) => {
+          logger.error(`failed to send message: ${e}`);
+        });
     }
 
-    return 'null->existing (source: null | dest: other channel)';
+    return "null->existing (source: null | dest: other channel)";
   }
 }
 
@@ -336,16 +390,17 @@ async function fromExisting(
       });
 
     if (level) {
-      newState.member?.send(`you reached level ${level} in ${newState.guild}!`).catch((e) => {
-        logger.error(`failed to send message: ${e}`);
-      });
+      newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+        .catch((e) => {
+          logger.error(`failed to send message: ${e}`);
+        });
     }
 
     channelEmptyCheck(oldChannel, pGuild, client).catch((e) => {
       logger.error(`failed to check channel state: ${e}`);
     });
 
-    return 'existing->null';
+    return "existing->null";
   }
 
   // Moved from channel to channel
@@ -355,20 +410,21 @@ async function fromExisting(
     });
 
   if (level) {
-    newState.member?.send(`you reached level ${level} in ${newState.guild}!`).catch((e) => {
-      logger.error(`failed to send message: ${e}`);
-    });
+    newState.member?.send(`you reached level ${level} in ${newState.guild}!`)
+      .catch((e) => {
+        logger.error(`failed to send message: ${e}`);
+      });
   }
 
   if (includedInPChannels(oldChannel.id, pGuild.pChannels)) {
     if (!includedInVoiceList(newChannel.id, pGuild.pChannels)) {
-      return 'not handled by portal';
+      return "not handled by portal";
     }
 
     // has been handled before
     await fiveMinuteRefresher(newChannel, pGuild.pChannels, newState.guild, 5);
 
-    return 'existing->existing (source: portalList | dest: voiceList) / has been handled before';
+    return "existing->existing (source: portalList | dest: voiceList) / has been handled before";
   } else if (includedInVoiceList(oldChannel.id, pGuild.pChannels)) {
     await channelEmptyCheck(oldChannel, pGuild, client).catch((e) => {
       logger.error(`failed to check channel state: ${e}`);
@@ -379,22 +435,27 @@ async function fromExisting(
       const pChannel = pGuild.pChannels.find((p) => p.id === newChannel.id);
 
       if (!pChannel) {
-        return 'could not find Portal in database';
+        return "could not find Portal in database";
       }
 
       await createVoiceChannel(newState, pChannel).catch((e) => {
         return `an error occurred while creating voice channel: ${e}`;
       });
 
-      return 'existing->existing (source: voiceList | dest: portalList) has been handled before';
+      return "existing->existing (source: voiceList | dest: portalList) has been handled before";
     } else if (includedInVoiceList(newChannel.id, pGuild.pChannels)) {
       // moved from voice to voice
-      await fiveMinuteRefresher(newChannel, pGuild.pChannels, newState.guild, 5);
+      await fiveMinuteRefresher(
+        newChannel,
+        pGuild.pChannels,
+        newState.guild,
+        5,
+      );
 
-      return 'existing->existing (source: voiceList | dest: voiceList)';
+      return "existing->existing (source: voiceList | dest: voiceList)";
     } else {
       // moved from voice to other refresher(newChannel, pGuild.portalList, newState.guild, 5);
-      return 'existing->existing (source: voiceList | dest: other)';
+      return "existing->existing (source: voiceList | dest: other)";
     }
   } else {
     // Joined portal channel
@@ -402,20 +463,25 @@ async function fromExisting(
       const pChannel = pGuild.pChannels.find((p) => p.id === newChannel.id);
 
       if (!pChannel) {
-        return 'existing->existing (source: other voice | dest: portalList) / could not find portal in DB, contact Portal support';
+        return "existing->existing (source: other voice | dest: portalList) / could not find portal in DB, contact Portal support";
       }
 
       await createVoiceChannel(newState, pChannel).catch((e) => {
         return `existing->existing (source: other voice | dest: portalList ): ${e}`;
       });
 
-      return 'existing->existing (source: other voice | dest: portalList)';
+      return "existing->existing (source: other voice | dest: portalList)";
     } else if (includedInVoiceList(newChannel.id, pGuild.pChannels)) {
       // left created channel and joins another created
-      await fiveMinuteRefresher(newChannel, pGuild.pChannels, newState.guild, 5);
-      return 'existing->existing (source: other voice | dest: voiceList)';
+      await fiveMinuteRefresher(
+        newChannel,
+        pGuild.pChannels,
+        newState.guild,
+        5,
+      );
+      return "existing->existing (source: other voice | dest: voiceList)";
     }
   }
 
-  return 'existing->existing (source: other voice | dest: voiceList)';
+  return "existing->existing (source: other voice | dest: voiceList)";
 }

@@ -1,14 +1,23 @@
-import { BanOptions, Guild, GuildMember, Message, VoiceState } from 'discord.js';
+import type {
+  BanOptions,
+  Guild,
+  GuildMember,
+  Message,
+  VoiceState,
+} from "npm:discord.js";
 
-import { PGuild } from '../types/classes/PGuild.class.js';
-import { PMember } from '../types/classes/PMember.class.js';
-import { Rank } from '../types/classes/PTypes.interface.js';
-import { RankSpeed, RankSpeedValueList } from '../types/enums/RankSpeed.enum.js';
-import logger from '../utilities/log.utility.js';
-import { getElapsedTime } from './help.library.js';
-import { updateEntireMember, updateMember } from './mongo.library.js';
+import type { PGuild } from "../types/classes/PGuild.class.ts";
+import type { PMember } from "../types/classes/PMember.class.ts";
+import type { Rank } from "../types/classes/PTypes.interface.ts";
+import {
+  RankSpeed,
+  RankSpeedValueList,
+} from "../types/enums/RankSpeed.enum.ts";
+import logger from "../utilities/log.utility.ts";
+import { getElapsedTime } from "./help.library.ts";
+import { updateEntireMember, updateMember } from "./mongo.library.ts";
 
-export async function calculateRank(member: PMember): Promise<number> {
+export function calculateRank(member: PMember): Promise<number> {
   if (member.tier === 0) {
     member.tier = 1; // must be removed
   }
@@ -25,28 +34,42 @@ export async function calculateRank(member: PMember): Promise<number> {
   return member.level;
 }
 
-export async function addPointsTime(pMember: PMember, rankSpeed: number): Promise<number> {
+export function addPointsTime(
+  pMember: PMember,
+  rankSpeed: number,
+): Promise<number> {
   if (!pMember.timestamp) {
     return pMember.points;
   }
 
   const voiceTime = getElapsedTime(pMember.timestamp, 0);
 
-  pMember.points += Math.round(voiceTime.remainingSec * RankSpeedValueList[rankSpeed] * 0.5);
-  pMember.points += Math.round(voiceTime.remainingMin * RankSpeedValueList[rankSpeed] * 30 * 1.15);
-  pMember.points += Math.round(voiceTime.remainingHrs * RankSpeedValueList[rankSpeed] * 30 * 30 * 1.25);
+  pMember.points += Math.round(
+    voiceTime.remainingSec * RankSpeedValueList[rankSpeed] * 0.5,
+  );
+  pMember.points += Math.round(
+    voiceTime.remainingMin * RankSpeedValueList[rankSpeed] * 30 * 1.15,
+  );
+  pMember.points += Math.round(
+    voiceTime.remainingHrs * RankSpeedValueList[rankSpeed] * 30 * 30 * 1.25,
+  );
 
   pMember.timestamp = null;
 
   return pMember.points;
 }
 
-export async function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): Promise<number | boolean> {
+export async function updateTimestamp(
+  voiceState: VoiceState,
+  pGuild: PGuild,
+): Promise<number | boolean> {
   if (!voiceState.member || voiceState.member.user.bot) {
     return false;
   }
 
-  const pMember = pGuild.pMembers.find((m) => voiceState && voiceState.member && m.id === voiceState.member.id);
+  const pMember = pGuild.pMembers.find((m) =>
+    voiceState && voiceState.member && m.id === voiceState.member.id
+  );
 
   if (!pMember) {
     return false;
@@ -64,20 +87,36 @@ export async function updateTimestamp(voiceState: VoiceState, pGuild: PGuild): P
 
   if (!pMember.timestamp) {
     pMember.timestamp = new Date();
-    (await updateMember(voiceState.guild.id, member.id, 'timestamp', pMember.timestamp)) ? false : pMember.level;
+    (await updateMember(
+        voiceState.guild.id,
+        member.id,
+        "timestamp",
+        pMember.timestamp,
+      ))
+      ? false
+      : pMember.level;
   }
 
   pMember.points = await addPointsTime(pMember, speed);
   pMember.level = await calculateRank(pMember);
   pMember.timestamp = null;
 
-  const updatedEntireMember = await updateEntireMember(voiceState.guild.id, member.id, pMember);
+  const updatedEntireMember = await updateEntireMember(
+    voiceState.guild.id,
+    member.id,
+    pMember,
+  );
 
   if (!updatedEntireMember) {
     return false;
   }
 
-  const roleRankUp = await giveRoleFromRankUp(pMember, member, ranks, voiceState.guild);
+  const roleRankUp = await giveRoleFromRankUp(
+    pMember,
+    member,
+    ranks,
+    voiceState.guild,
+  );
 
   if (!roleRankUp) {
     return false;
@@ -102,22 +141,27 @@ export async function addPointsMessage(
   const points = message.content.length * RankSpeedValueList[rankSpeed];
   member.points += points > 5 ? 5 : points;
 
-  updateMember(message.guild.id, member.id, 'points', member.points).catch(() => {
-    return 'failed to update member';
-  });
+  updateMember(message.guild.id, member.id, "points", member.points).catch(
+    () => {
+      return "failed to update member";
+    },
+  );
 
   const level = await calculateRank(member);
 
   if (level) {
-    updateMember(message.guild.id, member.id, 'level', level).catch(() => {
-      return 'failed to update member';
+    updateMember(message.guild.id, member.id, "level", level).catch(() => {
+      return "failed to update member";
     });
   }
 
   return level ?? false;
 }
 
-export async function kick(memberToKick: GuildMember, kickReason: string): Promise<boolean> {
+export async function kick(
+  memberToKick: GuildMember,
+  kickReason: string,
+): Promise<boolean> {
   if (!memberToKick.kickable) {
     return false;
   }
@@ -125,7 +169,10 @@ export async function kick(memberToKick: GuildMember, kickReason: string): Promi
   return !!(await memberToKick.kick(kickReason));
 }
 
-export async function ban(memberToBan: GuildMember, banOptions: BanOptions): Promise<boolean> {
+export async function ban(
+  memberToBan: GuildMember,
+  banOptions: BanOptions,
+): Promise<boolean> {
   if (!memberToBan.bannable) {
     return false;
   }
@@ -140,28 +187,31 @@ async function giveRoleFromRankUp(
   guild: Guild,
 ): Promise<boolean> {
   if (!ranks) {
-    logger.error('At least one rank must be given');
+    logger.error("At least one rank must be given");
     return false;
   }
 
   const newRank = await ranks.find((rank) => rank.level === pMember.level);
 
   if (!newRank) {
-    logger.error('Could not find rank');
+    logger.error("Could not find rank");
     return false;
   }
 
-  const newRole = await guild.roles.cache.find((role) => role.id === newRank.role);
+  const newRole = await guild.roles.cache.find((role) =>
+    role.id === newRank.role
+  );
 
   if (!newRole) {
-    logger.error('Could not find role');
+    logger.error("Could not find role");
     return false;
   }
 
   try {
     await member.roles.add(newRole);
   } catch (e) {
-    throw new Error('failed to give role to member');
+    logger.error(`Could not give role to member: ${e}`);
+    throw new Error("failed to give role to member");
   }
 
   return true;

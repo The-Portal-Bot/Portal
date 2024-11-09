@@ -1,9 +1,9 @@
-import { Activity, GuildMember, VoiceChannel } from 'discord.js';
+import type { Activity, GuildMember, VoiceChannel } from "npm:discord.js";
 
-import { GameNames } from '../assets/lists/gameNames.static.js';
-import { ProgramNames } from '../assets/lists/programNames.static.js';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class.js';
-import { Locale } from '../types/enums/Locales.enum.js';
+import { GameNames } from "../assets/lists/gameNames.static.ts";
+import { ProgramNames } from "../assets/lists/programNames.static.ts";
+import type { PVoiceChannel } from "../types/classes/PVoiceChannel.class.ts";
+import { Locale } from "../types/enums/Locales.enum.ts";
 
 function statusAliases(activities: Activity[], locale: number): string[] {
   const newStatus: string[] = [];
@@ -11,7 +11,7 @@ function statusAliases(activities: Activity[], locale: number): string[] {
   activities.forEach((activity) => {
     let found = false;
 
-    if (activity.name.toLowerCase() === 'custom status') {
+    if (activity.name.toLowerCase() === "custom status") {
       found = true;
     }
 
@@ -55,7 +55,10 @@ function statusAliases(activities: Activity[], locale: number): string[] {
   return newStatus;
 }
 
-export function getStatusList(voiceChannel: VoiceChannel, pVoiceChannel: PVoiceChannel): string[] {
+export function getStatusList(
+  voiceChannel: VoiceChannel,
+  pVoiceChannel: PVoiceChannel,
+): string[] {
   const arrayOfStatuses: string[] = [];
 
   voiceChannel.members.forEach((member: GuildMember) => {
@@ -63,11 +66,12 @@ export function getStatusList(voiceChannel: VoiceChannel, pVoiceChannel: PVoiceC
       if (!member.user.bot) {
         if (member.presence.activities !== undefined) {
           if (member.presence.activities.length > 0) {
-            statusAliases(member.presence.activities, pVoiceChannel.locale).forEach((stat) => {
-              if (!arrayOfStatuses.includes(stat)) {
-                arrayOfStatuses.push(stat);
-              }
-            });
+            statusAliases(member.presence.activities, pVoiceChannel.locale)
+              .forEach((stat) => {
+                if (!arrayOfStatuses.includes(stat)) {
+                  arrayOfStatuses.push(stat);
+                }
+              });
           }
         }
       }
@@ -76,11 +80,11 @@ export function getStatusList(voiceChannel: VoiceChannel, pVoiceChannel: PVoiceC
 
   if (arrayOfStatuses.length === 0) {
     if (pVoiceChannel.locale === Locale.gr) {
-      arrayOfStatuses.push('Άραγμα');
+      arrayOfStatuses.push("Άραγμα");
     } else if (pVoiceChannel.locale === Locale.de) {
-      arrayOfStatuses.push('Chillen');
+      arrayOfStatuses.push("Chillen");
     } else {
-      arrayOfStatuses.push('Chilling');
+      arrayOfStatuses.push("Chilling");
     }
   }
 

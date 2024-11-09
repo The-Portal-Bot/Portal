@@ -1,16 +1,16 @@
-import dayjs from 'dayjs';
-import { BanOptions, Message, TextChannel } from 'discord.js';
+import dayjs from "npm:dayjs";
+import { type BanOptions, type Message, TextChannel } from "npm:discord.js";
 
-import { ProfaneWords } from '../assets/lists/profaneWords.static.js';
-import configSpam from '../config.spam.json' assert { type: 'json' };
-import { PGuild } from '../types/classes/PGuild.class.js';
-import { SpamCache } from '../types/classes/PTypes.interface.js';
-import { ProfanityLevel } from '../types/enums/ProfanityLevel.enum.js';
-import logger from '../utilities/log.utility.js';
-import { deleteMessage, getRole } from './guild.library.js';
-import { isWhitelist, messageReply } from './help.library.js';
-import { updateMember } from './mongo.library.js';
-import { ban, kick } from './user.library.js';
+import { ProfaneWords } from "../assets/lists/profaneWords.static.ts";
+import configSpam from "../config.spam.json" with { type: "json" };
+import type { PGuild } from "../types/classes/PGuild.class.ts";
+import type { SpamCache } from "../types/classes/PTypes.interface.ts";
+import { ProfanityLevel } from "../types/enums/ProfanityLevel.enum.ts";
+import logger from "../utilities/log.utility.ts";
+import { deleteMessage, getRole } from "./guild.library.ts";
+import { isWhitelist, messageReply } from "./help.library.ts";
+import { updateMember } from "./mongo.library.ts";
+import { ban, kick } from "./user.library.ts";
 
 const profaneWords = ProfaneWords as {
   gr: string[];
@@ -28,8 +28,10 @@ export function isProfane(candidate: string, profanityLevel: number): string[] {
 
   const en = profaneWords.en.filter((word: string) => {
     const wordExp = new RegExp(
-      ProfanityLevel.default === profanityLevel ? `\\b(${word})\\b` : `\\b(\\w*${word}\\w*)\\b`,
-      'gi',
+      ProfanityLevel.default === profanityLevel
+        ? `\\b(${word})\\b`
+        : `\\b(\\w*${word}\\w*)\\b`,
+      "gi",
     );
 
     return wordExp.test(candidate);
@@ -37,25 +39,35 @@ export function isProfane(candidate: string, profanityLevel: number): string[] {
 
   const de = profaneWords.de.filter((word: string) => {
     const wordExp = new RegExp(
-      ProfanityLevel.default === profanityLevel ? `\\b(${word})\\b` : `\\b(\\w*${word}\\w*)\\b`,
-      'gi',
+      ProfanityLevel.default === profanityLevel
+        ? `\\b(${word})\\b`
+        : `\\b(\\w*${word}\\w*)\\b`,
+      "gi",
     );
 
     return wordExp.test(candidate);
   });
 
-  return gr.length > 0 && en.length > 0 && de.length > 0 ? gr.concat(en).concat(de) : [];
+  return gr.length > 0 && en.length > 0 && de.length > 0
+    ? gr.concat(en).concat(de)
+    : [];
 }
 
 /**
  * Determines if a user is spamming
  */
-export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: SpamCache[]): void {
+export function messageSpamCheck(
+  message: Message,
+  pGuild: PGuild,
+  spamCache: SpamCache[],
+): void {
   if (isWhitelist(message.member)) {
     return;
   }
 
-  const memberSpamCache = spamCache.find((c) => c.memberId === message.author.id);
+  const memberSpamCache = spamCache.find((c) =>
+    c.memberId === message.author.id
+  );
 
   if (!memberSpamCache) {
     spamCache.push({
@@ -79,7 +91,9 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
     return;
   }
 
-  const elapsedTime = dayjs.duration(dayjs().diff(dayjs(memberSpamCache.timestamp.getTime())));
+  const elapsedTime = dayjs.duration(
+    dayjs().diff(dayjs(memberSpamCache.timestamp.getTime())),
+  );
 
   if (elapsedTime.asSeconds() > configSpam.MESSAGE_INTERVAL / 1000) {
     memberSpamCache.timestamp = null;
@@ -97,21 +111,42 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
     memberSpamCache.duplicateFouls = 0;
   }
 
-  if (configSpam.DUPLICATE_AFTER !== 0 && memberSpamCache.duplicateFouls === configSpam.DUPLICATE_AFTER) {
-    messageReply(false, message, 'warning: please stop spamming the same message', false, true).catch((e) => {
+  if (
+    configSpam.DUPLICATE_AFTER !== 0 &&
+    memberSpamCache.duplicateFouls === configSpam.DUPLICATE_AFTER
+  ) {
+    messageReply(
+      false,
+      message,
+      "warning: please stop spamming the same message",
+      false,
+      true,
+    ).catch((e) => {
       logger.error(`failed to reply to message: ${e}`);
     });
 
     memberSpamCache.timestamp = new Date();
-  } else if (configSpam.WARN_AFTER !== 0 && memberSpamCache.spamFouls === configSpam.WARN_AFTER) {
-    messageReply(false, message, 'warning: please stop spamming messages', false, true).catch((e) => {
+  } else if (
+    configSpam.WARN_AFTER !== 0 &&
+    memberSpamCache.spamFouls === configSpam.WARN_AFTER
+  ) {
+    messageReply(
+      false,
+      message,
+      "warning: please stop spamming messages",
+      false,
+      true,
+    ).catch((e) => {
       logger.error(`failed to reply to message: ${e}`);
     });
 
     memberSpamCache.timestamp = new Date();
   }
 
-  if (configSpam.MUTE_AFTER !== 0 && memberSpamCache.spamFouls === configSpam.MUTE_AFTER) {
+  if (
+    configSpam.MUTE_AFTER !== 0 &&
+    memberSpamCache.spamFouls === configSpam.MUTE_AFTER
+  ) {
     memberSpamCache.timestamp = null;
     memberSpamCache.spamFouls = 0;
 
@@ -121,31 +156,45 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
       pGuild.pMembers[0].penalties = 1;
     }
 
-    if (pGuild.kickAfter && pGuild.kickAfter !== 0 && pGuild.pMembers[0].penalties === pGuild.kickAfter) {
+    if (
+      pGuild.kickAfter && pGuild.kickAfter !== 0 &&
+      pGuild.pMembers[0].penalties === pGuild.kickAfter
+    ) {
       if (message.member) {
-        kick(message.member, 'kicked due to spamming')
+        kick(message.member, "kicked due to spamming")
           .then((r) => {
             const replyMessage = r
               ? `kicked ${message.author} due to spamming`
               : `member ${message.author} cannot be kicked`;
 
-            messageReply(false, message, replyMessage, false, true).catch((e) => {
-              logger.error(`failed to reply to message: ${e}`);
-            });
+            messageReply(false, message, replyMessage, false, true).catch(
+              (e) => {
+                logger.error(`failed to reply to message: ${e}`);
+              },
+            );
           })
           .catch((e) => {
             logger.error(`failed to kick member: ${e}`);
           });
       } else {
-        messageReply(false, message, `could not kick ${message.author}`, false, true).catch((e) => {
+        messageReply(
+          false,
+          message,
+          `could not kick ${message.author}`,
+          false,
+          true,
+        ).catch((e) => {
           logger.error(`failed to reply to message: ${e}`);
         });
       }
-    } else if (pGuild.banAfter && pGuild.banAfter !== 0 && pGuild.pMembers[0].penalties === pGuild.banAfter) {
+    } else if (
+      pGuild.banAfter && pGuild.banAfter !== 0 &&
+      pGuild.pMembers[0].penalties === pGuild.banAfter
+    ) {
       if (message.member) {
         const banOptions: BanOptions = {
           deleteMessageDays: 0,
-          reason: 'banned due to spamming',
+          reason: "banned due to spamming",
         };
 
         ban(message.member, banOptions)
@@ -154,20 +203,33 @@ export function messageSpamCheck(message: Message, pGuild: PGuild, spamCache: Sp
               ? `banned ${message.author} due to spamming`
               : `member ${message.author} cannot be banned`;
 
-            messageReply(false, message, replyMessage, false, true).catch((e) => {
-              logger.error(`failed to reply to message: ${e}`);
-            });
+            messageReply(false, message, replyMessage, false, true).catch(
+              (e) => {
+                logger.error(`failed to reply to message: ${e}`);
+              },
+            );
           })
           .catch((e) => {
             logger.error(`failed to ban member: ${e}`);
           });
       } else {
-        messageReply(false, message, `could not kick ${message.author}`, false, true).catch((e) => {
+        messageReply(
+          false,
+          message,
+          `could not kick ${message.author}`,
+          false,
+          true,
+        ).catch((e) => {
           logger.error(`failed to reply to message: ${e}`);
         });
       }
     } else {
-      updateMember(pGuild.id, message.author.id, 'penalties', pGuild.pMembers[0].penalties).catch((e) => {
+      updateMember(
+        pGuild.id,
+        message.author.id,
+        "penalties",
+        pGuild.pMembers[0].penalties,
+      ).catch((e) => {
         logger.error(`failed to update member: ${e}`);
       });
 
@@ -195,7 +257,7 @@ async function muteUser(message: Message, muteRoleId: string): Promise<void> {
   const addedRole = await message.member?.roles.add(muteRole);
 
   if (!addedRole) {
-    logger.error('failed to give role to member');
+    logger.error("failed to give role to member");
     return;
   }
 
@@ -225,7 +287,7 @@ async function muteUser(message: Message, muteRoleId: string): Promise<void> {
               })
               .catch((e) => {
                 logger.error(`failed to reply to message: ${e}`);
-              }),
+              })
           )
           .catch(logger.error);
       },

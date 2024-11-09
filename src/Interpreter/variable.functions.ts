@@ -1,20 +1,23 @@
-import { VoiceChannel, Guild } from 'discord.js';
+import type { Guild, VoiceChannel } from "npm:discord.js";
 
-import { VariableBlueprints } from '../blueprints/variable.blueprint.js';
-import { PGuild } from '../types/classes/PGuild.class.js';
-import { PChannel } from '../types/classes/PPortalChannel.class.js';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class.js';
+import { VariableBlueprints } from "../blueprints/variable.blueprint.ts";
+import type { PGuild } from "../types/classes/PGuild.class.ts";
+import type { PChannel } from "../types/classes/PPortalChannel.class.ts";
+import type { PVoiceChannel } from "../types/classes/PVoiceChannel.class.ts";
 
 export function isVariable(candidate: string): string {
   for (let i = 0; i < VariableBlueprints.length; i++) {
-    const subString = String(candidate).substring(1, String(VariableBlueprints[i].name).length + 1);
+    const subString = String(candidate).substring(
+      1,
+      String(VariableBlueprints[i].name).length + 1,
+    );
 
     if (subString === VariableBlueprints[i].name) {
       return VariableBlueprints[i].name;
     }
   }
 
-  return '';
+  return "";
 }
 
 export function getVariable(
@@ -23,7 +26,7 @@ export function getVariable(
   pChannels: PChannel[],
   pGuild: PGuild,
   guild: Guild,
-  variable: string
+  variable: string,
 ) {
   let variableIndex = -1;
   for (let l = 0; l < VariableBlueprints.length; l++) {
@@ -42,6 +45,6 @@ export function getVariable(
     pVoiceChannel,
     pChannels,
     pGuild,
-    guild
+    guild,
   });
 }

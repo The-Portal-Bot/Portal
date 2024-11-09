@@ -1,23 +1,41 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, VoiceChannel } from 'discord.js';
-import { deleteChannel, includedInVoiceList, regexInterpreter } from '../../libraries/guild.library.js';
-import { messageHelp } from '../../libraries/help.library.js';
-import { updateVoice } from '../../libraries/mongo.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { PChannel } from '../../types/classes/PPortalChannel.class.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
-import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class.js';
-import { PortalChannelType } from '../../types/enums/PortalChannel.enum.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type {
+  ChatInputCommandInteraction,
+  GuildMember,
+  VoiceChannel,
+} from "npm:discord.js";
+import {
+  deleteChannel,
+  includedInVoiceList,
+  regexInterpreter,
+} from "../../libraries/guild.library.ts";
+import { messageHelp } from "../../libraries/help.library.ts";
+import { updateVoice } from "../../libraries/mongo.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import type { PChannel } from "../../types/classes/PPortalChannel.class.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
+import type { PVoiceChannel } from "../../types/classes/PVoiceChannel.class.ts";
+import { PortalChannelType } from "../../types/enums/PortalChannel.enum.ts";
 
-const COMMAND_NAME = 'force';
-const DESCRIPTION = 'force refresh your portal channel';
+const COMMAND_NAME = "force";
+const DESCRIPTION = "force refresh your portal channel";
 
-function isUserInHandledVoiceChannel(member: GuildMember, pGuild: PGuild): boolean {
-  return !!member.voice.channel && includedInVoiceList(member.voice.channel.id, pGuild.pChannels);
+function isUserInHandledVoiceChannel(
+  member: GuildMember,
+  pGuild: PGuild,
+): boolean {
+  return !!member.voice.channel &&
+    includedInVoiceList(member.voice.channel.id, pGuild.pChannels);
 }
 
-function isChannelCreator(member: GuildMember, pVoiceChannel: PVoiceChannel): boolean {
+function isChannelCreator(
+  member: GuildMember,
+  pVoiceChannel: PVoiceChannel,
+): boolean {
   return pVoiceChannel.creatorId === member.id;
 }
 
@@ -40,25 +58,37 @@ async function cloneAndUpdateVoiceChannel(
   const currentVoiceClone = await currentVoice.clone({ name: updatedName });
 
   if (!currentVoiceClone) {
-    return { result: false, value: 'Error while cloning channel' };
+    return { result: false, value: "Error while cloning channel" };
   }
 
   for (const member of currentVoice.members.values()) {
-    member.voice?.setChannel(currentVoiceClone, 'portal force update').catch(() => {
-      return { result: false, value: `Failed to move user ${member.displayName}` };
-    });
+    member.voice?.setChannel(currentVoiceClone, "portal force update").catch(
+      () => {
+        return {
+          result: false,
+          value: `Failed to move user ${member.displayName}`,
+        };
+      },
+    );
   }
 
-  const updatedVoice = await updateVoice(pGuild.id, pChannel.id, currentVoice.id, 'id', currentVoiceClone.id);
+  const updatedVoice = await updateVoice(
+    pGuild.id,
+    pChannel.id,
+    currentVoice.id,
+    "id",
+    currentVoiceClone.id,
+  );
   if (!updatedVoice) {
-    return { result: false, value: 'Failed to force update channel' };
+    return { result: false, value: "Failed to force update channel" };
   }
 
-  await deleteChannel(PortalChannelType.voice, currentVoice, interaction, true).catch((e) => {
-    return { result: false, value: `Failed to delete channel: ${e}` };
-  });
+  await deleteChannel(PortalChannelType.voice, currentVoice, interaction, true)
+    .catch((e) => {
+      return { result: false, value: `Failed to delete channel: ${e}` };
+    });
 
-  return { result: true, value: 'Force updated voice' };
+  return { result: true, value: "Force updated voice" };
 }
 
 export default {
@@ -67,29 +97,54 @@ export default {
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.MEMBER,
-  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
+    DESCRIPTION,
+  ),
 
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+  execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
 
-    if (!member) return { result: false, value: 'Member could not be fetched' };
-    if (!isUserInHandledVoiceChannel(member, pGuild))
+    if (!member) return { result: false, value: "Member could not be fetched" };
+    if (!isUserInHandledVoiceChannel(member, pGuild)) {
       return {
         result: false,
-        value: messageHelp('commands', 'force', 'The channel you are in is not handled by Portal'),
+        value: messageHelp(
+          "commands",
+          "force",
+          "The channel you are in is not handled by Portal",
+        ),
       };
-    if ((member.voice.channel as VoiceChannel).members.size > 10)
+    }
+    if ((member.voice.channel as VoiceChannel).members.size > 10) {
       return {
         result: false,
-        value: messageHelp('commands', 'force', 'You can only force a channel with up-to 10 members'),
+        value: messageHelp(
+          "commands",
+          "force",
+          "You can only force a channel with up-to 10 members",
+        ),
       };
+    }
 
     for (const pChannel of pGuild.pChannels) {
       for (const pVoiceChannel of pChannel.pVoiceChannels) {
-        if (pVoiceChannel.id !== member.voice.channel!.id) continue;
-        if (!isChannelCreator(member, pVoiceChannel))
-          return { result: false, value: 'You are not the creator of the channel' };
-        if (!interaction.guild) return { result: false, value: 'Could not fetch message\'s guild' };
+        if (pVoiceChannel.id !== member.voice.channel!.id) {
+          continue;
+        }
+
+        if (!isChannelCreator(member, pVoiceChannel)) {
+          return {
+            result: false,
+            value: "You are not the creator of the channel",
+          };
+        }
+
+        if (!interaction.guild) {
+          return { result: false, value: "Could not fetch message's guild" };
+        }
 
         return cloneAndUpdateVoiceChannel(
           member.voice.channel as VoiceChannel,
@@ -100,6 +155,6 @@ export default {
         );
       }
     }
-    return { result: false, value: 'Force failed' };
+    return { result: false, value: "Force failed" };
   },
 } as Command;

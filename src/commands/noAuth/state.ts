@@ -1,12 +1,16 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, Client } from 'discord.js';
-import { createEmbed } from '../../libraries/help.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type { ChatInputCommandInteraction, Client } from "npm:discord.js";
+import { createEmbed } from "../../libraries/help.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type Field,
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'state';
-const DESCRIPTION = 'returns server\'s state';
+const COMMAND_NAME = "state";
+const DESCRIPTION = "returns server's state";
 
 export default {
   time: 0,
@@ -14,21 +18,29 @@ export default {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
-    const guild = client.guilds.cache.find((g) => g.id === interaction?.guild?.id);
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
+    DESCRIPTION,
+  ),
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+    client: Client,
+  ): Promise<ReturnPromise> {
+    const guild = client.guilds.cache.find((g) =>
+      g.id === interaction?.guild?.id
+    );
 
     if (!guild) {
       return {
         result: false,
-        value: 'could not fetch guild',
+        value: "could not fetch guild",
       };
     }
 
     let portalState = [
-      <Field>{
-        emote: 'Portal Channels',
-        role: '',
+      <Field> {
+        emote: "Portal Channels",
+        role: "",
         inline: false,
       },
     ];
@@ -40,13 +52,15 @@ export default {
         .map((v, indexV) => {
           const voiceChannel = guild.channels.cache.find((c) => c.id === v.id);
 
-          return `${indexV + 1}. ${voiceChannel ? voiceChannel.name : 'unavailable'}`;
+          return `${indexV + 1}. ${
+            voiceChannel ? voiceChannel.name : "unavailable"
+          }`;
         })
-        .join('\n');
+        .join("\n");
 
-      return <Field>{
-        emote: `${portalChannel ? portalChannel.name : 'unavailable'}`,
-        role: '```\n' + voices ? voices : 'no voice' + '\n```',
+      return <Field> {
+        emote: `${portalChannel ? portalChannel.name : "unavailable"}`,
+        role: "```\n" + voices ? voices : "no voice" + "\n```",
         inline: true,
       };
     });
@@ -55,99 +69,133 @@ export default {
       portalState = portalState.concat(portals);
     }
 
-    portalState.push(<Field>{
-      emote: '',
-      role: '',
-      inline: false,
-    });
+    portalState.push(
+      <Field> {
+        emote: "",
+        role: "",
+        inline: false,
+      },
+    );
 
-    const music = guild.channels.cache.find((c) => c.id === pGuild.musicData.channelId);
+    const music = guild.channels.cache.find((c) =>
+      c.id === pGuild.musicData.channelId
+    );
 
     if (music) {
-      portalState.push(<Field>{
-        emote: 'Music channel',
-        role: '```\n' + music ? music.name : 'unavailable' + '\n```',
-        inline: true,
-      });
+      portalState.push(
+        <Field> {
+          emote: "Music channel",
+          role: "```\n" + music ? music.name : "unavailable" + "\n```",
+          inline: true,
+        },
+      );
     } else {
-      portalState.push(<Field>{
-        emote: 'Music channel',
-        role: '```\nnone\n```',
-        inline: true,
-      });
+      portalState.push(
+        <Field> {
+          emote: "Music channel",
+          role: "```\nnone\n```",
+          inline: true,
+        },
+      );
     }
 
-    const announcement = guild.channels.cache.find((c) => c.id === pGuild.announcement);
+    const announcement = guild.channels.cache.find((c) =>
+      c.id === pGuild.announcement
+    );
 
     if (announcement) {
-      portalState.push(<Field>{
-        emote: 'Announcement channel',
-        role: '```\n' + announcement ? announcement.name : 'unavailable' + '\n```',
-        inline: true,
-      });
+      portalState.push(
+        <Field> {
+          emote: "Announcement channel",
+          role: "```\n" + announcement
+            ? announcement.name
+            : "unavailable" + "\n```",
+          inline: true,
+        },
+      );
     } else {
-      portalState.push(<Field>{
-        emote: 'Announcement channel',
-        role: '```\nnone\n```',
-        inline: true,
-      });
+      portalState.push(
+        <Field> {
+          emote: "Announcement channel",
+          role: "```\nnone\n```",
+          inline: true,
+        },
+      );
     }
 
-    portalState.push(<Field>{
-      emote: '',
-      role: '',
-      inline: false,
-    });
+    portalState.push(
+      <Field> {
+        emote: "",
+        role: "",
+        inline: false,
+      },
+    );
 
     const urls = pGuild.pURLs.map((uId, indexU) => {
       const channel = guild.channels.cache.find((c) => c.id === uId);
-      return `${indexU + 1}. ${channel ? channel.name : 'unavailable'}`;
+      return `${indexU + 1}. ${channel ? channel.name : "unavailable"}`;
     });
 
     if (urls.length > 0) {
-      const urlSum = <Field>{
-        emote: 'URL channels',
-        role: '```\n' + urls ? urls.join('\n') : 'unavailable' + '\n```',
+      const urlSum = <Field> {
+        emote: "URL channels",
+        role: "```\n" + urls ? urls.join("\n") : "unavailable" + "\n```",
         inline: true,
       };
 
       portalState = portalState.concat(urlSum);
     } else {
-      portalState.push(<Field>{
-        emote: 'URL channels',
-        role: '```\nnone\n```',
-        inline: true,
-      });
+      portalState.push(
+        <Field> {
+          emote: "URL channels",
+          role: "```\nnone\n```",
+          inline: true,
+        },
+      );
     }
 
     const ignore = pGuild.pIgnores.map((uId, indexU) => {
       const channel = guild.channels.cache.find((c) => c.id === uId);
-      return `${indexU + 1}. ${channel ? channel.name : 'unavailable'}`;
+      return `${indexU + 1}. ${channel ? channel.name : "unavailable"}`;
     });
 
     if (ignore.length > 0) {
-      const ignoreSum = <Field>{
-        emote: 'Ignored channels',
-        role: '```\n' + ignore ? ignore.join('\n') : 'unavailable' + '\n```',
+      const ignoreSum = <Field> {
+        emote: "Ignored channels",
+        role: "```\n" + ignore ? ignore.join("\n") : "unavailable" + "\n```",
         inline: true,
       };
 
       portalState = portalState.concat(ignoreSum);
     } else {
-      portalState.push(<Field>{
-        emote: 'Ignored channels',
-        role: '```\nnone\n```',
-        inline: true,
-      });
+      portalState.push(
+        <Field> {
+          emote: "Ignored channels",
+          role: "```\nnone\n```",
+          inline: true,
+        },
+      );
     }
 
     const outcome = await interaction.reply({
-      embeds: [createEmbed('State of Portal', null, '#eba000', portalState, null, null, true, null, null)],
+      embeds: [
+        createEmbed(
+          "State of Portal",
+          null,
+          "#eba000",
+          portalState,
+          null,
+          null,
+          true,
+          null,
+          null,
+        ),
+      ],
     });
 
     return {
       result: !!outcome,
-      value: outcome ? '' : 'failed to send message',
+      value: outcome ? "" : "failed to send message",
     };
   },
 } as Command;

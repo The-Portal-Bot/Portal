@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema } from "npm:mongoose";
 
 const PVoiceChannelSchema = new Schema(
   {
@@ -12,8 +12,8 @@ const PVoiceChannelSchema = new Schema(
     annUser: { type: Boolean, required: true },
   },
   {
-    collection: 'guild_list',
-  }
+    collection: "guild_list",
+  },
 );
 
 export default PVoiceChannelSchema;

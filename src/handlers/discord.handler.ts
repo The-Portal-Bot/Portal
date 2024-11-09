@@ -1,14 +1,23 @@
-import { CacheFactory, Client, ClientOptions, GatewayIntentBits, Partials, Options } from 'discord.js';
+import {
+  type CacheFactory,
+  Client,
+  type ClientOptions,
+  GatewayIntentBits,
+  Options,
+  Partials,
+} from "npm:discord.js";
 
 export function clientHandler() {
-  const makeCache: CacheFactory = Options.cacheWithLimits({ MessageManager: 200 });
+  const makeCache: CacheFactory = Options.cacheWithLimits({
+    MessageManager: 200,
+  });
 
   const partials = [
     Partials.User,
     Partials.Channel,
     Partials.GuildMember,
     Partials.Message,
-    Partials.Reaction
+    Partials.Reaction,
   ];
 
   const intents = [
@@ -29,5 +38,5 @@ export function clientHandler() {
 }
 
 export async function connectToDiscord(client: Client, token: string) {
-  return client.login(token);
+  return await client.login(token);
 }

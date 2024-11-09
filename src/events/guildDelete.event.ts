@@ -1,7 +1,7 @@
-import { Guild } from 'discord.js';
-import { removeGuild } from '../libraries/mongo.library.js';
+import type { Guild } from "npm:discord.js";
+import { removeGuild } from "../libraries/mongo.library.ts";
 
-import logger from '../utilities/log.utility.js';
+import logger from "../utilities/log.utility.ts";
 
 export async function guildDelete(guild: Guild): Promise<void> {
   const guildRemoved = await removeGuild(guild.id);
