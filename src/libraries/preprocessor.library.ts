@@ -1,11 +1,12 @@
 import { Message } from 'discord.js';
+
 import * as auth from '../commands/auth';
 import * as noAuth from '../commands/noAuth';
 import { MusicData, PGuild } from '../types/classes/PGuild.class';
 import { AuthCommands, CommandOptions, NoAuthCommands } from '../types/classes/PTypes.interface';
+import logger from '../utilities/log.utility';
 import { includedInPIgnores, isUrlOnlyChannel } from './guild.library';
 import { isMessageDeleted, isUserIgnored, markMessageAsDeleted, messageReply } from './help.library';
-import logger from '../utilities/log.utility';
 import { removeIgnore, removeURL, setMusicData } from './mongo.library';
 import { addPointsMessage } from './user.library';
 
@@ -94,10 +95,8 @@ export function commandDecipher(messageContent: Message['content']): {
   };
 }
 
-export function commandFetcher(
-  commandName: AuthCommands | NoAuthCommands,
-){
-  const authCommand = [...Object.values(auth)].find(command => command.slashCommand.name === commandName);
+export function commandFetcher(commandName: AuthCommands | NoAuthCommands) {
+  const authCommand = [...Object.values(auth)].find((command) => command.slashCommand.name === commandName);
 
   if (authCommand) {
     return {
@@ -111,10 +110,10 @@ export function commandFetcher(
     } as CommandOptions;
   }
 
-  const noAuthCommand = [...Object.values(noAuth)].find(command => command.slashCommand.name === commandName);
+  const noAuthCommand = [...Object.values(noAuth)].find((command) => command.slashCommand.name === commandName);
 
   if (noAuthCommand) {
-    return  {
+    return {
       name: noAuthCommand.slashCommand.name,
       description: noAuthCommand.slashCommand.description,
       auth: noAuthCommand.auth,
@@ -184,7 +183,7 @@ export function handleIgnoredChannels(message: Message, pGuild: PGuild): boolean
           messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
             (e) => {
               logger.error(`failed to send message: ${e}`);
-            }
+            },
           );
         })
         .catch((e) => {
@@ -210,7 +209,7 @@ export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
       setMusicData(pGuild.id, musicData)
         .then((r) => {
           messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
-            (e) => logger.error(`failed to send message: ${e}`)
+            (e) => logger.error(`failed to send message: ${e}`),
           );
         })
         .catch((e) => logger.error(`failed to remove music channel: ${e}`));

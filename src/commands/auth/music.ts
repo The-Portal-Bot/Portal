@@ -11,7 +11,7 @@ import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
 const COMMAND_NAME = 'music';
 const DESCRIPTION = 'set a music channel';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -24,12 +24,14 @@ export = {
       option
         .setName('music_channel')
         .setDescription('the channel you want to make the music channel')
-        .setRequired(true))
+        .setRequired(true),
+    )
     .addChannelOption((option) =>
       option
         .setName('delete_previous')
         .setDescription('whether or not to delete the previous music channel')
-        .setRequired(false))
+        .setRequired(false),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const musicChannel = interaction.options.getChannel('music_channel');
@@ -65,8 +67,9 @@ export = {
     }
 
     if (deletePreviousMusicChannel) {
-      const music = interaction?.guild?.channels.cache
-        .find((channel) => channel.id == pGuild.musicData.channelId) as VoiceChannel;
+      const music = interaction?.guild?.channels.cache.find(
+        (channel) => channel.id == pGuild.musicData.channelId,
+      ) as VoiceChannel;
 
       if (music) {
         deleteChannel(PortalChannelType.music, music, interaction);

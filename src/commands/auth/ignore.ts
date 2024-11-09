@@ -9,15 +9,13 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 const COMMAND_NAME = 'ignore';
 const DESCRIPTION = 'ignore user or channel from spam';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {

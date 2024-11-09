@@ -8,9 +8,9 @@ import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'crypto';
-const DESCRIPTION = 'returns information about crypto currencies'
+const DESCRIPTION = 'returns information about crypto currencies';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -19,16 +19,12 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option
-        .setName('crypto_name')
-        .setDescription('The `name of the crypto currency`')
-        .setRequired(true))
-    .addStringOption(option =>
-      option
-        .setName('currency_name')
-        .setDescription('The name of the fiat currency to compare to')
-        .setRequired(true))
+    .addStringOption((option) =>
+      option.setName('crypto_name').setDescription('The `name of the crypto currency`').setRequired(true),
+    )
+    .addStringOption((option) =>
+      option.setName('currency_name').setDescription('The name of the fiat currency to compare to').setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     if (!process.env.COIN_GECKO) {
@@ -81,7 +77,8 @@ export = {
     const outcome = await interaction.reply({
       embeds: [
         createEmbed(null, null, '#FFE600', null, null, null, false, null, null, undefined, {
-          name: `${voca.titleCase(cryptoName)} to ${voca.titleCase(currencyName)} price is ${json[cryptoName][currencyName]
+          name: `${voca.titleCase(cryptoName)} to ${voca.titleCase(currencyName)} price is ${
+            json[cryptoName][currencyName]
           }`,
           icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/coin.gif',
         }),

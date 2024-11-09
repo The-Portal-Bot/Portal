@@ -7,9 +7,9 @@ import { PMember } from '../../types/classes/PMember.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'leaderboard';
-const DESCRIPTION = 'returns server\'s leaderboard'
+const DESCRIPTION = 'returns server\'s leaderboard';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -18,11 +18,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addNumberOption(option =>
-      option
-        .setName('requested_number')
-        .setDescription('Number of members to display')
-        .setRequired(false))
+    .addNumberOption((option) =>
+      option.setName('requested_number').setDescription('Number of members to display').setRequired(false),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const pMembers = pGuild.pMembers;
@@ -92,7 +90,7 @@ export = {
           null,
           true,
           null,
-          null
+          null,
         ),
       ],
     });

@@ -9,9 +9,9 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'url';
-const DESCRIPTION = 'set a channel to URL only'
+const DESCRIPTION = 'set a channel to URL only';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -21,10 +21,8 @@ export = {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addChannelOption((option) =>
-      option
-        .setName('url_channel')
-        .setDescription('the channel you want to make the url channel')
-        .setRequired(true))
+      option.setName('url_channel').setDescription('the channel you want to make the url channel').setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const urlChannel = interaction.options.getChannel('url_channel');
@@ -62,9 +60,7 @@ export = {
 
     return {
       result: response,
-      value: response
-        ? 'new url channel set successfully'
-        : 'failed to set new url channel',
+      value: response ? 'new url channel set successfully' : 'failed to set new url channel',
     };
   },
 } as Command;

@@ -5,9 +5,9 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 import { Command } from '../../types/Command';
 
 const COMMAND_NAME = 'focus';
-const DESCRIPTION = 'creates a dedicated channel for two users to privately talk in'
+const DESCRIPTION = 'creates a dedicated channel for two users to privately talk in';
 
-export = {
+export default {
   time: 1,
   premium: false,
   ephemeral: true,

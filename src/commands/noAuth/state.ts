@@ -6,17 +6,15 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'state';
-const DESCRIPTION = 'returns server\'s state'
+const DESCRIPTION = 'returns server\'s state';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const guild = client.guilds.cache.find((g) => g.id === interaction?.guild?.id);
 
@@ -145,7 +143,7 @@ export = {
 
     const outcome = await interaction.reply({
       embeds: [createEmbed('State of Portal', null, '#eba000', portalState, null, null, true, null, null)],
-    })
+    });
 
     return {
       result: !!outcome,

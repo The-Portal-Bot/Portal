@@ -7,9 +7,9 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { Rank, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'set_ranks';
-const DESCRIPTION = 'set ranks for server'
+const DESCRIPTION = 'set ranks for server';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -19,10 +19,8 @@ export = {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
-      option
-        .setName('rank_string')
-        .setDescription('JSON string of ranks to set (even for one rank)')
-        .setRequired(true))
+      option.setName('rank_string').setDescription('JSON string of ranks to set (even for one rank)').setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild)

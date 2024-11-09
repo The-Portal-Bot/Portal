@@ -6,9 +6,9 @@ import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'roll';
-const DESCRIPTION = 'roll a dice'
+const DESCRIPTION = 'roll a dice';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -17,14 +17,10 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('roll_command')
-        .setDescription('Roll command')
-        .setRequired(true))
-    .addBooleanOption(option =>
-      option.setName('show')
-        .setDescription('show rolled dice in detail')
-        .setRequired(false)),
+    .addStringOption((option) => option.setName('roll_command').setDescription('Roll command').setRequired(true))
+    .addBooleanOption((option) =>
+      option.setName('show').setDescription('show rolled dice in detail').setRequired(false),
+    ),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     let rollCommand = interaction.options.getString('roll_command');
     const show = interaction.options.getBoolean('show');
@@ -52,7 +48,7 @@ export = {
             icon: 'https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/dice.gif',
           }),
         ],
-      })
+      });
 
       return {
         result: !!outcome,

@@ -8,7 +8,7 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 const COMMAND_NAME = 'kick';
 const DESCRIPTION = 'kick a user';
 
-export = {
+export default {
   time: 1,
   premium: false,
   ephemeral: true,
@@ -17,21 +17,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addUserOption(option =>
-      option
-        .setName('user_to_kick')
-        .setDescription('user to kick')
-        .setRequired(true))
-    .addNumberOption(option =>
-      option
-        .setName('kick_days')
-        .setDescription('days to kick user for')
-        .setRequired(true))
-    .addStringOption(option =>
-      option
-        .setName('kick_reason')
-        .setDescription('kick reason')
-        .setRequired(false))
+    .addUserOption((option) => option.setName('user_to_kick').setDescription('user to kick').setRequired(true))
+    .addNumberOption((option) => option.setName('kick_days').setDescription('days to kick user for').setRequired(true))
+    .addStringOption((option) => option.setName('kick_reason').setDescription('kick reason').setRequired(false))
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const memberToBan = interaction.options.getMember('user_to_kick') as GuildMember;
@@ -59,7 +47,7 @@ export = {
       };
     }
 
-    if (!isMod((interaction.member as GuildMember))) {
+    if (!isMod(interaction.member as GuildMember)) {
       return {
         result: false,
         value: 'you must be a Portal moderator to kick users',
@@ -79,7 +67,7 @@ export = {
     const response = await askForApproval(
       interaction,
       `*${interaction.user}, are you sure you want to kick **${memberToBan.displayName}** for **${deleteMessageDays}** days*?`,
-      ButtonStyle.Danger
+      ButtonStyle.Danger,
     );
 
     if (!response) {
@@ -101,18 +89,15 @@ export = {
         result: kickResponse,
         value: kickResponse
           ? `User ${memberToBan.displayName} has been kicked`
-          : `User ${memberToBan.displayName} could not be kicked`
-      }
+          : `User ${memberToBan.displayName} could not be kicked`,
+      };
     } catch (e) {
       await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
 
       return {
         result: false,
         value: `User ${memberToBan.displayName} could not be kicked`,
-      }
+      };
     }
   },
 } as Command;
-
-
-

@@ -6,9 +6,9 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'level';
-const DESCRIPTION = 'returns your level'
+const DESCRIPTION = 'returns your level';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -46,7 +46,7 @@ export = {
           member,
           true,
           null,
-          null
+          null,
         ),
       ],
     };

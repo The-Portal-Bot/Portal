@@ -8,9 +8,9 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 import { Command } from '../../types/Command';
 
 const COMMAND_NAME = 'weather';
-const DESCRIPTION = 'returns weather data'
+const DESCRIPTION = 'returns weather data';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -19,11 +19,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option
-        .setName('country')
-        .setDescription('The country you want to get weather data for')
-        .setRequired(true))
+    .addStringOption((option) =>
+      option.setName('country').setDescription('The country you want to get weather data for').setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     if (!process.env.OPEN_WEATHER_MAP) {
@@ -95,9 +93,7 @@ export = {
             },
             {
               emote: 'Feels like',
-              role: `${kelvinToCelsius(json.main.feels_like)}°C / ${kelvinToFahrenheit(
-                json.main.feels_like
-              )}°F`,
+              role: `${kelvinToCelsius(json.main.feels_like)}°C / ${kelvinToFahrenheit(json.main.feels_like)}°F`,
               inline: true,
             },
             {
@@ -135,7 +131,7 @@ export = {
           null,
           true,
           null,
-          null
+          null,
         ),
       ],
     });
@@ -144,8 +140,6 @@ export = {
       result: !!outcome,
       value: outcome ? `${json.name} weather` : 'failed to send message',
     };
-
-
   },
 } as Command;
 

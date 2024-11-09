@@ -10,7 +10,7 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 const COMMAND_NAME = 'portal';
 const DESCRIPTION = 'set a portal channel';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -23,7 +23,8 @@ export = {
       option
         .setName('portal_channel_name')
         .setDescription('the name of the portal channel you want to create')
-        .setRequired(true))
+        .setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const newPortalChannel = interaction.options.getChannel('portal_channel_name');
@@ -94,19 +95,18 @@ export = {
       true,
       true,
       0,
-      false
+      false,
     );
 
     const portalInserted = await insertPortal(pGuild.id, pChannel as unknown as IPChannel);
 
     return {
       result: !!portalInserted,
-      value:
-        portalInserted ? 'Portal channel has been created.\n' +
+      value: portalInserted
+        ? 'Portal channel has been created.\n' +
           'Keep in mind that due to Discord\'s limitations,\n' +
-          'channel names will be updated on a five minute interval' :
-          'portal channel failed to be created',
+          'channel names will be updated on a five minute interval'
+        : 'portal channel failed to be created',
     };
-
   },
 } as Command;

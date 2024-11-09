@@ -7,9 +7,9 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'set';
-const DESCRIPTION = 'set the value of an attribute'
+const DESCRIPTION = 'set the value of an attribute';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -18,8 +18,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('attribute')
+    .addStringOption((option) =>
+      option
+        .setName('attribute')
         .setDescription('Attribute\'s name to set')
         .addChoices(
           { name: 'p.annAnnounce', value: 'p.annAnnounce' },
@@ -47,15 +48,10 @@ export = {
           { name: 'p.userLimit', value: 'p.userLimit' },
           { name: 'v.userLimit', value: 'v.userLimit' },
         )
-        .setRequired(true))
-    .addStringOption(option =>
-      option.setName('value')
-        .setDescription('Value to set attribute to')
-        .setRequired(false))
-    .addRoleOption(option =>
-      option.setName('role')
-        .setDescription('Value to set attribute to')
-        .setRequired(false)),
+        .setRequired(true),
+    )
+    .addStringOption((option) => option.setName('value').setDescription('Value to set attribute to').setRequired(false))
+    .addRoleOption((option) => option.setName('role').setDescription('Value to set attribute to').setRequired(false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const attribute = interaction.options.getString('attribute');
     const value = interaction.options.getString('value');
@@ -83,13 +79,13 @@ export = {
       };
     }
 
-    return await  setAttribute(
+    return await setAttribute(
       member.voice.channel as VoiceChannel,
       pGuild,
       attribute,
       member,
       interaction,
-      value ?? role as Role,
+      value ?? (role as Role),
     );
   },
 } as Command;

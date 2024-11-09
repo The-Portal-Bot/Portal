@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+
 import PVoiceChannelSchema from './PVoiceChannel.schema';
 
 const PPortalChannelSchema = new Schema(
@@ -19,7 +20,7 @@ const PPortalChannelSchema = new Schema(
   },
   {
     collection: 'guild_list',
-  }
+  },
 );
 
 export default PPortalChannelSchema;

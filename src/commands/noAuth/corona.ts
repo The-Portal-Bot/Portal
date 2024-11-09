@@ -10,9 +10,9 @@ import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'corona';
-const DESCRIPTION = 'returns data on COVID19'
+const DESCRIPTION = 'returns data on COVID19';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -21,11 +21,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option
-        .setName('country')
-        .setDescription('The country you want to get corona data for')
-        .setRequired(true))
+    .addStringOption((option) =>
+      option.setName('country').setDescription('The country you want to get corona data for').setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     if (!process.env.COVID_193) {
@@ -171,7 +169,7 @@ export = {
           null,
           true,
           null,
-          null
+          null,
         ),
       ],
     });

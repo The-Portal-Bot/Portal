@@ -10,9 +10,9 @@ import { StructureDocumentation } from './help/StructureDocumentation';
 import { VariableDocumentation } from './help/VariableDocumentation';
 
 const COMMAND_NAME = 'help';
-const DESCRIPTION = 'returns requested help page'
+const DESCRIPTION = 'returns requested help page';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -21,8 +21,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('category')
+    .addStringOption((option) =>
+      option
+        .setName('category')
         .setDescription('Category to get help for')
         .setRequired(true)
         .addChoices(
@@ -37,9 +38,11 @@ export = {
           { name: 'Pipe guide', value: 'guide_pipes' },
           { name: 'Attribute guide', value: 'guide_attributes' },
           { name: 'Structure guide', value: 'guide_structures' },
-        ))
-    .addStringOption(option =>
-      option.setName('command_unauthorised')
+        ),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('command_unauthorised')
         .setDescription('Command to get help for')
         .setRequired(false)
         .addChoices(
@@ -63,9 +66,11 @@ export = {
           { name: 'spam_rules', value: 'spam_rules' },
           { name: 'weather', value: 'weather' },
           { name: 'whoami', value: 'whoami' },
-        ))
-    .addStringOption(option =>
-      option.setName('command_authorised')
+        ),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('command_authorised')
         .setDescription('Command to get help for')
         .setRequired(false)
         .addChoices(
@@ -82,9 +87,11 @@ export = {
           { name: 'set_ranks', value: 'set_ranks' },
           { name: 'set', value: 'set' },
           { name: 'url', value: 'url' },
-        ))
-    .addStringOption(option =>
-      option.setName('variable')
+        ),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('variable')
         .setDescription('Variable to get help for')
         .setRequired(false)
         .addChoices(
@@ -110,9 +117,11 @@ export = {
           { name: 'statusCount', value: 'statusCount' },
           { name: 'statusHistory', value: 'statusHistory' },
           { name: 'statusList', value: 'statusList' },
-        ))
-    .addStringOption(option =>
-      option.setName('pipe')
+        ),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('pipe')
         .setDescription('Pipe to get help for')
         .setRequired(false)
         .addChoices(
@@ -131,9 +140,11 @@ export = {
           { name: 'words', value: 'words' },
           { name: 'titleCase', value: 'titleCase' },
           { name: 'length', value: 'length' },
-        ))
-    .addStringOption(option =>
-      option.setName('attribute')
+        ),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('attribute')
         .setDescription('Attribute to get help for')
         .setRequired(false)
         .addChoices(
@@ -148,9 +159,11 @@ export = {
           { name: 'Pipe guide', value: 'guide_pipes' },
           { name: 'Attribute guide', value: 'guide_attributes' },
           { name: 'Structure guide', value: 'guide_structures' },
-        ))
-    .addStringOption(option =>
-      option.setName('structure')
+        ),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('structure')
         .setDescription('Structure to get help for')
         .setRequired(false)
         .addChoices(
@@ -175,7 +188,8 @@ export = {
           { name: 'regex', value: 'regex' },
           { name: 'userLimitPortal', value: 'userLimitPortal' },
           { name: 'userLimit', value: 'userLimit' },
-        )),
+        ),
+    ),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const category = interaction.options.getString('category');
     const command_unauthorised = interaction.options.getString('command_unauthorised');
@@ -282,30 +296,33 @@ const helpArray: Field[] = [
 ];
 
 async function simpleReply() {
-  const helpMessage = [createEmbed(
-    'Help Card',
-    'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
-    '> make a member an **admin**, give role `p.admin`\n' +
-    '> make a member an **moderator**, give role `p.mod`\n' +
-    '> make a member a **dj**, give role `p.dj`\n' +
-    '> to **whitelist** a member, give role `p.mod`\n' +
-    '> to **ignore** a member, give role `p.ignore`\n' +
-    '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
-    '#05d1ff',
-    helpArray,
-    null,
-    null,
-    true,
-    null,
-    null
-  )];
+  const helpMessage = [
+    createEmbed(
+      'Help Card',
+      'Detailed documentation at [portal-bot.xyz/docs](https://portal-bot.xyz/docs)\n\n' +
+        '> make a member an **admin**, give role `p.admin`\n' +
+        '> make a member an **moderator**, give role `p.mod`\n' +
+        '> make a member a **dj**, give role `p.dj`\n' +
+        '> to **whitelist** a member, give role `p.mod`\n' +
+        '> to **ignore** a member, give role `p.ignore`\n' +
+        '> for more click [here](https://portal-bot.xyz/help#q-how-can-i-give-members-authority)',
+      '#05d1ff',
+      helpArray,
+      null,
+      null,
+      true,
+      null,
+      null,
+    ),
+  ];
 
   return helpMessage;
 }
 
 async function propertyReply(type: string, specific: string | null) {
   if (specific) {
-    const detailed = commandDocumentation.getHelpDetailed(specific) ||
+    const detailed =
+      commandDocumentation.getHelpDetailed(specific) ||
       variableDocumentation.getHelpDetailed(specific) ||
       pipeDocumentation.getHelpDetailed(specific) ||
       attributeDocumentation.getHelpDetailed(specific) ||

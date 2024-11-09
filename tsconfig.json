@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
-    "incremental": true,
-    "target": "ES2020",
-    "lib": ["ES2020", "dom"],
+    "target": "es2023",
+    "lib": ["es2023", "dom"],
     "module": "commonjs",
-    "declaration": true,
+    "moduleResolution": "node",
     "outDir": "build",
     "rootDir": "src",
     "removeComments": true,
     "strict": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "incremental": true,
+    "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src/**/*"],
+  "include": ["src"],
   "exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.js", "**/*.test.ts", "**/*.test.js"]
 }

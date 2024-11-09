@@ -6,17 +6,15 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'ping';
-const DESCRIPTION = 'pings portal'
+const DESCRIPTION = 'pings portal';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild, client: Client): Promise<ReturnPromise> {
     const message = {
       embeds: [

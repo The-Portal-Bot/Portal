@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+
 import { ButtonStyle, ChatInputCommandInteraction, InteractionContextType, TextChannel } from 'discord.js';
 import { askForApproval, messageHelp } from '../../libraries/help.library';
 import { Command } from '../../types/Command';
@@ -7,7 +8,7 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 const COMMAND_NAME = 'delete_messages';
 const DESCRIPTION = 'delete n messages';
 
-export = {
+export default {
   time: 1,
   premium: false,
   ephemeral: true,
@@ -16,11 +17,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addNumberOption(option =>
-      option
-        .setName('message_number')
-        .setDescription('number of messages to delete')
-        .setRequired(true))
+    .addNumberOption((option) =>
+      option.setName('message_number').setDescription('number of messages to delete').setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const bulkDeleteLength = interaction.options.getNumber('message_number');
@@ -49,7 +48,7 @@ export = {
     const result = await askForApproval(
       interaction,
       `*${interaction.user}, are you sure you want to delete **${bulkDeleteLength}** messages*?`,
-      ButtonStyle.Success
+      ButtonStyle.Success,
     );
 
     if (!result) {
@@ -72,5 +71,5 @@ export = {
       result: true,
       value: `User ${interaction.user.displayName}, deleted ${messages.size - 1} messages`,
     };
-  }
+  },
 } as Command;

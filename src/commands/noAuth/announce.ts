@@ -6,9 +6,9 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'announce';
-const DESCRIPTION = 'send an announcement to the announcement channel'
+const DESCRIPTION = 'send an announcement to the announcement channel';
 
-export = {
+export default {
   time: 2,
   premium: false,
   ephemeral: true,
@@ -17,14 +17,8 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('title')
-        .setDescription('Announcement title')
-        .setRequired(true))
-    .addStringOption(option =>
-      option.setName('body')
-        .setDescription('Announcement body')
-        .setRequired(true)),
+    .addStringOption((option) => option.setName('title').setDescription('Announcement title').setRequired(true))
+    .addStringOption((option) => option.setName('body').setDescription('Announcement body').setRequired(true)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const title = interaction.options.getString('title');
     const body = interaction.options.getString('body');
@@ -50,7 +44,9 @@ export = {
       };
     }
 
-    const announcementChannel = interaction.guild.channels.cache.find((channel) => channel.id === pGuild.announcement) as TextChannel;
+    const announcementChannel = interaction.guild.channels.cache.find(
+      (channel) => channel.id === pGuild.announcement,
+    ) as TextChannel;
 
     if (!announcementChannel) {
       return {
@@ -68,7 +64,7 @@ export = {
       interaction.member as GuildMember,
       null,
       null,
-      null
+      null,
     );
 
     const outcome = await announcementChannel.send({ embeds: [richMessage] });

@@ -8,10 +8,10 @@ import { PPoll } from '../../types/classes/PPoll.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'poll';
-const DESCRIPTION = 'create a new poll'
+const DESCRIPTION = 'create a new poll';
 const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -20,34 +20,13 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('title')
-        .setDescription('Poll title')
-        .setRequired(true))
-    .addStringOption(option =>
-      option.setName('option_1')
-        .setDescription('option 1')
-        .setRequired(true))
-    .addStringOption(option =>
-      option.setName('option_2')
-        .setDescription('option 2')
-        .setRequired(true))
-    .addStringOption(option =>
-      option.setName('option_3')
-        .setDescription('option 3')
-        .setRequired(false))
-    .addStringOption(option =>
-      option.setName('option_4')
-        .setDescription('option 4')
-        .setRequired(false))
-    .addStringOption(option =>
-      option.setName('option_5')
-        .setDescription('option 5')
-        .setRequired(false))
-    .addStringOption(option =>
-      option.setName('option_6')
-        .setDescription('option 6')
-        .setRequired(false)),
+    .addStringOption((option) => option.setName('title').setDescription('Poll title').setRequired(true))
+    .addStringOption((option) => option.setName('option_1').setDescription('option 1').setRequired(true))
+    .addStringOption((option) => option.setName('option_2').setDescription('option 2').setRequired(true))
+    .addStringOption((option) => option.setName('option_3').setDescription('option 3').setRequired(false))
+    .addStringOption((option) => option.setName('option_4').setDescription('option 4').setRequired(false))
+    .addStringOption((option) => option.setName('option_5').setDescription('option 5').setRequired(false))
+    .addStringOption((option) => option.setName('option_6').setDescription('option 6').setRequired(false)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
@@ -74,16 +53,34 @@ export = {
 
     const pollMap = [option_1, option_2];
 
-    if (option_3) {  pollMap.push(option_3); }
-    if (option_4) {  pollMap.push(option_4); }
-    if (option_5) {  pollMap.push(option_5); }
-    if (option_6) {  pollMap.push(option_6); }
+    if (option_3) {
+      pollMap.push(option_3);
+    }
+    if (option_4) {
+      pollMap.push(option_4);
+    }
+    if (option_5) {
+      pollMap.push(option_5);
+    }
+    if (option_6) {
+      pollMap.push(option_6);
+    }
 
-    pollMap.filter(poll => !!poll).map(poll => poll.trim());
+    pollMap.filter((poll) => !!poll).map((poll) => poll.trim());
 
-    const pollMapField = pollMap.map((p, i) => { return <Field>{emote: emoji[i],  role: p, inline: true}; });
+    const pollMapField = pollMap.map((p, i) => {
+      return <Field>{ emote: emoji[i], role: p, inline: true };
+    });
 
-    const response = await createRoleMessage(<TextChannel>interaction.channel, pGuild, title, '', '#9900ff', pollMapField, interaction.user.id);
+    const response = await createRoleMessage(
+      <TextChannel>interaction.channel,
+      pGuild,
+      title,
+      '',
+      '#9900ff',
+      pollMapField,
+      interaction.user.id,
+    );
 
     if (!response) {
       return {
@@ -106,7 +103,7 @@ async function createRoleMessage(
   desc: string,
   colour: ColorResolvable,
   pollMap: Field[],
-  memberId: string
+  memberId: string,
 ): Promise<ReturnPromise> {
   const roleMessageEmbed = createEmbed(title, desc, colour, pollMap, null, null, true, null, null);
 

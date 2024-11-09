@@ -7,17 +7,15 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'leave';
-const DESCRIPTION = 'makes portal leave your voice channel'
+const DESCRIPTION = 'makes portal leave your voice channel';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {

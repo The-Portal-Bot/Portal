@@ -9,9 +9,9 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'vendor';
-const DESCRIPTION = 'create a vendor message'
+const DESCRIPTION = 'create a vendor message';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -21,10 +21,8 @@ export = {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
-      option
-        .setName('vendor_string')
-        .setDescription('JSON string of vendor roles')
-        .setRequired(true))
+      option.setName('vendor_string').setDescription('JSON string of vendor roles').setRequired(true),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!interaction.guild) {
@@ -96,8 +94,8 @@ export = {
           new Field(
             r.emote,
             `\`\`\`${roleFetched.map((role) => `@${role ? role.name : 'undefined'}`).join(', ')}\`\`\``,
-            true
-          )
+            true,
+          ),
         );
       } else {
         returnValue = 'could not fetch guild of message';
@@ -119,7 +117,7 @@ export = {
       'React with emote to get or remove mentioned role',
       '#FF7F00',
       roleEmbDisplay,
-      roleMap
+      roleMap,
     );
 
     if (!roleMessage || !roleMessage.result) {
@@ -140,7 +138,7 @@ function createRoleMessage(
   desc: string,
   colour: ColorResolvable,
   roleEmb: Field[],
-  roleMap: GiveRole[]
+  roleMap: GiveRole[],
 ): Promise<ReturnPromise> {
   return new Promise((resolve) => {
     const roleMessageEmb = createEmbed(title, desc, colour, roleEmb, null, null, null, null, null);
@@ -163,7 +161,7 @@ function createRoleMessage(
               result: r,
               value: r
                 ? 'Keep in mind that Portal role must be over any role you wish it to be able to distribute.\n' +
-                'In order to change it, please head to your servers settings and put Portal role above them'
+                  'In order to change it, please head to your servers settings and put Portal role above them'
                 : 'failed to set new ranks',
             });
           })

@@ -9,22 +9,20 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'join';
-const DESCRIPTION = 'makes portal join your voice channel'
+const DESCRIPTION = 'makes portal join your voice channel';
 
-export = {
+export default {
   time: 1,
   premium: false,
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.MEMBER,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     try {
       const voiceChannel = await joinUserVoiceChannelByInteraction(interaction, pGuild);
 
-      if(!voiceChannel) {
+      if (!voiceChannel) {
         return {
           result: false,
           value: 'failed to join voice channel',
@@ -37,7 +35,7 @@ export = {
         result: true,
         value: 'successfully joined voice channel',
       };
-    }catch (error) {
+    } catch (error) {
       logger.error(`commands.join.error: ${error}`);
 
       return {

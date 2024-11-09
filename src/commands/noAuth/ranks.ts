@@ -6,17 +6,15 @@ import { PGuild } from '../../types/classes/PGuild.class';
 import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'ranks';
-const DESCRIPTION = 'display server ranks'
+const DESCRIPTION = 'display server ranks';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     if (!pGuild.ranks || pGuild.ranks.length === 0) {
       return {

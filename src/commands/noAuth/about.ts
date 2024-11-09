@@ -4,17 +4,15 @@ import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'about';
-const DESCRIPTION = 'returns information on Portal'
+const DESCRIPTION = 'returns information on Portal';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
   async execute(): Promise<ReturnPromise> {
     const aboutMessage = [
       createEmbed(
@@ -57,7 +55,7 @@ export = {
         null,
         true,
         null,
-        null
+        null,
         // undefined,
         // undefined,
         // 'since 2020'

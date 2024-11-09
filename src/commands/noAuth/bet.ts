@@ -8,9 +8,9 @@ import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
 
 const COMMAND_NAME = 'bet';
-const DESCRIPTION = 'returns betting data'
+const DESCRIPTION = 'returns betting data';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -19,15 +19,16 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('provider')
+    .addStringOption((option) =>
+      option
+        .setName('provider')
         .setDescription('betting provider')
         .setRequired(true)
-        .addChoices(
-          { name: 'OPAP', value: 'opap' },
-        ))
-    .addNumberOption(option =>
-      option.setName('game')
+        .addChoices({ name: 'OPAP', value: 'opap' }),
+    )
+    .addNumberOption((option) =>
+      option
+        .setName('game')
         .setDescription('betting game')
         .setRequired(true)
         .addChoices(
@@ -38,7 +39,8 @@ export = {
           { name: 'LOTTO', value: 5103 },
           { name: 'Tzoker', value: 5104 },
           { name: 'extra5', value: 5106 },
-        )),
+        ),
+    ),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const provider = interaction.options.getString('provider');
     const gameCode = interaction.options.getNumber('game');
@@ -129,7 +131,7 @@ export = {
           null,
           true,
           null,
-          null
+          null,
         ),
       ],
     });

@@ -1,10 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction, InteractionContextType, NewsChannel, VoiceChannel } from 'discord.js';
 
-import {
-  deleteChannel,
-  doesChannelHaveUsage
-} from '../../libraries/guild.library';
+import { deleteChannel, doesChannelHaveUsage } from '../../libraries/guild.library';
 import { messageHelp } from '../../libraries/help.library';
 import { updateGuild } from '../../libraries/mongo.library';
 import { Command } from '../../types/Command';
@@ -15,7 +12,7 @@ import { PortalChannelType } from '../../types/enums/PortalChannel.enum';
 const COMMAND_NAME = 'announcement';
 const DESCRIPTION = 'make an announcement to the announcements channel';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -28,12 +25,14 @@ export = {
       option
         .setName('announcement_channel')
         .setDescription('the channel you want to make the announcement channel')
-        .setRequired(true))
+        .setRequired(true),
+    )
     .addChannelOption((option) =>
       option
         .setName('delete_previous')
         .setDescription('whether or not to delete the previous announcement channel')
-        .setRequired(false))
+        .setRequired(false),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const announcementChannel = interaction.options.getChannel('announcement_channel');
@@ -69,8 +68,9 @@ export = {
     }
 
     if (deletePreviousAnnouncementChannel) {
-      const announcement = interaction?.guild?.channels.cache
-        .find((channel) => channel.id == pGuild.announcement) as VoiceChannel;
+      const announcement = interaction?.guild?.channels.cache.find(
+        (channel) => channel.id == pGuild.announcement,
+      ) as VoiceChannel;
 
       if (announcement) {
         deleteChannel(PortalChannelType.announcement, announcement, interaction);
@@ -81,9 +81,7 @@ export = {
 
     return {
       result: response,
-      value: response
-        ? 'new announcement channel set successfully'
-        : 'failed to set new announcement channel',
+      value: response ? 'new announcement channel set successfully' : 'failed to set new announcement channel',
     };
   },
 } as Command;

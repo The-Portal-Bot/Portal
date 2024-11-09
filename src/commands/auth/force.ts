@@ -21,15 +21,21 @@ function isChannelCreator(member: GuildMember, pVoiceChannel: PVoiceChannel): bo
   return pVoiceChannel.creatorId === member.id;
 }
 
-async function cloneAndUpdateVoiceChannel(currentVoice: VoiceChannel, pChannel: PChannel, pVoiceChannel: PVoiceChannel, pGuild: PGuild, interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+async function cloneAndUpdateVoiceChannel(
+  currentVoice: VoiceChannel,
+  pChannel: PChannel,
+  pVoiceChannel: PVoiceChannel,
+  pGuild: PGuild,
+  interaction: ChatInputCommandInteraction,
+): Promise<ReturnPromise> {
   const updatedName = regexInterpreter(
     pVoiceChannel.regex,
     currentVoice,
     pVoiceChannel,
     pGuild.pChannels,
     pGuild,
-        interaction.guild!,
-        interaction.user.id
+    interaction.guild!,
+    interaction.user.id,
   );
   const currentVoiceClone = await currentVoice.clone({ name: updatedName });
 
@@ -55,30 +61,43 @@ async function cloneAndUpdateVoiceChannel(currentVoice: VoiceChannel, pChannel: 
   return { result: true, value: 'Force updated voice' };
 }
 
-export = {
+export default {
   time: 5,
   premium: false,
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.MEMBER,
-  slashCommand: new SlashCommandBuilder()
-    .setName(COMMAND_NAME)
-    .setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
 
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
 
     if (!member) return { result: false, value: 'Member could not be fetched' };
-    if (!isUserInHandledVoiceChannel(member, pGuild)) return { result: false, value: messageHelp('commands', 'force', 'The channel you are in is not handled by Portal') };
-    if ((member.voice.channel as VoiceChannel).members.size > 10) return { result: false, value: messageHelp('commands', 'force', 'You can only force a channel with up-to 10 members') };
+    if (!isUserInHandledVoiceChannel(member, pGuild))
+      return {
+        result: false,
+        value: messageHelp('commands', 'force', 'The channel you are in is not handled by Portal'),
+      };
+    if ((member.voice.channel as VoiceChannel).members.size > 10)
+      return {
+        result: false,
+        value: messageHelp('commands', 'force', 'You can only force a channel with up-to 10 members'),
+      };
 
     for (const pChannel of pGuild.pChannels) {
       for (const pVoiceChannel of pChannel.pVoiceChannels) {
         if (pVoiceChannel.id !== member.voice.channel!.id) continue;
-        if (!isChannelCreator(member, pVoiceChannel)) return { result: false, value: 'You are not the creator of the channel' };
+        if (!isChannelCreator(member, pVoiceChannel))
+          return { result: false, value: 'You are not the creator of the channel' };
         if (!interaction.guild) return { result: false, value: 'Could not fetch message\'s guild' };
 
-        return cloneAndUpdateVoiceChannel(member.voice.channel as VoiceChannel, pChannel, pVoiceChannel, pGuild, interaction);
+        return cloneAndUpdateVoiceChannel(
+          member.voice.channel as VoiceChannel,
+          pChannel,
+          pVoiceChannel,
+          pGuild,
+          interaction,
+        );
       }
     }
     return { result: false, value: 'Force failed' };

@@ -8,9 +8,9 @@ import { Field, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.int
 import { PVoiceChannel } from '../../types/classes/PVoiceChannel.class';
 
 const COMMAND_NAME = 'run';
-const DESCRIPTION = 'execute given code'
+const DESCRIPTION = 'execute given code';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -19,10 +19,7 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('command')
-        .setDescription('Command to run')
-        .setRequired(true)),
+    .addStringOption((option) => option.setName('command').setDescription('Command to run').setRequired(true)),
   async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
     const command = interaction.options.getString('command');
 
@@ -77,10 +74,10 @@ export = {
           null,
           null,
           undefined,
-          undefined
+          undefined,
         ),
       ],
-    }
+    };
 
     const outcome = await interaction.reply(message);
 
@@ -91,46 +88,45 @@ export = {
       };
     }
 
-    const editedMessage = await outcome
-      .edit({
-        embeds: [
-          createEmbed(
-            'Text Interpreter',
-            null,
-            '#00ffb3',
-            <Field[]>[
-              {
-                emote: 'input',
-                role: maxString(`\`\`\`\n${command}\n\`\`\``, 256),
-                inline: false,
-              },
-              {
-                emote: 'output',
-                role: maxString(
-                  `\`\`\`\n${regexInterpreter(
-                    command,
-                    currentVoiceChannel as VoiceChannel,
-                    pVoice,
-                    pGuild.pChannels,
-                    pGuild,
-                    interaction.guild,
-                    interaction.user.id
-                  )}\n\`\`\``,
-                  256
-                ),
-                inline: false,
-              },
-            ],
-            null,
-            null,
-            false,
-            null,
-            null,
-            undefined,
-            undefined
-          ),
-        ],
-      });
+    const editedMessage = await outcome.edit({
+      embeds: [
+        createEmbed(
+          'Text Interpreter',
+          null,
+          '#00ffb3',
+          <Field[]>[
+            {
+              emote: 'input',
+              role: maxString(`\`\`\`\n${command}\n\`\`\``, 256),
+              inline: false,
+            },
+            {
+              emote: 'output',
+              role: maxString(
+                `\`\`\`\n${regexInterpreter(
+                  command,
+                  currentVoiceChannel as VoiceChannel,
+                  pVoice,
+                  pGuild.pChannels,
+                  pGuild,
+                  interaction.guild,
+                  interaction.user.id,
+                )}\n\`\`\``,
+                256,
+              ),
+              inline: false,
+            },
+          ],
+          null,
+          null,
+          false,
+          null,
+          null,
+          undefined,
+          undefined,
+        ),
+      ],
+    });
 
     return {
       result: !!editedMessage,

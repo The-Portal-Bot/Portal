@@ -1,4 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
+
 import * as auth from '../../../commands/auth';
 import * as noAuth from '../../../commands/noAuth';
 import { createEmbed } from '../../../libraries/help.library';
@@ -7,7 +8,7 @@ import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interfac
 const PORTAL_URL = 'https://portal-bot.xyz/docs';
 
 export class CommandDocumentation implements HelpDocumentation {
-  public getGuide():  EmbedBuilder {
+  public getGuide(): EmbedBuilder {
     const commandArray: Field[] = [
       {
         emote: '1. Go to any channel',
@@ -35,11 +36,11 @@ export class CommandDocumentation implements HelpDocumentation {
       null,
       null,
       null,
-      null
+      null,
     );
   }
 
-  public getHelp():  EmbedBuilder[] {
+  public getHelp(): EmbedBuilder[] {
     const commands = this.getCommandList();
     const commandArray: Field[][] = [];
 
@@ -65,7 +66,7 @@ export class CommandDocumentation implements HelpDocumentation {
           null,
           null,
           null,
-          null
+          null,
         );
       } else {
         return createEmbed(null, null, '#9775A9', commandArray[index], null, null, null, null, null);
@@ -73,7 +74,7 @@ export class CommandDocumentation implements HelpDocumentation {
     });
   }
 
-  public getHelpDetailed(candidate: string):  EmbedBuilder | boolean {
+  public getHelpDetailed(candidate: string): EmbedBuilder | boolean {
     const commands = this.getCommandList();
 
     for (let i = 0; i < commands.length; i++) {
@@ -94,7 +95,7 @@ export class CommandDocumentation implements HelpDocumentation {
           null,
           null,
           null,
-          null
+          null,
         );
       }
     }
@@ -103,12 +104,9 @@ export class CommandDocumentation implements HelpDocumentation {
   }
 
   private getCommandList() {
-    return [
-      ...Object.values(auth),
-      ...Object.values(noAuth),
-    ].map(command => ({
+    return [...Object.values(auth), ...Object.values(noAuth)].map((command) => ({
       name: command.slashCommand.name,
-      hover: command.slashCommand.description
+      hover: command.slashCommand.description,
     }));
   }
 }

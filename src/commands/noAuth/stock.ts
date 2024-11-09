@@ -21,9 +21,9 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 // };
 
 const COMMAND_NAME = 'stock';
-const DESCRIPTION = 'returns data on stocks'
+const DESCRIPTION = 'returns data on stocks';
 
-export = {
+export default {
   time: 0,
   premium: false,
   ephemeral: true,
@@ -32,10 +32,9 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption(option =>
-      option.setName('stock')
-        .setDescription('Stock you want to get data for')
-        .setRequired(true)),
+    .addStringOption((option) =>
+      option.setName('stock').setDescription('Stock you want to get data for').setRequired(true),
+    ),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     if (!process.env.YAHOO_FINANCE) {
       return {
@@ -127,7 +126,7 @@ export = {
           null,
           true,
           null,
-          null
+          null,
         ),
       ],
     });

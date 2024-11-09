@@ -1,5 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, InteractionContextType, InviteCreateOptions, TextChannel } from 'discord.js';
+import {
+  ChatInputCommandInteraction,
+  GuildMember,
+  InteractionContextType,
+  InviteCreateOptions,
+  TextChannel,
+} from 'discord.js';
 import { isMod, messageHelp } from '../../libraries/help.library';
 import { Command } from '../../types/Command';
 import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface';
@@ -7,7 +13,7 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface'
 const COMMAND_NAME = 'invite';
 const DESCRIPTION = 'generate an invite link';
 
-export = {
+export default {
   time: 1,
   premium: false,
   ephemeral: true,
@@ -16,31 +22,17 @@ export = {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addBooleanOption(option =>
-      option
-        .setName('temporary')
-        .setDescription('should invite be temporary')
-        .setRequired(false))
-    .addNumberOption(option =>
-      option
-        .setName('max_age')
-        .setDescription('what the maximum age of the invitee shall be')
-        .setRequired(false))
-    .addNumberOption(option =>
-      option
-        .setName('max_uses')
-        .setDescription('maximum usages')
-        .setRequired(false))
-    .addBooleanOption(option =>
-      option
-        .setName('unique')
-        .setDescription('should invite be unique')
-        .setRequired(false))
-    .addStringOption(option =>
-      option
-        .setName('reason')
-        .setDescription('the reason for the invite')
-        .setRequired(false))
+    .addBooleanOption((option) =>
+      option.setName('temporary').setDescription('should invite be temporary').setRequired(false),
+    )
+    .addNumberOption((option) =>
+      option.setName('max_age').setDescription('what the maximum age of the invitee shall be').setRequired(false),
+    )
+    .addNumberOption((option) => option.setName('max_uses').setDescription('maximum usages').setRequired(false))
+    .addBooleanOption((option) => option.setName('unique').setDescription('should invite be unique').setRequired(false))
+    .addStringOption((option) =>
+      option.setName('reason').setDescription('the reason for the invite').setRequired(false),
+    )
     .setContexts(InteractionContextType.Guild),
   async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
@@ -84,7 +76,7 @@ export = {
       maxUses,
       unique,
       reason,
-    }
+    };
 
     const createdInvite = await (<TextChannel>interaction.channel).createInvite(inviteCreationOptions);
 

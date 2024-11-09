@@ -6,6 +6,8 @@
 // // import { export_txt, get_lyrics, pause, play, skip } from "../libraries/music.library";
 // import { PGuild } from "../types/classes/PGuild.class";
 
+import logger from '../utilities/log.utility';
+
 // import { Client, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 
 // function clear_user_reactions(
@@ -459,14 +461,15 @@
 // }
 
 export async function messageReactionAdd(
-  // @ts-expect-error
+  // @ts-expect-error: description
   client: Client,
-  // @ts-expect-error
+  // @ts-expect-error: description
   messageReaction: MessageReaction | PartialMessageReactionClient,
-  // @ts-expect-error
+  // @ts-expect-error: description
   user: User | PartialUserClient,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
+    logger.info(`${client} ${messageReaction} ${user}`);
     return reject('under construction');
     // if (user.bot) {
     //     return resolve(''); // 'not handling bot reactions'
