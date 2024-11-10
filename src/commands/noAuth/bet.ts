@@ -1,7 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import dayjs from "npm:dayjs";
 import type { ChatInputCommandInteraction } from "npm:discord.js";
-import type { RequestOptions } from "node:https";
 
 import {
   createEmbed,
@@ -14,6 +13,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
+import logger from "../../utilities/log.utility.ts";
 
 const COMMAND_NAME = "bet";
 const DESCRIPTION = "returns betting data";
@@ -69,34 +69,24 @@ export default {
       };
     }
 
-    const options: RequestOptions = {
-      method: "GET",
-      hostname: "api.opap.gr",
-      port: undefined,
-      path: `/draws/v3.0/${gameCode}/last-result-and-active`,
-      headers: {
-        "x-opap-host": "api.opap.gr",
-        useQueryString: 1,
-      },
-    };
-
-    const response = await httpsFetch(options);
-
-    if (!response) {
-      return {
-        result: false,
-        value: "could not fetch data from OpenAPI",
-      };
-    }
-
-    const json = getJSONFromString(
-      response.toString().substring(response.toString().indexOf("{")),
+    const url = new URL(
+      `https://api.opap.gr/draws/v3.0/${gameCode}/last-result-and-active`,
     );
 
-    if (json === null) {
+    const response = await httpsFetch(url, {
+      method: "GET",
+      headers: {
+        "x-opap-host": "api.opap.gr",
+        useQueryString: "1",
+      },
+    });
+
+    const json = await response.json();
+
+    if (!json) {
       return {
         result: false,
-        value: "data from source is corrupted",
+        value: "could not parse data from OpenAPI",
       };
     }
 

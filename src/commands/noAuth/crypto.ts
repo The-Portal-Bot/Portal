@@ -65,19 +65,18 @@ export default {
       };
     }
 
-    const options: RequestOptions = {
+    const url = new URL("https://coingecko.p.rapidapi.com/simple/price");
+    url.searchParams.append("ids", cryptoName);
+    url.searchParams.append("vs_currencies", currencyName);
+
+    const response = await httpsFetch(url, {
       method: "GET",
-      hostname: "coingecko.p.rapidapi.com",
-      port: undefined,
-      path: `/simple/price?ids=${cryptoName}&vs_currencies=${currencyName}`,
       headers: {
         "x-rapidapi-host": "coingecko.p.rapidapi.com",
-        "x-rapidapi-key": Deno.env.get("COIN_GECKO"),
-        useQueryString: 1,
+        "x-rapidapi-key": Deno.env.get("COIN_GECKO") || "",
+        "Accept": "application/json",
       },
-    };
-
-    const response = await httpsFetch(options);
+    });
 
     if (!response) {
       return {

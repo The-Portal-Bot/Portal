@@ -17,7 +17,6 @@
     "discord.js": "npm:discord.js@14.16.3",
     "mongoose": "npm:mongoose@8.8.0",
     "dayjs": "npm:dayjs@1.11.13",
-    "node-fetch": "npm:node-fetch@^3.3.2", // should be replaced with deno fetch
     "winston": "npm:winston@3.16.0",
     "cheerio": "npm:cheerio@1.0.0-rc.12",
     "jsonfile": "npm:jsonfile@6.1.0",

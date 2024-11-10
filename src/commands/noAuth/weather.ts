@@ -55,17 +55,18 @@ export default {
       };
     }
 
-    const location = country.split(" ").join("%2C%20");
-    const options: RequestOptions = {
-      method: "GET",
-      hostname: "api.openweathermap.org",
-      port: undefined,
-      path: `/data/2.5/weather?q=${location}&appid=${
-        Deno.env.get("OPEN_WEATHER_MAP")
-      }`,
-    };
+    const url = new URL(`https://api.openweathermap.org/data/2.5/weather`);
 
-    const response = await httpsFetch(options);
+    const location = country.split(" ").join("%2C%20");
+    url.searchParams.append("q", location);
+    url.searchParams.append("appid", Deno.env.get("OPEN_WEATHER_MAP") || "");
+
+    const response = await httpsFetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
 
     if (!response) {
       return {
