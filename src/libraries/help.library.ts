@@ -397,7 +397,7 @@ export async function updateMusicLyricsMessage(
 export function joinUserVoiceChannelByInteraction(
   interaction: ChatInputCommandInteraction,
   pGuild: PGuild,
-): Promise<VoiceConnection | undefined> {
+): VoiceConnection | undefined {
   const member = interaction.member;
 
   if (!member) {

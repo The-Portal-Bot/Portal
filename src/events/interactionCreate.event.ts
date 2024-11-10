@@ -146,6 +146,7 @@ export async function interactionCreate(
     logger.error(
       `something went wrong with command ${interaction.commandName}`,
     );
+
     return await InteractionReply(interaction, {
       content: "something went wrong",
       ephemeral: false,

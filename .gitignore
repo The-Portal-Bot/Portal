@@ -107,6 +107,7 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+.vscode/*
 
 # yarn v2
 .yarn/cache
@@ -119,3 +120,6 @@ build/*
 
 # Ignore IDE configuration files
 .idea/
+
+# Executable files
+*.exe

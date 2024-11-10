@@ -83,10 +83,16 @@ async function cloneAndUpdateVoiceChannel(
     return { result: false, value: "Failed to force update channel" };
   }
 
-  await deleteChannel(PortalChannelType.voice, currentVoice, interaction, true)
-    .catch((e) => {
-      return { result: false, value: `Failed to delete channel: ${e}` };
-    });
+  const result = await deleteChannel(
+    PortalChannelType.voice,
+    currentVoice,
+    interaction,
+    true,
+  );
+
+  if (!result) {
+    return { result: false, value: `Failed to delete channel` };
+  }
 
   return { result: true, value: "Force updated voice" };
 }
@@ -100,8 +106,7 @@ export default {
   slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
     DESCRIPTION,
   ),
-
-  execute(
+  async execute(
     interaction: ChatInputCommandInteraction,
     pGuild: PGuild,
   ): Promise<ReturnPromise> {
@@ -155,6 +160,7 @@ export default {
         );
       }
     }
+
     return { result: false, value: "Force failed" };
   },
 } as Command;

@@ -22,7 +22,7 @@ import logger from "../utilities/log.utility.ts";
 export function eventHandler(
   client: Client,
   activeCooldowns: ActiveCooldowns = { guild: [], member: [] },
-): Promise<void> {
+): void {
   // This event will run if the bot starts, and logs in, successfully.
   client.once("ready", async () => await events.ready(client));
   // This event triggers when a channel is deleted

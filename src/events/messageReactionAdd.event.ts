@@ -470,7 +470,7 @@ export function messageReactionAdd(
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     logger.info(`${client} ${messageReaction} ${user}`);
-    if (date.now() > 0) {
+    if (Date.now() > 0) {
       return resolve();
     }
     return reject("under construction");

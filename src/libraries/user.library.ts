@@ -17,7 +17,7 @@ import logger from "../utilities/log.utility.ts";
 import { getElapsedTime } from "./help.library.ts";
 import { updateEntireMember, updateMember } from "./mongo.library.ts";
 
-export function calculateRank(member: PMember): Promise<number> {
+export function calculateRank(member: PMember): number {
   if (member.tier === 0) {
     member.tier = 1; // must be removed
   }
@@ -34,10 +34,7 @@ export function calculateRank(member: PMember): Promise<number> {
   return member.level;
 }
 
-export function addPointsTime(
-  pMember: PMember,
-  rankSpeed: number,
-): Promise<number> {
+export function addPointsTime(pMember: PMember, rankSpeed: number): number {
   if (!pMember.timestamp) {
     return pMember.points;
   }

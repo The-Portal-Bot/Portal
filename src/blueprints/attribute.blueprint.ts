@@ -347,10 +347,10 @@ export const AttributeBlueprints: Blueprint[] = [
       return "@everyone";
     },
     set: (): Promise<ReturnPromise> => {
-      return {
+      return Promise.resolve({
         result: false,
         value: "not yet implemented",
-      };
+      });
 
       // const category = ['p'];
       // const attribute = 'allowedRoles';
@@ -462,7 +462,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return "@everyone";
     },
-    set: (): Promise<ReturnPromise> => {
+    set: async (): Promise<ReturnPromise> => {
       return {
         result: false,
         value: "not yet implemented",
@@ -560,7 +560,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return "@everyone";
     },
-    set: (): Promise<ReturnPromise> => {
+    set: async (): Promise<ReturnPromise> => {
       return {
         result: false,
         value: "not yet implemented",
@@ -825,7 +825,7 @@ export const AttributeBlueprints: Blueprint[] = [
     get: ({ voiceChannel }): number => {
       return voiceChannel?.bitrate ?? 96000;
     },
-    set: ({ voiceChannel }, value): Promise<ReturnPromise> => {
+    set: async ({ voiceChannel }, value): Promise<ReturnPromise> => {
       const category = ["v"];
       const attribute = "bitrate";
       const newBitrate = Number(value);

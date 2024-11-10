@@ -18,6 +18,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
+import logger from "../../utilities/log.utility.ts";
 
 const COMMAND_NAME = "kick";
 const DESCRIPTION = "kick a user";

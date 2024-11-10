@@ -29,7 +29,7 @@ export default {
       option.setName("duration").setDescription("duration in seconds")
         .setRequired(true)
     ),
-  execute(
+  async execute(
     interaction: ChatInputCommandInteraction,
   ): Promise<ReturnPromise> {
     const member = interaction.options.getMember("member");

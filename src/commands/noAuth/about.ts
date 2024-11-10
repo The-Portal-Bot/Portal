@@ -19,7 +19,7 @@ export default {
   slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
     DESCRIPTION,
   ),
-  execute(): Promise<ReturnPromise> {
+  async execute(): Promise<ReturnPromise> {
     const aboutMessage = [
       createEmbed(
         "About",

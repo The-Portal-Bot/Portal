@@ -28,7 +28,7 @@ export default {
   slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
     DESCRIPTION,
   ),
-  execute(
+  async execute(
     interaction: ChatInputCommandInteraction,
     pGuild: PGuild,
   ): Promise<ReturnPromise> {

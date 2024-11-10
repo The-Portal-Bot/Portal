@@ -11,6 +11,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
+import logger from "../../utilities/log.utility.ts";
 
 const COMMAND_NAME = "roll";
 const DESCRIPTION = "roll a dice";

@@ -434,7 +434,7 @@ export function deleteChannel(
   channelToDelete: VoiceChannel | TextChannel,
   interaction: ChatInputCommandInteraction | null,
   isPortal = false,
-): Promise<boolean> {
+): boolean {
   logger.log({
     level: "info",
     type: "none",
@@ -561,7 +561,9 @@ export function deleteChannel(
 
 export function deleteMessage(message: Message<true>): Promise<boolean> {
   if (!message || !message.deletable) {
-    return false;
+    return new Promise(
+      (resolve) => resolve(false),
+    );
   }
 
   const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
