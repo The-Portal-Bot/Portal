@@ -16,7 +16,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import process from "node:process";
+import "@std/dotenv/load";
 
 const COMMAND_NAME = "crypto";
 const DESCRIPTION = "returns information about crypto currencies";
@@ -44,7 +44,7 @@ export default {
   async execute(
     interaction: ChatInputCommandInteraction,
   ): Promise<ReturnPromise> {
-    if (!process.env.COIN_GECKO) {
+    if (!Deno.env.get("COIN_GECKO")) {
       return {
         result: false,
         value: "COIN_GECKO API key is not set up",
@@ -72,7 +72,7 @@ export default {
       path: `/simple/price?ids=${cryptoName}&vs_currencies=${currencyName}`,
       headers: {
         "x-rapidapi-host": "coingecko.p.rapidapi.com",
-        "x-rapidapi-key": process.env.COIN_GECKO,
+        "x-rapidapi-key": Deno.env.get("COIN_GECKO"),
         useQueryString: 1,
       },
     };

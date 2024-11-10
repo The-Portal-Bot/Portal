@@ -1,6 +1,6 @@
 import { REST } from "@discordjs/rest";
+import "@std/dotenv/load";
 import { Routes } from "discord-api-types/v9";
-import dotenv from "npm:dotenv";
 import { transports } from "npm:winston";
 
 import * as auth from "./commands/auth/index.ts";
@@ -10,12 +10,11 @@ import { eventHandler } from "./handlers/event.handler.ts";
 import { mongoHandler } from "./handlers/mongo.handler.ts";
 import type { ActiveCooldowns } from "./types/classes/PTypes.interface.ts";
 import logger from "./utilities/log.utility.ts";
-import process from "node:process";
-
-dotenv.config();
 
 (async () => {
-  if (process.env.LOG) {
+  const LOG = Deno.env.get("LOG") === "true";
+
+  if (LOG) {
     logger.add(
       new transports.File({
         filename: "/logs/portal-error.log.json",
@@ -37,25 +36,28 @@ dotenv.config();
     );
   }
 
-  if (!process.env.TOKEN) {
+  const DISCORD_TOKEN = Deno.env.get("DISCORD_TOKEN");
+  if (!DISCORD_TOKEN) {
     logger.error("Discord token is not defined");
-    process.exit(1);
+    Deno.exit(1);
   }
 
-  if (!process.env.MONGO_URL) {
+  const MONGO_URL = Deno.env.get("MONGO_URL");
+  if (!MONGO_URL) {
     logger.error("mongo url is not defined");
-    process.exit(2);
+    Deno.exit(2);
   }
 
-  if (!process.env.CLIENT_ID) {
+  const CLIENT_ID = Deno.env.get("CLIENT_ID");
+  if (!CLIENT_ID) {
     logger.error("Discord client id is not defined");
-    process.exit(4);
+    Deno.exit(4);
   }
 
   try {
     logger.info("started refreshing application slash commands");
-    const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
-    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
+    const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
+    await rest.put(Routes.applicationCommands(CLIENT_ID), {
       body: [...Object.values(auth), ...Object.values(noAuth)].map((command) =>
         command.slashCommand.toJSON()
       ),
@@ -66,11 +68,11 @@ dotenv.config();
     logger.error(error);
   }
 
-  const mongo = await mongoHandler(process.env.MONGO_URL);
+  const mongo = await mongoHandler(MONGO_URL);
 
   if (!mongo) {
     logger.error("failed to connect to database");
-    process.exit(2);
+    Deno.exit(2);
   }
 
   logger.info("connected to database");
@@ -81,11 +83,11 @@ dotenv.config();
   const client = clientHandler();
   await eventHandler(client, active_cooldowns);
 
-  const discord = await connectToDiscord(client, process.env.TOKEN);
+  const discord = await connectToDiscord(client, DISCORD_TOKEN);
 
   if (!discord) {
     logger.error("failed to connect to discord");
-    process.exit(1);
+    Deno.exit(1);
   }
 
   logger.info("portal bot is running");

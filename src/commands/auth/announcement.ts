@@ -21,7 +21,7 @@ import {
 import { PortalChannelType } from "../../types/enums/PortalChannel.enum.ts";
 
 const COMMAND_NAME = "announcement";
-const DESCRIPTION = "make an announcement to the announcements channel";
+const DESCRIPTION = "set an announcements channel";
 
 export default {
   time: 0,

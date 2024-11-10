@@ -766,7 +766,7 @@
 // 				"path": `/search?q=${search_term}`,
 // 				'headers': {
 // 					"x-rapidapi-host": "genius.p.rapidapi.com",
-// 					'x-rapidapi-key': process.env.LYRICS,
+// 					'x-rapidapi-key': Deno.env.get("LYRICS,
 // 					'useQueryString': 1
 // 				},
 // 			}

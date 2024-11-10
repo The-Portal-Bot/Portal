@@ -1,50 +1,52 @@
-import dotenv from "npm:dotenv";
+import "@std/dotenv/load";
 import { createLogger, format, transports } from "npm:winston";
-import process from "node:process";
 
-dotenv.config();
+class LoggerUtility {
+  private static readonly consoleFormat = format.combine(
+    format.colorize(),
+    format.timestamp({ format: "DD-MM-YY HH:mm:ss" }),
+    format.errors({ stack: true }),
+    format.splat(),
+    format.printf(({ timestamp, level, message, service }) =>
+      `${timestamp} service: ${service} ${level}: ${message}`
+    ),
+  );
 
-const consoleFormat = format.combine(
-  format.colorize(),
-  format.timestamp({ format: "DD-MM-YY HH:mm:ss" }),
-  format.errors({ stack: true }),
-  format.splat(),
-  format.printf(({ timestamp, level, message, service }) =>
-    `${timestamp} service: ${service} ${level}: ${message}`
-  ),
-);
+  private static readonly fileFormat = format.combine(
+    format.timestamp({ format: "DD-MM-YY HH:mm:ss" }),
+    format.errors({ stack: true }),
+    format.splat(),
+    format.printf(({ timestamp, level, message, service }) =>
+      `${timestamp} service: ${service} ${level}: ${message}`
+    ),
+    format.json(),
+  );
 
-const fileFormat = format.combine(
-  format.timestamp({ format: "DD-MM-YY HH:mm:ss" }),
-  format.errors({ stack: true }),
-  format.splat(),
-  format.printf(({ timestamp, level, message, service }) =>
-    `${timestamp} service: ${service} ${level}: ${message}`
-  ),
-  format.json(),
-);
+  private static readonly fileTransports = [
+    new transports.File({
+      filename: "error.log",
+      level: "error",
+      format: LoggerUtility.fileFormat,
+      silent: true,
+    }),
+    new transports.File({
+      filename: "combined.log",
+      format: LoggerUtility.fileFormat,
+      silent: true,
+    }),
+  ];
 
-const fileTransports = [
-  new transports.File({
-    filename: "error.log",
-    level: "error",
-    format: fileFormat,
-    silent: true,
-  }),
-  new transports.File({
-    filename: "combined.log",
-    format: fileFormat,
-    silent: true,
-  }),
-];
+  private static readonly consoleTransport = Deno.env.get("DEBUG")
+    ? [new transports.Console({ format: LoggerUtility.consoleFormat })]
+    : [];
 
-const consoleTransport = process.env["DEBUG"]
-  ? [new transports.Console({ format: consoleFormat })]
-  : [];
+  public static readonly logger = createLogger({
+    defaultMeta: { service: "portal" },
+    transports: [
+      ...LoggerUtility.fileTransports,
+      ...LoggerUtility.consoleTransport,
+    ],
+  });
+}
 
-const logger = createLogger({
-  defaultMeta: { service: "portal" },
-  transports: [...fileTransports, ...consoleTransport],
-});
-
-export default logger;
+export default LoggerUtility.logger;

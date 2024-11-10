@@ -35,7 +35,7 @@ import { RankSpeed } from "../types/enums/RankSpeed.enum.ts";
 import logger from "../utilities/log.utility.ts";
 import { createDiscordJSAdapter } from "./adapter.library.ts";
 import { fetchGuild, fetchGuildList, setMusicData } from "./mongo.library.ts";
-import process from "node:process";
+import "@std/dotenv/load";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -603,7 +603,7 @@ export async function messageReply(
     }
 
     if (deleteReply) {
-      const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+      const delay = (Deno.env.get("DELETE_DELAY") as unknown as number) * 1000;
       setTimeout(async () => {
         if (isMessageDeleted(sentMessage)) {
           const deletedMessage = await sentMessage.delete().catch((e) => {
@@ -629,7 +629,7 @@ export async function messageReply(
       return Promise.reject("failed to react to message");
     }
 
-    const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+    const delay = (Deno.env.get("DELETE_DELAY") as unknown as number) * 1000;
     setTimeout(async () => {
       if (isMessageDeleted(message)) {
         const deletedMessage = await message.delete().catch((e) => {

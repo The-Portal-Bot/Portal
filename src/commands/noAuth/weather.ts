@@ -16,7 +16,7 @@ import {
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
 import type { Command } from "../../types/Command.ts";
-import process from "node:process";
+import "@std/dotenv/load";
 
 const COMMAND_NAME = "weather";
 const DESCRIPTION = "returns weather data";
@@ -39,7 +39,7 @@ export default {
   async execute(
     interaction: ChatInputCommandInteraction,
   ): Promise<ReturnPromise> {
-    if (!process.env.OPEN_WEATHER_MAP) {
+    if (!Deno.env.get("OPEN_WEATHER_MAP")) {
       return {
         result: false,
         value: "OPEN_WEATHER_MAP API key is not set up",
@@ -60,8 +60,9 @@ export default {
       method: "GET",
       hostname: "api.openweathermap.org",
       port: undefined,
-      path:
-        `/data/2.5/weather?q=${location}&appid=${process.env.OPEN_WEATHER_MAP}`,
+      path: `/data/2.5/weather?q=${location}&appid=${
+        Deno.env.get("OPEN_WEATHER_MAP")
+      }`,
     };
 
     const response = await httpsFetch(options);

@@ -39,7 +39,7 @@ import {
   maxString,
 } from "./help.library.ts";
 import { insertVoice, updateGuild } from "./mongo.library.ts";
-import process from "node:process";
+import "@std/dotenv/load";
 
 function inlineOperator(str: string) {
   switch (str) {
@@ -566,7 +566,7 @@ export function deleteMessage(message: Message<true>): Promise<boolean> {
     );
   }
 
-  const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+  const delay = (Deno.env.get("DELETE_DELAY") as unknown as number) * 1000;
 
   return new Promise((resolve) => {
     setTimeout(async () => {

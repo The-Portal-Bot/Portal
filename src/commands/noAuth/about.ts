@@ -1,11 +1,12 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
+
 import { createEmbed } from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";
 import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import process from "node:process";
 
 const COMMAND_NAME = "about";
 const DESCRIPTION = "returns information on Portal";
@@ -38,8 +39,9 @@ export default {
           },
           {
             emote: "Version",
-            role:
-              `[${process.env.VERSION}](https://portal-bot.xyz/blog/${process.env.VERSION})`,
+            role: `[${Deno.env.get("VERSION")}](https://portal-bot.xyz/blog/${
+              Deno.env.get("VERSION")
+            })`,
             inline: true,
           },
           {

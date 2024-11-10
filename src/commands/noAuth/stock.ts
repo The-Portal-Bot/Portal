@@ -13,7 +13,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import process from "node:process";
+import "@std/dotenv/load";
 // import { CountryCodes } from '../../data/lists/countryCodesISO.static.ts';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
@@ -47,7 +47,7 @@ export default {
   async execute(
     interaction: ChatInputCommandInteraction,
   ): Promise<ReturnPromise> {
-    if (!process.env.YAHOO_FINANCE) {
+    if (!Deno.env.get("YAHOO_FINANCE")) {
       return {
         result: false,
         value: "YAHOO_FINANCE API key is not set up",
@@ -70,7 +70,7 @@ export default {
       path: `/v8/finance/chart/${stock}?events=div%2Csplit`,
       headers: {
         "x-rapidapi-host": "yahoo-finance-low-latency.p.rapidapi.com",
-        "x-rapidapi-key": process.env.YAHOO_FINANCE,
+        "x-rapidapi-key": Deno.env.get("YAHOO_FINANCE"),
         useQueryString: 1,
       },
     };

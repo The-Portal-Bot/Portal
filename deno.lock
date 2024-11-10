@@ -1,11 +1,18 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/assert@*": "1.0.7",
+    "jsr:@std/assert@^1.0.7": "1.0.7",
+    "jsr:@std/dotenv@~0.225.2": "0.225.2",
+    "jsr:@std/expect@^1.0.7": "1.0.7",
+    "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@std/testing@*": "1.0.4",
     "npm:@discordjs/builders@1.9.0": "1.9.0",
     "npm:@discordjs/opus@0.9.0": "0.9.0",
     "npm:@discordjs/rest@^2.4.0": "2.4.0",
     "npm:@discordjs/voice@*": "0.17.0_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0",
     "npm:@discordjs/voice@0.17.0": "0.17.0_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0",
+    "npm:@types/node@*": "22.5.4",
     "npm:cheerio@*": "1.0.0",
     "npm:cheerio@1.0.0-rc.12": "1.0.0-rc.12",
     "npm:dayjs@*": "1.11.13",
@@ -14,8 +21,6 @@
     "npm:discord-ytdl-core@5.0.4": "5.0.4_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0",
     "npm:discord.js@*": "14.16.3",
     "npm:discord.js@14.16.3": "14.16.3",
-    "npm:dotenv@*": "16.4.5",
-    "npm:dotenv@16.4.5": "16.4.5",
     "npm:ffmpeg-static@5.2.0": "5.2.0",
     "npm:jsonfile@6.1.0": "6.1.0",
     "npm:libsodium-wrappers@0.7.15": "0.7.15",
@@ -32,6 +37,33 @@
     "npm:winston@3.16.0": "3.16.0",
     "npm:yt-search@2.12.1": "2.12.1",
     "npm:ytdl-core@4.11.5": "4.11.5"
+  },
+  "jsr": {
+    "@std/assert@1.0.7": {
+      "integrity": "64ce9fac879e0b9f3042a89b3c3f8ccfc9c984391af19e2087513a79d73e28c3",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/dotenv@0.225.2": {
+      "integrity": "e2025dce4de6c7bca21dece8baddd4262b09d5187217e231b033e088e0c4dd23"
+    },
+    "@std/expect@1.0.7": {
+      "integrity": "3904afa77cfe5c45dd2cd2c476e6fc5b6f57103d712890f0783d74c19d4b05a9",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.7",
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    },
+    "@std/testing@1.0.4": {
+      "integrity": "ca1368d720b183f572d40c469bb9faf09643ddd77b54f8b44d36ae6b94940576",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.7"
+      ]
+    }
   },
   "npm": {
     "@colors/colors@1.6.0": {
@@ -517,9 +549,6 @@
         "domelementtype",
         "domhandler"
       ]
-    },
-    "dotenv@16.4.5": {
-      "integrity": "sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg=="
     },
     "emoji-regex@8.0.0": {
       "integrity": "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="
@@ -1280,8 +1309,18 @@
       ]
     }
   },
+  "redirects": {
+    "https://deno.land/std/dotenv/mod.ts": "https://deno.land/std@0.224.0/dotenv/mod.ts"
+  },
+  "remote": {
+    "https://deno.land/std@0.224.0/dotenv/mod.ts": "0180eaeedaaf88647318811cdaa418cc64dc51fb08354f91f5f480d0a1309f7d",
+    "https://deno.land/std@0.224.0/dotenv/parse.ts": "09977ff88dfd1f24f9973a338f0f91bbdb9307eb5ff6085446e7c423e4c7ba0c",
+    "https://deno.land/std@0.224.0/dotenv/stringify.ts": "275da322c409170160440836342eaa7cf012a1d11a7e700d8ca4e7f2f8aa4615"
+  },
   "workspace": {
     "dependencies": [
+      "jsr:@std/dotenv@~0.225.2",
+      "jsr:@std/expect@^1.0.7",
       "npm:@discordjs/builders@1.9.0",
       "npm:@discordjs/opus@0.9.0",
       "npm:@discordjs/rest@^2.4.0",
@@ -1291,11 +1330,9 @@
       "npm:discord-api-types@0.37.0",
       "npm:discord-ytdl-core@5.0.4",
       "npm:discord.js@14.16.3",
-      "npm:dotenv@16.4.5",
       "npm:ffmpeg-static@5.2.0",
       "npm:jsonfile@6.1.0",
       "npm:libsodium-wrappers@0.7.15",
-      "npm:lodash@4.17.21",
       "npm:mongoose@8.8.0",
       "npm:node-fetch@^3.3.2",
       "npm:opusscript@0.1.1",

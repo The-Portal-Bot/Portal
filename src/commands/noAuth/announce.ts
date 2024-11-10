@@ -14,7 +14,7 @@ import {
 } from "../../types/classes/PTypes.interface.ts";
 
 const COMMAND_NAME = "announce";
-const DESCRIPTION = "send an announcement to the announcement channel";
+const DESCRIPTION = "make an announcement to the announcement channel";
 
 export default {
   time: 2,

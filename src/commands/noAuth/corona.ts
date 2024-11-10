@@ -19,7 +19,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import process from "node:process";
+import "@std/dotenv/load";
 
 const COMMAND_NAME = "corona";
 const DESCRIPTION = "returns data on COVID19";
@@ -42,7 +42,7 @@ export default {
   async execute(
     interaction: ChatInputCommandInteraction,
   ): Promise<ReturnPromise> {
-    if (!process.env.COVID_193) {
+    if (!Deno.env.get("COVID_193")) {
       return {
         result: false,
         value: "COVID_193 API key is not set up",
@@ -79,7 +79,7 @@ export default {
       path: "/statistics",
       headers: {
         "x-rapidapi-host": "covid-193.p.rapidapi.com",
-        "x-rapidapi-key": process.env.COVID_193,
+        "x-rapidapi-key": Deno.env.get("COVID_193"),
         useQueryString: 1,
       },
     };
