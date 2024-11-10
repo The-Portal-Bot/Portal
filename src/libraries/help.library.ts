@@ -46,8 +46,8 @@ type enumTypes =
   | typeof ProfanityLevel
   | typeof Locale;
 
-const idleThumbnail = "https://raw.githubusercontent.com/keybraker/" +
-  "Portal/master/src/assets/img/emptyQueue.png";
+const idleThumbnail =
+  "https://raw.githubusercontent.com/keybraker/Portal/master/src/assets/img/empty_queue.png";
 
 const deletedMessages = new WeakSet<Message>();
 const deletedChannel = new WeakSet<GuildBasedChannel | TextBasedChannel>();
