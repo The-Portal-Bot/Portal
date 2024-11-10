@@ -63,19 +63,19 @@ export default {
       };
     }
 
-    const options: RequestOptions = {
+    const url = new URL(
+      `https://yahoo-finance-low-latency.p.rapidapi.com/v8/finance/chart/${stock}`,
+    );
+    url.searchParams.append("events", "div,split");
+
+    const response = await httpsFetch(url, {
       method: "GET",
-      hostname: "yahoo-finance-low-latency.p.rapidapi.com",
-      port: undefined,
-      path: `/v8/finance/chart/${stock}?events=div%2Csplit`,
       headers: {
         "x-rapidapi-host": "yahoo-finance-low-latency.p.rapidapi.com",
-        "x-rapidapi-key": Deno.env.get("YAHOO_FINANCE"),
-        useQueryString: 1,
+        "x-rapidapi-key": Deno.env.get("YAHOO_FINANCE") || "",
+        "Accept": "application/json",
       },
-    };
-
-    const response = await httpsFetch(options);
+    });
 
     if (!response) {
       return {

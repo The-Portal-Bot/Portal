@@ -72,19 +72,16 @@ export default {
       };
     }
 
-    const options: RequestOptions = {
+    const url = new URL("https://covid-193.p.rapidapi.com/statistics");
+
+    const response = await httpsFetch(url, {
       method: "GET",
-      hostname: "covid-193.p.rapidapi.com",
-      port: undefined,
-      path: "/statistics",
       headers: {
         "x-rapidapi-host": "covid-193.p.rapidapi.com",
-        "x-rapidapi-key": Deno.env.get("COVID_193"),
-        useQueryString: 1,
+        "x-rapidapi-key": Deno.env.get("COVID_193") || "",
+        "Accept": "application/json",
       },
-    };
-
-    const response = await httpsFetch(options);
+    });
 
     if (!response) {
       return {
