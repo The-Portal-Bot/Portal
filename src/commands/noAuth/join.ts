@@ -33,12 +33,11 @@ export default {
     pGuild: PGuild,
   ): Promise<ReturnPromise> {
     try {
-      const voiceChannel = await joinUserVoiceChannelByInteraction(
+      const joinedChannel = joinUserVoiceChannelByInteraction(
         interaction,
-        pGuild,
       );
 
-      if (!voiceChannel) {
+      if (!joinedChannel) {
         return {
           result: false,
           value: "failed to join voice channel",

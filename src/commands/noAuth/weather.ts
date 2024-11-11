@@ -1,10 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
 import dayjs from "npm:dayjs";
 import {
   type ChatInputCommandInteraction,
   InteractionContextType,
 } from "npm:discord.js";
-import type { RequestOptions } from "node:https";
+
 import {
   createEmbed,
   getJSONFromString,
@@ -16,7 +17,6 @@ import {
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
 import type { Command } from "../../types/Command.ts";
-import "@std/dotenv/load";
 
 const COMMAND_NAME = "weather";
 const DESCRIPTION = "returns weather data";

@@ -1,3 +1,4 @@
+import "@std/dotenv/load";
 import dayjs from "npm:dayjs";
 import {
   type CategoryChannel,
@@ -39,7 +40,6 @@ import {
   maxString,
 } from "./help.library.ts";
 import { insertVoice, updateGuild } from "./mongo.library.ts";
-import "@std/dotenv/load";
 
 function inlineOperator(str: string) {
   switch (str) {
@@ -382,8 +382,8 @@ export async function createFocusChannel(
   };
 
   const newVoiceChannel = await guild.channels.create(voiceOptions).catch(
-    (e) => {
-      return Promise.reject(`failed to create focus channel: ${e}`);
+    (error) => {
+      return Promise.reject(`failed to create focus channel: ${error}`);
     },
   );
 

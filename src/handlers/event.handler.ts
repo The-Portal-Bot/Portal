@@ -53,6 +53,12 @@ export function eventHandler(
     async (member: GuildMember | PartialGuildMember) =>
       await events.guildMemberRemove(member),
   );
+  // This event triggers when a message is created
+  client.on(
+    "messageCreate",
+    async (message: Message<boolean> | PartialMessage) =>
+      await events.messageCreate(message),
+  );
   // This event triggers when a message is deleted
   client.on(
     "messageDelete",

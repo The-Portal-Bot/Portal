@@ -38,7 +38,7 @@ export default {
         .setDescription("the channel you want to make the announcement channel")
         .setRequired(true)
     )
-    .addChannelOption((option) =>
+    .addBooleanOption((option) =>
       option
         .setName("delete_previous")
         .setDescription(

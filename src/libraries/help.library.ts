@@ -1,11 +1,12 @@
+import "@std/dotenv/load";
+import duration from "dayjs/plugin/duration.js";
+import relativeTime from "dayjs/plugin/relativeTime.js";
 import {
   getVoiceConnection,
   joinVoiceChannel,
   type VoiceConnection,
 } from "npm:@discordjs/voice";
 import dayjs from "npm:dayjs";
-import duration from "dayjs/plugin/duration.js";
-import relativeTime from "dayjs/plugin/relativeTime.js";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -24,6 +25,7 @@ import {
   type TextBasedChannel,
   TextChannel,
 } from "npm:discord.js";
+import type { VoiceBasedChannel } from "npm:discord.js";
 import type { VideoSearchResult } from "yt-search";
 
 import { MusicData, type PGuild } from "../types/classes/PGuild.class.ts";
@@ -35,7 +37,6 @@ import { RankSpeed } from "../types/enums/RankSpeed.enum.ts";
 import logger from "../utilities/log.utility.ts";
 import { createDiscordJSAdapter } from "./adapter.library.ts";
 import { fetchGuild, fetchGuildList, setMusicData } from "./mongo.library.ts";
-import "@std/dotenv/load";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -79,15 +80,19 @@ export function markGuildAsDeleted(guild: Guild) {
   deletedGuild.add(guild);
 }
 
-export async function askForApproval(
+export async function askForApprovalByInteraction(
   interaction: ChatInputCommandInteraction,
   question: string,
   buttonStyle: ButtonStyle,
 ): Promise<boolean> {
-  const confirm = new ButtonBuilder().setCustomId("confirm").setLabel("Confirm")
+  const confirm = new ButtonBuilder()
+    .setCustomId("confirm")
+    .setLabel("Confirm")
     .setStyle(buttonStyle);
 
-  const cancel = new ButtonBuilder().setCustomId("cancel").setLabel("Cancel")
+  const cancel = new ButtonBuilder()
+    .setCustomId("cancel")
+    .setLabel("Cancel")
     .setStyle(ButtonStyle.Secondary);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -112,6 +117,55 @@ export async function askForApproval(
   }
 
   return collected.customId === "confirm";
+}
+
+export async function askForApprovalByMember(
+  member: GuildMember,
+  question: string,
+  buttonStyle: ButtonStyle,
+): Promise<boolean> {
+  const confirm = new ButtonBuilder()
+    .setCustomId("confirm")
+    .setLabel("Confirm")
+    .setStyle(buttonStyle);
+
+  const cancel = new ButtonBuilder()
+    .setCustomId("cancel")
+    .setLabel("Cancel")
+    .setStyle(ButtonStyle.Secondary);
+
+  const row = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(cancel, confirm);
+
+  const dmChannel = await member.createDM();
+  const message = await dmChannel.send({
+    content: question,
+    components: [row],
+  });
+
+  try {
+    const filter = (i: MessageComponentInteraction) =>
+      i.customId === "confirm" || i.customId === "cancel";
+    const collected = await message.awaitMessageComponent({
+      filter,
+      time: 10_000,
+    });
+
+    if (collected.customId === "confirm") {
+      await collected.update({ content: `${question} **Confirmed**` });
+      return true;
+    } else {
+      await collected.update({ content: `${question} **Cancelled**` });
+      return false;
+    }
+  } catch (error) {
+    logger.error(`failed to collect message: ${error}`);
+    await message.edit({
+      content: `${question} **Timed out**`,
+      components: [],
+    });
+    return false;
+  }
 }
 
 export function getJSONFromString(str: string) {
@@ -394,56 +448,70 @@ export async function updateMusicLyricsMessage(
   return !!editedMessage;
 }
 
-export function joinUserVoiceChannelByInteraction(
+export function getVoiceConnectionByInteraction(
   interaction: ChatInputCommandInteraction,
-  pGuild: PGuild,
-): VoiceConnection | undefined {
+):
+  | {
+    voiceConnection: VoiceConnection | null;
+    voiceBasedChannel: VoiceBasedChannel;
+  }
+  | null {
   const member = interaction.member;
-
   if (!member) {
-    return undefined; // throw('user could not be fetched for message');
+    logger.info("user could not be fetched for message");
+    return null;
   }
 
   if (!(member instanceof GuildMember)) {
-    return undefined; // throw('member is not a guild member instance');
+    logger.info("member is not a guild member instance");
+    return null;
   }
 
-  if (!member.voice) {
-    return undefined; // throw('voice could not be fetched for member');
-  }
-
-  const voiceChannel = member.voice.channel;
-  if (!voiceChannel) {
-    return undefined; // throw('you aren\'t in a voice channel');
+  const voiceBasedChannel = member.voice.channel;
+  if (!voiceBasedChannel) {
+    logger.info("you aren't in a voice channel");
+    return null;
   }
 
   const guild = interaction.guild;
   if (!guild) {
-    return undefined; // throw('guild could not be fetched for message');
+    logger.info("guild could not be fetched for message");
+    return null;
+  }
+
+  const voiceConnection = getVoiceConnection(guild.id);
+
+  return { voiceConnection: voiceConnection ?? null, voiceBasedChannel };
+}
+
+export function joinUserVoiceChannelByInteraction(
+  interaction: ChatInputCommandInteraction,
+): boolean {
+  const guild = interaction.guild;
+  if (!guild) {
+    logger.info("guild could not be fetched for message");
+    return false;
   }
 
   if (!guild.voiceAdapterCreator) {
-    return undefined; // throw('voiceAdapterCreator could not be fetched for guild');
+    logger.info("voiceAdapterCreator could not be fetched for guild");
+    return false;
   }
 
-  if (!pGuild) {
-    return undefined; // throw('could not find guild of message');
-  }
-
-  let voiceConnection = getVoiceConnection(voiceChannel.id);
+  const voice = getVoiceConnectionByInteraction(interaction);
   const clientVoiceState = guild.voiceStates.cache.get(guild.client.user.id);
 
-  if (voiceConnection && clientVoiceState?.channelId === voiceChannel?.id) {
+  if (voice && voice.voiceBasedChannel?.id === clientVoiceState?.channelId) {
     clientVoiceState.setDeaf(true);
-  } else {
-    voiceConnection = joinVoiceChannel({
-      channelId: voiceChannel.id,
+  } else if (voice) {
+    voice.voiceConnection = joinVoiceChannel({
+      channelId: voice.voiceBasedChannel.id,
       guildId: guild.id,
-      adapterCreator: createDiscordJSAdapter(voiceChannel),
+      adapterCreator: createDiscordJSAdapter(voice.voiceBasedChannel),
     });
 
-    if (!voiceConnection) {
-      return undefined; // throw('could not join voice channel');
+    if (!voice.voiceConnection) {
+      return false;
     }
 
     if (clientVoiceState) {
@@ -451,7 +519,7 @@ export function joinUserVoiceChannelByInteraction(
     }
   }
 
-  return voiceConnection;
+  return true;
 }
 
 export function createEmbed(

@@ -6,7 +6,10 @@ import {
   InteractionContextType,
   type TextChannel,
 } from "npm:discord.js";
-import { askForApproval, messageHelp } from "../../libraries/help.library.ts";
+import {
+  askForApprovalByInteraction,
+  messageHelp,
+} from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";
 import {
   type ReturnPromise,
@@ -65,7 +68,7 @@ export default {
       };
     }
 
-    const result = await askForApproval(
+    const result = await askForApprovalByInteraction(
       interaction,
       `*${interaction.user}, are you sure you want to delete **${bulkDeleteLength}** messages*?`,
       ButtonStyle.Success,

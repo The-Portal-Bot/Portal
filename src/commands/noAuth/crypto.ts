@@ -1,10 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
 import {
   type ChatInputCommandInteraction,
   InteractionContextType,
 } from "npm:discord.js";
-import type { RequestOptions } from "node:https";
 import voca from "npm:voca";
+
 import {
   createEmbed,
   getJSONFromString,
@@ -16,7 +17,6 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import "@std/dotenv/load";
 
 const COMMAND_NAME = "crypto";
 const DESCRIPTION = "returns information about crypto currencies";

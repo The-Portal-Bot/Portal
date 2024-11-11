@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
 import dayjs from "npm:dayjs";
 import {
   type ChatInputCommandInteraction,
   InteractionContextType,
 } from "npm:discord.js";
-import type { RequestOptions } from "node:https";
 import voca from "npm:voca";
 
 import { CountryCodes } from "../../assets/lists/countryCodesISO.static.ts";
@@ -19,7 +19,6 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import "@std/dotenv/load";
 
 const COMMAND_NAME = "corona";
 const DESCRIPTION = "returns data on COVID19";

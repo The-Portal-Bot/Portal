@@ -8,7 +8,7 @@ import {
 } from "npm:discord.js";
 
 import {
-  askForApproval,
+  askForApprovalByInteraction,
   isMod,
   messageHelp,
 } from "../../libraries/help.library.ts";
@@ -94,7 +94,7 @@ export default {
     const deleteMessageDays = kickDays ?? 1;
     const reason = kickReason ?? "kicked by admin";
 
-    const response = await askForApproval(
+    const response = await askForApprovalByInteraction(
       interaction,
       `*${interaction.user}, are you sure you want to kick **${memberToBan.displayName}** for **${deleteMessageDays}** days*?`,
       ButtonStyle.Danger,

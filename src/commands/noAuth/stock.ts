@@ -1,7 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
 import dayjs from "npm:dayjs";
 import type { ChatInputCommandInteraction } from "npm:discord.js";
-import type { RequestOptions } from "node:https";
+
 import {
   createEmbed,
   getJSONFromString,
@@ -13,7 +14,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import "@std/dotenv/load";
+
 // import { CountryCodes } from '../../data/lists/countryCodesISO.static.ts';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
