@@ -66,7 +66,7 @@ export async function setAttribute(
   for (let l = 0; l < AttributeBlueprints.length; l++) {
     if (candidate === AttributeBlueprints[l].name) {
       switch (AttributeBlueprints[l].auth) {
-        case AuthType.admin:
+        case AuthType.ADMIN:
           if (!isUserAuthorised(member)) {
             return {
               result: false,
@@ -76,7 +76,7 @@ export async function setAttribute(
           }
 
           break;
-        case AuthType.none:
+        case AuthType.NONE:
           // passes through no checks needed
           break;
         default:
@@ -111,7 +111,7 @@ export async function setAttribute(
             };
           }
 
-          if (AttributeBlueprints[l].auth === AuthType.portal) {
+          if (AttributeBlueprints[l].auth === AuthType.PORTAL) {
             if (pChannel.creatorId !== member.id) {
               return {
                 result: false,
@@ -119,7 +119,7 @@ export async function setAttribute(
                   `attribute ${candidate} can only be **set by the portal creator**`,
               };
             }
-          } else if (AttributeBlueprints[l].auth === AuthType.voice) {
+          } else if (AttributeBlueprints[l].auth === AuthType.VOICE) {
             if (pVoiceChannel.creatorId !== member.id) {
               return {
                 result: false,

@@ -1,20 +1,26 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-
 import {
   ButtonStyle,
   type ChatInputCommandInteraction,
   InteractionContextType,
   type TextChannel,
 } from "npm:discord.js";
+
+import { getChannelTypeById } from "../../libraries/guild.library.ts";
 import {
   askForApprovalByInteraction,
   messageHelp,
 } from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
 import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
+import {
+  TextChannelType,
+  TextChannelTypeList,
+} from "../../types/enums/TextChannelType.enum.ts";
 
 const COMMAND_NAME = "delete_messages";
 const DESCRIPTION = "delete n messages";
@@ -36,6 +42,7 @@ export default {
     .setContexts(InteractionContextType.Guild),
   async execute(
     interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
   ): Promise<ReturnPromise> {
     const bulkDeleteLength = interaction.options.getNumber("message_number");
 
@@ -65,6 +72,19 @@ export default {
       return {
         result: false,
         value: "message author could not be fetched",
+      };
+    }
+
+    const channelType = await getChannelTypeById(
+      interaction.channelId,
+      pGuild,
+    );
+    if (channelType !== TextChannelType.NONE) {
+      return {
+        result: false,
+        value: `it is not allowed to delete in ${
+          TextChannelTypeList[channelType]
+        } channels`,
       };
     }
 

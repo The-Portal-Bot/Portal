@@ -5,7 +5,7 @@ export const StructureBlueprint: Blueprint[] = [
   {
     name: "if",
     hover: "if statement flow control",
-    auth: AuthType.none,
+    auth: AuthType.NONE,
     get: () => undefined,
     set: () => undefined,
   },

@@ -8,7 +8,7 @@ import {
 
 import {
   deleteChannel,
-  doesChannelHaveUsage,
+  getChannelTypeById,
 } from "../../libraries/guild.library.ts";
 import { messageHelp } from "../../libraries/help.library.ts";
 import { updateGuild } from "../../libraries/mongo.library.ts";
@@ -19,6 +19,10 @@ import {
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
 import { PortalChannelType } from "../../types/enums/PortalChannel.enum.ts";
+import {
+  TextChannelType,
+  TextChannelTypeList,
+} from "../../types/enums/TextChannelType.enum.ts";
 
 const COMMAND_NAME = "announcement";
 const DESCRIPTION = "set an announcements channel";
@@ -87,14 +91,16 @@ export default {
       };
     }
 
-    const channelHasUsage = await doesChannelHaveUsage(
+    const channelType = await getChannelTypeById(
       announcementChannel.id,
       pGuild,
     );
-    if (channelHasUsage.result) {
+    if (channelType !== TextChannelType.NONE) {
       return {
         result: false,
-        value: channelHasUsage.value,
+        value: `selected channel is already in use as ${
+          TextChannelTypeList[channelType]
+        } channel`,
       };
     }
 

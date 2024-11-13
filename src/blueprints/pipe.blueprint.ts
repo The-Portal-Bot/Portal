@@ -26,7 +26,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "vowels",
@@ -39,7 +39,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "consonants",
@@ -52,7 +52,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "camelCase",
@@ -65,7 +65,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "capitalise",
@@ -78,7 +78,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "decapitalise",
@@ -91,7 +91,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "lowerCase",
@@ -104,7 +104,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "upperCase",
@@ -117,7 +117,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "populous_count",
@@ -130,7 +130,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? 0);
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "populous",
@@ -143,7 +143,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "snakeCase",
@@ -156,7 +156,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "souvlakiCase",
@@ -169,7 +169,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "words",
@@ -182,7 +182,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? 0);
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "titleCase",
@@ -195,7 +195,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? "");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "length",
@@ -208,7 +208,7 @@ export const PipeBlueprints: Blueprint[] = [
         : (str ?? 0);
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
 ];
 

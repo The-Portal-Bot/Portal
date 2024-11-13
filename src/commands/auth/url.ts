@@ -5,7 +5,7 @@ import {
   NewsChannel,
 } from "npm:discord.js";
 
-import { doesChannelHaveUsage } from "../../libraries/guild.library.ts";
+import { getChannelTypeById } from "../../libraries/guild.library.ts";
 import { messageHelp } from "../../libraries/help.library.ts";
 import { insertURL } from "../../libraries/mongo.library.ts";
 import type { Command } from "../../types/Command.ts";
@@ -14,6 +14,10 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
+import {
+  TextChannelType,
+  TextChannelTypeList,
+} from "../../types/enums/TextChannelType.enum.ts";
 
 const COMMAND_NAME = "url";
 const DESCRIPTION = "set a channel to URL only";
@@ -60,11 +64,13 @@ export default {
       };
     }
 
-    const channelHasUsage = await doesChannelHaveUsage(urlChannel.id, pGuild);
-    if (channelHasUsage.result) {
+    const channelType = await getChannelTypeById(urlChannel.id, pGuild);
+    if (channelType !== TextChannelType.NONE) {
       return {
         result: false,
-        value: channelHasUsage.value,
+        value: `selected channel is already in use as ${
+          TextChannelTypeList[channelType]
+        } channel`,
       };
     }
 

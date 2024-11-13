@@ -40,6 +40,7 @@ import {
   maxString,
 } from "./help.library.ts";
 import { insertVoice, updateGuild } from "./mongo.library.ts";
+import { TextChannelType } from "../types/enums/TextChannelType.enum.ts";
 
 function inlineOperator(str: string) {
   switch (str) {
@@ -881,53 +882,25 @@ export function regexInterpreter(
   return newChannelName;
 }
 
-export async function doesChannelHaveUsage(
-  textBasedChannelId: TextBasedChannel["id"],
+export function getChannelTypeById(
+  textBasedChannelId: string,
   pGuild: PGuild,
-) {
+): TextChannelType {
   if (!textBasedChannelId) {
-    return {
-      result: false,
-      value: "could not get channel id",
-    };
+    return TextChannelType.NONE;
   }
 
   if (isAnnouncementChannel(textBasedChannelId, pGuild)) {
-    const response = await updateGuild(pGuild.id, "announcement", "null").catch(
-      () => {
-        return {
-          result: true,
-          value: "failed to remove announcement channel",
-        };
-      },
-    );
-
-    return {
-      result: true,
-      value: response
-        ? "successfully removed announcement channel"
-        : "failed to remove announcement channel",
-    };
+    return TextChannelType.ANNOUNCEMENT;
   }
 
   if (isMusicChannel(textBasedChannelId, pGuild)) {
-    return {
-      result: true,
-      value:
-        "this can't be set as an announcement channel for it is the music channel",
-    };
+    return TextChannelType.MUSIC;
   }
 
   if (isUrlOnlyChannel(textBasedChannelId, pGuild)) {
-    return {
-      result: true,
-      value:
-        "this can't be set as the announcement channel for it is an url channel",
-    };
+    return TextChannelType.URL;
   }
 
-  return {
-    result: false,
-    value: "",
-  };
+  return TextChannelType.NONE;
 }

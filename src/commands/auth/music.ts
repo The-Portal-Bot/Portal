@@ -8,7 +8,7 @@ import {
 
 import {
   deleteChannel,
-  doesChannelHaveUsage,
+  getChannelTypeById,
 } from "../../libraries/guild.library.ts";
 import {
   createMusicLyricsMessage,
@@ -22,6 +22,10 @@ import {
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
 import { PortalChannelType } from "../../types/enums/PortalChannel.enum.ts";
+import {
+  TextChannelType,
+  TextChannelTypeList,
+} from "../../types/enums/TextChannelType.enum.ts";
 
 const COMMAND_NAME = "music";
 const DESCRIPTION = "set a music channel";
@@ -78,11 +82,13 @@ export default {
       };
     }
 
-    const channelHasUsage = await doesChannelHaveUsage(musicChannel.id, pGuild);
-    if (channelHasUsage.result) {
+    const channelType = await getChannelTypeById(musicChannel.id, pGuild);
+    if (channelType !== TextChannelType.NONE) {
       return {
         result: false,
-        value: channelHasUsage.value,
+        value: `selected channel is already in use as ${
+          TextChannelTypeList[channelType]
+        } channel`,
       };
     }
 

@@ -167,7 +167,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.annAnnounce",
@@ -211,7 +211,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "p.noBots",
@@ -260,7 +260,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.noBots",
@@ -304,7 +304,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "p.allowedRoles",
@@ -430,7 +430,7 @@ export const AttributeBlueprints: Blueprint[] = [
       //   value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
       // });
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "p.v.allowedRoles",
@@ -525,7 +525,7 @@ export const AttributeBlueprints: Blueprint[] = [
       //   }
       // });
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.allowedRoles",
@@ -633,7 +633,7 @@ export const AttributeBlueprints: Blueprint[] = [
       //   value: `attribute ${category.join('.') + '.' + attribute} can only be one or more roles`,
       // });
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "p.render",
@@ -682,7 +682,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.render",
@@ -725,7 +725,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "p.annUser",
@@ -774,7 +774,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.annUser",
@@ -817,7 +817,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "v.bitrate",
@@ -880,7 +880,7 @@ export const AttributeBlueprints: Blueprint[] = [
           });
       });
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "g.kickAfter",
@@ -924,7 +924,7 @@ export const AttributeBlueprints: Blueprint[] = [
         Number(value),
       );
     },
-    auth: AuthType.admin,
+    auth: AuthType.ADMIN,
   },
   {
     name: "g.banAfter",
@@ -968,7 +968,7 @@ export const AttributeBlueprints: Blueprint[] = [
         Number(value),
       );
     },
-    auth: AuthType.admin,
+    auth: AuthType.ADMIN,
   },
   {
     name: "g.muteRole",
@@ -1011,7 +1011,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value.id,
       );
     },
-    auth: AuthType.admin,
+    auth: AuthType.ADMIN,
   },
   {
     name: "g.rankSpeed",
@@ -1048,7 +1048,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return await updateGuildAttribute(pGuild.id, category, attribute, speed);
     },
-    auth: AuthType.admin,
+    auth: AuthType.ADMIN,
   },
   {
     name: "g.profanityLevel",
@@ -1087,7 +1087,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return await updateGuildAttribute(pGuild.id, category, attribute, level);
     },
-    auth: AuthType.admin,
+    auth: AuthType.ADMIN,
   },
   {
     name: "g.initialRole",
@@ -1139,7 +1139,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value.id,
       );
     },
-    auth: AuthType.admin,
+    auth: AuthType.ADMIN,
   },
   {
     name: "g.locale",
@@ -1182,7 +1182,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return await updateGuildAttribute(pGuild.id, category, attribute, locale);
     },
-    auth: AuthType.admin,
+    auth: AuthType.ADMIN,
   },
   {
     name: "p.locale",
@@ -1243,7 +1243,7 @@ export const AttributeBlueprints: Blueprint[] = [
         locale,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.locale",
@@ -1293,7 +1293,7 @@ export const AttributeBlueprints: Blueprint[] = [
 
       return await updateGuildAttribute(pGuild.id, category, attribute, locale);
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "v.position",
@@ -1340,7 +1340,7 @@ export const AttributeBlueprints: Blueprint[] = [
           } failed to be set to\`${value}\` to ${value} (is ${updatedVoiceChannel.position})`,
       };
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "p.regexOverwrite",
@@ -1389,7 +1389,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "p.regex",
@@ -1437,7 +1437,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "p.v.regex",
@@ -1485,7 +1485,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.regex",
@@ -1527,7 +1527,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
   {
     name: "m.regex",
@@ -1568,7 +1568,7 @@ export const AttributeBlueprints: Blueprint[] = [
         value,
       );
     },
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "p.userLimit",
@@ -1626,7 +1626,7 @@ export const AttributeBlueprints: Blueprint[] = [
         newUserLimit,
       );
     },
-    auth: AuthType.portal,
+    auth: AuthType.PORTAL,
   },
   {
     name: "v.userLimit",
@@ -1681,6 +1681,6 @@ export const AttributeBlueprints: Blueprint[] = [
           } failed to be set to \`${value}\``,
       };
     },
-    auth: AuthType.voice,
+    auth: AuthType.VOICE,
   },
 ];

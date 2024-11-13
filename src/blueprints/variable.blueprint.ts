@@ -32,7 +32,7 @@ export const VariableBlueprints: Blueprint[] = [
       return "#-";
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "#",
@@ -60,7 +60,7 @@ export const VariableBlueprints: Blueprint[] = [
       return "-";
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "creatorPortal",
@@ -84,7 +84,7 @@ export const VariableBlueprints: Blueprint[] = [
       return "?";
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "creatorVoice",
@@ -97,7 +97,7 @@ export const VariableBlueprints: Blueprint[] = [
       return pVoiceChannel.creatorId;
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "date",
@@ -112,7 +112,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().subtract(10, "days").calendar();
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "dayNumber",
@@ -125,7 +125,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().date();
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "dayName",
@@ -137,7 +137,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().format("dddd");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "monthNumber",
@@ -149,7 +149,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().format("M");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "monthName",
@@ -161,7 +161,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().startOf("month").format("MMMM");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "year",
@@ -173,7 +173,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().format("yyyy");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "time",
@@ -185,7 +185,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().format("hh:mm:ss");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "hour",
@@ -197,7 +197,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().format("hh");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "minute",
@@ -209,7 +209,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().format("mm");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "second",
@@ -221,7 +221,7 @@ export const VariableBlueprints: Blueprint[] = [
       return dayjs().format("ss");
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "memberActiveCount",
@@ -238,7 +238,7 @@ export const VariableBlueprints: Blueprint[] = [
       return cnt;
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "memberCount",
@@ -255,7 +255,7 @@ export const VariableBlueprints: Blueprint[] = [
       return cnt;
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "memberHistory",
@@ -266,7 +266,7 @@ export const VariableBlueprints: Blueprint[] = [
       return "noYetImplemented";
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "pMembers",
@@ -281,7 +281,7 @@ export const VariableBlueprints: Blueprint[] = [
       return pMembers;
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "memberWithStatus",
@@ -298,7 +298,7 @@ export const VariableBlueprints: Blueprint[] = [
       return pMembers;
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "statusCount",
@@ -317,7 +317,7 @@ export const VariableBlueprints: Blueprint[] = [
       return statusList.length;
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "statusHistory",
@@ -328,7 +328,7 @@ export const VariableBlueprints: Blueprint[] = [
       return "noYetImplemented";
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
   {
     name: "statusList",
@@ -344,6 +344,6 @@ export const VariableBlueprints: Blueprint[] = [
       return getStatusList(voiceChannel, pVoiceChannel);
     },
     set: () => undefined,
-    auth: AuthType.none,
+    auth: AuthType.NONE,
   },
 ];
