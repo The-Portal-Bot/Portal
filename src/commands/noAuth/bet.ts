@@ -2,18 +2,13 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import dayjs from "npm:dayjs";
 import type { ChatInputCommandInteraction } from "npm:discord.js";
 
-import {
-  createEmbed,
-  getJSONFromString,
-  messageHelp,
-} from "../../libraries/help.library.ts";
+import { createEmbed, messageHelp } from "../../libraries/help.library.ts";
 import { httpsFetch } from "../../libraries/http.library.ts";
 import type { Command } from "../../types/Command.ts";
 import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
-import logger from "../../utilities/log.utility.ts";
 
 const COMMAND_NAME = "bet";
 const DESCRIPTION = "returns betting data";

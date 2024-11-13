@@ -11,6 +11,7 @@ import {
   askForApprovalByMember,
   messageHelp,
 } from "../../libraries/help.library.ts";
+import { VoiceLibrary } from "../../libraries/voice.library.ts";
 import type { PGuild } from "../../types/classes/PGuild.class.ts";
 import {
   type ReturnPromise,
@@ -18,7 +19,6 @@ import {
 } from "../../types/classes/PTypes.interface.ts";
 import type { Command } from "../../types/Command.ts";
 import logger from "../../utilities/log.utility.ts";
-import { VoiceLibrary } from "../../libraries/voice.library.ts";
 
 const COMMAND_NAME = "focus";
 const DESCRIPTION =
@@ -133,9 +133,7 @@ export default {
     }
 
     if (
-      voiceBasedChannel.members.some((m) =>
-        m.id === memberToFocus.id
-      )
+      voiceBasedChannel.members.some((m) => m.id === memberToFocus.id)
     ) {
       return {
         result: false,

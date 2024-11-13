@@ -13,7 +13,7 @@ import {
   EmbedBuilder,
   type Guild,
   type GuildBasedChannel,
-  GuildMember,
+  type GuildMember,
   type Message,
   type MessageComponentInteraction,
   type PermissionResolvable,

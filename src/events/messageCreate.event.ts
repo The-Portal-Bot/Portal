@@ -2,7 +2,10 @@ import type { Message, PartialMessage, TextChannel } from "npm:discord.js";
 import { fetchGuild } from "../libraries/mongo.library.ts";
 
 import {} from "../libraries/help.library.ts";
-import { searchYoutube, startPlayback } from "../libraries/music.library2.ts";
+import {
+  searchYoutube,
+  type startPlayback,
+} from "../libraries/music.library2.ts";
 import { VoiceLibrary } from "../libraries/voice.library.ts";
 import type { PGuild } from "../types/classes/PGuild.class.ts";
 import logger from "../utilities/log.utility.ts";

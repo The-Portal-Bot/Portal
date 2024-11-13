@@ -2,7 +2,6 @@ import type {
   DiscordGatewayAdapterCreator,
   DiscordGatewayAdapterLibraryMethods,
 } from "npm:@discordjs/voice";
-// import { GatewayVoiceServerUpdateDispatchData } from 'discord-api-types/v9';
 import {
   type Client,
   Events,

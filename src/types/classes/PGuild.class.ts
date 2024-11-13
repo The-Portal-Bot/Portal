@@ -1,5 +1,5 @@
-import type { Document } from "npm:mongoose";
-import type { VideoSearchResult } from "yt-search";
+import type { Document } from "mongoose";
+import type { VideoSearchResult } from "npm:yt-search";
 
 import type { PGiveRole } from "./PGiveRole.class.ts";
 import type { PMember } from "./PMember.class.ts";

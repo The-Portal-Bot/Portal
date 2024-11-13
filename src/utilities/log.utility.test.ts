@@ -18,24 +18,64 @@ Deno.test("log.utility", () => {
     assertExists(logger.debug);
   });
 
-  Deno.test("logger formats messages correctly", async () => {
-    const infoSpy = spy(logger, "info");
-    await logger.info("test message");
+  Deno.test("logger logging methods call console.log", () => {
+    const consoleSpy = spy(console, "log");
 
-    assertEquals(infoSpy.calls.length, 1);
-    assertEquals(infoSpy.calls[0].args[0], "test message");
+    logger.error("error");
+    logger.warn("warn");
+    logger.info("info");
+    logger.debug("debug");
 
-    infoSpy.restore();
+    assertEquals(consoleSpy.calls.length, 4);
   });
 
-  Deno.test("logger respects DEBUG environment variable", () => {
-    const transports = logger.transports;
-    const hasConsoleTransport = transports.some((t) => t.name === "console");
+  Deno.test("logger logging methods call console.error", () => {
+    const consoleErrorSpy = spy(console, "error");
 
-    if (Deno.env.get("DEBUG")) {
-      assertEquals(hasConsoleTransport, true);
-    } else {
-      assertEquals(hasConsoleTransport, false);
-    }
+    logger.error("error");
+
+    assertEquals(consoleErrorSpy.calls.length, 1);
+  });
+
+  Deno.test("logger logging methods call console.warn", () => {
+    const consoleWarnSpy = spy(console, "warn");
+
+    logger.warn("warn");
+
+    assertEquals(consoleWarnSpy.calls.length, 1);
+  });
+
+  Deno.test("logger logging methods call console.info", () => {
+    const consoleInfoSpy = spy(console, "info");
+
+    logger.info("info");
+
+    assertEquals(consoleInfoSpy.calls.length, 1);
+  });
+
+  Deno.test("logger logging methods do not call console.log when DEBUG is not set", () => {
+    const consoleSpy = spy(console, "log");
+
+    Deno.env.set("DEBUG", "");
+
+    logger.error("error");
+    logger.warn("warn");
+    logger.info("info");
+    logger.debug("debug");
+
+    assertEquals(consoleSpy.calls.length, 0);
+  });
+
+  Deno.test("logger logging methods call console.log when DEBUG is set", () => {
+    const consoleSpy = spy(console, "log");
+
+    Deno.env.set("DEBUG", "true");
+
+    logger.error("error");
+    logger.warn("warn");
+    logger.info("info");
+    logger.debug("debug");
+
+    assertEquals(consoleSpy.calls.length, 4);
   });
 });

@@ -4,7 +4,7 @@ import { type ChatInputCommandInteraction, GuildMember } from "npm:discord.js";
 import logger from "../../utilities/log.utility.ts";
 
 import {
-  joinUserVoiceChannelByInteraction,
+  type joinUserVoiceChannelByInteraction,
   messageHelp,
 } from "../../libraries/help.library.ts";
 import { clientTalk } from "../../libraries/localisation.library.ts";
