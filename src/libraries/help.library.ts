@@ -1,11 +1,6 @@
 import "@std/dotenv/load";
 import duration from "dayjs/plugin/duration.js";
 import relativeTime from "dayjs/plugin/relativeTime.js";
-import {
-  getVoiceConnection,
-  joinVoiceChannel,
-  type VoiceConnection,
-} from "npm:@discordjs/voice";
 import dayjs from "npm:dayjs";
 import {
   ActionRowBuilder,
@@ -25,7 +20,6 @@ import {
   type TextBasedChannel,
   TextChannel,
 } from "npm:discord.js";
-import type { VoiceBasedChannel } from "npm:discord.js";
 import type { VideoSearchResult } from "yt-search";
 
 import { MusicData, type PGuild } from "../types/classes/PGuild.class.ts";
@@ -35,7 +29,6 @@ import { OpapGameId } from "../types/enums/OpapGames.enum.ts";
 import { ProfanityLevel } from "../types/enums/ProfanityLevel.enum.ts";
 import { RankSpeed } from "../types/enums/RankSpeed.enum.ts";
 import logger from "../utilities/log.utility.ts";
-import { createDiscordJSAdapter } from "./adapter.library.ts";
 import { fetchGuild, fetchGuildList, setMusicData } from "./mongo.library.ts";
 
 dayjs.extend(duration);
@@ -446,80 +439,6 @@ export async function updateMusicLyricsMessage(
   });
 
   return !!editedMessage;
-}
-
-export function getVoiceConnectionByInteraction(
-  interaction: ChatInputCommandInteraction,
-):
-  | {
-    voiceConnection: VoiceConnection | null;
-    voiceBasedChannel: VoiceBasedChannel;
-  }
-  | null {
-  const member = interaction.member;
-  if (!member) {
-    logger.info("user could not be fetched for message");
-    return null;
-  }
-
-  if (!(member instanceof GuildMember)) {
-    logger.info("member is not a guild member instance");
-    return null;
-  }
-
-  const voiceBasedChannel = member.voice.channel;
-  if (!voiceBasedChannel) {
-    logger.info("you aren't in a voice channel");
-    return null;
-  }
-
-  const guild = interaction.guild;
-  if (!guild) {
-    logger.info("guild could not be fetched for message");
-    return null;
-  }
-
-  const voiceConnection = getVoiceConnection(guild.id);
-
-  return { voiceConnection: voiceConnection ?? null, voiceBasedChannel };
-}
-
-export function joinUserVoiceChannelByInteraction(
-  interaction: ChatInputCommandInteraction,
-): boolean {
-  const guild = interaction.guild;
-  if (!guild) {
-    logger.info("guild could not be fetched for message");
-    return false;
-  }
-
-  if (!guild.voiceAdapterCreator) {
-    logger.info("voiceAdapterCreator could not be fetched for guild");
-    return false;
-  }
-
-  const voice = getVoiceConnectionByInteraction(interaction);
-  const clientVoiceState = guild.voiceStates.cache.get(guild.client.user.id);
-
-  if (voice && voice.voiceBasedChannel?.id === clientVoiceState?.channelId) {
-    clientVoiceState.setDeaf(true);
-  } else if (voice) {
-    voice.voiceConnection = joinVoiceChannel({
-      channelId: voice.voiceBasedChannel.id,
-      guildId: guild.id,
-      adapterCreator: createDiscordJSAdapter(voice.voiceBasedChannel),
-    });
-
-    if (!voice.voiceConnection) {
-      return false;
-    }
-
-    if (clientVoiceState) {
-      clientVoiceState.setDeaf(true);
-    }
-  }
-
-  return true;
 }
 
 export function createEmbed(

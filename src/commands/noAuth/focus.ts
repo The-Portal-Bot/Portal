@@ -9,7 +9,6 @@ import {
 } from "../../libraries/guild.library.ts";
 import {
   askForApprovalByMember,
-  getVoiceConnectionByInteraction,
   messageHelp,
 } from "../../libraries/help.library.ts";
 import type { PGuild } from "../../types/classes/PGuild.class.ts";
@@ -19,6 +18,7 @@ import {
 } from "../../types/classes/PTypes.interface.ts";
 import type { Command } from "../../types/Command.ts";
 import logger from "../../utilities/log.utility.ts";
+import { VoiceLibrary } from "../../libraries/voice.library.ts";
 
 const COMMAND_NAME = "focus";
 const DESCRIPTION =
@@ -65,14 +65,27 @@ export default {
       };
     }
 
-    if (!interaction.member) {
+    const member = interaction.member;
+    if (!member) {
       return {
         result: false,
         value: messageHelp("commands", COMMAND_NAME, "could not find member"),
       };
     }
 
-    if (interaction.member === memberToFocus) {
+    if (!(member instanceof GuildMember)) {
+      logger.info("member is not a guild member instance");
+      return {
+        result: false,
+        value: messageHelp(
+          "commands",
+          COMMAND_NAME,
+          "you must be a guild member",
+        ),
+      };
+    }
+
+    if (member === memberToFocus) {
       return {
         result: false,
         value: messageHelp(
@@ -85,8 +98,8 @@ export default {
 
     const duration = interaction.options.getNumber("duration") ?? (5 * 60);
 
-    const voice = getVoiceConnectionByInteraction(interaction);
-    if (!voice) {
+    const voiceBasedChannel = VoiceLibrary.getVoiceChannelByMember(member);
+    if (!voiceBasedChannel) {
       return {
         result: false,
         value: messageHelp(
@@ -97,7 +110,7 @@ export default {
       };
     }
 
-    if (!includedInVoiceList(voice.voiceBasedChannel.id, pGuild.pChannels)) {
+    if (!includedInVoiceList(voiceBasedChannel.id, pGuild.pChannels)) {
       return {
         result: false,
         value: messageHelp(
@@ -108,7 +121,7 @@ export default {
       };
     }
 
-    if (voice.voiceBasedChannel.members.size <= 2) {
+    if (voiceBasedChannel.members.size <= 2) {
       return {
         result: false,
         value: messageHelp(
@@ -120,7 +133,9 @@ export default {
     }
 
     if (
-      voice.voiceBasedChannel.members.some((m) => m.id === memberToFocus.id)
+      voiceBasedChannel.members.some((m) =>
+        m.id === memberToFocus.id
+      )
     ) {
       return {
         result: false,
@@ -189,7 +204,7 @@ export default {
       };
     }
 
-    const oldChannel = voice.voiceBasedChannel;
+    const oldChannel = voiceBasedChannel;
     const focusChannelOutcome = await createFocusChannel(
       interaction.guild,
       memberToFocus,

@@ -12,12 +12,14 @@
     "npm:@discordjs/rest@^2.4.0": "2.4.0",
     "npm:@discordjs/voice@*": "0.17.0_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0",
     "npm:@discordjs/voice@0.17.0": "0.17.0_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0",
+    "npm:@distube/ytdl-core@^4.15.1": "4.15.1_tough-cookie@4.1.4_undici@5.28.4",
     "npm:@types/node@*": "22.5.4",
     "npm:cheerio@*": "1.0.0",
     "npm:cheerio@1.0.0-rc.12": "1.0.0-rc.12",
     "npm:dayjs@*": "1.11.13",
     "npm:dayjs@1.11.13": "1.11.13",
     "npm:discord-api-types@0.37.0": "0.37.0",
+    "npm:discord-ytdl-core@*": "5.0.4_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0",
     "npm:discord-ytdl-core@5.0.4": "5.0.4_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0",
     "npm:discord.js@*": "14.16.3",
     "npm:discord.js@14.16.3": "14.16.3",
@@ -28,11 +30,13 @@
     "npm:mongoose@*": "8.8.0",
     "npm:mongoose@8.8.0": "8.8.0",
     "npm:opusscript@0.1.1": "0.1.1",
+    "npm:play-dl@^1.9.7": "1.9.7",
     "npm:roll@1.3.2": "1.3.2",
     "npm:voca@*": "1.4.1",
     "npm:voca@1.4.1": "1.4.1",
     "npm:winston@*": "3.16.0",
     "npm:winston@3.16.0": "3.16.0",
+    "npm:yt-search@*": "2.12.1",
     "npm:yt-search@2.12.1": "2.12.1",
     "npm:ytdl-core@4.11.5": "4.11.5"
   },
@@ -140,7 +144,7 @@
         "discord-api-types@0.37.97",
         "magic-bytes.js",
         "tslib",
-        "undici"
+        "undici@6.19.8"
       ]
     },
     "@discordjs/util@1.1.1": {
@@ -169,6 +173,20 @@
         "tslib",
         "ws"
       ]
+    },
+    "@distube/ytdl-core@4.15.1_tough-cookie@4.1.4_undici@5.28.4": {
+      "integrity": "sha512-10voV+ixUVQgam4/GMhjNTX/ipk9odkPnPoRaUESs5E/EW0JujwPDc815z53D86mSRlVc8esH1eiuzFnxLJKcA==",
+      "dependencies": [
+        "http-cookie-agent",
+        "m3u8stream",
+        "miniget",
+        "sax",
+        "tough-cookie",
+        "undici@5.28.4"
+      ]
+    },
+    "@fastify/busboy@2.1.1": {
+      "integrity": "sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA=="
     },
     "@mongodb-js/saslprep@1.1.9": {
       "integrity": "sha512-tVkljjeEaAhCqTzajSdgbQ6gE6f3oneVwa3iXR6csiEwXXOFsiC6Uh9iAjAhXPtqa/XMDHWjjeNH/77m/Yq2dw==",
@@ -230,6 +248,12 @@
     },
     "agent-base@6.0.2": {
       "integrity": "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==",
+      "dependencies": [
+        "debug"
+      ]
+    },
+    "agent-base@7.1.1": {
+      "integrity": "sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==",
       "dependencies": [
         "debug"
       ]
@@ -369,7 +393,7 @@
         "parse5",
         "parse5-htmlparser2-tree-adapter",
         "parse5-parser-stream",
-        "undici",
+        "undici@6.19.8",
         "whatwg-mimetype"
       ]
     },
@@ -517,7 +541,7 @@
         "fast-deep-equal",
         "lodash.snakecase",
         "tslib",
-        "undici"
+        "undici@6.19.8"
       ]
     },
     "dom-serializer@2.0.0": {
@@ -701,6 +725,14 @@
         "entities"
       ]
     },
+    "http-cookie-agent@6.0.6_tough-cookie@4.1.4_undici@5.28.4": {
+      "integrity": "sha512-XkwhYUWo0yhiHBWqLmAe2kIBymVY70ewi9sKmy6YBHpNU3BCH4nipKrtY5/effAxj0qneQ9ziZG5TXgaKLfYgg==",
+      "dependencies": [
+        "agent-base@7.1.1",
+        "tough-cookie",
+        "undici@5.28.4"
+      ]
+    },
     "http-response-object@3.0.2": {
       "integrity": "sha512-bqX0XTF6fnXSQcEJ2Iuyr75yVakyjIDCqroJQ/aHfSdlM743Cwqoi2nDYMzLGWUcuTWGWy8AAvOKXTfiv6q9RA==",
       "dependencies": [
@@ -710,7 +742,7 @@
     "https-proxy-agent@5.0.1": {
       "integrity": "sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==",
       "dependencies": [
-        "agent-base",
+        "agent-base@6.0.2",
         "debug"
       ]
     },
@@ -755,7 +787,7 @@
       "integrity": "sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==",
       "dependencies": [
         "graceful-fs",
-        "universalify"
+        "universalify@2.0.1"
       ]
     },
     "jsonpath-plus@5.0.7": {
@@ -997,6 +1029,15 @@
     "path-is-absolute@1.0.1": {
       "integrity": "sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg=="
     },
+    "play-audio@0.5.2": {
+      "integrity": "sha512-ZAqHUKkQLix2Iga7pPbsf1LpUoBjcpwU93F1l3qBIfxYddQLhxS6GKmS0d3jV8kSVaUbr6NnOEcEMFvuX93SWQ=="
+    },
+    "play-dl@1.9.7": {
+      "integrity": "sha512-KpgerWxUCY4s9Mhze2qdqPhiqd8Ve6HufpH9mBH3FN+vux55qSh6WJKDabfie8IBHN7lnrAlYcT/UdGax58c2A==",
+      "dependencies": [
+        "play-audio"
+      ]
+    },
     "prism-media@1.3.5_@discordjs+opus@0.9.0_ffmpeg-static@5.2.0": {
       "integrity": "sha512-IQdl0Q01m4LrkN1EGIE9lphov5Hy7WWlH6ulf5QdGePLlPas9p2mhgddTEHrlaXYjjFToM1/rWuwF37VF4taaA==",
       "dependencies": [
@@ -1010,8 +1051,14 @@
     "progress@2.0.3": {
       "integrity": "sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA=="
     },
+    "psl@1.9.0": {
+      "integrity": "sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag=="
+    },
     "punycode@2.3.1": {
       "integrity": "sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg=="
+    },
+    "querystringify@2.2.0": {
+      "integrity": "sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ=="
     },
     "readable-stream@3.6.2": {
       "integrity": "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==",
@@ -1036,6 +1083,9 @@
       "dependencies": [
         "minimatch@3.0.8"
       ]
+    },
+    "requires-port@1.0.0": {
+      "integrity": "sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ=="
     },
     "rimraf@3.0.2": {
       "integrity": "sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==",
@@ -1145,6 +1195,15 @@
         "next-tick"
       ]
     },
+    "tough-cookie@4.1.4": {
+      "integrity": "sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==",
+      "dependencies": [
+        "psl",
+        "punycode",
+        "universalify@0.2.0",
+        "url-parse"
+      ]
+    },
     "tr46@0.0.3": {
       "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw=="
     },
@@ -1175,11 +1234,27 @@
     "undici-types@6.19.8": {
       "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
     },
+    "undici@5.28.4": {
+      "integrity": "sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==",
+      "dependencies": [
+        "@fastify/busboy"
+      ]
+    },
     "undici@6.19.8": {
       "integrity": "sha512-U8uCCl2x9TK3WANvmBavymRzxbfFYG+tAu+fgx3zxQy3qdagQqBLwJVrdyO1TBfUXvfKveMKJZhpvUYoOjM+4g=="
     },
+    "universalify@0.2.0": {
+      "integrity": "sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg=="
+    },
     "universalify@2.0.1": {
       "integrity": "sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw=="
+    },
+    "url-parse@1.5.10": {
+      "integrity": "sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==",
+      "dependencies": [
+        "querystringify",
+        "requires-port"
+      ]
     },
     "util-deprecate@1.0.2": {
       "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="
@@ -1278,12 +1353,15 @@
     }
   },
   "redirects": {
-    "https://deno.land/std/dotenv/mod.ts": "https://deno.land/std@0.224.0/dotenv/mod.ts"
+    "https://deno.land/std/dotenv/mod.ts": "https://deno.land/std@0.224.0/dotenv/mod.ts",
+    "https://esm.sh/youtube-sr": "https://esm.sh/youtube-sr@4.3.11"
   },
   "remote": {
     "https://deno.land/std@0.224.0/dotenv/mod.ts": "0180eaeedaaf88647318811cdaa418cc64dc51fb08354f91f5f480d0a1309f7d",
     "https://deno.land/std@0.224.0/dotenv/parse.ts": "09977ff88dfd1f24f9973a338f0f91bbdb9307eb5ff6085446e7c423e4c7ba0c",
-    "https://deno.land/std@0.224.0/dotenv/stringify.ts": "275da322c409170160440836342eaa7cf012a1d11a7e700d8ca4e7f2f8aa4615"
+    "https://deno.land/std@0.224.0/dotenv/stringify.ts": "275da322c409170160440836342eaa7cf012a1d11a7e700d8ca4e7f2f8aa4615",
+    "https://esm.sh/v135/youtube-sr@4.3.11/denonext/youtube-sr.mjs": "d6caae66ac2125087bd96c93ee3d7f190066f09f47ac2222a324427ae0305206",
+    "https://esm.sh/youtube-sr@4.3.11": "d876b8469812c421d64876e3fa7628b77fdeee3a47f6b087681d95437b14b048"
   },
   "workspace": {
     "dependencies": [
@@ -1293,6 +1371,7 @@
       "npm:@discordjs/opus@0.9.0",
       "npm:@discordjs/rest@^2.4.0",
       "npm:@discordjs/voice@0.17.0",
+      "npm:@distube/ytdl-core@^4.15.1",
       "npm:cheerio@1.0.0-rc.12",
       "npm:dayjs@1.11.13",
       "npm:discord-api-types@0.37.0",
@@ -1303,6 +1382,7 @@
       "npm:libsodium-wrappers@0.7.15",
       "npm:mongoose@8.8.0",
       "npm:opusscript@0.1.1",
+      "npm:play-dl@^1.9.7",
       "npm:roll@1.3.2",
       "npm:voca@1.4.1",
       "npm:winston@3.16.0",

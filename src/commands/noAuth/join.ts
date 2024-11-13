@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type { ChatInputCommandInteraction } from "npm:discord.js";
+import { type ChatInputCommandInteraction, GuildMember } from "npm:discord.js";
 
 import logger from "../../utilities/log.utility.ts";
 
@@ -15,6 +15,7 @@ import {
   type ReturnPromise,
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
+import { VoiceLibrary } from "../../libraries/voice.library.ts";
 
 const COMMAND_NAME = "join";
 const DESCRIPTION = "makes portal join your voice channel";
@@ -33,8 +34,36 @@ export default {
     pGuild: PGuild,
   ): Promise<ReturnPromise> {
     try {
-      const joinedChannel = joinUserVoiceChannelByInteraction(
-        interaction,
+      const member = interaction?.member;
+      if (!member || !(member instanceof GuildMember)) {
+        return {
+          result: false,
+          value: messageHelp("commands", "join", "member not found"),
+        };
+      }
+      const channelId = member.voice.channelId;
+      if (!channelId) {
+        return {
+          result: false,
+          value: messageHelp(
+            "commands",
+            "join",
+            "user must be in voice channel",
+          ),
+        };
+      }
+
+      const guild = interaction.guild;
+      if (!guild) {
+        return {
+          result: false,
+          value: messageHelp("commands", "join", "guild not found"),
+        };
+      }
+
+      const joinedChannel = VoiceLibrary.joinUserVoiceChannelById(
+        channelId,
+        guild,
       );
 
       if (!joinedChannel) {

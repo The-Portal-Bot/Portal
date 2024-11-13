@@ -34,7 +34,9 @@ export async function messageDelete(
     await handleLyricMessageDeletion(message, pGuild);
   } else if (pGuild.pPolls.some((p) => p.messageId === message.id)) {
     await handlePollMessageDeletion(message, pGuild);
-  } else {
+  } else if (
+    pGuild.pRoles.some((roleGiver) => roleGiver.messageId === message.id)
+  ) {
     await handleVendorMessageDeletion(message, pGuild);
   }
 }
