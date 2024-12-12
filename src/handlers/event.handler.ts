@@ -86,5 +86,5 @@ export function eventHandler(
       await events.interactionCreate(interaction, activeCooldowns),
   );
 
-  logger.info("Event handlers registered");
+  logger.info("event handlers registered");
 }

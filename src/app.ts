@@ -84,11 +84,10 @@ import logger from "./utilities/log.utility.ts";
   await eventHandler(client, active_cooldowns);
 
   const discord = await connectToDiscord(client, DISCORD_TOKEN);
-
   if (!discord) {
     logger.error("failed to connect to discord");
     Deno.exit(1);
   }
 
-  logger.info("portal bot is running");
+  logger.info("Portal bot is running");
 })();
