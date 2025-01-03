@@ -42,11 +42,11 @@ export default {
     interaction: ChatInputCommandInteraction,
     pGuild: PGuild,
   ): Promise<ReturnPromise> {
-    const newPortalChannel = interaction.options.getChannel(
+    const portalChannel = interaction.options.getChannel(
       "portal_channel_name",
     );
 
-    if (!newPortalChannel) {
+    if (!portalChannel) {
       return {
         result: false,
         value: messageHelp(
@@ -57,7 +57,7 @@ export default {
       };
     }
 
-    if (!(newPortalChannel instanceof VoiceChannel)) {
+    if (!(portalChannel instanceof VoiceChannel)) {
       return {
         result: false,
         value: messageHelp(
@@ -108,7 +108,7 @@ export default {
     // }
 
     const pChannel = new PChannel(
-      newPortalChannel.id,
+      portalChannel.id,
       currentMember.id,
       true,
       "portal",
@@ -131,10 +131,8 @@ export default {
     return {
       result: !!portalInserted,
       value: portalInserted
-        ? "Portal channel has been created.\n" +
-          "Keep in mind that due to Discord's limitations,\n" +
-          "channel names will be updated on a five minute interval"
-        : "portal channel failed to be created",
+      ? `**${portalChannel.name}** set to Portal channel.`
+      : "failed to set new Portal channel ",
     };
   },
 } as Command;

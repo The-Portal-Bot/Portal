@@ -127,8 +127,8 @@ export default {
     return {
       result: response,
       value: response
-        ? "new announcement channel set successfully"
-        : "failed to set new announcement channel",
+        ? `**${announcementChannel.name}** set to Announcement channel.`
+        : "failed to set new Announcement channel ",
     };
   },
 } as Command;

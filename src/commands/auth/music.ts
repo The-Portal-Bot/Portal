@@ -107,7 +107,7 @@ export default {
 
     return {
       result: true,
-      value: "new music channel set successfully",
+      value: `**${musicChannel.name}** set to Music channel.`,
     };
   },
 } as Command;

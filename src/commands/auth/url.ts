@@ -79,8 +79,8 @@ export default {
     return {
       result: response,
       value: response
-        ? "new url channel set successfully"
-        : "failed to set new url channel",
+        ? `**${urlChannel.name}** set to URL channel.`
+        : "failed to set new URL channel ",
     };
   },
 } as Command;
