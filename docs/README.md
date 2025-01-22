@@ -1,5 +1,5 @@
 <p align="left">
-    <strong>Disclaimer:</strong> The transition to Discord.js v14 is ongoing. Some features may not work as expected until the transition is complete. (Expected Q1 2025)
+    <strong>BIG NEWS:</strong> Transitioned to deno2 from nodejs has been completed!
 </p>
 
 <h1 align="center">
@@ -78,11 +78,8 @@
 <br>
 
 <p align="center">
-    <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-v18.14.2-blue" alt="nodejs" /></a>
-    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-v9.8.1-blue" alt="npm" /></a>
-    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-v14.12.1-blue" alt="npm" /></a></br>
-    <a href="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml/badge.svg" alt="nodejs" /></a>
-    <a href="https://github.com/keybraker/Portal/actions/workflows/eslint.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/eslint.yml/badge.svg" alt="eslint" /></a>
+    <a href="https://deno.com/"><img src="https://img.shields.io/badge/deno-2.1.7-green" alt="deno2" /></a>
+    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-v14.17.2-blue" alt="npm" /></a></br>
 </p>
 
 <p align="center">
