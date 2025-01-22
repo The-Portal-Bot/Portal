@@ -1,10 +1,15 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { createEmbed } from '../../libraries/help.library.js';
-import { Command } from '../../types/Command.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
 
-const COMMAND_NAME = 'about';
-const DESCRIPTION = 'returns information on Portal';
+import { createEmbed } from "../../libraries/help.library.ts";
+import type { Command } from "../../types/Command.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
+
+const COMMAND_NAME = "about";
+const DESCRIPTION = "returns information on Portal";
 
 export default {
   time: 0,
@@ -12,42 +17,47 @@ export default {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
+    DESCRIPTION,
+  ),
   async execute(): Promise<ReturnPromise> {
     const aboutMessage = [
       createEmbed(
-        'About',
-        'A fully fledged and feature rich bot for Discord',
-        '#1DB954',
+        "About",
+        "A fully fledged and feature rich bot for Discord",
+        "#1DB954",
         [
           {
-            emote: 'Website',
-            role: '[portal-bot.xyz](https://portal-bot.xyz)',
+            emote: "Website",
+            role: "[portal-bot.xyz](https://portal-bot.xyz)",
             inline: true,
           },
           {
-            emote: 'Creator',
-            role: '[Keybraker](https://github.com/keybraker/Portal)',
+            emote: "Creator",
+            role: "[Keybraker](https://github.com/keybraker/Portal)",
             inline: true,
           },
           {
-            emote: 'Version',
-            role: `[${process.env.VERSION}](https://portal-bot.xyz/blog/${process.env.VERSION})`,
+            emote: "Version",
+            role: `[${Deno.env.get("VERSION")}](https://portal-bot.xyz/blog/${
+              Deno.env.get("VERSION")
+            })`,
             inline: true,
           },
           {
-            emote: 'Official Server',
-            role: '[Portal Official](https://discord.gg/WrMUzJYyzJ)',
+            emote: "Official Server",
+            role: "[Portal Official](https://discord.gg/WrMUzJYyzJ)",
             inline: true,
           },
           {
-            emote: 'Github',
-            role: '[keybraker/Portal](https://www.github.com/keybraker/Portal)',
+            emote: "Github",
+            role: "[keybraker/Portal](https://www.github.com/keybraker/Portal)",
             inline: true,
           },
           {
-            emote: 'Upvote',
-            role: '[Top.gg](https://top.gg/bot/704400876860735569) | [Bot.gg](https://discord.bots.gg/bots/704400876860735569)',
+            emote: "Upvote",
+            role:
+              "[Top.gg](https://top.gg/bot/704400876860735569) | [Bot.gg](https://discord.bots.gg/bots/704400876860735569)",
             inline: true,
           },
         ],

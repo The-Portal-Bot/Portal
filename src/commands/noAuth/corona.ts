@@ -1,17 +1,27 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import dayjs from 'dayjs';
-import { ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
-import { RequestOptions } from 'https';
-import voca from 'voca';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
+import dayjs from "npm:dayjs";
+import {
+  type ChatInputCommandInteraction,
+  InteractionContextType,
+} from "npm:discord.js";
+import voca from "npm:voca";
 
-import { CountryCodes } from '../../assets/lists/countryCodesISO.static.js';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
-import { httpsFetch } from '../../libraries/http.library.js';
-import { Command } from '../../types/Command.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { CountryCodes } from "../../assets/lists/countryCodesISO.static.ts";
+import {
+  createEmbed,
+  getJSONFromString,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { httpsFetch } from "../../libraries/http.library.ts";
+import type { Command } from "../../types/Command.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'corona';
-const DESCRIPTION = 'returns data on COVID19';
+const COMMAND_NAME = "corona";
+const DESCRIPTION = "returns data on COVID19";
 
 export default {
   time: 0,
@@ -23,24 +33,28 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
-      option.setName('country').setDescription('The country you want to get corona data for').setRequired(true),
+      option.setName("country").setDescription(
+        "The country you want to get corona data for",
+      ).setRequired(true)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    if (!process.env.COVID_193) {
+  async execute(
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReturnPromise> {
+    if (!Deno.env.get("COVID_193")) {
       return {
         result: false,
-        value: 'COVID_193 API key is not set up',
+        value: "COVID_193 API key is not set up",
       };
     }
 
     let code: string | null = null;
-    const country = interaction.options.getString('country');
+    const country = interaction.options.getString("country");
 
     if (!country) {
       return {
         result: false,
-        value: messageHelp('commands', 'corona', 'country must be provided'),
+        value: messageHelp("commands", "corona", "country must be provided"),
       };
     }
 
@@ -49,34 +63,37 @@ export default {
     if (!code) {
       return {
         result: false,
-        value: messageHelp('commands', 'corona', `could not fetch code for country ${country}`),
+        value: messageHelp(
+          "commands",
+          "corona",
+          `could not fetch code for country ${country}`,
+        ),
       };
     }
 
-    const options: RequestOptions = {
-      method: 'GET',
-      hostname: 'covid-193.p.rapidapi.com',
-      port: undefined,
-      path: '/statistics',
-      headers: {
-        'x-rapidapi-host': 'covid-193.p.rapidapi.com',
-        'x-rapidapi-key': process.env.COVID_193,
-        useQueryString: 1,
-      },
-    };
+    const url = new URL("https://covid-193.p.rapidapi.com/statistics");
 
-    const response = await httpsFetch(options);
+    const response = await httpsFetch(url, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-host": "covid-193.p.rapidapi.com",
+        "x-rapidapi-key": Deno.env.get("COVID_193") || "",
+        "Accept": "application/json",
+      },
+    });
 
     if (!response) {
       return {
         result: false,
-        value: 'could not fetch data from source',
+        value: "could not fetch data from source",
       };
     }
 
-    const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
+    const json = getJSONFromString(
+      response.toString().substring(response.toString().indexOf("{")),
+    );
 
-    if (json.message === 'You are not subscribed to this API.') {
+    if (json.message === "You are not subscribed to this API.") {
       return {
         result: false,
         value: json.message,
@@ -86,25 +103,27 @@ export default {
     if (!json) {
       return {
         result: false,
-        value: 'data from source was corrupted',
+        value: "data from source was corrupted",
       };
     }
 
     if (json.errors && json.errors.length !== 0) {
       return {
         result: false,
-        value: 'source responded with errors',
+        value: "source responded with errors",
       };
     }
 
     if (!json.response) {
       return {
         result: false,
-        value: 'source responded without data',
+        value: "source responded without data",
       };
     }
 
-    const countryData = json.response.find((data: { country: string }) => data.country === code);
+    const countryData = json.response.find((data: { country: string }) =>
+      data.country === code
+    );
 
     if (!countryData) {
       return {
@@ -116,52 +135,62 @@ export default {
     const outcome = await interaction.reply({
       embeds: [
         createEmbed(
-          `${countryData.country} | ${dayjs(countryData.time).format('DD/MM/YY')}`,
-          'Covid19 stats by covid-193',
-          '#FF0000',
+          `${countryData.country} | ${
+            dayjs(countryData.time).format("DD/MM/YY")
+          }`,
+          "Covid19 stats by covid-193",
+          "#FF0000",
           [
             {
-              emote: 'NEW cases',
-              role: `${countryData.cases.new ? countryData.cases.new : 'N/A'}`,
+              emote: "NEW cases",
+              role: `${countryData.cases.new ? countryData.cases.new : "N/A"}`,
               inline: true,
             },
             {
-              emote: 'NEW deaths',
-              role: `${countryData.deaths.new ? countryData.deaths.new : 'N/A'}`,
+              emote: "NEW deaths",
+              role: `${
+                countryData.deaths.new ? countryData.deaths.new : "N/A"
+              }`,
               inline: true,
             },
             {
-              emote: 'Tests P1M',
-              role: `${countryData.tests['1M_pop']}`,
+              emote: "Tests P1M",
+              role: `${countryData.tests["1M_pop"]}`,
               inline: true,
             },
             {
-              emote: 'Cases',
+              emote: "Cases",
               role: `${countryData.cases.total}`,
               inline: true,
             },
             {
-              emote: 'Deaths',
+              emote: "Deaths",
               role: `${countryData.deaths.total}`,
               inline: true,
             },
             {
-              emote: 'Recovered',
+              emote: "Recovered",
               role: `${countryData.cases.recovered}`,
               inline: true,
             },
             {
-              emote: '%Recovered',
-              role: `${((countryData.cases.recovered / countryData.cases.total) * 100).toFixed(2)}%`,
+              emote: "%Recovered",
+              role: `${
+                ((countryData.cases.recovered / countryData.cases.total) * 100)
+                  .toFixed(2)
+              }%`,
               inline: true,
             },
             {
-              emote: '%Diseased',
-              role: `${((countryData.deaths.total / countryData.cases.total) * 100).toFixed(2)}%`,
+              emote: "%Diseased",
+              role: `${
+                ((countryData.deaths.total / countryData.cases.total) * 100)
+                  .toFixed(2)
+              }%`,
               inline: true,
             },
             {
-              emote: 'Critical',
+              emote: "Critical",
               role: `${countryData.cases.critical}`,
               inline: true,
             },
@@ -177,7 +206,7 @@ export default {
 
     return {
       result: false,
-      value: outcome ? '' : 'failed to send message',
+      value: outcome ? "" : "failed to send message",
     };
   },
 } as Command;
@@ -186,8 +215,11 @@ const countryCodes: { name: string; code: string }[] = CountryCodes;
 
 const getCountryCode = function (country: string): string | null {
   for (let i = 0; i < countryCodes.length; i++) {
-    if (voca.lowerCase(countryCodes[i].name) === voca.lowerCase(country)) return countryCodes[i].name;
-    else if (voca.lowerCase(countryCodes[i].code) === voca.lowerCase(country)) return countryCodes[i].name;
+    if (voca.lowerCase(countryCodes[i].name) === voca.lowerCase(country)) {
+      return countryCodes[i].name;
+    } else if (
+      voca.lowerCase(countryCodes[i].code) === voca.lowerCase(country)
+    ) return countryCodes[i].name;
   }
 
   return null;

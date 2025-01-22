@@ -1,5 +1,5 @@
 <p align="left">
-    <strong>Disclaimer:</strong> The transition to Discord.js v14 is ongoing. Some features may not work as expected until the transition is complete. (Expected Q1 2025)
+    <strong>BIG NEWS:</strong> Transitioned to deno2 from nodejs has been completed!
 </p>
 
 <h1 align="center">
@@ -36,12 +36,20 @@
 
 ## Documentation
 
-- **[Commands](https://portal-bot.xyz/docs/commands/description)**, a list of all Portal commands with descriptions, arguments and how to use them.
-- **[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)** is a program used by Portal to generate a channel's name _with four types of data_
-  1. **[Variables](https://portal-bot.xyz/docs/interpreter/objects/variables/description)**, are immutable and live data, that return information.
-  2. **[Attributes](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)**, are mutable options that can be manipulated by whomever has clearance.
-  3. **[Pipes](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)**, are mini functions you can pass text variables or attributes to, that manipulate their outcome.
-  4. **[Structures](https://portal-bot.xyz/docs/interpreter/objects/structures/description)**, are conditional flow manipulators.
+- **[Commands](https://portal-bot.xyz/docs/commands/description)**, a list of
+  all Portal commands with descriptions, arguments and how to use them.
+- **[Text Interpreter](https://portal-bot.xyz/docs/interpreter/description)** is
+  a program used by Portal to generate a channel's name _with four types of
+  data_
+  1. **[Variables](https://portal-bot.xyz/docs/interpreter/objects/variables/description)**,
+     are immutable and live data, that return information.
+  2. **[Attributes](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)**,
+     are mutable options that can be manipulated by whomever has clearance.
+  3. **[Pipes](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)**,
+     are mini functions you can pass text variables or attributes to, that
+     manipulate their outcome.
+  4. **[Structures](https://portal-bot.xyz/docs/interpreter/objects/structures/description)**,
+     are conditional flow manipulators.
 
 ## Changelog
 
@@ -49,25 +57,29 @@
 
 ## More
 
-1. For frequently asked questions (FAQ) with their answers click _[here](https://portal-bot.xyz/help/#faq)_.
-2. If you want to host Portal on your own system you can either follow _[standard](https://portal-bot.xyz/hosting/standard/prerequisites)_ or _[docker](https://portal-bot.xyz/hosting/docker/prerequisites)_ guides.
-3. Portal is an open source project you can contribute too. There are guidelines for how to properly do it _[here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)_.
+1. For frequently asked questions (FAQ) with their answers click
+   _[here](https://portal-bot.xyz/help/#faq)_.
+2. If you want to host Portal on your own system you can either follow
+   _[standard](https://portal-bot.xyz/hosting/standard/prerequisites)_ or
+   _[docker](https://portal-bot.xyz/hosting/docker/prerequisites)_ guides.
+3. Portal is an open source project you can contribute too. There are guidelines
+   for how to properly do it
+   _[here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)_.
 4. To read the release history, click _[here](https://portal-bot.xyz/blog)_.
 
 #### Disclaimers
 
 > - Portal will never record conversations or store anything you type
 > - Discord updated their server rate limit to twice per 10 minutes.<br>
-> - The new rate limit for channel name and topic updates is 2 updates per 10 minutes, per channel _[more here](https://github.com/discordjs/discord.js/issues/4327)_
+> - The new rate limit for channel name and topic updates is 2 updates per 10
+>   minutes, per channel
+>   _[more here](https://github.com/discordjs/discord.js/issues/4327)_
 
 <br>
 
 <p align="center">
-    <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-v18.14.2-blue" alt="nodejs" /></a>
-    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-v9.8.1-blue" alt="npm" /></a>
-    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-v14.12.1-blue" alt="npm" /></a></br>
-    <a href="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/nodejs.yml/badge.svg" alt="nodejs" /></a>
-    <a href="https://github.com/keybraker/Portal/actions/workflows/eslint.yml"><img src="https://github.com/keybraker/Portal/actions/workflows/eslint.yml/badge.svg" alt="eslint" /></a>
+    <a href="https://deno.com/"><img src="https://img.shields.io/badge/deno-2.1.7-green" alt="deno2" /></a>
+    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-v14.17.2-blue" alt="npm" /></a></br>
 </p>
 
 <p align="center">

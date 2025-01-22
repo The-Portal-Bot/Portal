@@ -4,4 +4,4 @@ export enum ProfanityLevel {
   strict,
 }
 
-export const ProfanityLevelList = ['none', 'default', 'strict'];
+export const ProfanityLevelList = ["none", "default", "strict"];

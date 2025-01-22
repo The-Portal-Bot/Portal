@@ -1,12 +1,21 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import dayjs from 'dayjs';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { RequestOptions } from 'https';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
-import { httpsFetch } from '../../libraries/http.library.js';
-import { Command } from '../../types/Command.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
-// import { CountryCodes } from '../../data/lists/countryCodesISO.static.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
+import dayjs from "npm:dayjs";
+import type { ChatInputCommandInteraction } from "npm:discord.js";
+
+import {
+  createEmbed,
+  getJSONFromString,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { httpsFetch } from "../../libraries/http.library.ts";
+import type { Command } from "../../types/Command.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
+
+// import { CountryCodes } from '../../data/lists/countryCodesISO.static.ts';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
 
@@ -20,8 +29,8 @@ import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.
 //     return null;
 // };
 
-const COMMAND_NAME = 'stock';
-const DESCRIPTION = 'returns data on stocks';
+const COMMAND_NAME = "stock";
+const DESCRIPTION = "returns data on stocks";
 
 export default {
   time: 0,
@@ -33,51 +42,56 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
-      option.setName('stock').setDescription('Stock you want to get data for').setRequired(true),
+      option.setName("stock").setDescription("Stock you want to get data for")
+        .setRequired(true)
     ),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    if (!process.env.YAHOO_FINANCE) {
+  async execute(
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReturnPromise> {
+    if (!Deno.env.get("YAHOO_FINANCE")) {
       return {
         result: false,
-        value: 'YAHOO_FINANCE API key is not set up',
+        value: "YAHOO_FINANCE API key is not set up",
       };
     }
 
-    const stock = interaction.options.getString('stock');
+    const stock = interaction.options.getString("stock");
 
     if (!stock) {
       return {
         result: false,
-        value: messageHelp('commands', 'stock'),
+        value: messageHelp("commands", "stock"),
       };
     }
 
-    const options: RequestOptions = {
-      method: 'GET',
-      hostname: 'yahoo-finance-low-latency.p.rapidapi.com',
-      port: undefined,
-      path: `/v8/finance/chart/${stock}?events=div%2Csplit`,
-      headers: {
-        'x-rapidapi-host': 'yahoo-finance-low-latency.p.rapidapi.com',
-        'x-rapidapi-key': process.env.YAHOO_FINANCE,
-        useQueryString: 1,
-      },
-    };
+    const url = new URL(
+      `https://yahoo-finance-low-latency.p.rapidapi.com/v8/finance/chart/${stock}`,
+    );
+    url.searchParams.append("events", "div,split");
 
-    const response = await httpsFetch(options);
+    const response = await httpsFetch(url, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-host": "yahoo-finance-low-latency.p.rapidapi.com",
+        "x-rapidapi-key": Deno.env.get("YAHOO_FINANCE") || "",
+        "Accept": "application/json",
+      },
+    });
 
     if (!response) {
       return {
         result: false,
-        value: 'could not access the server',
+        value: "could not access the server",
       };
     }
 
-    const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
+    const json = getJSONFromString(
+      response.toString().substring(response.toString().indexOf("{")),
+    );
     if (json === null) {
       return {
         result: false,
-        value: 'data from source was corrupted',
+        value: "data from source was corrupted",
       };
     }
 
@@ -86,7 +100,7 @@ export default {
     if (chart === null) {
       return {
         result: false,
-        value: 'could not find any stock',
+        value: "could not find any stock",
       };
     }
 
@@ -95,7 +109,7 @@ export default {
     if (result === null) {
       return {
         result: false,
-        value: 'there were no results',
+        value: "there were no results",
       };
     }
 
@@ -104,16 +118,18 @@ export default {
     if (meta === null) {
       return {
         result: false,
-        value: 'there were no meta data',
+        value: "there were no meta data",
       };
     }
 
     const outcome = await interaction.reply({
       embeds: [
         createEmbed(
-          `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${dayjs().format('DD/MM/YY')}`,
-          'powered by yahoo finance',
-          '#FF0000',
+          `STOCK ${meta.symbol} (${meta.regularMarketPrice}) - ${
+            dayjs().format("DD/MM/YY")
+          }`,
+          "powered by yahoo finance",
+          "#FF0000",
           [],
           // [
           //     {
@@ -133,7 +149,7 @@ export default {
 
     return {
       result: !!outcome,
-      value: outcome ? '' : 'failed to send message',
+      value: outcome ? "" : "failed to send message",
     };
   },
 } as Command;

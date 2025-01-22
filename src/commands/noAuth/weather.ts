@@ -1,14 +1,25 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import dayjs from 'dayjs';
-import { ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
-import { RequestOptions } from 'https';
-import { createEmbed, getJSONFromString, messageHelp } from '../../libraries/help.library.js';
-import { httpsFetch } from '../../libraries/http.library.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
-import { Command } from '../../types/Command.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import "@std/dotenv/load";
+import dayjs from "npm:dayjs";
+import {
+  type ChatInputCommandInteraction,
+  InteractionContextType,
+} from "npm:discord.js";
 
-const COMMAND_NAME = 'weather';
-const DESCRIPTION = 'returns weather data';
+import {
+  createEmbed,
+  getJSONFromString,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { httpsFetch } from "../../libraries/http.library.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
+import type { Command } from "../../types/Command.ts";
+
+const COMMAND_NAME = "weather";
+const DESCRIPTION = "returns weather data";
 
 export default {
   time: 0,
@@ -20,55 +31,64 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addStringOption((option) =>
-      option.setName('country').setDescription('The country you want to get weather data for').setRequired(true),
+      option.setName("country").setDescription(
+        "The country you want to get weather data for",
+      ).setRequired(true)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    if (!process.env.OPEN_WEATHER_MAP) {
+  async execute(
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReturnPromise> {
+    if (!Deno.env.get("OPEN_WEATHER_MAP")) {
       return {
         result: false,
-        value: 'OPEN_WEATHER_MAP API key is not set up',
+        value: "OPEN_WEATHER_MAP API key is not set up",
       };
     }
 
-    const country = interaction.options.getString('country');
+    const country = interaction.options.getString("country");
 
     if (!country) {
       return {
         result: false,
-        value: messageHelp('commands', 'weather'),
+        value: messageHelp("commands", "weather"),
       };
     }
 
-    const location = country.split(' ').join('%2C%20');
-    const options: RequestOptions = {
-      method: 'GET',
-      hostname: 'api.openweathermap.org',
-      port: undefined,
-      path: `/data/2.5/weather?q=${location}&appid=${process.env.OPEN_WEATHER_MAP}`,
-    };
+    const url = new URL(`https://api.openweathermap.org/data/2.5/weather`);
 
-    const response = await httpsFetch(options);
+    const location = country.split(" ").join("%2C%20");
+    url.searchParams.append("q", location);
+    url.searchParams.append("appid", Deno.env.get("OPEN_WEATHER_MAP") || "");
+
+    const response = await httpsFetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
 
     if (!response) {
       return {
         result: false,
-        value: 'could not access the server',
+        value: "could not access the server",
       };
     }
 
-    const json = getJSONFromString(response.toString().substring(response.toString().indexOf('{')));
+    const json = getJSONFromString(
+      response.toString().substring(response.toString().indexOf("{")),
+    );
     if (json === null) {
       return {
         result: false,
-        value: 'data from source was corrupted',
+        value: "data from source was corrupted",
       };
     }
 
-    if (json.cod === '404') {
+    if (json.cod === "404") {
       return {
         result: false,
-        value: messageHelp('commands', 'weather', 'city not found'),
+        value: messageHelp("commands", "weather", "city not found"),
       };
     }
 
@@ -82,18 +102,22 @@ export default {
     const outcome = await interaction.reply({
       embeds: [
         createEmbed(
-          `${json.name}, ${json.sys.country} at ${dayjs().format('DD/MM/YY')}`,
-          'powered by OpenWeatherMap',
-          '#BFEFFF',
+          `${json.name}, ${json.sys.country} at ${dayjs().format("DD/MM/YY")}`,
+          "powered by OpenWeatherMap",
+          "#BFEFFF",
           [
             {
-              emote: 'Temperature',
-              role: `${kelvinToCelsius(json.main.temp)}°C / ${kelvinToFahrenheit(json.main.temp)}°F`,
+              emote: "Temperature",
+              role: `${kelvinToCelsius(json.main.temp)}°C / ${
+                kelvinToFahrenheit(json.main.temp)
+              }°F`,
               inline: true,
             },
             {
-              emote: 'Feels like',
-              role: `${kelvinToCelsius(json.main.feels_like)}°C / ${kelvinToFahrenheit(json.main.feels_like)}°F`,
+              emote: "Feels like",
+              role: `${kelvinToCelsius(json.main.feels_like)}°C / ${
+                kelvinToFahrenheit(json.main.feels_like)
+              }°F`,
               inline: true,
             },
             {
@@ -102,28 +126,32 @@ export default {
               inline: false,
             },
             {
-              emote: 'Humidity',
+              emote: "Humidity",
               role: `${json.main.humidity}`,
               inline: true,
             },
             {
-              emote: 'Wind Speed',
-              role: `${msToKs(json.wind.speed)}kmh / ${msToMlh(json.wind.speed)}mlh`,
+              emote: "Wind Speed",
+              role: `${msToKs(json.wind.speed)}kmh / ${
+                msToMlh(json.wind.speed)
+              }mlh`,
               inline: true,
             },
             {
-              emote: 'Cloudiness',
+              emote: "Cloudiness",
               role: `${json.clouds.all}%`,
               inline: true,
             },
             {
-              emote: 'Condition',
+              emote: "Condition",
               // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-              role: `${json.weather
-                .map((weather: { main: string; description: string }) => {
-                  return `${weather.main} (${weather.description})`;
-                })
-                .join(', ')}`,
+              role: `${
+                json.weather
+                  .map((weather: { main: string; description: string }) => {
+                    return `${weather.main} (${weather.description})`;
+                  })
+                  .join(", ")
+              }`,
               inline: false,
             },
           ],
@@ -138,7 +166,7 @@ export default {
 
     return {
       result: !!outcome,
-      value: outcome ? `${json.name} weather` : 'failed to send message',
+      value: outcome ? `${json.name} weather` : "failed to send message",
     };
   },
 } as Command;

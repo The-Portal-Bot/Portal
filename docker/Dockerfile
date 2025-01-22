@@ -1,20 +1,14 @@
-FROM node:18
+# Use the official Deno image
+FROM denoland/deno:2.1.7
 
-# Create app directory
-RUN mkdir -p /usr/src/portal
-# Make app working directory
+# Set the working directory
 WORKDIR /usr/src/portal
 
-COPY package*.json ./
-COPY tsconfig*.json ./
-
-# If you are building your code for production
-# RUN npm ci --only=production else RUN npm install
-RUN npm ci --only=production
-RUN npm install typescript --save-dev
-
-# Bundle app source
+# Copy the necessary files to the container
 COPY . .
 
-RUN npm run build
-CMD [ "node", "build/app.js" ]
+# Cache and install dependencies
+RUN deno cache src/app.ts
+
+# Run the application with necessary permissions
+CMD ["run", "--allow-net", "--allow-read", "--allow-env", "--allow-write", "--allow-ffi", "--allow-run", "--allow-sys", "src/app.ts"]

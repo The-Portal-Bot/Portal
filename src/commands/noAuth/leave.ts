@@ -1,13 +1,23 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { getVoiceConnection, VoiceConnectionStatus } from '@discordjs/voice';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { clientTalk, clientWrite } from '../../libraries/localisation.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { AnnouncementAction, ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  getVoiceConnection,
+  VoiceConnectionStatus,
+} from "npm:@discordjs/voice";
+import type { ChatInputCommandInteraction } from "npm:discord.js";
+import {
+  clientTalk,
+  clientWrite,
+} from "../../libraries/localisation.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  AnnouncementAction,
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'leave';
-const DESCRIPTION = 'makes portal leave your voice channel';
+const COMMAND_NAME = "leave";
+const DESCRIPTION = "makes portal leave your voice channel";
 
 export default {
   time: 0,
@@ -15,12 +25,17 @@ export default {
   ephemeral: true,
   auth: false,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
+    DESCRIPTION,
+  ),
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
         result: false,
-        value: 'guild could not be fetched',
+        value: "guild could not be fetched",
       };
     }
 
@@ -29,7 +44,7 @@ export default {
     if (!voiceConnection) {
       return {
         result: false,
-        value: 'portal must be connected to a voice channel with you',
+        value: "portal must be connected to a voice channel with you",
       };
     }
 
@@ -37,7 +52,7 @@ export default {
       // await voiceConnection.destroy();
       return {
         result: false,
-        value: 'failed to destroy voice connection',
+        value: "failed to destroy voice connection",
       };
     }
 

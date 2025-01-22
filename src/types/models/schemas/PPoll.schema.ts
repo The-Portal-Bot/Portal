@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema } from "npm:mongoose";
 
 const PPollSchema = new Schema(
   {
@@ -6,8 +6,8 @@ const PPollSchema = new Schema(
     memberId: { type: String, required: true },
   },
   {
-    collection: 'guild_list',
-  }
+    collection: "guild_list",
+  },
 );
 
 export default PPollSchema;

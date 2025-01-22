@@ -1,13 +1,20 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, GuildMember, TextChannel } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type {
+  ChatInputCommandInteraction,
+  GuildMember,
+  TextChannel,
+} from "npm:discord.js";
 
-import { createEmbed, messageHelp } from '../../libraries/help.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { createEmbed, messageHelp } from "../../libraries/help.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'announce';
-const DESCRIPTION = 'send an announcement to the announcement channel';
+const COMMAND_NAME = "announce";
+const DESCRIPTION = "make an announcement to the announcement channel";
 
 export default {
   time: 2,
@@ -18,30 +25,45 @@ export default {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addStringOption((option) => option.setName('title').setDescription('Announcement title').setRequired(true))
-    .addStringOption((option) => option.setName('body').setDescription('Announcement body').setRequired(true)),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
-    const title = interaction.options.getString('title');
-    const body = interaction.options.getString('body');
+    .addStringOption((option) =>
+      option.setName("title").setDescription("Announcement title").setRequired(
+        true,
+      )
+    )
+    .addStringOption((option) =>
+      option.setName("body").setDescription("Announcement body").setRequired(
+        true,
+      )
+    ),
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
+    const title = interaction.options.getString("title");
+    const body = interaction.options.getString("body");
 
     if (!title || !body) {
       return {
         result: false,
-        value: messageHelp('commands', 'announce'),
+        value: messageHelp("commands", "announce"),
       };
     }
 
-    if (pGuild.announcement === '' || pGuild.announcement === 'null') {
+    if (pGuild.announcement === "" || pGuild.announcement === "null") {
       return {
         result: false,
-        value: messageHelp('commands', 'announce', 'there is no announcement channel'),
+        value: messageHelp(
+          "commands",
+          "announce",
+          "there is no announcement channel",
+        ),
       };
     }
 
     if (!interaction.guild) {
       return {
         result: false,
-        value: 'message\'s guild could not be fetched',
+        value: "message's guild could not be fetched",
       };
     }
 
@@ -52,14 +74,18 @@ export default {
     if (!announcementChannel) {
       return {
         result: false,
-        value: messageHelp('commands', 'announce', 'announcements channel does not exist'),
+        value: messageHelp(
+          "commands",
+          "announce",
+          "announcements channel does not exist",
+        ),
       };
     }
 
     const richMessage = createEmbed(
       title,
       `@here ${body}`,
-      '#022E4E',
+      "#022E4E",
       [],
       null,
       interaction.member as GuildMember,
@@ -72,7 +98,9 @@ export default {
 
     return {
       result: !!outcome,
-      value: outcome ? 'announcement was sent successfully' : 'could not send message',
+      value: outcome
+        ? "announcement was sent successfully"
+        : "could not send message",
     };
   },
 } as Command;

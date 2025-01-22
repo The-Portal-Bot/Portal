@@ -1,51 +1,59 @@
-import { ChatInputCommandInteraction, EmbedBuilder, Guild, Presence, Role, User, VoiceChannel } from 'discord.js';
+import type {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  Guild,
+  Presence,
+  Role,
+  User,
+  VoiceChannel,
+} from "npm:discord.js";
 
-import { PGuild } from './PGuild.class.js';
-import { PMember } from './PMember.class.js';
-import { PChannel } from './PPortalChannel.class.js';
-import { PVoiceChannel } from './PVoiceChannel.class.js';
+import type { PGuild } from "./PGuild.class.ts";
+import type { PMember } from "./PMember.class.ts";
+import type { PChannel } from "./PPortalChannel.class.ts";
+import type { PVoiceChannel } from "./PVoiceChannel.class.ts";
 
 export type NoAuthCommands =
-  | 'about'
-  | 'announce'
-  | 'bet'
-  | 'corona'
-  | 'crypto'
-  | 'focus'
-  | 'help'
-  | 'join'
-  | 'leaderboard'
-  | 'leave'
-  | 'level'
-  | 'ping'
-  | 'poll'
-  | 'ranks'
-  | 'roll'
-  | 'run'
-  | 'state'
-  | 'spam_rules'
-  | 'weather'
-  | 'whoami';
+  | "about"
+  | "announce"
+  | "bet"
+  | "corona"
+  | "crypto"
+  | "focus"
+  | "help"
+  | "join"
+  | "leaderboard"
+  | "leave"
+  | "level"
+  | "ping"
+  | "poll"
+  | "ranks"
+  | "roll"
+  | "run"
+  | "state"
+  | "spam_rules"
+  | "weather"
+  | "whoami";
 
 export type AuthCommands =
-  | 'announcement'
-  | 'ban'
-  | 'delete_messages'
-  | 'force'
-  | 'ignore'
-  | 'invite'
-  | 'kick'
-  | 'music'
-  | 'portal'
-  | 'vendor'
-  | 'set_ranks'
-  | 'set'
-  | 'url';
+  | "announcement"
+  | "ban"
+  | "delete_messages"
+  | "force"
+  | "ignore"
+  | "invite"
+  | "kick"
+  | "music"
+  | "portal"
+  | "vendor"
+  | "set_ranks"
+  | "set"
+  | "url";
 
 export enum ScopeLimit {
-  NONE = 'none',
-  MEMBER = 'member',
-  GUILD = 'guild',
+  NONE = "none",
+  MEMBER = "member",
+  GUILD = "guild",
 }
 
 export enum AnnouncementAction {
@@ -131,7 +139,11 @@ export type PresenceArguments = {
   newPresence: Presence;
 };
 
-export type LanguageConsoleArguments = ClientArguments & StatusArguments & DataArguments & PresenceArguments;
+export type LanguageConsoleArguments =
+  & ClientArguments
+  & StatusArguments
+  & DataArguments
+  & PresenceArguments;
 
 export type LanguageConsole = {
   gr: (args: LanguageConsoleArguments) => string;
@@ -232,7 +244,13 @@ export type Blueprint = {
       interaction?: ChatInputCommandInteraction;
     },
     value: string | Role,
-  ) => Promise<ReturnPromise> | boolean | string | string[] | number | undefined;
+  ) =>
+    | Promise<ReturnPromise>
+    | boolean
+    | string
+    | string[]
+    | number
+    | undefined;
 };
 
 export interface HelpDocumentation {

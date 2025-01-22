@@ -1,5 +1,8 @@
 {
   "compile-hero.disable-compile-files-on-did-save-code": true,
   "git-blame.gitWebUrl": "",
-  "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+  "cSpell.words": [
+    "decapitalize"
+  ]
 }

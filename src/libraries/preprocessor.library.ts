@@ -1,28 +1,40 @@
-import { Message } from 'discord.js';
+import type { Message } from "npm:discord.js";
 
-import * as auth from '../commands/auth/index.js';
-import * as noAuth from '../commands/noAuth/index.js';
-import { MusicData, PGuild } from '../types/classes/PGuild.class.js';
-import { AuthCommands, CommandOptions, NoAuthCommands } from '../types/classes/PTypes.interface.js';
-import logger from '../utilities/log.utility.js';
-import { includedInPIgnores, isUrlOnlyChannel } from './guild.library.js';
-import { isMessageDeleted, isUserIgnored, markMessageAsDeleted, messageReply } from './help.library.js';
-import { removeIgnore, removeURL, setMusicData } from './mongo.library.js';
-import { addPointsMessage } from './user.library.js';
+import * as auth from "../commands/auth/index.ts";
+import * as noAuth from "../commands/noAuth/index.ts";
+import { MusicData, type PGuild } from "../types/classes/PGuild.class.ts";
+import type {
+  AuthCommands,
+  CommandOptions,
+  NoAuthCommands,
+} from "../types/classes/PTypes.interface.ts";
+import logger from "../utilities/log.utility.ts";
+import { includedInPIgnores, isUrlOnlyChannel } from "./guild.library.ts";
+import {
+  isMessageDeleted,
+  isUserIgnored,
+  markMessageAsDeleted,
+  messageReply,
+} from "./help.library.ts";
+import { removeIgnore, removeURL, setMusicData } from "./mongo.library.ts";
+import { addPointsMessage } from "./user.library.ts";
 
 /*
  * Returns: true/false if processing must continue
  */
-export async function portalPreprocessor(message: Message, pGuild: PGuild): Promise<boolean> {
+export async function portalPreprocessor(
+  message: Message,
+  pGuild: PGuild,
+): Promise<boolean> {
   if (!message.member) {
-    logger.error('could not get member');
+    logger.error("could not get member");
     return true;
   }
 
   if (isUserIgnored(message.member)) {
     if (!handleUrlChannels(message, pGuild)) {
       if (pGuild.musicData.channelId === message.channel.id) {
-        message.member.send('you can\'t play music when ignored').catch((e) => {
+        message.member.send("you can't play music when ignored").catch((e) => {
           logger.error(`failed to send message: ${e}`);
         });
 
@@ -74,7 +86,7 @@ export async function portalPreprocessor(message: Message, pGuild: PGuild): Prom
   }
 }
 
-export function commandDecipher(messageContent: Message['content']): {
+export function commandDecipher(messageContent: Message["content"]): {
   commandName: AuthCommands | NoAuthCommands | undefined;
   args: string[];
 } {
@@ -96,7 +108,9 @@ export function commandDecipher(messageContent: Message['content']): {
 }
 
 export function commandFetcher(commandName: AuthCommands | NoAuthCommands) {
-  const authCommand = [...Object.values(auth)].find((command) => command.slashCommand.name === commandName);
+  const authCommand = [...Object.values(auth)].find((command) =>
+    command.slashCommand.name === commandName
+  );
 
   if (authCommand) {
     return {
@@ -110,7 +124,9 @@ export function commandFetcher(commandName: AuthCommands | NoAuthCommands) {
     } as CommandOptions;
   }
 
-  const noAuthCommand = [...Object.values(noAuth)].find((command) => command.slashCommand.name === commandName);
+  const noAuthCommand = [...Object.values(noAuth)].find((command) =>
+    command.slashCommand.name === commandName
+  );
 
   if (noAuthCommand) {
     return {
@@ -131,9 +147,11 @@ export function handleRankingSystem(message: Message, pGuild: PGuild): void {
   addPointsMessage(message, pGuild.pMembers[0], pGuild.rankSpeed)
     .then((level) => {
       if (level) {
-        messageReply(true, message, `you reached level ${level}!`).catch((e) => {
-          logger.error(`failed to send message: ${e}`);
-        });
+        messageReply(true, message, `you reached level ${level}!`).catch(
+          (e) => {
+            logger.error(`failed to send message: ${e}`);
+          },
+        );
       }
     })
     .catch((e) => {
@@ -141,12 +159,19 @@ export function handleRankingSystem(message: Message, pGuild: PGuild): void {
     });
 }
 
-export async function handleUrlChannels(message: Message, pGuild: PGuild): Promise<boolean> {
+export async function handleUrlChannels(
+  message: Message,
+  pGuild: PGuild,
+): Promise<boolean> {
   if (isUrlOnlyChannel(message.channel.id, pGuild)) {
-    if (message.content === './url') {
+    if (message.content === "./url") {
       removeURL(pGuild.id, message.channel.id)
         .then((r) => {
-          messageReply(true, message, `removed url channel ${r ? 'successfully' : 'unsuccessfully'}`).catch((e) => {
+          messageReply(
+            true,
+            message,
+            `removed url channel ${r ? "successfully" : "unsuccessfully"}`,
+          ).catch((e) => {
             logger.error(`failed to send message: ${e}`);
           });
         })
@@ -154,9 +179,11 @@ export async function handleUrlChannels(message: Message, pGuild: PGuild): Promi
           logger.error(`failed to remove url channel: ${e}`);
         });
     } else {
-      message.author.send(`${message.channel} is a url-only channel`).catch((e) => {
-        logger.error(`failed to remove url channel: ${e}`);
-      });
+      message.author.send(`${message.channel} is a url-only channel`).catch(
+        (e) => {
+          logger.error(`failed to remove url channel: ${e}`);
+        },
+      );
 
       if (isMessageDeleted(message)) {
         const deletedMessage = await message.delete().catch((e) => {
@@ -175,12 +202,21 @@ export async function handleUrlChannels(message: Message, pGuild: PGuild): Promi
   return false;
 }
 
-export function handleIgnoredChannels(message: Message, pGuild: PGuild): boolean {
+export function handleIgnoredChannels(
+  message: Message,
+  pGuild: PGuild,
+): boolean {
   if (includedInPIgnores(message.channel.id, pGuild)) {
-    if (message.content === './ignore') {
+    if (message.content === "./ignore") {
       removeIgnore(pGuild.id, message.channel.id)
         .then((r) => {
-          messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
+          messageReply(
+            true,
+            message,
+            `removed from ignored channels ${
+              r ? "successfully" : "unsuccessfully"
+            }`,
+          ).catch(
             (e) => {
               logger.error(`failed to send message: ${e}`);
             },
@@ -199,16 +235,22 @@ export function handleIgnoredChannels(message: Message, pGuild: PGuild): boolean
 
 export function handleMusicChannels(message: Message, pGuild: PGuild): boolean {
   if (pGuild.musicData.channelId === message.channel.id) {
-    if (message.content === './music') {
+    if (message.content === "./music") {
       if (!message.guild) {
-        logger.error('failed to get guild from message');
+        logger.error("failed to get guild from message");
         return true;
       }
 
-      const musicData = new MusicData('null', 'null', 'null', [], false);
+      const musicData = new MusicData("null", "null", "null", [], false);
       setMusicData(pGuild.id, musicData)
         .then((r) => {
-          messageReply(true, message, `removed from ignored channels ${r ? 'successfully' : 'unsuccessfully'}`).catch(
+          messageReply(
+            true,
+            message,
+            `removed from ignored channels ${
+              r ? "successfully" : "unsuccessfully"
+            }`,
+          ).catch(
             (e) => logger.error(`failed to send message: ${e}`),
           );
         })

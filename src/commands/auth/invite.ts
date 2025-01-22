@@ -1,17 +1,20 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from "@discordjs/builders";
 import {
-  ChatInputCommandInteraction,
-  GuildMember,
+  type ChatInputCommandInteraction,
+  type GuildMember,
   InteractionContextType,
-  InviteCreateOptions,
-  TextChannel,
-} from 'discord.js';
-import { isMod, messageHelp } from '../../libraries/help.library.js';
-import { Command } from '../../types/Command.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+  type InviteCreateOptions,
+  type TextChannel,
+} from "npm:discord.js";
+import { isMod, messageHelp } from "../../libraries/help.library.ts";
+import type { Command } from "../../types/Command.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'invite';
-const DESCRIPTION = 'generate an invite link';
+const COMMAND_NAME = "invite";
+const DESCRIPTION = "generate an invite link";
 
 export default {
   time: 1,
@@ -23,50 +26,67 @@ export default {
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
     .addBooleanOption((option) =>
-      option.setName('temporary').setDescription('should invite be temporary').setRequired(false),
+      option.setName("temporary").setDescription("should invite be temporary")
+        .setRequired(false)
     )
     .addNumberOption((option) =>
-      option.setName('max_age').setDescription('what the maximum age of the invitee shall be').setRequired(false),
+      option.setName("max_age").setDescription(
+        "what the maximum age of the invitee shall be",
+      ).setRequired(false)
     )
-    .addNumberOption((option) => option.setName('max_uses').setDescription('maximum usages').setRequired(false))
-    .addBooleanOption((option) => option.setName('unique').setDescription('should invite be unique').setRequired(false))
+    .addNumberOption((option) =>
+      option.setName("max_uses").setDescription("maximum usages").setRequired(
+        false,
+      )
+    )
+    .addBooleanOption((option) =>
+      option.setName("unique").setDescription("should invite be unique")
+        .setRequired(false)
+    )
     .addStringOption((option) =>
-      option.setName('reason').setDescription('the reason for the invite').setRequired(false),
+      option.setName("reason").setDescription("the reason for the invite")
+        .setRequired(false)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
+  async execute(
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReturnPromise> {
     const member = interaction.member as GuildMember;
     if (!interaction.guild) {
       return {
         result: false,
-        value: 'guild could not be fetched',
+        value: "guild could not be fetched",
       };
     }
 
     if (!member) {
       return {
         result: false,
-        value: 'member could not be fetched',
+        value: "member could not be fetched",
       };
     }
 
     if (!isMod(member)) {
       return {
         result: false,
-        value: 'you must be a Portal moderator to invite users',
+        value: "you must be a Portal moderator to invite users",
       };
     }
 
-    const temporary = interaction.options.getBoolean('temporary');
-    const maxAge = interaction.options.getNumber('max_age');
-    const maxUses = interaction.options.getNumber('max_uses');
-    const unique = interaction.options.getBoolean('unique');
-    const reason = interaction.options.getString('reason');
+    const temporary = interaction.options.getBoolean("temporary");
+    const maxAge = interaction.options.getNumber("max_age");
+    const maxUses = interaction.options.getNumber("max_uses");
+    const unique = interaction.options.getBoolean("unique");
+    const reason = interaction.options.getString("reason");
 
     if (!(temporary && maxAge && maxUses && unique && reason)) {
       return {
         result: false,
-        value: messageHelp('commands', 'invite', 'all invite options are required'),
+        value: messageHelp(
+          "commands",
+          "invite",
+          "all invite options are required",
+        ),
       };
     }
 
@@ -78,27 +98,30 @@ export default {
       reason,
     };
 
-    const createdInvite = await (<TextChannel>interaction.channel).createInvite(inviteCreationOptions);
+    const createdInvite = await (<TextChannel> interaction.channel)
+      .createInvite(inviteCreationOptions);
 
     if (!createdInvite) {
       return {
         result: false,
-        value: 'failed to remove ignore channel',
+        value: "failed to remove ignore channel",
       };
     }
 
-    const sentMessage = await member?.send(`https://discord.gg/${createdInvite.code}`);
+    const sentMessage = await member?.send(
+      `https://discord.gg/${createdInvite.code}`,
+    );
 
     if (!sentMessage) {
       return {
         result: false,
-        value: 'failed to remove ignore channel',
+        value: "failed to remove ignore channel",
       };
     }
 
     return {
       result: true,
-      value: 'I sent you an invite as a private message',
+      value: "I sent you an invite as a private message",
     };
   },
 } as Command;

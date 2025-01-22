@@ -1,13 +1,16 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { includedInPIgnores } from '../../libraries/guild.library.js';
-import { insertIgnore, removeIgnore } from '../../libraries/mongo.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type { ChatInputCommandInteraction } from "npm:discord.js";
+import { includedInPIgnores } from "../../libraries/guild.library.ts";
+import { insertIgnore, removeIgnore } from "../../libraries/mongo.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
 
-const COMMAND_NAME = 'ignore';
-const DESCRIPTION = 'ignore user or channel from spam';
+const COMMAND_NAME = "ignore";
+const DESCRIPTION = "ignore user or channel from spam";
 
 export default {
   time: 0,
@@ -15,12 +18,17 @@ export default {
   ephemeral: true,
   auth: true,
   scopeLimit: ScopeLimit.NONE,
-  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(DESCRIPTION),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
+  slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
+    DESCRIPTION,
+  ),
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
     if (!interaction.guild) {
       return {
         result: false,
-        value: 'guild could not be fetched',
+        value: "guild could not be fetched",
       };
     }
 
@@ -29,7 +37,7 @@ export default {
     if (!channelId) {
       return {
         result: false,
-        value: 'could not fetch channel',
+        value: "could not fetch channel",
       };
     }
 
@@ -40,12 +48,14 @@ export default {
       if (response) {
         return {
           result: response,
-          value: response ? 'successfully removed ignore channel' : 'failed to remove ignore channel',
+          value: response
+            ? "successfully removed ignore channel"
+            : "failed to remove ignore channel",
         };
       } else {
         return {
           result: false,
-          value: 'failed to remove ignore channel',
+          value: "failed to remove ignore channel",
         };
       }
     } else {
@@ -54,12 +64,14 @@ export default {
       if (response) {
         return {
           result: response,
-          value: response ? 'set as an ignore channel successfully' : 'failed to set as an ignore channel',
+          value: response
+            ? "set as an ignore channel successfully"
+            : "failed to set as an ignore channel",
         };
       } else {
         return {
           result: false,
-          value: 'failed to set as an ignore channel',
+          value: "failed to set as an ignore channel",
         };
       }
     }

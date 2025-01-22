@@ -1,18 +1,29 @@
-import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
-import { createEmbed } from '../libraries/help.library.js';
-import { fetchAnnouncementChannelByGuildId, removeMember } from '../libraries/mongo.library.js';
+import type {
+  GuildMember,
+  PartialGuildMember,
+  TextChannel,
+} from "npm:discord.js";
+import { createEmbed } from "../libraries/help.library.ts";
+import {
+  fetchAnnouncementChannelByGuildId,
+  removeMember,
+} from "../libraries/mongo.library.ts";
 
-import logger from '../utilities/log.utility.js';
+import logger from "../utilities/log.utility.ts";
 
-export async function guildMemberRemove(member: GuildMember | PartialGuildMember): Promise<void> {
+export async function guildMemberRemove(
+  member: GuildMember | PartialGuildMember,
+): Promise<void> {
   if (member.user.bot) {
-    logger.info('new member is a bot, bots are not handled');
+    logger.info("new member is a bot, bots are not handled");
     return;
   }
 
   const removedMember = await removeMember(member.id, member.guild.id);
   if (!removedMember) {
-    logger.error(`failed to remove member ${member.id} from ${member.guild.id}`);
+    logger.error(
+      `failed to remove member ${member.id} from ${member.guild.id}`,
+    );
     return;
   }
 
@@ -23,23 +34,37 @@ export async function guildMemberRemove(member: GuildMember | PartialGuildMember
     return;
   }
 
-  const announcementChannel = <TextChannel>(
-    member.guild.channels.cache.find((channel) => channel.id === pGuild.announcement)
+  const announcementChannel = <TextChannel> (
+    member.guild.channels.cache.find((channel) =>
+      channel.id === pGuild.announcement
+    )
   );
 
   if (announcementChannel) {
-    const leaveMessage =
-      `member: ${member.presence?.user}\n` + `id: ${member.guild.id}\n` + `\thas left ${member.guild}`;
+    const leaveMessage = `member: ${member.presence?.user}\n` +
+      `id: ${member.guild.id}\n` + `\thas left ${member.guild}`;
 
     const message = {
       embeds: [
-        createEmbed('member left', leaveMessage, '#FC0303', [], member.user.avatarURL(), null, true, null, null),
+        createEmbed(
+          "member left",
+          leaveMessage,
+          "#FC0303",
+          [],
+          member.user.avatarURL(),
+          null,
+          true,
+          null,
+          null,
+        ),
       ],
     };
 
     const messageSent = await announcementChannel.send(message);
     if (!messageSent) {
-      logger.warn(`failed to send leave message for ${member.id} to ${member.guild.id}`);
+      logger.warn(
+        `failed to send leave message for ${member.id} to ${member.guild.id}`,
+      );
     }
   }
 

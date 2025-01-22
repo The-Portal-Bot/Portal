@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema } from "npm:mongoose";
 
 const GiveRoleSchema = new Schema(
   {
@@ -6,8 +6,8 @@ const GiveRoleSchema = new Schema(
     role: { type: [String], required: true },
   },
   {
-    collection: 'guild_list',
-  }
+    collection: "guild_list",
+  },
 );
 
 const PGiveRoleSchema = new Schema(
@@ -16,8 +16,8 @@ const PGiveRoleSchema = new Schema(
     roleEmoteMap: { type: [GiveRoleSchema], required: true },
   },
   {
-    collection: 'guild_list',
-  }
+    collection: "guild_list",
+  },
 );
 
 export default PGiveRoleSchema;

@@ -1,10 +1,10 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema } from "npm:mongoose";
 
-import { IPGuild } from '../classes/PGuild.class.js';
-import PGiveRoleSchema from './schemas/PGiveRole.schema.js';
-import PMemberSchema from './schemas/PMember.schema.js';
-import PPollSchema from './schemas/PPoll.schema.js';
-import PPortalChannelSchema from './schemas/PPortalChannel.schema.js';
+import type { IPGuild } from "../classes/PGuild.class.ts";
+import PGiveRoleSchema from "./schemas/PGiveRole.schema.ts";
+import PMemberSchema from "./schemas/PMember.schema.ts";
+import PPollSchema from "./schemas/PPoll.schema.ts";
+import PPortalChannelSchema from "./schemas/PPortalChannel.schema.ts";
 
 const VideoSearchResult = new Schema(
   {
@@ -37,7 +37,7 @@ const VideoSearchResult = new Schema(
     role: { type: String, required: true },
   },
   {
-    collection: 'guild_list',
+    collection: "guild_list",
   },
 );
 
@@ -47,7 +47,7 @@ const Rank = new Schema(
     role: { type: String, required: true },
   },
   {
-    collection: 'guild_list',
+    collection: "guild_list",
   },
 );
 
@@ -60,7 +60,7 @@ const MusicData = new Schema(
     pinned: { type: Boolean, required: true },
   },
   {
-    collection: 'guild_list',
+    collection: "guild_list",
   },
 );
 
@@ -88,8 +88,8 @@ const PGuildSchema = new Schema(
     premium: { type: Boolean, required: true },
   },
   {
-    collection: 'guild_list',
+    collection: "guild_list",
   },
 );
 
-export default model<IPGuild>('PGuildSchema', PGuildSchema);
+export default model<IPGuild>("PGuildSchema", PGuildSchema);

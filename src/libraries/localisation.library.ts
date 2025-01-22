@@ -1,32 +1,40 @@
-import { createAudioPlayer, createAudioResource, getVoiceConnection } from '@discordjs/voice';
-import { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
-import { PGuild } from '../types/classes/PGuild.class.js';
+import {
+  createAudioPlayer,
+  createAudioResource,
+  getVoiceConnection,
+} from "npm:@discordjs/voice";
+import type {
+  ChatInputCommandInteraction,
+  GuildMember,
+  User,
+} from "npm:discord.js";
+import type { PGuild } from "../types/classes/PGuild.class.ts";
 import {
   AnnouncementAction,
-  ClientArguments,
-  DataArguments,
+  type ClientArguments,
+  type DataArguments,
   EventAction,
-  LocalisationConsoleOption,
-  LocalisationPortalOption,
+  type LocalisationConsoleOption,
+  type LocalisationPortalOption,
   LogActions,
-  PresenceArguments,
-  StatusArguments,
-} from '../types/classes/PTypes.interface.js';
-import { Locale } from '../types/enums/Locales.enum.js';
-import logger from '../utilities/log.utility.js';
+  type PresenceArguments,
+  type StatusArguments,
+} from "../types/classes/PTypes.interface.ts";
+import { Locale } from "../types/enums/Locales.enum.ts";
+import logger from "../utilities/log.utility.ts";
 
 export const portal: LocalisationPortalOption[] = [
   {
     name: AnnouncementAction.join,
     lang: {
       gr: () => {
-        return '> Γειά σας, το Πόρταλ είναι εδώ';
+        return "> Γειά σας, το Πόρταλ είναι εδώ";
       },
       en: () => {
-        return '> Cheers love, Portal\'s here';
+        return "> Cheers love, Portal's here";
       },
       de: () => {
-        return '> Hallo, Portal ist da';
+        return "> Hallo, Portal ist da";
       },
     },
   },
@@ -34,13 +42,13 @@ export const portal: LocalisationPortalOption[] = [
     name: AnnouncementAction.leave,
     lang: {
       gr: () => {
-        return '> Αποχαιρετώ, καλή συνέχεια σε όλους';
+        return "> Αποχαιρετώ, καλή συνέχεια σε όλους";
       },
       en: () => {
-        return '> Goodbye everyone';
+        return "> Goodbye everyone";
       },
       de: () => {
-        return '> Auf Wiedersehen alle';
+        return "> Auf Wiedersehen alle";
       },
     },
   },
@@ -164,15 +172,15 @@ export const consoleText: LocalisationConsoleOption[] = [
     lang: {
       gr: () => {
         // args: unknown
-        return '> Το αρχείο JSON των συντεχνιών ενημερώθηκε';
+        return "> Το αρχείο JSON των συντεχνιών ενημερώθηκε";
       },
       en: () => {
         // args: unknown
-        return '> Guild JSON file has been updated';
+        return "> Guild JSON file has been updated";
       },
       de: () => {
         // args: unknown
-        return '> Die JSON Datei der Gilde wurde aktualisiert';
+        return "> Die JSON Datei der Gilde wurde aktualisiert";
       },
     },
   },
@@ -182,7 +190,7 @@ export const consoleText: LocalisationConsoleOption[] = [
       gr: (args: PresenceArguments) => {
         return (
           `ο χρήστης ${args?.newPresence?.member?.displayName} είναι μέλος ` +
-          'μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία ' +
+          "μια ελεγχόμενης συντεχνίας, έχει αλλάξει κατάσταση, αλλά βρίσκεται στη συντεχνία " +
           `(${args?.newPresence?.guild?.name})`
         );
       },
@@ -249,24 +257,24 @@ export function clientTalk(
   const player = createAudioPlayer();
 
   const localeToString: Record<Locale, string> = {
-    [Locale.gr]: 'gr',
-    [Locale.en]: 'en',
-    [Locale.de]: 'de',
+    [Locale.gr]: "gr",
+    [Locale.en]: "en",
+    [Locale.de]: "de",
   };
 
   const AnnouncementActionToString: Record<AnnouncementAction, string> = {
-    [AnnouncementAction.fail]: 'fail',
-    [AnnouncementAction.announce]: 'announce',
-    [AnnouncementAction.spotify]: 'spotify',
-    [AnnouncementAction.url]: 'url',
-    [AnnouncementAction.readOnly]: 'readOnly',
-    [AnnouncementAction.join]: 'join',
-    [AnnouncementAction.leave]: 'leave',
+    [AnnouncementAction.fail]: "fail",
+    [AnnouncementAction.announce]: "announce",
+    [AnnouncementAction.spotify]: "spotify",
+    [AnnouncementAction.url]: "url",
+    [AnnouncementAction.readOnly]: "readOnly",
+    [AnnouncementAction.join]: "join",
+    [AnnouncementAction.leave]: "leave",
   };
 
   const EventActionToString: Record<EventAction, string> = {
-    [EventAction.userConnected]: 'user_connected',
-    [EventAction.userDisconnected]: 'user_disconnected',
+    [EventAction.userConnected]: "user_connected",
+    [EventAction.userDisconnected]: "user_disconnected",
   };
 
   for (let i = 0; i < pGuild.pChannels.length; i++) {
@@ -281,7 +289,9 @@ export function clientTalk(
         const resource = createAudioResource(
           `src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`,
         );
-        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`);
+        logger.info(
+          `src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`,
+        );
 
         player.play(resource);
         voiceConnection.subscribe(player);
@@ -296,7 +306,9 @@ export function clientTalk(
         const resource = createAudioResource(
           `src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3`,
         );
-        logger.info(`src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`);
+        logger.info(
+          `src/assets/mp3s/${locale}/${contextAsAction}/${contextAsAction}_${random}.mp3, ${!!resource}`,
+        );
 
         player.play(resource);
         voiceConnection.subscribe(player);
@@ -309,13 +321,32 @@ export function clientTalk(
   return false;
 }
 
-export function getFunction(output: string, locale: number, context: EventAction | AnnouncementAction | LogActions) {
+export function getFunction(
+  output: string,
+  locale: number,
+  context: EventAction | AnnouncementAction | LogActions,
+) {
   let func;
 
-  if (output === 'portal') {
+  if (output === "portal") {
     portal.some((ct) => {
       if (ct.name === context) {
         switch (locale) {
+          case Locale.gr:
+            func = ct.lang.gr;
+            return true;
+          case Locale.en:
+            func = ct.lang.en;
+            return true;
+          case Locale.de:
+            func = ct.lang.de;
+            return true;
+        }
+      }
+    });
+  } else if (output === "console") {
+    consoleText.some((ct) => {
+      switch (locale) {
         case Locale.gr:
           func = ct.lang.gr;
           return true;
@@ -325,21 +356,6 @@ export function getFunction(output: string, locale: number, context: EventAction
         case Locale.de:
           func = ct.lang.de;
           return true;
-        }
-      }
-    });
-  } else if (output === 'console') {
-    consoleText.some((ct) => {
-      switch (locale) {
-      case Locale.gr:
-        func = ct.lang.gr;
-        return true;
-      case Locale.en:
-        func = ct.lang.en;
-        return true;
-      case Locale.de:
-        func = ct.lang.de;
-        return true;
       }
     });
   }
@@ -353,26 +369,32 @@ export function clientWrite(
   context: EventAction | AnnouncementAction | LogActions,
 ): string {
   const member = interaction.member as GuildMember;
-  if (!interaction) return 'could not fetch message';
-  if (!member) return 'could not fetch member';
-  if (!member.voice) return 'could not fetch voice';
+  if (!interaction) return "could not fetch message";
+  if (!member) return "could not fetch member";
+  if (!member.voice) return "could not fetch voice";
 
-  let returnValue = 'could not find data';
+  let returnValue = "could not find data";
 
   const found = pGuild.pChannels.some((p) =>
     p.pVoiceChannels.some((v) => {
       if (member && member.voice.channel) {
         if (v.id === member.voice.channel.id) {
           switch (v.locale) {
-          case Locale.gr:
-            returnValue = portal.find((p) => p.name === context)?.lang.gr({} as User) as unknown as string;
-            break;
-          case Locale.en:
-            returnValue = portal.find((p) => p.name === context)?.lang.en({} as User) as unknown as string;
-            break;
-          case Locale.de:
-            returnValue = portal.find((p) => p.name === context)?.lang.de({} as User) as unknown as string;
-            break;
+            case Locale.gr:
+              returnValue = portal.find((p) => p.name === context)?.lang.gr(
+                {} as User,
+              ) as unknown as string;
+              break;
+            case Locale.en:
+              returnValue = portal.find((p) => p.name === context)?.lang.en(
+                {} as User,
+              ) as unknown as string;
+              break;
+            case Locale.de:
+              returnValue = portal.find((p) => p.name === context)?.lang.de(
+                {} as User,
+              ) as unknown as string;
+              break;
           }
 
           return true;
@@ -380,13 +402,15 @@ export function clientWrite(
       }
 
       return false;
-    }),
+    })
   );
 
   if (found) {
     return returnValue;
   } else {
-    return portal.find((p) => p.name === context)?.lang.en({} as User) as unknown as string;
+    return portal.find((p) => p.name === context)?.lang.en(
+      {} as User,
+    ) as unknown as string;
   }
 }
 

@@ -1,62 +1,72 @@
-import { EmbedBuilder } from 'discord.js';
+import type { EmbedBuilder } from "npm:discord.js";
 
-import { AttributeBlueprints } from '../../../blueprints/attribute.blueprint.js';
-import { createEmbed } from '../../../libraries/help.library.js';
-import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface.js';
-import { Prefix } from '../../../types/enums/Prefix.enum.js';
+import { AttributeBlueprints } from "../../../blueprints/attribute.blueprint.ts";
+import { createEmbed } from "../../../libraries/help.library.ts";
+import type {
+  Field,
+  HelpDocumentation,
+} from "../../../types/classes/PTypes.interface.ts";
+import { Prefix } from "../../../types/enums/Prefix.enum.ts";
 
-const PORTAL_URL = 'https://portal-bot.xyz/docs';
-const INTERPRETER_URL = '/interpreter/objects';
+const PORTAL_URL = "https://portal-bot.xyz/docs";
+const INTERPRETER_URL = "/interpreter/objects";
 
 export class AttributeDocumentation implements HelpDocumentation {
   public getGuide(): EmbedBuilder {
     const attrArray: Field[] = [
       {
-        emote: 'Used in Regex Interpreter',
-        role: '*used by channel name (regex, regexVoice, regexPortal) and run command*',
+        emote: "Used in Regex Interpreter",
+        role:
+          "*used by channel name (regex, regexVoice, regexPortal) and run command*",
         inline: true,
       },
       {
-        emote: 'attributes are mutable data options',
-        role: '*options correspond to server, portal or voice channels*',
+        emote: "attributes are mutable data options",
+        role: "*options correspond to server, portal or voice channels*",
         inline: true,
       },
       {
-        emote: '1.\tIn any text channel execute command `./run`',
-        role: './run just like channel name generation uses the text interpreter',
+        emote: "1.\tIn any text channel execute command `./run`",
+        role:
+          "./run just like channel name generation uses the text interpreter",
         inline: false,
       },
       {
-        emote: '2.\t`./run My set locale is = &g.locale`',
-        role: './run executes the given text and replies with the processed output',
+        emote: "2.\t`./run My set locale is = &g.locale`",
+        role:
+          "./run executes the given text and replies with the processed output",
         inline: false,
       },
       {
-        emote: '3.\tAwait a reply from portal which will be gr, de or en',
-        role: '*The replied string will look like this: `My set locale is = gr`*',
+        emote: "3.\tAwait a reply from portal which will be gr, de or en",
+        role:
+          "*The replied string will look like this: `My set locale is = gr`*",
         inline: false,
       },
       {
-        emote: '4.\t`./set g.locale de` (no prefix & needed)',
-        role: '*set command, updates the data of an attribute in this case **locale** to **de***',
+        emote: "4.\t`./set g.locale de` (no prefix & needed)",
+        role:
+          "*set command, updates the data of an attribute in this case **locale** to **de***",
         inline: false,
       },
       {
-        emote: '5.\tWait for portal response which will be inform you if it was executed without issues',
-        role: '*portal will either confirm update or inform you of the error it faced*',
+        emote:
+          "5.\tWait for portal response which will be inform you if it was executed without issues",
+        role:
+          "*portal will either confirm update or inform you of the error it faced*",
         inline: false,
       },
     ];
 
     return createEmbed(
-      'Attribute Guide',
-      '[Attributes](' +
+      "Attribute Guide",
+      "[Attributes](" +
         PORTAL_URL +
         INTERPRETER_URL +
-        '/attributes/description) ' +
-        'are options that can be manipulated by whomever has clearance.\n' +
-        'How to use attributes with the Text Interpreter',
-      '#FF5714',
+        "/attributes/description) " +
+        "are options that can be manipulated by whomever has clearance.\n" +
+        "How to use attributes with the Text Interpreter",
+      "#FF5714",
       attrArray,
       null,
       null,
@@ -71,10 +81,16 @@ export class AttributeDocumentation implements HelpDocumentation {
 
     for (let l = 0; l <= AttributeBlueprints.length / 25; l++) {
       attributeArray[l] = [];
-      for (let i = 24 * l; i < AttributeBlueprints.length && i < 24 * (l + 1); i++) {
+      for (
+        let i = 24 * l;
+        i < AttributeBlueprints.length && i < 24 * (l + 1);
+        i++
+      ) {
         attributeArray[l].push({
           emote: `${i + 1}. ${AttributeBlueprints[i].name}`,
-          role: `[hover or click](${this.getLink(AttributeBlueprints[i].name)} "${AttributeBlueprints[i].hover}")`,
+          role: `[hover or click](${
+            this.getLink(AttributeBlueprints[i].name)
+          } "${AttributeBlueprints[i].hover}")`,
           inline: true,
         });
       }
@@ -83,15 +99,15 @@ export class AttributeDocumentation implements HelpDocumentation {
     return attributeArray.map((_attribute, index) => {
       if (index === 0) {
         return createEmbed(
-          'Attributes',
-          '[Attributes](' +
+          "Attributes",
+          "[Attributes](" +
             PORTAL_URL +
             INTERPRETER_URL +
-            '/attributes/description) ' +
-            'are options that can be manipulated by whomever has clearance.\n' +
-            'Prefix: ' +
+            "/attributes/description) " +
+            "are options that can be manipulated by whomever has clearance.\n" +
+            "Prefix: " +
             Prefix.ATTRIBUTE,
-          '#FF5714',
+          "#FF5714",
           attributeArray[0],
           null,
           null,
@@ -100,7 +116,17 @@ export class AttributeDocumentation implements HelpDocumentation {
           null,
         );
       } else {
-        return createEmbed(null, null, '#FF5714', attributeArray[index], null, null, null, null, null);
+        return createEmbed(
+          null,
+          null,
+          "#FF5714",
+          attributeArray[index],
+          null,
+          null,
+          null,
+          null,
+          null,
+        );
       }
     });
   }
@@ -111,13 +137,15 @@ export class AttributeDocumentation implements HelpDocumentation {
         return createEmbed(
           AttributeBlueprints[i].name,
           null,
-          '#FF5714',
+          "#FF5714",
           [
-            { emote: 'Type', role: 'Attribute', inline: true },
-            { emote: 'Prefix', role: `${Prefix.ATTRIBUTE}`, inline: true },
+            { emote: "Type", role: "Attribute", inline: true },
+            { emote: "Prefix", role: `${Prefix.ATTRIBUTE}`, inline: true },
             {
-              emote: 'Description',
-              role: `[hover or click](${this.getLink(candidate)} "${AttributeBlueprints[i].hover}")`,
+              emote: "Description",
+              role: `[hover or click](${this.getLink(candidate)} "${
+                AttributeBlueprints[i].hover
+              }")`,
               inline: true,
             },
           ],
@@ -134,15 +162,15 @@ export class AttributeDocumentation implements HelpDocumentation {
   }
 
   private getLink(attribute: string): string {
-    const url = PORTAL_URL + INTERPRETER_URL + '/attributes';
+    const url = PORTAL_URL + INTERPRETER_URL + "/attributes";
 
-    if (attribute.indexOf('g.') > -1) {
+    if (attribute.indexOf("g.") > -1) {
       return `${url}/detailed/global/${attribute}`;
-    } else if (attribute.indexOf('m.') > -1) {
+    } else if (attribute.indexOf("m.") > -1) {
       return `${url}/detailed/member/${attribute}`;
-    } else if (attribute.indexOf('p.') > -1) {
+    } else if (attribute.indexOf("p.") > -1) {
       return `${url}/detailed/portal/${attribute}`;
-    } else if (attribute.indexOf('v.') > -1) {
+    } else if (attribute.indexOf("v.") > -1) {
       return `${url}/detailed/voice/${attribute}`;
     } else {
       return `${url}/description`;

@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import type { Document } from "npm:mongoose";
 
 export class PPoll {
   public messageId: string;

@@ -1,13 +1,27 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { BanOptions, ButtonStyle, ChatInputCommandInteraction, GuildMember, InteractionContextType } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  type BanOptions,
+  ButtonStyle,
+  type ChatInputCommandInteraction,
+  type GuildMember,
+  InteractionContextType,
+} from "npm:discord.js";
 
-import { askForApproval, isMod, messageHelp } from '../../libraries/help.library.js';
-import { ban } from '../../libraries/user.library.js';
-import { Command } from '../../types/Command.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
+import {
+  askForApprovalByInteraction,
+  isMod,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import { ban } from "../../libraries/user.library.ts";
+import type { Command } from "../../types/Command.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
+import logger from "../../utilities/log.utility.ts";
 
-const COMMAND_NAME = 'kick';
-const DESCRIPTION = 'kick a user';
+const COMMAND_NAME = "kick";
+const DESCRIPTION = "kick a user";
 
 export default {
   time: 1,
@@ -18,54 +32,69 @@ export default {
   slashCommand: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(DESCRIPTION)
-    .addUserOption((option) => option.setName('user_to_kick').setDescription('user to kick').setRequired(true))
-    .addNumberOption((option) => option.setName('kick_days').setDescription('days to kick user for').setRequired(true))
-    .addStringOption((option) => option.setName('kick_reason').setDescription('kick reason').setRequired(false))
+    .addUserOption((option) =>
+      option.setName("user_to_kick").setDescription("user to kick").setRequired(
+        true,
+      )
+    )
+    .addNumberOption((option) =>
+      option.setName("kick_days").setDescription("days to kick user for")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option.setName("kick_reason").setDescription("kick reason").setRequired(
+        false,
+      )
+    )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction): Promise<ReturnPromise> {
-    const memberToBan = interaction.options.getMember('user_to_kick') as GuildMember;
-    const kickDays = interaction.options.getNumber('kick_days');
-    const kickReason = interaction.options.getString('kick_reason');
+  async execute(
+    interaction: ChatInputCommandInteraction,
+  ): Promise<ReturnPromise> {
+    const memberToBan = interaction.options.getMember(
+      "user_to_kick",
+    ) as GuildMember;
+    const kickDays = interaction.options.getNumber("kick_days");
+    const kickReason = interaction.options.getString("kick_reason");
 
     if (!memberToBan) {
       return {
         result: false,
-        value: messageHelp('commands', 'kick', 'user must be provided'),
+        value: messageHelp("commands", "kick", "user must be provided"),
       };
     }
 
     if (!kickDays) {
       return {
         result: false,
-        value: messageHelp('commands', 'kick', 'days to kick must be provided'),
+        value: messageHelp("commands", "kick", "days to kick must be provided"),
       };
     }
 
     if (!interaction.member) {
       return {
         result: false,
-        value: 'message author could not be fetched',
+        value: "message author could not be fetched",
       };
     }
 
     if (!isMod(interaction.member as GuildMember)) {
       return {
         result: false,
-        value: 'you must be a Portal moderator to kick users',
+        value: "you must be a Portal moderator to kick users",
       };
     }
 
     if (!interaction.guild) {
       return {
         result: false,
-        value: 'user guild could not be fetched',
+        value: "user guild could not be fetched",
       };
     }
 
     const deleteMessageDays = kickDays ?? 1;
-    const reason = kickReason ?? 'kicked by admin';
+    const reason = kickReason ?? "kicked by admin";
 
-    const response = await askForApproval(
+    const response = await askForApprovalByInteraction(
       interaction,
       `*${interaction.user}, are you sure you want to kick **${memberToBan.displayName}** for **${deleteMessageDays}** days*?`,
       ButtonStyle.Danger,
@@ -74,7 +103,7 @@ export default {
     if (!response) {
       return {
         result: false,
-        value: 'kick approval not received',
+        value: "kick approval not received",
       };
     }
 
@@ -93,7 +122,11 @@ export default {
           : `User ${memberToBan.displayName} could not be kicked`,
       };
     } catch (e) {
-      await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
+      logger.error(`Error while kicking: ${e}`);
+      await interaction.editReply({
+        content: "Confirmation not received within 1 minute, cancelling",
+        components: [],
+      });
 
       return {
         result: false,

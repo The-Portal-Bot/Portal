@@ -1,11 +1,16 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from "npm:discord.js";
 
-import * as auth from '../commands/auth/index.js';
-import * as noAuth from '../commands/noAuth/index.js';
-import { getElapsedTime, pad } from '../libraries/help.library.js';
-import { PGuild } from '../types/classes/PGuild.class.js';
-import { ActiveCooldowns, AuthCommands, NoAuthCommands, ScopeLimit } from '../types/classes/PTypes.interface.js';
-import logger from '../utilities/log.utility.js';
+import * as auth from "../commands/auth/index.ts";
+import * as noAuth from "../commands/noAuth/index.ts";
+import { getElapsedTime, pad } from "../libraries/help.library.ts";
+import type { PGuild } from "../types/classes/PGuild.class.ts";
+import {
+  type ActiveCooldowns,
+  type AuthCommands,
+  type NoAuthCommands,
+  ScopeLimit,
+} from "../types/classes/PTypes.interface.ts";
+import logger from "../utilities/log.utility.ts";
 
 export async function commandLoader(
   interaction: ChatInputCommandInteraction,
@@ -19,19 +24,29 @@ export async function commandLoader(
     return await commandExecution(interaction, command, pGuild);
   }
 
-  const cooldown = hasActiveCooldown(interaction, command, scopeLimit, activeCooldowns);
+  const cooldown = hasActiveCooldown(
+    interaction,
+    command,
+    scopeLimit,
+    activeCooldowns,
+  );
 
   if (cooldown) {
-    logger.info(`User ${interaction.user.id} tried to use ${command} but is on cooldown`);
+    logger.info(
+      `User ${interaction.user.id} tried to use ${command} but is on cooldown`,
+    );
 
     const elapsedTime = getElapsedTime(cooldown.timestamp, time);
 
-    const ending =
-      scopeLimit !== ScopeLimit.MEMBER ? `, as it was used again in* **${interaction.guild?.name}**` : '.*';
+    const ending = scopeLimit !== ScopeLimit.MEMBER
+      ? `, as it was used again in* **${interaction.guild?.name}**`
+      : ".*";
     const awaitMessage =
       `you need to wait **${pad(elapsedTime.remainingMin)}:` +
       `${pad(elapsedTime.remainingSec)}/${pad(elapsedTime.timeoutMin)}:` +
-      `${pad(elapsedTime.timeoutSec)}** *to use* **${command}** *again${ending}`;
+      `${
+        pad(elapsedTime.timeoutSec)
+      }** *to use* **${command}** *again${ending}`;
 
     return {
       result: false,
@@ -42,12 +57,13 @@ export async function commandLoader(
   const commandReturn = await commandExecution(interaction, command, pGuild);
 
   if (commandReturn.result) {
-    const activeCooldown =
-      scopeLimit === ScopeLimit.GUILD ? activeCooldowns[ScopeLimit.GUILD] : activeCooldowns[ScopeLimit.MEMBER];
+    const activeCooldown = scopeLimit === ScopeLimit.GUILD
+      ? activeCooldowns[ScopeLimit.GUILD]
+      : activeCooldowns[ScopeLimit.MEMBER];
 
     activeCooldown.push({
       member: interaction.user.id,
-      guild: interaction?.guild?.id ?? 'null',
+      guild: interaction?.guild?.id ?? "null",
       command: command,
       timestamp: Date.now(),
     });
@@ -55,7 +71,9 @@ export async function commandLoader(
     if (time) {
       setTimeout(
         () => {
-          const updatedCooldown = activeCooldown.filter((active) => active.command !== command);
+          const updatedCooldown = activeCooldown.filter((active) =>
+            active.command !== command
+          );
           if (scopeLimit === ScopeLimit.GUILD) {
             activeCooldowns[ScopeLimit.GUILD] = updatedCooldown;
           } else {
@@ -88,12 +106,16 @@ function hasActiveCooldown(
   scopeLimit: Omit<ScopeLimit, ScopeLimit.NONE>,
   activeCooldowns: ActiveCooldowns,
 ) {
-  const activeCooldown =
-    scopeLimit === ScopeLimit.GUILD ? activeCooldowns[ScopeLimit.GUILD] : activeCooldowns[ScopeLimit.MEMBER];
+  const activeCooldown = scopeLimit === ScopeLimit.GUILD
+    ? activeCooldowns[ScopeLimit.GUILD]
+    : activeCooldowns[ScopeLimit.MEMBER];
 
   return activeCooldown.find((activeCurrent) => {
     if (activeCurrent.command === command) {
-      if (scopeLimit === ScopeLimit.MEMBER && activeCurrent.member === interaction?.user.id) {
+      if (
+        scopeLimit === ScopeLimit.MEMBER &&
+        activeCurrent.member === interaction?.user.id
+      ) {
         if (interaction.guild && activeCurrent.guild === interaction.guild.id) {
           return true;
         }

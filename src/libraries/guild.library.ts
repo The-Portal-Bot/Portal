@@ -1,57 +1,67 @@
-import dayjs from 'dayjs';
+import "@std/dotenv/load";
+import dayjs from "npm:dayjs";
 import {
-  CategoryChannel,
-  CategoryChannelResolvable,
+  type CategoryChannel,
+  type CategoryChannelResolvable,
   ChannelType,
-  ChatInputCommandInteraction,
-  Guild,
-  GuildChannelCreateOptions,
-  GuildMember,
-  Message,
-  OverwriteResolvable,
+  type ChatInputCommandInteraction,
+  type Guild,
+  type GuildChannelCreateOptions,
+  type GuildMember,
+  type Message,
+  type OverwriteResolvable,
   PermissionFlagsBits,
   PermissionsBitField,
-  Role,
-  TextBasedChannel,
-  TextChannel,
-  VoiceBasedChannel,
-  VoiceChannel,
-  VoiceState
-} from 'discord.js';
-import voca from 'voca';
+  type Role,
+  type TextBasedChannel,
+  type TextChannel,
+  type VoiceBasedChannel,
+  type VoiceChannel,
+  type VoiceState,
+} from "npm:discord.js";
+import voca from "npm:voca";
 
-import { getAttribute, isAttribute } from '../Interpreter/attribute.functions.js';
-import { getPipe, isPipe } from '../Interpreter/pipe.functions.js';
-import { getVariable, isVariable } from '../Interpreter/variable.functions.js';
-import { PGuild } from '../types/classes/PGuild.class.js';
-import { PChannel } from '../types/classes/PPortalChannel.class.js';
-import { PVoiceChannel } from '../types/classes/PVoiceChannel.class.js';
-import { PortalChannelType } from '../types/enums/PortalChannel.enum.js';
-import { Prefix } from '../types/enums/Prefix.enum.js';
-import logger from '../utilities/log.utility.js';
-import { createMusicLyricsMessage, createMusicMessage, getJSONFromString, maxString } from './help.library.js';
-import { insertVoice, updateGuild } from './mongo.library.js';
+import {
+  getAttribute,
+  isAttribute,
+} from "../Interpreter/attribute.functions.ts";
+import { getPipe, isPipe } from "../Interpreter/pipe.functions.ts";
+import { getVariable, isVariable } from "../Interpreter/variable.functions.ts";
+import type { PGuild } from "../types/classes/PGuild.class.ts";
+import type { PChannel } from "../types/classes/PPortalChannel.class.ts";
+import { PVoiceChannel } from "../types/classes/PVoiceChannel.class.ts";
+import type { PortalChannelType } from "../types/enums/PortalChannel.enum.ts";
+import { Prefix } from "../types/enums/Prefix.enum.ts";
+import logger from "../utilities/log.utility.ts";
+import {
+  createMusicLyricsMessage,
+  createMusicMessage,
+  getJSONFromString,
+  maxString,
+} from "./help.library.ts";
+import { insertVoice, updateGuild } from "./mongo.library.ts";
+import { TextChannelType } from "../types/enums/TextChannelType.enum.ts";
 
 function inlineOperator(str: string) {
   switch (str) {
-  case '==':
-    return (a: string, b: string) => a == b;
-  case '===':
-    return (a: string, b: string) => a === b;
-  case '!=':
-    return (a: string, b: string) => a != b;
-  case '!==':
-    return (a: string, b: string) => a !== b;
-  case '>':
-    return (a: string, b: string) => a > b;
-  case '<':
-    return (a: string, b: string) => a < b;
-  case '>=':
-    return (a: string, b: string) => a >= b;
-  case '<=':
-    return (a: string, b: string) => a <= b;
-  default:
-    return (a: string, b: string) => a == b;
+    case "==":
+      return (a: string, b: string) => a == b;
+    case "===":
+      return (a: string, b: string) => a === b;
+    case "!=":
+      return (a: string, b: string) => a != b;
+    case "!==":
+      return (a: string, b: string) => a !== b;
+    case ">":
+      return (a: string, b: string) => a > b;
+    case "<":
+      return (a: string, b: string) => a < b;
+    case ">=":
+      return (a: string, b: string) => a >= b;
+    case "<=":
+      return (a: string, b: string) => a <= b;
+    default:
+      return (a: string, b: string) => a == b;
   }
 }
 
@@ -60,7 +70,7 @@ export function getOptions(
   topic: string,
   canWrite = true,
   parent?: CategoryChannelResolvable,
-  type: ChannelType = ChannelType.GuildText
+  type: ChannelType = ChannelType.GuildText,
 ) {
   return {
     name: topic,
@@ -79,16 +89,27 @@ export function getOptions(
   } as GuildChannelCreateOptions;
 }
 
-export function includedInPortalGuilds(guildId: string, pGuilds: PGuild[]): boolean {
+export function includedInPortalGuilds(
+  guildId: string,
+  pGuilds: PGuild[],
+): boolean {
   return pGuilds ? pGuilds.some((pGuild) => pGuild.id === guildId) : false;
 }
 
-export function includedInPChannels(channelId: string, pChannels: PChannel[]): boolean {
+export function includedInPChannels(
+  channelId: string,
+  pChannels: PChannel[],
+): boolean {
   return pChannels ? pChannels.some((p) => p.id === channelId) : false;
 }
 
-export function includedInVoiceList(channelId: string, pChannels: PChannel[]): boolean {
-  return pChannels ? pChannels.some((p) => p.pVoiceChannels.some((v) => v.id === channelId)) : false;
+export function includedInVoiceList(
+  channelId: string,
+  pChannels: PChannel[],
+): boolean {
+  return pChannels
+    ? pChannels.some((p) => p.pVoiceChannels.some((v) => v.id === channelId))
+    : false;
 }
 
 export function includedInPIgnores(channelId: string, pGuild: PGuild): boolean {
@@ -103,27 +124,38 @@ export function isMusicChannel(channelId: string, pGuild: PGuild): boolean {
   return pGuild ? pGuild.musicData.channelId === channelId : false;
 }
 
-export function isAnnouncementChannel(channelId: string, pGuild: PGuild): boolean {
+export function isAnnouncementChannel(
+  channelId: string,
+  pGuild: PGuild,
+): boolean {
   return pGuild ? pGuild.announcement === channelId : false;
 }
 
-export function getRole(guild: Guild | null, roleIdOrName: string): Role | undefined {
-  return guild?.roles.cache.find((role) => role.id === roleIdOrName || role.name === roleIdOrName);
+export function getRole(
+  guild: Guild | null,
+  roleIdOrName: string,
+): Role | undefined {
+  return guild?.roles.cache.find((role) =>
+    role.id === roleIdOrName || role.name === roleIdOrName
+  );
 }
 
 export async function createChannel(
   guild: Guild,
   channelName: string,
   channelOptions: GuildChannelCreateOptions,
-  channelCategory: string | null
+  channelCategory: string | null,
 ): Promise<string> {
-  const newGuildChannel = await guild.channels.create({ ...channelOptions, name: channelName });
+  const newGuildChannel = await guild.channels.create({
+    ...channelOptions,
+    name: channelName,
+  });
 
   if (!newGuildChannel) {
-    return Promise.reject(new Error('failed to create new channel'));
+    return Promise.reject(new Error("failed to create new channel"));
   }
 
-  if (typeof channelCategory === 'string') {
+  if (typeof channelCategory === "string") {
     // create category
     const newGuildCategoryChannel = await guild.channels.create({
       name: channelName,
@@ -131,7 +163,7 @@ export async function createChannel(
     }); // channelName
 
     if (!newGuildCategoryChannel) {
-      return Promise.reject(new Error('failed to create new category channel'));
+      return Promise.reject(new Error("failed to create new category channel"));
     }
 
     newGuildChannel.setParent(newGuildCategoryChannel).catch((e) => {
@@ -142,18 +174,23 @@ export async function createChannel(
   return newGuildChannel.id;
 }
 
-function createVoiceOptions(state: VoiceState, pChannel: PChannel): GuildChannelCreateOptions {
+function createVoiceOptions(
+  state: VoiceState,
+  pChannel: PChannel,
+): GuildChannelCreateOptions {
   let permissionOverwrites = null;
   if (pChannel.allowedRoles) {
     permissionOverwrites = pChannel.allowedRoles.map(
       (id) =>
-        <OverwriteResolvable>{
+        <OverwriteResolvable> {
           id,
           allow: PermissionsBitField.Flags.Connect, // ['CONNECT']
-        }
+        },
     );
 
-    if (!pChannel.allowedRoles.some((id) => id === state.guild.roles.everyone.id)) {
+    if (
+      !pChannel.allowedRoles.some((id) => id === state.guild.roles.everyone.id)
+    ) {
       permissionOverwrites.push({
         id: state.guild.roles.everyone.id,
         deny: PermissionsBitField.Flags.Connect, // ['CONNECT']
@@ -169,7 +206,7 @@ function createVoiceOptions(state: VoiceState, pChannel: PChannel): GuildChannel
   }
 
   return {
-    name: 'loading..',
+    name: "loading..",
     type: ChannelType.GuildVoice,
     bitrate: 96000,
     userLimit: pChannel.userLimitPortal,
@@ -178,18 +215,27 @@ function createVoiceOptions(state: VoiceState, pChannel: PChannel): GuildChannel
   } as GuildChannelCreateOptions;
 }
 
-export async function createVoiceChannel(state: VoiceState, pChannel: PChannel): Promise<string | boolean> {
+export async function createVoiceChannel(
+  state: VoiceState,
+  pChannel: PChannel,
+): Promise<string | boolean> {
   if (!state) {
-    return Promise.reject('there is no state');
+    return Promise.reject("there is no state");
   } else if (!state.channel) {
-    return Promise.reject('state has no channel');
+    return Promise.reject("state has no channel");
   } else if (!state.member) {
-    return Promise.reject('state has no member');
+    return Promise.reject("state has no member");
   }
 
-  const voiceOptions: GuildChannelCreateOptions = createVoiceOptions(state, pChannel);
+  const voiceOptions: GuildChannelCreateOptions = createVoiceOptions(
+    state,
+    pChannel,
+  );
 
-  const newGuildVoiceChannel = await state.guild.channels.create({ ...voiceOptions, name: 'loading..' });
+  const newGuildVoiceChannel = await state.guild.channels.create({
+    ...voiceOptions,
+    name: "loading..",
+  });
   if (!newGuildVoiceChannel) {
     return false;
   }
@@ -202,16 +248,18 @@ export async function createVoiceChannel(state: VoiceState, pChannel: PChannel):
     pChannel.noBots,
     pChannel.locale,
     pChannel.annAnnounce,
-    pChannel.annUser
+    pChannel.annUser,
   );
 
   insertVoice(state.member.guild.id, pChannel.id, newVoice).catch((e) => {
     return Promise.reject(`failed to store voice channel: ${e}`);
   });
 
-  await state.member.voice.setChannel(newGuildVoiceChannel as unknown as VoiceBasedChannel); // as VoiceBasedChannel)
+  await state.member.voice.setChannel(
+    newGuildVoiceChannel as unknown as VoiceBasedChannel,
+  ); // as VoiceBasedChannel)
 
-  return 'created channel and moved member to new voice';
+  return "created channel and moved member to new voice";
 }
 
 // @deprecated replaced by music.ts
@@ -219,10 +267,10 @@ export async function createMusicChannel(
   guild: Guild,
   musicChannel: string,
   musicCategory: string | CategoryChannel | null,
-  pGuild: PGuild
+  pGuild: PGuild,
 ): Promise<boolean> {
   let newMusicCategoryGuildChannel: CategoryChannel | undefined;
-  if (musicCategory && typeof musicCategory === 'string') {
+  if (musicCategory && typeof musicCategory === "string") {
     // with category
     newMusicCategoryGuildChannel = await guild.channels
       .create({ name: musicCategory, type: ChannelType.GuildCategory })
@@ -239,7 +287,8 @@ export async function createMusicChannel(
       name: `${musicChannel}`,
       parent: newMusicCategoryGuildChannel,
       type: ChannelType.GuildText,
-      topic: 'play:▶️, pause:⏸, skip:⏭, pin last:📌, lyrics:📄, queue text:⬇️, clear queue:🧹, leave:🚪', // , vol dwn ➖, vol up ➕
+      topic:
+        "play:▶️, pause:⏸, skip:⏭, pin last:📌, lyrics:📄, queue text:⬇️, clear queue:🧹, leave:🚪", // , vol dwn ➖, vol up ➕
     })
     .catch((e) => {
       return Promise.reject(`failed to create focus channel: ${e}`);
@@ -251,18 +300,25 @@ export async function createMusicChannel(
 
   pGuild.musicData.channelId = newMusicGuildChannel.id;
 
-  const musicMessageId = await createMusicMessage(newMusicGuildChannel, pGuild).catch((e) => {
-    return Promise.reject(`failed to send music message: ${e}`);
-  });
+  const musicMessageId = await createMusicMessage(newMusicGuildChannel, pGuild)
+    .catch((e) => {
+      return Promise.reject(`failed to send music message: ${e}`);
+    });
 
   if (!musicMessageId) {
     return false;
   }
 
-  logger.log({ level: 'info', type: 'none', message: `send music message ${musicMessageId}` });
-  createMusicLyricsMessage(newMusicGuildChannel, pGuild, musicMessageId).catch((e) => {
-    return Promise.reject(`failed to send music lyrics message: ${e}`);
+  logger.log({
+    level: "info",
+    type: "none",
+    message: `send music message ${musicMessageId}`,
   });
+  createMusicLyricsMessage(newMusicGuildChannel, pGuild, musicMessageId).catch(
+    (e) => {
+      return Promise.reject(`failed to send music lyrics message: ${e}`);
+    },
+  );
 
   return true;
 }
@@ -270,29 +326,34 @@ export async function createMusicChannel(
 export async function moveMembersBack(
   oldChannel: VoiceBasedChannel,
   member: GuildMember,
-  memberFound: GuildMember
+  memberFound: GuildMember,
 ): Promise<string> {
   if (!oldChannel.deletable) {
-    return Promise.reject('could not move to original voice channel because it was deleted');
+    return Promise.reject(
+      "could not move to original voice channel because it was deleted",
+    );
   }
 
-  const setUserBackToOriginalChannel = await member.voice.setChannel(oldChannel).catch((e) => {
-    return Promise.reject(`focus did not end properly: ${e}`);
-  });
+  const setUserBackToOriginalChannel = await member.voice.setChannel(oldChannel)
+    .catch((e) => {
+      return Promise.reject(`focus did not end properly: ${e}`);
+    });
 
   if (!setUserBackToOriginalChannel) {
-    return Promise.reject('did not move requester back to original channel');
+    return Promise.reject("did not move requester back to original channel");
   }
 
-  const setUserFocusBackToOriginalChannel = await memberFound.voice.setChannel(oldChannel).catch((e) => {
-    return Promise.reject(`focus did not end properly: ${e}`);
-  });
+  const setUserFocusBackToOriginalChannel = await memberFound.voice
+    .setChannel(oldChannel)
+    .catch((e) => {
+      return Promise.reject(`focus did not end properly: ${e}`);
+    });
 
   if (!setUserFocusBackToOriginalChannel) {
-    return Promise.reject('did not move requested back to original channel');
+    return Promise.reject("did not move requested back to original channel");
   }
 
-  return 'focus ended properly';
+  return "focus ended properly";
 }
 
 export async function createFocusChannel(
@@ -300,17 +361,18 @@ export async function createFocusChannel(
   member: GuildMember,
   memberFound: GuildMember,
   focusTime: number,
-  pChannel: PChannel
+  pChannel: PChannel,
 ): Promise<string> {
   if (!member.voice.channel) {
-    return Promise.reject('member is not in a voice channel');
+    return Promise.reject("member is not in a voice channel");
   }
 
-  const chatRoomName = `${focusTime === 0
-    ? 'Private Room'
-    : `PR-${focusTime}' $hour:$minute/${dayjs()
-      .add(focusTime, focusTime === 1 ? 'minute' : 'minutes')
-      .format('hh:mm')}`
+  const chatRoomName = `${
+    focusTime === 0 ? "Private Room" : `PR-${focusTime}' $hour:$minute/${
+      dayjs()
+        .add(focusTime, focusTime === 1 ? "minute" : "minutes")
+        .format("hh:mm")
+    }`
   }`;
 
   const voiceOptions: GuildChannelCreateOptions = {
@@ -320,12 +382,14 @@ export async function createFocusChannel(
     userLimit: 2,
   };
 
-  const newVoiceChannel = await guild.channels.create(voiceOptions).catch((e) => {
-    return Promise.reject(`failed to create focus channel: ${e}`);
-  });
+  const newVoiceChannel = await guild.channels.create(voiceOptions).catch(
+    (error) => {
+      return Promise.reject(`failed to create focus channel: ${error}`);
+    },
+  );
 
   if (!newVoiceChannel) {
-    return Promise.reject('failed to create new voice channel');
+    return Promise.reject("failed to create new voice channel");
   }
 
   member.voice
@@ -351,26 +415,32 @@ export async function createFocusChannel(
       pChannel.noBots,
       pChannel.locale,
       pChannel.annAnnounce,
-      pChannel.annUser
-    )
+      pChannel.annUser,
+    ),
   ).catch((e) => {
     return Promise.reject(`failed to store voice channel: ${e}`);
   });
 
   if (focusTime === 0) {
-    return 'private room successfully created';
+    return "private room successfully created";
   }
 
-  return focusTime === 0 ? 'private room successfully created' : 'focus channel successfully created';
+  return focusTime === 0
+    ? "private room successfully created"
+    : "focus channel successfully created";
 }
 
-export async function deleteChannel(
+export function deleteChannel(
   type: PortalChannelType,
   channelToDelete: VoiceChannel | TextChannel,
   interaction: ChatInputCommandInteraction | null,
-  isPortal = false
-): Promise<boolean> {
-  logger.log({ level: 'info', type: 'none', message: `${type}, ${channelToDelete}, ${interaction}, ${isPortal}` });
+  isPortal = false,
+): boolean {
+  logger.log({
+    level: "info",
+    type: "none",
+    message: `${type}, ${channelToDelete}, ${interaction}, ${isPortal}`,
+  });
   return true;
   // if (isPortal && channelToDelete.deletable) {
   //   const channelDeleted = await channelToDelete.delete().catch((e) => {
@@ -490,12 +560,14 @@ export async function deleteChannel(
   // return true;
 }
 
-export async function deleteMessage(message: Message<true>): Promise<boolean> {
+export function deleteMessage(message: Message<true>): Promise<boolean> {
   if (!message || !message.deletable) {
-    return false;
+    return new Promise(
+      (resolve) => resolve(false),
+    );
   }
 
-  const delay = (process.env.DELETE_DELAY as unknown as number) * 1000;
+  const delay = (Deno.env.get("DELETE_DELAY") as unknown as number) * 1000;
 
   return new Promise((resolve) => {
     setTimeout(async () => {
@@ -513,7 +585,7 @@ export async function generateChannelName(
   voiceChannel: VoiceChannel,
   pChannels: PChannel[],
   pGuild: PGuild,
-  guild: Guild
+  guild: Guild,
 ): Promise<boolean> {
   for (let i = 0; i < pChannels.length; i++) {
     for (let j = 0; j < pChannels[i].pVoiceChannels.length; j++) {
@@ -523,12 +595,14 @@ export async function generateChannelName(
         // me creating an database spam
         let regex = pChannels[i].pVoiceChannels[j].regex;
         if (pChannels[i].regexOverwrite) {
-          const member = voiceChannel.members.find((m) => m.id === pChannels[i].pVoiceChannels[j].creatorId);
+          const member = voiceChannel.members.find(
+            (m) => m.id === pChannels[i].pVoiceChannels[j].creatorId,
+          );
 
           if (member) {
             const pMember = pGuild.pMembers.find((m) => m.id === member.id);
 
-            if (pMember?.regex && pMember.regex !== 'null') {
+            if (pMember?.regex && pMember.regex !== "null") {
               regex = pMember.regex;
             }
           }
@@ -542,7 +616,7 @@ export async function generateChannelName(
             pChannels,
             pGuild,
             guild,
-            pChannels[i].pVoiceChannels[j].creatorId
+            pChannels[i].pVoiceChannels[j].creatorId,
           )
           : regex;
 
@@ -574,28 +648,30 @@ export function regexInterpreter(
   pChannels: PChannel[],
   pGuild: PGuild,
   guild: Guild,
-  memberId: string
+  memberId: string,
 ): string {
   let lastSpaceIndex = 0;
   let lastVariableEndIndex = 0;
   let lastAttributeEndIndex = 0;
 
-  let lastVariable = '';
-  let lastAttribute = '';
-  let newChannelName = '';
+  let lastVariable = "";
+  let lastAttribute = "";
+  let newChannelName = "";
 
   for (let i = 0; i < regex.length; i++) {
     if (regex[i] === Prefix.VARIABLE) {
       const variable = isVariable(regex.substring(i));
 
       if (variable.length !== 0) {
-        const returnValue: string | number = <string>getVariable(
-          voiceChannel,
-          pVoiceChannel,
-          pChannels,
-          pGuild,
-          guild,
-          variable
+        const returnValue: string | number = <string> (
+          getVariable(
+            voiceChannel,
+            pVoiceChannel,
+            pChannels,
+            pGuild,
+            guild,
+            variable,
+          )
         );
 
         if (returnValue !== null) {
@@ -621,7 +697,7 @@ export function regexInterpreter(
           pChannels,
           pGuild,
           guild,
-          attr //, pMember
+          attr, //, pMember
           // voiceChannel, pVoiceChannel, p, pGuild, attr, pMember
         );
 
@@ -646,7 +722,8 @@ export function regexInterpreter(
           if (returnValue !== null) {
             newChannelName = newChannelName.substring(
               0,
-              voca.chars(newChannelName).length - voca.chars(lastVariable).length
+              voca.chars(newChannelName).length -
+                voca.chars(lastVariable).length,
             );
             newChannelName += returnValue;
             i += voca.chars(pipe).length;
@@ -659,7 +736,8 @@ export function regexInterpreter(
           if (returnValue !== null) {
             newChannelName = newChannelName.substring(
               0,
-              voca.chars(newChannelName).length - voca.chars(lastAttribute).length
+              voca.chars(newChannelName).length -
+                voca.chars(lastAttribute).length,
             );
             newChannelName += returnValue;
             i += voca.chars(pipe).length;
@@ -667,7 +745,10 @@ export function regexInterpreter(
             newChannelName += regex[i];
           }
         } else {
-          const returnValue = getPipe(newChannelName.substring(lastSpaceIndex, newChannelName.length), pipe);
+          const returnValue = getPipe(
+            newChannelName.substring(lastSpaceIndex, newChannelName.length),
+            pipe,
+          );
 
           if (returnValue !== null) {
             const str_for_pipe = returnValue;
@@ -681,22 +762,27 @@ export function regexInterpreter(
       } else {
         newChannelName += regex[i];
       }
-    } else if (regex[i] === '{' && regex[i + 1] !== undefined && regex[i + 1] === '{') {
+    } else if (
+      regex[i] === "{" && regex[i + 1] !== undefined && regex[i + 1] === "{"
+    ) {
       try {
         // did not put into structure_list due to many unnecessary function calls
         let isValid = false;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const statement = getJSONFromString(
-          regex.substring(i + 1, i + 1 + regex.substring(i + 1).indexOf('}}') + 1)
+          regex.substring(
+            i + 1,
+            i + 1 + regex.substring(i + 1).indexOf("}}") + 1,
+          ),
         );
 
-        if (!statement) return 'error';
+        if (!statement) return "error";
 
-        if (Object.prototype.hasOwnProperty.call(statement, 'if')) {
-          if (Object.prototype.hasOwnProperty.call(statement, 'is')) {
-            if (Object.prototype.hasOwnProperty.call(statement, 'with')) {
-              if (Object.prototype.hasOwnProperty.call(statement, 'yes')) {
-                if (Object.prototype.hasOwnProperty.call(statement, 'no')) {
+        if (Object.prototype.hasOwnProperty.call(statement, "if")) {
+          if (Object.prototype.hasOwnProperty.call(statement, "is")) {
+            if (Object.prototype.hasOwnProperty.call(statement, "with")) {
+              if (Object.prototype.hasOwnProperty.call(statement, "yes")) {
+                if (Object.prototype.hasOwnProperty.call(statement, "no")) {
                   isValid = true;
                 }
               }
@@ -706,19 +792,19 @@ export function regexInterpreter(
 
         if (!isValid) {
           newChannelName += regex[i];
-          if (regex[i] === ' ') {
+          if (regex[i] === " ") {
             lastSpaceIndex = i + 1;
           }
         } else {
           if (
-            statement.is === '==' ||
-            statement.is === '===' ||
-            statement.is === '!=' ||
-            statement.is === '!==' ||
-            statement.is === '>' ||
-            statement.is === '<' ||
-            statement.is === '>=' ||
-            statement.is === '<='
+            statement.is === "==" ||
+            statement.is === "===" ||
+            statement.is === "!=" ||
+            statement.is === "!==" ||
+            statement.is === ">" ||
+            statement.is === "<" ||
+            statement.is === ">=" ||
+            statement.is === "<="
           ) {
             if (
               inlineOperator(statement.is)(
@@ -729,7 +815,7 @@ export function regexInterpreter(
                   pChannels,
                   pGuild,
                   guild,
-                  memberId
+                  memberId,
                 ),
                 regexInterpreter(
                   statement.with,
@@ -738,8 +824,8 @@ export function regexInterpreter(
                   pChannels,
                   pGuild,
                   guild,
-                  memberId
-                )
+                  memberId,
+                ),
               )
             ) {
               const value = regexInterpreter(
@@ -749,9 +835,9 @@ export function regexInterpreter(
                 pChannels,
                 pGuild,
                 guild,
-                memberId
+                memberId,
               );
-              if (value !== '--') {
+              if (value !== "--") {
                 newChannelName += value;
               }
             } else {
@@ -762,74 +848,59 @@ export function regexInterpreter(
                 pChannels,
                 pGuild,
                 guild,
-                memberId
+                memberId,
               );
-              if (value !== '--') {
+              if (value !== "--") {
                 newChannelName += value;
               }
             }
-            i += regex.substring(i + 1).indexOf('}}') + 2;
+            i += regex.substring(i + 1).indexOf("}}") + 2;
           } else {
-            return 'error';
+            return "error";
           }
         }
       } catch (e) {
-        logger.log({ level: 'info', type: 'none', message: `failed to parse json: ${e}` });
+        logger.log({
+          level: "info",
+          type: "none",
+          message: `failed to parse json: ${e}`,
+        });
         newChannelName += regex[i];
       }
     } else {
       newChannelName += regex[i];
-      if (regex[i] === ' ') {
+      if (regex[i] === " ") {
         lastSpaceIndex = i + 1;
       }
     }
   }
 
-  if (newChannelName === '') {
-    return '';
+  if (newChannelName === "") {
+    return "";
   }
 
   return newChannelName;
 }
 
-export async function doesChannelHaveUsage(textBasedChannelId: TextBasedChannel['id'], pGuild: PGuild) {
+export function getChannelTypeById(
+  textBasedChannelId: string,
+  pGuild: PGuild,
+): TextChannelType {
   if (!textBasedChannelId) {
-    return {
-      result: false,
-      value: 'could not get channel id',
-    };
+    return TextChannelType.NONE;
   }
 
   if (isAnnouncementChannel(textBasedChannelId, pGuild)) {
-    const response = await updateGuild(pGuild.id, 'announcement', 'null').catch(() => {
-      return {
-        result: true,
-        value: 'failed to remove announcement channel',
-      };
-    });
-
-    return {
-      result: true,
-      value: response ? 'successfully removed announcement channel' : 'failed to remove announcement channel',
-    };
+    return TextChannelType.ANNOUNCEMENT;
   }
 
   if (isMusicChannel(textBasedChannelId, pGuild)) {
-    return {
-      result: true,
-      value: 'this can\'t be set as an announcement channel for it is the music channel',
-    };
+    return TextChannelType.MUSIC;
   }
 
   if (isUrlOnlyChannel(textBasedChannelId, pGuild)) {
-    return {
-      result: true,
-      value: 'this can\'t be set as the announcement channel for it is an url channel',
-    };
+    return TextChannelType.URL;
   }
 
-  return {
-    result: false,
-    value: '',
-  };
+  return TextChannelType.NONE;
 }

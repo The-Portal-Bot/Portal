@@ -1,6 +1,9 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { PGuild } from './classes/PGuild.class.js';
-import { ReturnPromise, ScopeLimit } from './classes/PTypes.interface.js';
+import type {
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from "npm:discord.js";
+import type { PGuild } from "./classes/PGuild.class.ts";
+import type { ReturnPromise, ScopeLimit } from "./classes/PTypes.interface.ts";
 
 export type Command = {
   time: number;
@@ -9,5 +12,8 @@ export type Command = {
   auth: boolean;
   scopeLimit: ScopeLimit;
   slashCommand: SlashCommandBuilder;
-  execute: (interaction: ChatInputCommandInteraction, pGuild?: PGuild) => Promise<ReturnPromise>;
+  execute: (
+    interaction: ChatInputCommandInteraction,
+    pGuild?: PGuild,
+  ) => Promise<ReturnPromise>;
 };

@@ -1,12 +1,21 @@
-import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
-import { createEmbed } from '../libraries/help.library.js';
-import { fetchAnnouncementChannelByGuildId, insertMember } from '../libraries/mongo.library.js';
+import type {
+  GuildMember,
+  PartialGuildMember,
+  TextChannel,
+} from "npm:discord.js";
+import { createEmbed } from "../libraries/help.library.ts";
+import {
+  fetchAnnouncementChannelByGuildId,
+  insertMember,
+} from "../libraries/mongo.library.ts";
 
-import logger from '../utilities/log.utility.js';
+import logger from "../utilities/log.utility.ts";
 
-export async function guildMemberAdd(member: GuildMember | PartialGuildMember): Promise<void> {
+export async function guildMemberAdd(
+  member: GuildMember | PartialGuildMember,
+): Promise<void> {
   if (member.user.bot) {
-    logger.info('new member is a bot, bots are not handled');
+    logger.info("new member is a bot, bots are not handled");
     return;
   }
 
@@ -22,8 +31,10 @@ export async function guildMemberAdd(member: GuildMember | PartialGuildMember): 
     return;
   }
 
-  if (pGuild?.initialRole !== 'null') {
-    const initialRole = member.guild.roles.cache.find((r) => r.id === pGuild.initialRole);
+  if (pGuild?.initialRole !== "null") {
+    const initialRole = member.guild.roles.cache.find((r) =>
+      r.id === pGuild.initialRole
+    );
 
     if (initialRole) {
       const roleAdded = await member.roles.add(initialRole);
@@ -34,23 +45,37 @@ export async function guildMemberAdd(member: GuildMember | PartialGuildMember): 
     }
   }
 
-  const joinMessage =
-    `member: ${member.presence?.user}\n` + `id: ${member.guild.id}\n` + `\thas joined ${member.guild}`;
+  const joinMessage = `member: ${member.presence?.user}\n` +
+    `id: ${member.guild.id}\n` + `\thas joined ${member.guild}`;
 
-  const announcementChannel = <TextChannel>(
-    member.guild.channels.cache.find((channel) => channel.id === pGuild.announcement)
+  const announcementChannel = <TextChannel> (
+    member.guild.channels.cache.find((channel) =>
+      channel.id === pGuild.announcement
+    )
   );
 
   if (announcementChannel) {
     const message = {
       embeds: [
-        createEmbed('member joined', joinMessage, '#00C70D', [], member.user.avatarURL(), null, true, null, null),
+        createEmbed(
+          "member joined",
+          joinMessage,
+          "#00C70D",
+          [],
+          member.user.avatarURL(),
+          null,
+          true,
+          null,
+          null,
+        ),
       ],
     };
 
     const messageSent = await announcementChannel.send(message);
     if (!messageSent) {
-      logger.warn(`failed to send join message for ${member.id} to ${member.guild.id}`);
+      logger.warn(
+        `failed to send join message for ${member.id} to ${member.guild.id}`,
+      );
     }
   }
 

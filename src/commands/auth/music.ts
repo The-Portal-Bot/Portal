@@ -1,15 +1,34 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction, InteractionContextType, TextChannel, VoiceChannel } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  type ChatInputCommandInteraction,
+  InteractionContextType,
+  TextChannel,
+  type VoiceChannel,
+} from "npm:discord.js";
 
-import { deleteChannel, doesChannelHaveUsage } from '../../libraries/guild.library.js';
-import { createMusicLyricsMessage, createMusicMessage, messageHelp } from '../../libraries/help.library.js';
-import { Command } from '../../types/Command.js';
-import { PGuild } from '../../types/classes/PGuild.class.js';
-import { ReturnPromise, ScopeLimit } from '../../types/classes/PTypes.interface.js';
-import { PortalChannelType } from '../../types/enums/PortalChannel.enum.js';
+import {
+  deleteChannel,
+  getChannelTypeById,
+} from "../../libraries/guild.library.ts";
+import {
+  createMusicLyricsMessage,
+  createMusicMessage,
+  messageHelp,
+} from "../../libraries/help.library.ts";
+import type { Command } from "../../types/Command.ts";
+import type { PGuild } from "../../types/classes/PGuild.class.ts";
+import {
+  type ReturnPromise,
+  ScopeLimit,
+} from "../../types/classes/PTypes.interface.ts";
+import { PortalChannelType } from "../../types/enums/PortalChannel.enum.ts";
+import {
+  TextChannelType,
+  TextChannelTypeList,
+} from "../../types/enums/TextChannelType.enum.ts";
 
-const COMMAND_NAME = 'music';
-const DESCRIPTION = 'set a music channel';
+const COMMAND_NAME = "music";
+const DESCRIPTION = "set a music channel";
 
 export default {
   time: 0,
@@ -22,47 +41,54 @@ export default {
     .setDescription(DESCRIPTION)
     .addChannelOption((option) =>
       option
-        .setName('music_channel')
-        .setDescription('the channel you want to make the music channel')
-        .setRequired(true),
+        .setName("music_channel")
+        .setDescription("the channel you want to make the music channel")
+        .setRequired(true)
     )
     .addChannelOption((option) =>
       option
-        .setName('delete_previous')
-        .setDescription('whether or not to delete the previous music channel')
-        .setRequired(false),
+        .setName("delete_previous")
+        .setDescription("whether or not to delete the previous music channel")
+        .setRequired(false)
     )
     .setContexts(InteractionContextType.Guild),
-  async execute(interaction: ChatInputCommandInteraction, pGuild: PGuild): Promise<ReturnPromise> {
-    const musicChannel = interaction.options.getChannel('music_channel');
-    const deletePreviousMusicChannel = interaction.options.getChannel('delete_previous');
+  async execute(
+    interaction: ChatInputCommandInteraction,
+    pGuild: PGuild,
+  ): Promise<ReturnPromise> {
+    const musicChannel = interaction.options.getChannel("music_channel");
+    const deletePreviousMusicChannel = interaction.options.getChannel(
+      "delete_previous",
+    );
 
     if (!musicChannel) {
       return {
         result: false,
-        value: messageHelp('commands', 'music'),
+        value: messageHelp("commands", "music"),
       };
     }
 
     if (!(musicChannel instanceof TextChannel)) {
       return {
         result: false,
-        value: messageHelp('commands', 'music', 'channel must be text channel'),
+        value: messageHelp("commands", "music", "channel must be text channel"),
       };
     }
 
     if (!musicChannel.isTextBased) {
       return {
         result: false,
-        value: messageHelp('commands', 'music', 'channel must be text channel'),
+        value: messageHelp("commands", "music", "channel must be text channel"),
       };
     }
 
-    const channelHasUsage = await doesChannelHaveUsage(musicChannel.id, pGuild);
-    if (channelHasUsage.result) {
+    const channelType = await getChannelTypeById(musicChannel.id, pGuild);
+    if (channelType !== TextChannelType.NONE) {
       return {
         result: false,
-        value: channelHasUsage.value,
+        value: `selected channel is already in use as ${
+          TextChannelTypeList[channelType]
+        } channel`,
       };
     }
 
@@ -81,7 +107,7 @@ export default {
 
     return {
       result: true,
-      value: 'new music channel set successfully',
+      value: `**${musicChannel.name}** set to Music channel.`,
     };
   },
 } as Command;

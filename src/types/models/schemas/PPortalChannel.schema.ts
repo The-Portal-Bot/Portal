@@ -1,6 +1,6 @@
-import { Schema } from 'mongoose';
+import { Schema } from "npm:mongoose";
 
-import PVoiceChannelSchema from './PVoiceChannel.schema.js';
+import PVoiceChannelSchema from "./PVoiceChannel.schema.ts";
 
 const PPortalChannelSchema = new Schema(
   {
@@ -19,7 +19,7 @@ const PPortalChannelSchema = new Schema(
     regexOverwrite: { type: Boolean, required: true },
   },
   {
-    collection: 'guild_list',
+    collection: "guild_list",
   },
 );
 

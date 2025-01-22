@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   portal:
@@ -26,9 +26,9 @@ services:
     restart: always
     image: mongo:5.0
     logging:
-      driver: 'none'
+      driver: "none"
     ports:
-      - '27017:27017'
+      - "27017:27017"
     volumes:
       - type: bind
         source: ../mongo/data/db

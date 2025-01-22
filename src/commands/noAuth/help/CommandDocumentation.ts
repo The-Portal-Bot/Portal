@@ -1,36 +1,41 @@
-import { EmbedBuilder } from 'discord.js';
+import type { EmbedBuilder } from "npm:discord.js";
 
-import * as auth from '../../../commands/auth/index.js';
-import * as noAuth from '../../../commands/noAuth/index.js';
-import { createEmbed } from '../../../libraries/help.library.js';
-import { Field, HelpDocumentation } from '../../../types/classes/PTypes.interface.js';
+import * as auth from "../../../commands/auth/index.ts";
+import * as noAuth from "../../../commands/noAuth/index.ts";
+import { createEmbed } from "../../../libraries/help.library.ts";
+import type {
+  Field,
+  HelpDocumentation,
+} from "../../../types/classes/PTypes.interface.ts";
 
-const PORTAL_URL = 'https://portal-bot.xyz/docs';
+const PORTAL_URL = "https://portal-bot.xyz/docs";
 
 export class CommandDocumentation implements HelpDocumentation {
   public getGuide(): EmbedBuilder {
     const commandArray: Field[] = [
       {
-        emote: '1. Go to any channel',
-        role: '*you can write commands in any channel and Portal will see them*',
+        emote: "1. Go to any channel",
+        role:
+          "*you can write commands in any channel and Portal will see them*",
         inline: false,
       },
       {
-        emote: '2. `./help`',
-        role: '*write your command, for example help*',
+        emote: "2. `./help`",
+        role: "*write your command, for example help*",
         inline: false,
       },
       {
-        emote: '3. Wait for portal response',
-        role: '*portal will reply to almost all commands with an action or/and message*',
+        emote: "3. Wait for portal response",
+        role:
+          "*portal will reply to almost all commands with an action or/and message*",
         inline: false,
       },
     ];
 
     return createEmbed(
-      'Command Guide',
+      "Command Guide",
       `[Commands](${PORTAL_URL}/commands/description) are the way you communicate with Portal.\nhow to use commands`,
-      '#9775A9',
+      "#9775A9",
       commandArray,
       null,
       null,
@@ -49,7 +54,9 @@ export class CommandDocumentation implements HelpDocumentation {
       for (let i = 24 * l; i < commands.length && i < 24 * (l + 1); i++) {
         commandArray[l].push({
           emote: `${i + 1}. ${commands[i].name}`,
-          role: `[hover or click](${PORTAL_URL}/commands/detailed/${commands[i].name} "${commands[i].hover}")`,
+          role: `[hover or click](${PORTAL_URL}/commands/detailed/${
+            commands[i].name
+          } "${commands[i].hover}")`,
           inline: true,
         });
       }
@@ -58,9 +65,9 @@ export class CommandDocumentation implements HelpDocumentation {
     return commandArray.map((_command, index) => {
       if (index === 0) {
         return createEmbed(
-          'Commands',
+          "Commands",
           `[Commands](${PORTAL_URL}/commands/description) are the way you communicate with Portal.`,
-          '#9775A9',
+          "#9775A9",
           commandArray[0],
           null,
           null,
@@ -69,7 +76,17 @@ export class CommandDocumentation implements HelpDocumentation {
           null,
         );
       } else {
-        return createEmbed(null, null, '#9775A9', commandArray[index], null, null, null, null, null);
+        return createEmbed(
+          null,
+          null,
+          "#9775A9",
+          commandArray[index],
+          null,
+          null,
+          null,
+          null,
+          null,
+        );
       }
     });
   }
@@ -82,12 +99,15 @@ export class CommandDocumentation implements HelpDocumentation {
         return createEmbed(
           commands[i].name,
           null,
-          '#9775A9',
+          "#9775A9",
           [
-            { emote: 'Type', role: 'Command', inline: true },
+            { emote: "Type", role: "Command", inline: true },
             {
-              emote: 'Description',
-              role: `[hover or click](${PORTAL_URL}/commands/detailed/${candidate} "${commands[i].hover}")`,
+              emote: "Description",
+              role:
+                `[hover or click](${PORTAL_URL}/commands/detailed/${candidate} "${
+                  commands[i].hover
+                }")`,
               inline: true,
             },
           ],
@@ -104,7 +124,9 @@ export class CommandDocumentation implements HelpDocumentation {
   }
 
   private getCommandList() {
-    return [...Object.values(auth), ...Object.values(noAuth)].map((command) => ({
+    return [...Object.values(auth), ...Object.values(noAuth)].map((
+      command,
+    ) => ({
       name: command.slashCommand.name,
       hover: command.slashCommand.description,
     }));
