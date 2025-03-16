@@ -87,4 +87,4 @@ export default {
       value: editMessage ? "" : "error while editing pong message",
     };
   },
-} as Command;
+} as unknown as Command;

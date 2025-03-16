@@ -236,7 +236,7 @@ export default {
 
     return { result: false, value: messageHelp("commands", "help") };
   },
-} as Command;
+} as unknown as Command;
 
 const commandDocumentation = new CommandDocumentation();
 const variableDocumentation = new VariableDocumentation();

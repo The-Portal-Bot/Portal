@@ -209,7 +209,7 @@ export default {
       value: outcome ? "" : "failed to send message",
     };
   },
-} as Command;
+} as unknown as Command;
 
 const countryCodes: { name: string; code: string }[] = CountryCodes;
 

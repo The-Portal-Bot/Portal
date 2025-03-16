@@ -119,4 +119,4 @@ export default {
       } messages`,
     };
   },
-} as Command;
+} as unknown as Command;

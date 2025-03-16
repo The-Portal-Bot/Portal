@@ -169,7 +169,7 @@ export default {
       value: outcome ? `${json.name} weather` : "failed to send message",
     };
   },
-} as Command;
+} as unknown as Command;
 
 function kelvinToCelsius(kelvin: number): number {
   return Math.round(kelvin - 273.15);

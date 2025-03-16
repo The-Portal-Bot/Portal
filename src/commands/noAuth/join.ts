@@ -88,4 +88,4 @@ export default {
       };
     }
   },
-} as Command;
+} as unknown as Command;

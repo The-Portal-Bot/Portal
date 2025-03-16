@@ -157,4 +157,4 @@ export default {
       value: editedMessage ? "" : "failed to edit message",
     };
   },
-} as Command;
+} as unknown as Command;

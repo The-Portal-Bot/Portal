@@ -106,4 +106,4 @@ export default {
       value ?? (role as Role),
     );
   },
-} as Command;
+} as unknown as Command;

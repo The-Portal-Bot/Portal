@@ -176,7 +176,7 @@ export default {
 
     return roleMessage;
   },
-} as Command;
+} as unknown as Command;
 
 function createRoleMessage(
   channel: TextChannel,

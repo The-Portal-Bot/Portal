@@ -135,4 +135,4 @@ export default {
       : "failed to set new Portal channel ",
     };
   },
-} as Command;
+} as unknown as Command;

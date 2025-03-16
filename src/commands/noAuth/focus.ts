@@ -241,4 +241,4 @@ export default {
       value: focusChannelOutcome,
     };
   },
-} as Command;
+} as unknown as Command;

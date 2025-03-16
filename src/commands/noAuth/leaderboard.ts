@@ -117,7 +117,7 @@ export default {
       value: outcome ? "" : "failed to send message",
     };
   },
-} as Command;
+} as unknown as Command;
 
 function compare(memberA: PMember, memberB: PMember) {
   return memberB.level === memberA.level

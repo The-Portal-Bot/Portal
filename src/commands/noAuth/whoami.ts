@@ -79,4 +79,4 @@ export default {
       value: outcome ? "" : "could not send message",
     };
   },
-} as Command;
+} as unknown as Command;

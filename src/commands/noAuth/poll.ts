@@ -119,7 +119,7 @@ export default {
       value: response.result ? "" : response.value,
     };
   },
-} as Command;
+} as unknown as Command;
 
 async function createRoleMessage(
   channel: TextChannel,

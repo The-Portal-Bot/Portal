@@ -83,4 +83,4 @@ export default {
         : "failed to set new URL channel ",
     };
   },
-} as Command;
+} as unknown as Command;

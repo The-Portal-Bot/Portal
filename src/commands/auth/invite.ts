@@ -124,4 +124,4 @@ export default {
       value: "I sent you an invite as a private message",
     };
   },
-} as Command;
+} as unknown as Command;

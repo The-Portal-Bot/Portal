@@ -18,7 +18,7 @@ export default {
   auth: false,
   scopeLimit: ScopeLimit.NONE,
   slashCommand: new SlashCommandBuilder().setName(COMMAND_NAME).setDescription(
-    DESCRIPTION,
+    DESCRIPTION
   ),
   async execute(): Promise<ReturnPromise> {
     const aboutMessage = [
@@ -39,9 +39,7 @@ export default {
           },
           {
             emote: "Version",
-            role: `[${Deno.env.get("VERSION")}](https://portal-bot.xyz/blog/${
-              Deno.env.get("VERSION")
-            })`,
+            role: `[${Deno.env.get("VERSION")}](https://portal-bot.xyz/blog/${Deno.env.get("VERSION")})`,
             inline: true,
           },
           {
@@ -56,8 +54,7 @@ export default {
           },
           {
             emote: "Upvote",
-            role:
-              "[Top.gg](https://top.gg/bot/704400876860735569) | [Bot.gg](https://discord.bots.gg/bots/704400876860735569)",
+            role: "[Top.gg](https://top.gg/bot/704400876860735569) | [Bot.gg](https://discord.bots.gg/bots/704400876860735569)",
             inline: true,
           },
         ],
@@ -65,10 +62,7 @@ export default {
         null,
         true,
         null,
-        null,
-        // undefined,
-        // undefined,
-        // 'since 2020'
+        null
       ),
     ];
 
@@ -77,4 +71,4 @@ export default {
       value: aboutMessage,
     };
   },
-} as Command;
+} as unknown as Command;

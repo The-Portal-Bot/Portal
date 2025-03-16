@@ -103,4 +103,4 @@ export default {
         : "could not send message",
     };
   },
-} as Command;
+} as unknown as Command;

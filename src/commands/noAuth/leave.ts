@@ -66,4 +66,4 @@ export default {
       value: clientWrite(interaction, pGuild, AnnouncementAction.leave),
     };
   },
-} as Command;
+} as unknown as Command;

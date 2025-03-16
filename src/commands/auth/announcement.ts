@@ -131,4 +131,4 @@ export default {
         : "failed to set new Announcement channel ",
     };
   },
-} as Command;
+} as unknown as Command;

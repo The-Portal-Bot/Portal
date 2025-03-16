@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type { ChatInputCommandInteraction, Client } from "npm:discord.js";
+import type { ChatInputCommandInteraction } from "npm:discord.js";
 
 import SPAM_CONFIG from "../../config.spam.json" with { type: "json" };
 import { createEmbed } from "../../libraries/help.library.ts";
@@ -25,19 +25,7 @@ export default {
   async execute(
     interaction: ChatInputCommandInteraction,
     pGuild: PGuild,
-    client: Client,
   ): Promise<ReturnPromise> {
-    const guild = client.guilds.cache.find((guild) =>
-      guild.id === interaction?.guild?.id
-    );
-
-    if (!guild) {
-      return {
-        result: false,
-        value: "could not fetch guild",
-      };
-    }
-
     const rules =
       `**Duplicate spam warning after ${SPAM_CONFIG.DUPLICATE_AFTER}.**\n` +
       `**Spam warning after ${SPAM_CONFIG.WARN_AFTER}.**\n` +
@@ -83,4 +71,4 @@ export default {
       value: outcome ? "" : "failed to send message",
     };
   },
-} as Command;
+} as unknown as Command;

@@ -123,7 +123,7 @@ export default {
         : "failed to set new ranks",
     };
   },
-} as Command;
+} as unknown as Command;
 
 function isRank(rank: Rank) {
   return !!rank.level && !!rank.role;

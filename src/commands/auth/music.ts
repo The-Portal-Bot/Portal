@@ -110,4 +110,4 @@ export default {
       value: `**${musicChannel.name}** set to Music channel.`,
     };
   },
-} as Command;
+} as unknown as Command;

@@ -163,4 +163,4 @@ export default {
 
     return { result: false, value: "Force failed" };
   },
-} as Command;
+} as unknown as Command;
