@@ -78,9 +78,15 @@
 <br>
 
 <p align="center">
-    <a href="https://deno.com/"><img src="https://img.shields.io/badge/deno-2.1.7-green" alt="deno2" /></a>
-    <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/discord.js-v14.17.2-blue" alt="npm" /></a></br>
+    <a href="https://deno.com/">
+        <img src="https://img.shields.io/badge/deno-2.1.7-green" alt="deno2" />
+    </a>
+    <a href="https://discord.js.org/">
+        <img src="https://img.shields.io/badge/discord.js-v14.17.2-blue" alt="discordjs" />
+    </a>
 </p>
+
+</br>
 
 <p align="center">
    <a href="https://github.com/keybraker">Ioannis Tsiakkas</a> | <a href="http://www.gnu.org/philosophy/free-sw.html">GPL-3.0 License</a> | <a href="https://www.paypal.com/paypalme/tsiakkas">PayPalMe</a>

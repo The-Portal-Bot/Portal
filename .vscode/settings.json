@@ -4,5 +4,10 @@
   "git.ignoreLimitWarning": true,
   "cSpell.words": [
     "decapitalize"
-  ]
+  ],
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": true, // If you're using unstable Deno features
+  "deno.config": "./deno.json",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false // If you have a deno.json file
 }
