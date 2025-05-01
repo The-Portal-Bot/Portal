@@ -54,18 +54,18 @@
 ## Changelog
 
 - With discord.js 14 Portal moves to slash commands!
+- Migrated the project from node to deno2
 
 ## More
 
 1. For frequently asked questions (FAQ) with their answers click
    _[here](https://portal-bot.xyz/help/#faq)_.
 2. If you want to host Portal on your own system you can either follow
-   _[standard](https://portal-bot.xyz/hosting/standard/prerequisites)_ or
-   _[docker](https://portal-bot.xyz/hosting/docker/prerequisites)_ guides.
+   _[standard](https://portal-bot.xyz/docs/hosting/standard/prerequisites)_ or
+   _[docker](https://portal-bot.xyz/docs/hosting/docker/prerequisites)_ guides.
 3. Portal is an open source project you can contribute too. There are guidelines
    for how to properly do it
    _[here](https://github.com/keybraker/portal/blob/master/docs/CONTRIBUTING.md)_.
-4. To read the release history, click _[here](https://portal-bot.xyz/blog)_.
 
 #### Disclaimers
 

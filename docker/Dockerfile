@@ -1,5 +1,5 @@
 # Use the official Deno image
-FROM denoland/deno:2.2.4
+FROM denoland/deno:2.3.1
 
 # Set the working directory
 WORKDIR /usr/src/portal
