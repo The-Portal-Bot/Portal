@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.0.0
+          deno-version: v2.6.1
       - run: deno lint
       - run: deno fmt
       - run: deno test
