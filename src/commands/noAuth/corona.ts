@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import voca from "voca";
 
-import { CountryCodes } from "../../assets/lists/countryCodesISO.static.ts";
+import { CountryCodes } from "../../assets/lists/countryCodesIso.static.ts";
 import {
   createEmbed,
   getJSONFromString,

@@ -15,7 +15,7 @@ import {
   ScopeLimit,
 } from "../../types/classes/PTypes.interface.ts";
 
-// import { CountryCodes } from '../../data/lists/countryCodesISO.static.ts';
+// import { CountryCodes } from '../../data/lists/countryCodesIso.static.ts';
 
 // const country_codes: { name: string; code: string; }[] = CountryCodes;
 
