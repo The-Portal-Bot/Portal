@@ -79,7 +79,7 @@
 
 <p align="center">
     <a href="https://deno.com/">
-        <img src="https://img.shields.io/badge/deno-2.6.1-green" alt="deno2" />
+        <img src="https://img.shields.io/badge/deno-2.6.3-green" alt="deno2" />
     </a>
     <a href="https://discord.js.org/">
         <img src="https://img.shields.io/badge/discord.js-v14.17.2-blue" alt="discordjs" />

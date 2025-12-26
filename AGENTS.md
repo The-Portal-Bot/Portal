@@ -6,7 +6,7 @@ Portal is a fully-fledged, feature-rich Discord bot built with **Deno 2** and **
 
 ## Tech Stack
 
-- **Runtime**: Deno 2.6.1
+- **Runtime**: Deno 2.6.3
 - **Framework**: Discord.js v14.17.2
 - **Database**: MongoDB (via Mongoose)
 - **Language**: TypeScript (strict mode)

@@ -24,7 +24,7 @@
     "dayjs": "npm:dayjs@1.11.13",
     "discord-api-types": "npm:discord-api-types@0.37.0",
     "discord-ytdl-core": "npm:discord-ytdl-core@5.0.4",
-    "discord.js": "npm:discord.js@14.17.2",
+    "discord.js": "npm:discord.js@14.25.1",
     "ffmpeg-static": "npm:ffmpeg-static@5.2.0",
     "jsonfile": "npm:jsonfile@6.1.0",
     "libsodium-wrappers": "npm:libsodium-wrappers@0.7.15",
@@ -44,5 +44,9 @@
       "dom"
     ],
     "strict": true
+  },
+  "allowScripts": {
+    "allow": [],
+    "deny": ["npm:@discordjs/opus@0.9.0", "npm:es5-ext@0.10.64", "npm:ffmpeg-static@5.2.0"]
   }
 }
