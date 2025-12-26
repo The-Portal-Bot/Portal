@@ -1,7 +1,7 @@
 import type {
   DiscordGatewayAdapterCreator,
   DiscordGatewayAdapterLibraryMethods,
-} from "npm:@discordjs/voice";
+} from "@discordjs/voice";
 import {
   type Client,
   Events,
@@ -10,7 +10,7 @@ import {
   type Snowflake,
   Status,
   type VoiceBasedChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 const adapters = new Map<Snowflake, DiscordGatewayAdapterLibraryMethods>();
 const trackedClients = new Set<Client>();

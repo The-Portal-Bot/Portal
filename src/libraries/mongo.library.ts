@@ -4,8 +4,8 @@ import {
   type Guild,
   type TextChannel,
   type VoiceChannel,
-} from "npm:discord.js";
-import type { FilterQuery } from "npm:mongoose";
+} from "discord.js";
+import type { FilterQuery } from "mongoose";
 import type { VideoSearchResult } from "yt-search";
 
 import type { PGiveRole } from "../types/classes/PGiveRole.class.ts";

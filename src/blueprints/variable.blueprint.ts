@@ -1,4 +1,4 @@
-import dayjs from "npm:dayjs";
+import dayjs from "dayjs";
 import calendar from "dayjs/plugin/calendar.js";
 
 import { getStatusList } from "../libraries/status.library.ts";

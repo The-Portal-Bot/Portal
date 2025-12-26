@@ -1,5 +1,5 @@
-import dayjs from "npm:dayjs";
-import { type BanOptions, type Message, TextChannel } from "npm:discord.js";
+import dayjs from "dayjs";
+import { type BanOptions, type Message, TextChannel } from "discord.js";
 
 import { ProfaneWords } from "../assets/lists/profaneWords.static.ts";
 import configSpam from "../config.spam.json" with { type: "json" };

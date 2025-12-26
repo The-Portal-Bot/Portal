@@ -4,7 +4,7 @@ import {
   type GuildMember,
   InteractionContextType,
   VoiceChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { messageHelp } from "../../libraries/help.library.ts";
 import { insertPortal } from "../../libraries/mongo.library.ts";

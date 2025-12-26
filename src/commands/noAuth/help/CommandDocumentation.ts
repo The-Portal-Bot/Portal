@@ -1,4 +1,4 @@
-import type { EmbedBuilder } from "npm:discord.js";
+import type { EmbedBuilder } from "discord.js";
 
 import * as auth from "../../../commands/auth/index.ts";
 import * as noAuth from "../../../commands/noAuth/index.ts";

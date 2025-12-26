@@ -3,7 +3,7 @@ import type {
   ChatInputCommandInteraction,
   GuildMember,
   TextChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { createEmbed, messageHelp } from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";

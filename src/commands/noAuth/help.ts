@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { type ChatInputCommandInteraction, EmbedBuilder } from "npm:discord.js";
+import { type ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 
 import { createEmbed, messageHelp } from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";

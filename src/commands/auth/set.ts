@@ -4,7 +4,7 @@ import type {
   GuildMember,
   Role,
   VoiceChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { setAttribute } from "../../Interpreter/attribute.functions.ts";
 import { messageHelp } from "../../libraries/help.library.ts";

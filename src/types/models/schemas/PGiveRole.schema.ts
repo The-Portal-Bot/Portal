@@ -1,4 +1,4 @@
-import { Schema } from "npm:mongoose";
+import { Schema } from "mongoose";
 
 const GiveRoleSchema = new Schema(
   {

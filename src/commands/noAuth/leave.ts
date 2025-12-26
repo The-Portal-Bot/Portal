@@ -2,8 +2,8 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import {
   getVoiceConnection,
   VoiceConnectionStatus,
-} from "npm:@discordjs/voice";
-import type { ChatInputCommandInteraction } from "npm:discord.js";
+} from "@discordjs/voice";
+import type { ChatInputCommandInteraction } from "discord.js";
 import {
   clientTalk,
   clientWrite,
@@ -32,6 +32,7 @@ export default {
     interaction: ChatInputCommandInteraction,
     pGuild: PGuild,
   ): Promise<ReturnPromise> {
+    await Promise.resolve();
     if (!interaction.guild) {
       return {
         result: false,

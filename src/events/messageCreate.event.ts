@@ -1,4 +1,4 @@
-import type { GuildMember, Message, PartialMessage } from "npm:discord.js";
+import type { GuildMember, Message, PartialMessage } from "discord.js";
 import { fetchGuild } from "../libraries/mongo.library.ts";
 
 import {} from "../libraries/help.library.ts";

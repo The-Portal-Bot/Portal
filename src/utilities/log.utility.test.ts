@@ -1,5 +1,5 @@
-import { assertEquals, assertExists } from "jsr:@std/assert";
-import { spy } from "jsr:@std/testing/mock";
+import { assertEquals, assertExists } from "@std/assert";
+import { spy } from "@std/testing/mock";
 import logger from "./log.utility.ts";
 
 Deno.test("log.utility", () => {

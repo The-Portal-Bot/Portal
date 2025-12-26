@@ -1,14 +1,14 @@
-import mongoose, { type ConnectOptions } from "npm:mongoose";
+import mongoose, { type ConnectOptions } from "mongoose";
 
 import logger from "../utilities/log.utility.ts";
 
 export async function mongoHandler(mongoUrl: string) {
   mongoose.connection.on("connecting", () => {
-    logger.info("connecting to mongo", { service: "mongse" });
+    logger.info("connecting to mongo", { service: "mongoose" });
   });
 
   mongoose.connection.on("connected", () => {
-    logger.info("connected to mongo", { service: "mongse" });
+    logger.info("connected to mongo", { service: "mongoose" });
   });
 
   const connectOptions: ConnectOptions = {

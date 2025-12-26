@@ -5,7 +5,7 @@ import {
   InteractionContextType,
   type InviteCreateOptions,
   type TextChannel,
-} from "npm:discord.js";
+} from "discord.js";
 import { isMod, messageHelp } from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";
 import {

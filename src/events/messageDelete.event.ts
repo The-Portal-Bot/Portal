@@ -1,4 +1,4 @@
-import type { Message, PartialMessage, TextChannel } from "npm:discord.js";
+import type { Message, PartialMessage, TextChannel } from "discord.js";
 import {
   createMusicLyricsMessage,
   createMusicMessage,

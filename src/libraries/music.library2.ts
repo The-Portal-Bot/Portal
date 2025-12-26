@@ -4,12 +4,12 @@ import {
   createAudioResource,
   StreamType,
   type VoiceConnection,
-} from "npm:@discordjs/voice";
+} from "@discordjs/voice";
 // import { Buffer } from "node:buffer";
 // import type { RequestOptions } from "node:https";
-import ytdl from "npm:@distube/ytdl-core@^4.15.1";
-import type { VideoSearchResult } from "npm:yt-search";
-import yts from "npm:yt-search";
+import ytdl from "@distube/ytdl-core";
+import type { VideoSearchResult } from "yt-search";
+import yts from "yt-search";
 import type { PGuild } from "../types/classes/PGuild.class.ts";
 import logger from "../utilities/log.utility.ts";
 import { insertMusicVideo } from "./mongo.library.ts";
@@ -81,7 +81,6 @@ async function pushVideoToQueue(
   video: VideoSearchResult,
   pGuild: PGuild,
 ): Promise<boolean> {
-  return false;
   if (!pGuild.musicQueue) {
     pGuild.musicQueue = [];
   }
@@ -473,49 +472,49 @@ function playStream(
 //     }
 //   }
 
-function setupDispatcherListeners(
-  dispatcher: StreamDispatcher,
-  connection: VoiceConnection,
-  user: User,
-): void {
-  dispatcher.once("finish", async () => {
-    await handlePlaybackFinish(dispatcher, connection, user);
-  });
-}
+// function setupDispatcherListeners(
+//   dispatcher: StreamDispatcher,
+//   connection: VoiceConnection,
+//   user: User,
+// ): void {
+//   dispatcher.once("finish", async () => {
+//     await handlePlaybackFinish(dispatcher, connection, user);
+//   });
+// }
 
-async function handlePlaybackFinish(
-  dispatcher: StreamDispatcher,
-  connection: VoiceConnection,
-  user: User,
-): Promise<void> {
-  try {
-    if (!dispatcher.destroyed) {
-      dispatcher.destroy();
-    }
+// async function handlePlaybackFinish(
+//   dispatcher: StreamDispatcher,
+//   connection: VoiceConnection,
+//   user: User,
+// ): Promise<void> {
+//   try {
+//     if (!dispatcher.destroyed) {
+//       dispatcher.destroy();
+//     }
 
-    // Skip to next song
-    await this.skip(connection, user);
+//     // Skip to next song
+//     await this.skip(connection, user);
 
-    // Clear vote state
-    await clear_music_vote(this.pGuild.id);
+//     // Clear vote state
+//     await clear_music_vote(this.pGuild.id);
 
-    // Determine animation state
-    const animate = connection?.dispatcher
-      ? !connection.dispatcher.paused
-      : false;
+//     // Determine animation state
+//     const animate = connection?.dispatcher
+//       ? !connection.dispatcher.paused
+//       : false;
 
-    // Update message display
-    await update_music_message(
-      this.guild,
-      this.pGuild,
-      this.pGuild.music_queue?.[0],
-      "Next song",
-      animate,
-    );
-  } catch (error) {
-    throw new Error(`Failed to handle playback finish: ${error}`);
-  }
-}
+//     // Update message display
+//     await update_music_message(
+//       this.guild,
+//       this.pGuild,
+//       this.pGuild.music_queue?.[0],
+//       "Next song",
+//       animate,
+//     );
+//   } catch (error) {
+//     throw new Error(`Failed to handle playback finish: ${error}`);
+//   }
+// }
 
 //   private formatLyricsSearchTerm(): string {
 //     const uselessWords = ["official", "music", "video", "ft."];

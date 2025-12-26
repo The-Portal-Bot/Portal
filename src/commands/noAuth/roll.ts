@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type { ChatInputCommandInteraction, GuildMember } from "npm:discord.js";
+import type { ChatInputCommandInteraction, GuildMember } from "discord.js";
 import Roll from "roll";
 
 import {

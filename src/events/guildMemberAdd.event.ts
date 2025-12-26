@@ -2,7 +2,7 @@ import type {
   GuildMember,
   PartialGuildMember,
   TextChannel,
-} from "npm:discord.js";
+} from "discord.js";
 import { createEmbed } from "../libraries/help.library.ts";
 import {
   fetchAnnouncementChannelByGuildId,

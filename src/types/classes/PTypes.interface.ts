@@ -6,7 +6,7 @@ import type {
   Role,
   User,
   VoiceChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import type { PGuild } from "./PGuild.class.ts";
 import type { PMember } from "./PMember.class.ts";

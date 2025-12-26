@@ -1,4 +1,4 @@
-import type { Message } from "npm:discord.js";
+import type { Message } from "discord.js";
 
 import * as auth from "../commands/auth/index.ts";
 import * as noAuth from "../commands/noAuth/index.ts";

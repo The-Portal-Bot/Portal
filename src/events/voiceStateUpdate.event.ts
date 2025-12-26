@@ -1,14 +1,14 @@
 import {
   getVoiceConnection,
   VoiceConnectionStatus,
-} from "npm:@discordjs/voice";
+} from "@discordjs/voice";
 import type {
   Client,
   Guild,
   TextChannel,
   VoiceChannel,
   VoiceState,
-} from "npm:discord.js";
+} from "discord.js";
 
 import {
   createVoiceChannel,

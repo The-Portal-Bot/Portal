@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type { ChatInputCommandInteraction } from "npm:discord.js";
-import { ButtonStyle, GuildMember } from "npm:discord.js";
+import type { ChatInputCommandInteraction } from "discord.js";
+import { ButtonStyle, GuildMember } from "discord.js";
 
 import {
   createFocusChannel,

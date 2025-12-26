@@ -1,7 +1,7 @@
 import type {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "npm:discord.js";
+} from "discord.js";
 import type { PGuild } from "./classes/PGuild.class.ts";
 import type { ReturnPromise, ScopeLimit } from "./classes/PTypes.interface.ts";
 

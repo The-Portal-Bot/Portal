@@ -1,4 +1,4 @@
-import voca from "npm:voca";
+import voca from "voca";
 import type { Blueprint } from "../types/classes/PTypes.interface.ts";
 import { AuthType } from "../types/enums/Admin.enum.ts";
 

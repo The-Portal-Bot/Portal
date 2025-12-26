@@ -1,7 +1,7 @@
 import { REST } from "@discordjs/rest";
 import "@std/dotenv/load";
-import { Routes } from "discord-api-types/v9";
-import { transports } from "npm:winston";
+import { Routes } from "discord-api-types/v10";
+import { transports } from "winston";
 
 import * as auth from "./commands/auth/index.ts";
 import * as noAuth from "./commands/noAuth/index.ts";

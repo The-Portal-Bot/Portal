@@ -4,7 +4,7 @@ import {
   type ChatInputCommandInteraction,
   InteractionContextType,
   type TextChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { getChannelTypeById } from "../../libraries/guild.library.ts";
 import {

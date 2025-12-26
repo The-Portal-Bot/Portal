@@ -1,10 +1,14 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/assert@1": "1.0.8",
+    "jsr:@std/assert@^1.0.15": "1.0.16",
     "jsr:@std/assert@^1.0.8": "1.0.8",
     "jsr:@std/dotenv@~0.225.2": "0.225.2",
     "jsr:@std/expect@^1.0.7": "1.0.8",
+    "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@std/testing@1": "1.0.16",
     "npm:@discordjs/builders@1.9.0": "1.9.0",
     "npm:@discordjs/opus@0.9.0": "0.9.0",
     "npm:@discordjs/rest@^2.4.0": "2.6.0",
@@ -39,7 +43,13 @@
     "@std/assert@1.0.8": {
       "integrity": "ebe0bd7eb488ee39686f77003992f389a06c3da1bbd8022184804852b2fa641b",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.5"
+      ]
+    },
+    "@std/assert@1.0.16": {
+      "integrity": "6a7272ed1eaa77defe76e5ff63ca705d9c495077e2d5fd0126d2b53fc5bd6532",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.12"
       ]
     },
     "@std/dotenv@0.225.2": {
@@ -48,12 +58,21 @@
     "@std/expect@1.0.8": {
       "integrity": "27e40d8f3aefb372fc6a703fb0b69e34560e72a2f78705178babdffa00119a5f",
       "dependencies": [
-        "jsr:@std/assert",
-        "jsr:@std/internal"
+        "jsr:@std/assert@^1.0.8",
+        "jsr:@std/internal@^1.0.5"
       ]
     },
     "@std/internal@1.0.5": {
       "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    },
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/testing@1.0.16": {
+      "integrity": "a917ffdeb5924c9be436dc78bc32e511760e14d3a96e49c607fc5ecca86d0092",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.15"
+      ]
     }
   },
   "npm": {
@@ -1368,8 +1387,10 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/assert@1",
       "jsr:@std/dotenv@~0.225.2",
       "jsr:@std/expect@^1.0.7",
+      "jsr:@std/testing@1",
       "npm:@discordjs/builders@1.9.0",
       "npm:@discordjs/opus@0.9.0",
       "npm:@discordjs/rest@^2.4.0",

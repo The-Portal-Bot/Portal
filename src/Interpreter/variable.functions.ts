@@ -1,4 +1,4 @@
-import type { Guild, VoiceChannel } from "npm:discord.js";
+import type { Guild, VoiceChannel } from "discord.js";
 
 import { VariableBlueprints } from "../blueprints/variable.blueprint.ts";
 import type { PGuild } from "../types/classes/PGuild.class.ts";

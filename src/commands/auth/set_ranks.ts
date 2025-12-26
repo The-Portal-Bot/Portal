@@ -3,7 +3,7 @@ import {
   type ChatInputCommandInteraction,
   InteractionContextType,
   type Role,
-} from "npm:discord.js";
+} from "discord.js";
 import {
   getJSONFromString,
   messageHelp,

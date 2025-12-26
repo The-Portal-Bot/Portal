@@ -3,7 +3,7 @@ import type {
   ChatInputCommandInteraction,
   ColorResolvable,
   TextChannel,
-} from "npm:discord.js";
+} from "discord.js";
 import { createEmbed, messageHelp } from "../../libraries/help.library.ts";
 import { insertPoll } from "../../libraries/mongo.library.ts";
 import type { Command } from "../../types/Command.ts";

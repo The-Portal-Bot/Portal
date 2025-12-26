@@ -1,4 +1,4 @@
-import { model, Schema } from "npm:mongoose";
+import { model, Schema } from "mongoose";
 
 import type { IPGuild } from "../classes/PGuild.class.ts";
 import PGiveRoleSchema from "./schemas/PGiveRole.schema.ts";

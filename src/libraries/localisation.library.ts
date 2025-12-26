@@ -2,12 +2,12 @@ import {
   createAudioPlayer,
   createAudioResource,
   getVoiceConnection,
-} from "npm:@discordjs/voice";
+} from "@discordjs/voice";
 import type {
   ChatInputCommandInteraction,
   GuildMember,
   User,
-} from "npm:discord.js";
+} from "discord.js";
 import type { PGuild } from "../types/classes/PGuild.class.ts";
 import {
   AnnouncementAction,

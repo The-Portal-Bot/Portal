@@ -1,4 +1,4 @@
-import type { Client, Guild } from "npm:discord.js";
+import type { Client, Guild } from "discord.js";
 import { guildExists, insertGuild } from "../libraries/mongo.library.ts";
 
 import logger from "../utilities/log.utility.ts";

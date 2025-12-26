@@ -1,10 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { type ChatInputCommandInteraction, GuildMember } from "npm:discord.js";
+import { type ChatInputCommandInteraction, GuildMember } from "discord.js";
 
 import logger from "../../utilities/log.utility.ts";
 
 import {
-  type joinUserVoiceChannelByInteraction,
   messageHelp,
 } from "../../libraries/help.library.ts";
 import { clientTalk } from "../../libraries/localisation.library.ts";
@@ -33,6 +32,7 @@ export default {
     interaction: ChatInputCommandInteraction,
     pGuild: PGuild,
   ): Promise<ReturnPromise> {
+    await Promise.resolve();
     try {
       const member = interaction?.member;
       if (!member || !(member instanceof GuildMember)) {

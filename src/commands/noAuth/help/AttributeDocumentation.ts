@@ -1,4 +1,4 @@
-import type { EmbedBuilder } from "npm:discord.js";
+import type { EmbedBuilder } from "discord.js";
 
 import { AttributeBlueprints } from "../../../blueprints/attribute.blueprint.ts";
 import { createEmbed } from "../../../libraries/help.library.ts";

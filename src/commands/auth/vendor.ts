@@ -4,7 +4,7 @@ import {
   type ColorResolvable,
   InteractionContextType,
   type TextChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { getRole } from "../../libraries/guild.library.ts";
 import {

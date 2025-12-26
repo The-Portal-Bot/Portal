@@ -3,8 +3,8 @@ import "@std/dotenv/load";
 import {
   type ChatInputCommandInteraction,
   InteractionContextType,
-} from "npm:discord.js";
-import voca from "npm:voca";
+} from "discord.js";
+import voca from "voca";
 
 import {
   createEmbed,

@@ -1,4 +1,4 @@
-import type { Activity, GuildMember, VoiceChannel } from "npm:discord.js";
+import type { Activity, GuildMember, VoiceChannel } from "discord.js";
 
 import { GameNames } from "../assets/lists/gameNames.static.ts";
 import { ProgramNames } from "../assets/lists/programNames.static.ts";

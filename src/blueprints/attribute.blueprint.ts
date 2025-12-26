@@ -3,7 +3,7 @@ import {
   type GuildMember,
   OverwriteType,
   Role,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { getKeyFromEnum, isMod } from "../libraries/help.library.ts";
 import {
@@ -463,6 +463,8 @@ export const AttributeBlueprints: Blueprint[] = [
       return "@everyone";
     },
     set: async (): Promise<ReturnPromise> => {
+      await Promise.resolve();
+
       return {
         result: false,
         value: "not yet implemented",
@@ -561,6 +563,8 @@ export const AttributeBlueprints: Blueprint[] = [
       return "@everyone";
     },
     set: async (): Promise<ReturnPromise> => {
+      await Promise.resolve();
+
       return {
         result: false,
         value: "not yet implemented",
@@ -826,6 +830,8 @@ export const AttributeBlueprints: Blueprint[] = [
       return voiceChannel?.bitrate ?? 96000;
     },
     set: async ({ voiceChannel }, value): Promise<ReturnPromise> => {
+      await Promise.resolve();
+
       const category = ["v"];
       const attribute = "bitrate";
       const newBitrate = Number(value);

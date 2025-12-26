@@ -4,7 +4,7 @@ import {
   type ChatInputCommandInteraction,
   type EmbedBuilder,
   type GuildMember,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { commandLoader } from "../handlers/command.handler.ts";
 import { isUserAuthorised } from "../libraries/help.library.ts";

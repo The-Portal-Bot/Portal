@@ -2,8 +2,8 @@ import {
   getVoiceConnection,
   joinVoiceChannel,
   type VoiceConnection,
-} from "npm:@discordjs/voice";
-import type { Guild, GuildMember, VoiceBasedChannel } from "npm:discord.js";
+} from "@discordjs/voice";
+import type { Guild, GuildMember, VoiceBasedChannel } from "discord.js";
 
 import { createDiscordJSAdapter } from "./adapter.library.ts";
 import logger from "../utilities/log.utility.ts";

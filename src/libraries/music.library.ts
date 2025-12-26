@@ -1,6 +1,6 @@
 // // const ytdl = require('ytdl-core');
 // import ytdl from 'discord-ytdl-core';
-// import { Client, Guild, Message, MessageAttachment, User } from "npm:discord.js";
+// import { Client, Guild, Message, MessageAttachment, User } from "discord.js";
 // import { RequestOptions } from 'node:https';
 // import yts, { Duration, PlaylistMetadataResult, SearchResult, VideoMetadataResult, VideoSearchResult } from 'yt-search';
 // import { GuildPrtl } from "../types/classes/GuildPrtl.class";

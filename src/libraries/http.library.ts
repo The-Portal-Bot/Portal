@@ -1,5 +1,5 @@
 // http.library.ts
-import * as cheerio from "npm:cheerio";
+import * as cheerio from "cheerio";
 import logger from "../utilities/log.utility.ts";
 
 interface RetryConfig {

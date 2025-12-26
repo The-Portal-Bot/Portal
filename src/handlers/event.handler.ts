@@ -13,7 +13,7 @@ import type {
   PartialUser,
   User,
   VoiceState,
-} from "npm:discord.js";
+} from "discord.js";
 
 import * as events from "../events/index.ts";
 import type { ActiveCooldowns } from "../types/classes/PTypes.interface.ts";

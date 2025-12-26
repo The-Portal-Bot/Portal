@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import "@std/dotenv/load";
-import dayjs from "npm:dayjs";
+import dayjs from "dayjs";
 import {
   type ChatInputCommandInteraction,
   InteractionContextType,
-} from "npm:discord.js";
-import voca from "npm:voca";
+} from "discord.js";
+import voca from "voca";
 
 import { CountryCodes } from "../../assets/lists/countryCodesISO.static.ts";
 import {

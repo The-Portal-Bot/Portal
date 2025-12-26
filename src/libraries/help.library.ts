@@ -1,7 +1,7 @@
 import "@std/dotenv/load";
 import duration from "dayjs/plugin/duration.js";
 import relativeTime from "dayjs/plugin/relativeTime.js";
-import dayjs from "npm:dayjs";
+import dayjs from "dayjs";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -19,7 +19,7 @@ import {
   type PermissionResolvable,
   type TextBasedChannel,
   TextChannel,
-} from "npm:discord.js";
+} from "discord.js";
 import type { VideoSearchResult } from "yt-search";
 
 import { MusicData, type PGuild } from "../types/classes/PGuild.class.ts";

@@ -5,7 +5,7 @@ import {
   type Guild,
   type PresenceData,
   type PresenceStatusData,
-} from "npm:discord.js";
+} from "discord.js";
 
 import {
   removeDeletedChannels,

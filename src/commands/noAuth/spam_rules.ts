@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type { ChatInputCommandInteraction } from "npm:discord.js";
+import type { ChatInputCommandInteraction } from "discord.js";
 
 import SPAM_CONFIG from "../../config.spam.json" with { type: "json" };
 import { createEmbed } from "../../libraries/help.library.ts";

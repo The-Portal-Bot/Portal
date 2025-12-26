@@ -1,4 +1,4 @@
-import type { Document } from "npm:mongoose";
+import type { Document } from "mongoose";
 
 export class GiveRole {
   public emote: string;

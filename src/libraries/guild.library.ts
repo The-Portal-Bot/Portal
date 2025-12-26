@@ -1,5 +1,5 @@
 import "@std/dotenv/load";
-import dayjs from "npm:dayjs";
+import dayjs from "dayjs";
 import {
   type CategoryChannel,
   type CategoryChannelResolvable,
@@ -13,13 +13,12 @@ import {
   PermissionFlagsBits,
   PermissionsBitField,
   type Role,
-  type TextBasedChannel,
   type TextChannel,
   type VoiceBasedChannel,
   type VoiceChannel,
   type VoiceState,
-} from "npm:discord.js";
-import voca from "npm:voca";
+} from "discord.js";
+import voca from "voca";
 
 import {
   getAttribute,
@@ -39,7 +38,7 @@ import {
   getJSONFromString,
   maxString,
 } from "./help.library.ts";
-import { insertVoice, updateGuild } from "./mongo.library.ts";
+import { insertVoice } from "./mongo.library.ts";
 import { TextChannelType } from "../types/enums/TextChannelType.enum.ts";
 
 function inlineOperator(str: string) {

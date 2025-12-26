@@ -5,7 +5,7 @@ import {
   GatewayIntentBits,
   Options,
   Partials,
-} from "npm:discord.js";
+} from "discord.js";
 
 export function clientHandler() {
   const makeCache: CacheFactory = Options.cacheWithLimits({

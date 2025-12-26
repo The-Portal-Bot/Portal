@@ -3,7 +3,7 @@ import {
   type ChatInputCommandInteraction,
   type GuildMember,
   InteractionContextType,
-} from "npm:discord.js";
+} from "discord.js";
 import { createEmbed } from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";
 import type { PGuild } from "../../types/classes/PGuild.class.ts";

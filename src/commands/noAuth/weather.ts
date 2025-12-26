@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import "@std/dotenv/load";
-import dayjs from "npm:dayjs";
+import dayjs from "dayjs";
 import {
   type ChatInputCommandInteraction,
   InteractionContextType,
-} from "npm:discord.js";
+} from "discord.js";
 
 import {
   createEmbed,

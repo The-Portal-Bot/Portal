@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import dayjs from "npm:dayjs";
-import type { ChatInputCommandInteraction } from "npm:discord.js";
+import dayjs from "dayjs";
+import type { ChatInputCommandInteraction } from "discord.js";
 
 import { createEmbed, messageHelp } from "../../libraries/help.library.ts";
 import { httpsFetch } from "../../libraries/http.library.ts";

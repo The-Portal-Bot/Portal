@@ -5,7 +5,7 @@ import {
   type ChatInputCommandInteraction,
   type GuildMember,
   InteractionContextType,
-} from "npm:discord.js";
+} from "discord.js";
 
 import {
   askForApprovalByInteraction,

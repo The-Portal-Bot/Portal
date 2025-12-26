@@ -3,7 +3,7 @@ import {
   type ChatInputCommandInteraction,
   InteractionContextType,
   NewsChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { getChannelTypeById } from "../../libraries/guild.library.ts";
 import { messageHelp } from "../../libraries/help.library.ts";

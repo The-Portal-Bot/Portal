@@ -1,4 +1,4 @@
-import { Schema } from "npm:mongoose";
+import { Schema } from "mongoose";
 
 import PVoiceChannelSchema from "./PVoiceChannel.schema.ts";
 

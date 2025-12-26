@@ -1,5 +1,5 @@
 import "@std/dotenv/load";
-import { createLogger, format, transports } from "npm:winston";
+import { createLogger, format, transports } from "winston";
 
 class LoggerUtility {
   private static readonly consoleFormat = format.combine(

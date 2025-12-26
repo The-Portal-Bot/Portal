@@ -4,7 +4,7 @@ import type {
   GuildMember,
   Message,
   VoiceState,
-} from "npm:discord.js";
+} from "discord.js";
 
 import type { PGuild } from "../types/classes/PGuild.class.ts";
 import type { PMember } from "../types/classes/PMember.class.ts";

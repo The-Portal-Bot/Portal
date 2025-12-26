@@ -1,5 +1,5 @@
-// import { entersState, getVoiceConnection, VoiceConnectionStatus } from "npm:@discordjs/voice";
-// import { Client, MessageReaction, Role, User } from "npm:discord.js";
+// import { entersState, getVoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
+// import { Client, MessageReaction, Role, User } from "discord.js";
 // import { getRole } from "../libraries/guild.library";
 // import { createEmbed, isUserAuthorised, isUserDj, logger, updateMusicLyricsMessage, updateMusicMessage } from "../libraries/help.library";
 // import { clearMusicVote, fetchGuildReactionData, insertMusicVote, removePoll, setMusicData, updateGuild } from "../libraries/mongo.library";

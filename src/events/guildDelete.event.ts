@@ -1,4 +1,4 @@
-import type { Guild } from "npm:discord.js";
+import type { Guild } from "discord.js";
 import { removeGuild } from "../libraries/mongo.library.ts";
 
 import logger from "../utilities/log.utility.ts";

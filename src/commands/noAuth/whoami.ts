@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type { ChatInputCommandInteraction, User } from "npm:discord.js";
+import type { ChatInputCommandInteraction, User } from "discord.js";
 
 import { createEmbed } from "../../libraries/help.library.ts";
 import type { PGuild } from "../../types/classes/PGuild.class.ts";

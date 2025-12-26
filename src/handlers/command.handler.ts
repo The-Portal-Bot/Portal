@@ -1,4 +1,4 @@
-import type { ChatInputCommandInteraction } from "npm:discord.js";
+import type { ChatInputCommandInteraction } from "discord.js";
 
 import * as auth from "../commands/auth/index.ts";
 import * as noAuth from "../commands/noAuth/index.ts";

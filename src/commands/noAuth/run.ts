@@ -3,7 +3,7 @@ import type {
   ChatInputCommandInteraction,
   GuildMember,
   VoiceChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { regexInterpreter } from "../../libraries/guild.library.ts";
 import {

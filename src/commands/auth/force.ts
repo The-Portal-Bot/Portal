@@ -3,7 +3,7 @@ import type {
   ChatInputCommandInteraction,
   GuildMember,
   VoiceChannel,
-} from "npm:discord.js";
+} from "discord.js";
 import {
   deleteChannel,
   includedInVoiceList,
@@ -110,6 +110,7 @@ export default {
     interaction: ChatInputCommandInteraction,
     pGuild: PGuild,
   ): Promise<ReturnPromise> {
+    await Promise.resolve();
     const member = interaction.member as GuildMember;
 
     if (!member) return { result: false, value: "Member could not be fetched" };

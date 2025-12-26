@@ -21,6 +21,7 @@ export default {
     DESCRIPTION
   ),
   async execute(): Promise<ReturnPromise> {
+    await Promise.resolve();
     const aboutMessage = [
       createEmbed(
         "About",

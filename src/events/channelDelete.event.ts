@@ -4,7 +4,7 @@ import {
   type GuildChannel,
   type TextChannel,
   VoiceChannel,
-} from "npm:discord.js";
+} from "discord.js";
 import { handleChannelDeletion } from "../libraries/mongo.library.ts";
 
 import { PortalChannelType } from "../types/enums/PortalChannel.enum.ts";

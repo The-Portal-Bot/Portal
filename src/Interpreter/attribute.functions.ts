@@ -4,7 +4,7 @@ import type {
   GuildMember,
   Role,
   VoiceChannel,
-} from "npm:discord.js";
+} from "discord.js";
 
 import { AttributeBlueprints } from "../blueprints/attribute.blueprint.ts";
 import { isUserAuthorised } from "../libraries/help.library.ts";
