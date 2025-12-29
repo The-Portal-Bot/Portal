@@ -24,7 +24,7 @@ export function eventHandler(
   activeCooldowns: ActiveCooldowns = { guild: [], member: [] },
 ): void {
   // This event will run if the bot starts, and logs in, successfully.
-  client.once("ready", async () => await events.ready(client));
+  client.once("clientReady", async () => await events.ready(client));
   // This event triggers when a channel is deleted
   client.on(
     "channelDelete",

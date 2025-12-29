@@ -4,6 +4,7 @@ import {
   type ChatInputCommandInteraction,
   type EmbedBuilder,
   type GuildMember,
+  MessageFlags,
 } from "discord.js";
 
 import { commandLoader } from "../handlers/command.handler.ts";
@@ -169,9 +170,11 @@ async function InteractionReply(
     return;
   }
 
+  const flags = response.ephemeral ? MessageFlags.Ephemeral : undefined;
+
   const reply = typeof response.content === "string"
-    ? { content: response.content, ephemeral: response.ephemeral }
-    : { embeds: response.content, ephemeral: response.ephemeral };
+    ? { content: response.content, flags }
+    : { embeds: response.content, flags };
 
   if (interaction.isRepliable()) {
     await interaction.reply(reply);
