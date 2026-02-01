@@ -15,7 +15,7 @@
     "@discordjs/builders": "npm:@discordjs/builders@1.9.0",
     "@discordjs/opus": "npm:@discordjs/opus@0.9.0",
     "@discordjs/rest": "npm:@discordjs/rest@^2.4.0",
-    "@discordjs/voice": "npm:@discordjs/voice@0.17.0",
+    "@discordjs/voice": "npm:@discordjs/voice@0.18.0",
     "@discordjs/ws": "npm:@discordjs/ws@^2.0.0",
     "@distube/ytdl-core": "npm:@distube/ytdl-core@^4.15.1",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
