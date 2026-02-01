@@ -4,7 +4,6 @@ export { guildDelete } from "./guildDelete.event.ts";
 export { guildMemberAdd } from "./guildMemberAdd.event.ts";
 export { guildMemberRemove } from "./guildMemberRemove.event.ts";
 export { interactionCreate } from "./interactionCreate.event.ts";
-export { messageCreate } from "./messageCreate.event.ts";
 export { messageDelete } from "./messageDelete.event.ts";
 export { messageReactionAdd } from "./messageReactionAdd.event.ts";
 export { ready } from "./ready.event.ts";

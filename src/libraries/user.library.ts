@@ -2,17 +2,13 @@ import type {
   BanOptions,
   Guild,
   GuildMember,
-  Message,
   VoiceState,
 } from "discord.js";
 
 import type { PGuild } from "../types/classes/PGuild.class.ts";
 import type { PMember } from "../types/classes/PMember.class.ts";
 import type { Rank } from "../types/classes/PTypes.interface.ts";
-import {
-  RankSpeed,
-  RankSpeedValueList,
-} from "../types/enums/RankSpeed.enum.ts";
+import { RankSpeedValueList } from "../types/enums/RankSpeed.enum.ts";
 import logger from "../utilities/log.utility.ts";
 import { getElapsedTime } from "./help.library.ts";
 import { updateEntireMember, updateMember } from "./mongo.library.ts";
@@ -122,38 +118,9 @@ export async function updateTimestamp(
   return pMember.level > cachedLevel ? pMember.level : false;
 }
 
-export async function addPointsMessage(
-  message: Message,
-  member: PMember,
-  rankSpeed: number,
-): Promise<number | boolean> {
-  if (rankSpeed === RankSpeed.none) {
-    return false;
-  }
-
-  if (!message.guild) {
-    return false;
-  }
-
-  const points = message.content.length * RankSpeedValueList[rankSpeed];
-  member.points += points > 5 ? 5 : points;
-
-  updateMember(message.guild.id, member.id, "points", member.points).catch(
-    () => {
-      return "failed to update member";
-    },
-  );
-
-  const level = await calculateRank(member);
-
-  if (level) {
-    updateMember(message.guild.id, member.id, "level", level).catch(() => {
-      return "failed to update member";
-    });
-  }
-
-  return level ?? false;
-}
+// Note: addPointsMessage has been removed since it relied on message.content.length
+// which is no longer available without the MessageContent privileged intent.
+// Ranking points are now only earned through voice time in channels.
 
 export async function kick(
   memberToKick: GuildMember,

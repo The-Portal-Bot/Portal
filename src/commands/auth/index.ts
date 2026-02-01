@@ -6,6 +6,7 @@ export { default as ignore } from "./ignore.ts";
 export { default as invite } from "./invite.ts";
 export { default as kick } from "./kick.ts";
 export { default as music } from "./music.ts";
+export { default as play } from "./play.ts";
 export { default as portal } from "./portal.ts";
 export { default as set } from "./set.ts";
 export { default as set_ranks } from "./set_ranks.ts";
