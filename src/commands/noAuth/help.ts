@@ -1,6 +1,10 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { type ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 
+import { AttributeBlueprints } from "../../blueprints/attribute.blueprint.ts";
+import { PipeBlueprints } from "../../blueprints/pipe.blueprint.ts";
+import { StructureBlueprint } from "../../blueprints/structure.blueprint.ts";
+import { VariableBlueprints } from "../../blueprints/variable.blueprint.ts";
 import { createEmbed, messageHelp } from "../../libraries/help.library.ts";
 import type { Command } from "../../types/Command.ts";
 import {
@@ -16,6 +20,81 @@ import { VariableDocumentation } from "./help/VariableDocumentation.ts";
 
 const COMMAND_NAME = "help";
 const DESCRIPTION = "returns requested help page";
+
+type Choice = { name: string; value: string };
+
+// Generate choices dynamically from blueprints (commands loaded separately to avoid circular ref)
+const noAuthCommandChoices: Choice[] = [
+  { name: "about", value: "about" },
+  { name: "announce", value: "announce" },
+  { name: "bet", value: "bet" },
+  { name: "corona", value: "corona" },
+  { name: "crypto", value: "crypto" },
+  { name: "focus", value: "focus" },
+  { name: "help", value: "help" },
+  { name: "join", value: "join" },
+  { name: "leaderboard", value: "leaderboard" },
+  { name: "leave", value: "leave" },
+  { name: "level", value: "level" },
+  { name: "ping", value: "ping" },
+  { name: "poll", value: "poll" },
+  { name: "ranks", value: "ranks" },
+  { name: "roll", value: "roll" },
+  { name: "run", value: "run" },
+  { name: "spam_rules", value: "spam_rules" },
+  { name: "state", value: "state" },
+  { name: "weather", value: "weather" },
+  { name: "whoami", value: "whoami" },
+];
+
+const authCommandChoices: Choice[] = [
+  { name: "announcement", value: "announcement" },
+  { name: "ban", value: "ban" },
+  { name: "delete_messages", value: "delete_messages" },
+  { name: "force", value: "force" },
+  { name: "ignore", value: "ignore" },
+  { name: "invite", value: "invite" },
+  { name: "kick", value: "kick" },
+  { name: "music", value: "music" },
+  { name: "play", value: "play" },
+  { name: "portal", value: "portal" },
+  { name: "set", value: "set" },
+  { name: "set_ranks", value: "set_ranks" },
+  { name: "url", value: "url" },
+  { name: "vendor", value: "vendor" },
+];
+
+const variableChoices: Choice[] = VariableBlueprints
+  .map((v) => ({ name: v.name, value: v.name }))
+  .slice(0, 25);
+
+const pipeChoices: Choice[] = PipeBlueprints
+  .map((p) => ({ name: p.name, value: p.name }))
+  .slice(0, 25);
+
+const attributeChoicesGlobal: Choice[] = AttributeBlueprints
+  .filter((a) => a.name.startsWith("g."))
+  .map((a) => ({ name: a.name, value: a.name }))
+  .slice(0, 25);
+
+const attributeChoicesPortal: Choice[] = AttributeBlueprints
+  .filter((a) => a.name.startsWith("p.") && !a.name.startsWith("p.v."))
+  .map((a) => ({ name: a.name, value: a.name }))
+  .slice(0, 25);
+
+const attributeChoicesVoice: Choice[] = AttributeBlueprints
+  .filter((a) => a.name.startsWith("v.") || a.name.startsWith("p.v."))
+  .map((a) => ({ name: a.name, value: a.name }))
+  .slice(0, 25);
+
+const attributeChoicesMember: Choice[] = AttributeBlueprints
+  .filter((a) => a.name.startsWith("m."))
+  .map((a) => ({ name: a.name, value: a.name }))
+  .slice(0, 25);
+
+const structureChoices: Choice[] = StructureBlueprint
+  .map((s) => ({ name: s.name, value: s.name }))
+  .slice(0, 25);
 
 export default {
   time: 0,
@@ -47,170 +126,83 @@ export default {
     )
     .addStringOption((option) =>
       option
-        .setName("command_unauthorised")
-        .setDescription("Command to get help for")
+        .setName("command_public")
+        .setDescription("Public command to get help for")
         .setRequired(false)
-        .addChoices(
-          { name: "about", value: "about" },
-          { name: "announce", value: "announce" },
-          { name: "bet", value: "bet" },
-          { name: "corona", value: "corona" },
-          { name: "crypto", value: "crypto" },
-          { name: "focus", value: "focus" },
-          { name: "help", value: "help" },
-          { name: "join", value: "join" },
-          { name: "leaderboard", value: "leaderboard" },
-          { name: "leave", value: "leave" },
-          { name: "level", value: "level" },
-          { name: "ping", value: "ping" },
-          { name: "poll", value: "poll" },
-          { name: "ranks", value: "ranks" },
-          { name: "roll", value: "roll" },
-          { name: "run", value: "run" },
-          { name: "state", value: "state" },
-          { name: "spam_rules", value: "spam_rules" },
-          { name: "weather", value: "weather" },
-          { name: "whoami", value: "whoami" },
-        )
+        .addChoices(...noAuthCommandChoices)
     )
     .addStringOption((option) =>
       option
-        .setName("command_authorised")
-        .setDescription("Command to get help for")
+        .setName("command_admin")
+        .setDescription("Admin command to get help for")
         .setRequired(false)
-        .addChoices(
-          { name: "announcement", value: "announcement" },
-          { name: "ban", value: "ban" },
-          { name: "delete_messages", value: "delete_messages" },
-          { name: "force", value: "force" },
-          { name: "ignore", value: "ignore" },
-          { name: "invite", value: "invite" },
-          { name: "kick", value: "kick" },
-          { name: "music", value: "music" },
-          { name: "portal", value: "portal" },
-          { name: "vendor", value: "vendor" },
-          { name: "set_ranks", value: "set_ranks" },
-          { name: "set", value: "set" },
-          { name: "url", value: "url" },
-        )
+        .addChoices(...authCommandChoices)
     )
     .addStringOption((option) =>
       option
         .setName("variable")
         .setDescription("Variable to get help for")
         .setRequired(false)
-        .addChoices(
-          { name: "##", value: "##" },
-          { name: "#", value: "#" },
-          { name: "creatorPortal", value: "creatorPortal" },
-          { name: "creatorVoice", value: "creatorVoice" },
-          { name: "date", value: "date" },
-          { name: "dayNumber", value: "dayNumber" },
-          { name: "dayName", value: "dayName" },
-          { name: "monthNumber", value: "monthNumber" },
-          { name: "monthName", value: "monthName" },
-          { name: "year", value: "year" },
-          { name: "time", value: "time" },
-          { name: "hour", value: "hour" },
-          { name: "minute", value: "minute" },
-          { name: "second", value: "second" },
-          { name: "memberActiveCount", value: "memberActiveCount" },
-          { name: "memberCount", value: "memberCount" },
-          { name: "memberHistory", value: "memberHistory" },
-          { name: "pMembers", value: "pMembers" },
-          { name: "memberWithStatus", value: "memberWithStatus" },
-          { name: "statusCount", value: "statusCount" },
-          { name: "statusHistory", value: "statusHistory" },
-          { name: "statusList", value: "statusList" },
-        )
+        .addChoices(...variableChoices)
     )
     .addStringOption((option) =>
       option
         .setName("pipe")
         .setDescription("Pipe to get help for")
         .setRequired(false)
-        .addChoices(
-          { name: "acronym", value: "acronym" },
-          { name: "vowels", value: "vowels" },
-          { name: "consonants", value: "consonants" },
-          { name: "camelCase", value: "camelCase" },
-          { name: "capitalise", value: "capitalise" },
-          { name: "decapitalise", value: "decapitalise" },
-          { name: "lowerCase", value: "lowerCase" },
-          { name: "upperCase", value: "upperCase" },
-          { name: "populous_count", value: "populous_count" },
-          { name: "populous", value: "populous" },
-          { name: "snakeCase", value: "snakeCase" },
-          { name: "souvlakiCase", value: "souvlakiCase" },
-          { name: "words", value: "words" },
-          { name: "titleCase", value: "titleCase" },
-          { name: "length", value: "length" },
-        )
+        .addChoices(...pipeChoices)
     )
     .addStringOption((option) =>
       option
-        .setName("attribute")
-        .setDescription("Attribute to get help for")
+        .setName("attribute_global")
+        .setDescription("Global attribute (g.*) to get help for")
         .setRequired(false)
-        .addChoices(
-          { name: "All", value: "all" },
-          { name: "Command description", value: "description_commands" },
-          { name: "Variable description", value: "description_variables" },
-          { name: "Pipe description", value: "description_pipes" },
-          { name: "Attribute description", value: "description_attributes" },
-          { name: "Structure description", value: "description_structures" },
-          { name: "Command guide", value: "guide_commands" },
-          { name: "Variable guide", value: "guide_variables" },
-          { name: "Pipe guide", value: "guide_pipes" },
-          { name: "Attribute guide", value: "guide_attributes" },
-          { name: "Structure guide", value: "guide_structures" },
-        )
+        .addChoices(...attributeChoicesGlobal)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("attribute_portal")
+        .setDescription("Portal attribute (p.*) to get help for")
+        .setRequired(false)
+        .addChoices(...attributeChoicesPortal)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("attribute_voice")
+        .setDescription("Voice attribute (v.*) to get help for")
+        .setRequired(false)
+        .addChoices(...attributeChoicesVoice)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("attribute_member")
+        .setDescription("Member attribute (m.*) to get help for")
+        .setRequired(false)
+        .addChoices(...attributeChoicesMember)
     )
     .addStringOption((option) =>
       option
         .setName("structure")
         .setDescription("Structure to get help for")
         .setRequired(false)
-        .addChoices(
-          { name: "annAnnounce", value: "annAnnounce" },
-          { name: "noBots", value: "noBots" },
-          { name: "allowedRoles", value: "allowedRoles" },
-          { name: "render", value: "render" },
-          { name: "annUser", value: "annUser" },
-          { name: "bitrate", value: "bitrate" },
-          { name: "kickAfter", value: "kickAfter" },
-          { name: "banAfter", value: "banAfter" },
-          { name: "prefix", value: "prefix" },
-          { name: "muteRole", value: "muteRole" },
-          { name: "rankSpeed", value: "rankSpeed" },
-          { name: "profanityLevel", value: "profanityLevel" },
-          { name: "initialRole", value: "initialRole" },
-          { name: "locale", value: "locale" },
-          { name: "position", value: "position" },
-          { name: "regexOverwrite", value: "regexOverwrite" },
-          { name: "regexPortal", value: "regexPortal" },
-          { name: "regexVoice", value: "regexVoice" },
-          { name: "regex", value: "regex" },
-          { name: "userLimitPortal", value: "userLimitPortal" },
-          { name: "userLimit", value: "userLimit" },
-        )
+        .addChoices(...structureChoices)
     ),
-  async execute(
+  execute(
     interaction: ChatInputCommandInteraction,
-  ): Promise<ReturnPromise> {
+  ): ReturnPromise {
     const category = interaction.options.getString("category");
-    const command_unauthorised = interaction.options.getString(
-      "command_unauthorised",
-    );
-    const command_authorised = interaction.options.getString(
-      "command_authorised",
-    );
+    const commandPublic = interaction.options.getString("command_public");
+    const commandAdmin = interaction.options.getString("command_admin");
     const variable = interaction.options.getString("variable");
     const pipe = interaction.options.getString("pipe");
-    const attribute = interaction.options.getString("attribute");
+    const attributeGlobal = interaction.options.getString("attribute_global");
+    const attributePortal = interaction.options.getString("attribute_portal");
+    const attributeVoice = interaction.options.getString("attribute_voice");
+    const attributeMember = interaction.options.getString("attribute_member");
     const structure = interaction.options.getString("structure");
-    const specific = command_unauthorised ?? command_authorised ?? variable ??
-      pipe ?? attribute ?? structure;
+
+    const item = commandPublic ?? commandAdmin ?? variable ?? pipe ??
+      attributeGlobal ?? attributePortal ?? attributeVoice ?? attributeMember ?? structure;
 
     if (!category) {
       return {
@@ -220,17 +212,17 @@ export default {
     }
 
     if (category === "all") {
-      const response = await simpleReply();
+      const response = simpleReply();
       return { result: !!response, value: response };
     }
 
     if (category.startsWith("description")) {
-      const response = await propertyReply(category.split("_")[1], specific);
+      const response = propertyReply(category.split("_")[1], item);
       return { result: !!response, value: response };
     }
 
     if (category.startsWith("guide")) {
-      const response = await guideReply(category.split("_")[1]);
+      const response = guideReply(category.split("_")[1]);
       return { result: !!response, value: response };
     }
 
@@ -251,7 +243,7 @@ const helpArray: Field[] = [
     inline: false,
   },
   {
-    emote: "`./help commands` or `./help commands guide`",
+    emote: "`/help category:Command description`",
     role:
       "Commands are mini programs you can use to get a response or action\n",
     inline: false,
@@ -263,46 +255,57 @@ const helpArray: Field[] = [
     inline: false,
   },
   {
-    emote: "`./help variables` or `./help variables guide`",
+    emote: "`/help category:Variable description`",
     role: "Variables are live data about the current state of things\n" +
       "_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/variables/description)_",
     inline: false,
   },
   {
-    emote: "`./help pipes` or `./help pipes guide`",
+    emote: "`/help category:Pipe description`",
     role:
       "Pipes are mini-programs that manipulate text or even variables and attributes\n" +
       "_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/pipes/description)_",
     inline: false,
   },
   {
-    emote: "`./help attributes` or `./help attributes guide`",
+    emote: "`/help category:Attribute description`",
     role:
-      "Attributes are options that can be altered with **[set](https://portal-bot.xyz/docs/commands/detailed/set)** command\n" +
+      "Attributes are options that can be altered with **[/set](https://portal-bot.xyz/docs/commands/detailed/set)** command\n" +
       "_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/attributes/description)_",
     inline: false,
   },
   {
-    emote: "`./help structures` or `./help structures guide`",
+    emote: "`/help category:Structure description`",
     role: "Structures are rules to further manipulate the text outcome\n" +
       "_for more click [here](https://portal-bot.xyz/docs/interpreter/objects/structures/description)_",
     inline: false,
   },
   {
     emote: null,
-    role: "Specific help",
+    role: "**Guides**",
     inline: false,
   },
   {
-    emote: "`./help <specific_property_name>`",
-    role: "If you want to get a complete description of any property\n" +
-      "_(lets say you want to learn more about variables year, just type **./help year**)_",
+    emote: "`/help category:<type> guide`",
+    role:
+      "Get a step-by-step guide for commands, variables, pipes, attributes, or structures",
+    inline: false,
+  },
+  {
+    emote: null,
+    role: "**Specific help**",
+    inline: false,
+  },
+  {
+    emote: "`/help category:Command description item:<name>`",
+    role: "Get detailed help for a specific item\n" +
+      "_(e.g., `/help category:Variable description item:year`)_",
     inline: false,
   },
   {
     emote: null,
     role:
-      "**[FAQ](https://portal-bot.xyz/help#faq)** _frequently asked questioned_",
+      "**[FAQ](https://portal-bot.xyz/help#faq)** _frequently asked questions_",
     inline: false,
   },
 ];
